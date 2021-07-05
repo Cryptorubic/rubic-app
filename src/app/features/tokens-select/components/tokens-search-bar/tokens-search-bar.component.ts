@@ -4,10 +4,10 @@ import {
   Input,
   Output,
   EventEmitter,
+  AfterViewInit,
   Inject
 } from '@angular/core';
-import { TuiSvgService } from '@taiga-ui/core';
-import { tuiIconSearch } from '@taiga-ui/icons';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-tokens-search-bar',
@@ -15,15 +15,20 @@ import { tuiIconSearch } from '@taiga-ui/icons';
   styleUrls: ['./tokens-search-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokensSearchBarComponent {
+export class TokensSearchBarComponent implements AfterViewInit {
+  private searchBar: HTMLElement;
+
   @Input() query: string;
 
   @Output() queryChange = new EventEmitter<string>();
 
-  public tuiIconSearch = tuiIconSearch;
+  constructor(@Inject(DOCUMENT) private document) {}
 
-  constructor(@Inject(TuiSvgService) tuiSvgService: TuiSvgService) {
-    tuiSvgService.define({ tuiIconSearch });
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.searchBar = document.querySelector('app-tokens-search-bar tui-input input');
+      this.searchBar.focus();
+    }, 100);
   }
 
   onQueryChanges(model: string) {

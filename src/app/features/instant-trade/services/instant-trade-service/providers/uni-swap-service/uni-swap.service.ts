@@ -48,6 +48,8 @@ export class UniSwapService {
 
   private settings: ItSettingsForm;
 
+  private timeCoefficient = 60;
+
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly web3Private: Web3PrivateService,
@@ -72,6 +74,12 @@ export class UniSwapService {
         this.routingProviders = routingProviders.testnetAddresses;
       }
     });
+    useTestingModeService.uniswapSettings.secondsDeadline.subscribe(isSeconds => {
+      if (isSeconds) {
+        this.timeCoefficient = 1;
+      }
+    });
+
     this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
     this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
       this.settings = form;

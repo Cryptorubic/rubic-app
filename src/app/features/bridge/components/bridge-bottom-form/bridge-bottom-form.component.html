@@ -19,6 +19,10 @@
       <app-swap-button
         [needApprove]="needApprove"
         [status]="tradeStatus"
+        [formService]="swapFormService"
+        [fromAmount]="fromAmount"
+        [isBridgeNotSupported]="!isBridgeSupported"
+        [isTronAddressNotSet]="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
         (swapClick)="createTrade()"
         (approveClick)="approveTrade()"
       ></app-swap-button>
@@ -27,23 +31,22 @@
       class="bridge-bottom-form__terms-and-conditions terms-and-conditions"
       *ngIf="whatIsBlockchain"
     >
-      <span *ngIf="toWalletAddress && isBridgeSupported"
-        > {{ 'tradePage.getBefore'  | translate }} {{ whatIsBlockchain.name }} {{ 'tradePage.getMiddle' | translate}}
-        <a class="terms-and-conditions__address"
+      <span *ngIf="toWalletAddress && isBridgeSupported">
+        {{ 'tradePage.getBefore' | translate }} {{ whatIsBlockchain.name }}
+        {{ 'tradePage.getMiddle' | translate }}
+        <a
+          class="terms-and-conditions__address"
           [href]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
           target="_blank"
           rel="noopener"
-          >{{ toWalletAddress }}</a>
+          >{{ toWalletAddress }}</a
+        >
         {{ 'common.address' | translate }}</span
       >
 
-      <span
-        class="terms-and-conditions__error"
-        *ngIf="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
-        >You must set TRON wallet address in settings parameters</span
+      <a [href]="whatIsBlockchain.href" target="_blank"
+        >{{ 'bridgePage.whatIs' | translate }} {{ whatIsBlockchain.name }}?</a
       >
-
-      <a [href]="whatIsBlockchain.href" target="_blank">{{ 'bridgePage.whatIs' | translate }} {{ whatIsBlockchain.name }}?</a>
     </div>
   </div>
 </section>

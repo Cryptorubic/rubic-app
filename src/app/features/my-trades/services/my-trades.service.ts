@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
-import { BehaviorSubject, combineLatest, Observable, Subject, throwError, zip } from 'rxjs';
-import { catchError, filter, map, takeWhile } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  throwError,
+  zip
+} from 'rxjs';
+import { catchError, filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -14,6 +23,14 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
+import { HttpClient } from '@angular/common/http';
+import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+
+interface PanamaStatusResponse {
+  data: {
+    depositTxId: string;
+  };
+}
 
 @Injectable()
 export class MyTradesService {
@@ -30,6 +47,7 @@ export class MyTradesService {
   private walletAddress: string;
 
   constructor(
+    private readonly httpClient: HttpClient,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
@@ -71,11 +89,26 @@ export class MyTradesService {
   }
 
   private getBridgeTransactions(): Observable<TableTrade[]> {
-    return this.bridgeApiService
-      .getUserTrades(this.walletAddress)
-      .pipe(
-        map(trades => trades.map(trade => this.prepareBridgeData(trade)).filter(trade => !!trade))
-      );
+    return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
+      mergeMap(trades => {
+        const filteredTrades = trades
+          .map(trade => this.prepareBridgeData(trade))
+          .filter(trade => !!trade);
+        const sources: Observable<string>[] = filteredTrades.map(trade =>
+          trade.provider === BRIDGE_PROVIDER.PANAMA
+            ? this.loadPanamaTxHash(trade.transactionHash)
+            : of(trade.transactionHash)
+        );
+        return forkJoin(sources).pipe(
+          map(txHashes =>
+            txHashes.map((hash, index) => ({
+              ...filteredTrades[index],
+              transactionHash: hash
+            }))
+          )
+        );
+      })
+    );
   }
 
   private prepareBridgeData(trade: TableTrade): TableTrade {
@@ -144,5 +177,11 @@ export class MyTradesService {
           return throwError(err);
         })
       );
+  }
+
+  public loadPanamaTxHash(panamaId): Observable<string> {
+    return this.httpClient
+      .get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`)
+      .pipe(map((response: PanamaStatusResponse) => response.data.depositTxId));
   }
 }

@@ -41,6 +41,13 @@
               "src/styles.scss",
               "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
+            ],
+            "allowedCommonJsDependencies": [
+              "bignumber.js",
+              "decimal.js-light",
+              "hash.js",
+              "big.js",
+              "ng-inline-svg/lib_commonjs/inline-svg.module"
             ]
           },
           "configurations": {

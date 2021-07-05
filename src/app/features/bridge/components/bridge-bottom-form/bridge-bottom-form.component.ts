@@ -79,6 +79,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
+  public fromAmount: BigNumber;
+
   public minmaxError = false;
 
   public tradeStatus = TRADE_STATUS.DISABLED;
@@ -139,8 +141,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.isBridgeSupported = true;
     this.calculateTrade();
 
+    this.fromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       form => {
+        this.fromAmount = form.fromAmount;
+
         if (
           this.fromBlockchain !== form.fromBlockchain ||
           this.toBlockchain !== form.toBlockchain
