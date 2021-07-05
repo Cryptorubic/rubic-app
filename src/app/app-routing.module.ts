@@ -26,38 +26,12 @@ const routes: Routes = [
       import('./features/team-page-old/team-page.module').then(m => m.TeamPageModule)
   },
   {
-    path: 'public-v3/:unique_link',
-    redirectTo: '/trade/:unique_link'
-  },
-  {
-    path: 'trades-old/public-v3/:unique_link',
-    redirectTo: '/trade/:unique_link'
-  },
-  {
-    path: 'trade/:unique_link',
-    loadChildren: () =>
-      import('./features/order-book-trade-page-old/order-book-trade-page.module').then(
-        m => m.OrderBookTradePageModule
-      )
-  },
-  {
     path: 'contracts',
     redirectTo: '/trades-old/contracts'
   },
   {
-    path: 'trades-old',
-    loadChildren: () => import('./features/trades-old/trades.module').then(m => m.TradesModule)
-  },
-  {
     path: 'faq',
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
-  },
-  {
-    path: 'token-sale',
-    loadChildren: () =>
-      import('./features/token-sale-page-old/token-sale-page/token-sale-page.module').then(
-        m => m.TokenSalePageModule
-      )
   },
   {
     path: 'my-trades',

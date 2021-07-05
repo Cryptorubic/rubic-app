@@ -9,7 +9,7 @@ import { ProviderControllerData } from 'src/app/shared/components/provider-panel
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
+import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constants/providers';
@@ -17,7 +17,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
 import { Subscription } from 'rxjs';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';

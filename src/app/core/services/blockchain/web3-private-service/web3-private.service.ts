@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import CustomError from 'src/app/core/errors/models/custom-error';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -264,6 +265,13 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', err => {
           console.error(`Method execution error. ${err}`);
+          if (err.message.includes('Transaction has been reverted by the EVM')) {
+            reject(
+              new CustomError(
+                'Transaction has been reverted by the EVM. Try to increase transaction deadline.'
+              )
+            );
+          }
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {

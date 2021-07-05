@@ -8,7 +8,7 @@ import { forkJoin, Observable, Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { map, switchMap } from 'rxjs/operators';
-import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps-page-old/models/trade-data';
+import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps/models/trade-data';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol.service';
@@ -19,7 +19,7 @@ import { OneInchBscService } from 'src/app/features/instant-trade/services/insta
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -125,6 +125,9 @@ export class InstantTradeService {
         txHash: receipt.transactionHash
       });
     } catch (err) {
+      if (this.modalShowing) {
+        this.modalShowing.unsubscribe();
+      }
       this.errorService.catch$(err);
     }
   }
