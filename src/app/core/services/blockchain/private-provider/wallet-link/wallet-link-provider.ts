@@ -3,11 +3,11 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import WalletLink, { WalletLinkProvider as CoinbaseProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
@@ -100,7 +100,7 @@ export class WalletLinkProvider extends PrivateProvider {
     this.isEnabled = false;
   }
 
-  public addToken(token: SwapToken): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       this.errorsService.throw$(new WalletlinkError());
     }

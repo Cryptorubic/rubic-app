@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import { of, Subscription } from 'rxjs';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
@@ -25,7 +25,7 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public selectedToken: IToken;
+  public selectedToken: Token;
 
   private $formSubscription: Subscription;
 
@@ -56,7 +56,7 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
     this.tokensSelectService
       .showDialog(of(this.tokens), currentBlockchain, enabledCustomTokenBlockchain)
-      .subscribe((token: IToken) => {
+      .subscribe((token: Token) => {
         if (token) {
           this.selectedToken = token;
           if (this.tokenType === 'from') {

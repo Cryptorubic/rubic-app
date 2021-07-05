@@ -5,7 +5,7 @@ import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { filter, first, map, mergeMap } from 'rxjs/operators';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
+import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';

@@ -1,10 +1,8 @@
-import { BLOCKCHAIN_NAME } from '../blockchain/BLOCKCHAIN_NAME';
+import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 
-export interface Token {
-  blockchainName: BLOCKCHAIN_NAME;
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  totalSupply?: string;
+export interface Token extends BlockchainToken {
+  image: string;
+  rank: number;
+  price: number;
+  usedInIframe: boolean;
 }

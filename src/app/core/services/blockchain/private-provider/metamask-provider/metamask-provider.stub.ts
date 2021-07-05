@@ -1,10 +1,10 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 // @ts-ignore
-import config from '../../../../../../test/enviroment.test.json';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import * as config from 'src/test/enviroment.test.json';
 import { BlockchainsInfo } from '../../blockchain-info';
-import { BLOCKCHAIN_NAME } from '../../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
 
 /**
  * Stub for unit tests.
