@@ -80,9 +80,16 @@ export class UniSwapService {
       }
     });
 
-    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.settings = form;
+    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.settings = {
+      ...form.value,
+      slippageTolerance: form.value.slippageTolerance / 100
+    };
+    form.valueChanges.subscribe(formValue => {
+      this.settings = {
+        ...formValue,
+        slippageTolerance: formValue.slippageTolerance / 100
+      };
     });
   }
 

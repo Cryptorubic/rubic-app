@@ -69,9 +69,16 @@ export class OneInchBscService implements ItProvider {
         this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET];
       }
     });
-    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.settings = form;
+    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.settings = {
+      ...form.value,
+      slippageTolerance: form.value.slippageTolerance / 100
+    };
+    form.valueChanges.subscribe(formValue => {
+      this.settings = {
+        ...formValue,
+        slippageTolerance: formValue.slippageTolerance / 100
+      };
     });
     this.loadSupportedTokens();
   }

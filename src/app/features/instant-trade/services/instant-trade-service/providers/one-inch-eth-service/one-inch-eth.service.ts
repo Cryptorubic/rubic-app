@@ -64,9 +64,16 @@ export class OneInchEthService implements ItProvider {
     const network = BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.settings = form;
+    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.settings = {
+      ...form.value,
+      slippageTolerance: form.value.slippageTolerance / 100
+    };
+    form.valueChanges.subscribe(formValue => {
+      this.settings = {
+        ...formValue,
+        slippageTolerance: formValue.slippageTolerance / 100
+      };
     });
     this.loadSupportedTokens();
   }
