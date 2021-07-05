@@ -23,7 +23,6 @@ export class HeaderStore {
    */
   private readonly $isMobile: BehaviorSubject<boolean>;
 
-
   /**
    * Should wallets buttons be disabled or not.
    */
