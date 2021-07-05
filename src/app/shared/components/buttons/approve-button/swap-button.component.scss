@@ -48,3 +48,11 @@ $point-radius: 26px;
     }
   }
 }
+
+.error-button {
+  ::ng-deep {
+    .content {
+      color: rgb(216, 120, 121);
+    }
+  }
+}

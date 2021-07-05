@@ -196,7 +196,9 @@ export class InstantTradeService {
         })
         .subscribe();
     } catch (err) {
-      this.modalShowing.unsubscribe();
+      if (this.modalShowing) {
+        this.modalShowing.unsubscribe();
+      }
       this.errorService.throw$(err);
     }
   }

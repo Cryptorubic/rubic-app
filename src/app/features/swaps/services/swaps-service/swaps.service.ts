@@ -5,7 +5,6 @@ import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedToke
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { debounceTime } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -34,8 +33,7 @@ export class SwapsService {
   constructor(
     private readonly bridgesSwapProvider: BridgesSwapProviderService,
     private readonly instantTradesSwapProvider: InstantTradesSwapProviderService,
-    private readonly swapFormService: SwapFormService,
-    private readonly errorService: ErrorsService
+    private readonly swapFormService: SwapFormService
   ) {
     combineLatest([this.bridgesSwapProvider.tokens, this.instantTradesSwapProvider.tokens])
       .pipe(debounceTime(0))
@@ -60,6 +58,13 @@ export class SwapsService {
     } else {
       this._swapProvider = this.bridgesSwapProvider;
     }
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
+      if (form.fromBlockchain === form.toBlockchain) {
+        this._swapProvider = this.instantTradesSwapProvider;
+      } else {
+        this._swapProvider = this.bridgesSwapProvider;
+      }
+    });
   }
 
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {

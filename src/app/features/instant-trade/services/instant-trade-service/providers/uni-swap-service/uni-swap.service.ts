@@ -25,7 +25,7 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { from, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
 
 @Injectable({
@@ -47,6 +47,8 @@ export class UniSwapService {
   private isTestingMode: boolean;
 
   private settings: ItSettingsForm;
+
+  private timeCoefficient = 60;
 
   constructor(
     private readonly coingeckoApiService: CoingeckoApiService,
@@ -72,6 +74,12 @@ export class UniSwapService {
         this.routingProviders = routingProviders.testnetAddresses;
       }
     });
+    useTestingModeService.uniswapSettings.secondsDeadline.subscribe(isSeconds => {
+      if (isSeconds) {
+        this.timeCoefficient = 1;
+      }
+    });
+
     this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
     this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
       this.settings = form;
@@ -146,6 +154,7 @@ export class UniSwapService {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
+    await this.commonUniswap.checkSettings(this.blockchain);
     return this.commonUniswap.approve(tokenAddress, options);
   }
 
@@ -167,7 +176,7 @@ export class UniSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
+    const deadline = Math.floor(Date.now() / 1000) + this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 

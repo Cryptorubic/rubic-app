@@ -10,6 +10,6 @@ export class InstantTradesComponent {
   public readonly $isIframe;
 
   constructor(queryParamsService: QueryParamsService) {
-    this.$isIframe = queryParamsService.$isIframe;
+    this.$isIframe = queryParamsService.isIframe$;
   }
 }

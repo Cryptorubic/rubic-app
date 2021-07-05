@@ -1,14 +1,11 @@
 <ng-container>
-  <app-rubic-button *ngIf="needLogin | async"
-    [fullWidth]="true"
-    (onClick)="onLogin()"
-  >
+  <app-rubic-button *ngIf="needLogin | async" [fullWidth]="true" (onClick)="onLogin()">
     {{ 'navigation.login' | translate }}
   </app-rubic-button>
 
   <ng-template [ngIf]="!(needLogin | async)">
-    <ng-container *ngIf="needApprove; else swap">
-      <div class="buttons" *ngIf="!(needLogin | async)">
+    <ng-container *ngIf="needApprove && !loading && !hasError">
+      <div class="buttons">
         <app-rubic-button
           [fullWidth]="true"
           (onClick)="approveClick.emit()"
@@ -24,7 +21,8 @@
           [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
           appearance="secondary"
-        >{{ 'common.swap' | translate }}</app-rubic-button>
+          >{{ 'common.swap' | translate }}</app-rubic-button
+        >
         <div class="buttons__timeline-container timeline">
           <span class="timeline__connector"></span>
           <div
@@ -50,14 +48,29 @@
         </div>
       </div>
     </ng-container>
-    <ng-template #swap>
+
+    <ng-container *ngIf="(!needApprove && !hasError) || loading">
       <app-rubic-button
         [fullWidth]="true"
         (onClick)="swapClick.emit()"
-        [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
+        [loading]="
+          status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading
+        "
         [disabled]="status === TRADE_STATUS.DISABLED"
         appearance="secondary"
-      >{{ 'common.swap' | translate }}</app-rubic-button>
-    </ng-template>
+        >{{ 'common.swap' | translate }}</app-rubic-button
+      >
+    </ng-container>
+
+    <ng-container *ngIf="hasError && !loading">
+      <app-rubic-button
+        class="error-button"
+        [fullWidth]="true"
+        [disabled]="true"
+        appearance="secondary"
+      >
+        {{ errorText }}
+      </app-rubic-button>
+    </ng-container>
   </ng-template>
 </ng-container>

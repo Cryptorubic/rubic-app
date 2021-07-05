@@ -10,7 +10,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/swaps-page-old/instant-trades/models/instant-trades-trade-status';
-import { SwapForm } from 'src/app/features/swaps/models/SwapForm';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constants/providers';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -71,12 +71,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
+  public fromAmount: BigNumber;
+
   public tradeStatus: TRADE_STATUS;
 
   public needApprove: boolean;
 
   constructor(
-    private readonly swapFormService: SwapFormService,
+    public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
@@ -88,13 +90,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const formValue = this.swapFormService.commonTrade.value;
-    this.currentBlockchain = formValue.input.toBlockchain;
+    const formValue = this.swapFormService.commonTrade.controls.input.value;
+    this.fromAmount = formValue.fromAmount;
+    this.currentBlockchain = formValue.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
     this.conditionalCalculate(formValue);
-    this.formChangesSubscription$ = this.swapFormService.commonTrade.valueChanges.subscribe(form =>
-      this.setupForm(form)
-    );
+
+    this.formChangesSubscription$ =
+      this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
+        this.fromAmount = form.fromAmount;
+        this.cdr.detectChanges();
+
+        this.setupForm(form);
+      });
   }
 
   ngOnDestroy() {
@@ -102,13 +110,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.formChangesSubscription$.unsubscribe();
   }
 
-  private async conditionalCalculate(form: ControlsValue<SwapForm>): Promise<void> {
-    if (form.input.fromBlockchain !== form.input.toBlockchain) {
+  private async conditionalCalculate(form: ControlsValue<SwapFormInput>): Promise<void> {
+    if (form.fromBlockchain !== form.toBlockchain) {
       return;
     }
     if (
-      form.input.fromBlockchain === BLOCKCHAIN_NAME.TRON ||
-      form.input.fromBlockchain === BLOCKCHAIN_NAME.XDAI
+      form.fromBlockchain === BLOCKCHAIN_NAME.TRON ||
+      form.fromBlockchain === BLOCKCHAIN_NAME.XDAI
     ) {
       throw new NotSupportedItNetwork();
     }
@@ -116,15 +124,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async calculateTrades(): Promise<void> {
-    const form = this.swapFormService.commonTrade.value;
+    const form = this.swapFormService.commonTrade.controls.input.value;
     if (
       !(
-        form.input.fromToken &&
-        form.input.toToken &&
-        form.input.fromBlockchain &&
-        form.input.fromAmount &&
-        form.input.toBlockchain &&
-        form.input.fromAmount.gt(0)
+        form.fromToken &&
+        form.toToken &&
+        form.fromBlockchain &&
+        form.fromAmount &&
+        form.toBlockchain &&
+        form.fromAmount.gt(0)
       )
     ) {
       return;
@@ -235,7 +243,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        throw new NotSupportedItNetwork();
+        this.errorService.catch$(new NotSupportedItNetwork());
     }
   }
 
@@ -321,14 +329,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async setupForm(form: ControlsValue<SwapForm>) {
+  private async setupForm(form: ControlsValue<SwapFormInput>) {
     try {
       await this.conditionalCalculate(form);
       if (
-        this.currentBlockchain !== form.input.fromBlockchain &&
-        form.input.fromBlockchain === form.input.toBlockchain
+        this.currentBlockchain !== form.fromBlockchain &&
+        form.fromBlockchain === form.toBlockchain
       ) {
-        this.currentBlockchain = form.input.fromBlockchain;
+        this.currentBlockchain = form.fromBlockchain;
         this.initiateProviders(this.currentBlockchain);
       }
       if (!this.allowTrade) {
