@@ -509,7 +509,8 @@
     },
     "tokensListModal": {
       "title": "Elija token",
-      "disabledTokenHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
+      "unsupportedPairsHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
+      "clearParamsHint": "Borrar otros parámetros de formulario para seleccionar este token",
       "searchPlaceholder": "Buscar nombre o pegar dirección",
       "noSearchData": "Nada que mostrar"
     },
