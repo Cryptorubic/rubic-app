@@ -79,8 +79,6 @@ export class MetamaskProvider extends PrivateProvider {
     const accounts = await this.core.request({ method: 'eth_accounts' });
     this.selectedChain = chain;
     [this.selectedAddress] = accounts;
-    this.onAddressChanges.next(this.selectedAddress);
-    this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
   }
 
   public getAddress(): string {
@@ -99,13 +97,16 @@ export class MetamaskProvider extends PrivateProvider {
 
   public async activate(params?: unknown[]): Promise<void> {
     try {
-      await this.core.request({
+      const accounts = await this.core.request({
         method: 'eth_requestAccounts',
         params
       });
+      const chain = await this.core.request({ method: 'eth_chainId' });
       this.isEnabled = true;
+      this.selectedChain = String(chain);
+      [this.selectedAddress] = accounts;
       this.onNetworkChanges.next(this.getNetwork());
-      this.onAddressChanges.next(this.getAddress());
+      this.onAddressChanges.next(this.selectedAddress);
     } catch (error) {
       this.errorsService.throw$(new MetamaskError());
     }
