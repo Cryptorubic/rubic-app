@@ -1,11 +1,12 @@
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export type TopTokens = `topTokens[${keyof Record<BLOCKCHAIN_NAME, string>}]`;
 
 interface AllQueryParams {
   from: string;
   to: string;
-  chain: BLOCKCHAIN_NAME;
+  fromChain: BLOCKCHAIN_NAME;
+  toChain: BLOCKCHAIN_NAME;
   amount: string;
   iframe: string;
   hidden: string;

@@ -1,0 +1,45 @@
+@import 'src/scss/vars';
+
+.rubic-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px;
+  padding: 0 20px;
+
+  font-weight: 300;
+  font-family: $sf-pro-font;
+
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 21px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 26px;
+  }
+
+  &__link {
+    transition: 0.1s ease-in-out;
+
+    img {
+      display: block;
+      width: auto;
+      max-width: 22px;
+      height: auto;
+    }
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__copyright {
+    color: $rubic-base-07;
+    font-size: $rubic-font-size-01;
+  }
+
+  &__policy {
+    color: $rubic-primary;
+  }
+}

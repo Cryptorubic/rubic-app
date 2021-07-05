@@ -1,109 +1,124 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
+import BigNumber from 'bignumber.js';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
 
-const eth: SwapToken = {
+const eth: TokenAmount = {
   name: 'Ethereum',
   symbol: ETH.symbol,
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: ETH.address,
   decimals: ETH.decimals,
-  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_ETH_ethereum_UjtINYs.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.HIGH,
-  price: 1705
+  price: 1705,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const weenus = {
+const weenus: TokenAmount = {
   name: 'Weenus',
   symbol: WEENUS.symbol,
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: WEENUS.address,
   decimals: WEENUS.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
-  price: 10
+  price: 10,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const yeenus = {
+const yeenus: TokenAmount = {
   name: 'Yeenus',
   symbol: YEENUS.symbol,
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: YEENUS.address,
   decimals: YEENUS.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
-  price: 50
+  price: 50,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const xeenus = {
+const xeenus: TokenAmount = {
   name: 'Xeenus',
   symbol: XEENUS.symbol,
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: XEENUS.address,
   decimals: XEENUS.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
-  price: 2
+  price: 2,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const wsatt = {
+const wsatt: TokenAmount = {
   name: 'Wsatt',
   symbol: WSATT.symbol,
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: WSATT.address,
   decimals: WSATT.decimals,
-  image:
-    'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.LOW,
-  price: 5
+  price: 5,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const rbc = {
+const rbc: TokenAmount = {
   name: 'Rubic',
   symbol: 'RBC',
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   address: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 6,
-  price: 6
+  price: 6,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const bnb = {
+const bnb: TokenAmount = {
   name: 'Binance Coin',
   symbol: 'BNB',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   address: '0x0000000000000000000000000000000000000000',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/cg_logo_bnb_binance-coin-logo.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 1,
-  price: 1
+  price: 1,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const wrbc = {
+const wrbc: TokenAmount = {
   name: 'Wrapped Rubic',
-  symbol: 'WRBC',
+  symbol: 'BRBC',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   address: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/RBC_logo_new_I8eqPBM.png',
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 2,
-  price: 2
+  price: 2,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
-const matic = {
-  name: 'Matic Network',
+const matic: TokenAmount = {
+  name: 'Matic',
   symbol: 'MATIC',
   blockchain: BLOCKCHAIN_NAME.POLYGON,
   address: '0x0000000000000000000000000000000000000000',
   decimals: 18,
-  image: 'http://dev-api.rubic.exchange/media/token_images/MATIC_logo.png',
-  rank: 1,
-  price: 1
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
+  rank: 2,
+  price: 2,
+  usedInIframe: true,
+  amount: new BigNumber(0)
 };
 
 export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb, wrbc, matic];

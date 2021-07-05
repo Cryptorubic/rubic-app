@@ -6,34 +6,58 @@
   --main-green: #4aa956;
 
   --green-btn-border-hover-bg: #e5f5e7;
+
+  --tui-text-font: 'Ubuntu', Arial, sans-serif !important;
 }
 
 // ***** typography *****
-$main-font: 'Josefin Sans', Arial, sans-serif;
-$ubuntu-font: 'Ubuntu', Arial, sans-serif;
+$sf-pro-font: SF-Pro, sans-serif;
+$roboto-font: Roboto, sans-serif;
 
 // ***** colors *****
-$main-green: #4aa956;
-$dark: #242424;
-$dark-secondary: #110931;
-$grey-text: rgba(0, 0, 0, 0.5);
-$grey-background: #f4f4f4;
-$error-red: #ff2944;
-$active-green: #4aa956;
-$expired-yellow: #f4bb2b;
-$cancelled-red: #ee4256;
-$done-grey: #7c7c7c;
+$rubic-base-01: #fff;
+$rubic-base-02: #000;
+$rubic-base-03: rgba(250, 250, 250, 0.9);
+$rubic-base-04: #4b604f;
+$rubic-base-05: #639d6a;
+$rubic-base-06: #5c7d60;
+$rubic-base-07: #e0e2e0;
+$rubic-base-08: #fcfcfd;
+$rubic-base-09: #9db8a1;
 
-$text-gray: #a8a8a8;
+$rubic-primary: #4aa956;
+$rubic-secondary: #f4f5f4;
+$rubic-disable: #e1e1e1;
+
+$grey-background: #f4f4f4;
+
 
 // ***** breakpoints *****
 $desktop: 1240;
 $laptop: 960;
 $tablet: 768;
-$mobile-md: 636;
+$mobile-md: 651;
+$mobile-md-minus: 599;
 $mobile-sm-plus: 560;
 $mobile-sm: 401;
 
 // ***** shadows *****
 $shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
 $main-shadow: 0 3px 6px rgba(black, 0.16);
+
+// text colors
+$rubic-text-color-main: #283125;
+$rubic-text-disable: #909090;
+$rubic-text-error: #d9573f;
+
+$text-gray: #a8a8a8;
+
+// font-sizes
+$rubic-font-size-main: 14px;
+$rubic-font-size-01: 16px;
+$rubic-font-size-02: 18px;
+
+// box-shadows
+$rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
+$rubic-shadow-button-active: -5px -5px 30px rgba(172, 219, 178, 0.5), 5px 5px 30px rgba(59, 130, 67, 0.5);
+$rubic-shadow-button-disabled: -15px -15px 80px #fff, 10px 10px 30px rgba(58, 95, 69, 0.1), inset 4px 4px 20px rgba(255, 255, 255, 0.5);

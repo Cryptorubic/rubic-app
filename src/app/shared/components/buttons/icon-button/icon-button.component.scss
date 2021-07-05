@@ -1,0 +1,27 @@
+@import 'src/scss/vars';
+
+:host {
+  --tui-primary-text: #{$rubic-primary};
+  --tui-primary: white;
+  --tui-disabled-opacity: 1;
+
+  ::ng-deep tui-wrapper {
+    &[data-state='hovered'] {
+      background: $grey-background;
+    }
+
+    &[data-state='pressed'] {
+      background: $text-gray;
+    }
+
+    img {
+      max-width: 27px;
+      max-height: 27px;
+    }
+  }
+
+}
+
+.bordered {
+  border: 2px solid $rubic-primary;
+}

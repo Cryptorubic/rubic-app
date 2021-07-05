@@ -1,0 +1,62 @@
+@import 'src/scss/vars';
+
+$font-family: 'Ubuntu', Arial, sans-serif;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.team-page {
+  position: relative;
+
+  font-weight: normal;
+  font-family: $font-family !important;
+
+  background-color: white;
+
+  &__container {
+    padding: 80px 80px 0;
+  }
+
+  &__title {
+    max-width: 1180px;
+    margin: 0 auto 55px;
+
+    color: $rubic-primary;
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 44px;
+  }
+
+  &__content-wrapper {
+    position: relative;
+
+    display: grid;
+    grid-column-gap: 40px;
+    grid-template-columns: repeat(auto-fit, 330px);
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__card {
+    z-index: 1;
+    /*flex: 1 0 auto;*/
+    width: 320px;
+    margin-bottom: 60px;
+    /*margin-right: 20px;*/
+    padding: 0 5px;
+  }
+
+  &__triangles {
+    position: absolute;
+    top: 720px;
+    left: -80px;
+  }
+
+  &__triangles-rotated {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+}

@@ -1,0 +1,137 @@
+@import 'src/scss/vars';
+
+:host {
+  --tui-height-l: 50px;
+  --tui-height-s: 35px;
+  --tui-primary: #{$rubic-base-01};
+  --tui-primary-hover: #{$rubic-base-01};
+  --tui-focus: transparent;
+
+  [tuiButton] {
+    --tui-primary-text: #{$rubic-text-color-main};
+    --tui-link: #{$rubic-primary};
+    font-weight: 500;
+    font-size: $rubic-font-size-01;
+
+    border: 1px solid transparent;
+
+    transition: 0.3s;
+
+    &.full-width {
+      width: 100%;
+    }
+
+    &._hovered {
+      --tui-secondary-hover: #{$rubic-base-01};
+      --tui-primary-text: #{$rubic-primary};
+      --tui-link-hover: #{$rubic-primary};
+
+      background-color: $rubic-base-01;
+      box-shadow: $rubic-shadow-button-hover;
+    }
+
+    &._pressed {
+      --tui-secondary-active: #{$rubic-primary};
+      --tui-primary-active: #{$rubic-primary};
+      --tui-primary-text: #{$rubic-base-01};
+      --tui-text-01: #{$rubic-base-01};
+      --tui-link: #{$rubic-base-01};
+
+      background-color: $rubic-primary;
+      box-shadow: $rubic-shadow-button-active;
+
+      ::ng-deep img {
+        filter: brightness(10);
+      }
+    }
+
+    &._focused:not(&._pressed) {
+      border-color: $rubic-primary;
+    }
+
+    &._focused::after {
+      border: 0;
+    }
+
+    &._disabled {
+      border: 0;
+
+      ::ng-deep tui-wrapper {
+        color: rgba($rubic-text-disable, 0.6);
+
+        background-color: rgba($rubic-disable, 0.6);
+        box-shadow: $rubic-shadow-button-disabled;
+        opacity: 1 !important;
+      }
+    }
+
+    &[data-tui-host-size='l'] {
+      ::ng-deep .wrapper {
+        padding: 0 29px;
+      }
+    }
+
+    &[data-tui-host-size='s'] {
+      ::ng-deep .wrapper {
+        padding: 0 15px;
+      }
+    }
+
+    ::ng-deep img {
+      transition: 0.3s;
+    }
+
+    &.full-width {
+      width: 100%;
+    }
+
+    &[data-appearance='outline'] {
+      font-weight: 500;
+
+      border: 1px solid $rubic-primary;
+    }
+
+    &[data-appearance='secondary'] {
+      border: 0;
+    }
+  }
+
+  [tuiButton][bordered=true] {
+    box-shadow: $rubic-shadow-button-hover;
+  }
+
+
+  ::ng-deep {
+    tui-wrapper[data-appearance='secondary'] {
+      color: white;
+
+      background-color: $rubic-primary;
+
+      &[data-state='hovered'] {
+        box-shadow: $rubic-shadow-button-hover;
+      }
+
+      &[data-state='pressed'] {
+        color: $rubic-primary;
+
+        background-color: white !important;
+        box-shadow: $rubic-shadow-button-active;
+      }
+
+      &[data-state='disabled'] {
+        color: rgba(white, 0.4);
+
+        background-color: rgba($rubic-primary, 0.4);
+        border: 0;
+      }
+    }
+
+    tui-wrapper[data-appearance='outline']::after {
+      display: none;
+    }
+  }
+}
+
+::ng-deep .loader {
+  stroke: #{$rubic-primary} !important;
+}

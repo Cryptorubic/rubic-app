@@ -1,0 +1,82 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.tokens {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  padding: 15px 20px;
+
+  font-size: $rubic-font-size-01;
+
+  background-color: $rubic-base-03;
+  border-top-right-radius: 14px;
+
+  &__inner {
+    display: flex;
+    grid-gap: 8px;
+  }
+
+  &__image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 18px;
+    height: 18px;
+
+    img {
+      width: initial;
+      max-width: 18px;
+      height: initial;
+      max-height: 18px;
+    }
+  }
+
+  &__symbol {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__clear-container {
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+
+  &__container {
+    display: flex;
+    grid-gap: 10px;
+    align-items: center;
+
+    img {
+      display: block;
+    }
+
+    ::ng-deep [tuiButton] {
+      border-color: $rubic-primary !important;
+    }
+  }
+}
+
+
+::ng-deep button .content span {
+  font-weight: 300;
+}
+
+@include b($mobile-md) {
+  .tokens {
+    justify-content: flex-start;
+
+    border-radius: 0;
+  }
+}

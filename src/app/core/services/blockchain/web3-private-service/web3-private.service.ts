@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import CustomError from 'src/app/core/errors/models/custom-error';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { UserRejectError } from '../../../../shared/models/errors/provider/UserRejectError';
+import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
-import { LowGasError } from '../../../../shared/models/errors/provider/LowGasError';
+import { LowGasError } from '../../../errors/models/provider/LowGasError';
 
 @Injectable({
   providedIn: 'root'
@@ -196,16 +197,22 @@ export class Web3PrivateService {
   public async approveTokens(
     tokenAddress: string,
     spenderAddress: string,
-    value: BigNumber,
+    value: BigNumber | 'infinity',
     options: {
       onTransactionHash?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
+    let rawValue: BigNumber;
+    if (value === 'infinity') {
+      rawValue = new BigNumber(2).pow(256).minus(1);
+    } else {
+      rawValue = value;
+    }
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
 
     return new Promise((resolve, reject) => {
       contract.methods
-        .approve(spenderAddress, value.toFixed(0))
+        .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
           ...(this.defaultMockGas && { gas: this.defaultMockGas })
@@ -258,6 +265,13 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', err => {
           console.error(`Method execution error. ${err}`);
+          if (err.message.includes('Transaction has been reverted by the EVM')) {
+            reject(
+              new CustomError(
+                'Transaction has been reverted by the EVM. Try to increase transaction deadline.'
+              )
+            );
+          }
           if (err.code === 4001) {
             reject(new UserRejectError());
           } else {

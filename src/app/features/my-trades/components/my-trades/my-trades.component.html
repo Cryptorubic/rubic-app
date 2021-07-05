@@ -1,0 +1,42 @@
+<div class="my-trades">
+  <div class="my-trades__header header">
+    <div class="header__title">{{ 'myTrades.title' | translate }}</div>
+    <app-rubic-refresh-button
+      (refresh)="refreshTable()"
+      [loadingStatus]="loadingStatus"
+    ></app-rubic-refresh-button>
+  </div>
+
+  <tui-loader [overlay]="true" [showLoader]="loading" [ngClass]="{ 'position-up': !isDesktop }">
+    <div class="my-trades__table-container table-container" *tuiLet="tableData$ | async as data">
+      <div
+        class="table-container__connect-wallet-container"
+        *ngIf="loading === false && !walletAddress"
+      >
+        <app-rubic-button (onClick)="showConnectWalletModal()" [fullWidth]="true">
+          {{ 'navigation.login' | translate }}
+        </app-rubic-button>
+      </div>
+
+      <div
+        class="table-container__no-trades-text"
+        *ngIf="loading === false && walletAddress && !data.length"
+      >
+        {{ 'tradesTable.noData' | translate }}
+      </div>
+
+      <app-accordion
+        *ngIf="!isDesktop"
+        [tableData$]="tableData$"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+      ></app-accordion>
+
+      <app-table
+        *ngIf="isDesktop"
+        [loading]="loading"
+        [tableData$]="tableData$"
+        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
+      ></app-table>
+    </div>
+  </tui-loader>
+</div>

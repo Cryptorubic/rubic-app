@@ -1,90 +1,41 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-export const PROJECT_PARTS = {
-  TEST: {
-    '^/.+$': 'devswaps.mywish.io'
-  },
-  PROD: {
-    '^/$': 'swaps.network',
-    '^/.+$': 'trades.swaps.network',
-    from: 'swaps.network'
-  },
-  LOCAL: {
-    '^/.+$': 'local.devswaps.mywish.io'
-  }
-};
-
-let currMode = 'PROD';
-Object.entries(PROJECT_PARTS).forEach(([projectPartName, projectPartValue]: [string, any]) => {
-  Object.entries(projectPartValue).forEach(([, hostName]: [string, string]) => {
-    if (location.hostname === hostName) {
-      currMode = projectPartName;
-    }
-  });
-});
-
-export const MODE = currMode;
-
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./features/swaps-page/page-module/swaps-page.module').then(m => m.SwapsPageModule)
+    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
     path: 'bridge',
     redirectTo: 'cross-chain/bridge'
   },
   {
-    path: 'cross-chain',
+    path: 'crypto-tap',
     loadChildren: () =>
-      import('./features/cross-chain-swaps-page/cross-chain-swaps-page.module').then(
-        m => m.CrossChainSwapsPageModule
-      )
+      import('./features/crypto-tap/crypto-tap.module').then(m => m.CryptoTapModule)
   },
   {
     path: 'about',
     loadChildren: () =>
-      import('./features/features-page/features-page.module').then(m => m.FeaturesPageModule)
+      import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule)
   },
   {
     path: 'team',
-    loadChildren: () => import('./features/team-page/team-page.module').then(m => m.TeamPageModule)
-  },
-  {
-    path: 'public-v3/:unique_link',
-    redirectTo: '/trade/:unique_link'
-  },
-  {
-    path: 'trades/public-v3/:unique_link',
-    redirectTo: '/trade/:unique_link'
-  },
-  {
-    path: 'trade/:unique_link',
     loadChildren: () =>
-      import('./features/order-book-trade-page/order-book-trade-page.module').then(
-        m => m.OrderBookTradePageModule
-      )
+      import('./features/team-page-old/team-page.module').then(m => m.TeamPageModule)
   },
   {
     path: 'contracts',
-    redirectTo: '/trades/contracts'
-  },
-  {
-    path: 'trades',
-    loadChildren: () => import('./features/trades/trades.module').then(m => m.TradesModule)
+    redirectTo: '/trades-old/contracts'
   },
   {
     path: 'faq',
-    loadChildren: () => import('./features/faq-page/faq-page.module').then(m => m.FaqPageModule)
+    loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
   {
-    path: 'token-sale',
-    loadChildren: () =>
-      import('./features/token-sale-page/token-sale-page/token-sale-page.module').then(
-        m => m.TokenSalePageModule
-      )
+    path: 'my-trades',
+    loadChildren: () => import('./features/my-trades/my-trades.module').then(m => m.MyTradesModule)
   }
 ];
 

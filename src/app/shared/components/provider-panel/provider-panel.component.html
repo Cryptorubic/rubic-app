@@ -1,0 +1,64 @@
+<div class="provider-panel">
+  <div
+    class="provider-panel__content"
+    [ngClass]="{
+      'provider-panel__content_best-rate': providerData.isBestRate,
+      'provider-panel__content_loading': loading,
+      'provider-panel__content_selected': providerData.isActive,
+      'provider-panel__content_error': hasError
+    }"
+    (click)="activateProvider()"
+  >
+    <div class="provider-panel__provider-name">{{ 'common.via' | translate }} {{ providerData.name }}</div>
+    <div
+      *ngIf="providerData.isBestRate"
+      class="provider-panel__best-rate"
+      [ngClass]="{ 'provider-panel__best-rate_selected': providerData.isActive }"
+    >
+      <div [inlineSVG]="'assets/images/icons/Best-rate.svg'"></div>
+    </div>
+    <div class="provider-panel__body">
+      <div class="provider-panel__left">
+        <div
+          class="provider-panel__amount"
+          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
+        >
+          {{
+            (providerData.amount?.toString(10)
+              | withRound: 'toClosestValue':tradeData?.to?.token.decimals) ||
+              'Trading is not available'
+          }}
+          <div
+            *ngIf="hasError"
+            tuiHintMode="error"
+            class="provider-panel__hint provider-panel__hint_error"
+            [inlineSVG]="'/assets/images/icons/hint.svg'"
+            [tuiHint]="providerData.error | translate"
+          ></div>
+        </div>
+      </div>
+      <div *ngIf="providerData.estimatedGas" class="provider-panel__right">
+        <div
+          *ngIf="tradeData.to.amount && tradeData.to.token.price && tradeData.to.token.price > 0.01"
+          class="provider-panel__token-usd-price"
+          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
+        >
+          ${{ getUsdPrice() }}
+        </div>
+        <div
+          *ngIf="gasFeeDisplay"
+          class="provider-panel__token-gas-fee"
+          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
+        >
+          {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth?.toFixed(5) }} ≈
+          ${{ providerData.gasFeeInUsd?.toFixed(2) }}
+          <div
+            class="provider-panel__hint"
+            [inlineSVG]="'/assets/images/icons/hint.svg'"
+            [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

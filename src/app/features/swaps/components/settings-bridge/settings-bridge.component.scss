@@ -1,0 +1,51 @@
+@import 'src/scss/vars';
+
+.settings {
+  width: 265px;
+  padding: 20px;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__hint {
+    height: 15px;
+    margin-right: auto;
+    margin-left: 6px;
+
+    cursor: pointer;
+  }
+
+  &__form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 12px;
+
+    tui-input {
+      width: 100%;
+
+      &.ng-invalid {
+        ::ng-deep {
+          tui-wrapper[data-appearance='textfield'] {
+            &::after {
+              color: transparent;
+
+              border-color: #d82122;
+              opacity: 0.6;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  ::ng-deep {
+    tui-wrapper[data-appearance='textfield'] {
+      border-radius: 100px;
+      box-shadow: none;
+    }
+  }
+}

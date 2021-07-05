@@ -21,10 +21,15 @@ export class AppComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly activatedRoute: ActivatedRoute
   ) {
-    this.activatedRoute.queryParams.subscribe((queryParams: QueryParams) =>
-      this.queryParamsService.setupQueryParams(queryParams)
+    const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
+      (queryParams: QueryParams) => this.queryParamsService.setupQueryParams(queryParams)
     );
+    setTimeout(() => {
+      queryParamsSubscription$.unsubscribe();
+    });
+
     this.setupLanguage();
+
     this.healthcheckService
       .healthCheck()
       .then(isAvailable => (this.isBackendAvailable = isAvailable));

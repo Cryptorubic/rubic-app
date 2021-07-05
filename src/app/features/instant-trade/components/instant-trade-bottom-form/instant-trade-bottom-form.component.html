@@ -1,0 +1,39 @@
+<div class="instant-trade-bottom-form">
+  <ng-container *ngIf="allowTrade">
+    <header class="instant-trade-bottom-form__header">
+      <h4 class="instant-trade-bottom-form__title">Instant trade swaps</h4>
+      <a
+        *ngIf="tokenInfoUrl"
+        [href]="'https://keks.app/' + tokenInfoUrl"
+        class="instant-trade-bottom-form__analytics"
+        target="_blank"
+      >
+        <img src="assets/images/icons/analytic.svg" alt="{{ 'common.analytics' | translate }}" />
+        <span>{{ 'common.analytics' | translate }}</span>
+      </a>
+    </header>
+    <main class="instant-trade-bottom-form__body">
+      <div
+        class="instant-trade-bottom-form__provider-item"
+        *ngFor="let provider of providerControllers; let i = index"
+      >
+        <app-provider-panel
+          [providerControllerData]="provider"
+          (selectProvider)="selectProvider(i)"
+        ></app-provider-panel>
+      </div>
+    </main>
+    <footer class="instant-trade-bottom-form__footer"></footer>
+  </ng-container>
+</div>
+<div class="instant-trade-bottom-form__swap">
+  <app-swap-button
+    [needApprove]="needApprove"
+    [status]="tradeStatus"
+    [formService]="swapFormService"
+    [fromAmount]="fromAmount"
+    (swapClick)="createTrade()"
+    (approveClick)="approveTrade()"
+    (loginEvent)="calculateTrades()"
+  ></app-swap-button>
+</div>

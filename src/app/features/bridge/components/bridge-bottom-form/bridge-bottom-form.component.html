@@ -1,0 +1,52 @@
+<section class="bridge-bottom-form">
+  <app-amount-estimated
+    [formService]="swapFormService"
+    [loading]="tradeStatus === TRADE_STATUS.LOADING"
+  ></app-amount-estimated>
+  <div class="bridge-bottom-form__analytics" *ngIf="tokenInfoUrl">
+    <a
+      [href]="'https://keks.app/' + tokenInfoUrl"
+      target="_blank"
+      class="instant-trade-bottom-form__analytics"
+    >
+      <img src="assets/images/icons/analytic.svg" alt="Analytics" />
+      <span>{{ 'common.analytics' | translate }}</span>
+    </a>
+  </div>
+
+  <div class="bridge-bottom-form__footer">
+    <div class="bridge-bottom-form__button">
+      <app-swap-button
+        [needApprove]="needApprove"
+        [status]="tradeStatus"
+        [formService]="swapFormService"
+        [fromAmount]="fromAmount"
+        [isBridgeNotSupported]="!isBridgeSupported"
+        [isTronAddressNotSet]="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
+        (swapClick)="createTrade()"
+        (approveClick)="approveTrade()"
+      ></app-swap-button>
+    </div>
+    <div
+      class="bridge-bottom-form__terms-and-conditions terms-and-conditions"
+      *ngIf="whatIsBlockchain"
+    >
+      <span *ngIf="toWalletAddress && isBridgeSupported">
+        {{ 'tradePage.getBefore' | translate }} {{ whatIsBlockchain.name }}
+        {{ 'tradePage.getMiddle' | translate }}
+        <a
+          class="terms-and-conditions__address"
+          [href]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
+          target="_blank"
+          rel="noopener"
+          >{{ toWalletAddress }}</a
+        >
+        {{ 'common.address' | translate }}</span
+      >
+
+      <a [href]="whatIsBlockchain.href" target="_blank"
+        >{{ 'bridgePage.whatIs' | translate }} {{ whatIsBlockchain.name }}?</a
+      >
+    </div>
+  </div>
+</section>

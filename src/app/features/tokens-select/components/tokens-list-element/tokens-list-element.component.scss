@@ -1,0 +1,40 @@
+@import 'src/scss/vars';
+
+.token-card {
+  display: flex;
+  align-items: center;
+
+  &__name-container {
+    span,
+    small {
+      display: block;
+
+          }
+
+    span {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    small {
+      font-size: 13px;
+      line-height: 18px;
+    }
+  }
+
+  &__image-container {
+    display: flex;
+    flex: 0 0 40px;
+    align-items: center;
+    margin-right: 20px;
+
+    img {
+      max-width: 38px;
+      max-height: 38px;
+    }
+  }
+
+  &__amount {
+    margin-left: auto;
+  }
+}

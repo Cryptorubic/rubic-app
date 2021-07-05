@@ -1,23 +1,25 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
+import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import {
-  BridgeTableTrade,
+  BridgeBlockchainApi,
   BridgeTableTradeApi
-} from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeTableTrade';
-import { BridgeTrade } from '../../../../features/cross-chain-swaps-page/bridge-page/models/BridgeTrade';
-import { BridgeToken } from '../../../../features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
+} from 'src/app/core/services/backend/bridge-api/models/BridgeTableTradeApi';
+import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
-import { TRADE_STATUS } from './models/TRADE_STATUS';
-import { TokensService } from '../tokens-service/tokens.service';
 import { BOT_URL } from '../constants/BOT_URL';
-import { ethToXDaiDepositWallet } from '../../../../shared/constants/bridge/deposit-wallets';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BridgeApiService {
-  private readonly tradeBlockchain = {
+  private readonly tradeBlockchain: Record<BridgeBlockchainApi, BLOCKCHAIN_NAME> = {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
@@ -27,43 +29,45 @@ export class BridgeApiService {
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
 
-  public getTransactions(walletAddress: string): Promise<BridgeTableTrade[]> {
-    return new Promise<BridgeTableTrade[]>((resolve, reject) => {
-      this.httpService
-        .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
-        .subscribe(
-          (tradesApi: BridgeTableTradeApi[]) => {
-            resolve(tradesApi.map(trade => this.parseBridgeTableTrade(trade)));
-          },
-          error => {
-            console.error(error);
-            reject(error);
-          }
-        );
-    });
+  public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
+    return this.httpService
+      .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
+      .pipe(
+        map((tradesApi: BridgeTableTradeApi[]) =>
+          tradesApi.map(trade => this.parseTradeApiToTableTrade(trade))
+        )
+      );
   }
 
-  private parseBridgeTableTrade(trade: BridgeTableTradeApi): BridgeTableTrade {
+  private parseTradeApiToTableTrade(trade: BridgeTableTradeApi): TableTrade {
     const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
 
-    let { status } = trade;
-    if (fromBlockchain === BLOCKCHAIN_NAME.POLYGON && status === 'Waiting for deposit') {
-      status = 'Waiting for receiving';
+    let status = trade.status.toLowerCase() as TRANSACTION_STATUS;
+    if (
+      fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+      status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT
+    ) {
+      status = TRANSACTION_STATUS.WAITING_FOR_RECEIVING;
     }
 
     return {
-      status,
-      statusCode: trade.code,
-      fromBlockchain,
-      toBlockchain,
-      fromAmount: new BigNumber(trade.actualFromAmount).toFixed(),
-      toAmount: new BigNumber(trade.actualToAmount).toFixed(),
-      fromSymbol: trade.ethSymbol,
-      toSymbol: trade.bscSymbol,
-      updateTime: trade.updateTime,
       transactionHash: trade.transaction_id,
-      tokenImage: trade.image_link
+      status,
+      provider: trade.type,
+      fromToken: {
+        blockchain: fromBlockchain,
+        symbol: trade.ethSymbol,
+        amount: new BigNumber(trade.actualFromAmount).toFixed(),
+        image: trade.image_link
+      },
+      toToken: {
+        blockchain: toBlockchain,
+        symbol: trade.bscSymbol,
+        amount: new BigNumber(trade.actualToAmount).toFixed(),
+        image: trade.image_link
+      },
+      date: new Date(trade.updateTime)
     };
   }
 
@@ -121,7 +125,7 @@ export class BridgeApiService {
 
   public postPolygonTransaction(
     bridgeTrade: BridgeTrade,
-    status: TRADE_STATUS,
+    status: TRANSACTION_STATUS,
     transactionHash: string,
     userAddress: string
   ): Promise<void> {
@@ -134,7 +138,7 @@ export class BridgeApiService {
       ethSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address,
       bscSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.toBlockchain].address,
       updateTime: new Date(),
-      status,
+      status: status.toLowerCase(),
       transaction_id: transactionHash,
       walletFromAddress: userAddress,
       walletToAddress: userAddress,
@@ -157,7 +161,7 @@ export class BridgeApiService {
   public patchPolygonTransaction(
     burnTransactionHash: string,
     newTransactionHash: string,
-    status: TRADE_STATUS
+    status: TRANSACTION_STATUS
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.httpService
@@ -203,40 +207,38 @@ export class BridgeApiService {
     transactionHash: string,
     walletAddress: string
   ): Promise<void> {
-    const body = {
-      track: transactionHash,
-      walletAddress,
-      amount: bridgeTrade.amount,
-      fromBlockchain: bridgeTrade.fromBlockchain,
-      toBlockchain: bridgeTrade.toBlockchain,
-      symbol: bridgeTrade.token.symbol,
-      price: this.getTokenPrice(bridgeTrade.token)
-    };
-
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post(BOT_URL.BRIDGES, body).subscribe(
-        () => {
-          resolve();
-        },
-        error => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.getTokenPrice(bridgeTrade.token)
+      .pipe(
+        mergeMap(price => {
+          const body = {
+            track: transactionHash,
+            walletAddress,
+            amount: bridgeTrade.amount,
+            fromBlockchain: bridgeTrade.fromBlockchain,
+            toBlockchain: bridgeTrade.toBlockchain,
+            symbol: bridgeTrade.token.symbol,
+            price
+          };
+          return this.httpService.post(BOT_URL.BRIDGES, body);
+        })
+      )
+      .toPromise();
   }
 
-  private getTokenPrice(bridgeToken: BridgeToken): number {
-    const backendTokens = this.tokensService.tokens.getValue();
-    const prices = Object.values(BLOCKCHAIN_NAME)
-      .map(
-        blockchain =>
-          backendTokens.find(
-            token => bridgeToken.blockchainToken[blockchain]?.address === token.address
-          )?.price
-      )
-      .filter(it => it)
-      .sort((a, b) => b - a);
-    return prices[0];
+  private getTokenPrice(bridgeToken: BridgeToken): Observable<number> {
+    return this.tokensService.tokens.pipe(
+      map(backendTokens => {
+        const prices = Object.values(BLOCKCHAIN_NAME)
+          .map(
+            blockchain =>
+              backendTokens.find(
+                token => bridgeToken.blockchainToken[blockchain]?.address === token.address
+              )?.price
+          )
+          .filter(it => it)
+          .sort((a, b) => b - a);
+        return prices[0];
+      })
+    );
   }
 }

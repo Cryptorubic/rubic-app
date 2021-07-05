@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,6 @@ export class HealthcheckService {
       this.httpClient
         .get(`${environment.apiBaseUrl}/healthcheck/`, { observe: 'response' })
         .subscribe(
-          // eslint-disable-next-line @typescript-eslint/no-magic-numbers
           response => resolve(response.status === 200),
           () => resolve(false)
         );

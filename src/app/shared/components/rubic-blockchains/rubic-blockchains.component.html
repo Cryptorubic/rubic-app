@@ -1,0 +1,50 @@
+<div class="blockchains">
+  <div class="blockchain">
+    <img
+      class="blockchain__icon"
+      [src]="selectedBlockchain.image"
+      width="18"
+      height="15"
+      alt="blockchain"
+    />
+    {{ selectedBlockchain.visibleName }}
+  </div>
+
+  <div class="blockchains__list">
+    <app-rubic-button-circle
+      *ngFor="let blockchain of visibleBlockchainsList | slice: 0:3"
+      class="blockchains__list-item"
+      [size]="'s'"
+      [hint]="blockchain.visibleName"
+      (click)="selectBlockchain(blockchain.symbol)"
+    >
+      <img [src]="blockchain.image" alt />
+    </app-rubic-button-circle>
+
+    <app-dropdown-selector
+      *ngIf="visibleBlockchainsList.length > 3"
+      [dropdownButtonTemplate]="dropdownButtonTemplate"
+      [dropdownOptionsTemplates]="dropdownOptionsTemplates"
+      (optionChange)="selectBlockchain(visibleBlockchainsList[$event + 3].symbol)"
+    ></app-dropdown-selector>
+
+    <ng-template #dropdownButtonTemplate>
+      <app-rubic-button-circle class="blockchains__list-item" size="s" hint="More blockchains" hintDirection="top-right">
+        <img src="assets/img/icons/dropdown.svg" width="18px" height="18px" alt="Dropdown" />
+      </app-rubic-button-circle>
+    </ng-template>
+
+    <ng-template #dropdownOptionTemplate *ngFor="let blockchain of visibleBlockchainsList.slice(3)">
+      <div class="template-blockchains">
+        <img
+          class="template-blockchains__icon"
+          [src]="blockchain.image"
+          width="18"
+          height="15"
+          [alt]="blockchain.visibleName"
+        />
+        <span>{{ blockchain.visibleName }}</span>
+      </div>
+    </ng-template>
+  </div>
+</div>
