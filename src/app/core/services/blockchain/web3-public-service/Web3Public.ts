@@ -5,6 +5,7 @@ import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
 import { AbiItem } from 'web3-utils';
+import { BlockTransactionString } from 'web3-eth';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -55,6 +56,10 @@ export class Web3Public {
   public async getBalance(address: string, options: { inWei?: boolean } = {}): Promise<BigNumber> {
     const balance = await this.web3.eth.getBalance(address);
     return new BigNumber(options.inWei ? balance : this.weiToEth(balance));
+  }
+
+  public getBlock(): Promise<BlockTransactionString> {
+    return this.web3.eth.getBlock('latest');
   }
 
   /**

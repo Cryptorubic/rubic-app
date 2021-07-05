@@ -4,18 +4,21 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { from, Observable, of, throwError } from 'rxjs';
+import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
 } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/constants/contract';
 import BigNumber from 'bignumber.js';
-import { EvoContractTokenInBlockchains } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoContractToken';
+import {
+  EvoContractToken,
+  EvoContractTokenInBlockchains
+} from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoContractToken';
 import { EvoBridgeToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoBridgeToken';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -98,24 +101,32 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     const tokenFrom = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
     const destination = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 0;
 
-    const tokenIndex = this.evoTokens.find(
+    const evoToken = this.evoTokens.find(
       token => token[bridgeTrade.fromBlockchain].address === tokenFrom.address
-    )[bridgeTrade.fromBlockchain].index;
+    )[bridgeTrade.fromBlockchain];
 
-    return from(
-      this.web3PrivateService.executeContractMethod(
-        EVO_ADDRESSES[bridgeTrade.fromBlockchain],
-        EVO_ABI as AbiItem[],
-        'create',
-        [
-          tokenIndex,
-          bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals),
-          destination,
-          this.authService.user.address
-        ],
-        {
-          onTransactionHash
+    return this.checkDailyLimit(bridgeTrade, evoToken).pipe(
+      map(notExceeded => {
+        if (!notExceeded) {
+          return throwError(new UndefinedError());
         }
+        return undefined;
+      }),
+      mergeMap(() =>
+        this.web3PrivateService.executeContractMethod(
+          EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+          EVO_ABI as AbiItem[],
+          'create',
+          [
+            evoToken.index,
+            bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals),
+            destination,
+            this.authService.user.address
+          ],
+          {
+            onTransactionHash
+          }
+        )
       )
     );
   }
@@ -254,18 +265,51 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
               minAmount:
                 contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].minAmount /
                 10 ** bscSwapToken.decimals,
-              maxAmount: contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].dailyLimit.toNumber()
+              maxAmount:
+                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].dailyLimit.toNumber() /
+                10 ** bscSwapToken.decimals
             },
             [BLOCKCHAIN_NAME.POLYGON]: {
               ...bscSwapToken,
               address: contractToken[BLOCKCHAIN_NAME.POLYGON].address,
               minAmount:
                 contractToken[BLOCKCHAIN_NAME.POLYGON].minAmount / 10 ** polygonSwapToken.decimals,
-              maxAmount: contractToken[BLOCKCHAIN_NAME.POLYGON].dailyLimit.toNumber()
+              maxAmount:
+                contractToken[BLOCKCHAIN_NAME.POLYGON].dailyLimit.toNumber() /
+                10 ** bscSwapToken.decimals
             }
           }
         };
       })
       .filter(elem => elem);
+  }
+
+  private checkDailyLimit(
+    bridgeTrade: BridgeTrade,
+    evoToken: EvoContractToken
+  ): Observable<boolean> {
+    const weiAmount = bridgeTrade.amount.multipliedBy(
+      10 ** bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].decimals
+    );
+    const web3Public = this.web3PublicService[bridgeTrade.fromBlockchain] as Web3Public;
+    return forkJoin([
+      web3Public.callContractMethod(
+        EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+        EVO_ABI as AbiItem[],
+        'stats',
+        { methodArguments: [evoToken.index, this.authService.user.address] }
+      ),
+      web3Public.getBlock()
+    ]).pipe(
+      map(([[transferred, limitFrom], block]) => {
+        const msInDay = new BigNumber(86400000);
+        if (new BigNumber(block.timestamp).gte(msInDay.plus(limitFrom))) {
+          return true;
+        }
+
+        const totalTransferred = weiAmount.plus(transferred);
+        return totalTransferred.lte(evoToken.dailyLimit);
+      })
+    );
   }
 }
