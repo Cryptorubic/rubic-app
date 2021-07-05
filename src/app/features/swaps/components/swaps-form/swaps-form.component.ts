@@ -70,6 +70,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private formSubscription$: Subscription;
 
+  public settingsSubscription$: Subscription;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -107,6 +109,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.autoRefresh = el;
     });
 
+    this.settingsSubscription$ =
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
+        this.autoRefresh = settings.autoRefresh;
+        this.itForm.calculateTrades();
+      });
+
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       formValue => {
@@ -119,6 +127,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.formSubscription$.unsubscribe();
+    this.settingsSubscription$.unsubscribe();
   }
 
   private setFormValues(formValue: SwapFormInput): void {
