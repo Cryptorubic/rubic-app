@@ -18,6 +18,7 @@ import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.s
 import { TableData } from 'src/app/features/my-trades/components/my-trades/components/table-data';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-accordion',
@@ -33,6 +34,14 @@ export class AccordionComponent extends TableData implements OnInit, OnDestroy {
   public BLOCKCHAINS = BLOCKCHAINS;
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
+
+  private PAGE_SIZE = 5;
+
+  public page: number;
+
+  public pagesLength: number;
+
+  private tableData: TableRow[];
 
   public visibleData: TableRow[];
 
@@ -51,10 +60,16 @@ export class AccordionComponent extends TableData implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.tableDataSubscription$ = this.tableData$.subscribe(tableData => {
-      this.visibleData = tableData?.sort(this.sortBy(this.sortKey, this.sortDirection));
-      this.cdr.detectChanges();
-    });
+    this.tableDataSubscription$ = this.tableData$
+      .pipe(filter(tableData => !!tableData))
+      .subscribe(tableData => {
+        this.tableData = tableData?.sort(this.sortBy(this.sortKey, this.sortDirection));
+
+        this.pagesLength = Math.ceil(this.tableData.length / this.PAGE_SIZE);
+        this.goToPage(0);
+
+        this.cdr.detectChanges();
+      });
   }
 
   ngOnDestroy(): void {
@@ -64,5 +79,11 @@ export class AccordionComponent extends TableData implements OnInit, OnDestroy {
   public onReceive(trade: TableTrade, event: Event): void {
     event.stopPropagation();
     this.onReceivePolygonBridgeTrade.emit(trade);
+  }
+
+  public goToPage(page: number) {
+    this.page = page;
+    const start = this.page * this.PAGE_SIZE;
+    this.visibleData = this.tableData.slice(start, start + this.PAGE_SIZE);
   }
 }

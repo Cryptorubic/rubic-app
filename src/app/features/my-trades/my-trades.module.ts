@@ -7,7 +7,7 @@ import { TuiLetModule } from '@taiga-ui/cdk';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
-import { TuiAccordionModule } from '@taiga-ui/kit';
+import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { MyTradesComponent } from './components/my-trades/my-trades.component';
 import { SharedModule } from '../../shared/shared.module';
 import { TableComponent } from './components/my-trades/components/table/table.component';
@@ -24,7 +24,8 @@ import { AccordionComponent } from './components/my-trades/components/accordion/
     TuiTablePaginationModule,
     InlineSVGModule,
     SharedModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiPaginationModule
   ],
   providers: [MyTradesService, EthereumPolygonBridgeService]
 })

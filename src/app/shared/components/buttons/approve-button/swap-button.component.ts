@@ -97,17 +97,17 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   // eslint-disable-next-line consistent-return
   get errorText(): string {
-    if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
-      return 'Insufficient balance';
-    }
-    if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      return `Choose ${this.fromToken.blockchain} network in your wallet`;
-    }
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
       return `Choose supported bridge`;
     }
+    if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
+      return 'Insufficient balance';
+    }
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
       return `Set TRON address in settings`;
+    }
+    if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
+      return `Choose ${this.fromToken.blockchain} network in your wallet`;
     }
   }
 

@@ -85,9 +85,7 @@ export class ProviderConnectorService {
    */
   public async installProvider(): Promise<void> {
     const provider = this.storage.getItem('provider') as WALLET_NAME;
-    if (provider) {
-      await this.connectProvider(provider);
-    }
+    await this.connectProvider(provider);
   }
 
   public async activate(): Promise<void> {

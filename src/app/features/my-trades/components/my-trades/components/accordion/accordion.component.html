@@ -81,7 +81,10 @@
     <ng-template tuiAccordionItemContent>
       <div class="row">
         <div class="row__title">
-          {{ 'tradesTable.columns.from' | translate }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{ 'tradesTable.columns.to' | translate }}
+          {{ 'tradesTable.columns.from' | translate
+          }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{
+            'tradesTable.columns.to' | translate
+          }}
         </div>
 
         <div class="row__data">
@@ -171,3 +174,10 @@
     </ng-template>
   </tui-accordion-item>
 </tui-accordion>
+
+<tui-pagination
+  *ngIf="!!pagesLength"
+  [length]="pagesLength"
+  [index]="page"
+  (indexChange)="goToPage($event)"
+></tui-pagination>
