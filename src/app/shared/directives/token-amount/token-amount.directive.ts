@@ -26,35 +26,46 @@ export class TokenAmountDirective {
     let value = nativeValue.replaceAll(',', '');
     let caretPosition = this.elementRef.nativeElement.selectionStart;
 
-    if (value.replace('.', '').length > this.maxLength) {
+    if (nativeValue && nativeValue[nativeValue.length - 1] === ',') {
+      value += '.';
+    }
+    if (value === '.') {
+      if (this.prevValue === '') {
+        value = '0.';
+        caretPosition = 2;
+      } else {
+        value = '';
+        caretPosition = 0;
+      }
+    }
+
+    if (this.amountRegex.test(value)) {
+      value = this.getNewValue(value);
+      if (value === this.prevValue) {
+        caretPosition = this.prevCaretPosition;
+      } else {
+        caretPosition = this.getNewCaretPosition(value, caretPosition);
+
+        const digitsLength = value.replaceAll(',', '').replace('.', '').length;
+        if (digitsLength > this.maxLength) {
+          let lengthToShorten = digitsLength - this.maxLength;
+          const [integerPart, decimalPart] = value.split('.');
+          if (decimalPart?.length > lengthToShorten) {
+            value = `${integerPart}.${decimalPart.slice(0, decimalPart.length - lengthToShorten)}`;
+          } else {
+            if (decimalPart) {
+              lengthToShorten -= decimalPart.length;
+            }
+            const integerPartShortened = integerPart.replaceAll(',', '');
+            value = new BigNumber(
+              integerPartShortened.slice(0, integerPartShortened.length - lengthToShorten)
+            ).toFormat(BIG_NUMBER_FORMAT);
+          }
+        }
+      }
+    } else {
       value = this.prevValue;
       caretPosition = this.prevCaretPosition;
-    } else {
-      if (nativeValue && nativeValue[nativeValue.length - 1] === ',') {
-        value += '.';
-      }
-      if (value === '.') {
-        if (this.prevValue === '') {
-          value = '0.';
-          caretPosition = 2;
-        } else {
-          value = '';
-          caretPosition = 0;
-        }
-      }
-
-      if (this.amountRegex.test(value)) {
-        value = this.getNewValue(value);
-
-        if (value === this.prevValue) {
-          caretPosition = this.prevCaretPosition;
-        } else {
-          caretPosition = this.getNewCaretPosition(value, caretPosition);
-        }
-      } else {
-        value = this.prevValue;
-        caretPosition = this.prevCaretPosition;
-      }
     }
 
     this.elementRef.nativeElement.value = value;
