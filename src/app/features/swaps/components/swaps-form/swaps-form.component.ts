@@ -263,7 +263,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       toBlockchain: fromBlockchain,
       fromBlockchain: toBlockchain
     } as Partial<SwapFormInput>;
-    if (toAmount) {
+    if (toAmount && toAmount.gt(0)) {
       revertData.fromAmount = toAmount;
     }
     // Remove null control values.
