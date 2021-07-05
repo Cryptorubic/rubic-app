@@ -408,7 +408,7 @@
       "expected": "預期的",
       "date": "日期",
       "provider": "提供者",
-      "explorerLink": "資源管理器鏈接",
+      "explorerLink": "資源管理器鏈接"
     },
     "noData": "您還沒有交易",
     "noTrades": "沒有交易",
@@ -509,7 +509,8 @@
     },
     "tokensListModal": {
       "title": "选择币种",
-      "disabledTokenHint": "此令牌不可用於交換。 請選擇支持的對。",
+      "unsupportedPairsHint": "此令牌不可用於交換。 請選擇支持的對。",
+      "clearParamsHint": "清除其他表單參數以選擇此令牌",
       "searchPlaceholder": "搜索姓名或粘貼地址",
       "noSearchData": "沒什麼可顯示的"
     },

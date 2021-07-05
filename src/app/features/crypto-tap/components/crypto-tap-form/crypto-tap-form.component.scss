@@ -1,4 +1,10 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+:host {
+  width: 100%;
+  max-width: 610px;
+}
 
 .swaps-form {
   min-height: 200px;
@@ -98,4 +104,33 @@
 app-amount-estimated {
   display: block;
   margin-bottom: 15px;
+}
+
+@include b($mobile-md) {
+  .swaps-form {
+    padding: 0 0 20px;
+
+    &__header {
+      display: none;
+    }
+
+    &__top-part {
+      display: block;
+
+      > *:first-child {
+        display: block;
+
+        border-right: 0;
+        border-bottom: 2px solid $rubic-base-01;
+      }
+    }
+
+    &__delimiter {
+      margin-bottom: 6px;
+
+      > * {
+        top: 0;
+      }
+    }
+  }
 }
