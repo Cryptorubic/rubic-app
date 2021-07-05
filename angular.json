@@ -30,6 +30,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/manifest.json",
               {
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",

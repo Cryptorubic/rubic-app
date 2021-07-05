@@ -186,6 +186,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = provider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
+      this.needApprove = newProviders[selectedProviderIndex].needApprove;
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
@@ -198,14 +199,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const currentTradeState = this.tradeStatus;
 
     if (providerIndex !== -1) {
-      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-      this.providerControllers[providerIndex] = {
-        ...this.providerControllers[providerIndex],
-        tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-      };
-      this.cdr.detectChanges();
-
       try {
+        this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+        this.providerControllers[providerIndex] = {
+          ...this.providerControllers[providerIndex],
+          tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+        };
+        this.cdr.detectChanges();
         await this.instantTradeService.createTrade(
           provider.tradeProviderInfo.value,
           provider.trade
@@ -225,7 +225,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = currentTradeState;
       this.cdr.detectChanges();
 
-      this.tokensService.recalculateUsersBalance();
+      await this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
     }
