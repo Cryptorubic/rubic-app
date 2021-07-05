@@ -55,7 +55,6 @@ export class TokenAmountInputComponent implements OnChanges {
   public onUserBalanceMaxButtonClick(): void {
     const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);
     this.amountControl.setValue(amount);
-    this.emitAmountChange(amount);
   }
 
   public getUsdPrice(): BigNumber {
