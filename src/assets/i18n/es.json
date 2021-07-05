@@ -351,7 +351,7 @@
     "approveSuccessMessage": "Tienes tokens aprobados. Presione el botón de intercambio para continuar operando.",
     "tableTitle": "Sus intercambios entre plataformas",
     "whatIs": "¿Qué es ",
-    "whatIsAfter": "",
+    "whatIsAfter": "?",
     "checkOn": "Verificar ",
     "assistanceOf": "Con la ayuda de",
     "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada",
@@ -359,7 +359,7 @@
     "maxAmount": "Importe máximo ",
     "createBridge": "Create Bridge",
     "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "getBNB": "Get BNB",
+    "cryptoTap": "Crypto Tap",
     "bridge": "Bridge"
   },
   "instantTrades": {
@@ -509,7 +509,8 @@
     },
     "tokensListModal": {
       "title": "Elija token",
-      "disabledTokenHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
+      "unsupportedPairsHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
+      "clearParamsHint": "Borrar otros parámetros de formulario para seleccionar este token",
       "searchPlaceholder": "Buscar nombre o pegar dirección",
       "noSearchData": "Nada que mostrar"
     },

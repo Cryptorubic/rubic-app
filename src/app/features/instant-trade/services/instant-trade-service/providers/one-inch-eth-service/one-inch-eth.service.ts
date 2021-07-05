@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
-import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { catchError, first } from 'rxjs/operators';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -64,9 +64,16 @@ export class OneInchEthService implements ItProvider {
     const network = BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM);
     this.apiBaseUrl = `https://api.1inch.exchange/v3.0/${network.id}/`;
     this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.settings = form;
+    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.settings = {
+      ...form.value,
+      slippageTolerance: form.value.slippageTolerance / 100
+    };
+    form.valueChanges.subscribe(formValue => {
+      this.settings = {
+        ...formValue,
+        slippageTolerance: formValue.slippageTolerance / 100
+      };
     });
     this.loadSupportedTokens();
   }

@@ -189,7 +189,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       fromBlockchain &&
       userBlockchain &&
       fromBlockchain !== userBlockchain &&
-      (!this.isTestingMode || `${fromBlockchain}_TESTNET` === userBlockchain);
+      (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 
     this.cdr.markForCheck();
   }

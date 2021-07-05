@@ -351,7 +351,7 @@
     "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade.",
     "tableTitle": "Your cross-chain swaps",
     "whatIs": "What is ",
-    "whatIsAfter": "",
+    "whatIsAfter": "?",
     "checkOn": "Check on ",
     "assistanceOf": "With the assistance of",
     "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
@@ -359,7 +359,7 @@
     "maxAmount": "Maximum amount ",
     "createBridge": "Create Bridge",
     "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "getBNB": "Get BNB",
+    "cryptoTap": "Crypto Tap",
     "bridge": "Bridge"
   },
   "instantTrades": {
@@ -427,7 +427,7 @@
     },
     "disclaimerTitle": "Token safety alert!",
     "disclaimerText": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform.",
-    "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
+    "accumulatedTransactionsVolume": "Accumulated Transaction Volume",
     "collaborations": "Software Integrations And Collaborations With",
     "listingRequest": {
       "title": "Listing request",
@@ -509,7 +509,8 @@
     },
     "tokensListModal": {
       "title": "Select a token",
-      "disabledTokenHint": "This token is unavailable for the swap. Please select supported pairs.",
+      "unsupportedPairsHint": "This token is unavailable for the swap. Please select supported pairs.",
+      "clearParamsHint": "Clear other form parameters to select this token",
       "searchPlaceholder": "Search name or paste address",
       "noSearchData": "Nothing to show"
     },

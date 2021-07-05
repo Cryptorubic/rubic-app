@@ -8,7 +8,7 @@ import {
   UniSwapTrade
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
 import { TransactionReceipt } from 'web3-eth';
-import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
+import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
@@ -16,7 +16,7 @@ import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';

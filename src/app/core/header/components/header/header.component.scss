@@ -75,10 +75,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
   }
 }
 
+@include b($desktop) {
+  .rubic-header {
+    padding: 21px 20px 19px;
+  }
+}
+
 @include b($mobile-sm) {
   .rubic-header {
-    padding: 21px 15px 19px;
-
     &__main {
       flex-grow: 1;
       justify-content: space-between;
@@ -91,5 +95,22 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
     &__menu {
       margin-right: 10px;
     }
+  }
+}
+
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
+  padding: 7px 9px;
+
+  color: white !important;
+  font-weight: bold;
+  font-size: 14px;
+
+
+  background-color: $rubic-primary;
+  border-radius: 10px;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
   }
 }

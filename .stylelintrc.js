@@ -23,7 +23,7 @@ module.exports = {
     'selector-pseudo-element-no-unknown': null,
     'selector-max-id': [1, { 'severity': 'warning' }],
     'color-named': null,
-    'property-disallowed-list': ['background-image'],
+    'property-disallowed-list': [],
     /* scss rules */
     'scss/at-rule-no-unknown': true,
     'scss/selector-no-redundant-nesting-selector': true,

@@ -70,6 +70,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private formSubscription$: Subscription;
 
+  public settingsSubscription$: Subscription;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -107,6 +109,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.autoRefresh = el;
     });
 
+    this.settingsSubscription$ =
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
+        this.autoRefresh = settings.autoRefresh;
+        this.itForm.calculateTrades();
+      });
+
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       formValue => {
@@ -119,6 +127,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.formSubscription$.unsubscribe();
+    this.settingsSubscription$.unsubscribe();
   }
 
   private setFormValues(formValue: SwapFormInput): void {
@@ -128,10 +137,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.setAvailableTokens('from');
       this.setAvailableTokens('to');
 
-      setTimeout(() => {
-        this.setNewSelectedToken('from', formValue.fromToken);
-        this.setNewSelectedToken('to', formValue.toToken);
-      });
+      this.setNewSelectedToken('from', formValue.fromToken);
+      this.setNewSelectedToken('to', formValue.toToken);
     }
   }
 
@@ -150,7 +157,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
         this._supportedTokens[blockchain][blockchain].forEach(token => {
           const foundToken = this._supportedTokens[oppositeBlockchain][blockchain].find(
-            supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+            supportedToken => supportedToken.address?.toLowerCase() === token.address?.toLowerCase()
           );
 
           tokens.push({
@@ -178,8 +185,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         .map(bridgeTokensPair =>
           bridgeTokensPair.bridgeTokens.find(
             bridgeToken =>
-              bridgeToken.blockchainToken[oppositeBlockchain].address.toLowerCase() ===
-              oppositeToken.address.toLowerCase()
+              bridgeToken.blockchainToken[oppositeBlockchain].address?.toLowerCase() ===
+              oppositeToken.address?.toLowerCase()
           )
         )
         .filter(tokenPair => tokenPair);
@@ -192,8 +199,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         this._supportedTokens[blockchain][blockchain].forEach(token => {
           const foundTokenPair = tokensPairs.find(
             bridgeToken =>
-              bridgeToken.blockchainToken[blockchain]?.address.toLowerCase() ===
-              token.address.toLowerCase()
+              bridgeToken.blockchainToken[blockchain]?.address?.toLowerCase() ===
+              token.address?.toLowerCase()
           );
 
           tokens.push({
@@ -213,14 +220,18 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
 
     const token = this.selectedToken[tokenType];
-    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
-      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
-    );
+    const supportedTokenWithBalance = this._supportedTokens[token.blockchain][
+      token.blockchain
+    ].find(supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase());
 
-    const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-    this.swapFormService.commonTrade.controls.input.patchValue({
-      [formKey]: this.selectedToken[tokenType]
-    });
+    if (supportedTokenWithBalance) {
+      this.selectedToken[tokenType] = supportedTokenWithBalance;
+
+      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
+      this.swapFormService.commonTrade.controls.input.patchValue({
+        [formKey]: this.selectedToken[tokenType]
+      });
+    }
   }
 
   private setNewSelectedToken(tokenType: 'from' | 'to', token: TokenAmount): void {
@@ -229,16 +240,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
-      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
-    );
-
-    if (this.selectedToken[tokenType] !== token) {
-      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.commonTrade.controls.input.patchValue({
-        [formKey]: this.selectedToken[tokenType]
-      });
-    }
+    this.selectedToken[tokenType] = token;
   }
 
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
@@ -263,7 +265,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       toBlockchain: fromBlockchain,
       fromBlockchain: toBlockchain
     } as Partial<SwapFormInput>;
-    if (toAmount) {
+    if (toAmount && toAmount.gt(0)) {
       revertData.fromAmount = toAmount;
     }
     // Remove null control values.

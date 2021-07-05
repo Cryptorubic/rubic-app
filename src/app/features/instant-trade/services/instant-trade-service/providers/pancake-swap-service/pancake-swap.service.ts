@@ -6,7 +6,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import BigNumber from 'bignumber.js';
-import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
+import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import {
   abi,
   ethToTokensEstimatedGas,
@@ -20,13 +20,13 @@ import {
 import { TransactionReceipt } from 'web3-eth';
 import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
-import { from, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -57,9 +57,16 @@ export class PancakeSwapService {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
     this.blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     this.shouldCalculateGas = true;
-    this.settings = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
-      this.settings = form;
+    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.settings = {
+      ...form.value,
+      slippageTolerance: form.value.slippageTolerance / 100
+    };
+    form.valueChanges.subscribe(formValue => {
+      this.settings = {
+        ...formValue,
+        slippageTolerance: formValue.slippageTolerance / 100
+      };
     });
   }
 

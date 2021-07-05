@@ -8,8 +8,8 @@ import {
   OneInchTokensResponse
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
 import { map, switchMap } from 'rxjs/operators';
-import InstantTradeToken from 'src/app/features/swaps-page-old/instant-trades/models/InstantTradeToken';
-import InstantTrade from 'src/app/features/swaps-page-old/instant-trades/models/InstantTrade';
+import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
 import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';

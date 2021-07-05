@@ -27,27 +27,27 @@
       >0.15%
       </tui-input-number>
     </div>
-<!--    <div class="settings__form-row settings__form-row_small-input">-->
-<!--      <div class="settings__form-row">-->
-<!--        <label for="deadline">{{ 'settings.instantTrades.deadlineTitle' | translate }}</label>-->
-<!--        <div-->
-<!--          class="settings__hint"-->
-<!--          [inlineSVG]="'/assets/images/icons/hint.svg'"-->
-<!--          [tuiHint]="'settings.instantTrades.deadline' | translate"-->
-<!--        ></div>-->
-<!--      </div>-->
-<!--      <tui-input-number-->
-<!--        id="deadline"-->
-<!--        [tuiTextfieldLabelOutside]="true"-->
-<!--        formControlName="deadline"-->
-<!--        [decimal]="'never'"-->
-<!--        [max]="240"-->
-<!--        [min]="1"-->
-<!--        [tuiTextfieldSize]="'s'"-->
-<!--      >20-->
-<!--      </tui-input-number>-->
-<!--      <span> {{ 'common.minutes' | translate }}</span>-->
-<!--    </div>-->
+    <div class="settings__form-row settings__form-row_small-input">
+      <div class="settings__form-row">
+        <label for="deadline">{{ 'settings.instantTrades.deadlineTitle' | translate }}</label>
+        <div
+          class="settings__hint"
+          [inlineSVG]="'/assets/images/icons/hint.svg'"
+          [tuiHint]="'settings.instantTrades.deadline' | translate"
+        ></div>
+      </div>
+      <tui-input-number
+        id="deadline"
+        [tuiTextfieldLabelOutside]="true"
+        formControlName="deadline"
+        [decimal]="'never'"
+        [max]="240"
+        [min]="1"
+        [tuiTextfieldSize]="'s'"
+      >20
+      </tui-input-number>
+      <span> {{ 'common.minutes' | translate }}</span>
+    </div>
 
     <div class="settings__form-row">
       <label for="disableMultihops">{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
