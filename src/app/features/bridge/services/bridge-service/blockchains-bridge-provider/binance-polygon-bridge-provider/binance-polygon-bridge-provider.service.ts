@@ -28,6 +28,7 @@ import { AbiItem } from 'web3-utils';
 import { EvoResponseToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoResponseToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 
 @Injectable()
 export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
@@ -38,7 +39,8 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     private web3PrivateService: Web3PrivateService,
     private readonly translateService: TranslateService,
     private tokensService: TokensService,
-    private authService: AuthService
+    private authService: AuthService,
+    private bridgeApiService: BridgeApiService
   ) {
     super();
     this.loadTokens().subscribe(tokens => this.tokens$.next(tokens));
@@ -96,7 +98,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       if (typeof bridgeTrade.onTransactionHash === 'function') {
         bridgeTrade.onTransactionHash(hash);
       }
-      // TODO: send request
+      this.bridgeApiService.postEvoTransaction(hash, bridgeTrade.fromBlockchain);
     };
     const tokenFrom = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
     const destination = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 0;
@@ -160,7 +162,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     const tokensListPromises = blockchains.map(blockchain =>
       this.web3PublicService[blockchain].callContractMethod(
         EVO_ADDRESSES[blockchain],
-        EVO_ABI,
+        EVO_ABI as AbiItem[],
         'listTokensNames'
       )
     );
