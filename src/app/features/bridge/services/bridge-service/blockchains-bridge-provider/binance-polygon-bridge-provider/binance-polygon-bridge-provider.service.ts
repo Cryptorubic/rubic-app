@@ -4,12 +4,12 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { map, withLatestFrom } from 'rxjs/operators';
+import { map, switchMap, withLatestFrom } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
@@ -23,6 +23,8 @@ import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { AbiItem } from 'web3-utils';
 import { EvoResponseToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoResponseToken';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 
 @Injectable()
 export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
@@ -30,15 +32,35 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
   constructor(
     private web3PublicService: Web3PublicService,
+    private web3PrivateService: Web3PrivateService,
     private readonly translateService: TranslateService,
-    private tokensService: TokensService
+    private tokensService: TokensService,
+    private authService: AuthService
   ) {
     super();
     this.loadTokens().subscribe(tokens => this.tokens$.next(tokens));
   }
 
   approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    return undefined;
+    const { token } = bridgeTrade;
+    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+
+    return this.needApprove(bridgeTrade).pipe(
+      switchMap(needApprove => {
+        if (!needApprove) {
+          console.error('You should check bridge trade allowance before approve');
+          return throwError(new UndefinedError());
+        }
+        return this.web3PrivateService.approveTokens(
+          tokenFrom.address,
+          EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+          'infinity',
+          {
+            onTransactionHash: bridgeTrade.onTransactionHash
+          }
+        );
+      })
+    );
   }
 
   getProviderType(): BRIDGE_PROVIDER {
@@ -46,11 +68,56 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   }
 
   needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
-    return undefined;
+    const { token } = bridgeTrade;
+    const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+
+    if (!this.authService?.user?.address) {
+      console.error('Should login before approve');
+      return throwError(new UndefinedError());
+    }
+
+    return from(
+      web3Public.getAllowance(
+        tokenFrom.address,
+        this.authService.user.address,
+        EVO_ADDRESSES[bridgeTrade.fromBlockchain]
+      )
+    ).pipe(
+      map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
+    );
   }
 
   createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    return undefined;
+    const onTransactionHash = hash => {
+      if (typeof bridgeTrade.onTransactionHash === 'function') {
+        bridgeTrade.onTransactionHash(hash);
+      }
+      // TODO: send request
+    };
+    const tokenFrom = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+    const destination = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 0;
+
+    const tokenIndex = this.evoTokens.find(
+      token => token[bridgeTrade.fromBlockchain].address === tokenFrom.address
+    )[bridgeTrade.fromBlockchain].index;
+
+    return from(
+      this.web3PrivateService.executeContractMethod(
+        EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+        EVO_ABI as AbiItem[],
+        'create',
+        [
+          tokenIndex,
+          bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals),
+          destination,
+          this.authService.user.address
+        ],
+        {
+          onTransactionHash
+        }
+      )
+    );
   }
 
   getFee(
@@ -117,7 +184,8 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         feeTarget: token.feeTarget,
         minAmount: Number(token.minAmount),
         dailyLimit: new BigNumber(token.dailyLimit),
-        bonus: Number(token.bonus)
+        bonus: Number(token.bonus),
+        index
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         symbol: tokensInBlockchains[1][index],
@@ -127,7 +195,8 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         feeTarget: polygonTokens[index].feeTarget,
         minAmount: Number(polygonTokens[index].minAmount),
         dailyLimit: new BigNumber(polygonTokens[index].dailyLimit),
-        bonus: Number(polygonTokens[index].bonus)
+        bonus: Number(polygonTokens[index].bonus),
+        index
       }
     }));
 

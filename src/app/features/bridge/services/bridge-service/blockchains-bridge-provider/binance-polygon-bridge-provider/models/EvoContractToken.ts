@@ -15,4 +15,5 @@ export interface EvoContractToken {
   minAmount: number;
   dailyLimit: BigNumber;
   bonus: number;
+  index: number;
 }
