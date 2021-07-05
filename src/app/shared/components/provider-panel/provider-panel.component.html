@@ -51,7 +51,7 @@
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >
           {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth?.toFixed(5) }} ≈
-          {{ providerData.gasFeeInUsd?.toFixed(2) }}$
+          ${{ providerData.gasFeeInUsd?.toFixed(2) }}
           <div
             class="provider-panel__hint"
             [inlineSVG]="'/assets/images/icons/hint.svg'"

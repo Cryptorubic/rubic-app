@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 $background-white: #fcfcfc;
 
@@ -7,7 +8,7 @@ $background-white: #fcfcfc;
   align-items: center;
   justify-content: space-between;
 
-  height: 88px;
+  min-height: 88px;
 
   font-family: $sf-pro-font;
 
@@ -20,22 +21,23 @@ $background-white: #fcfcfc;
     flex-direction: column;
 
     width: 100%;
-    padding: 7px 0 0 20px;
+    padding: 0 20px;
   }
 
   &__amount {
     width: 100%;
-    height: 36px;
 
     color: #283125;
     font-weight: 100;
     font-size: 30px;
+    line-height: 36px;
     letter-spacing: 0.1em;
 
     background: $background-white;
   }
 
   &__right-side {
+    align-self: flex-start;
     width: 44%;
     max-width: 180px;
   }
@@ -90,5 +92,27 @@ $background-white: #fcfcfc;
     text-overflow: ellipsis;
 
     cursor: default;
+  }
+}
+
+@include b($mobile-md) {
+  .crypto-tap-output {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 7px 0 25px;
+
+    &__wrapper {
+      margin-bottom: 3px;
+    }
+  }
+
+  .usd-price-container {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .right-side {
+    padding: 0 20px;
   }
 }
