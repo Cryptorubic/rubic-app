@@ -26,7 +26,7 @@
     font-weight: 300;
 
     &__value:first-child {
-      margin-right: 35px;
+      margin-right: 45px;
     }
   }
 
@@ -51,10 +51,6 @@
 
     &__values {
       display: block;
-
-      &__value:first-child {
-        margin-right: 0;
-      }
     }
 
     &__value-it {
