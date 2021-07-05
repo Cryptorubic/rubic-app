@@ -3,5 +3,5 @@ export enum BRIDGE_PROVIDER {
   PANAMA = 'panama',
   POLYGON = 'polygon',
   XDAI = 'xdai',
-  EVO = 'evo'
+  EVO = 'evodefi'
 }

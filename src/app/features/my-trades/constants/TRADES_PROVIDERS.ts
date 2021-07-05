@@ -27,7 +27,7 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   },
   [BRIDGE_PROVIDER.EVO]: {
     name: 'Evo',
-    image: `${imageBasePath}xdai.svg`
+    image: `${imageBasePath}evo.svg`
   }
 };
 
