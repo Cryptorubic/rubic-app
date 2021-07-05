@@ -351,7 +351,7 @@
     "approveSuccessMessage": "Вы одобрили токены. Нажмите кнопку свопа, чтобы продолжить торговлю.",
     "tableTitle": "Ваши кросс-чейн обмены",
     "whatIs": "Что такое ",
-    "whatIsAfter": "",
+    "whatIsAfter": "?",
     "checkOn": "Check on ",
     "assistanceOf": "С помощью",
     "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес",
@@ -359,7 +359,7 @@
     "maxAmount": "Максимальная сумма ",
     "createBridge": "Create Bridge",
     "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "getBNB": "Get BNB",
+    "cryptoTap": "Crypto Tap",
     "bridge": "Bridge"
   },
   "instantTrades": {

@@ -351,7 +351,7 @@
     "approveSuccessMessage": "토큰을 승인했습니다. 거래를 계속하려면 스왑 버튼을 누르십시오.",
     "tableTitle": "내 크로스-체인 스왑",
     "whatIs": "뭐가 ",
-    "whatIsAfter": "",
+    "whatIsAfter": "?",
     "checkOn": "확인하다 ",
     "assistanceOf": "지원",
     "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
@@ -359,7 +359,7 @@
     "maxAmount": "최대 금액 ",
     "createBridge": "Create Bridge",
     "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "getBNB": "Get BNB",
+    "cryptoTap": "Crypto Tap",
     "bridge": "Bridge"
   },
   "instantTrades": {
