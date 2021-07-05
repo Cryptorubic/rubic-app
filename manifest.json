@@ -1,0 +1,17 @@
+{
+  "short_name": "Rubic",
+  "name": "Rubic - Trading ReDefined",
+  "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps, and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",
+  "icons": [
+    {
+      "src": "assets/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#4aa956",
+  "theme_color": "white",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any"
+}
