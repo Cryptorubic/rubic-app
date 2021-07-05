@@ -10,7 +10,7 @@ import {
   throwError,
   zip
 } from 'rxjs';
-import { catchError, filter, map, mergeMap, takeWhile } from 'rxjs/operators';
+import { catchError, defaultIfEmpty, filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -105,7 +105,8 @@ export class MyTradesService {
               ...filteredTrades[index],
               transactionHash: hash
             }))
-          )
+          ),
+          defaultIfEmpty([])
         );
       })
     );
