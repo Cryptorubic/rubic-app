@@ -1,0 +1,51 @@
+<div class="token-input-container">
+  <div class="amount-input-container">
+    <label class="amount-input-container__label">
+      <input
+        autocomplete="off"
+        class="amount-input-container__input"
+        name="token-amount"
+        [placeholder]="placeholder"
+        appTokenAmount
+        [formControl]="amountControl"
+        [decimals]="token?.decimals || DEFAULT_DECIMALS"
+        (amountChange)="emitAmountChange($event)"
+      />
+    </label>
+
+    <div
+      class="amount-input-container__user-balance-container user-balance-container"
+      *ngIf="token?.amount.gt(0)"
+    >
+      <span class="user-balance-container__balance"
+        >{{ 'common.have' | translate }}
+        {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}</span
+      >
+      <button class="user-balance-container__max-button" (click)="onUserBalanceMaxButtonClick()">
+        MAX
+      </button>
+    </div>
+  </div>
+
+  <div class="token-input-container__right-side right-side">
+    <div
+      class="right-side__usd-price-container usd-price-container"
+      [ngClass]="{ 'usd-price-container_hidden': getUsdPrice().eq(0) }"
+    >
+      <span
+        class="usd-price-container__price"
+        [tuiHint]="usdPriceTooltip"
+        tuiHintDirection="top"
+        tuiHintMode="onDark"
+        >${{ getUsdPrice() | bigNumberFormat: 2 }}</span
+      >
+      <ng-template #usdPriceTooltip>${{ getUsdPrice() | bigNumberFormat }}</ng-template>
+    </div>
+
+    <div class="right-side__error-info">
+      <span *ngIf="minAmount !== undefined && amount.lt(minAmount)">Min {{ minAmount }}</span>
+
+      <span *ngIf="maxAmount !== undefined && amount.gt(maxAmount)">Max {{ maxAmount }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+:host {
+  font-family: $sf-pro-font;
+}
+
+.blockchains {
+  display: flex;
+  grid-gap: 10px;
+  align-items: center;
+  height: 100%;
+  padding: 25px 20px;
+
+  background-color: $rubic-base-03;
+  border-top-left-radius: 14px;
+
+  &__list {
+    &-item {
+      margin-right: 5px;
+    }
+  }
+}
+
+.blockchain {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 8px 16px;
+
+  font-weight: 500;
+
+  font-size: $rubic-font-size-01;
+
+  border: 1px solid $rubic-primary;
+  border-radius: 175px;
+
+  &__icon {
+    width: 100px;
+    max-width: 18px;
+    height: auto;
+    max-height: 18px;
+    margin-right: 10px;
+  }
+}
+
+.template-blockchains {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 106px;
+
+  &__icon {
+    width: auto;
+    max-width: 18px;
+    height: auto;
+    max-height: 20px;
+    margin-right: 20px;
+
+    transition: 0.3s ease-in-out;
+  }
+}
+
+@include b($mobile-md) {
+  .blockchains {
+    padding: 15px 20px;
+
+    border-top-right-radius: 14px;
+
+    &__list {
+      display: flex;
+    }
+  }
+
+  :host(.form-panel__blockchains_bottom) {
+    .blockchains {
+      padding-top: 30px;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .blockchains {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

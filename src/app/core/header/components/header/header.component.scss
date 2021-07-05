@@ -1,87 +1,95 @@
-@import '../../../../../scss/mixins';
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
-$mobile-width: 1024;
+.rubic-header {
+  position: relative;
 
-.header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 30px 24px;
 
-  padding-top: 20px;
-  padding-bottom: 20px;
-
-  background-color: white;
-
-  transition: all linear 0.2s;
-
-  @include b($mobile-width) {
-    padding: 0;
+  &__disabled-link {
+    color: #909090;
+    font-size: 16px;
   }
 
-  &__mobile-language {
-    margin-right: 10px;
-  }
-
-  &_scrolled {
-    z-index: 10;
-
-    padding-top: 13px;
-    padding-bottom: 10px;
-
-    background-color: white;
-  }
-
-  &__container {
-    position: relative;
-    z-index: 1;
-
+  &__main,
+  &__nav,
+  &__profile {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+  }
 
-    background: white;
+  &__profile {
+    grid-gap: 10px;
+  }
 
-    @include b($mobile-width) {
-      position: relative;
+  &__nav {
+    grid-gap: 30px;
+  }
 
-      height: 65px;
-      padding-top: 12px;
-      padding-bottom: 11px;
+  &__logo {
+    margin-right: 54px;
+
+    transition: 0.3s ease-in-out opacity;
+
+    img {
+      display: block;
+    }
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &:active {
+      opacity: 1;
     }
   }
 
-  app-header-language-dropdown {
-    @include b($mobile-width) {
-      margin-right: 10px;
-      margin-left: auto;
-    }
+  &__menu {
+    display: inline-flex;
   }
 
-  app-header-navigation {
-    margin-right: 40px;
-  }
-
-  app-header-logotype {
-    margin-right: auto;
-  }
-
-  &__mobile-container {
+  &__nav {
     position: absolute;
+    left: 50%;
 
-    width: 100%;
-    padding: 15px 0;
+    transform: translateX(-50%);
+  }
+}
 
-    background: white;
-    box-shadow: inset 0 7px 9px -7px rgb(0 0 0 / 10%);
-    transform: translateY(-100%);
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
+  text-decoration: none;
+}
 
-    transition: all linear 0.2s;
+@include b($desktop) {
+  .rubic-header {
+    &__profile-trades,
+    &__profile-user,
+    &__login,
+    &__nav {
+      display: none;
+    }
+  }
+}
 
-    &_opened {
-      transform: translateY(0);
+@include b($mobile-sm) {
+  .rubic-header {
+    padding: 21px 15px 19px;
+
+    &__main {
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    &__logo {
+      margin-right: 0;
+    }
+
+    &__menu {
+      margin-right: 10px;
     }
   }
 }
@@ -94,7 +102,7 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
   font-size: 14px;
 
 
-  background-color: $main-green;
+  background-color: $rubic-primary;
   border-radius: 10px;
 
   &:hover,

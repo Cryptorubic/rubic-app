@@ -29,10 +29,10 @@ const blockchainsScanners = {
     nativeCoinUrl: 'stat/supply/'
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
-    baseUrl: 'https://explorer-mainnet.maticvigil.com/',
-    nativeCoinUrl: '',
+    baseUrl: 'https://polygonscan.com/',
+    nativeCoinUrl: 'stat/supply/',
     [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   },
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: {
@@ -63,7 +63,11 @@ export class ScannerLinkPipe implements PipeTransform {
     useTestingMode.isTestingMode.subscribe(value => (this.isTestingMode = value));
   }
 
-  transform(address, blockchainName: BLOCKCHAIN_NAME, type: ADDRESS_TYPE) {
+  transform(address, blockchainName: BLOCKCHAIN_NAME, type: ADDRESS_TYPE): string {
+    if (!address || !blockchainName) {
+      return '';
+    }
+
     const baseUrl = !this.isTestingMode
       ? blockchainsScanners[blockchainName].baseUrl
       : blockchainsScanners[`${blockchainName}_TESTNET`].baseUrl;

@@ -1,0 +1,9 @@
+<tui-input
+  [ngModel]="query"
+  (ngModelChange)="onQueryChanges($event)"
+  iconAlign="left"
+  icon="tuiIconSearch"
+  tuiTextfieldSize="s">
+  <span class="placeholder">{{ 'modals.tokensListModal.searchPlaceholder' | translate }}</span>
+</tui-input>
+

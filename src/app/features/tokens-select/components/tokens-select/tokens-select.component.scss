@@ -1,0 +1,46 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.tokens-select {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 500px;
+
+  &__header {
+    position: relative;
+
+    margin-right: 40px;
+
+    h2 {
+      margin-top: 0;
+
+      color: #808080;
+      font-weight: 300;
+      font-size: 24px;
+      line-height: 29px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+    max-height: 400px;
+  }
+
+}
+
+app-tokens-search-bar {
+  margin-bottom: 14px;
+}
+
+@include b($mobile-md) {
+  .tokens-select {
+    height: 100%;
+
+    &__content {
+      height: 100%;
+      max-height: none;
+    }
+  }
+}

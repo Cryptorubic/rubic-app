@@ -1,30 +1,31 @@
-<ng-container #mobileHeader *ngIf="$isMobile | async; else desktopHeader">
-  <header class="header">
-    <div class="header__container app-content-block">
-      <app-header-logotype></app-header-logotype>
-      <app-header-language-dropdown></app-header-language-dropdown>
-      <app-mobile-menu-toggler></app-mobile-menu-toggler>
-    </div>
-    <div
-      class="header__mobile-container"
-      [ngClass]="{ 'header__mobile-container_opened': $isMobileMenuOpened | async }"
-    >
-      <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
-      <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
-      <app-header-navigation></app-header-navigation>
-    </div>
-  </header>
-</ng-container>
-<ng-template #desktopHeader>
-  <header class="header" [ngClass]="{ header_scrolled: pageScrolled }">
-    <div class="header__container app-content-block">
-      <app-header-logotype></app-header-logotype>
-      <a class="header__link" href="https://beta.rubic.exchange/">Switch to new design</a>
-      <app-header-navigation></app-header-navigation>
-      <app-header-language-dropdown></app-header-language-dropdown>
-      <app-login-button *ngIf="!($currentUser | async)?.address"></app-login-button>
-      <app-user-profile *ngIf="($currentUser | async)?.address"></app-user-profile>
-    </div>
-  </header>
+<header class="rubic-header">
+  <div class="rubic-header__main">
+    <a class="rubic-header__logo" routerLink="/">
+      <img src="assets/img/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+    </a>
+
+    <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
+  </div>
+
+  <nav class="rubic-header__nav">
+    <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
+    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">Crypto tap</a>
+    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order book</span>
+  </nav>
+
+  <div class="rubic-header__profile">
+    <a class="rubic-header__profile-trades button-link" routerLink="my-trades" routerLinkActive="button-link_active">
+      {{ 'navigation.myTrades' | translate }}
+    </a>
+
+    <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
+    <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
+    <app-rubic-language-select></app-rubic-language-select>
+    <!--<app-rubic-toggler-theme></app-rubic-toggler-theme>-->
+  </div>
+</header>
+
+
+<ng-template #orderBookTooltip>
+  <span>{{ 'navigation.notAvailable' | translate }}</span>
 </ng-template>
-<app-logout-confirm-modal></app-logout-confirm-modal>

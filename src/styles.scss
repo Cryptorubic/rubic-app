@@ -18,10 +18,14 @@
 
 /* Global */
 @import 'scss/livechat';
-@import 'scss/global-material-styles';
-@import 'scss/iframe-style';
+@import 'scss/new-ui';
+
+/* TaigaUI custom styles */
+@import 'scss/taiga-slyles';
 
 * {
+  box-sizing: border-box;
+
   appearance: none;
   -webkit-tap-highlight-color: transparent;
 
@@ -30,19 +34,50 @@
   }
 }
 
-body {
-  min-width: 320px;
-  margin: 0;
-  padding: 0;
+html {
+  height: auto !important;
+  min-height: 100%;
 
-  font-family: 'Ubuntu', 'Josefin Sans', Arial, sans-serif;
+  body {
+    min-width: 320px;
+    height: auto;
+    margin: 0;
+    padding: 0;
 
-  background: #f4f4f4;
-  background-size: cover;
+    background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
+
+    main,
+    input,
+    button,
+    select,
+    textarea {
+      font-family: $sf-pro-font !important;
+    }
+  }
 }
 
-html {
-  background-color: #f4f4f4;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  margin: 0;
+
+  appearance: none;
+}
+
+input[type=number] {
+  /* stylelint-disable */
+  -moz-appearance: textfield;
+}
+
+button {
+  cursor: pointer;
+}
+
+main.main-content {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+  display: flex;
+  justify-content: center;
 }
 
 .noscroll {
@@ -92,4 +127,25 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 .mat-tooltip {
   white-space: pre-line;
   text-align: center;
+}
+
+.bar {
+  bottom: 10px !important;
+
+  &_vertical {
+    top: 10px !important;
+  }
+}
+
+tui-dropdown-box {
+  min-width: 265px;
+
+  border: none !important;
+  border-radius: 18px !important;
+}
+
+@include b($mobile-sm) {
+  tui-dropdown-box {
+    min-width: 153px;
+  }
 }

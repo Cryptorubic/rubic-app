@@ -1,0 +1,8 @@
+<form [formGroup]="themeForm">
+  <tui-toggle
+    class="theme-toggle"
+    [ngClass]="{ 'theme-toggle_night': isDark }"
+    formControlName="themeControl"
+    [size]="'l'"
+  ></tui-toggle>
+</form>

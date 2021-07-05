@@ -1,14 +1,14 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { MetamaskError } from 'src/app/core/errors/models/provider/MetamaskError';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
-import { IBlockchain } from '../../../../../shared/models/blockchain/IBlockchain';
-import { MetamaskError } from '../../../../../shared/models/errors/provider/MetamaskError';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsService } from '../../../errors/errors.service';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;
@@ -45,9 +45,9 @@ export class MetamaskProvider extends PrivateProvider {
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
 
-    const { ethereum } = window as any;
+    const { ethereum } = window;
     if (!ethereum) {
-      this.errorsService.throw(new MetamaskError());
+      errorsService.catch$(new MetamaskError());
       return;
     }
     web3.setProvider(ethereum);
@@ -56,6 +56,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.selectedChain = chain;
       if (this.isEnabled) {
         chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+        // tslint:disable-next-line:no-console
         console.info('Chain changed', chain);
       }
     });
@@ -63,6 +64,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges.next(this.selectedAddress);
+        // tslint:disable-next-line:no-console
         console.info('Selected account changed to', accounts[0]);
       }
       if (!this.selectedAddress) {
@@ -93,7 +95,7 @@ export class MetamaskProvider extends PrivateProvider {
     return null;
   }
 
-  public async activate(params?: any[]): Promise<void> {
+  public async activate(params?: unknown[]): Promise<void> {
     try {
       const accounts = await this.core.request({
         method: 'eth_requestAccounts',
@@ -106,11 +108,11 @@ export class MetamaskProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.selectedAddress);
     } catch (error) {
-      this.errorsService.throw(new MetamaskError());
+      this.errorsService.throw$(new MetamaskError());
     }
   }
 
-  public async requestPermissions(): Promise<any[]> {
+  public async requestPermissions(): Promise<unknown[]> {
     try {
       return this.core.request({
         method: 'wallet_requestPermissions',
@@ -130,10 +132,10 @@ export class MetamaskProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw(new MetamaskError());
+      this.errorsService.throw$(new MetamaskError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw(new NetworkError(token.blockchain));
+      this.errorsService.throw$(new NetworkError(token.blockchain));
     }
 
     return this.core.request({

@@ -1,0 +1,21 @@
+<div class="rubic-footer">
+  <nav class="rubic-footer__nav">
+    <a
+      *ngFor="let link of footerLinks"
+      class="rubic-footer__link"
+      [href]="link.link"
+      rel="noopener"
+      target="_blank"
+    >
+      <img
+        [src]="link.imageUrl"
+        width="22"
+        height="20"
+        [alt]="link.altText">
+    </a>
+  </nav>
+  <div class="rubic-footer__copyright">
+    © Copyright Rubic {{ year }},
+    <a href="https://rubic.finance/assets/pdf/Rubic%20Privacy%20Policy.pdf" class="rubic-footer__policy">{{ 'common.privacyPolicy' | translate }}</a>
+  </div>
+</div>

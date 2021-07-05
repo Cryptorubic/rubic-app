@@ -1,15 +1,10 @@
-import { IBlockchain } from '../../../../shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import SwapToken from '../../../../shared/models/tokens/SwapToken';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsService } from '../../errors/errors.service';
 
 export abstract class PrivateProvider {
-  /**
-   * @description default value for transactions gasLimit. Required for tests provider stub
-   */
-  public readonly defaultGasLimit: string | undefined = undefined;
-
   /**
    * @description is the blockchain provider installed
    */
@@ -36,8 +31,6 @@ export abstract class PrivateProvider {
     return this.getAddress();
   }
 
-  public abstract getAddress(): string;
-
   /**
    * @description current selected network
    * @return current selected network or undefined if isActive is false
@@ -49,9 +42,20 @@ export abstract class PrivateProvider {
     return this.getNetwork();
   }
 
-  protected constructor(protected readonly errorsService: ErrorsService) {}
+  /**
+   * @description default value for transactions gasLimit. Required for tests provider stub
+   */
+  public readonly defaultGasLimit: string | undefined = undefined;
+
+  public errorsService: ErrorsService;
+
+  public abstract getAddress(): string;
 
   public abstract getNetwork(): IBlockchain;
+
+  protected constructor(errorsService: ErrorsService) {
+    this.errorsService = errorsService;
+  }
 
   /**
    * @description current selected network name
@@ -77,7 +81,7 @@ export abstract class PrivateProvider {
    */
   public abstract addToken(token: SwapToken): Promise<void>;
 
-  public async requestPermissions(): Promise<any[]> {
+  public async requestPermissions(): Promise<unknown[]> {
     return [{ parentCapability: 'eth_accounts' }];
   }
 }

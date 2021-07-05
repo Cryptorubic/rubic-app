@@ -1,17 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Renderer2,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Observable } from 'rxjs';
-import { AsyncPipe, DOCUMENT } from '@angular/common';
-import { AuthService } from '../../../../../services/auth/auth.service';
+import { AsyncPipe } from '@angular/common';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
 
@@ -22,8 +15,6 @@ import { HeaderStore } from '../../../../services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WalletsModalComponent {
-  @ViewChild('modal') modal: TemplateRef<any>;
-
   public readonly $walletsLoading: Observable<boolean>;
 
   private readonly allProviders: WalletProvider[];
@@ -46,7 +37,7 @@ export class WalletsModalComponent {
   }
 
   constructor(
-    private dialog: MatDialog,
+    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
@@ -91,17 +82,17 @@ export class WalletsModalComponent {
     this.headerStore.setWalletsLoadingStatus(true);
     try {
       await this.providerConnectorService.connectProvider(provider);
+      await this.authService.signIn();
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }
-    await this.authService.signIn();
     this.headerStore.setWalletsLoadingStatus(false);
     this.close();
   }
 
   public close(): void {
     this.headerStore.setWalletsLoadingStatus(false);
-    this.dialog.closeAll();
+    this.context.completeWith();
   }
 
   // @TODO Uncomment when fix mobile wallets.

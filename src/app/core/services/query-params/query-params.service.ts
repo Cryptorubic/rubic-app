@@ -1,287 +1,285 @@
-import { AsyncPipe, DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Inject, Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
-import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
-import { skip, take } from 'rxjs/operators';
+import { filter, first, map, mergeMap } from 'rxjs/operators';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
-import { TokensService } from '../backend/tokens-service/tokens.service';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import BigNumber from 'bignumber.js';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
-import { TradeParametersService } from '../swaps/trade-parameters-service/trade-parameters.service';
-import { TradeTypeService } from '../swaps/trade-type-service/trade-type.service';
 import { QueryParams } from './models/query-params';
-
-type DefaultQueryParams = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: QueryParams;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: QueryParams;
-  [BLOCKCHAIN_NAME.POLYGON]: QueryParams;
-  bridge: QueryParams;
-};
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueryParamsService {
-  private readonly $isIframeSubject: BehaviorSubject<boolean>;
+  private static DEFAULT_PARAMETERS = {
+    swap: {
+      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+      toChain: BLOCKCHAIN_NAME.ETHEREUM,
+      from: {
+        [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
+        [BLOCKCHAIN_NAME.POLYGON]: 'MATIC'
+      },
+      to: {
+        [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC'
+      },
+      amount: '1'
+    }
+  };
+
+  private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
 
   public currentQueryParams: QueryParams;
 
-  public defaultQueryParams: DefaultQueryParams;
+  private readonly _hiddenNetworks$ = new BehaviorSubject<string[]>([]);
 
-  private readonly $tokens: Observable<List<SwapToken>>;
+  private readonly _tokensSelectionDisabled$ = new BehaviorSubject<boolean>(false);
 
-  private readonly $hiddenNetworksSubject: BehaviorSubject<string[]>;
+  private readonly _theme$ = new BehaviorSubject<string>('default');
 
-  private readonly $tokensSelectionDisabledSubject: BehaviorSubject<boolean>;
-
-  private readonly $themeSubject: BehaviorSubject<string>;
-
-  public get $isIframe(): Observable<boolean> {
-    return this.$isIframeSubject.asObservable();
+  public get isIframe$(): Observable<boolean> {
+    return this._isIframe$.asObservable();
   }
 
-  public get $theme(): Observable<string> {
-    return this.$themeSubject.asObservable();
+  public get theme$(): Observable<string> {
+    return this._theme$.asObservable();
   }
 
-  public get $hiddenNetworks(): Observable<string[]> {
-    return this.$hiddenNetworksSubject.asObservable();
+  public get hiddenNetworks$(): Observable<string[]> {
+    return this._hiddenNetworks$.asObservable();
   }
 
-  public get $tokensSelectionDisabled(): Observable<boolean> {
-    return this.$tokensSelectionDisabledSubject.asObservable();
+  public get tokensSelectionDisabled$(): Observable<boolean> {
+    return this._tokensSelectionDisabled$.asObservable();
   }
 
   constructor(
-    private readonly tradeParametersService: TradeParametersService,
     private readonly tokensService: TokensService,
-    private readonly tradeTypeService: TradeTypeService,
     private readonly web3Public: Web3PublicService,
     @Inject(DOCUMENT) private document: Document,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly swapFormService: SwapFormService,
+    private readonly swapsService: SwapsService
   ) {
-    this.$themeSubject = new BehaviorSubject<string>('default');
-    this.$isIframeSubject = new BehaviorSubject<boolean>(false);
-    this.$tokensSelectionDisabledSubject = new BehaviorSubject<boolean>(false);
-    this.$hiddenNetworksSubject = new BehaviorSubject<string[]>([]);
-    this.$tokens = this.tokensService.tokens.asObservable();
-    this.defaultQueryParams = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: {
-        from: 'ETH',
-        to: 'RBC',
-        amount: '1'
-      },
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        from: 'BNB',
-        to: 'BRBC',
-        amount: '1'
-      },
-      [BLOCKCHAIN_NAME.POLYGON]: {
-        from: 'MATIC',
-        to: 'USDT',
-        amount: '1'
-      },
-      bridge: {
-        chain: BLOCKCHAIN_NAME.ETHEREUM
-      }
-    };
-  }
-
-  private static isHEXColor(color: string): boolean {
-    return /^[A-F0-9]+$/i.test(color);
-  }
-
-  public initiateTradesParams(params: QueryParams): void {
-    this.currentQueryParams = this.setDefaultParams(params);
-  }
-
-  public async setupTradeForm(cdr: ChangeDetectorRef): Promise<void> {
-    const queryChain = this.currentQueryParams?.chain as BLOCKCHAIN_NAME;
-    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryChain)
-      ? queryChain
-      : BLOCKCHAIN_NAME.ETHEREUM;
-
-    const tradeParams = {
-      fromToken: (this.currentQueryParams.from && (await this.getToken('from', cdr))) || undefined,
-      toToken: (this.currentQueryParams.to && (await this.getToken('to', cdr))) || undefined,
-      fromAmount:
-        this.currentQueryParams.amount ||
-        this.tradeParametersService.getTradeParameters(chain).fromAmount,
-      toAmount: this.tradeParametersService.getTradeParameters(chain).toAmount,
-      isCustomFromTokenFormOpened: false,
-      isCustomToTokenFormOpened: false,
-      customFromTokenAddress:
-        this.currentQueryParams.from && this.isAddress(this.currentQueryParams.from)
-          ? this.currentQueryParams.from
-          : undefined,
-      customToTokenAddress:
-        this.currentQueryParams.to && this.isAddress(this.currentQueryParams.to)
-          ? this.currentQueryParams.to
-          : undefined
-    };
-    this.tradeParametersService.setTradeParameters(chain, tradeParams);
-    this.tradeTypeService.setBlockchain(chain);
-  }
-
-  public initiateBridgeParams(params: QueryParams): void {
-    this.currentQueryParams = {
-      from: params.from || this.defaultQueryParams.bridge.from,
-      amount: params.amount || this.defaultQueryParams.bridge.amount,
-      chain: params.chain || this.defaultQueryParams.bridge.chain
-    };
-  }
-
-  private async getToken(
-    tokenType: 'from' | 'to',
-    cdr: ChangeDetectorRef
-  ): Promise<SwapToken | undefined> {
-    const tokenInfo = this.currentQueryParams[tokenType];
-    return !this.isAddress(tokenInfo)
-      ? this.searchTokenBySymbol(tokenInfo, cdr)
-      : this.searchTokenByAddress(tokenInfo, cdr);
+    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
+      this.setQueryParams({
+        ...(value.fromToken?.symbol && { from: value.fromToken.symbol }),
+        ...(value.toToken?.symbol && { to: value.toToken.symbol }),
+        ...(value.fromBlockchain && { fromChain: value.fromBlockchain }),
+        ...(value.toBlockchain && { toChain: value.toBlockchain }),
+        ...(value.fromAmount &&
+          !value.fromAmount?.eq(0) &&
+          value.fromAmount?.isFinite() && { amount: value.fromAmount.toFixed() })
+      });
+    });
   }
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams) {
-      if (queryParams.iframe === 'true') {
-        this.$isIframeSubject.next(true);
-        this.document.body.classList.add('iframe');
-        if (queryParams.hidden) {
-          this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
-        }
-        const hasTopTokens = Object.values(BLOCKCHAIN_NAME).some(
-          blockchain => `topTokens[${blockchain}]` in queryParams
-        );
-        if (hasTopTokens) {
-          const topTokens = Object.entries(queryParams).reduce(
-            (
-              acc: { [k in keyof Record<BLOCKCHAIN_NAME, string>]?: string[] },
-              curr: [string, string]
-            ) => {
-              const [key, value] = curr;
-              const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
-              return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
-            },
-            {}
-          );
-          this.tokensService.tokens.pipe(skip(1), take(1)).subscribe(tokens => {
-            const rankedTokens = tokens.map((token: SwapToken) => {
-              const currentBlockchainTop = topTokens[token.blockchain];
-              const isTop =
-                currentBlockchainTop?.length > 0 &&
-                currentBlockchainTop.some(topToken => {
-                  return topToken === token.symbol;
-                });
-              return isTop
-                ? {
-                    ...token,
-                    rank: TOKEN_RANK.TOP
-                  }
-                : token;
-            });
-            this.tokensService.tokens.next(rankedTokens);
-          });
-        }
-        if (queryParams.background) {
-          const color = queryParams.background;
-          this.document.body.style.background = QueryParamsService.isHEXColor(color)
-            ? `#${color}`
-            : color;
-        }
-        if (queryParams.hideSelection) {
-          this.$tokensSelectionDisabledSubject.next(queryParams.hideSelection === 'true');
-        }
-        if (queryParams.theme && queryParams.theme === 'dark') {
-          this.$themeSubject.next('dark');
-          this.document.body.classList.add('dark');
-        }
-      } else {
-        this.$isIframeSubject.next(false);
-      }
+      this.setIframeStatus(queryParams);
+      this.setHiddenStatus(queryParams);
+      this.setTopTokens(queryParams);
+      this.setBackgroundStatus(queryParams);
+      this.setHideSelectionStatus(queryParams);
+      this.setThemeStatus(queryParams);
+
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
       } else if (hasParams) {
-        this.initiateBridgeParams(queryParams);
+        this.initiateCryptoTapParams(queryParams);
       }
     }
   }
 
-  public isAddress(token: string): boolean {
-    const web3Public: Web3Public = this.web3Public[this.currentQueryParams.chain];
-    return web3Public.isAddressCorrect(token);
-  }
-
-  public setQueryParam(key: keyof QueryParams, value: any): void {
-    if (this.currentQueryParams && value) {
-      this.currentQueryParams[key] = value;
-      this.navigate();
-    }
-  }
-
-  public removeQueryParam(key: keyof QueryParams): void {
-    this.currentQueryParams[key] = undefined;
+  public setQueryParams(params: Partial<QueryParams>): void {
+    this.currentQueryParams = {
+      ...this.currentQueryParams,
+      ...params
+    };
     this.navigate();
   }
 
-  public searchTokenBySymbol(
-    queryParam: string,
-    cdr: ChangeDetectorRef,
-    tokensList?: List<any>,
-    isBridge?: boolean
-  ): SwapToken {
-    const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
-    const similarTokens = tokens.filter(token =>
-      isBridge
-        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].symbol ===
-          queryParam
-        : (token as SwapToken).symbol === queryParam &&
-          token.blockchain === this.currentQueryParams.chain
+  private initiateTradesParams(params: QueryParams): void {
+    this.tokensService.tokens
+      .pipe(
+        filter(tokens => tokens?.size !== 0),
+        mergeMap(tokens =>
+          this.getProtectedSwapParams(params).pipe(
+            map(protectedParams => ({ tokens, protectedParams }))
+          )
+        ),
+        mergeMap(({ tokens, protectedParams }) => {
+          const fromBlockchain = protectedParams.fromChain as BLOCKCHAIN_NAME;
+          const toBlockchain = protectedParams.toChain as BLOCKCHAIN_NAME;
+
+          const findFromToken$ = this.getTokenBySymbolOrAddress(
+            tokens,
+            protectedParams?.from,
+            fromBlockchain
+          );
+          const findToToken$ = this.getTokenBySymbolOrAddress(
+            tokens,
+            protectedParams?.to,
+            toBlockchain
+          );
+
+          return forkJoin([findFromToken$, findToToken$]).pipe(
+            map(([fromToken, toToken]) => ({
+              fromToken,
+              toToken,
+              fromBlockchain,
+              toBlockchain,
+              protectedParams
+            }))
+          );
+        })
+      )
+      .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
+        this.swapFormService.commonTrade.controls.input.patchValue({
+          fromBlockchain,
+          toBlockchain,
+          ...(fromToken && { fromToken }),
+          ...(toToken && { toToken }),
+          ...(protectedParams.amount !== undefined && {
+            fromAmount: new BigNumber(protectedParams.amount)
+          })
+        });
+      });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private initiateCryptoTapParams(params: QueryParams): void {
+    // TODO: add crypto tap params
+  }
+
+  private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
+    return this.swapsService.bridgeTokensPairs.pipe(
+      filter(pairs => !!pairs?.length),
+      first(),
+      map(pairs => {
+        const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
+          queryParams?.fromChain as BLOCKCHAIN_NAME
+        )
+          ? queryParams.fromChain
+          : QueryParamsService.DEFAULT_PARAMETERS.swap.fromChain;
+
+        const toChain = Object.values(BLOCKCHAIN_NAME).includes(
+          queryParams?.toChain as BLOCKCHAIN_NAME
+        )
+          ? queryParams.toChain
+          : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
+
+        const newParams =
+          queryParams.from || queryParams.to
+            ? {
+                ...queryParams,
+                from:
+                  queryParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
+                to: queryParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toChain],
+                amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
+                fromChain,
+                toChain
+              }
+            : {
+                ...queryParams,
+                fromChain,
+                toChain
+              };
+        if (newParams.from === newParams.to && fromChain === toChain) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]
+            ? (newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain])
+            : (newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]);
+        }
+
+        if (
+          fromChain !== toChain &&
+          !pairs.some(
+            (pair: BlockchainsBridgeTokens) =>
+              pair.fromBlockchain === fromChain &&
+              pair.toBlockchain === toChain &&
+              pair.bridgeTokens.some(
+                bridgeToken =>
+                  bridgeToken.blockchainToken[fromChain]?.symbol.toLowerCase() ===
+                    newParams.from.toLowerCase() &&
+                  bridgeToken.blockchainToken[toChain]?.symbol.toLowerCase() ===
+                    newParams.to.toLowerCase()
+              )
+          )
+        ) {
+          newParams.from = null;
+          newParams.to = null;
+        }
+        return newParams;
+      })
+    );
+  }
+
+  private getTokenBySymbolOrAddress(
+    tokens: List<TokenAmount>,
+    token: string,
+    chain: BLOCKCHAIN_NAME
+  ): Observable<TokenAmount> {
+    if (!token) {
+      return of(null);
+    }
+
+    return this.isAddress(token, chain)
+      ? this.searchTokenByAddress(tokens, token, chain)
+      : of(this.searchTokenBySymbol(tokens, token, chain));
+  }
+
+  private searchTokenBySymbol(
+    tokens: List<TokenAmount>,
+    symbol: string,
+    chain: string
+  ): TokenAmount {
+    const similarTokens = tokens.filter(
+      token => token.symbol === symbol && token.blockchain === chain
     );
 
+    if (!similarTokens.size) {
+      return null;
+    }
+
     return similarTokens.size > 1
-      ? similarTokens.find(token => token.used_in_iframe)
+      ? similarTokens.find(token => token.usedInIframe) || similarTokens.first()
       : similarTokens.first();
   }
 
-  public async searchTokenByAddress(
-    queryParam: string,
-    cdr: ChangeDetectorRef,
-    tokensList?: List<any>,
-    isBridge?: boolean
-  ): Promise<SwapToken> {
-    const tokens = tokensList || new AsyncPipe(cdr).transform(this.$tokens);
-    const searchingToken = tokens.find(token =>
-      isBridge
-        ? (token as BridgeToken).blockchainToken[this.currentQueryParams.chain].address ===
-          queryParam
-        : token.address === queryParam && token.blockchain === this.currentQueryParams.chain
+  private searchTokenByAddress(
+    tokens: List<TokenAmount>,
+    address: string,
+    chain: BLOCKCHAIN_NAME
+  ): Observable<TokenAmount> {
+    const searchingToken = tokens.find(
+      token => token.address === address && token.blockchain === chain
     );
 
-    return searchingToken || (await this.getCustomToken(queryParam));
+    return searchingToken
+      ? of(searchingToken)
+      : this.tokensService.addToken(address, chain).pipe(first());
   }
 
-  public async getCustomToken(address: string): Promise<SwapToken> {
-    let customToken = null;
-    try {
-      customToken = await this.web3Public[this.currentQueryParams.chain].getTokenInfo(address);
-      customToken = {
-        blockchain: undefined,
-        image: undefined,
-        rank: undefined,
-        price: undefined,
-        used_in_iframe: undefined,
-        ...customToken
-      };
-    } catch (e) {
-      console.error(e);
-    }
-    return customToken;
+  private isAddress(token: string, chain: BLOCKCHAIN_NAME): boolean {
+    const web3Public: Web3Public = this.web3Public[chain];
+    return web3Public.isAddressCorrect(token);
+  }
+
+  private isHEXColor(color: string): boolean {
+    return /^[A-F0-9]+$/i.test(color);
   }
 
   private navigate(): void {
@@ -291,49 +289,81 @@ export class QueryParamsService {
     });
   }
 
-  private setDefaultParams(queryParams: QueryParams): QueryParams {
-    const chain = Object.values(BLOCKCHAIN_NAME).includes(queryParams?.chain as BLOCKCHAIN_NAME)
-      ? queryParams.chain
-      : BLOCKCHAIN_NAME.ETHEREUM;
-    return queryParams.from || queryParams.to
-      ? {
-          ...queryParams,
-          from: queryParams.from || this.defaultQueryParams[chain].from,
-          to: queryParams.to || this.defaultQueryParams[chain].to,
-          amount: queryParams.amount || this.defaultQueryParams[chain].amount,
-          chain
-        }
-      : {
-          ...queryParams,
-          chain
-        };
+  private setIframeStatus(queryParams: QueryParams) {
+    if (queryParams.iframe === 'true') {
+      this._isIframe$.next(true);
+      this.document.body.classList.add('iframe');
+      return;
+    }
+    this._isIframe$.next(false);
   }
 
-  public clearCurrentParams() {
-    this.currentQueryParams = {
-      ...this.currentQueryParams,
-      from: null,
-      to: null,
-      amount: null,
-      chain: null
-    };
-    this.navigate();
+  private setHiddenStatus(queryParams: QueryParams) {
+    if (queryParams.hidden) {
+      this._hiddenNetworks$.next(queryParams.hidden.split(','));
+    }
   }
 
-  public swapDefaultParams() {
-    [
-      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].from,
-      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].to
-    ] = [
-      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].to,
-      this.defaultQueryParams[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].from
-    ];
-    [
-      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].from,
-      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].to
-    ] = [
-      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].to,
-      this.defaultQueryParams[BLOCKCHAIN_NAME.ETHEREUM].from
-    ];
+  private setTopTokens(queryParams: QueryParams) {
+    const hasTopTokens = Object.values(BLOCKCHAIN_NAME).some(
+      blockchain => `topTokens[${blockchain}]` in queryParams
+    );
+
+    if (hasTopTokens) {
+      const topTokens = Object.entries(queryParams).reduce(
+        (
+          acc: { [k in keyof Record<BLOCKCHAIN_NAME, string>]?: string[] },
+          curr: [string, string]
+        ) => {
+          const [key, value] = curr;
+          const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
+          return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
+        },
+        {}
+      );
+      this.tokensService.tokens
+        .pipe(
+          filter(tokens => tokens?.size !== 0),
+          first()
+        )
+        .subscribe(tokens => {
+          const rankedTokens = tokens.map((token: TokenAmount) => {
+            const currentBlockchainTop = topTokens[token.blockchain];
+            const isTop =
+              currentBlockchainTop?.length > 0 &&
+              currentBlockchainTop.some(topToken => {
+                return topToken === token.symbol;
+              });
+            return isTop
+              ? {
+                  ...token,
+                  rank: TOKEN_RANK.TOP
+                }
+              : token;
+          });
+
+          this.tokensService.setTokens(rankedTokens);
+        });
+    }
+  }
+
+  private setBackgroundStatus(queryParams: QueryParams) {
+    if (queryParams.background) {
+      const color = queryParams.background;
+      this.document.body.style.background = this.isHEXColor(color) ? `#${color}` : color;
+    }
+  }
+
+  private setHideSelectionStatus(queryParams: QueryParams) {
+    if (queryParams.hideSelection) {
+      this._tokensSelectionDisabled$.next(queryParams.hideSelection === 'true');
+    }
+  }
+
+  private setThemeStatus(queryParams: QueryParams) {
+    if (queryParams.theme && queryParams.theme === 'dark') {
+      this._theme$.next('dark');
+      this.document.body.classList.add('dark');
+    }
   }
 }

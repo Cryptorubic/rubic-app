@@ -1,16 +1,16 @@
 import { BehaviorSubject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { NetworkError } from 'src/app/shared/models/errors/provider/NetworkError';
-import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import WalletLink, { WalletLinkProvider as CoinbaseProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
-import { ErrorsService } from '../../../errors/errors.service';
 
 export class WalletLinkProvider extends PrivateProvider {
   private isEnabled: boolean;
@@ -47,10 +47,10 @@ export class WalletLinkProvider extends PrivateProvider {
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
-    errorsService: ErrorsService,
+    errorService: ErrorsService,
     blockchainId?: number
   ) {
-    super(errorsService);
+    super(errorService);
     this.isEnabled = false;
     this.defaultWalletParams = {
       appName: 'Rubic',
@@ -59,7 +59,7 @@ export class WalletLinkProvider extends PrivateProvider {
     };
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
-    const chainId = blockchainId || 1;
+    const chainId = blockchainId || 42;
     const chain = BlockchainsInfo.getBlockchainById(chainId);
     const walletLink = new WalletLink(this.defaultWalletParams);
     this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
@@ -82,14 +82,14 @@ export class WalletLinkProvider extends PrivateProvider {
     try {
       const [address] = await this.core.send('eth_requestAccounts');
 
-      const chain = BlockchainsInfo.getBlockchainById(1);
+      const chain = BlockchainsInfo.getBlockchainById(42);
       this.onNetworkChanges.next(chain);
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chain.name;
       this.isEnabled = true;
     } catch (error) {
-      this.errorsService.throw(new WalletlinkError());
+      this.errorsService.throw$(new WalletlinkError());
     }
   }
 
@@ -102,10 +102,10 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public addToken(token: SwapToken): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw(new WalletlinkError());
+      this.errorsService.throw$(new WalletlinkError());
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw(new NetworkError(token.blockchain));
+      this.errorsService.throw$(new NetworkError(token.blockchain));
     }
 
     return this.core.request({

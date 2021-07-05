@@ -24,27 +24,41 @@
     "add": "Add",
     "via": "Via",
     "contractAddress": "Dirección del contrato de token",
+    "address": "dirección de",
     "enterAmount": "Ingresa el monto",
-    "chooseToken": "Elija Token",
-    "warning": "Warning"
+    "chooseToken": "Elija token",
+    "clearToken": "Token claro",
+    "warning": "Advertencia",
+    "customerSupport": "customer support",
+    "OK": "OK",
+    "analytics": "Analítica",
+    "minutes": "minutos",
+    "swap": "Intercambio",
+    "approve": "Aprobar"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
-    "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde <a href='https://www.metamask.io' target='_blank'>www.metamask.io</a> y conectar la billeta con el botón de Conectar la Billetera.",
+    "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
     "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
-    "OverQueryLimit": "You have attempted to execute too many trades in a short period of time and exceeded Binance bridge restrictions of 3 trades maximum in 30 minutes.\nPlease wait and try again later, if you still have problems please reach out to our <a href='mailto:support@rubic.finance' target='_blank'>Customer Support</a>.",
+    "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del puente Binance de 3 operaciones como máximo en 30 minutos. Espere y vuelva a intentarlo más tarde. Si aún tiene problemas, comuníquese con nuestro",
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
-    "undefined": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al <a href='mailto:support@rubic.finance' target='_blank'>Soporte al Consumidor</a>.",
-    "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
-    "noQrCode": "Please make sure that you have scan qrCode",
-    "noWallet": "You have not connected any wallet",
-    "retrievingTokensError": "Error retrieving tokens",
-    "wrongToken": "Rubic bridge supports only rubic token.",
-    "oneInchQuote": "Oneinch quote error",
-    "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
-    "signReject": "You have reject wallet sign. Please confirm it first to login at our application",
-    "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas"
+    "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
+    "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
+    "sameTokens": "No puede elegir el mismo token en ambos lados, elija diferentes tokens.",
+    "noQrCode": "Asegúrese de haber escaneado qrCode",
+    "noWallet": "No has conectado ninguna billetera",
+    "retrievingTokensError": "Error al recuperar tokens",
+    "wrongToken": "El puente de rubic solo admite token de rubic.",
+    "oneInchQuote": "1inch de cotización",
+    "notSupportedNetwork": "{{networkToChoose}} no es compatible con el proveedor de billetera seleccionado.",
+    "signReject": "Tiene signo de billetera rechazada. Confirme primero para iniciar sesión en nuestra aplicación",
+    "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Intente aumentar el gas suministrado",
+    "noSelectedProvider": "No ha seleccionado ningún proveedor de intercambio",
+    "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
+    "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
+    "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
+    "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
+    "1inchNotSupportedToken": "1inch no admite uno de los tokens ingresados."
   },
   "navigation": {
     "about": "Información",
@@ -55,7 +69,8 @@
     "login": "Conecta tu Billetera",
     "myTrades": "Mis intercambios",
     "logout": "Cerrar sesión",
-    "logoutMessage": "¿Deseas Cerrar Sesión?"
+    "logoutMessage": "¿Deseas Cerrar Sesión?",
+    "notAvailable": "Order book no está disponible en versión beta."
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -332,6 +347,8 @@
     "swapToggleText": "Use our swaps",
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
+    "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
+    "approveSuccessMessage": "Tienes tokens aprobados. Presione el botón de intercambio para continuar operando.",
     "tableTitle": "Sus intercambios entre plataformas",
     "whatIs": "¿Qué es ",
     "whatIsAfter": "?",
@@ -389,13 +406,16 @@
       "network": "Red Principal",
       "spent": "Spent",
       "expected": "Expected",
-      "date": "Fecha"
+      "date": "Fecha",
+      "provider": "Proveedora",
+      "explorerLink": "Enlace del explorador"
     },
-    "noData": "You have no swaps yet",
+    "noData": "Aún no tienes intercambios",
     "noTrades": "There are no trades",
     "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Mostrar datos",
-    "sortBy": "Ordenar por"
+    "sortBy": "Ordenar por",
+    "receive": "Recibir"
   },
   "tradesPage": {
     "createTrade": "Crea tu Intercambio",
@@ -428,10 +448,12 @@
     "left": "Left",
     "investors": "Number of investors",
     "getBefore": "You will get",
+    "getMiddle": "tokens para el",
     "getAfter": "after the trade is complete",
     "find": "Fill all",
     "limit": "Min contribution limit:",
     "fee": "Broker's fee:",
+    "providerFee": "Tarifa de proveedor",
     "withdraw": "Withdraw",
     "rate": "Rate:",
     "closingDate": "Fecha límite",
@@ -440,7 +462,9 @@
     "copied": "Copiado",
     "publicDeal": "Intercambio Público",
     "brokerAddress": "Broker Address",
-    "notExist": "Such trade doesn't exist."
+    "notExist": "Such trade doesn't exist.",
+    "rbcLowFees": "Use RBC por tarifas bajas",
+    "discountRBC": "descuento con RBC"
   },
   "maintenance": {
     "title": "Maintenance",
@@ -478,6 +502,53 @@
         "text": "Successful swap!",
         "link": "Check transaction on explorer"
       }
+    },
+    "confirmImportModal": {
+      "title": "¡Confirme su importación!",
+      "text": "Este token no aparece en Rubic.exchange.\nAl agregarlo como un token personalizado, confirma que está operando con él bajo su propio riesgo."
+    },
+    "tokensListModal": {
+      "title": "Elija token",
+      "disabledTokenHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
+      "searchPlaceholder": "Buscar nombre o pegar dirección",
+      "noSearchData": "Nada que mostrar"
+    },
+    "walletsModal": {
+      "title": "Conectar billetera",
+      "new": "¿Nuevo en Ethereum?",
+      "learnMore": "Más información sobre carteras"
     }
+  },
+  "riskBanner": {
+    "text": "Tenga en cuenta que la interfaz de usuario se encuentra actualmente en versión beta y aún puede contener errores no detectados que afectan la funcionalidad de la plataforma. Úselo bajo su propio riesgo.",
+    "link": "Cambiar al diseño antiguo"
+  },
+  "settings": {
+    "instantTrades": {
+      "slippageTitle": "Tolerancia al deslizamiento",
+      "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
+      "multihopsTitle": "Desactivar tiendas múltiples",
+      "multihops": "Su intercambio se completará solo con pares directos.",
+      "rubicOptimisationTitle": "Utilice la optimización de Rubic",
+      "rubicOptimisation": "La optimización de rúbrica está habilitada de forma predeterminada. Sin embargo, puede deshabilitarlo para que se ejecute la ruta comercial óptima, sin tener en cuenta el costo del gas.",
+      "deadlineTitle": "Fecha límite de transacción",
+      "deadline": "Su transacción se revertirá si está pendiente por más de este período de tiempo.",
+      "autoRefreshTitle": "Autorefrescar",
+      "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos."
+    },
+    "bridge": {
+      "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
+    }
+  },
+  "volume": {
+    "title": "Volumen de transacciones acumuladas",
+    "instantTrades": "Intercambios instantáneos",
+    "crossChain": "Ntercambios entre plataformas"
+  },
+  "notifications": {
+    "tradeInProgress": "Comercio en curso",
+    "successfulTradeTitle": "Comercio exitoso",
+    "approveInProgress": "Aprobar en progreso",
+    "successApprove": "Aprobación exitosa"
   }
 }

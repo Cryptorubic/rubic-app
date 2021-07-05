@@ -1,0 +1,47 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+$green: rgb(74, 169, 86);
+
+.instant-trade-bottom-form {
+  margin-bottom: 15px;
+  padding: 15px 20px 30px;
+
+  background-color: #fcfcfc;
+  border-radius: 0 0 14px 14px;
+
+  &__provider-item:not(:last-child) {
+    margin-bottom: 15px;
+  }
+  
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    margin: 0;
+
+    font-weight: 300;
+    font-size: 16px;
+  }
+
+  &__analytics {
+    span {
+      margin-left: 10px;
+
+      color: $green;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .instant-trade-bottom-form {
+    &__swap {
+      padding: 0 20px
+    }
+  }
+}

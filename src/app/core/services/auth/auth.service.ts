@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
-import { UserRejectError } from 'src/app/shared/models/errors/provider/UserRejectError';
-import { WalletlinkError } from 'src/app/shared/models/errors/provider/WalletlinkError';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
-import { QueryParamsService } from '../query-params/query-params.service';
 import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
-import { ErrorsService } from '../errors/errors.service';
 import { StoreService } from '../store/store.service';
 
 /**
@@ -37,10 +35,9 @@ export class AuthService {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
-    private readonly queryParamsService: QueryParamsService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private readonly errorsService: ErrorsService,
-    private readonly store: StoreService
+    private readonly store: StoreService,
+    private readonly errorService: ErrorsService
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
@@ -155,11 +152,13 @@ export class AuthService {
       this.providerConnectorService.deActivate();
 
       let error = err;
-      if (err.code === 4001 || err instanceof WalletlinkError) {
-        this.headerStore.setWalletsLoadingStatus(false);
-        error = new UserRejectError();
+      if (err.code === 4001) {
+        error = new SignRejectError();
       }
-      this.errorsService.throw(error);
+      this.headerStore.setWalletsLoadingStatus(false);
+      this.errorService.catch$(error);
+      this.$currentUser.next(null);
+      this.isAuthProcess = false;
     }
   }
 

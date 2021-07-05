@@ -1,0 +1,73 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.my-trades {
+  display: flex;
+  flex-direction: column;
+
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 30px 35px 40px;
+
+  font-family: $sf-pro-font;
+
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 19px;
+  box-shadow: -30px -30px 80px rgba(255, 255, 255, 0.3),
+    30px 30px 80px rgba(139, 85, 116, 0.1),
+    inset 4px 4px 20px rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(24px);
+
+  &__table-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+.header {
+  display: flex;
+  grid-gap: 5px;
+  align-items: center;
+
+  &__title {
+    color: #283125;
+    font-weight: 200;
+    font-size: 24px;
+    line-height: 29px;
+  }
+}
+
+.table-container {
+  &__connect-wallet-container {
+    max-width: 245px;
+    margin: 0 auto;
+  }
+
+  &__no-trades-text {
+    font-weight: 200;
+    font-size: 18px;
+    text-align: center;
+  }
+}
+
+tui-loader {
+  ::ng-deep {
+    .loader {
+      stroke: $rubic-primary;
+    }
+  }
+}
+
+tui-loader.position-up {
+  ::ng-deep {
+    .loader {
+      align-self: flex-start;
+    }
+  }
+}
+
+@include b($mobile-sm-plus) {
+  .my-trades {
+    padding: 30px 20px 40px;
+  }
+}

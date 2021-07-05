@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
+import { CryptoTapApiService } from './crypto-tap-api.service';
 
 describe('CryptoTapApiService', () => {
   let service: CryptoTapApiService;
