@@ -10,7 +10,7 @@ import {
 import { forkJoin, of, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { first } from 'rxjs/operators';
+import { debounceTime, first } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -142,8 +142,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTrade();
 
     this.fromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
-    this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
-      form => {
+    this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe(form => {
         this.fromAmount = form.fromAmount;
 
         if (
@@ -163,8 +164,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
         this.calculateTrade();
         this.cdr.detectChanges();
-      }
-    );
+      });
 
     this.settingsSubscription$ =
       this.settingsService.settingsForm.controls.BRIDGE.valueChanges.subscribe(settings => {
@@ -173,7 +173,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.toWalletAddress = this.tronAddress;
         }
 
-        this.calculateTrade();
         this.cdr.detectChanges();
       });
 
@@ -196,7 +195,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.unsupportedBridgeSubscription$?.unsubscribe();
   }
 
-  public calculateTrade(): void {
+  private calculateTrade(): void {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.commonTrade.controls.input.value;
 

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-import { first } from 'rxjs/operators';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -22,12 +21,15 @@ export class AppComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly activatedRoute: ActivatedRoute
   ) {
-    this.activatedRoute.queryParams
-      .pipe(first())
-      .subscribe((queryParams: QueryParams) =>
-        this.queryParamsService.setupQueryParams(queryParams)
-      );
+    const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
+      (queryParams: QueryParams) => this.queryParamsService.setupQueryParams(queryParams)
+    );
+    setTimeout(() => {
+      queryParamsSubscription$.unsubscribe();
+    });
+
     this.setupLanguage();
+
     this.healthcheckService
       .healthCheck()
       .then(isAvailable => (this.isBackendAvailable = isAvailable));
