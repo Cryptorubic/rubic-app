@@ -134,12 +134,11 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.selectedFromAmount = formValue.fromAmount;
 
     if (this._supportedTokens) {
-      /* this.setAvailableTokens('from');
-      this.setAvailableTokens('to'); */
-      /* setTimeout(() => {
-        this.setNewSelectedToken('from', formValue.fromToken);
-        this.setNewSelectedToken('to', formValue.toToken);
-      }); */
+      this.setAvailableTokens('from');
+      this.setAvailableTokens('to');
+
+      this.setNewSelectedToken('from', formValue.fromToken);
+      this.setNewSelectedToken('to', formValue.toToken);
     }
   }
 
@@ -241,16 +240,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.selectedToken[tokenType] = this._supportedTokens[token.blockchain][token.blockchain].find(
-      supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
-    );
-
-    if (this.selectedToken[tokenType] !== token) {
-      const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.commonTrade.controls.input.patchValue({
-        [formKey]: this.selectedToken[tokenType]
-      });
-    }
+    this.selectedToken[tokenType] = token;
   }
 
   public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
