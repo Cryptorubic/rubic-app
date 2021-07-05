@@ -38,7 +38,6 @@
               }
             ],
             "styles": [
-              "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.scss",
               "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
