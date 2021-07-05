@@ -157,7 +157,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
         this._supportedTokens[blockchain][blockchain].forEach(token => {
           const foundToken = this._supportedTokens[oppositeBlockchain][blockchain].find(
-            supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase()
+            supportedToken => supportedToken.address?.toLowerCase() === token.address?.toLowerCase()
           );
 
           tokens.push({
@@ -185,8 +185,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         .map(bridgeTokensPair =>
           bridgeTokensPair.bridgeTokens.find(
             bridgeToken =>
-              bridgeToken.blockchainToken[oppositeBlockchain].address.toLowerCase() ===
-              oppositeToken.address.toLowerCase()
+              bridgeToken.blockchainToken[oppositeBlockchain].address?.toLowerCase() ===
+              oppositeToken.address?.toLowerCase()
           )
         )
         .filter(tokenPair => tokenPair);
@@ -199,8 +199,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         this._supportedTokens[blockchain][blockchain].forEach(token => {
           const foundTokenPair = tokensPairs.find(
             bridgeToken =>
-              bridgeToken.blockchainToken[blockchain]?.address.toLowerCase() ===
-              token.address.toLowerCase()
+              bridgeToken.blockchainToken[blockchain]?.address?.toLowerCase() ===
+              token.address?.toLowerCase()
           );
 
           tokens.push({
