@@ -22,6 +22,7 @@ import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trad
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TranslateService } from '@ngx-translate/core';
+import { SushiSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-service/sushi-swap.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,7 @@ export class InstantTradeService {
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
     private readonly oneInchBscService: OneInchBscService,
+    private readonly sushiSwapService: SushiSwapService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -151,7 +153,8 @@ export class InstantTradeService {
     this.swapFormService.setItProviders({
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
-        [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapService
+        [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapService,
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,
