@@ -105,14 +105,14 @@
     tui-wrapper[data-appearance='secondary'] {
       color: white;
 
-      background-color: $main-green;
+      background-color: $rubic-primary;
 
       &[data-state='hovered'] {
         box-shadow: $rubic-shadow-button-hover;
       }
 
       &[data-state='pressed'] {
-        color: $main-green;
+        color: $rubic-primary;
 
         background-color: white !important;
         box-shadow: $rubic-shadow-button-active;
@@ -121,7 +121,7 @@
       &[data-state='disabled'] {
         color: rgba(white, 0.4);
 
-        background-color: rgba($main-green, 0.4);
+        background-color: rgba($rubic-primary, 0.4);
         border: 0;
       }
     }

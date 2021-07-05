@@ -1,7 +1,7 @@
 @import 'src/scss/vars';
 
 :host {
-  --tui-primary-text: #{$main-green};
+  --tui-primary-text: #{$rubic-primary};
   --tui-primary: white;
   --tui-disabled-opacity: 1;
 
@@ -23,5 +23,5 @@
 }
 
 .bordered {
-  border: 2px solid $main-green;
+  border: 2px solid $rubic-primary;
 }

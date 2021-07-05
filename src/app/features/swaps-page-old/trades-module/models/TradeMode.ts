@@ -1,6 +1,0 @@
-enum TRADE_MODE {
-  INSTANT_TRADE = 'INSTANT_TRADE',
-  ORDER_BOOK = 'ORDER_BOOK'
-}
-
-export default TRADE_MODE;

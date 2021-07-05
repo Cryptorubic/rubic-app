@@ -6,8 +6,8 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesResponseApi';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { HttpService } from '../../http/http.service';
-import InstantTrade from '../../../../features/swaps-page-old/instant-trades/models/InstantTrade';
 import { BOT_URL } from '../constants/BOT_URL';
 import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
