@@ -39,9 +39,9 @@ $white: white;
     }
 
     &_error {
-      border-color: red;
+      border-color: $rubic-warning;
     }
-    
+
     &_selected {
       color: $white;
 
@@ -134,6 +134,13 @@ $white: white;
     font-weight: 300;
     font-size: 24px;
     letter-spacing: 2px;
+
+    &_error {
+      display: block;
+      width: 100%;
+
+      font-size: 20px;
+    }
   }
 
   &__currency {
@@ -159,9 +166,14 @@ $white: white;
     cursor: pointer;
 
     &_error {
+      position: relative;
+      top: 3px;
+
+      float: right;
+
       ::ng-deep {
         svg path {
-          fill: red;
+          fill: $rubic-warning;
         }
       }
     }
@@ -171,11 +183,11 @@ $white: white;
     position: absolute;
     bottom: 0;
     left: 50%;
-    
+
     flex: 100%;
     justify-content: center;
     height: 25px;
-    
+
     transform: translateX(-50%);
 
     ::ng-deep svg path {
