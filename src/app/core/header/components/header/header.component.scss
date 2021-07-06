@@ -90,12 +90,8 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
 
 @include b($mobile-sm) {
   .rubic-header {
-    &__logo {
-      margin-right: 0;
-    }
-
     &__menu {
-      margin-right: 10px;
+      margin-left: 10px;
     }
   }
 }
