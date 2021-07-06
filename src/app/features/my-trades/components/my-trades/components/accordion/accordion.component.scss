@@ -1,7 +1,87 @@
+@import '~@taiga-ui/core/styles/taiga-ui-local';
+
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
 @import '../styles';
+
+:host {
+  --tui-secondary-hover: #{$rubic-base-01};
+  --tui-secondary-active: #{$rubic-base-01};
+  --tui-link: #{$rubic-primary};
+  --tui-link-hover: #{$rubic-primary};
+  --tui-link-active: #{$rubic-secondary};
+}
+
+.sort-by-dropdown {
+  display: flex;
+  grid-gap: 15px;
+  align-items: center;
+
+  margin-bottom: 20px;
+
+  tui-hosted-dropdown {
+    .title {
+      display: flex;
+      flex-wrap: nowrap;
+      grid-gap: 5px;
+
+      .arrow-right {
+        ::ng-deep {
+          svg path {
+            fill: #{$rubic-primary};
+          }
+        }
+      }
+    }
+
+    ::ng-deep {
+      > .wrapper > button {
+        background: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+
+  .icon {
+    @include transition(transform);
+
+    &_rotated {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__sort-arrows {
+    display: flex;
+
+    .sort-arrow {
+      width: 15px;
+      height: 16px;
+
+      ::ng-deep {
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+tui-dropdown-box {
+  ::ng-deep {
+    button {
+      color: #808080;
+    }
+  }
+}
+
+tui-data-list {
+  .title {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-gap: 5px;
+  }
+}
 
 .accordions {
   &:not(:last-child) {
@@ -24,7 +104,7 @@
     }
 
     .header[automation-id='tui-accordion__item-header'] {
-      height: 88px;
+      min-height: 88px;
 
       background: rgba(255, 255, 255, 0.3);
       border: none;

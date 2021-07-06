@@ -20,6 +20,7 @@ import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { defaultSort } from '@taiga-ui/addon-table';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -85,7 +86,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
-    const tableData: TableRow[] = [];
+    let tableData: TableRow[] = [];
     tableTrades.forEach(trade => {
       tableData.push({
         Status: trade.status,
@@ -98,6 +99,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
         inProgress: false
       });
     });
+    tableData = tableData.sort((a, b) => defaultSort(a.Date, b.Date));
     this.tableData$.next(tableData);
 
     setTimeout(() => {

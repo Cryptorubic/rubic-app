@@ -2,7 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MyTradesRoutingModule } from 'src/app/features/my-trades/my-trades-routing.module';
 import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
-import { TuiLoaderModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownControllerModule,
+  TuiHostedDropdownModule,
+  TuiLoaderModule,
+  TuiSvgModule
+} from '@taiga-ui/core';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
@@ -25,7 +32,12 @@ import { AccordionComponent } from './components/my-trades/components/accordion/
     InlineSVGModule,
     SharedModule,
     TuiAccordionModule,
-    TuiPaginationModule
+    TuiPaginationModule,
+    TuiHostedDropdownModule,
+    TuiDropdownControllerModule,
+    TuiButtonModule,
+    TuiDataListModule,
+    TuiSvgModule
   ],
   providers: [MyTradesService, EthereumPolygonBridgeService]
 })
