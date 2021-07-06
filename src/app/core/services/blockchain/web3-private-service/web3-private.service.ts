@@ -7,6 +7,7 @@ import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
 import { LowGasError } from '../../../errors/models/provider/LowGasError';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,10 @@ export class Web3PrivateService {
     return this.providerConnector.address;
   }
 
-  constructor(private readonly providerConnector: ProviderConnectorService) {
+  constructor(
+    private readonly providerConnector: ProviderConnectorService,
+    private translateService: TranslateService
+  ) {
     this.web3 = providerConnector.web3;
     this.defaultMockGas = '400000';
   }
@@ -268,7 +272,7 @@ export class Web3PrivateService {
           if (err.message.includes('Transaction has been reverted by the EVM')) {
             reject(
               new CustomError(
-                'Transaction has been reverted by the EVM. Try to increase transaction deadline.'
+                this.translateService.instant('errors.cancelDeadline')
               )
             );
           }

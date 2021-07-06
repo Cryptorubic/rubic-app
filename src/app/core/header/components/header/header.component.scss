@@ -60,6 +60,23 @@
   }
 }
 
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
+  padding: 7px 9px;
+
+  color: white !important;
+  font-weight: bold;
+  font-size: 14px;
+
+
+  background-color: $rubic-primary;
+  border-radius: 10px;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
 a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
 a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
   text-decoration: none;
@@ -88,27 +105,20 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
   }
 }
 
+@include b($mobile-md) {
+  .rubic-header {
+    &__logo {
+      img {
+        width: 95px;
+      }
+    }
+  }
+}
+
 @include b($mobile-sm) {
   .rubic-header {
     &__menu {
       margin-left: 10px;
     }
-  }
-}
-
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
-  padding: 7px 9px;
-
-  color: white !important;
-  font-weight: bold;
-  font-size: 14px;
-
-
-  background-color: $rubic-primary;
-  border-radius: 10px;
-
-  &:hover,
-  &:focus {
-    text-decoration: none;
   }
 }

@@ -51,14 +51,19 @@
     "wrongToken": "루빅 브릿지는 루빅 토큰 만 지원합니다.",
     "oneInchQuote": "1inch 견적 오류",
     "notSupportedNetwork": "{{networkToChoose}} 선택한 지갑 제공 업체에서 지원하지 않습니다.",
-    "signReject": "지갑 서명을 거부했습니다. 신청서에 로그인하려면 먼저 확인하십시오",
+    "signReject": "지갑으로 로그인을 거부했습니다. 앱을 최대한 활용하려면 지갑으로 로그인을 확인하십시오.",
     "lowGas": "거래 가스가 너무 낮습니다. 최소한의 거래 비용을 충당하기에는 가스가 충분하지 않습니다. 공급 가스를 늘리십시오",
     "noSelectedProvider": "스왑 제공 업체를 선택하지 않았습니다.",
     "notSupportedItNetwork": "선택한 네트워크는 즉시 거래에 지원되지 않습니다.",
     "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
     "insufficientLiquidity": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오.",
     "1inchRefreshError":  "1inch는 현재 사용할 수 없습니다. 거래를 새로 고치세요.",
-    "1inchNotSupportedToken": "1INCH는 입력 된 토큰 중 하나를 지원하지 않습니다."
+    "1inchNotSupportedToken": "1INCH는 선택한 토큰 중 하나를 지원하지 않습니다.",
+    "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",
+    "chooseSupportedBridge": "지원되는 브리지 선택",
+    "InsufficientBalance": "잔액 불충분",
+    "setTronAddress": "설정에서 TRON 주소 설정",
+    "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요"
   },
   "navigation": {
     "about": "소개",
@@ -465,7 +470,8 @@
     "notExist": "그러한 거래는 존재하지 않습니다.",
     "rbcLowFees": "저렴한 수수료로 RBC 사용",
     "discountRBC": "RBC 할인",
-    "blockchainsHint": "더 많은 블록 체인"
+    "blockchainsHint": "더 많은 블록 체인",
+    "tradingNotAvailable": "거래 불가"
   },
   "maintenance": {
     "title": "유지",

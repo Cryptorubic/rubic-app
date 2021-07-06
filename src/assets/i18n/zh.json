@@ -51,14 +51,19 @@
     "wrongToken": "Rubic 橋僅支持 rubic 令牌。",
     "oneInchQuote": "1inch 報價錯誤",
     "notSupportedNetwork": "{{networkToChoose}} 所選錢包提供商不支持。",
-    "signReject": "您有拒絕錢包標誌。 請先確認登錄我們的應用程序",
+    "signReject": "您已拒絕使用錢包登錄。 請使用您的錢包確認登錄，以便充分利用我們的應用程序。",
     "lowGas": "交易氣體太低。 沒有足夠的氣體來支付交易的最低成本。 嘗試增加供氣",
     "noSelectedProvider": "您尚未選擇任何掉期提供者",
     "notSupportedItNetwork": "即時交易不支持所選網絡",
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
     "insufficientLiquidity": "這筆交易的流動性不足。 嘗試啟用多跳交易。",
     "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
-    "1inchNotSupportedToken": "1inch 目前不可用。 請嘗試刷新交易。"
+    "1inchNotSupportedToken": "1inch 不支持所選代幣之一。",
+    "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
+    "chooseSupportedBridge": "選擇支持的網橋",
+    "InsufficientBalance": "餘額不足",
+    "setTronAddress": "在設置中設置波場地址",
+    "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡"
   },
   "navigation": {
     "about": "关于",
@@ -465,7 +470,8 @@
     "notExist": "這樣的貿易不存在。",
     "rbcLowFees": "使用 RBC 收取低費用",
     "discountRBC": "RBC 折扣",
-    "blockchainsHint": "更多區塊鏈"
+    "blockchainsHint": "更多區塊鏈",
+    "tradingNotAvailable": "交易不可用"
   },
   "maintenance": {
     "title": "維護",
