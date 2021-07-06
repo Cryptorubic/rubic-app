@@ -43,9 +43,11 @@
   &__copyright {
     color: $rubic-base-07;
     font-size: $rubic-font-size-01;
+    text-align: center;
   }
 
   &__policy {
     color: $rubic-primary;
+    white-space: nowrap;
   }
 }
