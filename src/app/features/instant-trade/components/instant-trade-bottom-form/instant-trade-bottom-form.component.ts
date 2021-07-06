@@ -65,6 +65,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
+  get orderedProviders(): ProviderControllerData[] {
+    return [...this.providerControllers].sort(item => (item.isBestRate ? -1 : 1));
+  }
+
   public formChangesSubscription$: Subscription;
 
   public providerControllers: ProviderControllerData[];
