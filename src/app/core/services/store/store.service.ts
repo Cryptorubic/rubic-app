@@ -60,7 +60,7 @@ export class StoreService {
   }
 
   public getItem(key: keyof Store): unknown {
-    return this.$dataSubject?.value[key];
+    return this.$dataSubject.value?.[key];
   }
 
   public fetchData(isIframe: boolean): void {
