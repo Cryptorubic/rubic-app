@@ -24,6 +24,7 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
+import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -251,23 +252,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public selectProvider(providerNumber: number): void {
+  public selectProvider(providerName: INSTANT_TRADES_PROVIDER): void {
     const newProviders = this.providerControllers.map(provider => {
+      const isSelected = provider.tradeProviderInfo.value === providerName;
       return {
         ...provider,
-        isSelected: false
+        isSelected
       };
     });
-    newProviders[providerNumber] = {
-      ...newProviders[providerNumber],
-      isSelected: true
-    };
     this.providerControllers = newProviders;
-    if (newProviders[providerNumber].needApprove !== null) {
-      this.tradeStatus = newProviders[providerNumber].needApprove
+    const currentProvider = newProviders.find(provider => provider.isSelected);
+
+    if (currentProvider.needApprove !== null) {
+      this.tradeStatus = currentProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
-      this.needApprove = newProviders[providerNumber].needApprove;
+      this.needApprove = currentProvider.needApprove;
     }
   }
 
