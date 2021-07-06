@@ -126,6 +126,13 @@
         </div>
       </div>
 
+      <div class="item-header__provider provider">
+        <div class="img-container">
+          <img [src]="TRADES_PROVIDERS[trade.provider].image" alt="provider" />
+        </div>
+        {{ TRADES_PROVIDERS[trade.provider].name }}
+      </div>
+
       <div class="item-header__date date">
         <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
         <span>{{ trade.date | date: 'HH:mm' }}</span>

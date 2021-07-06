@@ -135,8 +135,8 @@ tui-data-list {
   font-size: 15px;
 
   &__status {
-    width: 170px;
-    margin-right: 8%;
+    width: 165px;
+    margin-right: 5%;
   }
 
   &__blockchains-container {
@@ -151,6 +151,13 @@ tui-data-list {
 
   &__token {
     margin-right: auto;
+  }
+
+  &__provider {
+    justify-content: flex-start !important;
+
+    width: 117px;
+    margin-right: 5%;
   }
 
   &__date {
@@ -218,6 +225,13 @@ tui-data-list {
   }
 }
 
+.provider {
+  display: flex;
+  grid-gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
 .date {
   display: flex;
   flex-direction: column;
@@ -282,11 +296,23 @@ tui-data-list {
   }
 }
 
-.provider {
-  display: flex;
-  grid-gap: 12px;
-  align-items: center;
-  justify-content: center;
+tui-pagination {
+  ::ng-deep {
+    .button {
+      .wrapper[data-appearance='flat'] {
+        color: #808080;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@include b(1023) {
+  .item-header {
+    &__provider {
+      display: none;
+    }
+  }
 }
 
 @include b($laptop) {
@@ -348,17 +374,6 @@ tui-data-list {
 
       margin-right: 0;
       margin-bottom: 10px;
-    }
-  }
-}
-
-tui-pagination {
-  ::ng-deep {
-    .button {
-      .wrapper[data-appearance='flat'] {
-        color: #808080;
-        font-weight: 500;
-      }
     }
   }
 }
