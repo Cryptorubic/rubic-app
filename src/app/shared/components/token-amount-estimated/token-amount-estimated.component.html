@@ -10,7 +10,11 @@
 
     <div
       class="bottom-amount__tokens-container"
-      [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading, 'bottom-amount__tokens-container_wide': _loading }"
+      [ngClass]="{
+        'tui-skeleton': _loading,
+        'tui-skeleton_text': _loading,
+        'bottom-amount__tokens-container_wide': _loading
+      }"
     >
       <span class="bottom-amount__tokens">{{ tokensAmount }}</span>
     </div>
@@ -21,9 +25,14 @@
         class="bottom-amount__fee"
         [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
       >
-        <span>{{ 'tradePage.providerFee' | translate }}: {{fee.amount + '&nbsp;' + fee.token.symbol}} ≈ ${{fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2}}</span>
+        <span
+          >{{ 'tradePage.providerFee' | translate }}:
+          {{ fee.amount + '&nbsp;' + fee.token.symbol }} ≈ ${{
+            fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2
+          }}</span
+        >
       </div>
-      <div  class="bottom-amount__additional-content">
+      <div class="bottom-amount__additional-content">
         <ng-content></ng-content>
       </div>
     </div>

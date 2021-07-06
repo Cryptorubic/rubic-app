@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
@@ -106,7 +106,7 @@ export class ProviderConnectorService {
    * @description opens a window with suggestion to add token to user's wallet
    * @param token token to add
    */
-  public addToken(token: SwapToken): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     return this.provider.addToken(token);
   }
 

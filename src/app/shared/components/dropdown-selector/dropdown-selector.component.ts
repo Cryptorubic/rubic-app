@@ -15,9 +15,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropdownSelectorComponent {
-  @Input() dropdownButtonTemplate: TemplateRef<any>;
+  @Input() dropdownButtonTemplate: TemplateRef<unknown>;
 
-  @Input() dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
+  @Input() dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
   @Output() optionChange = new EventEmitter<number>();
 

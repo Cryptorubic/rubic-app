@@ -1,14 +1,15 @@
 <div class="crypto-tap-output">
   <div class="crypto-tap-output__wrapper">
-    <div class="crypto-tap-output__amount" [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }">
-      {{amount | bigNumberFormat | withRound: 'toClosestValue':token?.decimals || 18}}
+    <div
+      class="crypto-tap-output__amount"
+      [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }"
+    >
+      {{ amount | bigNumberFormat | withRound: 'toClosestValue':token?.decimals || 18 }}
     </div>
 
-    <div
-      class="user-balance-container"
-      *ngIf="token?.amount.gt(0)"
-    >
-      <span class="user-balance-container__balance">{{ 'common.have' | translate }}
+    <div class="user-balance-container" *ngIf="token?.amount.gt(0)">
+      <span class="user-balance-container__balance"
+        >{{ 'common.have' | translate }}
         {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}</span
       >
     </div>
@@ -19,10 +20,7 @@
       class="right-side__usd-price-container usd-price-container"
       [hidden]="!getUsdPrice() || getUsdPrice().eq(0)"
     >
-      <span
-        class="usd-price-container__price"
-      >${{ getUsdPrice() | bigNumberFormat: 2 }}</span
-      >
+      <span class="usd-price-container__price">${{ getUsdPrice() | bigNumberFormat: 2 }}</span>
     </div>
   </div>
 </div>
