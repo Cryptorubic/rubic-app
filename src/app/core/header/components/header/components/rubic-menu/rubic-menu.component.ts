@@ -91,4 +91,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
       })
       .subscribe();
   }
+
+  isLinkActive(url) {
+    return window.location.pathname === url;
+  }
 }

@@ -139,13 +139,14 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
 
 tui-dropdown-box {
   min-width: 265px;
+  max-height: 435px !important;
 
   border: none !important;
   border-radius: 18px !important;
 }
 
-@include b($mobile-sm) {
+@include b($mobile-md) {
   tui-dropdown-box {
-    min-width: 153px;
+    min-width: 155px;
   }
 }

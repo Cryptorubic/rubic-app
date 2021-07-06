@@ -14,7 +14,6 @@
     font-size: 16px;
   }
 
-  &__main,
   &__nav,
   &__profile {
     display: flex;
@@ -30,6 +29,7 @@
   }
 
   &__logo {
+    display: block;
     margin-right: 54px;
 
     transition: 0.3s ease-in-out opacity;
@@ -49,6 +49,7 @@
 
   &__menu {
     display: inline-flex;
+    margin-right: auto;
   }
 
   &__nav {
@@ -66,28 +67,29 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
 
 @include b($desktop) {
   .rubic-header {
+    padding: 21px 20px 19px;
+
     &__profile-trades,
     &__profile-user,
     &__login,
     &__nav {
       display: none;
     }
-  }
-}
 
-@include b($desktop) {
-  .rubic-header {
-    padding: 21px 20px 19px;
+    &__logo {
+      margin-right: auto;
+    }
+
+    &__menu {
+      order: 1;
+      margin-right: 0;
+      margin-left: 15px;
+    }
   }
 }
 
 @include b($mobile-sm) {
   .rubic-header {
-    &__main {
-      flex-grow: 1;
-      justify-content: space-between;
-    }
-
     &__logo {
       margin-right: 0;
     }
