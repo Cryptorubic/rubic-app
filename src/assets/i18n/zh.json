@@ -464,7 +464,8 @@
     "brokerAddress": "經紀人地址",
     "notExist": "這樣的貿易不存在。",
     "rbcLowFees": "使用 RBC 收取低費用",
-    "discountRBC": "RBC 折扣"
+    "discountRBC": "RBC 折扣",
+    "blockchainsHint": "更多區塊鏈"
   },
   "maintenance": {
     "title": "維護",

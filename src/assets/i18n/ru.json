@@ -464,7 +464,8 @@
     "brokerAddress": "Брокерский адрес",
     "notExist": "Такой сделки не существует",
     "rbcLowFees": "Использовать RBC для низкой комиссии",
-    "discountRBC": "скидка с RBC"
+    "discountRBC": "скидка с RBC",
+    "blockchainsHint": "Больше блокчейнов"
   },
   "maintenance": {
     "title": "Поддержка",

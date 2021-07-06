@@ -464,7 +464,8 @@
     "brokerAddress": "브로커 주소",
     "notExist": "그러한 거래는 존재하지 않습니다.",
     "rbcLowFees": "저렴한 수수료로 RBC 사용",
-    "discountRBC": "RBC 할인"
+    "discountRBC": "RBC 할인",
+    "blockchainsHint": "더 많은 블록 체인"
   },
   "maintenance": {
     "title": "유지",

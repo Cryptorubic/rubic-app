@@ -464,7 +464,8 @@
     "brokerAddress": "Broker Address",
     "notExist": "Such trade doesn't exist.",
     "rbcLowFees": "Use RBC for low fees",
-    "discountRBC": "discount with RBC"
+    "discountRBC": "discount with RBC",
+    "blockchainsHint": "More blockchains"
   },
   "maintenance": {
     "title": "Maintenance",
