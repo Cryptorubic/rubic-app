@@ -44,6 +44,8 @@ export class AccordionComponent extends TableData implements OnInit, OnDestroy {
 
   private tableData: TableRow[];
 
+  private sortedTableData: TableRow[];
+
   public visibleData: TableRow[];
 
   public isDropdownOpened = false;
@@ -96,7 +98,7 @@ export class AccordionComponent extends TableData implements OnInit, OnDestroy {
   }
 
   private sortTableData(): void {
-    this.tableData = this.tableData?.sort(
+    this.sortedTableData = this.tableData?.sort(
       this.sortBy(this.selectedColumn.value, this.sortDirection)
     );
     this.goToPage(this.page);
@@ -110,7 +112,7 @@ export class AccordionComponent extends TableData implements OnInit, OnDestroy {
   public goToPage(page: number) {
     this.page = page;
     const start = this.page * this.PAGE_SIZE;
-    this.visibleData = this.tableData.slice(start, start + this.PAGE_SIZE);
+    this.visibleData = this.sortedTableData.slice(start, start + this.PAGE_SIZE);
 
     this.cdr.detectChanges();
   }
