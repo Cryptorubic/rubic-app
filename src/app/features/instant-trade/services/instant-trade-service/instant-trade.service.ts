@@ -171,7 +171,7 @@ export class InstantTradeService {
     const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
     const providerApproveData = Object.values(
       this.blockchainsProviders[this.currentBlockchain]
-    ).map((provider: ItProvider) => provider.needApprove(fromToken.address));
+    ).map((provider: ItProvider) => provider.getAllowance(fromToken.address));
 
     return forkJoin(providerApproveData).pipe(
       map((approveArray: BigNumber[]) => {
@@ -214,7 +214,7 @@ export class InstantTradeService {
       const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
       const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
       const providerApproveData = providers.map((provider: ItProvider) =>
-        provider.needApprove(fromToken.address)
+        provider.getAllowance(fromToken.address)
       );
 
       return forkJoin(providerApproveData).pipe(

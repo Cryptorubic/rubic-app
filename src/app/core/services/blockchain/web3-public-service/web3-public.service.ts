@@ -16,11 +16,11 @@ import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.s
 export class Web3PublicService {
   private readonly connectionLinks: ConnectionLink[];
 
-  static tokenAmountToWei(token: SwapToken, amount: string | BigNumber): string {
+  public static tokenAmountToWei(token: SwapToken, amount: string | BigNumber): string {
     return new BigNumber(amount || '0').times(new BigNumber(10).pow(token.decimals)).toFixed(0);
   }
 
-  static tokenWeiToAmount(token: SwapToken, amount: string | BigNumber): BigNumber {
+  public static tokenWeiToAmount(token: SwapToken, amount: string | BigNumber): BigNumber {
     return new BigNumber(amount).div(new BigNumber(10).pow(token.decimals));
   }
 
