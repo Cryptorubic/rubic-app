@@ -93,7 +93,7 @@ export class OneInchBscService implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    return this.commonOneinch.needApprove(
+    return this.commonOneinch.getAllowance(
       tokenAddress,
       this.web3Public,
       this.blockchain,
