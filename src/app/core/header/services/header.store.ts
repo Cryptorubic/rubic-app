@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 /**
@@ -23,11 +22,6 @@ export class HeaderStore {
    * Determines if current window width is similar to mobile.
    */
   private readonly $isMobile: BehaviorSubject<boolean>;
-
-  /**
-   * Logout confirmation modal reference.
-   */
-  public logoutConfirmationModal: MatDialogRef<any>;
 
   /**
    * Should wallets buttons be disabled or not.

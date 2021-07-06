@@ -6,7 +6,7 @@
       [loading]="loading"
       [disabled]="disabled"
       (onClick)="openTokensSelect()"
-      [tuiHint]="selectedToken ? tooltip : null"
+      [tuiHint]="(selectedToken && !disabled) ? tooltip : null"
     >
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner">

@@ -1,16 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { WEENUS } from 'src/test/tokens/eth-tokens';
+import { CookieService } from 'ngx-cookie-service';
+import { TranslateModule } from '@ngx-translate/core';
+import providerServiceStub from 'src/app/core/services/blockchain/private-provider/metamask-provider/metamask-provider.stub';
 import { Web3PrivateService } from './web3-private.service';
-import providerServiceStub from '../private-provider/metamask-provider/metamask-provider.service.stub';
-// @ts-ignore
-import config from '../../../../../test/enviroment.test.json';
+import * as config from '../../../../../test/enviroment.test.json';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 import { Web3PublicService } from '../web3-public-service/web3-public.service';
 import { Web3Public } from '../web3-public-service/Web3Public';
-import { WEENUS } from '../../../../../test/tokens/eth-tokens';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 
 describe('Web3PrivateService', () => {
@@ -27,13 +28,15 @@ describe('Web3PrivateService', () => {
         HttpHandler,
         { provide: MetamaskProvider, useValue: providerServiceStub() },
         { provide: PublicProviderService, useValue: publicProviderServiceStub() },
-        Web3PublicService
-      ]
+        Web3PublicService,
+        CookieService
+      ],
+      imports: [TranslateModule.forRoot()]
     });
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-    web3PublicEth = TestBed.get(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
-    service = TestBed.get(Web3PrivateService);
+    web3PublicEth = TestBed.inject(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
+    service = TestBed.inject(Web3PrivateService);
   });
 
   afterEach(() => {

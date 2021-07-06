@@ -8,7 +8,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -66,7 +66,7 @@ export class TokensService {
     this._tokens.next(tokens);
   }
 
-  private setCustomRanks(tokens: List<IToken>): List<IToken> {
+  private setCustomRanks(tokens: List<Token>): List<Token> {
     return tokens.map(token => {
       if (token.blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
         if (token.address === RBC_ADDRESS) {
@@ -99,7 +99,7 @@ export class TokensService {
     });
   }
 
-  private setDefaultTokenAmounts(tokens: List<IToken> = this._tokens.getValue()): void {
+  private setDefaultTokenAmounts(tokens: List<Token> = this._tokens.getValue()): void {
     this._tokens.next(
       tokens.map(token => ({
         ...token,
@@ -139,7 +139,7 @@ export class TokensService {
       );
     });
 
-    const getRelativeBalance = (token: IToken, weiBalance: BigNumber): BigNumber =>
+    const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
       weiBalance.div(10 ** token.decimals);
 
     const balances = await Promise.all(promises);
