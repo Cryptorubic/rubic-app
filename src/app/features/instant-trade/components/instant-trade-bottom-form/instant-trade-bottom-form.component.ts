@@ -67,8 +67,20 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   get orderedProviders(): ProviderControllerData[] {
-    return [...this.providerControllers].sort(item => (item.isBestRate ? -1 : 1));
+    if (
+      !this.providersOrderCache?.length ||
+      this.providerControllers.some(item => item.isBestRate)
+    ) {
+      this.providersOrderCache = [...this.providerControllers]
+        .sort(item => (item.isBestRate ? -1 : 1))
+        .map(item => item.tradeProviderInfo.value);
+    }
+    return this.providersOrderCache.map(providerName =>
+      this.providerControllers.find(provider => provider.tradeProviderInfo.value === providerName)
+    );
   }
+
+  private providersOrderCache: INSTANT_TRADES_PROVIDER[];
 
   public formChangesSubscription$: Subscription;
 
@@ -237,6 +249,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
+    this.providersOrderCache = null;
     switch (blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.ETHEREUM];
@@ -253,6 +266,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public selectProvider(providerName: INSTANT_TRADES_PROVIDER): void {
+    if (
+      this.tradeStatus === TRADE_STATUS.LOADING ||
+      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
+    ) {
+      return;
+    }
+
     const newProviders = this.providerControllers.map(provider => {
       const isSelected = provider.tradeProviderInfo.value === providerName;
       return {
@@ -327,7 +348,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
       }
       this.cdr.detectChanges();
-      await this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
     }
@@ -335,7 +355,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private async setupForm(form: ControlsValue<SwapFormInput>) {
     try {
-      await this.conditionalCalculate(form);
       if (
         this.currentBlockchain !== form.fromBlockchain &&
         form.fromBlockchain === form.toBlockchain
@@ -345,7 +364,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       }
       if (!this.allowTrade) {
         this.tradeStatus = TRADE_STATUS.DISABLED;
+        return;
       }
+      await this.conditionalCalculate(form);
       this.cdr.detectChanges();
     } catch (err) {
       this.errorService.catch$(err);
