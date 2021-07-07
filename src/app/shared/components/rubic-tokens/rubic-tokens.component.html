@@ -36,6 +36,12 @@
       <img [src]="'assets/img/icons/scanner.svg'" alt="{{ 'common.checkOnExplorer' | translate }}" />
     </a>
   </div>
+  <a class="tokens__clear-mobile"
+     href="#"
+     *ngIf="selectedToken"
+     (click)="clearToken(); $event.preventDefault();">
+    {{ 'common.clearToken' | translate }}
+  </a>
 </div>
 
 <ng-template #tooltip>
