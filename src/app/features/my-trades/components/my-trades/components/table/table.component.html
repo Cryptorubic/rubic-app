@@ -15,8 +15,8 @@
           column.translateKey | translate
         }}</span>
 
-        <span class="title" *ngIf="column.value === 'FromTo'">
-          {{ 'tradesTable.columns.from' | translate
+        <span class="title" *ngIf="column.value === 'FromTo'"
+          >{{ 'tradesTable.columns.from' | translate
           }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{
             'tradesTable.columns.to' | translate
           }}
@@ -24,19 +24,17 @@
 
         <div
           class="sort-arrow"
-          [ngClass]="{
-            'sort-arrow_green':
-              sorter$.getValue() === sorters[column.value] && direction$.getValue() === -1
-          }"
-          [inlineSVG]="'assets/images/icons/my-trades/arrow-up.svg'"
+          [class.sort-arrow_green]="
+            sorter$.getValue() === sorters[column.value] && direction$.getValue() === -1
+          "
+          inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
         ></div>
         <div
           class="sort-arrow"
-          [ngClass]="{
-            'sort-arrow_green':
-              sorter$.getValue() === sorters[column.value] && direction$.getValue() === 1
-          }"
-          [inlineSVG]="'assets/images/icons/my-trades/arrow-down.svg'"
+          [class.sort-arrow_green]="
+            sorter$.getValue() === sorters[column.value] && direction$.getValue() === 1
+          "
+          inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
         ></div>
       </th>
     </tr>

@@ -1,3 +1,57 @@
+<div class="sort-by-dropdown" *ngIf="visibleData?.length">
+  <tui-hosted-dropdown tuiDropdownAlign="left" [content]="dropdown" [(open)]="isDropdownOpened">
+    <button tuiButton type="button" appearance="flat" [iconRight]="icon">
+      <span class="title" *ngIf="selectedColumn.value !== 'FromTo'">{{
+        selectedColumn.translateKey | translate
+      }}</span>
+
+      <span class="title" *ngIf="selectedColumn.value === 'FromTo'"
+        >{{ 'tradesTable.columns.from' | translate }}
+        <span class="arrow-right" inlineSVG="assets/images/icons/my-trades/arrow-right.svg"></span>
+        {{ 'tradesTable.columns.to' | translate }}</span
+      >
+    </button>
+  </tui-hosted-dropdown>
+
+  <ng-template #icon>
+    <tui-svg
+      src="tuiIconChevronDown"
+      class="icon"
+      [class.icon_rotated]="isDropdownOpened"
+    ></tui-svg>
+  </ng-template>
+
+  <ng-template #dropdown>
+    <tui-data-list>
+      <button *ngFor="let column of columns" tuiOption (click)="onColumnChange(column)">
+        <span class="title" *ngIf="column.value !== 'FromTo'">{{
+          column.translateKey | translate
+        }}</span>
+
+        <span class="title" *ngIf="column.value === 'FromTo'"
+          >{{ 'tradesTable.columns.from' | translate
+          }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{
+            'tradesTable.columns.to' | translate
+          }}</span
+        >
+      </button>
+    </tui-data-list>
+  </ng-template>
+
+  <div class="sort-by-dropdown__sort-arrows" (click)="onSortDirectionChange()">
+    <div
+      class="sort-arrow"
+      [class.sort-arrow_green]="sortDirection === -1"
+      inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
+    ></div>
+    <div
+      class="sort-arrow"
+      [class.sort-arrow_green]="sortDirection === 1"
+      inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
+    ></div>
+  </div>
+</div>
+
 <tui-accordion class="accordions" [rounded]="true" *ngFor="let item of visibleData">
   <tui-accordion-item
     class="accordions__item item"
@@ -29,7 +83,7 @@
           size="s"
           [loading]="item.inProgress"
           (onClick)="onReceive(trade, $event)"
-          >Receive</app-rubic-button
+          >{{ 'tradesTable.receive' | translate }}</app-rubic-button
         >
 
         <div class="status__text">{{ trade.status }}</div>
@@ -70,6 +124,13 @@
           </div>
           {{ trade.toToken.symbol }}
         </div>
+      </div>
+
+      <div class="item-header__provider provider">
+        <div class="img-container">
+          <img [src]="TRADES_PROVIDERS[trade.provider].image" alt="provider" />
+        </div>
+        {{ TRADES_PROVIDERS[trade.provider].name }}
       </div>
 
       <div class="item-header__date date">
