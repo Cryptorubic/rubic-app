@@ -45,8 +45,6 @@ export class BridgeService {
 
   private bridgeProvider: BlockchainsBridgeProvider;
 
-  private _isTestingMode = false;
-
   private _backendTokens: List<TokenAmount>;
 
   constructor(
@@ -209,7 +207,6 @@ export class BridgeService {
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
           await this.checkBalance(
             bridgeTrade.fromBlockchain,
-            bridgeTrade.toBlockchain,
             token.address,
             token.symbol,
             token.decimals,
@@ -252,7 +249,6 @@ export class BridgeService {
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
         await this.checkBalance(
           bridgeTrade.fromBlockchain,
-          bridgeTrade.toBlockchain,
           token.address,
           token.symbol,
           token.decimals,
@@ -274,22 +270,12 @@ export class BridgeService {
 
   private async checkBalance(
     fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME,
     tokenAddress: string,
     symbol: string,
     decimals: number,
     amount: BigNumber
   ): Promise<void> {
-    let web3Public: Web3Public;
-    if (
-      this._isTestingMode &&
-      fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
-      toBlockchain === BLOCKCHAIN_NAME.POLYGON
-    ) {
-      web3Public = this.web3PublicService[BLOCKCHAIN_NAME.GOERLI_TESTNET];
-    } else {
-      web3Public = this.web3PublicService[fromBlockchain];
-    }
+    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
 
     let balance;
     if (web3Public.isNativeAddress(tokenAddress)) {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { List } from 'immutable';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { IToken } from 'src/app/shared/models/tokens/IToken';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { map } from 'rxjs/operators';
 import { HttpService } from '../../http/http.service';
 import { BackendToken } from './models/BackendToken';
@@ -15,7 +15,7 @@ export class TokensApiService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  private static prepareTokens(tokens: BackendToken[]): List<IToken> {
+  private static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
         .map((token: BackendToken) => ({
@@ -28,7 +28,7 @@ export class TokensApiService {
     );
   }
 
-  public getTokensList(): Observable<List<IToken>> {
+  public getTokensList(): Observable<List<Token>> {
     return this.httpService
       .get(this.getTokensUrl)
       .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
