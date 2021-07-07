@@ -72,7 +72,7 @@
     "team": "Team",
     "project": "Project",
     "login": "Connect Wallet",
-    "myTrades": "My trades",
+    "myTrades": "My Trades",
     "logout": "Logout",
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign."
@@ -394,7 +394,7 @@
     "title": "Cross-Chain Swaps"
   },
   "myTrades": {
-    "title": "My trades"
+    "title": "My Trades"
   },
   "tradesForm": {
     "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."

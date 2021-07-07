@@ -72,7 +72,7 @@
     "team": "Equipo",
     "project": "Proyecto",
     "login": "Conecta tu Billetera",
-    "myTrades": "Mis intercambios",
+    "myTrades": "Mis Intercambios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿Deseas Cerrar Sesión?",
     "notAvailable": "En construcción - Rediseño de UX."
@@ -394,7 +394,7 @@
     "title": "Ntercambios entre plataformas"
   },
   "myTrades": {
-    "title": "Mis intercambios"
+    "title": "Mis Intercambios"
   },
   "tradesForm": {
     "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
