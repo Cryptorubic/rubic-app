@@ -35,7 +35,7 @@ module.exports = {
         '@angular-eslint/no-input-rename': 'off',
         'class-methods-use-this': 'off',
         complexity: ['error', 20],
-        eqeqeq: ['error', 'always'],
+        eqeqeq: ['error', 'always', {"null": "ignore"}],
         'no-magic-numbers': 'off',
         '@typescript-eslint/naming-convention': [
           'error',
