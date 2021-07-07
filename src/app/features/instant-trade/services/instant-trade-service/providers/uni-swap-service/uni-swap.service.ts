@@ -183,7 +183,7 @@ export class UniSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + this.settings.deadline;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
