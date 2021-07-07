@@ -111,6 +111,10 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
       img {
         width: 95px;
       }
+
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
