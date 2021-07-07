@@ -2,6 +2,7 @@
   <header class="swaps-form__header">
     <h1 class="swaps-form__title">Swap</h1>
     <app-rubic-refresh-button
+      class="swaps-form__refresh"
       *ngIf="isInstantTrade && allowTrade"
       (refresh)="refreshTrade()"
       [loadingStatus]="loadingStatus"

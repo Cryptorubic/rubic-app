@@ -26,7 +26,7 @@
           {{
             (providerData.amount?.toString(10)
               | withRound: 'toClosestValue':tradeData?.to?.token.decimals) ||
-              'tradePage.tradingNotAvailable' | translate
+            'Trading is not available'
           }}
           <div
             *ngIf="hasError"
