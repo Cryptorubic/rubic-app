@@ -1,3 +1,4 @@
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
 export default [
@@ -8,8 +9,8 @@ export default [
     rpcLink: 'https://damp-misty-hill.quiknode.pro/c5c252ef9e1c07505eaf8109044b87b8e792f54c/',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.ETHEREUM,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18
@@ -22,8 +23,8 @@ export default [
     rpcLink: 'https://old-spring-bird.bsc.quiknode.pro/4b21f182bb32c5addb6385834400044da34d44f8/',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Binance Coin',
       symbol: 'BNB',
       decimals: 18
@@ -36,8 +37,8 @@ export default [
     rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.POLYGON,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.POLYGON,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Matic Network',
       symbol: 'MATIC',
       decimals: 18
@@ -50,8 +51,8 @@ export default [
     rpcLink: 'https://rpc.xdaichain.com/',
     imagePath: 'assets/images/icons/coins/xdai.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.XDAI,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.XDAI,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'xDai',
       symbol: 'XDAI',
       decimals: 18
@@ -64,8 +65,8 @@ export default [
     rpcLink: '',
     imagePath: 'assets/images/icons/coins/tron.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.TRON,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.TRON,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Tron',
       symbol: 'TRON',
       decimals: 18
@@ -79,22 +80,8 @@ export default [
     rpcLink: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     imagePath: 'assets/images/icons/coins/kovan.png',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
-      address: '0x0000000000000000000000000000000000000000',
-      name: 'Ethereum',
-      symbol: 'ETH',
-      decimals: 18
-    }
-  },
-  {
-    id: 5,
-    name: BLOCKCHAIN_NAME.GOERLI_TESTNET,
-    scannerUrl: 'https://goerli.infura.io/',
-    rpcLink: 'https://goerli.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
-    imagePath: 'assets/images/icons/coins/goerli.png',
-    nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.GOERLI_TESTNET,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18
@@ -107,8 +94,8 @@ export default [
     rpcLink: 'https://data-seed-prebsc-1-s1.binance.org:8545',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Binance Coin',
       symbol: 'BNB',
       decimals: 18
@@ -121,8 +108,8 @@ export default [
     rpcLink: 'https://rpc-mumbai.maticvigil.com',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
-      blockchainName: BLOCKCHAIN_NAME.POLYGON_TESTNET,
-      address: '0x0000000000000000000000000000000000000000',
+      blockchain: BLOCKCHAIN_NAME.POLYGON_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
       name: 'Polygon',
       symbol: 'MATIC',
       decimals: 18

@@ -77,26 +77,6 @@
 
       margin-right: 10px;
     }
-
-    .sort-arrow {
-      ::ng-deep {
-        svg path {
-          opacity: 0.3;
-
-          fill: #808080;
-        }
-      }
-
-      &_green {
-        ::ng-deep {
-          svg path {
-            opacity: 1;
-
-            fill: $rubic-primary;
-          }
-        }
-      }
-    }
   }
 
   td {

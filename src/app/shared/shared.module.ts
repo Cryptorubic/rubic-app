@@ -13,7 +13,6 @@ import {
   TuiInputCountModule,
   TuiDataListWrapperModule
 } from '@taiga-ui/kit';
-
 import {
   TuiButtonModule,
   TuiDataListModule,
@@ -35,19 +34,12 @@ import { RubicLanguageSelectComponent } from 'src/app/core/header/components/hea
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { RubicRefreshButtonComponent } from 'src/app/features/swaps/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
-import { BigNumberFormat } from './pipes/big-number-format.pipe';
-import { NativeUrlPipe } from './pipes/native-url.pipe';
+import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
-import { TokenAddressDirective } from './directives/token-address/token-address.directive';
-import { NumberPrecisionDirective } from './directives/number-precision/number-precision.directive';
-import { ScannerLinkComponent } from './components/scanner-link/scanner-link.component';
-import { WrapLinkDirective } from './directives/wrap-link/wrap-link.directive';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
 import { ShortAddressPipe } from './pipes/short-address.pipe';
 import { WithRoundPipe } from './pipes/with-round.pipe';
-import { RoundPipe } from './pipes/round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
-import { CrossButtonComponent } from './components/buttons/cross-button/cross-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
 import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
@@ -56,47 +48,35 @@ import { RubicButtonComponent } from './components/rubic-button/rubic-button.com
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.component';
 
 @NgModule({
   declarations: [
     // Components.
     SpinnerComponent,
-    ScannerLinkComponent,
     ProviderPanelComponent,
     DropdownSelectorComponent,
     TokenAmountInputComponent,
-    ProviderPanelComponent,
     AmountEstimatedComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
     IconButtonComponent,
-    CrossButtonComponent,
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
-    RubicBannerComponent,
     SwapButtonComponent,
-    RubicBannerComponent,
     RubicTokensComponent,
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
     // Pipes.
-    BigNumberFormat,
+    BigNumberFormatPipe,
     ScannerLinkPipe,
-    NativeUrlPipe,
     ShortAddressPipe,
     WithRoundPipe,
-    RoundPipe,
     ShortenAmountPipe,
     // Directives.
-    TokenAddressDirective,
-    TokenAddressDirective,
-    NumberPrecisionDirective,
-    WrapLinkDirective,
     SafetyLinkDirective,
     TokenAmountDirective
   ],
@@ -129,13 +109,9 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
   ],
   exports: [
     SpinnerComponent,
-    BigNumberFormat,
+    BigNumberFormatPipe,
     ScannerLinkPipe,
-    NativeUrlPipe,
-    TokenAddressDirective,
     TranslateModule,
-    NumberPrecisionDirective,
-    ScannerLinkComponent,
     ShortAddressPipe,
     RubicButtonCircleComponent,
     ProviderPanelComponent,
@@ -146,15 +122,12 @@ import { RubicBannerComponent } from './components/rubic-banner/rubic-banner.com
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
     IconButtonComponent,
-    CrossButtonComponent,
-    RoundPipe,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
     TokenAmountInputComponent,
-    RubicBannerComponent,
     SwapButtonComponent,
     WithRoundPipe,
     SafetyLinkDirective,

@@ -8,7 +8,7 @@ import { forkJoin, Observable, Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { map, switchMap } from 'rxjs/operators';
-import { INTSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps/models/trade-data';
+import { INSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps/models/INSTANT_TRADES_TRADE_STATUS';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol.service';
@@ -20,7 +20,6 @@ import { ItProvider } from 'src/app/features/instant-trade/services/instant-trad
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/types/InstantTradesPostApi';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { TranslateService } from '@ngx-translate/core';
 import { SushiSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-service/sushi-swap.service';
 
@@ -86,14 +85,11 @@ export class InstantTradeService {
                 provider,
                 from_token: trade.from.token.address,
                 to_token: trade.to.token.address,
-                from_amount: Web3PublicService.tokenAmountToWei(
-                  trade.from.token as SwapToken,
-                  trade.from.amount
+                from_amount: Web3PublicService.amountToWei(
+                  trade.from.amount,
+                  trade.from.token.decimals
                 ),
-                to_amount: Web3PublicService.tokenAmountToWei(
-                  trade.to.token as SwapToken,
-                  trade.to.amount
-                )
+                to_amount: Web3PublicService.amountToWei(trade.to.amount, trade.to.token.decimals)
               };
             } else {
               tradeInfo = {
@@ -113,7 +109,7 @@ export class InstantTradeService {
         }
       );
       this.modalShowing.unsubscribe();
-      this.updateTrade(receipt.transactionHash, INTSTANT_TRADES_TRADE_STATUS.COMPLETED);
+      this.updateTrade(receipt.transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
       this.notificationsService
         .show(this.translateService.instant('notifications.successfulTradeTitle'), {
           status: TuiNotification.Success
@@ -142,7 +138,7 @@ export class InstantTradeService {
       .subscribe();
   }
 
-  public updateTrade(hash: string, status: INTSTANT_TRADES_TRADE_STATUS) {
+  public updateTrade(hash: string, status: INSTANT_TRADES_TRADE_STATUS) {
     return this.instantTradesApiService.patchTrade(hash, status).subscribe({
       // tslint:disable-next-line:no-console
       error: err => console.debug('IT patch request is failed', err)
