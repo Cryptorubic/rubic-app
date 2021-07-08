@@ -334,6 +334,17 @@ tui-pagination {
       display: none;
     }
   }
+
+  .row {
+    &__title {
+      flex-direction: column;
+      justify-content: center;
+
+      img {
+        transform: rotate(90deg);
+      }
+    }
+  }
 }
 
 @include b($mobile-sm-plus) {
