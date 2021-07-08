@@ -22,9 +22,12 @@
 
   &__values {
     display: flex;
-    grid-gap: 45px;
 
     font-weight: 300;
+
+    & > div:first-child {
+      margin-right: 45px;
+    }
   }
 
   &__value {
@@ -48,6 +51,10 @@
 
     &__values {
       display: block;
+
+      & > div:first-child {
+        margin-right: 0;
+      }
     }
 
     &__value-it {

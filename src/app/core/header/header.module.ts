@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatMenuModule } from '@angular/material/menu';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,8 +32,6 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     TranslateModule,
     RouterModule,
     BrowserAnimationsModule,
-    MatDialogModule,
-    MatMenuModule,
     A11yModule,
     OverlayModule,
     InlineSVGModule.forRoot(),

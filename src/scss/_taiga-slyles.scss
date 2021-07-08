@@ -18,6 +18,10 @@ tui-dialog {
     }
   }
 
+  .wrapper {
+    z-index: 1;
+  }
+
   .close {
     position: absolute !important;
     top: 18px !important;

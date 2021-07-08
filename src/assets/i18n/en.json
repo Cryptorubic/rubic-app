@@ -70,7 +70,7 @@
     "myTrades": "My trades",
     "logout": "Logout",
     "logoutMessage": "Do you really want to Log Out?",
-    "notAvailable": "Order book is not available in beta."
+    "notAvailable": "Under Construction - UX Redesign."
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",
@@ -408,14 +408,14 @@
       "expected": "Expected",
       "date": "Date",
       "provider": "Provider",
-      "explorerLink": "Explorer link",
-      "receive": "Receive"
+      "explorerLink": "Explorer link"
     },
     "noData": "You have no trades yet",
     "noTrades": "There are no trades",
     "noTradesWithSelected": "There are no trades with selected parameters",
     "showData": "Show data",
-    "sortBy": "Sort by"
+    "sortBy": "Sort by",
+    "receive": "Receive"
   },
   "tradesPage": {
     "createTrade": "Create your Trade",
@@ -542,7 +542,7 @@
     }
   },
   "volume": {
-    "title": "Accumulated Transactions Volume",
+    "title": "Accumulated Transaction Volume",
     "instantTrades": "Instant Trades",
     "crossChain": "Cross-Chain Swaps"
   },
