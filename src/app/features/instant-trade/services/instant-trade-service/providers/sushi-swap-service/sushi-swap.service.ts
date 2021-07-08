@@ -26,7 +26,7 @@ import {
   routingProviders,
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
-  uniSwapContracts,
+  sushiSwapContracts,
   WETH
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-service/sushi-swap-constants';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -55,7 +55,7 @@ export class SushiSwapService implements ItProvider {
 
   private WETHAddress: string;
 
-  private uniswapContractAddress: string;
+  private sushiswapContractAddress: string;
 
   private routingProviders: string[];
 
@@ -74,7 +74,7 @@ export class SushiSwapService implements ItProvider {
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.shouldCalculateGas = true;
     this.WETHAddress = WETH.address;
-    this.uniswapContractAddress = uniSwapContracts.address;
+    this.sushiswapContractAddress = sushiSwapContracts.address;
     this.routingProviders = routingProviders.addresses;
 
     const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
@@ -90,13 +90,17 @@ export class SushiSwapService implements ItProvider {
     });
   }
 
-  public needApprove(tokenAddress: string): Observable<BigNumber> {
-    return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
+  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+    return this.commonUniswap.getAllowance(
+      tokenAddress,
+      this.sushiswapContractAddress,
+      this.web3Public
+    );
   }
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     await this.commonUniswap.checkSettings(this.blockchain);
-    return this.commonUniswap.approve(tokenAddress, options);
+    return this.commonUniswap.approve(tokenAddress, this.sushiswapContractAddress, options);
   }
 
   public async calculateTrade(
@@ -174,7 +178,7 @@ export class SushiSwapService implements ItProvider {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
-        this.uniswapContractAddress,
+        this.sushiswapContractAddress,
         abi
       );
     }
@@ -183,7 +187,7 @@ export class SushiSwapService implements ItProvider {
       return this.commonUniswap.createTokensToEthTrade(
         uniSwapTrade,
         options,
-        this.uniswapContractAddress,
+        this.sushiswapContractAddress,
         abi
       );
     }
@@ -191,7 +195,7 @@ export class SushiSwapService implements ItProvider {
     return this.commonUniswap.createTokensToTokensTrade(
       uniSwapTrade,
       options,
-      this.uniswapContractAddress,
+      this.sushiswapContractAddress,
       abi
     );
   }
@@ -255,7 +259,7 @@ export class SushiSwapService implements ItProvider {
       route.path,
       to,
       deadline,
-      this.uniswapContractAddress,
+      this.sushiswapContractAddress,
       this.web3Public,
       estimatedGasArray,
       abi

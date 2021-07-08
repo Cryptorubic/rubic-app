@@ -27,11 +27,12 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
+import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UniSwapService {
+export class UniSwapService implements ItProvider {
   protected blockchain: BLOCKCHAIN_NAME;
 
   protected shouldCalculateGas: boolean;
@@ -148,8 +149,12 @@ export class UniSwapService {
     };
   }
 
-  public needApprove(tokenAddress: string): Observable<BigNumber> {
-    return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
+  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+    return this.commonUniswap.getAllowance(
+      tokenAddress,
+      this.uniswapContractAddress,
+      this.web3Public
+    );
   }
 
   public async approve(
@@ -159,7 +164,7 @@ export class UniSwapService {
     }
   ): Promise<void> {
     await this.commonUniswap.checkSettings(this.blockchain);
-    return this.commonUniswap.approve(tokenAddress, options);
+    return this.commonUniswap.approve(tokenAddress, this.uniswapContractAddress, options);
   }
 
   public async createTrade(

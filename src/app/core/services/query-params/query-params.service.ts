@@ -115,6 +115,7 @@ export class QueryParamsService {
     this.tokensService.tokens
       .pipe(
         filter(tokens => tokens?.size !== 0),
+        first(),
         mergeMap(tokens =>
           this.getProtectedSwapParams(params).pipe(
             map(protectedParams => ({ tokens, protectedParams }))
