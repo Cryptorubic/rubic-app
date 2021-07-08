@@ -69,6 +69,7 @@ export class TokenAmountDirective {
     }
 
     this.elementRef.nativeElement.value = value;
+    this.elementRef.nativeElement.focus();
     this.elementRef.nativeElement.setSelectionRange(caretPosition, caretPosition);
     this.amountChange.emit(value);
 
