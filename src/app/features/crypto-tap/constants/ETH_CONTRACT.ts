@@ -1,3 +1,5 @@
+import { AbiItem } from 'web3-utils';
+
 export const contractAddressEthereum = '0x8eDe575dbaDf66A29843608883B81F265d398c26';
 
 export const contractAddressKovan = '0x61386c9764bb2341b5bb7b22599348317eAd6dDb';
@@ -270,4 +272,4 @@ export const ABI = [
     stateMutability: 'nonpayable',
     type: 'function'
   }
-];
+] as AbiItem[];

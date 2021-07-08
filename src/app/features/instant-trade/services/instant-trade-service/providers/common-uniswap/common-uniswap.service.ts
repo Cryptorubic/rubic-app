@@ -26,6 +26,7 @@ import { ItSettingsForm } from 'src/app/features/swaps/services/settings-service
 import { AbiItem } from 'web3-utils';
 import { from, Observable, of } from 'rxjs';
 import { uniSwapContracts } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 
 @Injectable({
   providedIn: 'root'
@@ -50,12 +51,7 @@ export class CommonUniswapService {
     );
   }
 
-  public async approve(
-    tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    }
-  ): Promise<void> {
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     const uintInfinity = new BigNumber(2).pow(256).minus(1);
     await this.web3Private.approveTokens(
       tokenAddress,

@@ -37,6 +37,7 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 
 @Injectable({
   providedIn: 'root'
@@ -93,12 +94,7 @@ export class SushiSwapService implements ItProvider {
     return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
   }
 
-  public async approve(
-    tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    }
-  ): Promise<void> {
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     await this.commonUniswap.checkSettings(this.blockchain);
     return this.commonUniswap.approve(tokenAddress, options);
   }
@@ -159,7 +155,6 @@ export class SushiSwapService implements ItProvider {
       onApprove?: (hash: string) => void;
     } = {}
   ): Promise<TransactionReceipt> {
-    // @TODO Проверить правильность констант и проверить почему газ считается не верно.
     await this.commonUniswap.checkSettings(this.blockchain);
     await this.commonUniswap.checkBalance(trade, this.web3Public);
 
@@ -171,7 +166,7 @@ export class SushiSwapService implements ItProvider {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + this.settings.deadline;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
@@ -232,18 +227,18 @@ export class SushiSwapService implements ItProvider {
     gasCalculationMethodName: string,
     estimatedGasArray: BigNumber[]
   ): Promise<{ route: UniswapRoute; gasData: Gas }> {
-    const sushiRoute = (await this.fetchRoutes(fromAmountAbsolute, fromToken, toToken)).route.sort(
-      (a, b) => (b.sum_output > a.sum_output ? 1 : -1)
+    const sushiRoutes = await this.fetchRoutes(fromAmountAbsolute, fromToken, toToken);
+    if (sushiRoutes.number_of_routes === 0) {
+      throw new InsufficientLiquidityError();
+    }
+    const bestSushiRoute = sushiRoutes.route.sort((a, b) =>
+      b.sum_output > a.sum_output ? 1 : -1
     )[0];
 
     const route = {
-      path: sushiRoute.route.split(';'),
-      outputAbsoluteAmount: new BigNumber(sushiRoute.sum_output)
+      path: bestSushiRoute.route.split(';'),
+      outputAbsoluteAmount: new BigNumber(bestSushiRoute.sum_output)
     };
-
-    if (route.path.length === 0) {
-      throw new InsufficientLiquidityError();
-    }
 
     const to = this.providerConnectorService.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;

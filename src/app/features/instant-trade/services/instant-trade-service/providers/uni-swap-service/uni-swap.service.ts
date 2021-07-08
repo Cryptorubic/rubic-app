@@ -44,8 +44,6 @@ export class UniSwapService {
 
   private routingProviders: string[];
 
-  private isTestingMode: boolean;
-
   private settings: ItSettingsForm;
 
   private timeCoefficient = 60;
@@ -67,7 +65,6 @@ export class UniSwapService {
     this.routingProviders = routingProviders.addresses;
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
-        this.isTestingMode = true;
         this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM_TESTNET];
         this.WETHAddress = WETH.testnetAddress;
         this.uniswapContractAddress = uniSwapContracts.testnetAddress;
