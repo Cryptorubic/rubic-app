@@ -58,6 +58,16 @@ export class Web3Public {
     return new BigNumber(options.inWei ? balance : this.weiToEth(balance));
   }
 
+  public async getTokenOrNativeBalance(userAddress: string, tokenAddress): Promise<BigNumber> {
+    let balance;
+    if (this.isNativeAddress(tokenAddress)) {
+      balance = await this.web3.eth.getBalance(userAddress);
+    } else {
+      balance = await this.getTokenBalance(userAddress, tokenAddress);
+    }
+    return new BigNumber(balance);
+  }
+
   /**
    * @description gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
    * @param tokenAddress address of the smart-contract corresponding to the token

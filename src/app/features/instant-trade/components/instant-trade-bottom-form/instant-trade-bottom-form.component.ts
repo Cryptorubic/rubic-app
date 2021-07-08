@@ -24,6 +24,8 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
+import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -65,6 +67,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
+  get orderedProviders(): ProviderControllerData[] {
+    if (
+      !this.providersOrderCache?.length ||
+      this.providerControllers.some(item => item.isBestRate)
+    ) {
+      this.providersOrderCache = [...this.providerControllers]
+        .sort(item => (item.isBestRate ? -1 : 1))
+        .map(item => item.tradeProviderInfo.value);
+    }
+    return this.providersOrderCache.map(providerName =>
+      this.providerControllers.find(provider => provider.tradeProviderInfo.value === providerName)
+    );
+  }
+
+  private providersOrderCache: INSTANT_TRADES_PROVIDER[];
+
   public formChangesSubscription$: Subscription;
 
   public providerControllers: ProviderControllerData[];
@@ -84,7 +102,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly testingMode: UseTestingModeService
   ) {
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
@@ -139,9 +158,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     this.prepareControllers();
-    const approveData = this.authService.user?.address
-      ? await this.instantTradeService.getApprove().toPromise()
-      : new Array(this.providerControllers.length).fill(null);
+    const approveData =
+      this.authService.user?.address && !this.testingMode.isTestingMode.value
+        ? await this.instantTradeService.getApprove().toPromise()
+        : new Array(this.providerControllers.length).fill(null);
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
@@ -232,6 +252,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
+    this.providersOrderCache = null;
     switch (blockchain) {
       case BLOCKCHAIN_NAME.ETHEREUM:
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.ETHEREUM];
@@ -247,23 +268,30 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public selectProvider(providerNumber: number): void {
+  public selectProvider(providerName: INSTANT_TRADES_PROVIDER): void {
+    if (
+      this.tradeStatus === TRADE_STATUS.LOADING ||
+      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
+    ) {
+      return;
+    }
+
     const newProviders = this.providerControllers.map(provider => {
+      const isSelected = provider.tradeProviderInfo.value === providerName;
       return {
         ...provider,
-        isSelected: false
+        isSelected
       };
     });
-    newProviders[providerNumber] = {
-      ...newProviders[providerNumber],
-      isSelected: true
-    };
     this.providerControllers = newProviders;
-    if (newProviders[providerNumber].needApprove !== null) {
-      this.tradeStatus = newProviders[providerNumber].needApprove
+    const currentProvider = newProviders.find(provider => provider.isSelected);
+
+    if (currentProvider.needApprove !== null) {
+      this.tradeStatus = currentProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
-      this.needApprove = newProviders[providerNumber].needApprove;
+      this.needApprove = currentProvider.needApprove;
     }
   }
 
@@ -312,18 +340,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         this.providerControllers[providerIndex] = {
           ...this.providerControllers[providerIndex],
-          tradeState: INSTANT_TRADES_STATUS.COMPLETED
+          tradeState: INSTANT_TRADES_STATUS.COMPLETED,
+          needApprove: false
         };
         this.cdr.detectChanges();
       } catch (err) {
         this.providerControllers[providerIndex] = {
           ...this.providerControllers[providerIndex],
-          tradeState: INSTANT_TRADES_STATUS.APPROVAL
+          tradeState: INSTANT_TRADES_STATUS.APPROVAL,
+          needApprove: true
         };
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
       }
       this.cdr.detectChanges();
-      await this.tokensService.recalculateUsersBalance();
     } else {
       this.errorService.throw$(new NoSelectedProviderError());
     }
@@ -331,7 +360,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private async setupForm(form: ControlsValue<SwapFormInput>) {
     try {
-      await this.conditionalCalculate(form);
       if (
         this.currentBlockchain !== form.fromBlockchain &&
         form.fromBlockchain === form.toBlockchain
@@ -341,7 +369,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       }
       if (!this.allowTrade) {
         this.tradeStatus = TRADE_STATUS.DISABLED;
+        return;
       }
+      await this.conditionalCalculate(form);
       this.cdr.detectChanges();
     } catch (err) {
       this.errorService.catch$(err);
