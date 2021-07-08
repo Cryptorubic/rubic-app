@@ -25,6 +25,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -101,7 +102,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly testingMode: UseTestingModeService
   ) {
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
@@ -156,9 +158,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     this.prepareControllers();
-    const approveData = this.authService.user?.address
-      ? await this.instantTradeService.getApprove().toPromise()
-      : new Array(this.providerControllers.length).fill(null);
+    const approveData =
+      this.authService.user?.address && !this.testingMode.isTestingMode.value
+        ? await this.instantTradeService.getApprove().toPromise()
+        : new Array(this.providerControllers.length).fill(null);
     const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
