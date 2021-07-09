@@ -4,7 +4,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import {
   BridgeBlockchainApi,
@@ -209,6 +209,7 @@ export class BridgeApiService {
   ): Promise<void> {
     return this.getTokenPrice(bridgeTrade.token)
       .pipe(
+        first(),
         mergeMap(price => {
           const body = {
             track: transactionHash,
