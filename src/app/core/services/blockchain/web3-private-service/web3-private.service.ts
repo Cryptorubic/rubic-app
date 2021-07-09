@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import CustomError from 'src/app/core/errors/models/custom-error';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
+import { TranslateService } from '@ngx-translate/core';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
 import { LowGasError } from '../../../errors/models/provider/LowGasError';
-import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +24,7 @@ export class Web3PrivateService {
   }
 
   constructor(
-    private readonly providerConnector: ProviderConnectorService,
-    private readonly translateService: TranslateService
+    private readonly providerConnector: ProviderConnectorService
   ) {
     this.web3 = providerConnector.web3;
     this.defaultMockGas = '400000';

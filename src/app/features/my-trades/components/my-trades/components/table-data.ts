@@ -45,27 +45,4 @@ export abstract class TableData {
       ADDRESS_TYPE.TRANSACTION
     );
   }
-
-  public getTranslationStatusKey(status: TRANSACTION_STATUS): string {
-    switch (status) {
-      case TRANSACTION_STATUS.COMPLETED:
-        return 'tradesTable.statuses.completed';
-      case TRANSACTION_STATUS.PENDING:
-        return 'tradesTable.statuses.pending';
-      case TRANSACTION_STATUS.CANCELLED:
-        return 'tradesTable.statuses.cancelled';
-      case TRANSACTION_STATUS.REJECTED:
-        return 'tradesTable.statuses.rejected';
-      case TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS:
-        return 'tradesTable.statuses.depositInProgress';
-      case TRANSACTION_STATUS.WITHDRAW_IN_PROGRESS:
-        return 'tradesTable.statuses.withdrawInProgress';
-      case TRANSACTION_STATUS.WAITING_FOR_DEPOSIT:
-        return 'tradesTable.statuses.waitingForDeposit';
-      case TRANSACTION_STATUS.WAITING_FOR_RECEIVING:
-        return 'tradesTable.statuses.waitingForReceiving';
-      default:
-        return '';
-    }
-  }
 }
