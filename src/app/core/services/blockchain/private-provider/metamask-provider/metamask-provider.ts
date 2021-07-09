@@ -47,8 +47,7 @@ export class MetamaskProvider extends PrivateProvider {
 
     const { ethereum } = window;
     if (!ethereum) {
-      errorsService.catch$(new MetamaskError());
-      return;
+      throw new MetamaskError();
     }
     web3.setProvider(ethereum);
     this.core = ethereum;
