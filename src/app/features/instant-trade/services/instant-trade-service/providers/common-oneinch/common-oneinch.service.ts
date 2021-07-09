@@ -6,7 +6,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import {
   OneInchApproveResponse,
   OneInchTokensResponse
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch.types';
 import { map, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
