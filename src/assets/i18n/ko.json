@@ -242,108 +242,112 @@
     "title": "FAQ",
     "questions": {
       "0": {
-        "title": "Rubic p2p 거래는 무엇인가요?",
-        "answer": "Rubic은 멀티체인 defi 플랫폼입니다. Rubic은 프로젝트가 탈중앙화되어 한곳에서 토큰을 생성, 관리 및 거래할 수 있도록 defi 서비스를 구성합니다. 사용자가 자신의 조건에 따라 거래하고 공유하고 수익을 창출하는 데 도움이 됩니다."
+        "title": "What is Rubic?",
+        "answer": "Rubic is a multichain DeFi ecosystem, which features cross-chain swaps, instant swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete cross-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as buying MATIC or BNB directly via our Crypto Tap.\n\nAt the moment, Rubic supports trades on Ethereum, Polygon (ex Matic), and Binance Smart Chain networks and cross-chain swaps between Ethereum, Polygon (ex Matic), and Binance Smart Chain, xDai and TRON networks."
       },
       "1": {
-        "title": "누가 우리의 서비스를 사용할 수 있나요?",
-        "answer": "토큰을 만들고 관리하고 싶은 사람과 암호화폐를 가지고 있고 그것을 교환하고 싶은 사람은 모두 사용 가능합니다. KYC는 필요하지 않습니다."
+        "title": "Who can use our service?",
+        "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete cross-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at Rubic.exchange"
       },
       "2": {
-        "title": "최소 및 최대 거래 규모는 어떠한가요?",
-        "answer": "제한은 없습니다."
+        "title": "What are the minimum and maximum trade sizes?",
+        "answer": "There are no limits for Instant Trades.\n\nThe minimum and maximum trade sizes for Cross-Chain Swaps will be shown on the form for each token, if they have any restrictions."
       },
       "3": {
-        "title": "어떻게 작동하나요?",
-        "answer": "거래에는 두 가지 옵션이 있습니다:\n F첫째, 자신의 조건에 따라 거래를 생성하고 다른 쪽에서 귀하의 조건에 동의하고 그 부분을 채울 때까지 기다립니다.\n 둘째, 즉각 거래를 선택하고 다른 쪽의 조건에 동의합니다. 출시 예정.\n\n코딩 기술 없이 자신만의 토큰을 만들고 상장 없이 거래할 수 있습니다."
+        "title": "How does it work?",
+        "answer": "There are numerous features that Rubic provides to its users. These features include:\n\nInstant Trades - Complete a trade between different assets using different blockchains and DEXs, all on one platform.\n\nRubic Routing system - Complete an instant trade while getting the best rates on the market.\n\nCross-Chain Swaps - Complete a swap between different networks using integrated and created bridges between those networks.\n\nCrypto Tap - Easily buy MATIC or BNB without ever needing KYC/VPNs, using either RBC or ETH. If RBC is used for the Tap, you’ll also get a discounted rate.\n\nThe Rubic platform also provides the services of Custom Bridge creation, platform listings, Rubic Relay Widget integrations and will soon offer cross-chain routing.\n\nThe Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well."
       },
       "4": {
-        "title": "어떤 암호화폐가 지원되나요?",
-        "answer": "Rubic은 현재 거래를 위해 이더리움 기반 토큰에 대해 작동합니다. Tron, Binance Chain, BTC 블록체인이 곧 출시될 예정입니다. 그러나 토큰을 생성하고 관리하기 위해 우리는 이미 Ethereum, Tron, EOS, NEO, Waves, Binance Smart Chain Blockchains에서 지원하는 멀티체인 서비스를 제공합니다."
+        "title": "Which cryptocurrencies are supported?",
+        "answer": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20),  Binance Smart Chain tokens (BEP-20), and on the Polygon network. For cross-chain swaps Rubic also allows users to transfer their assets between Ethereum, BSC, Polygon, xDai and TRON networks. \nMore blockchains will be implemented soon.\n\nAt the same time, thanks to our partnership, MyWish users can create and manage tokens. We also provide multichain services supported by Ethereum, Tron, EOS, NEO, and Binance Smart Chain.\n"
       },
       "5": {
-        "title": "당신의 서비스를 사용하기 전에 토큰을 상장해야 하나요?",
-        "answer": "아니요, 어느 토큰이든 거래할 수 있습니다. 그러나 저희에게 연락하시면 저희 목록에 귀하의 토큰을 추가할 것입니다."
+        "title": "Should I list my token before using your service?",
+        "answer": "No, you can freely trade any token by manually adding their contract addresses. However, you can <a href='mailto:support@rubic.exchange'>contact us</a> and we’ll add your token to our list."
       },
       "6": {
-        "title": "어떻게 시작하나요?",
-        "answer": "쉽고 빠릅니다. 시작하려면 메타마스크만 있으면 됩니다.\n 원하는 조건을 입력하고 거래 생성을 클릭하세요."
+        "title": "How to start?",
+        "answer": "Using Rubic is quick and simple. You need either a MetaMask crypto wallet, or a wallet that’s compatible with WalletConnect. Choose the blockchain in which you want to swap your tokens, and choose the trade which you’d like to complete.\n\nCheck out the tutorials on our YouTube channel: <a href='https://www.youtube.com/watch?v=eo4qZnQbSs8&list=PLVWQUJaU3PTpCzcxPEPNoJOIuVV0Or0FV'>https://www.youtube.com/watch?v=eo4qZnQbSs8&list=PLVWQUJaU3PTpCzcxPEPNoJOIuVV0Or0FV</a>"
       },
       "7": {
-        "title": "거래를 어떻게 생성하나요?",
-        "answer": "1단계. 양식을 채우고 보유한 금액을 입력하고 원하는 금액을 입력합니다.\n 2단계. 거래 완료까지 마감 날짜 및 시간, 최소 및 최대 기여, 개인 정보 보호, 중개 수수료, 유동성 잠금과 같은 고급 옵션 추가\n 3단계. 거래 세부 정보 확인\n 4단계. 거래 생성 클릭\n 5단계. 메타마스크를 사용하여 거래 확인\n 6단계. 거래에 참여합니다."
+        "title": "How to create a trade?",
+        "answer": "<span class='faq__highlight'>Instant Trades:</span>\n<strong>Step 1:</strong> Select “Swaps”, and choose network in which you would like to complete a swap.\n<strong>Step 2:</strong> Fill out the form by choosing the tokens you want to exchange.\n<strong>Step 3:</strong> Enter the amount you want to exchange.\n<strong>Step 4:</strong> Now, the DEX aggregator will automatically show you the best rates across multiple protocols.\n<strong>Step 5:</strong> Press the “Swap” button or Approve your tokens if needed.\n<strong>Step 4:</strong> Now, the DEX aggregator will automatically show you the best rates across multiple protocols.\n<strong>Step 6:</strong> Use MetaMask or a wallet that’s compatible with WalletConnect, to confirm your trade, and now wait for the transaction to be confirmed on the blockchain.\n<a href='https://youtu.be/kxg9GQvBU2A'>Video tutorial</a>"
       },
       "8": {
-        "title": "비용은 얼마인가요?",
-        "answer": "현재 당사 서비스는 즉시 거래에 대한 수수료를 부과하지 않습니다. 그러나 주문 장 거래를 생성하는 데는 0.015 ETH의 수수료가 있습니다."
+        "title": "How much does it cost?",
+        "answer": "Currently, our service doesn't charge any provider fees for Instant Trades.\n\nFees for using the bridges for BRBC and RBC will be:\n\nFrom RBC (Ethereum) to BRBC (BSC) — 100 RBC (Ethereum).\n\nFrom BRBC (BSC) to RBC (Ethereum) - 100 BRBC (BSC).\nIn every trade you need to pay gas fee, you will see the exact amount while confirming the transaction in your wallet.\n\nRubic’s Tap will help anyone begin using the Polygon and BSC networks, as well as providing a discount for users that complete the swap using the RBC token. Users will be able to swap more BNB and MATIC than normal and pay less RBC at the same time.\n\nCommission fees in ETH is 0.02, and in RBC is just 150 RBC or about 0.007 ETH worth at the current market prices at the time of writing this article."
       },
       "9": {
-        "title": "거래를 완료하는 데 얼마나 걸리나요?",
-        "answer": "거래는 상대방이 자신의 부분을 완료하는 즉시 완료됩니다."
+        "title": "How long does it take to complete a transaction?",
+        "answer": "For Instant Trades, the transaction will be complete as soon as it gets confirmed on the blockchain.\n\nFor Cross-chain Swaps, the swap timing depends on the bridge which you’re using to complete the swap.\n\nFor Crypto Taps - It will be completed in 5 minutes after the acceptance swap."
       },
       "10": {
-        "title": "거래의 개인 정보 및 보안이 어떻게 보장되나요?",
-        "answer": "거래는 숙련된 개발자 및 외부 감사에 의해 확인된 스마트 계약으로 보호됩니다."
+        "title": "How is the privacy and security of the transaction ensured?",
+        "answer": "The deal is secured by smart contracts verified by experienced developers and external audits. As a DEX aggregator, we collect several AMM's in our platform that allows users to complete a swap with the best rate.\nRubic team is carefully checking the security of integrated AMM’s and all of the transactions through instant trades are passing through this security reliable projects."
       },
       "11": {
-        "title": "하나의 거래에 몇 명이 참여할 수 있나요?",
-        "answer": "양쪽 각각에 최대 10명까지 참여 가능합니다."
+        "title": "How do I add the Binance Smart Chain and Polygon networks to MetaMask?",
+        "answer": "<strong>Step 1.</strong> Click on the top-right circle and head to Settings\n\n<strong>Step 2.</strong> After Settings was accessed, locate and click Networks\n\n<strong>Step 3.</strong> On the top-right cornet click Add Network to manually add Binance Smart Chain (or any\nother blockchain)\n\n<strong>Step 4.</strong> Add the details written down below for your blockchain of interest\n\nBinance Smart Chain Network\n\nNetwork Name: Binance Smart Chain Mainnet\n\nNew RPC URL: https://bsc-dataseed.binance.org/\n\nChainID: 56 (*if it’s not working, try 0x38)\n\nSymbol: BNB\n\nBlock Explorer URL: https://bscscan.com\n\nMatic Network\n\nNetwork Name: Matic Mainnet\n\nNew RPC URL: https://rpc-mainnet.matic.network/\n\nChainID: 137 (*if it’s not working, try 0x89)\n\nSymbol: MATIC\n\nBlock Explorer URL: https://explorer.matic.network\n\n<strong>Step 5.</strong> Click Save and you are ready to go!\n\nRemember! Before starting trading, identify your nature of your tokens and select their\ncorresponding Network. To swap between the Networks just click on the top-right on the name of\nthe current Network selected and you’ll get a drop-menu with all the Networks available.\n\n<a href='https://rubic.exchange/assets/book.pdf'>Please click here for more details.</a>"
       },
       "12": {
-        "title": "상대방이 거래를 완료하지 않으면 어떻게 되나요 (P2P)?",
-        "answer": "거래가 만료되고 모든 토큰이 반환됩니다."
+        "title": "How do I use the ETH <-> BSC bridge?",
+        "answer": "<strong>Step 1.</strong> Install and unlock MetaMask wallet (www.metamask.io) or use WalletConnect to connect your wallet to <a href='http://www.rubic.exchange'>www.rubic.exchange</a>. \n\n<strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\n<strong>Step 3.</strong> Currently, users are able to swap 25 ERC20 tokens with their corresponding BEP20 version, and vice-versa (the list is always being updated). The list of tokens:\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>Step 4.</strong>  Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Proceed if you’re satisfied with the amount of returning tokens (this includes the Binance fee).\n\n<strong>Step 5.</strong>  You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\n<strong>Step 6.</strong> Click “Swap”, followed by MetaMask's or a wallet that’s compatible with WalletConnect, trade confirmation. \n\n<strong>Step 7.</strong> Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well."
       },
       "13": {
-        "title": "거래를 생성했는데 마음이 바뀌었다면 거래를 취소할 수 있나요?",
-        "answer": "예, 상대방이 거래를 완료하기 전에 언제든지 거래를 취소할 수 있습니다. 거래를 취소하면 토큰을 되찾을 수 있습니다."
+        "title": "I'm not able to use cross-chain swaps; it appears I have exceeded their limit. What should I do?",
+        "answer": "The swap between the Ethereum and Binance Smart Chain networks uses the Panama Bridge, which has some restrictions on swaps. This error might occur if you’re completing the swap from a country that has restricted Binance. Please use a VPN, and refresh the page or try again in 30 mins.\n\nThis restriction will soon improve after the implementation of cross-chain routing."
       },
       "14": {
-        "title": "Binance Smart Chain 및 Polygon 네트워크를 MetaMask에 추가하는 방법은 무엇입니까?",
-        "answer": "<a href='/assets/book.pdf' target='_blank'>자세한 내용은 여기를 클릭하십시오.</a>"
+        "title": "How long does it take to complete a cross-chain swap?",
+        "answer": "It usually varies, and this does not depend on us, but on the two blockchains.\n\n As estimations, we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of minutes for the deposit"
       },
       "15": {
-        "title": "교차 체인 브리지를 사용하는 방법?",
-        "answer": "<strong>1 단계.</strong> MetaMask 지갑 (<a href='www.metamask.io' target='_blank'>www.metamask.io</a>) 을 설치하고 Rubic.exchange에 연결합니다.\n\n<strong>2 단계.</strong> 단계. 교환 대상을 선택합니다 (이더 리움에서 바이 낸스로 또는 그 반대로). 스왑 화살표 버튼을 클릭하여 목적지를 변경할 수 있습니다.\n\n<strong>3 단계.</strong> 단계. 현재 사용자는 25 개의 ERC20 토큰을 해당 BEP20 버전과 교환 할 수 있으며 그 반대도 가능합니다 (목록은 계속 업데이트됩니다). 토큰 목록 :\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>4 단계.</strong>  단계. 교환 할 토큰 수를 입력합니다 (교환 할 수있는 최소 및 최대 토큰 수 아래에 확인). 반환되는 토큰 양에 만족하면 다음으로 진행하십시오 (바이 낸스 수수료 포함).\n\n<strong>5 단계.</strong> 단계. 'Etherscan / BSCscan에서 확인'을 클릭하면 토큰의 계약을 볼 수 있습니다.'\n\n<strong>6 단계.</strong> 단계. Create Swap을 클릭 한 다음 MetaMask의 거래 확인을 클릭합니다.\n\n<strong>7 단계.</strong> 거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요."
+        "title": "How does Rubic unite different DEX platforms? ",
+        "answer": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices. Rubic always analyzes and compares all the variants, and comes up with the best rate. Please notice that while checking all the alternatives we consider the GAS fee. Rubic strives to provide users with the best exchange opportunities. "
       },
       "16": {
-        "title": "거래가 블록 체인에 기록 될 때까지 기다리십시오. 거래가 수락되면 알림이 전송됩니다. 테이블에서 거래 세부 정보를 찾을 수 있습니다. 바이 낸스가 처리 할 때까지 기다려주세요?",
-        "answer": "현재 30 분 동안 3 개의 교차 체인 스왑이 제한되어 있으므로 잠시 기다렸다가 나중에 다시 시도하십시오. 이것은 곧 개선 될 것입니다"
+        "title": "Why do we need to make a choice between different providers?",
+        "answer": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to make better trading decisions.\n\nMoreover, Rubic created a routing solution that will allow users to trade any token on BSC, Polygon and Ethereum networks. Our self-created routing system for Ethereum has several advantages over the Uniswap routing system. The main advantage is the ability to calculate gas prices and show users the best-optimized solution while paying the least amount of gas.\n\nOur routing system gives users lower prices on their swaps than most DEXs. Users will receive quotes for lower prices in situations where the price difference between different swap outcomes costs more than the ANTICIPATED price difference for the miner’s commission fees. When this difference in swap price is more than the difference in miner’s commission fees, the user will be presented with an option for a cheaper swap route. In situations where this occurs, users will also be given an option with a more expensive gas fee and a longer route to execute the swap, due to potential issues with liquidity."
       },
       "17": {
-        "title": "크로스 체인 스왑을 완료하는 데 얼마나 걸립니까?",
-        "answer": "일반적으로 다양하며 이는 우리에게 의존하지 않고 두 블록 체인에 의존합니다.\n추정에 따르면 초기화에는 2 분, 피드백 대기에는 4 분, 입금에는 몇 분이 더 소요됩니다.\n\n현재 평균 시간은 약 10 분입니다."
+        "title": "What should I do when I see the message:\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
+        "answer": "If you get this message, try the following methods:\n1. Reload the page.\n2. Clear the website cache.\n3.  Log out and then log back into MetaMask.\n\nIf it’s still not working please contact our support team."
       },
       "18": {
-        "title": "Uniswap 통합의 이점은 무엇입니까?",
-        "answer": "사용자는 가장 낮은 가스 가격으로 최고의 토큰 요율을 얻기 위해 적합한 DEX 프로토콜을 선택할 수 있습니다."
+        "title": "What should I do if Uniswap doesn’t display the rates?",
+        "answer": "In order to see the Uniswap rates you will need to login with your MetaMask wallet or a wallet that’s compatible with WalletConnect, once logged in refresh the page as well."
       },
       "19": {
-        "title": "1 인치와 Uniswap 중에서 선택해야하는 이유는 무엇입니까?",
-        "answer": "이러한 프로토콜의 가스 수수료 및 가격 비율은 다르므로 더 많은 옵션을 가질 수있는 기회는 사용자가 더 나은 거래 결정을 내릴 수 있도록합니다."
+        "title": "What are use cases of RBC? ",
+        "answer": "The Rubic platform has an ERC-20 token, «RBC», which is used as the fuel within the platform.\n\n Our platform is chargingthe users for the following operations:\n\n Rubic Bridge swaps \n\n Crypto Tap swaps \n\n Bridge creations \n\n Order book creation \n\n Other services \n\n Accounting with Relayers, external services, and marketing services are made in RBC."
       },
       "20": {
-        "title": "토큰 승인이 가스 요금에 포함되어 있습니까?",
-        "answer": "토큰 승인은 가스 요금에 포함되어 있지 않습니다. 처음 사용하는 동안 토큰을 한 번만 승인하면됩니다. 다음과 같이 보일 수 있습니다.\n <img src='/assets/images/faq/approve-token.png' class='faq__img' />"
+        "title": "What is the Rubic Relay widget?",
+        "answer": "The Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well."
       },
       "21": {
-        "title": "메시지가 표시되면 어떻게해야합니까.\n<div class='faq__warning'><span class='faq__warning-flex-container'>Trading on Uniswap is not available</span></div>?",
-        "answer": "이 메시지가 나타나면 다음 방법을 시도하십시오.\n1. 페이지를 새로 고침하십시오\n2. 웹 사이트 캐시를 지 웁니다\n3. 로그 아웃 한 다음 MetaMask에 로그인합니다\n그래도 작동하지 않으면 지원 팀에 문의하십시오."
+        "title": "How can we integrate the Rubic Relay widget?",
+        "answer": "Here is a detailed instructional guide for the Relay’s integration:\n\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
       },
       "22": {
-        "title": "Uniswap에 요금이 표시되지 않으면 어떻게해야합니까?",
-        "answer": "Uniswap 요금을 확인하려면 MetaMask 계정으로 로그인해야합니다. 로그인 한 후 페이지도 새로 고칩니다."
+        "title": "How do we get listed on Rubic? ",
+        "answer": "Please fill out the form at Rubic.exchange in order to get listed.\n\n If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:\nProject name\nProject description\nLinks to the project and social media\nContract address\nWhitepaper/Onepager"
       },
       "23": {
-        "title": "지정가 주문의 목적은 무엇입니까?",
-        "answer": "제한 주문을 통해 사용자는 원하는 비율로 토큰을 사고 팔 수 있으며 특정 조건이 충족되면 주문 장 거래가 자동으로 완료 될 수있는 기회를 제공합니다."
+        "title": "How do I use Rubic’s bridges?",
+        "answer": "Tutorial for our bridges:\n\n <strong>Step 1.</strong> Install MetaMask wallet (www.metamask.io) or WalletConnect and connect it to Rubic.exchange. \n\n <strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button.\n\n <strong>Step 3.</strong> Currently, users are able to swap the RBC token with its corresponding BEP20 (BRBC) version, and vice-versa.\n\n <strong>Step 4.</strong>  Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Proceed if you’re satisfied with the amount of returning tokens (this includes the Rubic bridge).\n\n <strong>Step 5.</strong> You can view token contracts by clicking on 'Check on Etherscan/BSCScan'.\n\n <strong>Step 6.</strong> Click “Swap”, followed by accepting MetaMask’s or a wallet that’s compatible with WalletConnect, trade confirmation.\n\n <strong>Step 7.</strong> Please wait until the transaction is recorded on the blockchain. You’ll be notified once your transaction is accepted, and you can find the transaction details in the MyTrades table. Please wait until the Rubic bridge processes it as well."
       },
       "24": {
-        "title": "지정가 주문을 완료하기위한 조건은 무엇입니까?",
-        "answer": "지정가 주문이 자동으로 채워지는 조건은 다음과 같습니다.\n<ul><li>주문서의 거래 율은 가스 수수료 + 플랫폼 보상을 포함하여 시장 비율과 동일합니다 (현재 0.01 ETH, 시간이 지남에 따라 변경됨).</li><li>거래는 만료되지 않습니다.</li><li>무역은 공개해야합니다.</li><li>최소 거래 규모는 0.1 ETH 또는 400 RBC입니다.</li></ul>또한 다른 사용자가 거래 매개 변수를 수락하고 거래에 참여하면 주문을 완료 할 수 있습니다."
+        "title": "How to use TRON bridge?",
+        "answer": "<strong>Step 1.</strong>  Install and unlock MetaMask wallet (www.metamask.io) or use WalletConnect to connect your wallet to <a href='http://www.rubic.exchange/'>www.rubic.exchange</a>.\n\n <strong>Step 2.</strong> Choose your exchange destination (from Ethereum or Binance Smart Chain to TRON).\n\n <strong>Step 3.</strong> Enter your TRON wallet address in settings. Your tokens will be transferred to it.\n\n <strong>Step 4.</strong> Currently, users can only trade USDT and bUSDT to the corresponding TRON network version. <strong>Step 5.</strong> Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Next, proceed if you are satisfied with the amount of returning tokens (this includes the transaction fee).\n\n <strong>Step 6.</strong>  You can view token contracts by clicking on ‘Check on Etherscan/TRONscan’.\n\n <strong>Step 7.</strong> Click Create Swap, followed by accepting MetaMask’s or a wallet that’s compatible with WalletConnect trade confirmation.\n\n <strong>Step 8.</strong> Please wait until the transaction is recorded in the blockchain. You’ll be notified once your transaction is accepted, and you can find the transaction details in the table."
       },
       "25": {
-        "title": "지정가 주문 사용 방법?",
-        "answer": "<strong>1 단계 :</strong> 토큰을 교환 할 블록 체인을 선택하고 주문 장을 선택합니다 (현재 제한 주문 기능은 이더 리움에서 거래를 지원하므로 이더 리움 네트워크를 선택하고 싶을 것입니다. 앞으로 더 많은 블록 체인이 지원 될 것입니다).\n\n<strong>2 단계 :</strong> 원하는 비율로 교환하려는 토큰을 선택합니다. 현재는 \"RBC-ETH\"및 \"ETH-RBC\"쌍만 사용할 수 있습니다.\n\n<strong>3 단계 :</strong> 마감 날짜 및 시간, 최소 및 최대 기여, 개인 정보 보호, 필요한 경우 중개 수수료와 같은 고급 옵션을 선택합니다.\n\n<strong>4 단계 :</strong> 메타 마스크에서 거래 생성 및 생성 거래 확인을 클릭합니다.\n\n<strong>5 단계 :</strong> 거래의 일부에 기여합니다 (토큰 승인 및 기여의 두 가지 거래가 있습니다). 거래에서 유일한 참여자가 될 계획이라면 '모두 채우기'를 선택하면 네트워크 요금이 적용됩니다.\n<a href='https://youtu.be/xiuT59ueJ8c'>비디오 튜토리얼 (이 방법은 모든 블록 체인에서 작동합니다)</a>\n\n<strong>6 단계 :</strong> 주문이 종료 될 때까지 기다립니다. 다른 사용자가 주문을 처리하거나 Uniswap의 쌍의 요금 (가스 요금 포함)이 일치하는 경우 Rubic이 자동으로 주문을 처리 할 수 \u200B\u200B있습니다.\n\n<strong>중대한:</strong>\n* 판매자는 거래의 측면을 100 % 완료해야합니다 (동영상 자습서 확인). 거래에서 유일한 판매자가 되려면 '모두 채우기'를 선택해야합니다. 이렇게하면 거래의 일부가 100 % 완료되고 다른 구매자 (또는 지정가 주문 기능)가 사용할 수있게됩니다. \n** 구매자가 주문의 일부를 채우고 자하는 경우 지정가 주문 기능은 여전히 \u200B\u200B그 일부를 수행하고 100 % 완료 될 때까지 나머지 주문을 자동으로 채 웁니다.\n*** 거래 만료일에 도달 한 경우 거래 테이블로 이동하여 '환불'버튼을 클릭하여 토큰을 되 찾을 수 있습니다 (네트워크 수수료가 적용됩니다).\n\n지정가 주문에 사용할 수있는 첫 번째 토큰 쌍은 RBC / ETH입니다. 나중에 Ethereum, Polygon 및 Binance Smart Chain과 같은 여러 블록 체인에 대한 새로운 쌍을 추가하고 지원할 계획입니다.\n\n거래는 \"CLOSING DATE\"매개 변수에 지정된 시간에 도달하면 마감됩니다."
+        "title": "How do I use the ETH <-> Polygon bridge?",
+        "answer": "On Rubic.exchange, you’re able to swap ERC20 tokens with their corresponding version in the Polygon network and vice-versa (for example, swap USDT- ERC20 with USDT in the Polygon network). Since Ethereum is facing high gas fees and BSC only started adding more validators, people are looking for networks that are more attractive for traders. Users will be able to transfer their tokens onto the Polygon ecosystem, all within the Rubic platform. Polygon has already powered more than 7M transactions for more than 300k user addresses, with transaction activity increasing by the day. Currently, our bridge will only allow users to swap PoS tokens.\n\n Swap from Ethereum to Polygon:\n\n <strong>Step 1.</strong> Enter the number of tokens that you want to swap and press “Create Swap.”\n\n <strong>Step 2.</strong> Accept the transaction through your MetaMask or a wallet that’s compatible with WalletConnect.\n\n <strong>Step 3.</strong> Your transaction status will be shown on the table.\n\n <strong>Step 4.</strong>  After 7–10 minutes, your cross-chain swap will be completed and you’ll be able to trade your tokens within the Polygon network.\n\n Swap from Polygon to Ethereum:\n\n <strong>Step 1.</strong> Enter the number of tokens that you want to swap and press “Create swap.”\n\n <strong>Step 2.</strong> Wait until the “Withdraw in progress” status is changed to “Waiting for deposit”. Your transaction status will be shown on the table.\n\n <strong>Step 3.</strong> Press “Receive.”\n\n <strong>Step 4.</strong> Your tokens will be swapped to your wallet on the Ethereum network as soon as the transaction is mined.\n\n In some cases, completing swaps might take more time than usual."
+      },
+      "26": {
+        "title": "How do I use the xDai bridge? ",
+        "answer": "<strong>Step 1.</strong> Install and unlock MetaMask wallet (www.metamask.io) or use WalletConnect to connect your wallet to <a href='http://www.rubic.exchange/'>www.rubic.exchange.</a>\n\n <strong>Step 2.</strong>  Choose your exchange destination (from Ethereum to xDai).\n\n <strong>Step 3.</strong> Currently, users are able to swap DAI tokens to the xDAI version.\n\n <strong>Step 4.</strong> Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Proceed if you’re satisfied with the amount of returning tokens.\n\n <strong>Step 5.</strong> You can view token contracts by clicking on 'Check on Etherscan/Blockscout.’\n\n <strong>Step 6.</strong>  Click “Swap,” followed by accepting your wallet’s trade confirmation.\n\n <strong>Step 7.</strong> Please wait until the transaction is recorded on the blockchain. You’ll be notified once your transaction is accepted, and you can find the transaction details in the table. Please wait until the xDai bridge processes it as well."
       }
     }
   },
