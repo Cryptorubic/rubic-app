@@ -18,7 +18,7 @@ import CustomError from 'src/app/core/errors/models/custom-error';
 import {
   OneInchQuoteResponse,
   OneInchSwapResponse
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch-types';
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch.types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import {
   ItSettingsForm,
@@ -210,11 +210,7 @@ export class OneInchEthService implements ItProvider {
     }
     const oneInchTrade = (await this.httpClient
       .get(`${this.apiBaseUrl}swap`, tradeParams)
-      .pipe(
-        catchError(err => {
-          throw new CustomError(err.error.message);
-        })
-      )
+      .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
     const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);

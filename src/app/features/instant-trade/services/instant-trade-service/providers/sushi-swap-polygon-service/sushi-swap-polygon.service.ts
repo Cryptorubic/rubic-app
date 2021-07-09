@@ -5,48 +5,33 @@ import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTrad
 import { Observable } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TransactionReceipt } from 'web3-eth';
-import {
-  SushiRoute,
-  SushiRoutesResponse
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-service/sushi-swap.types';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import {
   abi,
   ethToTokensEstimatedGas,
+  maxTransitTokens,
   routingProviders,
+  sushiSwapPolygonContracts,
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
-  sushiSwapContracts,
   WETH
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-service/sushi-swap-constants';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import {
-  Gas,
-  UniswapRoute,
-  UniSwapTrade
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
-import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+} from './sushi-swap-polygon.constants';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SushiSwapService implements ItProvider {
-  private readonly apiUrl = 'https://api.sushipro.io/find_route';
-
-  private readonly apiKey = 'Rub1cl33T*';
-
+export class SushiSwapPolygonService implements ItProvider {
   protected blockchain: BLOCKCHAIN_NAME;
 
   protected shouldCalculateGas: boolean;
@@ -66,15 +51,13 @@ export class SushiSwapService implements ItProvider {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly settingsService: SettingsService,
     private readonly commonUniswap: CommonUniswapService,
-    private readonly w3Public: Web3PublicService,
-    private readonly web3Private: Web3PrivateService,
-    private readonly coingeckoApiService: CoingeckoApiService
+    private readonly w3Public: Web3PublicService
   ) {
-    this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM];
-    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.web3Public = w3Public[BLOCKCHAIN_NAME.POLYGON];
+    this.blockchain = BLOCKCHAIN_NAME.POLYGON;
     this.shouldCalculateGas = true;
     this.WETHAddress = WETH.address;
-    this.sushiswapContractAddress = sushiSwapContracts.address;
+    this.sushiswapContractAddress = sushiSwapPolygonContracts.address;
     this.routingProviders = routingProviders.addresses;
 
     const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
@@ -125,11 +108,20 @@ export class SushiSwapService implements ItProvider {
       estimatedGasArray = tokensToEthEstimatedGas;
     }
 
-    const { route, gasData } = await this.getToAmountAndPath(
-      fromAmount.toString(),
+    const amountIn = fromAmount.multipliedBy(10 ** fromTokenClone.decimals).toFixed(0);
+
+    const { route, gasData } = await this.commonUniswap.getToAmountAndPath(
+      this.settings.rubicOptimisation,
+      amountIn,
       fromTokenClone,
       toTokenClone,
       estimatedGasPredictionMethod,
+      this.settings,
+      this.web3Public,
+      routingProviders.addresses,
+      this.sushiswapContractAddress,
+      abi,
+      maxTransitTokens,
       estimatedGasArray
     );
 
@@ -140,7 +132,7 @@ export class SushiSwapService implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: route.outputAbsoluteAmount
+        amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
       },
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
@@ -198,83 +190,5 @@ export class SushiSwapService implements ItProvider {
       this.sushiswapContractAddress,
       abi
     );
-  }
-
-  /**
-   * @description Fetch routes from sushi api.
-   * @param fromAmount Tokens trade from amount.
-   * @param fromToken Instant trade from token.
-   * @param toToken Instant trade to token.
-   * @return Observable<SushiRoutesResponse<SushiRoute[]>> Sushi routes array.
-   */
-  private fetchRoutes(
-    fromAmount: string,
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
-  ): Promise<SushiRoutesResponse<SushiRoute[]>> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-    const requestData = {
-      api_key: this.apiKey,
-      quantity: fromAmount,
-      token_input: fromToken.address.toString(),
-      token_output: toToken.address.toString(),
-      hops: '4'
-    } as { [param: string]: string | readonly string[] };
-    const httpParams = new HttpParams({ fromObject: requestData });
-    return this.httpService.post('', httpParams, this.apiUrl, { headers }).toPromise();
-  }
-
-  private async getToAmountAndPath(
-    fromAmountAbsolute: string,
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    gasCalculationMethodName: string,
-    estimatedGasArray: BigNumber[]
-  ): Promise<{ route: UniswapRoute; gasData: Gas }> {
-    const sushiRoutes = await this.fetchRoutes(fromAmountAbsolute, fromToken, toToken);
-    if (sushiRoutes.number_of_routes === 0) {
-      throw new InsufficientLiquidityError();
-    }
-    const bestSushiRoute = sushiRoutes.route.sort((a, b) =>
-      b.sum_output > a.sum_output ? 1 : -1
-    )[0];
-
-    const route = {
-      path: bestSushiRoute.route.split(';'),
-      outputAbsoluteAmount: new BigNumber(bestSushiRoute.sum_output)
-    };
-
-    const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await this.web3Public.getGasPriceInETH();
-
-    const amountOutMin = route.outputAbsoluteAmount
-      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
-      .toFixed(0);
-
-    const estimatedGas = await this.commonUniswap[gasCalculationMethodName](
-      fromAmountAbsolute,
-      amountOutMin,
-      route.path,
-      to,
-      deadline,
-      this.sushiswapContractAddress,
-      this.web3Public,
-      estimatedGasArray,
-      abi
-    );
-
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
-    const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
-
-    return {
-      route,
-      gasData: {
-        estimatedGas,
-        gasFeeInEth,
-        gasFeeInUsd
-      }
-    };
   }
 }

@@ -18,10 +18,9 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { AuthService } from '../../../../../services/auth/auth.service';
 import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
-import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component';
 
 @Component({
   selector: 'app-user-profile',
