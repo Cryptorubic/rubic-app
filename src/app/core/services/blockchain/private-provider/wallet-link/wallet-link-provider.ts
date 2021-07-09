@@ -89,7 +89,7 @@ export class WalletLinkProvider extends PrivateProvider {
       this.selectedChain = chain.name;
       this.isEnabled = true;
     } catch (error) {
-      this.errorsService.throw$(new WalletlinkError());
+      throw new WalletlinkError();
     }
   }
 
@@ -102,10 +102,10 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw$(new WalletlinkError());
+      throw new WalletlinkError();
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw$(new NetworkError(token.blockchain));
+      throw new NetworkError(token.blockchain);
     }
 
     return this.core.request({

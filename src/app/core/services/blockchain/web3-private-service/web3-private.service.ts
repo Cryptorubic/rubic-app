@@ -5,6 +5,7 @@ import { TransactionReceipt } from 'web3-eth';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
+import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -251,11 +252,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Method execution error. ${err}`);
           if (err.message.includes('Transaction has been reverted by the EVM')) {
-            reject(
-              new CustomError(
-                'Transaction has been reverted by the EVM. Try to increase transaction deadline.'
-              )
-            );
+            reject(new TransactionRevertedError());
           }
           if (err.code === 4001) {
             reject(new UserRejectError());

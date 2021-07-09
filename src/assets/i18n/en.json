@@ -58,7 +58,8 @@
     "notSupportedBridge": "Currently this bridge is unavailable. Please select supported bridge.",
     "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
     "oneinchRefreshError":  "1inch is currently unavailable. Please try to refresh the trade.",
-    "1inchNotSupportedToken": "1inch not supports one of entered tokens."
+    "1inchNotSupportedToken": "1inch not supports one of entered tokens.",
+    "transactionReverted": "Transaction has been reverted by the EVM. Try to increase transaction deadline."
   },
   "navigation": {
     "about": "About",

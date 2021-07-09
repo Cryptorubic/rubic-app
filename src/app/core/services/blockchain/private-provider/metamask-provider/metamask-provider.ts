@@ -108,7 +108,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.selectedAddress);
     } catch (error) {
-      this.errorsService.throw$(new MetamaskError());
+      throw new MetamaskError();
     }
   }
 
@@ -132,10 +132,10 @@ export class MetamaskProvider extends PrivateProvider {
 
   public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw$(new MetamaskError());
+      throw new MetamaskError();
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw$(new NetworkError(token.blockchain));
+      throw new NetworkError(token.blockchain);
     }
 
     return this.core.request({

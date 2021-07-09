@@ -58,7 +58,8 @@
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
     "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
     "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
-    "1inchNotSupportedToken": "1inch no admite uno de los tokens ingresados."
+    "1inchNotSupportedToken": "1inch no admite uno de los tokens ingresados.",
+    "transactionReverted": "Transaction has been reverted by the EVM. Try to increase transaction deadline."
   },
   "navigation": {
     "about": "Información",

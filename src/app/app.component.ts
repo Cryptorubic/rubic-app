@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -19,10 +20,17 @@ export class AppComponent {
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly errorService: ErrorsService
   ) {
     const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
-      (queryParams: QueryParams) => this.queryParamsService.setupQueryParams(queryParams)
+      (queryParams: QueryParams) => {
+        try {
+          this.queryParamsService.setupQueryParams(queryParams);
+        } catch (err) {
+          this.errorService.catch$(err);
+        }
+      }
     );
     setTimeout(() => {
       queryParamsSubscription$.unsubscribe();

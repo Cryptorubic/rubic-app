@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -40,7 +41,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly errorService: ErrorsService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -65,7 +67,11 @@ export class HeaderComponent implements AfterViewInit {
     const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.isIframe$);
     this.storeService.fetchData(isIframe);
     if (!isIframe) {
-      await this.authService.loadUser();
+      try {
+        await this.authService.loadUser();
+      } catch (err) {
+        this.errorService.catch$(err);
+      }
     }
   }
 
