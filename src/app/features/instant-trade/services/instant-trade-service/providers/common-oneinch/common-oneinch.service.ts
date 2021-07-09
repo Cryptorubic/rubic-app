@@ -114,7 +114,7 @@ export class CommonOneinchService {
     }
   }
 
-  public needApprove(
+  public getAllowance(
     tokenAddress: string,
     web3Public: Web3Public,
     blockchain: BLOCKCHAIN_NAME,

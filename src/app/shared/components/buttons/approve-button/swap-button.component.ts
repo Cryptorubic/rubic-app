@@ -169,20 +169,14 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (!this._fromAmount || !this.fromToken) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.loading = false;
-      this.cdr.markForCheck();
-      return;
-    }
-
-    if (this.fromToken.amount.isNaN()) {
-      this.loading = true;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
       return;
     }
 
     this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = this.fromToken.amount.lt(this._fromAmount);
 
     this.loading = false;
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   private checkWrongBlockchainError(): void {
@@ -195,7 +189,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       fromBlockchain !== userBlockchain &&
       (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   public onLogin() {

@@ -21,7 +21,7 @@
       <div class="provider-panel__left">
         <div
           class="provider-panel__amount"
-          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
+          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading, 'provider-panel__amount_error': hasError }"
         >
           {{
             (providerData.amount?.toString(10)

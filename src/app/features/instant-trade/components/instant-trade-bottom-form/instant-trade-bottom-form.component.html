@@ -15,11 +15,11 @@
     <main class="instant-trade-bottom-form__body">
       <div
         class="instant-trade-bottom-form__provider-item"
-        *ngFor="let provider of providerControllers; let i = index"
+        *ngFor="let provider of orderedProviders"
       >
         <app-provider-panel
           [providerControllerData]="provider"
-          (selectProvider)="selectProvider(i)"
+          (selectProvider)="selectProvider(provider.tradeProviderInfo.value)"
         ></app-provider-panel>
       </div>
     </main>

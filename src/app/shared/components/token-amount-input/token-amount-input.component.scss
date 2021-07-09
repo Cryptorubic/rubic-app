@@ -83,7 +83,7 @@ $background-white: #fcfcfc;
   white-space: nowrap;
 
   &__error-info {
-    color: #dfcb5f;
+    color: $rubic-text-error;
     font-size: 18px;
     font-family: $roboto-font;
     line-height: 21px;

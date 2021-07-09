@@ -64,6 +64,8 @@
     "InsufficientBalance": "Баланс недостаточен",
     "setTronAddress": "Задайте Адрес Tron в настройках",
     "chooseNetworkWallet": "Выберите {{blockchain}} сеть в вашем кошельке"
+    "1inchNotSupportedToken": "1inch не поддерживает один из введенных токенов.",
+    "transactionReverted": "Транзакция отклонена EVM. Попробуйте увеличить срок действия транзакции в настройках."
   },
   "navigation": {
     "about": "О компании",

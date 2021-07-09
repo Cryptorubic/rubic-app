@@ -139,7 +139,7 @@ export class TokensSelectComponent implements OnInit {
 
       const blockchainToken: BlockchainToken = await web3Public.getTokenInfo(this.query);
 
-      if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals) {
+      if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals != null) {
         const amount = this.authService.user?.address
           ? (await web3Public.getTokenBalance(this.authService.user.address, this.query)).div(
               10 ** blockchainToken.decimals
