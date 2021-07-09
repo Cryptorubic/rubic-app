@@ -415,6 +415,16 @@
       "provider": "提供者",
       "explorerLink": "資源管理器鏈接"
     },
+    "statuses": {
+      "completed": "完全的",
+      "pending": "待辦的",
+      "canceled": "取消",
+      "rejected": "拒絕了",
+      "depositInProgress": "存款進行中",
+      "withdrawInProgress": "撤回進行中",
+      "waitingForDeposit": "等待存款",
+      "waitingForReceiving": "等待接收"
+    },
     "noData": "您還沒有交易",
     "noTrades": "沒有交易",
     "noTradesWithSelected": "沒有選擇參數的交易",

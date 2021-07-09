@@ -415,6 +415,16 @@
       "provider": "Провайдер",
       "explorerLink": "Ссылка на проводник"
     },
+    "statuses": {
+      "completed": "Завершено",
+      "pending": "Ожидается",
+      "canceled": "Отменено",
+      "rejected": "Отклонено",
+      "depositInProgress": "Депозит в процессе",
+      "withdrawInProgress": "Вывод в процессе",
+      "waitingForDeposit": "Ожидание депозита",
+      "waitingForReceiving": "Ожидание получения"
+    },
     "noData": "У вас еще нет сделок",
     "noTrades": "Сделок нет",
     "noTradesWithSelected": "С текущими параметрами сделок не существует",

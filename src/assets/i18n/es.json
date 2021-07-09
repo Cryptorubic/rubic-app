@@ -415,6 +415,16 @@
       "provider": "Proveedora",
       "explorerLink": "Enlace del explorador"
     },
+    "statuses": {
+      "completed": "completado",
+      "pending": "pendiente",
+      "canceled": "cancelado",
+      "rejected": "rechazado",
+      "depositInProgress": "depósito en curso",
+      "withdrawInProgress": "retiro en curso",
+      "waitingForDeposit": "esperando depósito",
+      "waitingForReceiving": "esperando recibir"
+    },
     "noData": "Aún no tienes intercambios",
     "noTrades": "There are no trades",
     "noTradesWithSelected": "There are no trades with selected parameters",

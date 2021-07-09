@@ -415,6 +415,16 @@
       "provider": "공급자",
       "explorerLink": "탐색기 링크"
     },
+    "statuses": {
+      "completed": "완료 됨",
+      "pending": "보류 중",
+      "canceled": "취소 된",
+      "rejected": "거부",
+      "depositInProgress": "입금 진행 중",
+      "withdrawInProgress": "출금 진행 중",
+      "waitingForDeposit": "입금을 기다리는 중",
+      "waitingForReceiving": "받기를 기다리고"
+    },
     "noData": "아직 거래가 없습니다",
     "noTrades": "거래가 없습니다",
     "noTradesWithSelected": "선택한 매개 변수를 사용한 거래가 없습니다.",
