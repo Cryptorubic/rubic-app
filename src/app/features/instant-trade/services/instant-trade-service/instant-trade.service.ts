@@ -22,6 +22,7 @@ import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trad
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TranslateService } from '@ngx-translate/core';
 import { SushiSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-service/sushi-swap.service';
+import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 
 @Injectable({
   providedIn: 'root'
@@ -123,10 +124,15 @@ export class InstantTradeService {
         txHash: receipt.transactionHash
       });
     } catch (err) {
+      if (err instanceof TransactionRevertedError) {
+        console.error(err);
+      } else {
+        this.errorService.catch$(err);
+      }
+    } finally {
       if (this.modalShowing) {
         this.modalShowing.unsubscribe();
       }
-      this.errorService.catch$(err);
     }
   }
 
@@ -201,25 +207,21 @@ export class InstantTradeService {
       if (this.modalShowing) {
         this.modalShowing.unsubscribe();
       }
-      this.errorService.throw$(err);
+      throw err;
     }
   }
 
   public getApprove(): Observable<boolean[]> | never {
-    try {
-      const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
-      const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
-      const providerApproveData = providers.map((provider: ItProvider) =>
-        provider.getAllowance(fromToken.address)
-      );
+    const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
+    const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
+    const providerApproveData = providers.map((provider: ItProvider) =>
+      provider.getAllowance(fromToken.address)
+    );
 
-      return forkJoin(providerApproveData).pipe(
-        map((approveArray: BigNumber[]) => {
-          return approveArray.map(el => fromAmount.gt(el));
-        })
-      );
-    } catch (err) {
-      return this.errorService.throw$(err);
-    }
+    return forkJoin(providerApproveData).pipe(
+      map((approveArray: BigNumber[]) => {
+        return approveArray.map(el => fromAmount.gt(el));
+      })
+    );
   }
 }

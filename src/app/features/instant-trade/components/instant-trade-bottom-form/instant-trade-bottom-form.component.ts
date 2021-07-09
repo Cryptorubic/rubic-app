@@ -40,6 +40,8 @@ interface CalculationResult {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
+  private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
+
   public get allowTrade(): boolean {
     const form = this.swapFormService.commonTrade.controls.input.value;
     return Boolean(
@@ -105,6 +107,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly testingMode: UseTestingModeService
   ) {
+    this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
     this.tradeStatus = TRADE_STATUS.DISABLED;
   }
 
@@ -133,39 +136,40 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (form.fromBlockchain !== form.toBlockchain) {
       return;
     }
-    if (
-      form.fromBlockchain === BLOCKCHAIN_NAME.TRON ||
-      form.fromBlockchain === BLOCKCHAIN_NAME.XDAI
-    ) {
+    if (this.unsupportedItNetworks.includes(form.toBlockchain)) {
       throw new NotSupportedItNetwork();
     }
     await this.calculateTrades();
   }
 
   public async calculateTrades(): Promise<void> {
-    const form = this.swapFormService.commonTrade.controls.input.value;
-    if (
-      !(
-        form.fromToken &&
-        form.toToken &&
-        form.fromBlockchain &&
-        form.fromAmount &&
-        form.toBlockchain &&
-        form.fromAmount.gt(0)
-      )
-    ) {
-      return;
+    try {
+      const form = this.swapFormService.commonTrade.controls.input.value;
+      if (
+        !(
+          form.fromToken &&
+          form.toToken &&
+          form.fromBlockchain &&
+          form.fromAmount &&
+          form.toBlockchain &&
+          form.fromAmount.gt(0)
+        )
+      ) {
+        return;
+      }
+
+      this.prepareControllers();
+      const approveData =
+        this.authService.user?.address && !this.testingMode.isTestingMode.value
+          ? await this.instantTradeService.getApprove().toPromise()
+          : new Array(this.providerControllers.length).fill(null);
+      const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+
+      const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+      this.setupControllers(tradeData, approveData, bestProviderIndex);
+    } catch (err) {
+      this.errorService.catch$(err);
     }
-
-    this.prepareControllers();
-    const approveData =
-      this.authService.user?.address && !this.testingMode.isTestingMode.value
-        ? await this.instantTradeService.getApprove().toPromise()
-        : new Array(this.providerControllers.length).fill(null);
-    const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
-
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
-    this.setupControllers(tradeData, approveData, bestProviderIndex);
   }
 
   private prepareControllers(): void {
@@ -185,7 +189,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   ): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
-      isSelected: !controller.error && controller.isSelected,
+      isSelected:
+        !controller.error && controller.isSelected && tradeData[index]?.status === 'fulfilled',
       trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
       isBestRate: false,
       needApprove: approveData[index],
@@ -351,10 +356,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           needApprove: true
         };
         this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+        this.errorService.catch$(err);
       }
       this.cdr.detectChanges();
     } else {
-      this.errorService.throw$(new NoSelectedProviderError());
+      this.errorService.catch$(new NoSelectedProviderError());
     }
   }
 

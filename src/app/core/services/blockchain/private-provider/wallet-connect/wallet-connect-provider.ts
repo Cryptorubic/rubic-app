@@ -129,10 +129,10 @@ export class WalletConnectProvider extends PrivateProvider {
 
   public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw$(new WalletconnectError());
+      throw new WalletconnectError();
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw$(new NetworkError(token.blockchain));
+      throw new NetworkError(token.blockchain);
     }
 
     return this.core.request({

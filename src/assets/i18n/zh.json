@@ -58,7 +58,8 @@
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
     "insufficientLiquidity": "這筆交易的流動性不足。 嘗試啟用多跳交易。",
     "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
-    "1inchNotSupportedToken": "1inch 目前不可用。 請嘗試刷新交易。"
+    "1inchNotSupportedToken": "1inch 目前不可用。 請嘗試刷新交易。",
+    "transactionReverted": "Transaction has been reverted by the EVM. Try to increase transaction deadline."
   },
   "navigation": {
     "about": "关于",
