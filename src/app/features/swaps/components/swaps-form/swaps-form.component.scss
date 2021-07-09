@@ -110,10 +110,24 @@
 
 @include b($mobile-md) {
   .swaps-form {
+    position: relative;
+
     padding: 0 0 20px;
 
     &__header {
+      height: 0;
+      margin-bottom: 0;
+    }
+
+    &__title,
+    &__refresh {
       display: none;
+    }
+
+    &__settings {
+      position: absolute;
+      top: 15px;
+      right: 20px;
     }
 
     &__top-part {

@@ -2,6 +2,7 @@
 
 .settings {
   min-width: 265px;
+  max-width: 320px;
   padding: 20px;
 
   &__form {
@@ -39,7 +40,7 @@
   }
 
   &__toggle {
-    margin-left: 30px;
+    margin-left: 15px;
   }
 
   &__form-row {

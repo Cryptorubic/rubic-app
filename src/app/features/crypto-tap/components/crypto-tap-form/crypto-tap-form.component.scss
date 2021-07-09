@@ -83,10 +83,6 @@
       font-weight: 400;
     }
   }
-
-  &__button-container {
-    padding: 0 20px;
-  }
 }
 
 .swaps-volume {
@@ -135,6 +131,10 @@ app-amount-estimated {
       > * {
         top: 0;
       }
+    }
+
+    &__button-container {
+      padding: 0 20px;
     }
   }
 }

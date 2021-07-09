@@ -18,7 +18,7 @@
     "advancedOptions": "Opciones Avanzadas",
     "send": "Send",
     "left": "Left",
-    "checkOnExplorer": "Verifique en el Explorador",
+    "checkOnScanner": "Check on scanner",
     "useCustomToken": "Utiliza un token personalizado",
     "cancel": "Cancel",
     "add": "Add",
@@ -51,15 +51,19 @@
     "wrongToken": "El puente de rubic solo admite token de rubic.",
     "oneInchQuote": "1inch de cotización",
     "notSupportedNetwork": "{{networkToChoose}} no es compatible con el proveedor de billetera seleccionado.",
-    "signReject": "Tiene signo de billetera rechazada. Confirme primero para iniciar sesión en nuestra aplicación",
+    "signReject": "Ha rechazado un inicio de sesión con su billetera. Confirme un inicio de sesión con su billetera para utilizar completamente nuestra aplicación.",
     "lowGas": "El gas de transacción es demasiado bajo. No hay suficiente gas para cubrir el costo mínimo de la transacción. Intente aumentar el gas suministrado",
     "noSelectedProvider": "No ha seleccionado ningún proveedor de intercambio",
     "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
     "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
     "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
-    "1inchNotSupportedToken": "1inch no admite uno de los tokens ingresados.",
-    "transactionReverted": "Transaction has been reverted by the EVM. Try to increase transaction deadline."
+    "1inchNotSupportedToken": "1inch no es compatible con uno de los tokens seleccionados.",
+    "cancelDeadline": "Su transacción se ha revertido porque la fecha límite de la transacción ha expirado. Intente aumentar el tiempo límite de la transacción o la cantidad de gas.",
+    "chooseSupportedBridge": "Elija un puente compatible",
+    "InsufficientBalance": "Saldo insuficiente",
+    "setTronAddress": "Establecer la dirección TRON en la configuración",
+    "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera"
   },
   "navigation": {
     "about": "Información",
@@ -68,7 +72,7 @@
     "team": "Equipo",
     "project": "Proyecto",
     "login": "Conecta tu Billetera",
-    "myTrades": "Mis intercambios",
+    "myTrades": "Mis Intercambios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿Deseas Cerrar Sesión?",
     "notAvailable": "En construcción - Rediseño de UX."
@@ -390,7 +394,7 @@
     "title": "Ntercambios entre plataformas"
   },
   "myTrades": {
-    "title": "Mis intercambios"
+    "title": "Mis Intercambios"
   },
   "tradesForm": {
     "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
@@ -410,6 +414,16 @@
       "date": "Fecha",
       "provider": "Proveedora",
       "explorerLink": "Enlace del explorador"
+    },
+    "statuses": {
+      "completed": "completado",
+      "pending": "pendiente",
+      "canceled": "cancelado",
+      "rejected": "rechazado",
+      "depositInProgress": "depósito en curso",
+      "withdrawInProgress": "retiro en curso",
+      "waitingForDeposit": "esperando depósito",
+      "waitingForReceiving": "esperando recibir"
     },
     "noData": "Aún no tienes intercambios",
     "noTrades": "There are no trades",
@@ -465,7 +479,9 @@
     "brokerAddress": "Broker Address",
     "notExist": "Such trade doesn't exist.",
     "rbcLowFees": "Use RBC por tarifas bajas",
-    "discountRBC": "descuento con RBC"
+    "discountRBC": "descuento con RBC",
+    "blockchainsHint": "Más blockchains",
+    "tradingNotAvailable": "El comercio no está disponible"
   },
   "maintenance": {
     "title": "Maintenance",

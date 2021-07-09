@@ -4,6 +4,8 @@ app-spinner {
   left: 50%;
 
   display: block;
+
+  transform: translateX(-50%);
 }
 
 ::ng-deep {
