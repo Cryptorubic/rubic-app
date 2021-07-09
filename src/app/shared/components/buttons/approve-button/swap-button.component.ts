@@ -24,6 +24,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { TranslateService } from '@ngx-translate/core';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -98,16 +99,18 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   // eslint-disable-next-line consistent-return
   get errorText(): string {
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
-      return `Choose supported bridge`;
+      return this.translateService.instant('errors.chooseSupportedBridge');
     }
     if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
-      return 'Insufficient balance';
+      return this.translateService.instant('errors.InsufficientBalance');
     }
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
-      return `Set TRON address in settings`;
+      return this.translateService.instant('errors.setTronAddress');
     }
     if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      return `Choose ${this.fromToken.blockchain} network in your wallet`;
+      return this.translateService.instant('errors.chooseNetworkWallet', {
+        blockchain: this.fromToken.blockchain
+      });
     }
   }
 
@@ -118,7 +121,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly dialogService: TuiDialogService,
-    @Inject(INJECTOR) private readonly injector: Injector
+    @Inject(INJECTOR) private readonly injector: Injector,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {

@@ -1,8 +1,10 @@
-@import '../../../../../scss/vars';
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .team-card {
   box-sizing: border-box;
-  width: 320px;
+  width: 100%;
+  max-width: 320px;
   height: 475px;
   margin: 0 auto;
   padding: 10px;
@@ -40,7 +42,7 @@
     font-weight: bold;
     font-size: 22px;
 
-        font-style: normal;
+    font-style: normal;
     line-height: 32px;
   }
 
@@ -50,7 +52,7 @@
     font-weight: normal;
     font-size: 14px;
 
-        font-style: normal;
+    font-style: normal;
     line-height: 32px;
   }
 
@@ -63,5 +65,17 @@
     width: 18px;
     height: 18px;
     margin-right: 17px;
+  }
+}
+
+@include b($mobile-md) {
+  .team-card {
+    height: auto;
+
+    &__image {
+      width: 100%;
+      height: auto;
+      max-height: 305px;
+    }
   }
 }

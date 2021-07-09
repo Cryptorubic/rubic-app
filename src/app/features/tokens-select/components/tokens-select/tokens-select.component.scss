@@ -34,7 +34,7 @@ app-tokens-search-bar {
   margin-bottom: 14px;
 }
 
-@include b($mobile-md) {
+@include b($mobile-md-minus) {
   .tokens-select {
     height: 100%;
 
