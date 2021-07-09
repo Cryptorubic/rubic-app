@@ -211,11 +211,7 @@ export class OneInchPolService implements ItProvider {
     }
     const oneInchTrade: OneInchSwapResponse = (await this.httpClient
       .get(`${this.apiBaseUrl}swap`, tradeParams)
-      .pipe(
-        catchError(err => {
-          throw new CustomError(err.error.message);
-        })
-      )
+      .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
     const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
