@@ -418,14 +418,14 @@
       "explorerLink": "Ссылка на проводник"
     },
     "statuses": {
-      "completed": "Завершено",
-      "pending": "Ожидается",
-      "canceled": "Отменено",
-      "rejected": "Отклонено",
-      "depositInProgress": "Депозит в процессе",
-      "withdrawInProgress": "Вывод в процессе",
-      "waitingForDeposit": "Ожидание депозита",
-      "waitingForReceiving": "Ожидание получения"
+      "completed": "завершено",
+      "pending": "ожидается",
+      "canceled": "отменено",
+      "rejected": "отклонено",
+      "depositInProgress": "депозит в процессе",
+      "withdrawInProgress": "вывод в процессе",
+      "waitingForDeposit": "ожидание депозита",
+      "waitingForReceiving": "ожидание получения"
     },
     "noData": "У вас еще нет сделок",
     "noTrades": "Сделок нет",
