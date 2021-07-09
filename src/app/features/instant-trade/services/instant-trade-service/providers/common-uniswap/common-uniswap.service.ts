@@ -6,7 +6,7 @@ import {
   SWAP_METHOD,
   UniswapRoute,
   UniSwapTrade
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import { TransactionReceipt } from 'web3-eth';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
