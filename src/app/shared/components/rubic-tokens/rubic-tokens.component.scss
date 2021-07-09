@@ -72,6 +72,12 @@
   }
 }
 
+:host(.crypto) {
+  .tokens__clear-mobile {
+    display: none;
+  }
+}
+
 
 ::ng-deep button .content span {
   font-weight: 300;
