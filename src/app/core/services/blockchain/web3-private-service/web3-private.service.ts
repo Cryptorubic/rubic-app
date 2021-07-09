@@ -26,7 +26,7 @@ export class Web3PrivateService {
 
   constructor(
     private readonly providerConnector: ProviderConnectorService,
-    private translateService: TranslateService
+    private readonly translateService: TranslateService
   ) {
     this.web3 = providerConnector.web3;
     this.defaultMockGas = '400000';
@@ -256,11 +256,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Method execution error. ${err}`);
           if (err.message.includes('Transaction has been reverted by the EVM')) {
-            reject(
-              new CustomError(
-                this.translateService.instant('errors.cancelDeadline')
-              )
-            );
+            reject(new TransactionRevertedError());
           }
           if (err.code === 4001) {
             reject(new UserRejectError());
