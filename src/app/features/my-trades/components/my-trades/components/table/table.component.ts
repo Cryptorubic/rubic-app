@@ -14,6 +14,7 @@ import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { TableData } from 'src/app/features/my-trades/components/my-trades/components/table-data';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
 
 @Component({
   selector: 'app-table',
@@ -33,6 +34,8 @@ export class TableComponent extends TableData implements OnInit {
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
   public readonly columns = COLUMNS;
+
+  public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
 
   public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
     Status: () => 0,

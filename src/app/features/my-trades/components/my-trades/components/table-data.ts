@@ -9,6 +9,7 @@ import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EventEmitter, Output } from '@angular/core';
+import { TRANSACTION_STATUS } from '../../../../../shared/models/blockchain/TRANSACTION_STATUS';
 
 export abstract class TableData {
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();

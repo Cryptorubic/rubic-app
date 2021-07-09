@@ -6,7 +6,7 @@
   <main class="swaps-form__content">
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
-        class="form-panel__blockchains"
+        class="form-panel__blockchains crypto"
         blockchainType="from"
         [formService]="cryptoTapFormService"
         [blockchainsList]="blockchainsListFrom"
@@ -33,14 +33,14 @@
 
     <div class="swaps-form__top-part">
       <app-rubic-blockchains
-        class="form-panel__blockchains form-panel__blockchains_bottom"
+        class="form-panel__blockchains form-panel__blockchains_bottom crypto"
         blockchainType="to"
         [formService]="cryptoTapFormService"
         [blockchainsList]="blockchainsListTo"
       ></app-rubic-blockchains>
 
       <app-rubic-tokens
-        class="form-panel__tokens"
+        class="form-panel__tokens crypto"
         [loading]="tokensLoading"
         tokenType="to"
         [tokens]="availableTokens['to']"

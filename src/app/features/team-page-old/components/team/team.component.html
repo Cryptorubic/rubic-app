@@ -1,8 +1,8 @@
 <div class="team-page">
   <div class="team-page__container">
-    <div class="team-page__title">{{ 'teamPage.title' | translate }}</div>
 
     <main class="team-page__content-wrapper">
+      <div class="team-page__title">{{ 'teamPage.title' | translate }}</div>
       <div class="team-page__card" *ngFor="let card of cards">
         <app-team-card [content]="card"> </app-team-card>
       </div>

@@ -116,6 +116,7 @@ $white: white;
     display: flex;
     flex: 4;
     align-items: center;
+    margin-right: 10px;
   }
 
   &__right {
@@ -133,6 +134,7 @@ $white: white;
 
     font-weight: 300;
     font-size: 24px;
+    line-height: 1.2;
     letter-spacing: 2px;
 
     &_error {
@@ -211,6 +213,10 @@ $white: white;
 
     &__right {
       align-items: flex-start;
+    }
+
+    &__left {
+      margin-right: 0;
     }
 
     &__left,
