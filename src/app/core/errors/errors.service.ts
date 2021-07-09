@@ -16,6 +16,7 @@ export class ErrorsService {
   ) {}
 
   public throw$(error: RubicError): never {
+    // tslint:disable-next-line:no-console
     console.debug(error);
 
     const options = {
@@ -43,7 +44,12 @@ export class ErrorsService {
   }
 
   public catch$(error: RubicError): void {
+    // tslint:disable-next-line:no-console
     console.debug(error);
+
+    if (error.displayError === false) {
+      return;
+    }
 
     const options = {
       label: this.translateService.instant('common.error'),

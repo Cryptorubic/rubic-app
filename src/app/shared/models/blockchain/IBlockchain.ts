@@ -1,5 +1,5 @@
+import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { BLOCKCHAIN_NAME } from './BLOCKCHAIN_NAME';
-import { Token } from '../tokens/Token';
 
 export interface IBlockchain {
   id: number;
@@ -7,5 +7,5 @@ export interface IBlockchain {
   scannerUrl: string;
   rpcLink: string;
   imagePath: string;
-  nativeCoin: Token;
+  nativeCoin: BlockchainToken;
 }

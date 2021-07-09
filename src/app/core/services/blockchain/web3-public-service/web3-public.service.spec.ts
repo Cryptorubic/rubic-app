@@ -1,5 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
+import { AbiItem } from 'web3-utils';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ETH, WEENUS, WETH, WSATT, XEENUS, YEENUS, ZEENUS } from 'src/test/tokens/eth-tokens';
+import { WEENUS_ABI } from 'src/test/tokens/tokens-abi';
+import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
 import { Web3PublicService } from './web3-public.service';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 
@@ -9,18 +14,6 @@ import config from '../../../../../test/enviroment.test.json';
 import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
 
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import {
-  ETH,
-  WEENUS,
-  WETH,
-  WSATT,
-  XEENUS,
-  YEENUS,
-  ZEENUS
-} from '../../../../../test/tokens/eth-tokens';
-import { WEENUS_ABI } from '../../../../../test/tokens/tokens-abi';
-import { coingeckoTestTokens } from '../../../../../test/tokens/coingecko-tokens';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { useTestingModeStub } from '../../use-testing-mode/use-testing-mode.stub';
 
@@ -40,7 +33,7 @@ describe('Web3PublicService', () => {
         { provide: UseTestingModeService, useValue: useTestingModeStub() }
       ]
     });
-    service = TestBed.get(Web3PublicService);
+    service = TestBed.inject(Web3PublicService);
   });
 
   beforeAll(() => {
@@ -85,7 +78,7 @@ describe('Web3PublicService', () => {
       case BLOCKCHAIN_NAME.ETHEREUM:
         {
           const gasFee = await getWeb3Public().getEstimatedGas(
-            WEENUS_ABI,
+            WEENUS_ABI as AbiItem[],
             WEENUS.address,
             'transfer',
             [bobAddress, '30'],
@@ -129,7 +122,7 @@ describe('Web3PublicService', () => {
   it('call contract method works', async done => {
     const weenusSymbol = await getWeb3Public().callContractMethod(
       WEENUS.address,
-      ERC20_TOKEN_ABI,
+      ERC20_TOKEN_ABI as AbiItem[],
       'symbol'
     );
 

@@ -2,14 +2,7 @@
   tuiTable
   class="table"
   [ngClass]="{ table_hidden: loading === false && !(tableData$ | async).length }"
-  [columns]="[
-    'Status',
-    'FromTo',
-    'Provider',
-    'Sent',
-    'Expected',
-    'Date'
-  ]"
+  [columns]="['Status', 'FromTo', 'Provider', 'Sent', 'Expected', 'Date']"
   [sorter]="sorter$ | async"
   [direction]="direction$ | async"
   (sorterChange)="sorter$.next($event)"
@@ -18,27 +11,30 @@
   <thead>
     <tr tuiThGroup>
       <th tuiTh [resizable]="true" *ngFor="let column of columns" [sorter]="sorters[column.value]">
-        <span class="title" *ngIf="column.value !== 'FromTo'">{{ column.translateKey | translate }}</span>
+        <span class="title" *ngIf="column.value !== 'FromTo'">{{
+          column.translateKey | translate
+        }}</span>
 
-        <span class="title" *ngIf="column.value === 'FromTo'">
-          {{ 'tradesTable.columns.from' | translate }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{ 'tradesTable.columns.to' | translate }}
+        <span class="title" *ngIf="column.value === 'FromTo'"
+          >{{ 'tradesTable.columns.from' | translate
+          }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{
+            'tradesTable.columns.to' | translate
+          }}
         </span>
 
         <div
           class="sort-arrow"
-          [ngClass]="{
-            'sort-arrow_green':
-              sorter$.getValue() === sorters[column.value] && direction$.getValue() === -1
-          }"
-          [inlineSVG]="'assets/images/icons/my-trades/arrow-up.svg'"
+          [class.sort-arrow_green]="
+            sorter$.getValue() === sorters[column.value] && direction$.getValue() === -1
+          "
+          inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
         ></div>
         <div
           class="sort-arrow"
-          [ngClass]="{
-            'sort-arrow_green':
-              sorter$.getValue() === sorters[column.value] && direction$.getValue() === 1
-          }"
-          [inlineSVG]="'assets/images/icons/my-trades/arrow-down.svg'"
+          [class.sort-arrow_green]="
+            sorter$.getValue() === sorters[column.value] && direction$.getValue() === 1
+          "
+          inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
         ></div>
       </th>
     </tr>
@@ -72,13 +68,14 @@
               </div>
             </a>
 
-          <app-rubic-button
-            *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
-            size="s"
-            [loading]="item.inProgress"
-            (onClick)="onReceivePolygonBridgeTrade.emit(trade)"
-            >{{ 'tradesTable.receive' | translate }}</app-rubic-button>
-        </td>
+            <app-rubic-button
+              *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
+              size="s"
+              [loading]="item.inProgress"
+              (onClick)="onReceivePolygonBridgeTrade.emit(trade)"
+              >{{ 'tradesTable.receive' | translate }}</app-rubic-button
+            >
+          </td>
 
           <td *tuiCell="'FromTo'" tuiTd class="blockchains">
             <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
@@ -132,7 +129,9 @@
 
           <td *tuiCell="'Expected'" tuiTd class="token">
             <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-              <span>{{ trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+              <span>{{
+                trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
+              }}</span>
               <div class="token-info">
                 <div class="img-container">
                   <img [src]="trade.toToken.image" alt="to token" />

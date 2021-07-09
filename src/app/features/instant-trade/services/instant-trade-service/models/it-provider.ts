@@ -14,7 +14,7 @@ export interface ItProvider {
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
   ) => Promise<InstantTrade>;
-  needApprove: (tokenAddress: string) => Observable<BigNumber>;
+  getAllowance: (tokenAddress: string) => Observable<BigNumber>;
   approve: (
     tokenAddress: string,
     options: {

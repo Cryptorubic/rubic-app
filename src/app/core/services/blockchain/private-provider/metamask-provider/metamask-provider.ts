@@ -1,10 +1,10 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { MetamaskError } from 'src/app/core/errors/models/provider/MetamaskError';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -108,7 +108,7 @@ export class MetamaskProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.selectedAddress);
     } catch (error) {
-      this.errorsService.throw$(new MetamaskError());
+      throw new MetamaskError();
     }
   }
 
@@ -130,12 +130,12 @@ export class MetamaskProvider extends PrivateProvider {
     this.isEnabled = false;
   }
 
-  public addToken(token: SwapToken): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw$(new MetamaskError());
+      throw new MetamaskError();
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw$(new NetworkError(token.blockchain));
+      throw new NetworkError(token.blockchain);
     }
 
     return this.core.request({

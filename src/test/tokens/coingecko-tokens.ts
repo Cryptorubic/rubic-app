@@ -1,7 +1,8 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
+import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
 
 const eth: TokenAmount = {
@@ -86,7 +87,7 @@ const bnb: TokenAmount = {
   name: 'Binance Coin',
   symbol: 'BNB',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  address: '0x0000000000000000000000000000000000000000',
+  address: NATIVE_TOKEN_ADDRESS,
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 1,
@@ -112,7 +113,7 @@ const matic: TokenAmount = {
   name: 'Matic',
   symbol: 'MATIC',
   blockchain: BLOCKCHAIN_NAME.POLYGON,
-  address: '0x0000000000000000000000000000000000000000',
+  address: NATIVE_TOKEN_ADDRESS,
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 2,

@@ -3,6 +3,9 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import CustomError from 'src/app/core/errors/models/custom-error';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { AbiItem } from 'web3-utils';
+import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -38,12 +41,9 @@ export class Web3PrivateService {
     contractAddress: string,
     toAddress: string,
     amount: string | BigNumber,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-      gas?: string;
-    } = {}
+    options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], contractAddress);
 
     return new Promise((resolve, reject) => {
       contract.methods
@@ -80,7 +80,7 @@ export class Web3PrivateService {
     toAddress: string,
     amount: string | BigNumber
   ): Promise<string> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], contractAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], contractAddress);
 
     return new Promise((resolve, reject) => {
       contract.methods
@@ -115,13 +115,7 @@ export class Web3PrivateService {
   public async sendTransaction(
     toAddress: string,
     value: BigNumber | string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-      inWei?: boolean;
-      data?: string;
-      gas?: string;
-      gasPrice?: string;
-    } = {}
+    options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     return new Promise((resolve, reject) => {
       this.web3.eth
@@ -160,9 +154,7 @@ export class Web3PrivateService {
   public async sendTransactionWithOnHashResolve(
     toAddress: string,
     value: string | BigNumber,
-    options: {
-      inWei?: boolean;
-    } = {}
+    options: TransactionOptions = {}
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       this.web3.eth
@@ -198,9 +190,7 @@ export class Web3PrivateService {
     tokenAddress: string,
     spenderAddress: string,
     value: BigNumber | 'infinity',
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    } = {}
+    options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     let rawValue: BigNumber;
     if (value === 'infinity') {
@@ -208,7 +198,7 @@ export class Web3PrivateService {
     } else {
       rawValue = value;
     }
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as any[], tokenAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
 
     return new Promise((resolve, reject) => {
       contract.methods
@@ -243,14 +233,10 @@ export class Web3PrivateService {
    */
   public async executeContractMethod(
     contractAddress: string,
-    contractAbi: any[],
+    contractAbi: AbiItem[],
     methodName: string,
-    methodArguments: any[],
-    options: {
-      onTransactionHash?: (hash: string) => void;
-      value?: BigNumber | string;
-      gas?: string;
-    } = {}
+    methodArguments: unknown[],
+    options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
@@ -266,11 +252,7 @@ export class Web3PrivateService {
         .on('error', err => {
           console.error(`Method execution error. ${err}`);
           if (err.message.includes('Transaction has been reverted by the EVM')) {
-            reject(
-              new CustomError(
-                'Transaction has been reverted by the EVM. Try to increase transaction deadline.'
-              )
-            );
+            reject(new TransactionRevertedError());
           }
           if (err.code === 4001) {
             reject(new UserRejectError());
@@ -291,10 +273,10 @@ export class Web3PrivateService {
    */
   public executeContractMethodWithOnHashResolve(
     contractAddress: string,
-    contractAbi: any[],
+    contractAbi: AbiItem[],
     methodName: string,
-    methodArguments: any[]
-  ): Promise<any> {
+    methodArguments: unknown[]
+  ): Promise<unknown> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return new Promise((resolve, reject) => {

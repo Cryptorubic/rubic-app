@@ -10,6 +10,8 @@ export abstract class RubicError extends Error {
 
   public data: object;
 
+  public displayError: boolean;
+
   protected constructor(
     errorType: ErrorType,
     translateKey?: string,
@@ -22,5 +24,6 @@ export abstract class RubicError extends Error {
     this.type = errorType;
     this.component = component;
     this.data = data;
+    this.displayError = true;
   }
 }
