@@ -1,21 +1,18 @@
-@import '../../../../../scss/mixins';
-@import '../../../../../scss/vars';
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .about-page {
   font-weight: normal;
 
   background-color: white;
+  border-radius: 10px;
 
   @include b(1100) {
     background-image: none;
   }
 
   .first-block {
-    padding-top: 200px;
-
-    @include b(850) {
-      padding-top: 100px;
-    }
+    padding-top: 25px;
 
     .container {
       display: grid;
@@ -359,5 +356,28 @@
         }
       }
     }
+  }
+}
+
+@include b($mobile-md) {
+  .h3-block-title-s1 {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .about-page {
+    .benefit {
+      margin-top: 0;
+    }
+
+    .rubic-roadmap,
+    .rubic-contract,
+    .features {
+      margin-top: 20px;
+    }
+  }
+
+  .span-title-benefits {
+    font-size: 21px;
   }
 }
