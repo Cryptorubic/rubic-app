@@ -13,7 +13,7 @@
           [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
           appearance="secondary"
         >
-          Swap
+          Approve
         </app-rubic-button>
         <app-rubic-button
           [fullWidth]="true"
@@ -21,7 +21,7 @@
           [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
           appearance="secondary"
-          >Approve</app-rubic-button
+          >Swap</app-rubic-button
         >
         <div class="buttons__timeline-container timeline">
           <span class="timeline__connector"></span>
