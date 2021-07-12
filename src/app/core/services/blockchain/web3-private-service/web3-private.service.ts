@@ -5,7 +5,6 @@ import { TransactionReceipt } from 'web3-eth';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
-import { TranslateService } from '@ngx-translate/core';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -23,9 +22,7 @@ export class Web3PrivateService {
     return this.providerConnector.address;
   }
 
-  constructor(
-    private readonly providerConnector: ProviderConnectorService
-  ) {
+  constructor(private readonly providerConnector: ProviderConnectorService) {
     this.web3 = providerConnector.web3;
     this.defaultMockGas = '400000';
   }

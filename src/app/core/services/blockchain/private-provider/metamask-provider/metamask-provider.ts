@@ -150,4 +150,11 @@ export class MetamaskProvider extends PrivateProvider {
       }
     });
   }
+
+  public async switchChain(chainId: string): Promise<void> {
+    this.core.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId }]
+    });
+  }
 }

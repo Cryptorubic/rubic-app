@@ -121,4 +121,11 @@ export class WalletLinkProvider extends PrivateProvider {
       } as any
     });
   }
+
+  public async switchChain(chainId: string): Promise<void> {
+    this.core.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId }]
+    });
+  }
 }

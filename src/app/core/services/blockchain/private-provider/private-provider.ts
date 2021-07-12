@@ -84,4 +84,6 @@ export abstract class PrivateProvider {
   public async requestPermissions(): Promise<unknown[]> {
     return [{ parentCapability: 'eth_accounts' }];
   }
+
+  public abstract switchChain(chainParams: string): Promise<void>;
 }

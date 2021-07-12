@@ -5,6 +5,7 @@ import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
@@ -153,5 +154,11 @@ export class ProviderConnectorService {
       this.errorService
     ) as PrivateProvider;
     this.providerName = WALLET_NAME.METAMASK;
+  }
+
+  public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
+    const network = BlockchainsInfo.getBlockchainByName(networkName);
+    const chainId = `0x${network.id.toString(16)}`;
+    await this.provider.switchChain(chainId);
   }
 }
