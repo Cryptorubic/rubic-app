@@ -1,0 +1,10 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+@include b($mobile-sm) {
+  :host ::ng-deep {
+    .select {
+      padding: 9px 15px;
+    }
+  }
+}

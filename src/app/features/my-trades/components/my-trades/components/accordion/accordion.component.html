@@ -239,6 +239,7 @@
 <tui-pagination
   *ngIf="!!pagesLength"
   [length]="pagesLength"
+  [activePadding]="0"
   [index]="page"
   (indexChange)="goToPage($event)"
 ></tui-pagination>

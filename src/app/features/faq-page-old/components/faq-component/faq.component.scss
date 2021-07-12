@@ -1,6 +1,11 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .faq-container {
   height: 100%;
   padding-top: 25px;
@@ -28,6 +33,7 @@
 
     background: white;
     border-left: 5px solid #4aa956;
+    border-radius: 10px;
     cursor: pointer;
 
     &_active {
