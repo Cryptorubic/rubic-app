@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 import { InstantTradeProviderController } from '../../../../models/instant-trades-provider-controller';
 import { InstantTradeSwapInput } from '../../../../models/instant-trade-input';
 
@@ -35,13 +37,14 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: ProviderConnectorService,
+    private dialog: MatDialog
   ) {
     super();
     this.disableSelection = false;
   }
 
   public async login(): Promise<void> {
-    await this.authService.serverlessSignIn();
+    this.dialog.open(WalletsModalComponent, { width: '420px' });
   }
 }
