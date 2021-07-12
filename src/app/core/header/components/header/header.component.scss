@@ -14,7 +14,6 @@
     font-size: 16px;
   }
 
-  &__main,
   &__nav,
   &__profile {
     display: flex;
@@ -30,6 +29,7 @@
   }
 
   &__logo {
+    display: block;
     margin-right: 54px;
 
     transition: 0.3s ease-in-out opacity;
@@ -49,6 +49,7 @@
 
   &__menu {
     display: inline-flex;
+    margin-right: auto;
   }
 
   &__nav {
@@ -56,45 +57,6 @@
     left: 50%;
 
     transform: translateX(-50%);
-  }
-}
-
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
-  text-decoration: none;
-}
-
-@include b($desktop) {
-  .rubic-header {
-    &__profile-trades,
-    &__profile-user,
-    &__login,
-    &__nav {
-      display: none;
-    }
-  }
-}
-
-@include b($desktop) {
-  .rubic-header {
-    padding: 21px 20px 19px;
-  }
-}
-
-@include b($mobile-sm) {
-  .rubic-header {
-    &__main {
-      flex-grow: 1;
-      justify-content: space-between;
-    }
-
-    &__logo {
-      margin-right: 0;
-    }
-
-    &__menu {
-      margin-right: 10px;
-    }
   }
 }
 
@@ -112,5 +74,55 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
   &:hover,
   &:focus {
     text-decoration: none;
+  }
+}
+
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
+a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
+  text-decoration: none;
+}
+
+@include b($desktop) {
+  .rubic-header {
+    padding: 21px 20px 19px;
+
+    &__profile-trades,
+    &__profile-user,
+    &__login,
+    &__nav {
+      display: none;
+    }
+
+    &__logo {
+      margin-right: auto;
+    }
+
+    &__menu {
+      order: 1;
+      margin-right: 0;
+      margin-left: 15px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .rubic-header {
+    &__logo {
+      img {
+        width: 95px;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .rubic-header {
+    &__menu {
+      margin-left: 10px;
+    }
   }
 }

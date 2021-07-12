@@ -1,63 +1,65 @@
 import { Injectable } from '@angular/core';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import { Observable } from 'rxjs';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import { TransactionReceipt } from 'web3-eth';
+import { HttpService } from 'src/app/core/services/http/http.service';
+import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import {
+  ItSettingsForm,
+  SettingsService
+} from 'src/app/features/swaps/services/settings-service/settings.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import {
   abi,
   ethToTokensEstimatedGas,
   maxTransitTokens,
   routingProviders,
+  sushiSwapEthContracts,
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
-  quickSwapContracts,
   WETH
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
-import { TransactionReceipt } from 'web3-eth';
-import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import {
-  ItSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Observable } from 'rxjs';
-import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
-import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-eth-service/sushi-swap-eth.constants';
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuickSwapService implements ItProvider {
+export class SushiSwapEthService implements ItProvider {
   protected blockchain: BLOCKCHAIN_NAME;
 
   protected shouldCalculateGas: boolean;
 
   private web3Public: Web3Public;
 
+  private WETHAddress: string;
+
+  private sushiswapContractAddress: string;
+
+  private routingProviders: string[];
+
   private settings: ItSettingsForm;
 
   constructor(
-    private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly web3Private: Web3PrivateService,
-    private readonly w3Public: Web3PublicService,
-    private readonly useTestingModeService: UseTestingModeService,
+    private readonly httpService: HttpService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly settingsService: SettingsService,
-    private readonly commonUniswap: CommonUniswapService
+    private readonly commonUniswap: CommonUniswapService,
+    private readonly w3Public: Web3PublicService
   ) {
-    useTestingModeService.isTestingMode.subscribe(value => {
-      if (value) {
-        this.web3Public = w3Public[BLOCKCHAIN_NAME.POLYGON_TESTNET];
-      }
-    });
-    this.web3Public = w3Public[BLOCKCHAIN_NAME.POLYGON];
-    this.blockchain = BLOCKCHAIN_NAME.POLYGON;
+    this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM];
+    this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.shouldCalculateGas = true;
+    this.WETHAddress = WETH.address;
+    this.sushiswapContractAddress = sushiSwapEthContracts.address;
+    this.routingProviders = routingProviders.addresses;
+
     const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
     this.settings = {
       ...form.value,
@@ -74,19 +76,14 @@ export class QuickSwapService implements ItProvider {
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
     return this.commonUniswap.getAllowance(
       tokenAddress,
-      quickSwapContracts.address,
+      this.sushiswapContractAddress,
       this.web3Public
     );
   }
 
-  public async approve(
-    tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    }
-  ): Promise<void> {
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     await this.commonUniswap.checkSettings(this.blockchain);
-    return this.commonUniswap.approve(tokenAddress, quickSwapContracts.address, options);
+    return this.commonUniswap.approve(tokenAddress, this.sushiswapContractAddress, options);
   }
 
   public async calculateTrade(
@@ -100,13 +97,13 @@ export class QuickSwapService implements ItProvider {
     let estimatedGasArray = tokensToTokensEstimatedGas;
 
     if (this.web3Public.isNativeAddress(fromTokenClone.address)) {
-      fromTokenClone.address = WETH.address;
+      fromTokenClone.address = this.WETHAddress;
       estimatedGasPredictionMethod = 'calculateEthToTokensGasLimit';
       estimatedGasArray = ethToTokensEstimatedGas;
     }
 
     if (this.web3Public.isNativeAddress(toTokenClone.address)) {
-      toTokenClone.address = WETH.address;
+      toTokenClone.address = this.WETHAddress;
       estimatedGasPredictionMethod = 'calculateTokensToEthGasLimit';
       estimatedGasArray = tokensToEthEstimatedGas;
     }
@@ -121,8 +118,8 @@ export class QuickSwapService implements ItProvider {
       estimatedGasPredictionMethod,
       this.settings,
       this.web3Public,
-      routingProviders.addresses,
-      quickSwapContracts.address,
+      this.routingProviders,
+      this.sushiswapContractAddress,
       abi,
       maxTransitTokens,
       estimatedGasArray
@@ -173,7 +170,7 @@ export class QuickSwapService implements ItProvider {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
-        quickSwapContracts.address,
+        this.sushiswapContractAddress,
         abi
       );
     }
@@ -182,7 +179,7 @@ export class QuickSwapService implements ItProvider {
       return this.commonUniswap.createTokensToEthTrade(
         uniSwapTrade,
         options,
-        quickSwapContracts.address,
+        this.sushiswapContractAddress,
         abi
       );
     }
@@ -190,7 +187,7 @@ export class QuickSwapService implements ItProvider {
     return this.commonUniswap.createTokensToTokensTrade(
       uniSwapTrade,
       options,
-      quickSwapContracts.address,
+      this.sushiswapContractAddress,
       abi
     );
   }

@@ -1,20 +1,28 @@
 <header class="rubic-header">
-  <div class="rubic-header__main">
-    <a class="rubic-header__logo" routerLink="/">
-      <img src="assets/img/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
-    </a>
+  <a class="rubic-header__logo" routerLink="/">
+    <img src="assets/img/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+  </a>
 
-    <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
-  </div>
+  <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
 
   <nav class="rubic-header__nav">
-    <a class="button-link" routerLink="/" routerLinkActive="button-link_active" [routerLinkActiveOptions]="{ exact: true }">Swaps</a>
-    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">Crypto Tap</a>
+    <a class="button-link"
+       routerLink="/"
+       [class.button-link_active]="isLinkActive('/')">
+      Swaps
+    </a>
+    <a class="button-link"
+       routerLink="/crypto-tap"
+       routerLinkActive="button-link_active">
+      Crypto Tap
+    </a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order Book</span>
   </nav>
 
   <div class="rubic-header__profile">
-    <a class="rubic-header__profile-trades button-link" routerLink="my-trades" routerLinkActive="button-link_active">
+    <a class="rubic-header__profile-trades button-link"
+       routerLink="my-trades"
+       routerLinkActive="button-link_active">
       {{ 'navigation.myTrades' | translate }}
     </a>
 

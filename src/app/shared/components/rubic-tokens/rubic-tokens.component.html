@@ -30,12 +30,19 @@
     <a
       [hidden]="!selectedToken"
       [href]="selectedToken?.address | scannerLink: selectedToken?.blockchain:ADDRESS_TYPE.TOKEN"
+      [tuiHint]="'common.checkOnScanner' | translate"
       rel="noopener"
       target="_blank"
     >
-      <img [src]="'assets/img/icons/scanner.svg'" alt="{{ 'common.checkOnExplorer' | translate }}" />
+      <img [src]="'assets/img/icons/scanner.svg'" alt="{{ 'common.checkOnScanner' | translate }}" />
     </a>
   </div>
+  <a class="tokens__clear-mobile"
+     href="#"
+     *ngIf="selectedToken"
+     (click)="clearToken(); $event.preventDefault();">
+    {{ 'common.clearToken' | translate }}
+  </a>
 </div>
 
 <ng-template #tooltip>

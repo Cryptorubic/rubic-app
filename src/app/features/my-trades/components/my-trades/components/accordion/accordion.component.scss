@@ -334,6 +334,17 @@ tui-pagination {
       display: none;
     }
   }
+
+  .row {
+    &__title {
+      flex-direction: column;
+      justify-content: center;
+
+      img {
+        transform: rotate(90deg);
+      }
+    }
+  }
 }
 
 @include b($mobile-sm-plus) {
@@ -374,6 +385,18 @@ tui-pagination {
 
       margin-right: 0;
       margin-bottom: 10px;
+    }
+  }
+
+  tui-pagination {
+    ::ng-deep {
+      [data-tui-host-size='s'][data-tui-host-shape=square],
+      [data-tui-host-size='s'][tuiIconButton] {
+        width: 23px;
+        height: 23px;
+
+        border-radius: 6px;
+      }
     }
   }
 }
