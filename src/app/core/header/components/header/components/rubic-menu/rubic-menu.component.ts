@@ -74,12 +74,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.isOpened = opened;
   }
 
-  public clickNavigate(link) {
-    if (link.includes(location.protocol)) {
-      window.open(link, '_blank');
-    } else {
-      this.router.navigate([link]);
-    }
+  public closeMenu() {
     this.isOpened = false;
   }
 
