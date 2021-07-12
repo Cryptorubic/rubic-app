@@ -95,6 +95,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
   }
 
+  public get networkErrorText(): void {
+    return this.translateService.instant('common.switchTo', {
+      networkName: this.fromToken.blockchain
+    });
+  }
+
   // eslint-disable-next-line consistent-return
   get errorText(): string {
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
@@ -105,11 +111,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     }
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
       return this.translateService.instant('errors.setTronAddress');
-    }
-    if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      return this.translateService.instant('common.switchTo', {
-        networkName: this.fromToken.blockchain
-      });
     }
     if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
       return this.translateService.instant('errors.noSelectedProvider');
