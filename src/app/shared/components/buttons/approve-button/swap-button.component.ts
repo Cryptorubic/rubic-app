@@ -106,13 +106,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
       return this.translateService.instant('errors.setTronAddress');
     }
-    if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
-      return this.translateService.instant('errors.noSelectedProvider');
-    }
     if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
       return this.translateService.instant('common.switchTo', {
         networkName: this.fromToken.blockchain
       });
+    }
+    if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
+      return this.translateService.instant('errors.noSelectedProvider');
     }
   }
 
