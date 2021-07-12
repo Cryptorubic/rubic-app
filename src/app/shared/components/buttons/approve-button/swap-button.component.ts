@@ -189,19 +189,19 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  private checkProviderSelectedError(): void {}
-
   private checkWrongBlockchainError(): void {
-    const fromBlockchain = this.fromToken?.blockchain;
-    const userBlockchain = this.providerConnectorService.network?.name;
+    if (this.providerConnectorService.provider) {
+      const fromBlockchain = this.fromToken?.blockchain;
+      const userBlockchain = this.providerConnectorService.network?.name;
 
-    this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-      fromBlockchain &&
-      userBlockchain &&
-      fromBlockchain !== userBlockchain &&
-      (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
+      this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
+        fromBlockchain &&
+        userBlockchain &&
+        fromBlockchain !== userBlockchain &&
+        (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 
-    this.cdr.detectChanges();
+      this.cdr.detectChanges();
+    }
   }
 
   public onLogin() {
