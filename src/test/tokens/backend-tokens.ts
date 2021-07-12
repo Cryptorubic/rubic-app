@@ -1,5 +1,5 @@
+import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
 import { ETH, WEENUS, WSATT, XEENUS, YEENUS } from './eth-tokens';
-import { TOKEN_RANK } from '../../app/shared/models/tokens/token-rank';
 
 const eth = {
   name: 'Ethereum',

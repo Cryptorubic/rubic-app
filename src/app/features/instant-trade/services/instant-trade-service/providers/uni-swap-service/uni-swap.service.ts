@@ -18,7 +18,7 @@ import {
   WETH
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
-import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
+import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import {
@@ -27,11 +27,12 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
+import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UniSwapService {
+export class UniSwapService implements ItProvider {
   protected blockchain: BLOCKCHAIN_NAME;
 
   protected shouldCalculateGas: boolean;
@@ -43,8 +44,6 @@ export class UniSwapService {
   private uniswapContractAddress: string;
 
   private routingProviders: string[];
-
-  private isTestingMode: boolean;
 
   private settings: ItSettingsForm;
 
@@ -67,7 +66,6 @@ export class UniSwapService {
     this.routingProviders = routingProviders.addresses;
     useTestingModeService.isTestingMode.subscribe(value => {
       if (value) {
-        this.isTestingMode = true;
         this.web3Public = w3Public[BLOCKCHAIN_NAME.ETHEREUM_TESTNET];
         this.WETHAddress = WETH.testnetAddress;
         this.uniswapContractAddress = uniSwapContracts.testnetAddress;
@@ -151,8 +149,12 @@ export class UniSwapService {
     };
   }
 
-  public needApprove(tokenAddress: string): Observable<BigNumber> {
-    return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
+  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+    return this.commonUniswap.getAllowance(
+      tokenAddress,
+      this.uniswapContractAddress,
+      this.web3Public
+    );
   }
 
   public async approve(
@@ -162,7 +164,7 @@ export class UniSwapService {
     }
   ): Promise<void> {
     await this.commonUniswap.checkSettings(this.blockchain);
-    return this.commonUniswap.approve(tokenAddress, options);
+    return this.commonUniswap.approve(tokenAddress, this.uniswapContractAddress, options);
   }
 
   public async createTrade(
@@ -183,7 +185,7 @@ export class UniSwapService {
       .toFixed(0);
     const { path } = trade.options;
     const to = this.providerConnectorService.address;
-    const deadline = Math.floor(Date.now() / 1000) + this.settings.deadline;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 

@@ -29,7 +29,7 @@
     ></app-dropdown-selector>
 
     <ng-template #dropdownButtonTemplate>
-      <app-rubic-button-circle class="blockchains__list-item" size="s" hint="More blockchains" hintDirection="top-right">
+      <app-rubic-button-circle class="blockchains__list-item" size="s" [hint]="'tradePage.blockchainsHint' | translate" hintDirection="top-right">
         <img src="assets/img/icons/dropdown.svg" width="18px" height="18px" alt="Dropdown" />
       </app-rubic-button-circle>
     </ng-template>

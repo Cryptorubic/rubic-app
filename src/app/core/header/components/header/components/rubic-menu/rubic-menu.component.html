@@ -59,26 +59,24 @@
 
       <tui-opt-group class="rubic-menu__mobile">
       <a routerLink="/"
-         (click)="clickNavigate('')"
-         routerLinkActive="data-list__link_active"
-         [routerLinkActiveOptions]="{ exact: true }"
+         (click)="clickNavigate('/')"
+         [class.data-list__link_active]="isLinkActive('/')"
          class="data-list__link">
         <button
           tuiOption
           class="data-list__option">
-          {{ 'Swaps' | translate }}
+          Swaps
         </button>
       </a>
 
       <a routerLink="crypto-tap"
          (click)="clickNavigate('crypto-tap')"
          routerLinkActive="data-list__link_active"
-         [routerLinkActiveOptions]="{ exact: true }"
          class="data-list__link">
         <button
           tuiOption
           class="data-list__option">
-          {{ 'Crypto tap' | translate }}
+          Crypto Tap
         </button>
       </a>
 
@@ -86,7 +84,7 @@
         tuiOption
         class="data-list__option data-list__option_disabled"
         tuiHint="{{ 'navigation.notAvailable' | translate }}">
-        {{ 'Order Book' | translate }}
+        Order Book
       </button>
     </tui-opt-group>
 
@@ -110,7 +108,7 @@
            (click)="clickNavigate('my-trades')"
            routerLinkActive="data-list__link_active"
            class="data-list__link">
-          <button tuiOption class="data-list__option" (click)="clickNavigate('my-trades')">
+          <button tuiOption class="data-list__option">
             {{ 'navigation.myTrades' | translate }}
           </button>
         </a>

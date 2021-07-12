@@ -47,6 +47,10 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
   [INSTANT_TRADES_PROVIDER.QUICKSWAP]: {
     name: 'Quickswap',
     image: `${imageBasePath}quickswap.svg`
+  },
+  [INSTANT_TRADES_PROVIDER.SUSHISWAP]: {
+    name: 'Sushiswap',
+    image: `${imageBasePath}sushiswap.svg`
   }
 };
 

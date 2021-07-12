@@ -21,12 +21,12 @@
       <div class="provider-panel__left">
         <div
           class="provider-panel__amount"
-          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
+          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading, 'provider-panel__amount_error': hasError }"
         >
           {{
             (providerData.amount?.toString(10)
               | withRound: 'toClosestValue':tradeData?.to?.token.decimals) ||
-              'Trading is not available'
+            'Trading is not available'
           }}
           <div
             *ngIf="hasError"

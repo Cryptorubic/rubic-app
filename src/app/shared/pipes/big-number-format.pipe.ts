@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { BIG_NUMBER_FORMAT } from '../constants/formats/BIG_NUMBER_FORMAT';
 
 @Pipe({ name: 'bigNumberFormat' })
-export class BigNumberFormat implements PipeTransform {
+export class BigNumberFormatPipe implements PipeTransform {
   transform(value: BigNumber | string | number, dp = -1): string {
     if (typeof value === 'number') {
       value = value.toString();

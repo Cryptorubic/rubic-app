@@ -2,8 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
-  TableRowKey,
-  TableRowKeyValue
+  TableRowKey
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
@@ -14,6 +13,8 @@ import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PR
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { TableData } from 'src/app/features/my-trades/components/my-trades/components/table-data';
+import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
 
 @Component({
   selector: 'app-table',
@@ -32,32 +33,9 @@ export class TableComponent extends TableData implements OnInit {
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
-  public readonly columns: TableRowKeyValue[] = [
-    {
-      translateKey: 'tradesTable.columns.status',
-      value: 'Status'
-    },
-    {
-      translateKey: 'tradesTable.columns.from',
-      value: 'FromTo'
-    },
-    {
-      translateKey: 'tradesTable.columns.provider',
-      value: 'Provider'
-    },
-    {
-      translateKey: 'tradesTable.columns.send',
-      value: 'Sent'
-    },
-    {
-      translateKey: 'tradesTable.columns.expected',
-      value: 'Expected'
-    },
-    {
-      translateKey: 'tradesTable.columns.date',
-      value: 'Date'
-    }
-  ];
+  public readonly columns = COLUMNS;
+
+  public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
 
   public readonly sorters: Record<TableRowKey, TuiComparator<TableRow>> = {
     Status: () => 0,

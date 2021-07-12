@@ -11,6 +11,7 @@ import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -34,7 +35,7 @@ export class Web3Public {
   }
 
   public get nativeTokenAddress(): string {
-    return '0x0000000000000000000000000000000000000000';
+    return NATIVE_TOKEN_ADDRESS;
   }
 
   /**
@@ -56,6 +57,16 @@ export class Web3Public {
   public async getBalance(address: string, options: { inWei?: boolean } = {}): Promise<BigNumber> {
     const balance = await this.web3.eth.getBalance(address);
     return new BigNumber(options.inWei ? balance : this.weiToEth(balance));
+  }
+
+  public async getTokenOrNativeBalance(userAddress: string, tokenAddress): Promise<BigNumber> {
+    let balance;
+    if (this.isNativeAddress(tokenAddress)) {
+      balance = await this.web3.eth.getBalance(userAddress);
+    } else {
+      balance = await this.getTokenBalance(userAddress, tokenAddress);
+    }
+    return new BigNumber(balance);
   }
 
   public getBlock(): Promise<BlockTransactionString> {
@@ -221,11 +232,7 @@ export class Web3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    const defaultAddress = '0x0000000000000000000000000000000000000000';
-    if (this.blockchain?.name === BLOCKCHAIN_NAME.POLYGON) {
-      return address.toLowerCase() === defaultAddress;
-    }
-    return address === defaultAddress;
+    return address === NATIVE_TOKEN_ADDRESS;
   };
 
   /**

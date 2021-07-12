@@ -1,7 +1,87 @@
+@import '~@taiga-ui/core/styles/taiga-ui-local';
+
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
 @import '../styles';
+
+:host {
+  --tui-secondary-hover: #{$rubic-base-01};
+  --tui-secondary-active: #{$rubic-base-01};
+  --tui-link: #{$rubic-primary};
+  --tui-link-hover: #{$rubic-primary};
+  --tui-link-active: #{$rubic-secondary};
+}
+
+.sort-by-dropdown {
+  display: flex;
+  grid-gap: 15px;
+  align-items: center;
+
+  margin-bottom: 20px;
+
+  tui-hosted-dropdown {
+    .title {
+      display: flex;
+      flex-wrap: nowrap;
+      grid-gap: 5px;
+
+      .arrow-right {
+        ::ng-deep {
+          svg path {
+            fill: #{$rubic-primary};
+          }
+        }
+      }
+    }
+
+    ::ng-deep {
+      > .wrapper > button {
+        background: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+
+  .icon {
+    @include transition(transform);
+
+    &_rotated {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__sort-arrows {
+    display: flex;
+
+    .sort-arrow {
+      width: 15px;
+      height: 16px;
+
+      ::ng-deep {
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+tui-dropdown-box {
+  ::ng-deep {
+    button {
+      color: #808080;
+    }
+  }
+}
+
+tui-data-list {
+  .title {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-gap: 5px;
+  }
+}
 
 .accordions {
   &:not(:last-child) {
@@ -24,7 +104,7 @@
     }
 
     .header[automation-id='tui-accordion__item-header'] {
-      height: 88px;
+      min-height: 88px;
 
       background: rgba(255, 255, 255, 0.3);
       border: none;
@@ -55,8 +135,8 @@
   font-size: 15px;
 
   &__status {
-    width: 170px;
-    margin-right: 8%;
+    width: 165px;
+    margin-right: 5%;
   }
 
   &__blockchains-container {
@@ -71,6 +151,13 @@
 
   &__token {
     margin-right: auto;
+  }
+
+  &__provider {
+    justify-content: flex-start !important;
+
+    width: 117px;
+    margin-right: 5%;
   }
 
   &__date {
@@ -138,6 +225,13 @@
   }
 }
 
+.provider {
+  display: flex;
+  grid-gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
 .date {
   display: flex;
   flex-direction: column;
@@ -202,11 +296,23 @@
   }
 }
 
-.provider {
-  display: flex;
-  grid-gap: 12px;
-  align-items: center;
-  justify-content: center;
+tui-pagination {
+  ::ng-deep {
+    .button {
+      .wrapper[data-appearance='flat'] {
+        color: #808080;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@include b(1023) {
+  .item-header {
+    &__provider {
+      display: none;
+    }
+  }
 }
 
 @include b($laptop) {
@@ -226,6 +332,17 @@
 
     &__token {
       display: none;
+    }
+  }
+
+  .row {
+    &__title {
+      flex-direction: column;
+      justify-content: center;
+
+      img {
+        transform: rotate(90deg);
+      }
     }
   }
 }
@@ -270,14 +387,15 @@
       margin-bottom: 10px;
     }
   }
-}
 
-tui-pagination {
-  ::ng-deep {
-    .button {
-      .wrapper[data-appearance='flat'] {
-        color: #808080;
-        font-weight: 500;
+  tui-pagination {
+    ::ng-deep {
+      [data-tui-host-size='s'][data-tui-host-shape=square],
+      [data-tui-host-size='s'][tuiIconButton] {
+        width: 23px;
+        height: 23px;
+
+        border-radius: 6px;
       }
     }
   }

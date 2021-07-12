@@ -14,11 +14,11 @@ import {
   routingProviders,
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
-  uniSwapContracts,
+  quickSwapContracts,
   WETH
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
-import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-types';
+import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import {
@@ -71,8 +71,12 @@ export class QuickSwapService implements ItProvider {
     });
   }
 
-  public needApprove(tokenAddress: string): Observable<BigNumber> {
-    return this.commonUniswap.needApprove(tokenAddress, this.web3Public);
+  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+    return this.commonUniswap.getAllowance(
+      tokenAddress,
+      quickSwapContracts.address,
+      this.web3Public
+    );
   }
 
   public async approve(
@@ -82,7 +86,7 @@ export class QuickSwapService implements ItProvider {
     }
   ): Promise<void> {
     await this.commonUniswap.checkSettings(this.blockchain);
-    return this.commonUniswap.approve(tokenAddress, options);
+    return this.commonUniswap.approve(tokenAddress, quickSwapContracts.address, options);
   }
 
   public async calculateTrade(
@@ -118,7 +122,7 @@ export class QuickSwapService implements ItProvider {
       this.settings,
       this.web3Public,
       routingProviders.addresses,
-      uniSwapContracts.address,
+      quickSwapContracts.address,
       abi,
       maxTransitTokens,
       estimatedGasArray
@@ -169,7 +173,7 @@ export class QuickSwapService implements ItProvider {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
-        uniSwapContracts.address,
+        quickSwapContracts.address,
         abi
       );
     }
@@ -178,7 +182,7 @@ export class QuickSwapService implements ItProvider {
       return this.commonUniswap.createTokensToEthTrade(
         uniSwapTrade,
         options,
-        uniSwapContracts.address,
+        quickSwapContracts.address,
         abi
       );
     }
@@ -186,7 +190,7 @@ export class QuickSwapService implements ItProvider {
     return this.commonUniswap.createTokensToTokensTrade(
       uniSwapTrade,
       options,
-      uniSwapContracts.address,
+      quickSwapContracts.address,
       abi
     );
   }

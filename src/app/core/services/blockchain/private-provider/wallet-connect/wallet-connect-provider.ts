@@ -3,12 +3,12 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
-import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import Web3 from 'web3';
 import WalletConnect from '@walletconnect/web3-provider';
 import networks from 'src/app/shared/constants/blockchain/networks';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletconnectError } from 'src/app/core/errors/models/provider/WalletconnectError';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
@@ -127,12 +127,12 @@ export class WalletConnectProvider extends PrivateProvider {
     this.isEnabled = false;
   }
 
-  public addToken(token: SwapToken): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
-      this.errorsService.throw$(new WalletconnectError());
+      throw new WalletconnectError();
     }
     if (this.getNetwork().name !== token.blockchain) {
-      this.errorsService.throw$(new NetworkError(token.blockchain));
+      throw new NetworkError(token.blockchain);
     }
 
     return this.core.request({

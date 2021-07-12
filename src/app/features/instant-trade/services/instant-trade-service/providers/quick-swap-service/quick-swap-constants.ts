@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { AbiItem } from 'web3-utils';
 
-export const uniSwapContracts = {
+export const quickSwapContracts = {
   address: '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff',
   testnetAddress: ''
 };

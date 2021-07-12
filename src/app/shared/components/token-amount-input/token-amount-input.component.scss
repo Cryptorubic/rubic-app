@@ -83,7 +83,7 @@ $background-white: #fcfcfc;
   white-space: nowrap;
 
   &__error-info {
-    color: #dfcb5f;
+    color: $rubic-text-error;
     font-size: 18px;
     font-family: $roboto-font;
     line-height: 21px;
@@ -116,14 +116,17 @@ $background-white: #fcfcfc;
 
 @include b($mobile-md) {
   .token-input-container {
+    position: relative;
+
     flex-direction: column;
     justify-content: flex-start;
-    height: 120px;
+    height: auto;
+    padding-bottom: 20px;
 
     &__right-side {
       width: 100%;
       max-width: none;
-      padding: 5px 20px 10px;
+      padding: 5px 20px;
     }
   }
 
@@ -137,6 +140,14 @@ $background-white: #fcfcfc;
 
   .usd-price-container {
     justify-content: flex-start;
+  }
+
+  .right-side {
+    &__error-info {
+      position: absolute;
+      right: 20px;
+      bottom: 5px;
+    }
   }
 }
 

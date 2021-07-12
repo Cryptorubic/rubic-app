@@ -20,13 +20,13 @@ import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicBlockchainsComponent implements OnInit {
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
-
   @Input() public blockchainType: 'from' | 'to';
 
   @Input() formService: FormService;
 
   @Input() blockchainsList = blockchainsList;
+
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
   public selectedBlockchain: BlockchainItem;
 

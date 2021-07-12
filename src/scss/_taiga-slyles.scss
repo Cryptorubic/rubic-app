@@ -18,6 +18,10 @@ tui-dialog {
     }
   }
 
+  .wrapper {
+    z-index: 1;
+  }
+
   .close {
     position: absolute !important;
     top: 18px !important;
@@ -40,13 +44,24 @@ tui-notification {
   }
 }
 
+.tooltip .text {
+  font-size: $rubic-font-size-01;
+}
+
 @include b($mobile-md-minus) {
   tui-dialog {
     height: 100vh;
-    margin: 0;
 
     .content {
       height: 100%;
     }
+  }
+
+  tui-hint-box {
+    max-width: 160px !important;
+  }
+
+  .tooltip .text {
+    font-size: $rubic-font-size-main;
   }
 }
