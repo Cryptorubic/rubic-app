@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-buy-crypto',
@@ -6,8 +6,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./buy-crypto.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BuyCryptoComponent implements OnInit {
+export class BuyCryptoComponent {
   constructor() {}
-
-  ngOnInit(): void {}
 }

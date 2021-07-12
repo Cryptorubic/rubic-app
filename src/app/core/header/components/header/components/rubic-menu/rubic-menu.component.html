@@ -25,6 +25,17 @@
           </button>
         </a>
 
+        <a routerLink="buy-crypto"
+           (click)="clickNavigate('buy-crypto')"
+           routerLinkActive="data-list__link_active"
+           class="data-list__link">
+          <button
+            tuiOption
+            class="data-list__option">
+            {{ 'Buy crypto' | translate }}
+          </button>
+        </a>
+
         <a routerLink="faq"
            (click)="clickNavigate('faq')"
            routerLinkActive="data-list__link_active"
