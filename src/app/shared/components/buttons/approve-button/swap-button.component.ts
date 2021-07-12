@@ -31,7 +31,8 @@ enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
   WRONG_BLOCKCHAIN = 'Wrong user network',
   NOT_SUPPORTED_BRIDGE = 'Not supported bridge',
-  TRON_WALLET_ADDRESS = 'TRON wallet address is not set'
+  TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
+  NOT_SELECTED_PROVIDER = 'Provider is not selected'
 }
 
 @Component({
@@ -53,11 +54,15 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   @Input() set isBridgeNotSupported(value: boolean) {
-    this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value;
+    this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value || false;
   }
 
   @Input() set isTronAddressNotSet(value: boolean) {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
+  }
+
+  @Input() set providerError(value: boolean) {
+    this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER] = value;
   }
 
   @Output() approveClick = new EventEmitter<void>();
@@ -72,13 +77,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   public loading: boolean;
 
-  public errorType: Record<ERROR_TYPE, boolean> = Object.values(ERROR_TYPE).reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: false
-    }),
-    {}
-  ) as Record<ERROR_TYPE, boolean>;
+  public errorType: Record<ERROR_TYPE, boolean>;
 
   private isTestingMode: boolean;
 
@@ -107,9 +106,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
       return this.translateService.instant('errors.setTronAddress');
     }
+    if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
+      return this.translateService.instant('errors.noSelectedProvider');
+    }
     if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      return this.translateService.instant('errors.chooseNetworkWallet', {
-        blockchain: this.fromToken.blockchain
+      return this.translateService.instant('common.switchTo', {
+        networkName: this.fromToken.blockchain
       });
     }
   }
@@ -123,7 +125,15 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
     private translateService: TranslateService
-  ) {}
+  ) {
+    this.errorType = Object.values(ERROR_TYPE).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: false
+      }),
+      {}
+    ) as Record<ERROR_TYPE, boolean>;
+  }
 
   ngOnInit(): void {
     this.needApprove = false;
@@ -179,6 +189,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  private checkProviderSelectedError(): void {}
+
   private checkWrongBlockchainError(): void {
     const fromBlockchain = this.fromToken?.blockchain;
     const userBlockchain = this.providerConnectorService.network?.name;
@@ -196,5 +208,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.dialogService
       .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
       .subscribe(() => this.loginEvent.emit());
+  }
+
+  public async changeNetwork(): Promise<void> {
+    this.providerConnectorService.switchChain(this.fromToken?.blockchain);
   }
 }
