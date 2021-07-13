@@ -73,7 +73,7 @@
       </app-rubic-button>
     </ng-container>
 
-    <ng-container *ngIf="hasError && !errorType['Wrong user network'] && !loading">
+    <ng-container *ngIf="hasError && !errorType['Wrong user network'] && !loading || hasError && errorType['Wrong user network'] && !loading && !allowChangeNetwork">
       <app-rubic-button
         class="error-button"
         [fullWidth]="true"
