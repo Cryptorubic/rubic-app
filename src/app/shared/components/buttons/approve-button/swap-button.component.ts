@@ -99,11 +99,14 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   public get allowChangeNetwork(): boolean {
-    if (this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK) {
-      return false;
-    }
     const unsupportedItBlockchains = [BLOCKCHAIN_NAME.XDAI, BLOCKCHAIN_NAME.TRON];
     const form = this.formService.commonTrade.controls.input.value;
+    if (
+      this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK ||
+      !form.fromBlockchain
+    ) {
+      return false;
+    }
 
     if (form.toBlockchain === form.fromBlockchain) {
       return !unsupportedItBlockchains.some(el => el === form.fromBlockchain);
@@ -113,7 +116,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   public get networkErrorText(): void {
     return this.translateService.instant('common.switchTo', {
-      networkName: this.fromToken.blockchain
+      networkName: this.formService.commonTrade.controls.input.value.fromBlockchain
     });
   }
 
