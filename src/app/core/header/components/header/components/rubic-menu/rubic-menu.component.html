@@ -15,7 +15,7 @@
     <tui-data-list class="data-list">
       <tui-opt-group>
         <a routerLink="about"
-           (click)="clickNavigate('about')"
+           (click)="closeMenu()"
            routerLinkActive="data-list__link_active"
            class="data-list__link">
           <button
@@ -26,7 +26,7 @@
         </a>
 
         <a routerLink="faq"
-           (click)="clickNavigate('faq')"
+           (click)="closeMenu()"
            routerLinkActive="data-list__link_active"
            class="data-list__link">
           <button
@@ -36,7 +36,7 @@
           </button>
         </a>
 
-        <a (click)="clickNavigate('https://rubic.finance/')"
+        <a href="https://rubic.finance/"
            class="data-list__link">
           <button
             tuiOption
@@ -46,7 +46,7 @@
         </a>
 
         <a routerLink="team"
-           (click)="clickNavigate('team')"
+           (click)="closeMenu()"
            routerLinkActive="data-list__link_active"
            class="data-list__link">
           <button
@@ -59,7 +59,7 @@
 
       <tui-opt-group class="rubic-menu__mobile">
       <a routerLink="/"
-         (click)="clickNavigate('/')"
+         (click)="closeMenu()"
          [class.data-list__link_active]="isLinkActive('/')"
          class="data-list__link">
         <button
@@ -70,7 +70,7 @@
       </a>
 
       <a routerLink="crypto-tap"
-         (click)="clickNavigate('crypto-tap')"
+         (click)="closeMenu()"
          routerLinkActive="data-list__link_active"
          class="data-list__link">
         <button
@@ -105,7 +105,7 @@
         </button>
 
         <a routerLink="my-trades"
-           (click)="clickNavigate('my-trades')"
+           (click)="closeMenu()"
            routerLinkActive="data-list__link_active"
            class="data-list__link">
           <button tuiOption class="data-list__option">

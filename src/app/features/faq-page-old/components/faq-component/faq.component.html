@@ -1,28 +1,26 @@
 <div class="faq-container">
-  <div class="app-content-block">
-    <h2 class="title-section">{{ 'faqPage.title' | translate }}</h2>
+  <h2 class="title-section">{{ 'faqPage.title' | translate }}</h2>
 
-    <div class="questions-container">
-      <div
-        *ngFor="let question of questions"
-        [ngClass]="{ 'questions-container__question_active': question.isActive }"
-        (click)="toggleQuestion($event, question)"
-        class="questions-container__question"
-      >
-        <div class="questions-container__question-head">
-          <span
-            class="questions-container__title"
-            [innerHTML]="question.title | translate"
-          >
-          </span>
-          <div class="questions-container__arrow"></div>
-        </div>
-        <p
-          class="questions-container__text"
-          [innerHTML]="question.answer | translate"
-          (click)="$event.stopPropagation()"
-        ></p>
+  <div class="questions-container">
+    <div
+      *ngFor="let question of questions"
+      [ngClass]="{ 'questions-container__question_active': question.isActive }"
+      (click)="toggleQuestion($event, question)"
+      class="questions-container__question"
+    >
+      <div class="questions-container__question-head">
+        <span
+          class="questions-container__title"
+          [innerHTML]="question.title | translate"
+        >
+        </span>
+        <div class="questions-container__arrow"></div>
       </div>
+      <p
+        class="questions-container__text"
+        [innerHTML]="question.answer | translate"
+        (click)="$event.stopPropagation()"
+      ></p>
     </div>
   </div>
 </div>

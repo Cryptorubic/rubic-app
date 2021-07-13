@@ -15,17 +15,13 @@
     "copyright": "Copyright",
     "privacyPolicy": "Privacy policy",
     "close": "Close",
-    "advancedOptions": "Advanced Options",
     "send": "Send",
     "left": "Left",
     "checkOnScanner": "Check on scanner",
-    "useCustomToken": "Use custom token",
     "cancel": "Cancel",
     "add": "Add",
     "via": "Via ",
-    "contractAddress": "Token Contract Address",
     "address": "address",
-    "enterAmount": "Enter amount",
     "chooseToken": "Select token",
     "clearToken": "Clear token",
     "warning": "Warning",
@@ -45,7 +41,6 @@
     "userReject": "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
     "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
-    "sameTokens": "You can't choose the same token on both sides, please choose different tokens.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
     "noWallet": "You have not connected any wallet",
     "retrievingTokensError": "Error retrieving tokens",
@@ -56,7 +51,7 @@
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
     "noSelectedProvider": "You have not selected any swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
-    "notSupportedBridge": "Currently this bridge is unavailable. Please select supported bridge.",
+    "notSupportedBridge": "This bridge is currently unavailable. Please select a supported bridge.",
     "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
     "oneinchRefreshError":  "1inch is currently unavailable. Please try to refresh the trade.",
     "1inchNotSupportedToken": "1inch doesn’t support one of the selected tokens.",
@@ -353,56 +348,22 @@
     }
   },
   "bridgePage": {
-    "title": "Create your cross-chain swap",
-    "swapToggleText": "Use our swaps",
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
     "approveProgressMessage": "You accepted the approve transaction and the exchange has started. Please wait until the trade is complete.",
     "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade.",
-    "tableTitle": "Your cross-chain swaps",
     "whatIs": "What is ",
-    "whatIsAfter": "?",
-    "checkOn": "Check on ",
-    "assistanceOf": "With the assistance of",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address",
-    "minAmount": "Minimum amount ",
-    "maxAmount": "Maximum amount ",
-    "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "cryptoTap": "Crypto Tap",
-    "bridge": "Bridge"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
   },
   "instantTrades": {
-    "title": "Instant Trades",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
-    "notSupportedToken": "Please make sure that selected token is supported on the specified DEX and try again later.",
-    "bestRate": "Best Rate",
     "gasFee": "Est. gas fee",
     "useOptimization": "Use Rubic optimization",
     "notAvailableBefore": "Trading on ",
     "notAvailableAfter": " is not available."
   },
-  "orderBook": {
-    "title": "Order Book",
-    "closingTime": "Closing time (utc)",
-    "tradeListed": "Trade will be listed on the main page",
-    "specifyTokens": "Please specify tokens and required amounts to see the advanced options",
-    "minContribution": "Minimum contribution in",
-    "brokerFee": "Broker Fee",
-    "specifyForBorker": "You can specify % for Broker",
-    "yourRate": "Your rate is ",
-    "higher": "higher",
-    "lower": "lower",
-    "coingeckoRate": " than coingecko rate"
-  },
-  "bridge": {
-    "title": "Cross-Chain Swaps"
-  },
   "myTrades": {
     "title": "My Trades"
-  },
-  "tradesForm": {
-    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
   },
   "tradesTable": {
     "columns": {
@@ -431,58 +392,13 @@
       "waitingForReceiving": "waiting for receiving"
     },
     "noData": "You have no trades yet",
-    "noTrades": "There are no trades",
-    "noTradesWithSelected": "There are no trades with selected parameters",
-    "showData": "Show data",
-    "sortBy": "Sort by",
     "receive": "Receive"
   },
-  "tradesPage": {
-    "createTrade": "Create your Trade",
-    "swapToggleText": "Cross-chain swaps",
-    "tradesDisclaimer": {
-      "beforeText": "By trading on our platform you agree with the following",
-      "termsAndConditions": "terms and conditions",
-      "afterText": ""
-    },
-    "disclaimerTitle": "Token safety alert!",
-    "disclaimerText": "Please be very careful during the whole trading process as it involves high system risks for example  great levels of volatility, hacker attacks and time risks connected with necessity to wait for the other side to complete the trade. <br/><br/> Anyone can create any token on the existing blockchains and name it as wanted. That makes it possible to create fake versions of existing tokens or tokens for projects that do not have tokens. Please be careful and do your research before interacting with any token. Interact with the tokens at your own risk and please note that the organizers are not responsible for the legitimacy of the tokens presented on the Rubic trading platform.",
-    "accumulatedTransactionsVolume": "Accumulated Transaction Volume",
-    "collaborations": "Software Integrations And Collaborations With",
-    "listingRequest": {
-      "title": "Listing request",
-      "description": "If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:",
-      "information": {
-        "projectName": "Project name",
-        "projectDescription": "Project description",
-        "links": "Links to the project and social media",
-        "contractAddress": "Contract address",
-        "onepager": "Whitepaper/Onepager",
-        "logo": "Link to logo in PNG and SVG",
-        "why": "Why you have chosen Rubic.exchange?"
-      }
-    }
-  },
   "tradePage": {
-    "sent": "Sent",
-    "left": "Left",
-    "investors": "Number of investors",
     "getBefore": "You will get",
     "getMiddle": "tokens to the",
     "getAfter": "after the trade is complete",
-    "find": "Fill all",
-    "limit": "Min contribution limit:",
-    "fee": "Broker's fee:",
     "providerFee": "Provider fee",
-    "withdraw": "Withdraw",
-    "rate": "Rate:",
-    "closingDate": "Closing date",
-    "closingTime": "Closing Time",
-    "link": "Link To Deal",
-    "copied": "Сopied",
-    "publicDeal": "Public Deal",
-    "brokerAddress": "Broker Address",
-    "notExist": "Such trade doesn't exist.",
     "rbcLowFees": "Use RBC for low fees",
     "discountRBC": "discount with RBC",
     "blockchainsHint": "More blockchains",
@@ -493,38 +409,6 @@
     "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
   },
   "modals": {
-    "adModal": {
-      "text": "Binance Smart Chain Wrapped Rubic is live now!",
-      "button": "Add BRBC to the wallet"
-    },
-    "gasPriceModal": {
-      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
-    },
-    "polygonToEthTradeModal": {
-      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
-    },
-    "cancelModal": {
-      "text": "The trade was cancelled",
-      "link": "Check transaction on scanner"
-    },
-    "operationModal": {
-      "progress": {
-        "text": "Operation is in progress <br /> Please wait until it is completed"
-      },
-      "success": {
-        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
-        "link": "Check transaction on scanner"
-      }
-    },
-    "tradeModal": {
-      "progress": {
-        "text": "Trade is in progress <br />  Please wait until it is completed"
-      },
-      "success": {
-        "text": "Successful swap!",
-        "link": "Check transaction on explorer"
-      }
-    },
     "confirmImportModal": {
       "title": "Please confirm your import!",
       "text": "This token is not listed on Rubic.exchange.\nBy adding it as a custom token, you confirm that you’re trading with it at your own risk."
@@ -541,10 +425,6 @@
       "new": "New to Ethereum?",
       "learnMore": "Learn more about wallets"
     }
-  },
-  "riskBanner": {
-    "text": "Please be aware that the UI is currently in beta, and it may still contain undetected bugs affecting the platform’s functionality. Use it at your own risk.",
-    "link": "Switch to old design"
   },
   "settings": {
     "instantTrades": {

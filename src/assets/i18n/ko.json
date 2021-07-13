@@ -15,17 +15,13 @@
     "copyright": "저작권",
     "privacyPolicy": "개인 정보 정책",
     "close": "닫기",
-    "advancedOptions": "고급 옵션",
     "send": "보내다",
     "left": "왼쪽",
     "checkOnScanner": "Check on scanner",
-    "useCustomToken": "맞춤형 토큰 사용",
     "cancel": "취소",
     "add": "더하다",
     "via": "통하다",
-    "contractAddress": "토큰 계약 주소",
     "address": "주소",
-    "enterAmount": "금액을 입력하세요",
     "chooseToken": "토큰 선택",
     "clearToken": "클리어 토큰",
     "warning": "경고",
@@ -45,7 +41,6 @@
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "rubicError": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
-    "sameTokens": "양쪽에서 동일한 토큰을 선택할 수 없습니다. 다른 토큰을 선택하십시오.",
     "noQrCode": "qrCode를 스캔했는지 확인하십시오",
     "noWallet": "연결된 지갑이 없습니다.",
     "retrievingTokensError": "토큰 검색 오류",
@@ -353,56 +348,22 @@
     }
   },
   "bridgePage": {
-    "title": "교차 체인 스왑 만들기",
-    "swapToggleText": "당사 스왑 사용하기",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
     "approveProgressMessage": "승인 거래를 수락하고 교환이 시작되었습니다. 거래가 완료 될 때까지 기다려주세요.",
     "approveSuccessMessage": "토큰을 승인했습니다. 거래를 계속하려면 스왑 버튼을 누르십시오.",
-    "tableTitle": "내 크로스-체인 스왑",
     "whatIs": "뭐가 ",
-    "whatIsAfter": "?",
-    "checkOn": "확인하다 ",
-    "assistanceOf": "지원",
-    "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
-    "minAmount": "-최소 금액 ",
-    "maxAmount": "최대 금액 ",
-    "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "cryptoTap": "Crypto Tap",
-    "bridge": "Bridge"
+    "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다"
   },
   "instantTrades": {
-    "title": "즉시 거래",
     "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",
-    "notSupportedToken": "선택한 토큰이 지정된 DEX에서 지원되는지 확인하고 나중에 다시 시도하세요.",
-    "bestRate": "최적가",
     "gasFee": "예상 가스 수수료",
     "useOptimization": "Rubic 최적화 사용",
     "notAvailableBefore": "거래 ",
     "notAvailableAfter": " 사용할 수 없습니다."
   },
-  "orderBook": {
-    "title": "오더북",
-    "closingTime": "마감 시간(UTC)",
-    "tradeListed": "거래가 메인 페이지에 표시됩니다",
-    "specifyTokens": "고급 옵션을 보려면 토큰과 필요한 금액을 지정하세요.",
-    "minContribution": "최소 참여",
-    "brokerFee": "브로커 수수료",
-    "specifyForBorker": "브로커에 대해 %를 지정할 수 있습니다.",
-    "yourRate": "귀하의 비율은 coingecko 비율보다 ",
-    "higher": "higher",
-    "lower": "lower",
-    "coingeckoRate": " 더 높습니다"
-  },
-  "bridge": {
-    "title": "크로스-체인 스왑"
-  },
   "myTrades": {
     "title": "내 거래"
-  },
-  "tradesForm": {
-    "unknownTokenWarning": "올바른 프로젝트인지 확인하십시오. 그렇지 않은 경우 나중에 판매하지 못할 수 있습니다. 자신의 위험에 따라 거래하십시오."
   },
   "tradesTable": {
     "columns": {
@@ -431,58 +392,13 @@
       "waitingForReceiving": "받기를 기다리고"
     },
     "noData": "아직 거래가 없습니다",
-    "noTrades": "거래가 없습니다",
-    "noTradesWithSelected": "선택한 매개 변수를 사용한 거래가 없습니다.",
-    "showData": "데이터 표시",
-    "sortBy": "정렬 기준",
     "receive": "받다"
   },
-  "tradesPage": {
-    "createTrade": "거래 생성",
-    "swapToggleText": "크로스-체인 스왑",
-    "tradesDisclaimer": {
-      "beforeText": "당사 플랫폼에서 거래함으로써 귀하는 다음",
-      "termsAndConditions": "약관에",
-      "afterText": "동의합니다."
-    },
-    "disclaimerTitle": "토큰 안전 경고!",
-    "disclaimerText": "높은 수준의 변동성, 해커 공격 및 상대방이 거래를 완료할 때까지 기다려야 하는 시간의 위험과 같은 높은 시스템 위험을 수반하므로 거래 과정에서 각별히 주의하세요.",
-    "accumulatedTransactionsVolume": "누적 거래량",
-    "collaborations": "소프트웨어 통합 및 협업",
-    "listingRequest": {
-      "title": "리스팅 요청",
-      "description": "프로젝트가 루빅 플랫폼에 나열되기를 원한다면 Rubic 을 지원하도록 이메일을 보내주십시오.재무(<a href='mailto:support@rubic.finance'>http://support@rubic.com</a>)다음 정보와 함께:",
-      "information": {
-        "projectName": "프로젝트 이름",
-        "projectDescription": "프로젝트 설명",
-        "links": "프로젝트 및 소셜 미디어에 대한 링크",
-        "contractAddress": "계약 주소",
-        "onepager": "Whitepaper/Onepager",
-        "logo": "PNG 및 SVG 의 로고 링크",
-        "why": "루빅을 선택한 이유.교환?"
-      }
-    }
-  },
   "tradePage": {
-    "sent": "보냄",
-    "left": "왼쪽",
-    "investors": "투자자 수",
     "getBefore": "당신은 얻을 것이다",
     "getMiddle": "토큰을",
     "getAfter": "거래가 완료된 후",
-    "find": "모두 채우기",
-    "limit": "최소 기부 한도:",
-    "fee": "브로커 수수료:",
     "providerFee": "제공자 수수료",
-    "withdraw": "빼다",
-    "rate": "율:",
-    "closingDate": "마감일",
-    "closingTime": "마감 시간",
-    "link": "거래 링크",
-    "copied": "Сopied",
-    "publicDeal": "공개 거래",
-    "brokerAddress": "브로커 주소",
-    "notExist": "그러한 거래는 존재하지 않습니다.",
     "rbcLowFees": "저렴한 수수료로 RBC 사용",
     "discountRBC": "RBC 할인",
     "blockchainsHint": "더 많은 블록 체인",
@@ -493,38 +409,6 @@
     "text": "서버 문제가 발생했습니다. 추후 공지가있을 때까지 지금 플랫폼을 사용하지 마십시오. 감사합니다."
   },
   "modals": {
-    "adModal": {
-      "text": "바이낸스 스마트 체인 Wrapped Rubic이 출시되었습니다!",
-      "button": "지갑에 BRBC 추가하기"
-    },
-    "gasPriceModal": {
-      "text": "현재 대상 네트워크 (이더 리움)의 가스 가격이 높습니다. 스왑 기간이 연장되며 최대 4 시간이 소요될 수 있습니다. <br /> 지금 계속 하시겠습니까?"
-    },
-    "polygonToEthTradeModal": {
-      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
-    },
-    "cancelModal": {
-      "text": "거래가 취소되었습니다",
-      "link": "스캐너에서 거래 확인"
-    },
-    "operationModal": {
-      "progress": {
-        "text": "작업이 진행 중입니다. <br /> 완료 될 때까지 기다리십시오."
-      },
-      "success": {
-        "text": "작업이 성공했습니다! <br />이 페이지는 자동으로 업데이트됩니다. <br />",
-        "link": "스캐너에서 거래 확인"
-      }
-    },
-    "tradeModal": {
-      "progress": {
-        "text": "거래가 진행 중입니다. <br /> 완료 될 때까지 기다려주세요."
-      },
-      "success": {
-        "text": "성공적인 스왑!",
-        "link": "탐색기에서 거래 확인"
-      }
-    },
     "confirmImportModal": {
       "title": "가져 오기를 확인하세요!",
       "text": "이 토큰은 Rubic.exchange에 등록되지 않았습니다.\n맞춤 토큰으로 추가하면 자신의 책임하에 거래하고 있음을 확인하게됩니다."
@@ -541,10 +425,6 @@
       "new": "Ethereum을 처음 사용하십니까?",
       "learnMore": "지갑에 대해 더 알아보기"
     }
-  },
-  "riskBanner": {
-    "text": "UI는 현재 베타 버전이며 플랫폼 기능에 영향을 미치는 감지되지 않은 버그가 여전히 포함되어있을 수 있습니다. 자신의 책임하에 사용하십시오.",
-    "link": "이전 디자인으로 전환"
   },
   "settings": {
     "instantTrades": {

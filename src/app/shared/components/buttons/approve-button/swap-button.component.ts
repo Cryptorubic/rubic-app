@@ -161,9 +161,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.useTestingModeSubscription$.unsubscribe();
-    this.formServiceSubscription$.unsubscribe();
-    this.providerConnectorServiceSubscription$.unsubscribe();
+    this.useTestingModeSubscription$?.unsubscribe();
+    this.formServiceSubscription$?.unsubscribe();
+    this.providerConnectorServiceSubscription$?.unsubscribe();
   }
 
   private setFormValues(form: ISwapFormInput): void {

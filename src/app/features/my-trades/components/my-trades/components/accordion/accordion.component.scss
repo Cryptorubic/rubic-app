@@ -387,16 +387,4 @@ tui-pagination {
       margin-bottom: 10px;
     }
   }
-
-  tui-pagination {
-    ::ng-deep {
-      [data-tui-host-size='s'][data-tui-host-shape=square],
-      [data-tui-host-size='s'][tuiIconButton] {
-        width: 23px;
-        height: 23px;
-
-        border-radius: 6px;
-      }
-    }
-  }
 }
