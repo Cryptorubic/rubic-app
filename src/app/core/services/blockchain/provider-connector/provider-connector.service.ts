@@ -6,6 +6,7 @@ import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
@@ -156,9 +157,40 @@ export class ProviderConnectorService {
     this.providerName = WALLET_NAME.METAMASK;
   }
 
+  public async addChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
+    const network = BlockchainsInfo.getBlockchainByName(networkName);
+    const defaultPolygonRpc = 'https://rpc-mainnet.maticvigil.com';
+    const params = {
+      chainId: `0x${network.id.toString(16)}`,
+      chainName: network.name,
+      nativeCurrency: {
+        name: network.nativeCoin.name,
+        symbol: network.nativeCoin.symbol,
+        decimals: 18
+      },
+      rpcUrls: [networkName === BLOCKCHAIN_NAME.POLYGON ? defaultPolygonRpc : network.rpcLink],
+      blockExplorerUrls: [network.scannerUrl],
+      iconUrls: [`https://rubic.exchange/${network.imagePath}`]
+    } as AddEthChainParams;
+    await this.provider.addChain(params);
+  }
+
   public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
     const chainId = `0x${network.id.toString(16)}`;
-    await this.provider.switchChain(chainId);
+    try {
+      await this.provider.switchChain(chainId);
+    } catch (switchError) {
+      if (switchError.code === 4902) {
+        try {
+          await this.addChain(networkName);
+          await this.provider.switchChain(chainId);
+        } catch (err) {
+          this.errorService.catch$(err);
+        }
+      } else {
+        this.errorService.catch$(switchError);
+      }
+    }
   }
 }
