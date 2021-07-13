@@ -352,8 +352,7 @@
     "approveProgressMessage": "승인 거래를 수락하고 교환이 시작되었습니다. 거래가 완료 될 때까지 기다려주세요.",
     "approveSuccessMessage": "토큰을 승인했습니다. 거래를 계속하려면 스왑 버튼을 누르십시오.",
     "whatIs": "뭐가 ",
-    "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다",
-    "cryptoTap": "Crypto Tap"
+    "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다"
   },
   "instantTrades": {
     "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",

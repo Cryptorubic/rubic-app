@@ -352,8 +352,7 @@
     "approveProgressMessage": "您接受了批准交易並且交易已經開始。 請等待交易完成。",
     "approveSuccessMessage": "您已批准令牌。 按掉期按鈕繼續交易。",
     "whatIs": "什么是 ",
-    "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址",
-    "cryptoTap": "Crypto Tap"
+    "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址"
   },
   "instantTrades": {
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",

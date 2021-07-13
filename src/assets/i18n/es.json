@@ -14,7 +14,7 @@
     "accept": "Aceptar",
     "copyright": "Derechos de autor",
     "privacyPolicy": "Política de privacidad",
-    "close": "Cerrar"
+    "close": "Cerrar",
     "send": "Send",
     "left": "Left",
     "checkOnScanner": "Check on scanner",
@@ -352,8 +352,7 @@
     "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
     "approveSuccessMessage": "Tienes tokens aprobados. Presione el botón de intercambio para continuar operando.",
     "whatIs": "¿Qué es ",
-    "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada",
-    "cryptoTap": "Crypto Tap"
+    "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada"
   },
   "instantTrades": {
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
