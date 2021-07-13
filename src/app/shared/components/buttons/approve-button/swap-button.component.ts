@@ -1,15 +1,15 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  Input,
-  Output,
   EventEmitter,
   Inject,
   INJECTOR,
   Injector,
-  ChangeDetectorRef,
+  Input,
+  OnDestroy,
   OnInit,
-  OnDestroy
+  Output
 } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
@@ -212,6 +212,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   public async changeNetwork(): Promise<void> {
-    this.providerConnectorService.switchChain(this.fromToken?.blockchain);
+    const currentStatus = this.status;
+    this.status = TRADE_STATUS.LOADING;
+    try {
+      await this.providerConnectorService.switchChain(this.fromToken?.blockchain);
+    } finally {
+      this.status = currentStatus;
+    }
   }
 }
