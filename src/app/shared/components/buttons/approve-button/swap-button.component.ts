@@ -109,7 +109,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     }
     if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
       return this.translateService.instant('errors.chooseNetworkWallet', {
-        blockchain: this.fromToken.blockchain
+        blockchain: this.fromToken?.blockchain || ''
       });
     }
   }

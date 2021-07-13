@@ -267,18 +267,22 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
               minAmount:
                 contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].minAmount /
                 10 ** bscSwapToken.decimals,
-              maxAmount:
-                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].dailyLimit.toNumber() /
-                10 ** bscSwapToken.decimals
+              maxAmount: Number(
+                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].dailyLimit
+                  .div(10 ** bscSwapToken.decimals)
+                  .toFixed(2)
+              )
             },
             [BLOCKCHAIN_NAME.POLYGON]: {
-              ...bscSwapToken,
+              ...polygonSwapToken,
               address: contractToken[BLOCKCHAIN_NAME.POLYGON].address,
               minAmount:
                 contractToken[BLOCKCHAIN_NAME.POLYGON].minAmount / 10 ** polygonSwapToken.decimals,
-              maxAmount:
-                contractToken[BLOCKCHAIN_NAME.POLYGON].dailyLimit.toNumber() /
-                10 ** bscSwapToken.decimals
+              maxAmount: Number(
+                contractToken[BLOCKCHAIN_NAME.POLYGON].dailyLimit
+                  .div(10 ** polygonSwapToken.decimals)
+                  .toFixed(2)
+              )
             }
           }
         };
