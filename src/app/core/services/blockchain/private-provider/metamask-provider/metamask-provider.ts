@@ -5,6 +5,7 @@ import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { MetamaskError } from 'src/app/core/errors/models/provider/MetamaskError';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
+import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -151,10 +152,17 @@ export class MetamaskProvider extends PrivateProvider {
     });
   }
 
-  public async switchChain(chainId: string): Promise<void> {
-    this.core.request({
+  public async switchChain(chainId: string): Promise<null | never> {
+    return this.core.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
+    });
+  }
+
+  public async addChain(params: AddEthChainParams): Promise<null | never> {
+    return this.core.request({
+      method: 'wallet_addEthereumChain',
+      params: [params]
     });
   }
 }

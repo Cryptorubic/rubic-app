@@ -8,6 +8,7 @@ import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
+import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
@@ -122,10 +123,17 @@ export class WalletLinkProvider extends PrivateProvider {
     });
   }
 
-  public async switchChain(chainId: string): Promise<void> {
-    this.core.request({
+  public async switchChain(chainId: string): Promise<null | never> {
+    return this.core.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
+    });
+  }
+
+  public async addChain(params: AddEthChainParams): Promise<null | never> {
+    return this.core.request({
+      method: 'wallet_addEthereumChain',
+      params: [params]
     });
   }
 }
