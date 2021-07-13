@@ -67,6 +67,7 @@
         [fullWidth]="true"
         appearance="secondary"
         (click)="changeNetwork()"
+        [loading]="status === TRADE_STATUS.LOADING"
       >
         {{ networkErrorText }}
       </app-rubic-button>
