@@ -44,6 +44,8 @@
 
   ::ng-deep {
     tui-wrapper[data-appearance='textfield'] {
+      font-size: 16px;
+
       border-radius: 100px;
       box-shadow: none;
     }
