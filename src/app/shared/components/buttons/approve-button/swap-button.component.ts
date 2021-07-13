@@ -27,6 +27,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
+import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -98,6 +99,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   public get allowChangeNetwork(): boolean {
+    if (this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK) {
+      return false;
+    }
     const unsupportedItBlockchains = [BLOCKCHAIN_NAME.XDAI, BLOCKCHAIN_NAME.TRON];
     const form = this.formService.commonTrade.controls.input.value;
 
@@ -123,6 +127,11 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     }
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
       return this.translateService.instant('errors.setTronAddress');
+    }
+    if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
+      return this.translateService.instant('errors.chooseNetworkWallet', {
+        blockchain: this.fromToken.blockchain
+      });
     }
     if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
       return this.translateService.instant('errors.noSelectedProvider');
