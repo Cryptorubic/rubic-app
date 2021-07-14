@@ -30,6 +30,12 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 
+// Exclude MATIC token because it is not supported by EVO relayer
+const EXCLUDED_TOKENS = {
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: ['0xcc42724c6683b7e57334c4e856f4c9965ed682bd'],
+  [BLOCKCHAIN_NAME.POLYGON]: ['0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270']
+};
+
 @Injectable()
 export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
   private evoTokens: EvoContractTokenInBlockchains[];
@@ -186,8 +192,14 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     );
 
     const tokens = await Promise.all(tokensInfoPromises);
-    const bscTokens = tokens[0];
-    const polygonTokens = tokens[1];
+    const bscTokens = tokens[0].filter(
+      token =>
+        !EXCLUDED_TOKENS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].includes(token.token.toLowerCase())
+    );
+    const polygonTokens = tokens[1].filter(
+      token => !EXCLUDED_TOKENS[BLOCKCHAIN_NAME.POLYGON].includes(token.token.toLowerCase())
+    );
+
     this.evoTokens = bscTokens.map((token, index) => ({
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         symbol: tokensInBlockchains[0][index],
