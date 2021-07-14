@@ -2,6 +2,7 @@ import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
+import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
 
 export abstract class PrivateProvider {
@@ -84,4 +85,8 @@ export abstract class PrivateProvider {
   public async requestPermissions(): Promise<unknown[]> {
     return [{ parentCapability: 'eth_accounts' }];
   }
+
+  public abstract switchChain(chainParams: string): Promise<null | never>;
+
+  public abstract addChain(params: AddEthChainParams): Promise<null | never>;
 }

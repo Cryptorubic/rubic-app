@@ -15,17 +15,13 @@
     "copyright": "Derechos de autor",
     "privacyPolicy": "Política de privacidad",
     "close": "Cerrar",
-    "advancedOptions": "Opciones Avanzadas",
     "send": "Send",
     "left": "Left",
     "checkOnScanner": "Check on scanner",
-    "useCustomToken": "Utiliza un token personalizado",
     "cancel": "Cancel",
     "add": "Add",
     "via": "Via",
-    "contractAddress": "Dirección del contrato de token",
     "address": "dirección de",
-    "enterAmount": "Ingresa el monto",
     "chooseToken": "Elija token",
     "clearToken": "Token claro",
     "warning": "Advertencia",
@@ -34,7 +30,8 @@
     "analytics": "Analítica",
     "minutes": "minutos",
     "swap": "Intercambio",
-    "approve": "Aprobar"
+    "approve": "Aprobar",
+    "switchTo": "Switch to {{ networkName }} network"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -44,7 +41,6 @@
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
     "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
-    "sameTokens": "No puede elegir el mismo token en ambos lados, elija diferentes tokens.",
     "noQrCode": "Asegúrese de haber escaneado qrCode",
     "noWallet": "No has conectado ninguna billetera",
     "retrievingTokensError": "Error al recuperar tokens",
@@ -352,56 +348,22 @@
     }
   },
   "bridgePage": {
-    "title": "Create your cross-chain swap",
-    "swapToggleText": "Use our swaps",
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
     "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
     "approveSuccessMessage": "Tienes tokens aprobados. Presione el botón de intercambio para continuar operando.",
-    "tableTitle": "Sus intercambios entre plataformas",
     "whatIs": "¿Qué es ",
-    "whatIsAfter": "?",
-    "checkOn": "Verificar ",
-    "assistanceOf": "Con la ayuda de",
-    "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada",
-    "minAmount": "Monto minimo ",
-    "maxAmount": "Importe máximo ",
-    "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "cryptoTap": "Crypto Tap",
-    "bridge": "Bridge"
+    "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada"
   },
   "instantTrades": {
-    "title": "Intercambios instantáneos",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
-    "notSupportedToken": "Por favor asegúrese que el token seleccionado sea compatible con la DEX elegida e intente nuevamente más adelante.",
-    "bestRate": "Mejor Tasa",
     "gasFee": "Costo de tarifas estimado:",
     "useOptimization": "Utilice la optimización de Rubic",
     "notAvailableBefore": "Negociando en ",
     "notAvailableAfter": " no está disponible."
   },
-  "orderBook": {
-    "title": "Libro de Órdenes",
-    "closingTime": "Hora límite (UTC)",
-    "tradeListed": "El intercambio aparecerá en la página principal",
-    "specifyTokens": "Por favor especifique la cantidad de tokens necesaria para ver las opciones avanzadas",
-    "minContribution": "Minimum contribution in",
-    "brokerFee": "Broker Fee",
-    "specifyForBorker": "You can specify % for Broker",
-    "yourRate": "Su tasa de intercambio es ",
-    "higher": "higher",
-    "lower": "lower",
-    "coingeckoRate": " más rentable que la de coingecko"
-  },
-  "bridge": {
-    "title": "Ntercambios entre plataformas"
-  },
   "myTrades": {
     "title": "Mis Intercambios"
-  },
-  "tradesForm": {
-    "unknownTokenWarning": "Please check that it represents the right project. If it is not, you may not be able to sell it later. Trade on your own risk."
   },
   "tradesTable": {
     "columns": {
@@ -430,58 +392,13 @@
       "waitingForReceiving": "esperando recibir"
     },
     "noData": "Aún no tienes intercambios",
-    "noTrades": "There are no trades",
-    "noTradesWithSelected": "There are no trades with selected parameters",
-    "showData": "Mostrar datos",
-    "sortBy": "Ordenar por",
     "receive": "Recibir"
   },
-  "tradesPage": {
-    "createTrade": "Crea tu Intercambio",
-    "swapToggleText": "Ntercambios entre plataformas",
-    "tradesDisclaimer": {
-      "beforeText": "Al utilizar nuestra plataforma estás de acuerdo con los siguientes",
-      "termsAndConditions": "términos y condiciones",
-      "afterText": ""
-    },
-    "disclaimerTitle": "¡Alerta de seguridad del token!",
-    "disclaimerText": "Por favor tenga cuidado con todo el proceso de intercambio, porque involucra riesgos de seguridad importantes, como por ejemplo grandes tasas de volatilidad, ataques de hackers y riesgos relacionados a los tiempos de las transacciones. <br/><br/> Cualquier ente puede crear un token en las plataformas existentes. Esto abre la posibilidad de la existencia de versiones falsas de los tokens pre-existentes, o tokens para proyectos no legítimos. Por favor, ten cuidado y realiza una investigación previo a realizar un intercambio. Interactúa con los tokens bajo tu propio riesgo, ya que no es responsabilidad de los organizadores de Rubic la de verificar que los tokens intercambiados en la plataforma sean legítimos.",
-    "accumulatedTransactionsVolume": "Accumulated Transactions Volume",
-    "collaborations": "Integraciones de Software y Colaboraciones Con",
-    "listingRequest": {
-      "title": "Petición de listado",
-      "description": "Si deseas alistar tu proyecto a la plataforma de Rubic, debes enviar un email a <a href='mailto:support@rubic.finance'>support@rubic.finance</a> con la siguiente información:",
-      "information": {
-        "projectName": "Nombre del proyecto",
-        "projectDescription": "Descripción del proyecto",
-        "links": "Links y redes sociales del proyecto",
-        "contractAddress": "Dirección del contrato",
-        "onepager": "Papel Blanco/Resumen del Proyecto",
-        "logo": "Link del logo en PNG y SVG",
-        "why": "¿Por qué has elegido a Rubic.exchange?"
-      }
-    }
-  },
   "tradePage": {
-    "sent": "Sent",
-    "left": "Left",
-    "investors": "Number of investors",
     "getBefore": "You will get",
     "getMiddle": "tokens para el",
     "getAfter": "after the trade is complete",
-    "find": "Fill all",
-    "limit": "Min contribution limit:",
-    "fee": "Broker's fee:",
     "providerFee": "Tarifa de proveedor",
-    "withdraw": "Withdraw",
-    "rate": "Rate:",
-    "closingDate": "Fecha límite",
-    "closingTime": "Hora límite",
-    "link": "Link To Deal",
-    "copied": "Copiado",
-    "publicDeal": "Intercambio Público",
-    "brokerAddress": "Broker Address",
-    "notExist": "Such trade doesn't exist.",
     "rbcLowFees": "Use RBC por tarifas bajas",
     "discountRBC": "descuento con RBC",
     "blockchainsHint": "Más blockchains",
@@ -492,38 +409,6 @@
     "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
   },
   "modals": {
-    "adModal": {
-      "text": "La versión Envuelta de Rubic para Binance Smart Chain ya se encuentra disponible!",
-      "button": "AÑADA BRBC a su billetera"
-    },
-    "gasPriceModal": {
-      "text": "Gas price in the target network (Ethereum) is high now. Swap duration is extended and may take up to 4 hours.<br />Would you like to continue now?"
-    },
-    "polygonToEthTradeModal": {
-      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
-    },
-    "cancelModal": {
-      "text": "The trade was cancelled",
-      "link": "Check transaction on scanner"
-    },
-    "operationModal": {
-      "progress": {
-        "text": "Operation is in progress <br /> Please wait until it is completed"
-      },
-      "success": {
-        "text": "The operation is successful! <br /> This page will be updated automatically <br />",
-        "link": "Check transaction on scanner"
-      }
-    },
-    "tradeModal": {
-      "progress": {
-        "text": "Trade is in progress <br />  Please wait until it is completed"
-      },
-      "success": {
-        "text": "Successful swap!",
-        "link": "Check transaction on explorer"
-      }
-    },
     "confirmImportModal": {
       "title": "¡Confirme su importación!",
       "text": "Este token no aparece en Rubic.exchange.\nAl agregarlo como un token personalizado, confirma que está operando con él bajo su propio riesgo."
@@ -540,10 +425,6 @@
       "new": "¿Nuevo en Ethereum?",
       "learnMore": "Más información sobre carteras"
     }
-  },
-  "riskBanner": {
-    "text": "Tenga en cuenta que la interfaz de usuario se encuentra actualmente en versión beta y aún puede contener errores no detectados que afectan la funcionalidad de la plataforma. Úselo bajo su propio riesgo.",
-    "link": "Cambiar al diseño antiguo"
   },
   "settings": {
     "instantTrades": {

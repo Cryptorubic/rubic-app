@@ -54,6 +54,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get isProviderSelected(): boolean {
+    return !this.providerControllers.some(el => el.isSelected);
+  }
+
   get tokenInfoUrl(): string {
     const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
     let tokenAddress;

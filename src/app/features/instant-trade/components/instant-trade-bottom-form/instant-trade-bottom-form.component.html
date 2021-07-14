@@ -35,5 +35,6 @@
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (loginEvent)="calculateTrades()"
+    [providerError]="isProviderSelected"
   ></app-swap-button>
 </div>

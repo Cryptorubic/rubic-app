@@ -15,17 +15,13 @@
     "copyright": "版权",
     "privacyPolicy": "隐私政策",
     "close": "关闭",
-    "advancedOptions": "高級選項",
     "send": "发送",
     "left": "离开",
     "checkOnScanner": "Check on scanner",
-    "useCustomToken": "使用自定义代币",
     "cancel": "取消",
     "add": "添加",
     "via": "通過",
-    "contractAddress": "代币合约地址",
     "address": "地址",
-    "enterAmount": "输入金额",
     "chooseToken": "选择币种",
     "clearToken": "清除令牌",
     "warning": "警告",
@@ -34,7 +30,8 @@
     "analytics": "分析",
     "minutes": "分鐘",
     "swap": "交換",
-    "approve": "批准"
+    "approve": "批准",
+    "switchTo": "Switch to {{ networkName }} network"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -44,7 +41,6 @@
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
     "rubicError": "请稍后再试，或尝试使用其他设备。如果您仍有问题",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
-    "sameTokens": "兩邊不能選擇相同的令牌，請選擇不同的令牌.",
     "noQrCode": "請確保您有掃描二維碼",
     "noWallet": "您尚未連接任何錢包",
     "retrievingTokensError": "檢索令牌時出錯",
@@ -352,56 +348,22 @@
     }
   },
   "bridgePage": {
-    "title": "創建跨鏈交換",
-    "swapToggleText": "使用我們的掉期",
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
     "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。",
     "approveProgressMessage": "您接受了批准交易並且交易已經開始。 請等待交易完成。",
     "approveSuccessMessage": "您已批准令牌。 按掉期按鈕繼續交易。",
-    "tableTitle": "您的跨鏈互換",
     "whatIs": "什么是 ",
-    "whatIsAfter": "?",
-    "checkOn": "檢查 ",
-    "assistanceOf": "在...的協助下",
-    "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址",
-    "minAmount": "最低金額 ",
-    "maxAmount": "最高金額 ",
-    "createBridge": "Create Bridge",
-    "erc": "If your project is ERC-20 and you would like to create a wrapped version on BSC, to be added to Rubics bridge - please contact us.",
-    "cryptoTap": "Crypto Tap",
-    "bridge": "Bridge"
+    "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址"
   },
   "instantTrades": {
-    "title": "支持即时交易",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
-    "notSupportedToken": "請確保指定的DEX支持所選令牌，然後重試.",
-    "bestRate": "最優惠的價格",
     "gasFee": "gas费用估计值",
     "useOptimization": "使用Rubic優化",
     "notAvailableBefore": "交易 ",
     "notAvailableAfter": " 不可用。"
   },
-  "orderBook": {
-    "title": "订单簿",
-    "closingTime": "關閉時間（UTC）",
-    "tradeListed": "交易將在主頁上列出",
-    "specifyTokens": "請指定令牌和所需金額以查看高級選項",
-    "minContribution": "最低供款",
-    "brokerFee": "中介費",
-    "specifyForBorker": "您可以為經紀人指定％",
-    "yourRate": "你的价格为 ",
-    "higher": "更高",
-    "lower": "降低",
-    "coingeckoRate": " 比 coingecko 价格"
-  },
-  "bridge": {
-    "title": "跨鏈掉期"
-  },
   "myTrades": {
     "title": "我的行业"
-  },
-  "tradesForm": {
-    "unknownTokenWarning": "請檢查它是否代表正確的項目。 如果不是，您可能以後將無法出售。 交易風險自負。"
   },
   "tradesTable": {
     "columns": {
@@ -430,58 +392,13 @@
       "waitingForReceiving": "等待接收"
     },
     "noData": "您還沒有交易",
-    "noTrades": "沒有交易",
-    "noTradesWithSelected": "沒有選擇參數的交易",
-    "showData": "顯示資料",
-    "sortBy": "排序方式",
     "receive": "收到"
   },
-  "tradesPage": {
-    "createTrade": "创造你的贸易",
-    "swapToggleText": "跨鏈掉期",
-    "tradesDisclaimer": {
-      "beforeText": "在我们的平台上进行交易，即代表您同意以下",
-      "termsAndConditions": "条款",
-      "afterText": ""
-    },
-    "disclaimerTitle": "代币安全警报!",
-    "disclaimerText": "在整个交易过程中都请保持高度谨慎，交易过程涉及较高的系统风险，例如剧烈的波动、黑客攻击，以及必须等待对方完成交易所导致的相关时效性风险。",
-    "accumulatedTransactionsVolume": "累計交易量",
-    "collaborations": "與軟件的集成和協作",
-    "listingRequest": {
-      "title": "上市要求",
-      "description": "如果您希望您的项目在Rubic平台上列出，请发送电子邮件至support@rubic。金融(<a href='mailto:support@rubic.finance'>http://support@rubic</a>。财务/）与以下信息:",
-      "information": {
-        "projectName": "项目名称",
-        "projectDescription": "项目描述",
-        "links": "链接到项目和社交媒体",
-        "contractAddress": "合約地址",
-        "onepager": "合同地址",
-        "logo": "链接到PNG和SVG中的徽标",
-        "why": "为什么你选择Rubic。交换？"
-      }
-    }
-  },
   "tradePage": {
-    "sent": "发送",
-    "left": "左",
-    "investors": "投资者人数",
     "getBefore": "交易完成后，你将获得",
     "getMiddle": "令牌到",
     "getAfter": "",
-    "find": "交割全部",
-    "limit": "最低出资限额",
-    "fee": "经纪商佣金：",
     "providerFee": "提供者費用",
-    "withdraw": "退款",
-    "rate": "价格：",
-    "closingDate": "结束日期",
-    "closingTime": "结束时间",
-    "link": "交易链接",
-    "copied": "影射",
-    "publicDeal": "公開交易",
-    "brokerAddress": "經紀人地址",
-    "notExist": "這樣的貿易不存在。",
     "rbcLowFees": "使用 RBC 收取低費用",
     "discountRBC": "RBC 折扣",
     "blockchainsHint": "更多區塊鏈",
@@ -492,38 +409,6 @@
     "text": "我們遇到服務器問題，請暫時不要使用該平台，除非另行通知。 謝謝你。"
   },
   "modals": {
-    "adModal": {
-      "text": "Binance Smart Chain Wrapped Rubic現已上線！",
-      "button": "添加 BRBC 到錢包"
-    },
-    "gasPriceModal": {
-      "text": "Gas price 在目標網絡中 (Ethereum) 現在很高。 交換時間會延長，最多可能需要4個小時。<br />您想現在繼續嗎?"
-    },
-    "polygonToEthTradeModal": {
-      "text": "Bridge trade from Polygon to Ethereum takes 2 transactions. After the 1st transaction you will need to wait for about 30 minutes and then deposit second time &ndash; 'Receive' button will appear in the corresponding line of the swaps list under the form."
-    },
-    "cancelModal": {
-      "text": "交易已被取消",
-      "link": "在掃描儀上檢查交易"
-    },
-    "operationModal": {
-      "progress": {
-        "text": "操作正在進行中<br />請等待直到完成"
-      },
-      "success": {
-        "text": "操作成功！ <br />此頁面將自動更新<br />",
-        "link": "在掃描儀上檢查交易"
-      }
-    },
-    "tradeModal": {
-      "progress": {
-        "text": "交易正在進行中<br />請等待直到交易完成"
-      },
-      "success": {
-        "text": "交換成功！",
-        "link": "在資源管理器上檢查交易"
-      }
-    },
     "confirmImportModal": {
       "title": "請確認您的導入！",
       "text": "該令牌未在 Rubic.exchange 上列出。\n通過將其添加為自定義代幣，您確認使用它進行交易的風險由您自己承擔。"
@@ -540,10 +425,6 @@
       "new": "以太坊新手？",
       "learnMore": "了解有關錢包的更多信息"
     }
-  },
-  "riskBanner": {
-    "text": "請注意，用戶界面目前處於測試階段，它可能仍包含影響平台功能的未檢測到的錯誤。 需要您自擔風險使用它。",
-    "link": "切換到舊設計"
   },
   "settings": {
     "instantTrades": {
