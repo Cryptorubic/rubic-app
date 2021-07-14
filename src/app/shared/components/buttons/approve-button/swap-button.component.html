@@ -62,7 +62,21 @@
       >
     </ng-container>
 
-    <ng-container *ngIf="hasError && !loading">
+    <ng-container *ngIf="hasError && errorType['Wrong user network']  && !loading && allowChangeNetwork">
+      <app-rubic-button
+        [fullWidth]="true"
+        appearance="secondary"
+        (click)="changeNetwork()"
+        [loading]="status === TRADE_STATUS.LOADING"
+      >
+        {{ networkErrorText }}
+      </app-rubic-button>
+    </ng-container>
+
+    <ng-container *ngIf="
+      hasError && !errorType['Wrong user network'] && !loading ||
+      hasError && errorType['Wrong user network'] && !loading && !allowChangeNetwork
+    ">
       <app-rubic-button
         class="error-button"
         [fullWidth]="true"
