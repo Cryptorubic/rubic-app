@@ -9,7 +9,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
@@ -135,7 +135,18 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
             onTransactionHash
           }
         )
-      )
+      ),
+      tap(async receipt => {
+        try {
+          await this.bridgeApiService.notifyBridgeBot(
+            bridgeTrade,
+            receipt.transactionHash,
+            this.authService.user.address
+          );
+        } catch (e) {
+          console.error(e);
+        }
+      })
     );
   }
 
