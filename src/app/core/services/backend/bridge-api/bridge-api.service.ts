@@ -262,7 +262,7 @@ export class BridgeApiService {
           )
           .filter(it => it)
           .sort((a, b) => b - a);
-        return prices[0];
+        return prices[0] || 0;
       })
     );
   }
