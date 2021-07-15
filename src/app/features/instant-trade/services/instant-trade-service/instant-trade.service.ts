@@ -25,6 +25,7 @@ import TransactionRevertedError from 'src/app/core/errors/models/common/transact
 import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-bsc-service/sushi-swap-bsc.service';
+import CustomError from 'src/app/core/errors/models/custom-error';
 
 @Injectable({
   providedIn: 'root'
@@ -120,13 +121,19 @@ export class InstantTradeService {
           status: TuiNotification.Success
         })
         .subscribe();
-      await this.instantTradesApiService.notifyInstantTradesBot({
-        provider,
-        blockchain: this.currentBlockchain,
-        walletAddress: receipt.from,
-        trade,
-        txHash: receipt.transactionHash
-      });
+      try {
+        await this.instantTradesApiService.notifyInstantTradesBot({
+          provider,
+          blockchain: this.currentBlockchain,
+          walletAddress: receipt.from,
+          trade,
+          txHash: receipt.transactionHash
+        });
+      } catch (err) {
+        const error = new CustomError('Notify Instant Trade bot failed');
+        error.displayError = false;
+        throw error;
+      }
     } catch (err) {
       if (err instanceof TransactionRevertedError) {
         console.error(err);
