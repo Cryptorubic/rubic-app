@@ -24,6 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-eth-service/sushi-swap-eth.service';
+import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-bsc-service/sushi-swap-bsc.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,7 @@ export class InstantTradeService {
     private readonly oneInchBscService: OneInchBscService,
     private readonly sushiSwapEthService: SushiSwapEthService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
+    private readonly sushiSwapBscService: SushiSwapBscService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -162,7 +164,8 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,
-        [INSTANT_TRADES_PROVIDER.PANCAKESWAP]: this.pancakeSwapService
+        [INSTANT_TRADES_PROVIDER.PANCAKESWAP]: this.pancakeSwapService,
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapBscService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchPolygonService,
