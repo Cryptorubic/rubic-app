@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
@@ -24,7 +23,6 @@ export class StoreService {
   public isIframe: boolean;
 
   constructor(
-    private readonly queryParamsService: QueryParamsService,
     private readonly cookieService: CookieService,
     @Inject(DOCUMENT) private document: Document
   ) {

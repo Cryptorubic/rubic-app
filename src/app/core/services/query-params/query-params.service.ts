@@ -8,6 +8,7 @@ import SwapToken from 'src/app/shared/models/tokens/SwapToken';
 import { BridgeToken } from 'src/app/features/cross-chain-swaps-page/bridge-page/models/BridgeToken';
 import { skip, take } from 'rxjs/operators';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/token-rank';
+import { StoreService } from 'src/app/core/services/store/store.service';
 import { TokensService } from '../backend/tokens-service/tokens.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
@@ -62,7 +63,8 @@ export class QueryParamsService {
     private readonly tradeTypeService: TradeTypeService,
     private readonly web3Public: Web3PublicService,
     @Inject(DOCUMENT) private document: Document,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly storageService: StoreService
   ) {
     this.$themeSubject = new BehaviorSubject<string>('default');
     this.$isIframeSubject = new BehaviorSubject<boolean>(false);
@@ -149,6 +151,7 @@ export class QueryParamsService {
     if (queryParams) {
       if (queryParams.iframe === 'true') {
         this.$isIframeSubject.next(true);
+        this.storageService.isIframe = true;
         this.document.body.classList.add('iframe');
         if (queryParams.hidden) {
           this.$hiddenNetworksSubject.next(queryParams.hidden.split(','));
