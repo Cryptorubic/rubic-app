@@ -12,6 +12,7 @@ import {
 } from 'src/app/core/services/backend/bridge-api/models/BridgeTableTradeApi';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { BridgeBotRequest } from 'src/app/core/services/backend/bridge-api/models/BridgeBotRequest';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 
@@ -211,10 +212,10 @@ export class BridgeApiService {
       .pipe(
         first(),
         mergeMap(price => {
-          const body = {
-            track: transactionHash,
+          const body: BridgeBotRequest = {
+            txHash: transactionHash,
             walletAddress,
-            amount: bridgeTrade.amount,
+            amount: bridgeTrade.amount.toNumber(),
             fromBlockchain: bridgeTrade.fromBlockchain,
             toBlockchain: bridgeTrade.toBlockchain,
             symbol: bridgeTrade.token.symbol,

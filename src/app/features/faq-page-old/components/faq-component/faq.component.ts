@@ -22,7 +22,6 @@ export class FaqComponent {
   public toggleQuestion(containerElement: MouseEvent, question: Question) {
     const answerElement = (containerElement.currentTarget as HTMLElement)
       .children[1] as HTMLElement;
-    console.log(answerElement, answerElement.offsetHeight, answerElement.scrollHeight);
     question.isActive = !question.isActive;
     if (question.isActive) {
       answerElement.style.height = `${answerElement.scrollHeight}px`;
