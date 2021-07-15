@@ -4,10 +4,10 @@ import { OneInchEthService } from 'src/app/features/instant-trade/services/insta
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { forkJoin, Observable, Subscription, timer } from 'rxjs';
+import { forkJoin, Observable, of, Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { INSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps/models/INSTANT_TRADES_TRADE_STATUS';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -221,7 +221,12 @@ export class InstantTradeService {
     const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
     const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
     const providerApproveData = providers.map((provider: ItProvider) =>
-      provider.getAllowance(fromToken.address)
+      provider.getAllowance(fromToken.address).pipe(
+        catchError(err => {
+          console.debug(err);
+          return of(null);
+        })
+      )
     );
 
     return forkJoin(providerApproveData).pipe(
