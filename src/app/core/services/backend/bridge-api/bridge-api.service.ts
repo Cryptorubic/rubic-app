@@ -233,9 +233,10 @@ export class BridgeApiService {
         const prices = Object.values(BLOCKCHAIN_NAME)
           .map(
             blockchain =>
-              backendTokens.find(
-                token => bridgeToken.blockchainToken[blockchain]?.address === token.address
-              )?.price
+              backendTokens
+                .filter(token => token.blockchain === blockchain)
+                .find(token => bridgeToken.blockchainToken[blockchain]?.address === token.address)
+                ?.price
           )
           .filter(it => it)
           .sort((a, b) => b - a);
