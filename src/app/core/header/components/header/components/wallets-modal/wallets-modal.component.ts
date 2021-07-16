@@ -2,15 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
-  Renderer2,
   TemplateRef,
   ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Observable } from 'rxjs';
-import { AsyncPipe, DOCUMENT } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { AuthService } from '../../../../../services/auth/auth.service';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
@@ -50,7 +49,8 @@ export class WalletsModalComponent {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
-    private readonly cdr: ChangeDetectorRef // @Inject(DOCUMENT) private readonly document: Document, // private readonly renderer: Renderer2
+    public readonly queryParamsService: QueryParamsService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.$walletsLoading = this.headerStore.getWalletsLoadingStatus();
     this.$mobileDisplayStatus = this.headerStore.getMobileDisplayStatus();
@@ -59,19 +59,22 @@ export class WalletsModalComponent {
         name: 'MetaMask',
         value: WALLET_NAME.METAMASK,
         img: './assets/images/icons/wallets/metamask.svg',
-        desktopOnly: false
+        desktopOnly: false,
+        displayInIframe: false
       },
       // {
       //   name: 'Coinbase wallet',
       //   value: WALLET_NAME.WALLET_LINK,
       //   img: './assets/images/icons/wallets/coinbase.png',
-      //   desktopOnly: true
+      //   desktopOnly: true,
+      //   displayInIframe: false
       // },
       {
         name: 'WalletConnect',
         value: WALLET_NAME.WALLET_CONNECT,
         img: './assets/images/icons/wallets/walletconnect.svg',
-        desktopOnly: true
+        desktopOnly: false,
+        displayInIframe: true
       }
     ];
   }

@@ -8,9 +8,15 @@
         <div class="modal__title">Connect wallet</div>
       </header>
       <main class="modal__body">
-        <button [disabled]="($walletsLoading | async) ? 'disabled' : false" class="modal__provider-button" *ngFor="let provider of providers" (click)="connectProvider(provider.value)">{{ provider.name }}
-          <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
-        </button>
+        <ng-container *ngFor="let provider of providers">
+          <button
+            *ngIf="(queryParamsService.$isIframe | async) === true ? provider.displayInIframe : true"
+            [disabled]="($walletsLoading | async) ? 'disabled' : false"
+            class="modal__provider-button"
+            (click)="connectProvider(provider.value)">{{ provider.name }}
+            <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
+          </button>
+        </ng-container>
       </main>
       <footer class="modal__footer">
         <span>New to Ethereum? </span>
