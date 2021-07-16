@@ -4,21 +4,18 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { forkJoin, from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, of, throwError } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
 } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/constants/contract';
 import BigNumber from 'bignumber.js';
-import {
-  EvoContractToken,
-  EvoContractTokenInBlockchains
-} from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoContractToken';
+import { EvoContractTokenInBlockchains } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoContractToken';
 import { EvoBridgeToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoBridgeToken';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -29,6 +26,11 @@ import { EvoResponseToken } from 'src/app/features/bridge/services/bridge-servic
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
+import {
+  BlockchainsConfig,
+  TokensIdConfig
+} from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/Config';
+import { ConfigResponse } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/ConfigResponse';
 
 // Exclude MATIC token because it is not supported by EVO relayer
 const EXCLUDED_TOKENS = {
@@ -38,7 +40,7 @@ const EXCLUDED_TOKENS = {
 
 @Injectable()
 export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
-  private evoTokens: EvoContractTokenInBlockchains[];
+  private evoTokens: EvoBridgeToken[];
 
   constructor(
     private web3PublicService: Web3PublicService,
@@ -49,7 +51,10 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     private bridgeApiService: BridgeApiService
   ) {
     super();
-    this.loadTokens().subscribe(tokens => this.tokens$.next(tokens));
+    this.loadTokens().subscribe(tokens => {
+      this.tokens$.next(tokens);
+      this.evoTokens = tokens.toArray();
+    });
   }
 
   approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
@@ -110,32 +115,27 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     const destination = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 0;
 
     const evoToken = this.evoTokens.find(
-      token => token[bridgeTrade.fromBlockchain].address === tokenFrom.address
-    )[bridgeTrade.fromBlockchain];
+      token =>
+        token.blockchainToken[bridgeTrade.fromBlockchain].address.toLowerCase() ===
+        tokenFrom.address.toLowerCase()
+    ).evoInfo[bridgeTrade.fromBlockchain];
 
-    return this.checkDailyLimit(bridgeTrade, evoToken).pipe(
-      map(notExceeded => {
-        if (!notExceeded) {
-          return throwError(new UndefinedError());
+    return from(
+      this.web3PrivateService.executeContractMethod(
+        EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+        EVO_ABI as AbiItem[],
+        'create',
+        [
+          evoToken.index,
+          bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals),
+          destination,
+          Web3PublicService.addressToBytes32(this.authService.user.address)
+        ],
+        {
+          onTransactionHash
         }
-        return undefined;
-      }),
-      mergeMap(() =>
-        this.web3PrivateService.executeContractMethod(
-          EVO_ADDRESSES[bridgeTrade.fromBlockchain],
-          EVO_ABI as AbiItem[],
-          'create',
-          [
-            evoToken.index,
-            bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals),
-            destination,
-            this.authService.user.address
-          ],
-          {
-            onTransactionHash
-          }
-        )
-      ),
+      )
+    ).pipe(
       tap(async receipt => {
         try {
           await this.bridgeApiService.notifyBridgeBot(
@@ -160,16 +160,34 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         ? BLOCKCHAIN_NAME.POLYGON
         : BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     const evoToken = this.evoTokens.find(
-      token => token[toBlockchain].address === bridgeToken.blockchainToken[toBlockchain].address
-    )[fromBlockchain];
+      token =>
+        token.blockchainToken[toBlockchain].address ===
+        bridgeToken.blockchainToken[toBlockchain].address
+    ).evoInfo[fromBlockchain];
     return of(evoToken.feeBase.plus(amount.multipliedBy(evoToken.fee).dividedBy(10000)).toNumber());
   }
 
   private loadTokens(): Observable<List<EvoBridgeToken>> {
+    const loadTokensAndConfig$ = from(this.fetchSupportedTokens()).pipe(
+      switchMap(evoTokens => {
+        const blockchainTokens: { [key in BLOCKCHAIN_NAME]?: number[] } = {
+          [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [],
+          [BLOCKCHAIN_NAME.POLYGON]: []
+        };
+
+        evoTokens.forEach(token =>
+          Object.entries(token).forEach(([key, value]) => blockchainTokens[key].push(value.index))
+        );
+        return from(this.fetchConfigs(blockchainTokens)).pipe(
+          map(config => ({ evoTokens, config }))
+        );
+      })
+    );
+
     return from(this.tokensService.tokens).pipe(
-      withLatestFrom(this.fetchSupportedTokens()),
-      map(([swapTokens, contractTokens]) =>
-        List(this.buildBridgeTokens(contractTokens, swapTokens.toArray()))
+      withLatestFrom(loadTokensAndConfig$),
+      map(([swapTokens, { evoTokens, config }]) =>
+        List(this.buildBridgeTokens(evoTokens, config, swapTokens.toArray()))
       )
     );
   }
@@ -211,36 +229,35 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       token => !EXCLUDED_TOKENS[BLOCKCHAIN_NAME.POLYGON].includes(token.token.toLowerCase())
     );
 
-    this.evoTokens = bscTokens.map((token, index) => ({
+    return bscTokens.map((token, index) => ({
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         symbol: tokensInBlockchains[0][index],
         address: token.token,
-        fee: new BigNumber(token.fee),
-        feeBase: new BigNumber(token.feeBase),
+        defaultFee: new BigNumber(token.defaultFee),
+        defaultFeeBase: new BigNumber(token.defaultFeeBase),
         feeTarget: token.feeTarget,
-        minAmount: Number(token.minAmount),
-        dailyLimit: new BigNumber(token.dailyLimit),
+        defaultMinAmount: new BigNumber(token.defaultMinAmount),
+        defaultMaxAmount: new BigNumber(token.defaultMaxAmount),
         bonus: Number(token.bonus),
         index
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         symbol: tokensInBlockchains[1][index],
         address: polygonTokens[index].token,
-        fee: new BigNumber(polygonTokens[index].fee),
-        feeBase: new BigNumber(polygonTokens[index].feeBase),
+        defaultFee: new BigNumber(polygonTokens[index].defaultFee),
+        defaultFeeBase: new BigNumber(polygonTokens[index].defaultFeeBase),
         feeTarget: polygonTokens[index].feeTarget,
-        minAmount: Number(polygonTokens[index].minAmount),
-        dailyLimit: new BigNumber(polygonTokens[index].dailyLimit),
+        defaultMinAmount: new BigNumber(polygonTokens[index].defaultMinAmount),
+        defaultMaxAmount: new BigNumber(polygonTokens[index].defaultMaxAmount),
         bonus: Number(polygonTokens[index].bonus),
         index
       }
     }));
-
-    return this.evoTokens;
   }
 
   private buildBridgeTokens(
     contractTokens: EvoContractTokenInBlockchains[],
+    config: BlockchainsConfig,
     swapTokens: TokenAmount[]
   ): EvoBridgeToken[] {
     const bscSwapTokens = swapTokens.filter(
@@ -267,31 +284,61 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
           return null;
         }
 
+        const bscConfigToken =
+          config[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN][
+            contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].index
+          ];
+        const polygonConfigToken =
+          config[BLOCKCHAIN_NAME.POLYGON][contractToken[BLOCKCHAIN_NAME.POLYGON].index];
+
+        const validBN = (bn1: BigNumber, bn2: BigNumber) => (bn1 && bn1.gt(0) ? bn1 : bn2);
+
         return {
           evoInfo: {
             [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-              fee: contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].fee,
-              feeBase: contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].feeBase,
-              dailyLimit: contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].dailyLimit
+              fee: validBN(
+                bscConfigToken.fee,
+                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].defaultFee
+              ),
+              feeBase: validBN(
+                bscConfigToken.feeBase,
+                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].defaultFeeBase
+              ),
+              index: contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].index
             },
             [BLOCKCHAIN_NAME.POLYGON]: {
-              fee: contractToken[BLOCKCHAIN_NAME.POLYGON].fee,
-              feeBase: contractToken[BLOCKCHAIN_NAME.POLYGON].feeBase,
-              dailyLimit: contractToken[BLOCKCHAIN_NAME.POLYGON].dailyLimit
+              fee: validBN(
+                polygonConfigToken.fee,
+                contractToken[BLOCKCHAIN_NAME.POLYGON].defaultFee
+              ),
+              feeBase: validBN(
+                polygonConfigToken.feeBase,
+                contractToken[BLOCKCHAIN_NAME.POLYGON].defaultFeeBase
+              ),
+              index: contractToken[BLOCKCHAIN_NAME.POLYGON].index
             }
           },
           symbol: bscSwapToken.symbol,
           image: bscSwapToken.image,
           rank: bscSwapToken.rank,
+          price: bscSwapToken.price,
           blockchainToken: {
             [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
               ...bscSwapToken,
               address: contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].address,
-              minAmount:
-                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].minAmount /
-                10 ** bscSwapToken.decimals,
+              minAmount: Number(
+                validBN(
+                  bscConfigToken.minAmount,
+                  contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].defaultMinAmount
+                )
+                  .div(10 ** bscSwapToken.decimals)
+                  .toFixed(2)
+              ),
               maxAmount: Number(
-                contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].dailyLimit
+                validBN(
+                  bscConfigToken.maxAmount,
+                  contractToken[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].defaultMaxAmount
+                )
                   .div(10 ** bscSwapToken.decimals)
                   .toFixed(2)
               )
@@ -299,10 +346,19 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
             [BLOCKCHAIN_NAME.POLYGON]: {
               ...polygonSwapToken,
               address: contractToken[BLOCKCHAIN_NAME.POLYGON].address,
-              minAmount:
-                contractToken[BLOCKCHAIN_NAME.POLYGON].minAmount / 10 ** polygonSwapToken.decimals,
+              minAmount: Number(
+                validBN(
+                  polygonConfigToken.minAmount,
+                  contractToken[BLOCKCHAIN_NAME.POLYGON].defaultMinAmount
+                )
+                  .div(10 ** polygonSwapToken.decimals)
+                  .toFixed(2)
+              ),
               maxAmount: Number(
-                contractToken[BLOCKCHAIN_NAME.POLYGON].dailyLimit
+                validBN(
+                  polygonConfigToken.maxAmount,
+                  contractToken[BLOCKCHAIN_NAME.POLYGON].defaultMaxAmount
+                )
                   .div(10 ** polygonSwapToken.decimals)
                   .toFixed(2)
               )
@@ -313,32 +369,54 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       .filter(elem => elem);
   }
 
-  private checkDailyLimit(
-    bridgeTrade: BridgeTrade,
-    evoToken: EvoContractToken
-  ): Observable<boolean> {
-    const weiAmount = bridgeTrade.amount.multipliedBy(
-      10 ** bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].decimals
-    );
-    const web3Public = this.web3PublicService[bridgeTrade.fromBlockchain] as Web3Public;
-    return forkJoin([
-      web3Public.callContractMethod(
-        EVO_ADDRESSES[bridgeTrade.fromBlockchain],
-        EVO_ABI as AbiItem[],
-        'stats',
-        { methodArguments: [evoToken.index, this.authService.user.address] }
-      ),
-      web3Public.getBlock()
-    ]).pipe(
-      map(([[transferred, limitFrom], block]) => {
-        const msInDay = new BigNumber(86400000);
-        if (new BigNumber(block.timestamp).gte(msInDay.plus(limitFrom))) {
-          return true;
-        }
+  private async fetchConfigs(
+    blockchainTokenIds: { [key in BLOCKCHAIN_NAME]?: number[] }
+  ): Promise<BlockchainsConfig> {
+    const blockchains = [
+      {
+        name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        destinationId: 0
+      },
+      {
+        name: BLOCKCHAIN_NAME.POLYGON,
+        destinationId: 1
+      }
+    ] as const;
 
-        const totalTransferred = weiAmount.plus(transferred);
-        return totalTransferred.lte(evoToken.dailyLimit);
-      })
+    const blockchainPromises: Promise<TokensIdConfig>[] = blockchains.map(async blockchain => {
+      const tokenIds = blockchainTokenIds[blockchain.name];
+      const configResponse = await (
+        this.web3PublicService[blockchain.name] as Web3Public
+      ).multicallContractMethod<ConfigResponse>(
+        EVO_ADDRESSES[blockchain.name],
+        EVO_ABI as AbiItem[],
+        'configs',
+        tokenIds.map(id => [id, blockchain.destinationId])
+      );
+
+      const result: TokensIdConfig = {};
+
+      configResponse.forEach((response, index) => {
+        result[tokenIds[index]] = {
+          tokenId: tokenIds[index],
+          destination: blockchain.name,
+          fee: response.fee ? new BigNumber(response.fee) : null,
+          feeBase: response.feeBase ? new BigNumber(response.feeBase) : null,
+          minAmount: response.minAmount ? new BigNumber(response.minAmount) : null,
+          maxAmount: response.maxAmount ? new BigNumber(response.maxAmount) : null,
+          directTransferAllowed: response.directTransferAllowed
+        };
+      });
+
+      return result;
+    });
+
+    const blockchainsConfig = {};
+
+    (await Promise.all(blockchainPromises)).forEach(
+      (config, index) => (blockchainsConfig[blockchains[index].name] = config)
     );
+
+    return blockchainsConfig;
   }
 }

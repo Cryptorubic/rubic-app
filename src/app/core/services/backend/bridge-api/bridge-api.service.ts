@@ -258,7 +258,9 @@ export class BridgeApiService {
           .map(
             blockchain =>
               backendTokens.find(
-                token => bridgeToken.blockchainToken[blockchain]?.address === token.address
+                token =>
+                  bridgeToken.blockchainToken[blockchain]?.address.toLowerCase() ===
+                  token.address.toLowerCase()
               )?.price
           )
           .filter(it => it)

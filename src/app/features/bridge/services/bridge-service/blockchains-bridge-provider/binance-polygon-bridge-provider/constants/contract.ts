@@ -1,8 +1,8 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export const EVO_ADDRESSES = {
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0xA40278F4E300876c17eAceC98C0AB7C5C0a4AEf2',
-  [BLOCKCHAIN_NAME.POLYGON]: '0x840eA78f667B73853F4baEcE4a5EBe212C4039C1'
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0x09E5a6dEAa49C78D4d090d1035205be5C9E79F26',
+  [BLOCKCHAIN_NAME.POLYGON]: '0x9503c64fb86e06b46be093423b59f6b9567caacb'
 };
 
 export const EVO_ABI = [
@@ -22,19 +22,21 @@ export const EVO_ABI = [
       {
         components: [
           { internalType: 'uint256', name: 'id', type: 'uint256' },
-          { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+          { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
           { internalType: 'address', name: 'sender', type: 'address' },
-          { internalType: 'address', name: 'target', type: 'address' },
+          { internalType: 'bytes32', name: 'target', type: 'bytes32' },
           { internalType: 'uint256', name: 'amount', type: 'uint256' },
+          { internalType: 'uint256', name: 'feeAmount', type: 'uint256' },
           { internalType: 'uint8', name: 'decimals', type: 'uint8' },
-          { internalType: 'uint8', name: 'destination', type: 'uint8' }
+          { internalType: 'uint8', name: 'destination', type: 'uint8' },
+          { internalType: 'address', name: 'tokenIn', type: 'address' },
+          { internalType: 'bytes32', name: 'tokenOut', type: 'bytes32' }
         ],
         indexed: false,
         internalType: 'struct Bridge.Order',
         name: 'order',
         type: 'tuple'
-      },
-      { indexed: false, internalType: 'uint256', name: 'fee', type: 'uint256' }
+      }
     ],
     name: 'OrderCreated',
     type: 'event'
@@ -50,21 +52,44 @@ export const EVO_ABI = [
   },
   {
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
-    name: '_isTrusted',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    name: 'addresses',
+    outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
-    name: 'addTrusted',
+    inputs: [{ internalType: 'uint256[]', name: '_orderIds', type: 'uint256[]' }],
+    name: 'closeManyOrders',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [{ internalType: 'uint256', name: 'orderId', type: 'uint256' }],
-    name: 'close',
+    name: 'closeOrder',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'uint256', name: 'orderId', type: 'uint256' },
+          { internalType: 'uint8', name: 'dstFrom', type: 'uint8' },
+          { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+          { internalType: 'address payable', name: 'to', type: 'address' },
+          { internalType: 'uint256', name: 'amount', type: 'uint256' },
+          { internalType: 'uint256', name: 'decimals', type: 'uint256' },
+          { internalType: 'contract ERC20', name: 'tokenOut', type: 'address' },
+          { internalType: 'address[]', name: 'swapPath', type: 'address[]' }
+        ],
+        internalType: 'struct Bridge.CompleteParams[]',
+        name: 'params',
+        type: 'tuple[]'
+      }
+    ],
+    name: 'completeManyOrders',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -73,10 +98,12 @@ export const EVO_ABI = [
     inputs: [
       { internalType: 'uint256', name: 'orderId', type: 'uint256' },
       { internalType: 'uint8', name: 'dstFrom', type: 'uint8' },
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
       { internalType: 'address payable', name: 'to', type: 'address' },
       { internalType: 'uint256', name: 'amount', type: 'uint256' },
-      { internalType: 'uint256', name: 'decimals', type: 'uint256' }
+      { internalType: 'uint256', name: 'decimals', type: 'uint256' },
+      { internalType: 'contract ERC20', name: 'tokenOut', type: 'address' },
+      { internalType: 'address[]', name: 'swapPath', type: 'address[]' }
     ],
     name: 'completeOrder',
     outputs: [],
@@ -92,14 +119,44 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: '', type: 'uint8' },
+      { internalType: 'uint8', name: '', type: 'uint8' }
+    ],
+    name: 'configs',
+    outputs: [
+      { internalType: 'uint16', name: 'fee', type: 'uint16' },
+      { internalType: 'uint256', name: 'feeBase', type: 'uint256' },
+      { internalType: 'uint256', name: 'minAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'maxAmount', type: 'uint256' },
+      { internalType: 'bool', name: 'directTransferAllowed', type: 'bool' }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
       { internalType: 'uint256', name: 'amount', type: 'uint256' },
       { internalType: 'uint8', name: 'destination', type: 'uint8' },
-      { internalType: 'address', name: 'target', type: 'address' }
+      { internalType: 'bytes32', name: 'target', type: 'bytes32' }
     ],
     name: 'create',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'contract ERC20', name: 'tokenIn', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
+      { internalType: 'bytes32', name: 'target', type: 'bytes32' },
+      { internalType: 'bytes32', name: 'tokenOut', type: 'bytes32' },
+      { internalType: 'address[]', name: 'swapPath', type: 'address[]' }
+    ],
+    name: 'createWithSwap',
+    outputs: [],
+    stateMutability: 'payable',
     type: 'function'
   },
   {
@@ -119,12 +176,15 @@ export const EVO_ABI = [
       {
         components: [
           { internalType: 'uint256', name: 'id', type: 'uint256' },
-          { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+          { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
           { internalType: 'address', name: 'sender', type: 'address' },
-          { internalType: 'address', name: 'target', type: 'address' },
+          { internalType: 'bytes32', name: 'target', type: 'bytes32' },
           { internalType: 'uint256', name: 'amount', type: 'uint256' },
+          { internalType: 'uint256', name: 'feeAmount', type: 'uint256' },
           { internalType: 'uint8', name: 'decimals', type: 'uint8' },
-          { internalType: 'uint8', name: 'destination', type: 'uint8' }
+          { internalType: 'uint8', name: 'destination', type: 'uint8' },
+          { internalType: 'address', name: 'tokenIn', type: 'address' },
+          { internalType: 'bytes32', name: 'tokenOut', type: 'bytes32' }
         ],
         internalType: 'struct Bridge.Order[]',
         name: '',
@@ -146,12 +206,15 @@ export const EVO_ABI = [
     name: 'orders',
     outputs: [
       { internalType: 'uint256', name: 'id', type: 'uint256' },
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
       { internalType: 'address', name: 'sender', type: 'address' },
-      { internalType: 'address', name: 'target', type: 'address' },
+      { internalType: 'bytes32', name: 'target', type: 'bytes32' },
       { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint256', name: 'feeAmount', type: 'uint256' },
       { internalType: 'uint8', name: 'decimals', type: 'uint8' },
-      { internalType: 'uint8', name: 'destination', type: 'uint8' }
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
+      { internalType: 'address', name: 'tokenIn', type: 'address' },
+      { internalType: 'bytes32', name: 'tokenOut', type: 'bytes32' }
     ],
     stateMutability: 'view',
     type: 'function'
@@ -164,13 +227,6 @@ export const EVO_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
-    name: 'removeTrusted',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [],
     name: 'renounceOwnership',
     outputs: [],
@@ -179,7 +235,7 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
       { internalType: 'uint256', name: 'bonus', type: 'uint256' }
     ],
     name: 'setBonus',
@@ -189,18 +245,84 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
-      { internalType: 'uint256', name: 'dailyLimit', type: 'uint256' },
-      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
+      {
+        components: [
+          { internalType: 'uint16', name: 'fee', type: 'uint16' },
+          { internalType: 'uint256', name: 'feeBase', type: 'uint256' },
+          { internalType: 'uint256', name: 'minAmount', type: 'uint256' },
+          { internalType: 'uint256', name: 'maxAmount', type: 'uint256' },
+          { internalType: 'bool', name: 'directTransferAllowed', type: 'bool' }
+        ],
+        internalType: 'struct Bridge.Config',
+        name: 'config',
+        type: 'tuple'
+      }
     ],
-    name: 'setDailyLimit',
+    name: 'setConfig',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint16', name: 'defaultFee', type: 'uint16' }
+    ],
+    name: 'setDefaultFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint256', name: 'defaultFeeBase', type: 'uint256' },
+      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+    ],
+    name: 'setDefaultFeeBase',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint256', name: 'defaultMaxAmount', type: 'uint256' },
+      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+    ],
+    name: 'setDefaultMaxAmount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint256', name: 'defaultMinAmount', type: 'uint256' },
+      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+    ],
+    name: 'setDefaultMinAmount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
+      { internalType: 'bool', name: 'directTransferAllowed', type: 'bool' }
+    ],
+    name: 'setDirectTransferAllowed',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
       { internalType: 'uint16', name: 'fee', type: 'uint16' }
     ],
     name: 'setFee',
@@ -210,7 +332,8 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
       { internalType: 'uint256', name: 'feeBase', type: 'uint256' },
       { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
     ],
@@ -221,7 +344,7 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
       { internalType: 'address', name: 'feeTarget', type: 'address' }
     ],
     name: 'setFeeTarget',
@@ -231,7 +354,20 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
+      { internalType: 'uint256', name: 'maxAmount', type: 'uint256' },
+      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+    ],
+    name: 'setMaxAmount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'uint8', name: 'destination', type: 'uint8' },
       { internalType: 'uint256', name: 'minAmount', type: 'uint256' },
       { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
     ],
@@ -242,14 +378,32 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
+      { internalType: 'bool', name: 'allowed', type: 'bool' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' }
+    ],
+    name: 'setSwapSettings',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'contract IBridgeSwap', name: 'newSwapper', type: 'address' }],
+    name: 'setSwapper',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
       { internalType: 'contract ERC20', name: 'token', type: 'address' },
-      { internalType: 'uint16', name: 'fee', type: 'uint16' },
-      { internalType: 'uint256', name: 'feeBase', type: 'uint256' },
       { internalType: 'address', name: 'feeTarget', type: 'address' },
-      { internalType: 'uint256', name: 'minAmount', type: 'uint256' },
-      { internalType: 'uint256', name: 'dailyLimit', type: 'uint256' },
-      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+      { internalType: 'uint16', name: 'defaultFee', type: 'uint16' },
+      { internalType: 'uint256', name: 'defaultFeeBase', type: 'uint256' },
+      { internalType: 'uint256', name: 'defaultMinAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'defaultMaxAmount', type: 'uint256' },
+      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' },
+      { internalType: 'uint256', name: 'bonus', type: 'uint256' }
     ],
     name: 'setToken',
     outputs: [],
@@ -258,27 +412,45 @@ export const EVO_ABI = [
   },
   {
     inputs: [
-      { internalType: 'uint16', name: '', type: 'uint16' },
-      { internalType: 'address', name: '', type: 'address' }
+      { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'bool', name: 'isTrusted', type: 'bool' }
     ],
-    name: 'stats',
-    outputs: [
-      { internalType: 'uint256', name: 'transfered', type: 'uint256' },
-      { internalType: 'uint256', name: 'limitFrom', type: 'uint256' }
-    ],
+    name: 'setTrusted',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'swapDefaultTokenId',
+    outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint16', name: '', type: 'uint16' }],
+    inputs: [],
+    name: 'swapper',
+    outputs: [{ internalType: 'contract IBridgeSwap', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'swapsAllowed',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
     name: 'tokens',
     outputs: [
       { internalType: 'contract ERC20', name: 'token', type: 'address' },
-      { internalType: 'uint16', name: 'fee', type: 'uint16' },
-      { internalType: 'uint256', name: 'feeBase', type: 'uint256' },
       { internalType: 'address', name: 'feeTarget', type: 'address' },
-      { internalType: 'uint256', name: 'minAmount', type: 'uint256' },
-      { internalType: 'uint256', name: 'dailyLimit', type: 'uint256' },
+      { internalType: 'uint16', name: 'defaultFee', type: 'uint16' },
+      { internalType: 'uint256', name: 'defaultFeeBase', type: 'uint256' },
+      { internalType: 'uint256', name: 'defaultMinAmount', type: 'uint256' },
+      { internalType: 'uint256', name: 'defaultMaxAmount', type: 'uint256' },
       { internalType: 'uint256', name: 'bonus', type: 'uint256' }
     ],
     stateMutability: 'view',
@@ -292,13 +464,32 @@ export const EVO_ABI = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'trusted',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [
-      { internalType: 'uint16', name: 'tokenId', type: 'uint16' },
-      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint8', name: 'tokenId', type: 'uint8' },
+      { internalType: 'address payable', name: 'to', type: 'address' },
       { internalType: 'uint256', name: 'amount', type: 'uint256' },
       { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
     ],
     name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'contract ERC20', name: 'token', type: 'address' },
+      { internalType: 'address payable', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint8', name: 'inputDecimals', type: 'uint8' }
+    ],
+    name: 'withdrawToken',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

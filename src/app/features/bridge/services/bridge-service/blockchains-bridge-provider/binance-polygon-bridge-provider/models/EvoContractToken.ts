@@ -9,11 +9,11 @@ export interface EvoContractTokenInBlockchains {
 export interface EvoContractToken {
   symbol: string;
   address: string;
-  fee: BigNumber;
-  feeBase: BigNumber;
+  defaultFee: BigNumber;
+  defaultFeeBase: BigNumber;
   feeTarget: string;
-  minAmount: number;
-  dailyLimit: BigNumber;
+  defaultMinAmount: BigNumber;
+  defaultMaxAmount: BigNumber;
   bonus: number;
   index: number;
 }

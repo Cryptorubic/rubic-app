@@ -1,10 +1,13 @@
+import BigNumber from 'bignumber.js';
+
 export interface EvoResponseToken {
   symbol: string;
   token: string;
-  fee: string;
-  feeBase: string;
+  defaultFee: string;
+  defaultFeeBase: string;
   feeTarget: string;
-  minAmount: number;
+  defaultMinAmount: BigNumber;
+  defaultMaxAmount: BigNumber;
   dailyLimit: string;
   bonus: number;
 }

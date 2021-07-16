@@ -12,5 +12,5 @@ export interface EvoBridgeToken extends BridgeToken {
 interface EvoToken {
   fee: BigNumber;
   feeBase: BigNumber;
-  dailyLimit: BigNumber;
+  index: number;
 }
