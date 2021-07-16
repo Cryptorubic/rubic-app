@@ -104,6 +104,17 @@
       ]
     },
     {
+      "img": "AleksandrM.jpg",
+      "name": "Alexandr Menshikov",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/realhum"
+        }
+      ]
+    },
+    {
       "img": "AndreyAksenov.png",
       "name": "Andrey Aksenov",
       "role": "Marketing",
