@@ -7,7 +7,7 @@ interface InstantTradesBlockchainNetwork {
 }
 
 interface InstantTradesContract {
-  name: INSTANT_TRADES_PROVIDER;
+  name: INSTANT_TRADES_PROVIDER | 'pancakeswap_old';
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
 }
