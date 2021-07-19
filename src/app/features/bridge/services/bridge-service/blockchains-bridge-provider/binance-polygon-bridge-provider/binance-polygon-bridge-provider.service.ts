@@ -4,7 +4,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { from, Observable, of, throwError } from 'rxjs';
+import { combineLatest, from, Observable, of, throwError } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -127,7 +127,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         'create',
         [
           evoToken.index,
-          bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals),
+          bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).toFixed(),
           destination,
           Web3PublicService.addressToBytes32(this.authService.user.address)
         ],
@@ -184,8 +184,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       })
     );
 
-    return from(this.tokensService.tokens).pipe(
-      withLatestFrom(loadTokensAndConfig$),
+    return combineLatest([from(this.tokensService.tokens), loadTokensAndConfig$]).pipe(
       map(([swapTokens, { evoTokens, config }]) =>
         List(this.buildBridgeTokens(evoTokens, config, swapTokens.toArray()))
       )
