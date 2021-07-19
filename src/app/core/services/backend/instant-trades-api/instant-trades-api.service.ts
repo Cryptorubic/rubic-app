@@ -120,10 +120,15 @@ export class InstantTradesApiService {
       };
     }
 
+    let provider = tradeApi.contract.name;
+    if (provider === 'pancakeswap_old') {
+      provider = INSTANT_TRADES_PROVIDER.PANCAKESWAP;
+    }
+
     return {
       transactionHash: tradeApi.hash,
       status: tradeApi.status,
-      provider: tradeApi.contract.name,
+      provider,
       fromToken: getTableToken('from'),
       toToken: getTableToken('to'),
       date: new Date(tradeApi.status_updated_at)
