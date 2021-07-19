@@ -20,12 +20,14 @@
     }"
     (submit)="$event.preventDefault()"
   >
-    <img
-      *ngIf="$isIframe | async"
-      class="instant-trade-form__iframe-logo"
-      alt="Rubic logotype"
-      src="assets/images/rubic-logo.svg?_=2"
-    />
+    <a href="https://rubic.exchange">
+      <img
+        *ngIf="$isIframe | async"
+        class="instant-trade-form__iframe-logo"
+        alt="Rubic logotype"
+        src="assets/images/rubic-logo.svg?_=2"
+      />
+    </a>
     <app-chain-dropdown
       [disabled]="$tokensSelectionDisabled | async"
       *ngIf="$isIframe | async"
