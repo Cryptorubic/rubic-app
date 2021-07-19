@@ -203,6 +203,30 @@ export class BridgeApiService {
     });
   }
 
+  public postEvoTransaction(
+    transactionHash: string,
+    fromBlockchain: BLOCKCHAIN_NAME
+  ): Promise<void> {
+    const body = {
+      type: 'evodefi',
+      fromNetwork:
+        fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 'binance-smart-chain' : 'polygon',
+      transaction_id: transactionHash
+    };
+
+    return new Promise<void>((resolve, reject) => {
+      this.httpService.post('bridges/transactions', body).subscribe(
+        () => {
+          resolve();
+        },
+        error => {
+          console.error(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
   public notifyBridgeBot(
     bridgeTrade: BridgeTrade,
     transactionHash: string,
@@ -234,12 +258,14 @@ export class BridgeApiService {
           .map(
             blockchain =>
               backendTokens.find(
-                token => bridgeToken.blockchainToken[blockchain]?.address === token.address
+                token =>
+                  bridgeToken.blockchainToken[blockchain]?.address.toLowerCase() ===
+                  token.address.toLowerCase()
               )?.price
           )
           .filter(it => it)
           .sort((a, b) => b - a);
-        return prices[0];
+        return prices[0] || 0;
       })
     );
   }

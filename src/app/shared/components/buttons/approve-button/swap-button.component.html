@@ -1,10 +1,15 @@
 <ng-container>
-  <app-rubic-button *ngIf="needLogin | async" [fullWidth]="true" (onClick)="onLogin()">
+  <app-rubic-button
+    *ngIf="needLogin"
+    [loading]="needLoginLoading"
+    [fullWidth]="true"
+    (onClick)="onLogin()"
+  >
     {{ 'navigation.login' | translate }}
   </app-rubic-button>
 
-  <ng-template [ngIf]="!(needLogin | async)">
-    <ng-container *ngIf="needApprove && !loading && !hasError">
+  <ng-template [ngIf]="!needLogin">
+    <ng-container *ngIf="needApprove && !dataLoading && !hasError">
       <div class="buttons">
         <app-rubic-button
           [fullWidth]="true"
@@ -49,12 +54,12 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="(!needApprove && !hasError) || loading">
+    <ng-container *ngIf="(!needApprove && !hasError) || dataLoading">
       <app-rubic-button
         [fullWidth]="true"
         (onClick)="swapClick.emit()"
         [loading]="
-          status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading
+          status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || dataLoading
         "
         [disabled]="status === TRADE_STATUS.DISABLED"
         appearance="secondary"
@@ -62,7 +67,11 @@
       >
     </ng-container>
 
-    <ng-container *ngIf="hasError && errorType['Wrong user network']  && !loading && allowChangeNetwork">
+    <ng-container
+      *ngIf="
+        hasError && errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading && allowChangeNetwork
+      "
+    >
       <app-rubic-button
         [fullWidth]="true"
         appearance="secondary"
@@ -73,10 +82,12 @@
       </app-rubic-button>
     </ng-container>
 
-    <ng-container *ngIf="
-      hasError && !errorType['Wrong user network'] && !loading ||
-      hasError && errorType['Wrong user network'] && !loading && !allowChangeNetwork
-    ">
+    <ng-container
+      *ngIf="
+        (hasError && !errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading) ||
+        (hasError && errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading && !allowChangeNetwork)
+      "
+    >
       <app-rubic-button
         class="error-button"
         [fullWidth]="true"
