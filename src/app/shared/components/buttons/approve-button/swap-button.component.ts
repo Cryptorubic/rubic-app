@@ -172,6 +172,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
         this.needLoginLoading = false;
         this.needLogin = !user?.address;
       }
+      this.cdr.detectChanges();
     });
 
     this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
