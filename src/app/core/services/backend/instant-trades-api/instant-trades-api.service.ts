@@ -50,8 +50,8 @@ export class InstantTradesApiService {
     const { trade, ...props } = body;
     const req: InstantTradeBotRequest = {
       ...props,
-      fromAmount: trade.from.amount.div(10 ** trade.from.token.decimals).toNumber(),
-      toAmount: trade.to.amount.div(10 ** trade.to.token.decimals).toNumber(),
+      fromAmount: trade.from.amount.toNumber(),
+      toAmount: trade.to.amount.toNumber(),
       fromSymbol: trade.from.token.symbol,
       toSymbol: trade.to.token.symbol,
       price: trade.from.token.price

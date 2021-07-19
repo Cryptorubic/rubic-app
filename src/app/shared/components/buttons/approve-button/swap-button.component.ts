@@ -13,8 +13,7 @@ import {
 } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
@@ -45,7 +44,7 @@ enum ERROR_TYPE {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapButtonComponent implements OnInit, OnDestroy {
-  @Input() needApprove: boolean;
+  @Input() needApprove = false;
 
   @Input() status: TRADE_STATUS;
 
@@ -76,9 +75,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   public TRADE_STATUS = TRADE_STATUS;
 
-  public needLogin: Observable<boolean>;
+  public ERROR_TYPE = ERROR_TYPE;
 
-  public loading: boolean;
+  public needLogin: boolean;
+
+  public needLoginLoading: boolean;
+
+  public dataLoading: boolean;
 
   public errorType: Record<ERROR_TYPE, boolean>;
 
@@ -162,10 +165,14 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.needApprove = false;
-    this.needLogin = this.authService.getCurrentUser().pipe(map(user => !user?.address));
-
-    this.loading = true;
+    this.needLoginLoading = true;
+    this.needLogin = true;
+    this.authService.getCurrentUser().subscribe(user => {
+      if (user !== undefined) {
+        this.needLoginLoading = false;
+        this.needLogin = !user?.address;
+      }
+    });
 
     this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
@@ -192,8 +199,14 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(form: ISwapFormInput): void {
+    this.dataLoading = true;
+    this.cdr.detectChanges();
+
     this.fromToken = form.fromToken;
     this.checkErrors();
+
+    this.dataLoading = false;
+    this.cdr.detectChanges();
   }
 
   private checkErrors(): void {
@@ -204,14 +217,11 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private checkInsufficientFundsError(): void {
     if (!this._fromAmount || !this.fromToken) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
-      this.loading = false;
       this.cdr.detectChanges();
       return;
     }
 
     this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = this.fromToken.amount.lt(this._fromAmount);
-
-    this.loading = false;
     this.cdr.detectChanges();
   }
 

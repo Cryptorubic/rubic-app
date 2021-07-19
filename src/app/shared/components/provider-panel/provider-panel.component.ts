@@ -102,10 +102,8 @@ export class ProviderPanelComponent {
   public get gasFeeDisplay(): boolean {
     return (
       this.tradeData.gasFeeInEth &&
-      this.tradeData.gasFeeInUsd &&
       this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.POLYGON &&
-      this.tradeData.gasFeeInUsd.gte('0.01')
+      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.POLYGON
     );
   }
 
