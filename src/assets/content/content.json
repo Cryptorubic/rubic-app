@@ -93,17 +93,6 @@
       ]
     },
     {
-      "img": "DaniilSvetlov.png",
-      "name": "Daniil Svetlov",
-      "role": "Backend Developer",
-      "links": [
-        {
-          "icon": "Github.svg",
-          "url": "https://github.com/ddsvetlov"
-        }
-      ]
-    },
-    {
       "img": "AleksandrVolkov.jpg",
       "name": "Alexandr Volkov",
       "role": "Backend Developer",
