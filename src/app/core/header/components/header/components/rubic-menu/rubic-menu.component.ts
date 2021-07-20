@@ -54,7 +54,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.$currentUser = this.authService.getCurrentUser();
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.cdr.detectChanges();
     this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(network => {
       this.currentBlockchain = network;
@@ -65,7 +65,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._onNetworkChanges$.unsubscribe();
     this._onAddressChanges$.unsubscribe();
   }
