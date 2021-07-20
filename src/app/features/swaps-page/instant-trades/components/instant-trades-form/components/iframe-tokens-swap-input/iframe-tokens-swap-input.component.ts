@@ -46,7 +46,7 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
   }
 
   public async login(): Promise<void> {
-    const isMetamaskBrowser = this.detectMobile && window.ethereum;
+    const isMetamaskBrowser = this.detectMobile && this.detectMetamask();
     const isIframe = window.self !== window.top;
     if (isMetamaskBrowser && isIframe) {
       this.dialog.open(WarningModalComponent, {
@@ -72,5 +72,13 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
     ];
 
     return toMatch.some(toMatchItem => navigator.userAgent.match(toMatchItem));
+  }
+
+  private detectMetamask(): boolean {
+    const androidAgent =
+      'Mozilla/5.0 (Linux; Android 10; Android SDK built for x86 Build/OSM1.180201.023) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.92 Mobile Safari/537.36';
+    const iosAgent =
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/76.0.3809.123 Mobile/15E148 Safari/605.1';
+    return navigator.userAgent === androidAgent || navigator.userAgent === iosAgent;
   }
 }
