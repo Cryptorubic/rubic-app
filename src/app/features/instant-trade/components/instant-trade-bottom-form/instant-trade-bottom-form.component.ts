@@ -118,6 +118,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = formValue.fromAmount;
     this.currentBlockchain = formValue.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
+    console.log(this.providerControllers);
     this.conditionalCalculate(formValue);
 
     this.formChangesSubscription$ =
