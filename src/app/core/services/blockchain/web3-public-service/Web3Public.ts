@@ -6,12 +6,12 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
 import { AbiItem } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };

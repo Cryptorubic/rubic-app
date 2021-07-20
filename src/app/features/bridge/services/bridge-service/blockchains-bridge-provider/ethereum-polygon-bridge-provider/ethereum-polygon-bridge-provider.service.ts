@@ -129,7 +129,6 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           );
         },
         err => {
-          // tslint:disable-next-line:no-console
           console.debug('Error retrieving polygon tokens: ', err);
           this.tokens$.next(List([]));
         }
