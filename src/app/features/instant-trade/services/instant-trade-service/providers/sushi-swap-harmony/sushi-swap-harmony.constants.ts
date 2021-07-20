@@ -8,14 +8,17 @@ export const WONE = {
 
 export const routingProviders = {
   addresses: [
-    '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a' // WONE
+    '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE
+    '0xef977d2f931c1978db5f6747666fa1eacb0d0339', // DAI
+    '0xe176ebe47d621b984a73036b9da5d834411ef734', // JENN
+    '0xe176ebe47d621b984a73036b9da5d834411ef734' // BUSD
   ],
   testnetAddresses: [
     'one1cqeqx6z3fdukzftdv27hhjvyvg7q7lm9yhykcm' // WONE
   ]
 };
 
-export const maxTransitTokens = 1;
+export const maxTransitTokens = 3;
 
 export const tokensToTokensEstimatedGas = [
   new BigNumber(120_000),
@@ -39,7 +42,7 @@ export const ethToTokensEstimatedGas = [
 ];
 
 export const sushiSwapHarmonyContracts = {
-  address: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
+  address: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
   testnetAddress: '0x5546e0295c7bb85b2fC00883B6025BA0Db06e50A'
 };
 

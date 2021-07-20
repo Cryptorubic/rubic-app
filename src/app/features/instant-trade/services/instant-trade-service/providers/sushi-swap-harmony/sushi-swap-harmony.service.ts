@@ -22,11 +22,16 @@ import {
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Observable } from 'rxjs';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { TransactionReceipt } from 'web3-eth';
+import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SushiSwapHarmonyService implements ItProvider {
+  protected blockchain: BLOCKCHAIN_NAME;
 
   private WONEAddress: string;
 
@@ -41,9 +46,11 @@ export class SushiSwapHarmonyService implements ItProvider {
   constructor(
     private readonly w3Public: Web3PublicService,
     private readonly settingsService: SettingsService,
-    private readonly commonUniswap: CommonUniswapService
+    private readonly commonUniswap: CommonUniswapService,
+    private readonly providerConnectorService: ProviderConnectorService,
   ) {
     this.web3Public = w3Public[BLOCKCHAIN_NAME.HARMONY];
+    this.blockchain = BLOCKCHAIN_NAME.HARMONY;
     this.WONEAddress = WONE.address;
     this.sushiswapContractAddress = sushiSwapHarmonyContracts.address;
 
@@ -68,6 +75,11 @@ export class SushiSwapHarmonyService implements ItProvider {
       this.sushiswapContractAddress,
       this.web3Public
     );
+  }
+
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
+    await this.commonUniswap.checkSettings(this.blockchain);
+    return this.commonUniswap.approve(tokenAddress, this.sushiswapContractAddress, options);
   }
 
   public async calculateTrade(
@@ -126,5 +138,53 @@ export class SushiSwapHarmonyService implements ItProvider {
         gasOptimization: this.settings.rubicOptimisation
       }
     };
+  }
+
+  public async createTrade(
+    trade: InstantTrade,
+    options: {
+      onConfirm?: (hash: string) => void;
+      onApprove?: (hash: string) => void;
+    } = {}
+  ): Promise<TransactionReceipt> {
+    await this.commonUniswap.checkSettings(this.blockchain);
+    await this.commonUniswap.checkBalance(trade, this.web3Public);
+
+    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
+
+    const amountOutMin = trade.to.amount
+      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
+      .multipliedBy(10 ** trade.to.token.decimals)
+      .toFixed(0);
+    const { path } = trade.options;
+    const to = this.providerConnectorService.address;
+    const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
+
+    const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
+
+    if (this.web3Public.isNativeAddress(trade.from.token.address)) {
+      return this.commonUniswap.createEthToTokensTrade(
+        uniSwapTrade,
+        options,
+        this.sushiswapContractAddress,
+        abi
+      );
+    }
+
+    if (this.web3Public.isNativeAddress(trade.to.token.address)) {
+      return this.commonUniswap.createTokensToEthTrade(
+        uniSwapTrade,
+        options,
+        this.sushiswapContractAddress,
+        abi
+      );
+    }
+
+    return this.commonUniswap.createTokensToTokensTrade(
+      uniSwapTrade,
+      options,
+      this.sushiswapContractAddress,
+      abi
+    );
   }
 }
