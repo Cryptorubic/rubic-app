@@ -4,9 +4,16 @@
       <h1 class="modal__title">{{ 'modals.walletsModal.title' | translate }}</h1>
     </header>
     <main class="modal__body">
-      <button [disabled]="($walletsLoading | async) ? 'disabled' : false" class="modal__provider-button" *ngFor="let provider of providers" (click)="connectProvider(provider.value)">{{ provider.name }}
-        <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
-      </button>
+      <ng-container *ngFor="let provider of providers">
+        <button
+          *ngIf="provider.display"
+          [disabled]="($walletsLoading | async) ? 'disabled' : false"
+          class="modal__provider-button"
+          (click)="connectProvider(provider.value)"
+        >{{ provider.name }}
+          <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
+        </button>
+      </ng-container>
     </main>
     <footer class="modal__footer">
       <span>{{ 'modals.walletsModal.new' | translate }} </span>
