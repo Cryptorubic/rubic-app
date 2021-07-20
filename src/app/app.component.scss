@@ -9,7 +9,8 @@ app-spinner {
 }
 
 ::ng-deep {
-  app-my-trades {
+  app-my-trades,
+  app-buy-crypto {
     display: block;
     width: 100%;
   }

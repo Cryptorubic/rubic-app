@@ -14,84 +14,87 @@
   <div class="rubic-menu__container">
     <tui-data-list class="data-list">
       <tui-opt-group>
-        <a routerLink="about"
-           (click)="closeMenu()"
-           routerLinkActive="data-list__link_active"
-           class="data-list__link">
-          <button
-            tuiOption
-            class="data-list__option">
+        <a
+          routerLink="about"
+          (click)="closeMenu()"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">
             {{ 'navigation.about' | translate }}
           </button>
         </a>
 
-        <a routerLink="faq"
-           (click)="closeMenu()"
-           routerLinkActive="data-list__link_active"
-           class="data-list__link">
-          <button
-            tuiOption
-            class="data-list__option">
+        <a
+          routerLink="buy-crypto"
+          (click)="closeMenu()"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">
+            {{ 'Buy crypto' | translate }}
+          </button>
+        </a>
+
+        <a
+          routerLink="faq"
+          (click)="closeMenu()"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">
             {{ 'navigation.faq' | translate }}
           </button>
         </a>
 
-        <a href="https://rubic.finance/"
-           class="data-list__link">
-          <button
-            tuiOption
-            class="data-list__option">
+        <a href="https://rubic.finance/" class="data-list__link">
+          <button tuiOption class="data-list__option">
             {{ 'navigation.project' | translate }}
           </button>
         </a>
 
-        <a routerLink="team"
-           (click)="closeMenu()"
-           routerLinkActive="data-list__link_active"
-           class="data-list__link">
-          <button
-            tuiOption
-            class="data-list__option">
+        <a
+          routerLink="team"
+          (click)="closeMenu()"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">
             {{ 'navigation.team' | translate }}
           </button>
         </a>
       </tui-opt-group>
 
       <tui-opt-group class="rubic-menu__mobile">
-      <a routerLink="/"
-         (click)="closeMenu()"
-         [class.data-list__link_active]="isLinkActive('/')"
-         class="data-list__link">
+        <a
+          routerLink="/"
+          (click)="closeMenu()"
+          [class.data-list__link_active]="isLinkActive('/')"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">Swaps</button>
+        </a>
+
+        <a
+          routerLink="crypto-tap"
+          (click)="closeMenu()"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+        >
+          <button tuiOption class="data-list__option">Crypto Tap</button>
+        </a>
+
         <button
           tuiOption
-          class="data-list__option">
-          Swaps
+          class="data-list__option data-list__option_disabled"
+          tuiHint="{{ 'navigation.notAvailable' | translate }}"
+        >
+          Order Book
         </button>
-      </a>
-
-      <a routerLink="crypto-tap"
-         (click)="closeMenu()"
-         routerLinkActive="data-list__link_active"
-         class="data-list__link">
-        <button
-          tuiOption
-          class="data-list__option">
-          Crypto Tap
-        </button>
-      </a>
-
-      <button
-        tuiOption
-        class="data-list__option data-list__option_disabled"
-        tuiHint="{{ 'navigation.notAvailable' | translate }}">
-        Order Book
-      </button>
-    </tui-opt-group>
+      </tui-opt-group>
 
       <tui-opt-group *ngIf="($currentUser | async)?.address" class="rubic-menu__mobile">
-        <button
-          tuiOption
-          class="data-list__address">
+        <button tuiOption class="data-list__address">
           <div class="data-list__address-container">
             <img
               *ngIf="currentBlockchain?.imagePath"
@@ -99,15 +102,18 @@
               [src]="currentBlockchain?.imagePath"
               alt="($currentBlockchain | async)?.name"
               width="25"
-              height="25">
-            {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
+              height="25"
+            />
+            {{ ($currentUser | async)?.address | shortAddress: 5:3 }}
           </div>
         </button>
 
-        <a routerLink="my-trades"
-           (click)="closeMenu()"
-           routerLinkActive="data-list__link_active"
-           class="data-list__link">
+        <a
+          routerLink="my-trades"
+          (click)="closeMenu()"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+        >
           <button tuiOption class="data-list__option">
             {{ 'navigation.myTrades' | translate }}
           </button>
@@ -116,14 +122,15 @@
         <button
           tuiOption
           (click)="toggleConfirmModal()"
-          class="data-list__option data-list__option_logout">
+          class="data-list__option data-list__option_logout"
+        >
           {{ 'navigation.logout' | translate }}
         </button>
-    </tui-opt-group>
+      </tui-opt-group>
     </tui-data-list>
 
     <div class="rubic-menu__mobile">
-      <div class="rubic-menu__bottom " *ngIf="!($currentUser | async)?.address">
+      <div class="rubic-menu__bottom" *ngIf="!($currentUser | async)?.address">
         <app-login-button class="rubic-menu__login" appearance="outline"></app-login-button>
       </div>
     </div>
