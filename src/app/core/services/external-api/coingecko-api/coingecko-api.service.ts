@@ -6,15 +6,20 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class CoingeckoApiService {
-  private baseUrl = 'https://api.coingecko.com/api/v3/';
+  private readonly baseUrl = 'https://api.coingecko.com/api/v3/';
 
   constructor(private httpClient: HttpClient) {}
 
   public async getEtherPriceInUsd(): Promise<BigNumber> {
-    return this.getTokenUsdPriceById('ethereum');
+    try {
+      return await this.getTokenUsdPriceByCoingeckoId('ethereum');
+    } catch (coingeckoError) {
+      console.debug('Coingecko is not alive');
+      return new BigNumber(0);
+    }
   }
 
-  public async getTokenUsdPriceById(tokenCoingeckoId: string): Promise<BigNumber> {
+  public async getTokenUsdPriceByCoingeckoId(tokenCoingeckoId: string): Promise<BigNumber> {
     const response = await this.httpClient
       .get(`${this.baseUrl}simple/price`, {
         params: { ids: tokenCoingeckoId, vs_currencies: 'usd' }
