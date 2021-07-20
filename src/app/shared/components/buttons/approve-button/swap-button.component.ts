@@ -91,6 +91,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   private _fromAmount: BigNumber;
 
+  private authServiceSubscription$: Subscription;
+
   private useTestingModeSubscription$: Subscription;
 
   private formServiceSubscription$: Subscription;
@@ -167,7 +169,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.needLoginLoading = true;
     this.needLogin = true;
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       if (user !== undefined) {
         this.needLoginLoading = false;
         this.needLogin = !user?.address;
@@ -194,6 +196,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.authServiceSubscription$.unsubscribe();
     this.useTestingModeSubscription$?.unsubscribe();
     this.formServiceSubscription$?.unsubscribe();
     this.providerConnectorServiceSubscription$?.unsubscribe();
