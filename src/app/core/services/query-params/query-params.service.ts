@@ -27,7 +27,8 @@ export class QueryParamsService {
       from: {
         [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
-        [BLOCKCHAIN_NAME.POLYGON]: 'MATIC'
+        [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
+        [BLOCKCHAIN_NAME.HARMONY]: 'ONE'
       },
       to: {
         [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',

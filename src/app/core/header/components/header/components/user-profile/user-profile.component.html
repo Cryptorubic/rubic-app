@@ -6,7 +6,7 @@
 
 <ng-template #dropdownButtonTemplate>
   <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
+    <div class="user-profile__chain-icon">
       <img
         (click)="useTestingMode()"
         [src]="currentBlockchain?.imagePath"

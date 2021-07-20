@@ -32,6 +32,7 @@ export class TokensListComponent implements OnChanges {
       const tokensNumber = changes.tokens.currentValue.length;
       this.hintsShown = Array(tokensNumber).fill(false);
     }
+    console.log(this.tokens);
   }
 
   onTokenSelect(token: AvailableTokenAmount) {

@@ -269,6 +269,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       case BLOCKCHAIN_NAME.POLYGON:
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
+      case BLOCKCHAIN_NAME.HARMONY:
+        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.HARMONY];
+        break;
       default:
         this.errorService.catch$(new NotSupportedItNetwork());
     }

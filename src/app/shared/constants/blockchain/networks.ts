@@ -72,6 +72,20 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 1666600000,
+    name: BLOCKCHAIN_NAME.HARMONY,
+    scannerUrl: '',
+    rpcLink: '',
+    imagePath: 'assets/images/icons/coins/harmony.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.HARMONY,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ONE',
+      symbol: 'ONE',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,

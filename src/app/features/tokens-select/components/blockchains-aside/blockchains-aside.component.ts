@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Output, EventEmitter, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from '../../../../core/services/blockchain/blockchain-info';
 
@@ -18,7 +18,8 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     BLOCKCHAIN_NAME.POLYGON,
     BLOCKCHAIN_NAME.TRON,
-    BLOCKCHAIN_NAME.XDAI
+    BLOCKCHAIN_NAME.XDAI,
+    BLOCKCHAIN_NAME.HARMONY
   ];
 
   public blockchainImages = Object.fromEntries(
