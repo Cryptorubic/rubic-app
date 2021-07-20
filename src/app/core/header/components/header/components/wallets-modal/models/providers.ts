@@ -9,4 +9,5 @@ export interface WalletProvider {
   value: WALLET_NAME;
   img: string;
   desktopOnly: boolean;
+  display: boolean;
 }

@@ -40,6 +40,7 @@ export class ErrorsService {
       ? this.translateService.instant(error.translateKey)
       : error.message;
     this.notificationsService.show(text, options).subscribe();
+
     throw error;
   }
 
@@ -47,7 +48,7 @@ export class ErrorsService {
     // tslint:disable-next-line:no-console
     console.debug(error);
 
-    if (error.displayError === false) {
+    if (error.displayError === false || error.message.includes('Attempt to use a destroyed view')) {
       return;
     }
 
