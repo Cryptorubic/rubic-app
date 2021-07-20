@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
-import CustomError from 'src/app/core/errors/models/custom-error';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
@@ -92,9 +91,12 @@ export class AuthService {
   public async loadUser() {
     this.isAuthProcess = true;
     if (!this.providerConnectorService.provider) {
-      const error = new CustomError('Provider error');
-      error.displayError = false;
-      throw error;
+      try {
+        this.providerConnectorService.installProvider();
+      } catch (error) {
+        error.displayError = false;
+        throw error;
+      }
     }
     this.fetchMetamaskLoginBody().subscribe(
       async metamaskLoginBody => {

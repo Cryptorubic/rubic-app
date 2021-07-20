@@ -45,5 +45,10 @@ export const footerLinks: FooterLink[] = [
     imageUrl: 'assets/img/icons/socials/coingecko.svg',
     altText: 'Coingecko',
     link: 'https://www.coingecko.com/en/coins/rubic'
+  },
+  {
+    imageUrl: 'assets/img/icons/socials/pulse.svg',
+    altText: 'Defi Pulse',
+    link: 'https://defipulse.com/'
   }
 ];
