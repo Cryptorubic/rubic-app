@@ -52,7 +52,7 @@ export class IframeTokensSwapInputComponent extends InstantTradeSwapInput {
       this.dialog.open(WarningModalComponent, {
         width: '420px',
         data: {
-          text: 'Sorry, but metamask browser is not supported by rubic.exchange widget. Please, try to use the app via Chrome browser.'
+          text: 'Sorry, but Rubic Relay widget is not supporting Metamask browser. Please try again using Сhrome browser.'
         }
       });
     } else {
