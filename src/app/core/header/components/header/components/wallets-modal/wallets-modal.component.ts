@@ -60,7 +60,7 @@ export class WalletsModalComponent {
         value: WALLET_NAME.METAMASK,
         img: './assets/images/icons/wallets/metamask.svg',
         desktopOnly: false,
-        displayInIframe: false
+        displayInIframe: true
       },
       // {
       //   name: 'Coinbase wallet',
