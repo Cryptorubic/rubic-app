@@ -161,6 +161,7 @@ export class OneInchPolService implements ItProvider {
     const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
     return {
+      blockchain: this.blockchain,
       from: {
         token: fromToken,
         amount: fromAmount

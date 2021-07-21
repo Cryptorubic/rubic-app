@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import {
+  FROM_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_BLOCKCHAINS
+} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesPostApi';
@@ -62,17 +65,41 @@ export class InstantTradesApiService {
 
   /**
    * @description send request to server for add trade
-   * @param tradeInfo data body for request
    * @return instant trade object
    */
-  public createTrade(tradeInfo: InstantTradesPostApi): Observable<InstantTradesResponseApi | null> {
+  public createTrade(
+    hash: string,
+    provider: INSTANT_TRADES_PROVIDER,
+    trade: InstantTrade,
+    blockchain: BLOCKCHAIN_NAME
+  ): Observable<InstantTradesResponseApi | null> {
     if (this.isIframe) {
       return of(null);
+    }
+
+    let tradeInfo: InstantTradesPostApi;
+    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
+      tradeInfo = {
+        hash,
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        provider,
+        from_token: trade.from.token.address,
+        to_token: trade.to.token.address,
+        from_amount: Web3PublicService.amountToWei(trade.from.amount, trade.from.token.decimals),
+        to_amount: Web3PublicService.amountToWei(trade.to.amount, trade.to.token.decimals)
+      };
+    } else {
+      tradeInfo = {
+        hash,
+        provider,
+        network: TO_BACKEND_BLOCKCHAINS[blockchain]
+      };
     }
 
     if (this.isTestingMode) {
       tradeInfo.network = 'ethereum-test';
     }
+
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo).pipe(delay(1000));
   }
 
@@ -100,10 +127,7 @@ export class InstantTradesApiService {
       .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
-          swaps
-            // @ts-ignore TODO hotfix
-            .filter(swap => swap.status !== 'not_in_mempool')
-            .map(swap => this.parseTradeApiToTableTrade(swap))
+          swaps.map(swap => this.parseTradeApiToTableTrade(swap))
         )
       );
   }

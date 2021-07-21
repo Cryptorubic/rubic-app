@@ -161,10 +161,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       }
 
       this.prepareControllers();
+      const providersNames = this.providerControllers.map(
+        provider => provider.tradeProviderInfo.value
+      );
       const approveData = this.authService.user?.address
-        ? await this.instantTradeService.getApprove().toPromise()
+        ? await this.instantTradeService.getApprove(providersNames).toPromise()
         : new Array(this.providerControllers.length).fill(null);
-      const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+      const tradeData = (await this.instantTradeService.calculateTrades(
+        providersNames
+      )) as CalculationResult[];
 
       const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
       this.setupControllers(tradeData, approveData, bestProviderIndex);

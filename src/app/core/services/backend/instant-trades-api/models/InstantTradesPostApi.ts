@@ -12,8 +12,8 @@ interface InstantTradesOneInchApi {
   network: string;
   from_token: string;
   to_token: string;
-  from_amount: number;
-  to_amount: number;
+  from_amount: string;
+  to_amount: string;
 }
 
 export type InstantTradesPostApi = InstantTradesUniswapAbstractApi | InstantTradesOneInchApi;

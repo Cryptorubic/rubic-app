@@ -164,6 +164,7 @@ export class OneInchBscService implements ItProvider {
     const gasFeeInEth = new BigNumber(0);
 
     return {
+      blockchain: this.blockchain,
       from: {
         token: fromToken,
         amount: fromAmount
