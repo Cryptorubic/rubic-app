@@ -232,7 +232,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
         fromBlockchain &&
-        userBlockchain &&
         fromBlockchain !== userBlockchain &&
         (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 

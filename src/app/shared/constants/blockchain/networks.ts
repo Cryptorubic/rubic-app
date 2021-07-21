@@ -75,7 +75,7 @@ export default [
   {
     id: 1666600000,
     name: BLOCKCHAIN_NAME.HARMONY,
-    scannerUrl: '',
+    scannerUrl: 'https://explorer.harmony.one/#/',
     rpcLink: 'https://api.harmony.one',
     imagePath: 'assets/images/icons/coins/harmony.svg',
     nativeCoin: {
