@@ -15,53 +15,39 @@
   </header>
 
   <main class="swaps-form__content">
-    <div class="swaps-form__top-part">
-      <app-rubic-blockchains
-        class="form-panel__blockchains"
-        blockchainType="from"
-        [formService]="swapFormService"
-      ></app-rubic-blockchains>
-
-      <app-rubic-tokens
-        class="form-panel__tokens"
-        [loading]="isLoading"
-        tokenType="from"
-        [tokens]="availableTokens['from']"
-        [formService]="swapFormService"
-      ></app-rubic-tokens>
-    </div>
+    <app-swaps-header
+      [fromBlockchain]="fromBlockchain"
+      [toBlockchain]="toBlockchain"
+      [swapType]="swapType"
+    ></app-swaps-header>
 
     <app-token-amount-input
       [token]="selectedToken.from"
       [amount]="selectedFromAmount"
-      [minAmount]="getMinMaxAmounts('minAmount')"
-      [maxAmount]="getMinMaxAmounts('maxAmount')"
       (amountChange)="onTokenInputAmountChange($event)"
+      [loading]="isLoading"
+      [tokens]="availableTokens['from']"
+      [formService]="swapFormService"
+
     ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">
       <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
     </div>
 
-    <div class="swaps-form__top-part">
-      <app-rubic-blockchains
-        class="form-panel__blockchains form-panel__blockchains_bottom"
-        blockchainType="to"
-        [formService]="swapFormService"
-      ></app-rubic-blockchains>
+    <app-instant-trade-bottom-form
+      *ngIf="isInstantTrade"
+      [loading]="isLoading"
+      [tokens]="availableTokens['to']"
+      [formService]="swapFormService"
+    ></app-instant-trade-bottom-form>
 
-      <app-rubic-tokens
-        class="form-panel__tokens"
-        [loading]="isLoading"
-        tokenType="to"
-        [tokens]="availableTokens['to']"
-        [formService]="swapFormService"
-      ></app-rubic-tokens>
-    </div>
-
-    <app-instant-trade-bottom-form *ngIf="isInstantTrade"></app-instant-trade-bottom-form>
-
-    <app-bridge-bottom-form *ngIf="!isInstantTrade"></app-bridge-bottom-form>
+    <app-bridge-bottom-form
+      *ngIf="!isInstantTrade"
+      [loading]="isLoading"
+      [tokens]="availableTokens['to']"
+      [formService]="swapFormService"
+    ></app-bridge-bottom-form>
   </main>
 </div>
 

@@ -34,7 +34,9 @@ enum ERROR_TYPE {
   WRONG_BLOCKCHAIN = 'Wrong user network',
   NOT_SUPPORTED_BRIDGE = 'Not supported bridge',
   TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
-  NOT_SELECTED_PROVIDER = 'Provider is not selected'
+  NOT_SELECTED_PROVIDER = 'Provider is not selected',
+  LESS_THAN_MINIMUM = 'Entered amount less than minimum',
+  MORE_THAN_MAXIMUM = 'Entered amount more than maximum'
 }
 
 @Component({
@@ -54,6 +56,24 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this._fromAmount = value;
     this.checkInsufficientFundsError();
   }
+
+  @Input() set minAmount(value: undefined | number) {
+    if (value) {
+      this.minAmountValue = value;
+      this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
+    }
+  }
+
+  private minAmountValue: number;
+
+  @Input() set maxAmount(value: undefined | number) {
+    if (value) {
+      this.maxAmountValue = value;
+      this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
+    }
+  }
+
+  private maxAmountValue: number;
 
   @Input() set isBridgeNotSupported(value: boolean) {
     this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value || false;
@@ -129,6 +149,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   get errorText(): string {
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
       return this.translateService.instant('errors.chooseSupportedBridge');
+    }
+    if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
+      return `Minimum amount is ${this.minAmountValue}`;
+    }
+    if (this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]) {
+      return `Maximum amount is ${this.maxAmountValue}`;
     }
     if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
       return this.translateService.instant('errors.InsufficientBalance');

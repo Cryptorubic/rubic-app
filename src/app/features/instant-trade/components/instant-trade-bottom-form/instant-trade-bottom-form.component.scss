@@ -7,7 +7,7 @@ $green: rgb(74, 169, 86);
   margin-bottom: 15px;
   padding: 15px 20px 30px;
 
-  background-color: #fcfcfc;
+  background-color: white;
   border-radius: 0 0 14px 14px;
 
   &__provider-item:not(:last-child) {
@@ -18,6 +18,39 @@ $green: rgb(74, 169, 86);
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+  }
+
+  &__body-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  &__token-amount {
+    max-width: 300px;
+    margin-bottom: 3px;
+
+    color: #283125;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 40px;
+    letter-spacing: 0.1em;
+    
+    text-overflow: ellipsis;
+
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__usd-amount {
+    color: rgba(144, 144, 144, 0.6);
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.1em;
+    text-align: right;
   }
 
   &__title {
@@ -41,7 +74,7 @@ $green: rgb(74, 169, 86);
 @include b($mobile-md) {
   .instant-trade-bottom-form {
     &__swap {
-      padding: 0 20px
+      padding: 0 20px;
     }
   }
 }

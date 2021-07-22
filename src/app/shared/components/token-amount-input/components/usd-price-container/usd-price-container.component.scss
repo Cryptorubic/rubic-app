@@ -1,0 +1,30 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.usd-price-container {
+  display: flex;
+  justify-content: flex-end;
+
+  color: rgba(144, 144, 144, 0.6);
+  font-size: 14px;
+  line-height: 17px;
+
+  text-align: right;
+
+  @include b($mobile-md) {
+    justify-content: flex-start;
+  }
+
+  &_hidden {
+    visibility: hidden;
+  }
+
+  &__price {
+    overflow: hidden;
+
+    letter-spacing: 0.1em;
+    text-overflow: ellipsis;
+
+    cursor: default;
+  }
+}

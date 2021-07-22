@@ -1,0 +1,21 @@
+<div
+  class="bridge-bottom-form__terms-and-conditions terms-and-conditions"
+  *ngIf="whatIsBlockchain"
+>
+      <span *ngIf="toWalletAddress && isBridgeSupported">
+        {{ 'tradePage.getBefore' | translate }} {{ whatIsBlockchain.name }}
+        {{ 'tradePage.getMiddle' | translate }}
+        <a
+          class="terms-and-conditions__address"
+          [href]="toWalletAddress | scannerLink: toBlockchain:ADDRESS_TYPE.WALLET"
+          target="_blank"
+          rel="noopener"
+        >{{ toWalletAddress }}</a
+        >
+        {{ 'common.address' | translate }}</span
+      >
+
+  <a [href]="whatIsBlockchain.href" target="_blank"
+  >{{ 'bridgePage.whatIs' | translate }} {{ whatIsBlockchain.name }}?</a
+  >
+</div>

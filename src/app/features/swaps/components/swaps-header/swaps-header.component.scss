@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  padding: 5px;
+
+  background-color: white;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.swaps-header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 50px;
+  padding: 10px;
+
+  background: linear-gradient(135deg, rgba(235, 243, 236, 1) 0%, rgba(235, 243, 236, 1) 50%, rgba(245, 249, 246, 1) 50%, rgba(245, 249, 246, 1) 100%);
+  border-radius: 14px;
+
+  &__blockchain {
+    display: flex;
+    align-items: center;
+
+    height: 35px;
+    padding: 7px 15px;
+
+    font-weight: 500;
+    font-size: 16px;
+
+    background-color: white;
+    border-radius: 35px;
+
+    img {
+      width: auto;
+      height: 100%;
+      margin-right: 10px;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    left: 50%;
+
+    border-radius: 100%;
+    box-shadow: 0 2px 10px rgba(#3a5f45, 0.2);
+
+    transform: translate(-50%);
+  }
+}

@@ -48,6 +48,9 @@ import { RubicButtonComponent } from './components/rubic-button/rubic-button.com
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
+import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
+import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
+import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +81,10 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
     ShortenAmountPipe,
     // Directives.
     SafetyLinkDirective,
-    TokenAmountDirective
+    TokenAmountDirective,
+    UserBalanceContainerComponent,
+    UsdPriceContainerComponent,
+    AnalyticsLinkComponent
   ],
   imports: [
     CommonModule,
@@ -133,7 +139,8 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
     SafetyLinkDirective,
     RubicTokensComponent,
     RubicBlockchainsComponent,
-    RubicRefreshButtonComponent
+    RubicRefreshButtonComponent,
+    AnalyticsLinkComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

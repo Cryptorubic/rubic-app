@@ -2,11 +2,13 @@
 @import 'src/scss/mixins';
 
 .bottom-amount {
-  box-sizing: border-box;
-  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
 
-  background-color: #fcfcfc;
-  border-radius: 0 0 14px 14px;
+  max-width: 350px;
+  height: 100%;
 
   &__form {
     display: flex;
@@ -16,8 +18,6 @@
   &__usd-container {
     display: inline-block;
     float: right;
-    width: 31%;
-    margin-bottom: 10px;
     overflow: hidden;
 
     color: rgba(144, 144, 144, 0.6);
@@ -31,35 +31,29 @@
     }
   }
 
-  &__usd,
-  &__tokens {
-    width: 100%;
-    padding: 0;
-
-    letter-spacing: 0.1em;
-
-    background: none;
-    border: none;
-  }
-
   &__usd {
     overflow: hidden;
+
+    letter-spacing: 0.1em;
 
     text-align: right;
     text-overflow: ellipsis;
   }
 
-  &__tokens {
-    font-weight: 100;
-    font-size: 30px;
-    line-height: 36px;
-    text-align: left;
-  }
-
   &__tokens-container {
-    display: flex;
-    padding-top: 5px;
-    overflow: hidden;
+    width: 100%;
+    height: 40px;
+    overflow: auto;
+
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 40px;
+    letter-spacing: 0.1em;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     &_wide {
       width: calc(100% - 100px);

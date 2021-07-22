@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -25,6 +26,8 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -39,6 +42,12 @@ interface CalculationResult {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
+  @Input() loading: boolean;
+
+  @Input() tokens: AvailableTokenAmount[];
+
+  @Input() formService: FormService;
+
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
   public get allowTrade(): boolean {
@@ -71,6 +80,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
+
+  public selectedProvider: ProviderControllerData;
 
   get orderedProviders(): ProviderControllerData[] {
     if (
@@ -292,6 +303,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
     this.providerControllers = newProviders;
     const currentProvider = newProviders.find(provider => provider.isSelected);
+    this.selectedProvider = currentProvider;
 
     if (currentProvider.needApprove !== null) {
       this.tradeStatus = currentProvider.needApprove
@@ -383,5 +395,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     } catch (err) {
       this.errorService.catch$(err);
     }
+  }
+
+  public getUsdPrice(): string {
+    return this.selectedProvider.trade.to.amount
+      .multipliedBy(this.selectedProvider.trade.to.token.price)
+      .toFixed(2);
   }
 }

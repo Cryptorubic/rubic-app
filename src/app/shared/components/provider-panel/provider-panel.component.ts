@@ -198,7 +198,7 @@ export class ProviderPanelComponent {
     }
   }
 
-  getUsdPrice(): string {
+  public getUsdPrice(): string {
     return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
   }
 }

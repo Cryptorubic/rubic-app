@@ -14,6 +14,7 @@ import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -72,6 +73,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public settingsSubscription$: Subscription;
 
+  public fromBlockchain: BLOCKCHAIN_NAME;
+
+  public toBlockchain: BLOCKCHAIN_NAME;
+
+  public swapType: SWAP_PROVIDER_TYPE;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -115,12 +122,23 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         this.itForm.calculateTrades();
       });
 
+    this.swapType =
+      this.swapFormService.commonTrade.controls.input.value.fromBlockchain ===
+      this.swapFormService.commonTrade.controls.input.value.toBlockchain
+        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        : SWAP_PROVIDER_TYPE.BRIDGE;
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       formValue => {
         this.isLoading = true;
         this.setFormValues(formValue);
         this.isLoading = false;
+        this.fromBlockchain = formValue.fromBlockchain;
+        this.toBlockchain = formValue.toBlockchain;
+        this.swapType =
+          formValue.fromBlockchain === formValue.toBlockchain
+            ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+            : SWAP_PROVIDER_TYPE.BRIDGE;
       }
     );
   }
@@ -248,10 +266,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         [formKey]: this.selectedToken[tokenType]
       });
     }
-  }
-
-  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    return this.swapsService.getMinMaxAmounts(amountType);
   }
 
   public onTokenInputAmountChange(amount: string): void {

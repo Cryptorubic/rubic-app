@@ -63,14 +63,24 @@
   &__delimiter {
     position: relative;
 
-    margin-bottom: 15px;
+    background-color: white;
     
     > * {
       position: absolute;
-      top: 7.5px;
       left: 50%;
 
       transform: translate(-50%, -50%);
+    }
+
+    &::after {
+      display: block;
+      width: calc(100% - 40px);
+      height: 1px;
+      margin-left: 20px;
+
+      background-color: rgba(black, 0.1);
+
+      content: '';
     }
   }
 

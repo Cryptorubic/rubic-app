@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   Injector,
+  Input,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -23,6 +24,8 @@ import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -59,6 +62,16 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BridgeBottomFormComponent implements OnInit, OnDestroy {
+  @Input() loading: boolean;
+
+  @Input() tokens: AvailableTokenAmount[];
+
+  @Input() formService: FormService;
+
+  public minError: undefined | number;
+
+  public maxError: undefined | number;
+
   public TRADE_STATUS = TRADE_STATUS;
 
   public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
@@ -146,6 +159,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(500))
       .subscribe(form => {
         this.fromAmount = form.fromAmount;
+
+        if (this.fromAmount.gt(this.getMinMaxAmounts('maxAmount'))) {
+          this.maxError = this.getMinMaxAmounts('maxAmount');
+        }
+        if (this.fromAmount.lt(this.getMinMaxAmounts('minAmount'))) {
+          this.minError = this.getMinMaxAmounts('minAmount');
+        }
 
         if (
           this.fromBlockchain !== form.fromBlockchain ||
@@ -363,5 +383,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         }
       );
+  }
+
+  private getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
+    return this.swapService.getMinMaxAmounts(amountType);
   }
 }
