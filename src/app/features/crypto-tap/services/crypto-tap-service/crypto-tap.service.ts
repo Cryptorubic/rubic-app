@@ -138,7 +138,7 @@ export class CryptoTapService {
       });
       if (balance.lt(amountInWei)) {
         const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toString());
+        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toFixed());
       }
     } else {
       const tokensBalance = await web3Public.getTokenBalance(
@@ -153,7 +153,7 @@ export class CryptoTapService {
         throw new InsufficientFundsError(
           token.symbol,
           formattedTokensBalance,
-          fromAmount.toString()
+          fromAmount.toFixed()
         );
       }
     }

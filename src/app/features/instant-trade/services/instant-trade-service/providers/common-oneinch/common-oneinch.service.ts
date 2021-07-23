@@ -20,7 +20,6 @@ import { from, Observable, of } from 'rxjs';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import networks from 'src/app/shared/constants/blockchain/networks';
 
@@ -99,19 +98,17 @@ export class CommonOneinchService {
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toFixed()
         );
       }
     } else {
       const tokensBalance = await web3.getTokenBalance(address, trade.from.token.address);
       if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance
-          .div(10 ** trade.from.token.decimals)
-          .toString();
+        const formattedTokensBalance = tokensBalance.div(10 ** trade.from.token.decimals).toFixed();
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedTokensBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toFixed()
         );
       }
     }
@@ -146,7 +143,7 @@ export class CommonOneinchService {
   public specifyError(err: HttpErrorResponse, blockchain: BLOCKCHAIN_NAME): never {
     if (err.error.message.includes("cannot estimate. Don't forget about miner fee.")) {
       const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
-      const message = `Can\'t estimate. Don\'t forget about miner fee. Try to leave the buffer of ${nativeToken} for gas.`;
+      const message = `Can't estimate. Don't forget about miner fee. Try to leave the buffer of ${nativeToken} for gas.`;
       throw new CustomError(message);
     }
     throw new CustomError(err.error.message);
