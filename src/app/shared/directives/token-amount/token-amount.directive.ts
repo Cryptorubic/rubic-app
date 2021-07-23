@@ -6,13 +6,16 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
   selector: '[appTokenAmount]'
 })
 export class TokenAmountDirective {
-  @Input() decimals: number;
-
-  @Input() maxLength = 14;
+  @Input() set decimals(value: number) {
+    this._decimals = value;
+    this.onChange();
+  }
 
   @Output() amountChange = new EventEmitter<string>();
 
   private readonly amountRegex = /^([0-9]+\.?[0-9]*|[0-9]*\.?[0-9]+)?$/;
+
+  private _decimals: number;
 
   private prevValue = '';
 
@@ -45,23 +48,6 @@ export class TokenAmountDirective {
         caretPosition = this.prevCaretPosition;
       } else {
         caretPosition = this.getNewCaretPosition(value, caretPosition);
-
-        const digitsLength = value.replaceAll(',', '').replace('.', '').length;
-        if (digitsLength > this.maxLength) {
-          let lengthToShorten = digitsLength - this.maxLength;
-          const [integerPart, decimalPart] = value.split('.');
-          if (decimalPart?.length > lengthToShorten) {
-            value = `${integerPart}.${decimalPart.slice(0, decimalPart.length - lengthToShorten)}`;
-          } else {
-            if (decimalPart) {
-              lengthToShorten -= decimalPart.length;
-            }
-            const integerPartShortened = integerPart.replaceAll(',', '');
-            value = new BigNumber(
-              integerPartShortened.slice(0, integerPartShortened.length - lengthToShorten)
-            ).toFormat(BIG_NUMBER_FORMAT);
-          }
-        }
       }
     } else {
       value = this.prevValue;
@@ -79,7 +65,7 @@ export class TokenAmountDirective {
   private getNewValue(value: string): string {
     if (value.includes('.')) {
       const decimalsStartIndex = value.indexOf('.') + 1;
-      value = value.slice(0, decimalsStartIndex + this.decimals);
+      value = value.slice(0, decimalsStartIndex + this._decimals);
     }
 
     const [integerPart, decimalPart] = value.split('.');
