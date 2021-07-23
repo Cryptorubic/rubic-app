@@ -57,10 +57,9 @@
       border: 0;
 
       ::ng-deep tui-wrapper {
-        color: rgba($rubic-text-disable, 0.6);
+        color: rgba($rubic-text-disable, 0.7);
 
-        background-color: rgba($rubic-disable, 0.6);
-        box-shadow: $rubic-shadow-button-disabled;
+        background-color: rgba(white, 0.3);
         opacity: 1 !important;
       }
     }

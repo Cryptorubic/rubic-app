@@ -111,6 +111,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
+  private currentFromToken: any;
+
+  private currentToToken: any;
+
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
@@ -128,6 +132,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const formValue = this.swapFormService.commonTrade.controls.input.value;
     this.fromAmount = formValue.fromAmount;
     this.currentBlockchain = formValue.toBlockchain;
+    this.currentFromToken = formValue.fromToken;
+    this.currentToToken = formValue.toToken;
     this.initiateProviders(this.currentBlockchain);
     this.conditionalCalculate(formValue);
 
@@ -135,7 +141,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
         this.fromAmount = form.fromAmount;
         this.cdr.detectChanges();
-
+        if (
+          form.fromToken.address !== this.currentFromToken ||
+          form.toToken.address !== this.currentToToken
+        ) {
+          this.clearSelection();
+        }
         this.setupForm(form);
       });
   }
@@ -401,5 +412,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return this.selectedProvider.trade.to.amount
       .multipliedBy(this.selectedProvider.trade.to.token.price)
       .toFixed(2);
+  }
+
+  private clearSelection(): void {
+    this.selectedProvider = null;
+    this.providerControllers = this.providerControllers.map(el => ({ ...el, isSelected: false }));
+    this.cdr.detectChanges();
   }
 }

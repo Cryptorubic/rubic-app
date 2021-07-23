@@ -10,33 +10,68 @@ $green: rgb(74, 169, 86);
   background-color: white;
   border-radius: 0 0 14px 14px;
 
-  &__provider-item:not(:last-child) {
-    margin-bottom: 15px;
+  &__provider-item:first-child {
+    grid-column: span 2;
   }
-  
+
+  &__provider-item:not(:first-child) {
+    grid-column: span 1;
+  }
+
+  &__provider-item:not(:nth-child(2n+1)):last-child {
+    grid-column: span 2;
+
+    ::ng-deep .provider-panel__body {
+      flex-direction: row;
+    }
+  }
+
   &__header {
-    display: flex;
-    justify-content: space-between;
     margin-bottom: 20px;
+  }
+
+  &__left-part {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &__provider-badge {
+    padding: 2px 6px;
+
+    color: gray;
+    font-weight: 300;
+    font-size: 14px;
+    text-transform: capitalize;
+
+    background: #f3f9f3;
+    border-radius: 3px;
+  }
+
+  &__providers {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 30px;
   }
 
   &__body-top {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
   }
 
   &__token-amount {
     max-width: 300px;
-    margin-bottom: 3px;
+    margin-bottom: 13px;
+
+    overflow: auto;
 
     color: #283125;
     font-weight: 400;
     font-size: 30px;
     line-height: 40px;
     letter-spacing: 0.1em;
-    
-    text-overflow: ellipsis;
 
     scrollbar-width: none;
 

@@ -16,8 +16,6 @@
   }
 
   &__footer {
-    padding-top: 15px;
-
     @include b($mobile-md) {
       padding: 15px 20px 0;
     }

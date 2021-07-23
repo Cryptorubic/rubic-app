@@ -79,6 +79,7 @@ interface ProviderData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderPanelComponent {
+  @Input() public providerIndex: number;
   /**
    * Setup provider data.
    * @param data provider controller data.

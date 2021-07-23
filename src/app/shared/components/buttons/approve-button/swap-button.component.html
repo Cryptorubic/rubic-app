@@ -4,6 +4,7 @@
     [loading]="needLoginLoading"
     [fullWidth]="true"
     (onClick)="onLogin()"
+    [appearance]="tokensFilled ? 'secondary' : 'primary'"
   >
     {{ 'navigation.login' | translate }}
   </app-rubic-button>

@@ -57,19 +57,23 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.checkInsufficientFundsError();
   }
 
-  @Input() set minAmount(value: undefined | number) {
+  @Input() set minAmount(value: false | number) {
     if (value) {
       this.minAmountValue = value;
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
+    } else {
+      this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
     }
   }
 
   private minAmountValue: number;
 
-  @Input() set maxAmount(value: undefined | number) {
+  @Input() set maxAmount(value: false | number) {
     if (value) {
       this.maxAmountValue = value;
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
+    } else {
+      this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
     }
   }
 
@@ -122,6 +126,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
   }
+
+  public tokensFilled: boolean;
 
   public get allowChangeNetwork(): boolean {
     const unsupportedItBlockchains = [BLOCKCHAIN_NAME.XDAI, BLOCKCHAIN_NAME.TRON];
@@ -232,6 +238,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.dataLoading = true;
     this.cdr.detectChanges();
 
+    this.tokensFilled = Boolean(form.fromToken && form.toToken);
     this.fromToken = form.fromToken;
     this.checkErrors();
 

@@ -63,6 +63,21 @@ $white: white;
       border-left-color: $green;
       border-left-width: 5px;
     }
+
+    &_small {
+      .provider-panel__token-usd-price {
+        display: none;
+      }
+
+      .provider-panel__body {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .provider-panel__amount {
+        font-size: 20px;
+      }
+    }
   }
 
   &__best-rate {

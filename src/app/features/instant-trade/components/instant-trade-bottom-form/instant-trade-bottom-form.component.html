@@ -1,41 +1,39 @@
 <div class="instant-trade-bottom-form">
     <main class="instant-trade-bottom-form__body">
       <div class="instant-trade-bottom-form__body-top">
-        <app-rubic-tokens
-          [loading]="loading"
-          tokenType="to"
-          [tokens]="tokens"
-          [formService]="formService"
-        ></app-rubic-tokens>
+        <div class="instant-trade-bottom-form__left-part">
+          <app-rubic-tokens
+            [loading]="loading"
+            tokenType="to"
+            [tokens]="tokens"
+            [formService]="formService"
+          ></app-rubic-tokens>
+          <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
+            Trade Via {{ selectedProvider.tradeProviderInfo.label }}
+          </div>
+        </div>
         <div *ngIf="selectedProvider" class="instant-trade-bottom-form__amount">
           <div class="instant-trade-bottom-form__token-amount">{{ selectedProvider.trade.to.amount }}</div>
           <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
         </div>
       </div>
-      <ng-container *ngIf="allowTrade">
+      <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">
         <div
           class="instant-trade-bottom-form__provider-item"
-          *ngFor="let provider of orderedProviders"
+          *ngFor="let provider of orderedProviders; let i = index"
         >
           <app-provider-panel
             [providerControllerData]="provider"
             (selectProvider)="selectProvider(provider.tradeProviderInfo.value)"
+            [providerIndex]="i"
           ></app-provider-panel>
         </div>
-      </ng-container>
+      </div>
     </main>
     <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
-  <a
-    *ngIf="tokenInfoUrl"
-    [href]="'https://keks.app/' + tokenInfoUrl"
-    class="instant-trade-bottom-form__analytics"
-    target="_blank"
-  >
-    <img src="assets/images/icons/analytic.svg" alt="{{ 'common.analytics' | translate }}" />
-    <span>{{ 'common.analytics' | translate }}</span>
-  </a>
+  <app-analytics-link [tokenInfoUrl]="tokenInfoUrl"></app-analytics-link>
   <app-swap-button
     [needApprove]="needApprove"
     [status]="tradeStatus"

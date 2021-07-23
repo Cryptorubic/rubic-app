@@ -68,9 +68,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
-  public minError: undefined | number;
+  public minError: false | number;
 
-  public maxError: undefined | number;
+  public maxError: false | number;
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -160,12 +160,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(form => {
         this.fromAmount = form.fromAmount;
 
-        if (this.fromAmount.gt(this.getMinMaxAmounts('maxAmount'))) {
-          this.maxError = this.getMinMaxAmounts('maxAmount');
-        }
-        if (this.fromAmount.lt(this.getMinMaxAmounts('minAmount'))) {
-          this.minError = this.getMinMaxAmounts('minAmount');
-        }
+        const minAmount = this.getMinMaxAmounts('minAmount');
+        const maxAmount = this.getMinMaxAmounts('maxAmount');
+        this.maxError = this.fromAmount.gt(maxAmount) ? maxAmount : false;
+        this.minError = this.fromAmount.lt(minAmount) ? minAmount : false;
 
         if (
           this.fromBlockchain !== form.fromBlockchain ||
