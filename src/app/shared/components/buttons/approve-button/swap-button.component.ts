@@ -87,6 +87,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   private isTestingMode: boolean;
 
+  private fromBlockchain: BLOCKCHAIN_NAME;
+
   private fromToken: TokenAmount;
 
   private _fromAmount: BigNumber;
@@ -180,6 +182,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
         this.isTestingMode = isTestingMode;
+        if (isTestingMode) {
+          this.checkErrors();
+        }
       }
     );
 
@@ -206,6 +211,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.dataLoading = true;
     this.cdr.detectChanges();
 
+    this.fromBlockchain = form.fromBlockchain;
     this.fromToken = form.fromToken;
     this.checkErrors();
 
@@ -231,14 +237,10 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   private checkWrongBlockchainError(): void {
     if (this.providerConnectorService.provider) {
-      const fromBlockchain = this.fromToken?.blockchain;
       const userBlockchain = this.providerConnectorService.network?.name;
-
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        fromBlockchain &&
-        userBlockchain &&
-        fromBlockchain !== userBlockchain &&
-        (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
+        this.fromBlockchain !== userBlockchain &&
+        (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
     }
@@ -254,7 +256,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     const currentStatus = this.status;
     this.status = TRADE_STATUS.LOADING;
     try {
-      await this.providerConnectorService.switchChain(this.fromToken?.blockchain);
+      await this.providerConnectorService.switchChain(this.fromBlockchain);
     } finally {
       this.status = currentStatus;
     }

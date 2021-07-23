@@ -95,6 +95,7 @@ export class ProviderConnectorService {
     this.storage.setItem('provider', this.provider.name);
   }
 
+  // eslint-disable-next-line
   public async requestPermissions(): Promise<any[]> {
     return this.provider.requestPermissions();
   }
@@ -159,16 +160,25 @@ export class ProviderConnectorService {
 
   public async addChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
-    const defaultPolygonRpc = 'https://rpc-mainnet.maticvigil.com';
+    const defaultData = {
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+        name: 'Binance Smart Chain Mainnet',
+        rpc: 'https://bsc-dataseed1.binance.org'
+      },
+      [BLOCKCHAIN_NAME.POLYGON]: {
+        name: 'Matic(Polygon) Mainnet',
+        rpc: 'https://rpc-mainnet.matic.network'
+      }
+    };
     const params = {
       chainId: `0x${network.id.toString(16)}`,
-      chainName: network.name,
+      chainName: defaultData[network.name]?.name || network.name,
       nativeCurrency: {
         name: network.nativeCoin.name,
         symbol: network.nativeCoin.symbol,
         decimals: 18
       },
-      rpcUrls: [networkName === BLOCKCHAIN_NAME.POLYGON ? defaultPolygonRpc : network.rpcLink],
+      rpcUrls: [defaultData[network.name]?.rpc || network.rpcLink],
       blockExplorerUrls: [network.scannerUrl],
       iconUrls: [`https://rubic.exchange/${network.imagePath}`]
     } as AddEthChainParams;

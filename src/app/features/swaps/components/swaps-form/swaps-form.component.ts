@@ -255,7 +255,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   public onTokenInputAmountChange(amount: string): void {
-    if (!this.selectedFromAmount?.eq(amount)) {
+    if ((this.selectedFromAmount || amount) && !this.selectedFromAmount?.eq(amount)) {
       this.swapFormService.commonTrade.controls.input.patchValue({
         fromAmount: new BigNumber(amount)
       });
