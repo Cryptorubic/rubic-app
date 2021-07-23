@@ -33,7 +33,7 @@ export default [
   {
     id: 137,
     name: BLOCKCHAIN_NAME.POLYGON,
-    scannerUrl: 'https://explorer-mainnet.maticvigil.com/',
+    scannerUrl: 'https://polygonscan.com',
     rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
