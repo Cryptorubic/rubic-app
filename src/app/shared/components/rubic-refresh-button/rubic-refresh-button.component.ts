@@ -9,6 +9,7 @@ import {
   ViewChild,
   ElementRef
 } from '@angular/core';
+import { fromEvent } from 'rxjs';
 
 export type RefreshButtonStatus = 'refreshing' | 'in progress' | 'stopped';
 
@@ -63,16 +64,26 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
    */
   public readonly refreshTimeout = 15;
 
+  private refreshIconListener;
+
   constructor() {
     this.autoUpdate = false;
   }
 
   public ngOnInit(): void {
-    this.refreshIconElement.nativeElement.addEventListener('animationiteration', () => {
+    this.refreshIconListener = fromEvent(
+      this.refreshIconElement.nativeElement,
+      'animationiteration'
+    ).subscribe(() => {
       if (this.status !== 'refreshing') {
         this.refreshIconElement.nativeElement.classList.remove('refresh-button__icon_refreshing');
       }
     });
+  }
+
+  public ngOnDestroy(): void {
+    clearTimeout(this.timer);
+    this.refreshIconListener.unsubscribe();
   }
 
   private setupTimer(): void {
@@ -80,9 +91,5 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
       clearTimeout(this.timer);
       this.onRefresh.emit();
     }, this.refreshTimeout * 1000);
-  }
-
-  public ngOnDestroy(): void {
-    clearTimeout(this.timer);
   }
 }
