@@ -25,6 +25,11 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
       this.setupTimer();
     } else {
       clearTimeout(this.timer);
+      if (status === 'refreshing') {
+        setTimeout(() => {
+          this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
+        });
+      }
     }
   }
 
@@ -65,7 +70,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.refreshIconElement.nativeElement.addEventListener('animationiteration', () => {
       if (this.status !== 'refreshing') {
-        this.refreshIconElement.nativeElement.removeClass('refresh-button__icon_refreshing');
+        this.refreshIconElement.nativeElement.classList.remove('refresh-button__icon_refreshing');
       }
     });
   }
