@@ -140,10 +140,12 @@ export class PanamaBridgeProviderService {
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
 
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
+    let txHash;
 
     const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {
         bridgeTrade.onTransactionHash(hash);
+        txHash = hash;
       }
       await this.bridgeApiService.postPanamaTransaction(
         binanceId,
@@ -178,7 +180,7 @@ export class PanamaBridgeProviderService {
     }
     this.bridgeApiService.notifyBridgeBot(
       bridgeTrade,
-      binanceId,
+      txHash,
       this.providerConnectorService.address
     );
     return receipt;
