@@ -8,7 +8,7 @@
     #refreshIcon
   />
   <svg
-    *ngIf="autoUpdate && status !== 'refreshing'"
+    *ngIf="autoUpdate && status === 'stopped'"
     class="refresh-button__outline-icon"
     xmlns="http://www.w3.org/2000/svg"
   >
