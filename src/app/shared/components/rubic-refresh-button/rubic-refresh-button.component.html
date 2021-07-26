@@ -1,16 +1,14 @@
-<div class="refresh-button">
+<div class="refresh-button" (click)="onRefresh.emit()">
   <img
-    (click)="triggerRefresh()"
     class="refresh-icon"
     [ngClass]="{
-            'refresh-button__icon_refreshing':
-              status === 'refreshing' || status === 'stopped',
-            'refresh-button__icon_stopped': status === 'stopped'
-          }"
+      'refresh-button__icon_refreshing': status === 'refreshing'
+    }"
     src="assets/images/icons/reload.svg"
     width="18"
     height="18"
     alt="Reload"
+    #refreshIcon
   />
   <svg
     *ngIf="autoUpdate && status !== 'refreshing'"
@@ -20,10 +18,11 @@
     <circle
       class="refresh-button__timer"
       [ngStyle]="{ 'animation-duration': refreshTimeout + 's' }"
-      [ngClass]="{ 'refresh-button__timer_stopped' : status === 'refreshing' }"
+      [ngClass]="{ 'refresh-button__timer_stopped': status === 'refreshing' }"
       cx="25"
       cy="25"
       r="20"
-      transform="rotate(-90)"/>
+      transform="rotate(-90)"
+    />
   </svg>
 </div>
