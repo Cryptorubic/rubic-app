@@ -8,11 +8,12 @@
   font-weight: 300;
   font-size: 14px;
   text-align: center;
+  color: var(--form-bright-text-color);
 
   a {
     display: block;
 
-    color: $rubic-primary;
+    color: var(--form-rubic-text-color);
     font-weight: 400;
   }
 

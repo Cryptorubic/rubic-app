@@ -11,7 +11,7 @@
   margin-bottom: 35px;
   padding: 30px 40px;
 
-  background-color: rgba(white, 0.5);
+  background-color: var(--main-form-background);
   border-radius: 19px;
   backdrop-filter: blur(50px);
 
@@ -32,6 +32,8 @@
 
     font-weight: 100;
     font-size: 24px;
+
+    color: var(--form-bright-text-color);
   }
 
   &__settings {
@@ -46,7 +48,7 @@
     > *:first-child {
       flex-grow: 1;
 
-      border-right: 2px solid $rubic-base-01;
+      border-right: 2px solid var(--rubic-base-01);
     }
 
     app-rubic-tokens {
@@ -63,8 +65,8 @@
   &__delimiter {
     position: relative;
 
-    background-color: white;
-    
+    background-color: var(--main-background);
+
     > * {
       position: absolute;
       left: 50%;
@@ -72,15 +74,26 @@
       transform: translate(-50%, -50%);
     }
 
+    &::before,
     &::after {
-      display: block;
-      width: calc(100% - 40px);
-      height: 1px;
-      margin-left: 20px;
+      position: absolute;
+      top: 0;
 
-      background-color: rgba(black, 0.1);
+      display: block;
+      width: calc(50% - 37px);
+      height: 1px;
+
+      background-color: var(--rubic-secondary);
 
       content: '';
+    }
+
+    &::before {
+      left: 20px;
+    }
+
+    &::after {
+      right: 20px;
     }
   }
 
@@ -147,7 +160,7 @@
         display: block;
 
         border-right: 0;
-        border-bottom: 2px solid $rubic-base-01;
+        border-bottom: 2px solid var(--rubic-base-01);
       }
     }
 

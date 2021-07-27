@@ -2,7 +2,7 @@
   display: block;
   padding: 5px;
 
-  background-color: white;
+  background-color: var(--main-background);
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
 }
@@ -17,7 +17,11 @@
   height: 50px;
   padding: 10px;
 
-  background: linear-gradient(135deg, rgba(235, 243, 236, 1) 0%, rgba(235, 243, 236, 1) 50%, rgba(245, 249, 246, 1) 50%, rgba(245, 249, 246, 1) 100%);
+  background-image: linear-gradient(135deg,
+  var(--form-header-color-1) 0%,
+  var(--form-header-color-1) 50%,
+  var(--form-header-color-2) 50%,
+  var(--form-header-color-2) 100%);
   border-radius: 14px;
 
   &__blockchain {
@@ -27,10 +31,11 @@
     height: 35px;
     padding: 7px 15px;
 
+    color: var(--form-bright-text-color);
     font-weight: 500;
     font-size: 16px;
 
-    background-color: white;
+    background-color: var(--main-background);
     border-radius: 35px;
 
     img {

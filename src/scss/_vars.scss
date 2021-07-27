@@ -7,7 +7,32 @@
 
   --green-btn-border-hover-bg: #e5f5e7;
 
+  --primary-color: rgb(74, 169, 86);
+
   --tui-text-font: 'Ubuntu', Arial, sans-serif !important;
+
+  --main-form-background: rgba(255, 255, 255, 0.5);
+  --main-background: rgba(255, 255, 255, 1);
+
+  --rubic-base-03: rgba(250, 250, 250, 0.9);
+  --rubic-secondary: rgb(244, 245, 244);
+
+  --form-header-color-1: rgb(235, 243, 236);
+  --form-header-color-2: rgb(245, 249, 246);
+
+  --form-bright-text-color: rgb(0, 0, 0);
+  --form-bright-reversed-text-color: rgb(255, 255, 255);
+  --form-dim-text-color: rgb(143, 143, 143, 60%);
+  --form-rubic-text-color: rgb(74, 169, 86);
+
+  --rubic-base-01: rgb(255, 255, 255);
+  --rubic-base-02: rgb(0, 0, 0);
+
+  --rubic-base-10: rgb(250, 250, 250);
+  --rubic-base-11: rgb(243, 249, 243);
+  --rubic-base-12: rgb(128, 128, 128);
+  --rubic-base-13: rgba(255, 255, 255, 0.3);
+
 }
 
 // ***** typography *****
@@ -15,9 +40,6 @@ $sf-pro-font: SF-Pro, sans-serif;
 $roboto-font: Roboto, sans-serif;
 
 // ***** colors *****
-$rubic-base-01: #fff;
-$rubic-base-02: #000;
-$rubic-base-03: rgba(250, 250, 250, 0.9);
 $rubic-base-04: #4b604f;
 $rubic-base-05: #639d6a;
 $rubic-base-06: #5c7d60;
@@ -26,7 +48,6 @@ $rubic-base-08: #fcfcfd;
 $rubic-base-09: #9db8a1;
 
 $rubic-primary: #4aa956;
-$rubic-secondary: #f4f5f4;
 $rubic-disable: #e1e1e1;
 $rubic-warning: #dfcb5f;
 

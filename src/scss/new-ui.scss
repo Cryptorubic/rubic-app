@@ -25,18 +25,18 @@ html {
 
   background-color: transparent;
 
-  border: 1px solid $rubic-base-01;
+  border: 1px solid var(--rubic-base-01);
   border-radius: 156px;
   cursor: pointer;
 
   transition: 0.3s all ease-in-out;
 
   &:hover {
-    background-color: $rubic-base-01;
+    background-color: var(--rubic-base-01);
   }
 
   &:focus {
-    background-color: $rubic-base-01;
+    background-color: var(--rubic-base-01);
     border-color: $rubic-primary;
   }
 
@@ -53,7 +53,7 @@ html {
   }
 
   &_wallets {
-    background-color: $rubic-base-01;
+    background-color: var(--rubic-base-01);
   }
 
   &:hover {
@@ -79,7 +79,7 @@ html {
 
   &:hover,
   &_active {
-    background-color: $rubic-base-01;
+    background-color: var(--rubic-base-01);
   }
 
   &:hover {
@@ -88,7 +88,7 @@ html {
 
   &:active,
   &_active:active {
-    color: $rubic-base-01 !important;
+    color: var(--rubic-base-01) !important;
 
     background-color: $rubic-primary;
     box-shadow: $rubic-shadow-button-active;
@@ -105,7 +105,7 @@ html {
   }
 
   &_error {
-    color: $rubic-base-01;
+    color: var(--rubic-base-01);
 
     background-color: #dc3545;
 

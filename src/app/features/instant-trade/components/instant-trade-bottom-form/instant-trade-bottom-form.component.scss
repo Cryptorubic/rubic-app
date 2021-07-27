@@ -7,7 +7,7 @@ $green: rgb(74, 169, 86);
   margin-bottom: 15px;
   padding: 15px 20px 30px;
 
-  background-color: white;
+  background-color: var(--main-background);
   border-radius: 0 0 14px 14px;
 
   &__provider-item:first-child {
@@ -40,12 +40,12 @@ $green: rgb(74, 169, 86);
   &__provider-badge {
     padding: 2px 6px;
 
-    color: gray;
+    color: var(--form-bright-text-color);
     font-weight: 300;
     font-size: 14px;
     text-transform: capitalize;
 
-    background: #f3f9f3;
+    background: var(--rubic-base-10);
     border-radius: 3px;
   }
 
@@ -67,7 +67,7 @@ $green: rgb(74, 169, 86);
 
     overflow: auto;
 
-    color: #283125;
+    color: var(--form-bright-text-color);
     font-weight: 400;
     font-size: 30px;
     line-height: 40px;
@@ -81,7 +81,7 @@ $green: rgb(74, 169, 86);
   }
 
   &__usd-amount {
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-size: 14px;
     line-height: 17px;
     letter-spacing: 0.1em;

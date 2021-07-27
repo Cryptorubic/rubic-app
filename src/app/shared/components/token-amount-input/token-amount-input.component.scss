@@ -11,7 +11,7 @@
 
   font-family: $sf-pro-font;
 
-  background-color: white;
+  background-color: var(--main-background);
 
   &__wrapper {
     display: flex;
@@ -30,11 +30,13 @@
     height: 100%;
     padding: 0;
 
-    color: #283125;
+    color: var(--form-bright-text-color);
     font-weight: 400;
     font-size: 30px;
     letter-spacing: 0.1em;
     text-align: right;
+
+    background-color: transparent;
 
     border: none;
   }

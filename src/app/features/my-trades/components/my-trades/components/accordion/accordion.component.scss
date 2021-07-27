@@ -6,11 +6,11 @@
 @import '../styles';
 
 :host {
-  --tui-secondary-hover: #{$rubic-base-01};
-  --tui-secondary-active: #{$rubic-base-01};
+  --tui-secondary-hover: var(--rubic-base-01);
+  --tui-secondary-active: var(--rubic-base-01);
   --tui-link: #{$rubic-primary};
   --tui-link-hover: #{$rubic-primary};
-  --tui-link-active: #{$rubic-secondary};
+  --tui-link-active: var(--rubic-secondary);
 }
 
 .sort-by-dropdown {

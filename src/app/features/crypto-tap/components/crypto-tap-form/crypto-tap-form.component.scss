@@ -49,7 +49,7 @@
     > *:first-child {
       flex-grow: 1;
 
-      border-right: 2px solid $rubic-base-01;
+      border-right: 2px solid var(--rubic-base-01);
     }
   }
 
@@ -121,7 +121,7 @@ app-amount-estimated {
         display: block;
 
         border-right: 0;
-        border-bottom: 2px solid $rubic-base-01;
+        border-bottom: 2px solid var(--rubic-base-01);
       }
     }
 

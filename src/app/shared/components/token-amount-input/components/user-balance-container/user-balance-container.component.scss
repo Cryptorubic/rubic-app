@@ -2,7 +2,7 @@
   &__balance {
     margin-right: 10px;
 
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-size: 14px;
     line-height: 17px;
   }
@@ -10,7 +10,7 @@
   &__max-button {
     padding: 0;
 
-    color: #4aa956;
+    color: var(--form-rubic-text-color);
     font-size: 14px;
     line-height: 17px;
     letter-spacing: 0.1em;

@@ -95,7 +95,6 @@
 
       <tui-opt-group *ngIf="($currentUser | async)?.address" class="rubic-menu__mobile">
         <button tuiOption class="data-list__address">
-          <div class="data-list__address-container">
             <img
               *ngIf="currentBlockchain?.imagePath"
               class="rubic-menu__chain-icon"
@@ -105,7 +104,6 @@
               height="25"
             />
             {{ ($currentUser | async)?.address | shortAddress: 5:3 }}
-          </div>
         </button>
 
         <a

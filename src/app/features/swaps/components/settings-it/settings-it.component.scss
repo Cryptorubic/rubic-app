@@ -1,9 +1,15 @@
 @import 'src/scss/vars';
 
+:host {
+  color: var(--form-bright-text-color);
+}
+
 .settings {
   min-width: 265px;
   max-width: 320px;
   padding: 20px;
+
+  backdrop-filter: blur(5px);
 
   &__form {
     display: flex;
@@ -72,6 +78,8 @@
 
   ::ng-deep {
     tui-wrapper[data-appearance='textfield'] {
+      color: var(--form-bright-text-color);
+
       border-radius: 100px;
       box-shadow: none;
 

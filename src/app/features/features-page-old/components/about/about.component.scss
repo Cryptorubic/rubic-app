@@ -4,7 +4,7 @@
 .about-page {
   font-weight: normal;
 
-  background-color: white;
+  background-color: var(--main-background);
   border-radius: 10px;
 
   @include b(1100) {
@@ -66,7 +66,7 @@
         min-height: 155px;
         padding: 40px 60px 25px 25px;
 
-        background-color: #fafafa;
+        background-color: var(--main-background);
 
         @include b(850) {
           padding: 20px;
@@ -104,7 +104,7 @@
         min-height: 50px;
         padding: 25px 35px;
 
-        background-color: #fafafa;
+        background-color: var(--main-background);
 
         @include b(850) {
           padding: 20px;
@@ -193,7 +193,7 @@
         width: 2px;
         height: 100%;
 
-        background-color: #4aa956;
+        background-color: var(--main-green);
 
         content: '';
       }
@@ -208,6 +208,10 @@
 
         margin-left: auto;
         padding-left: 30px;
+
+        li {
+          color: var(--form-bright-text-color);
+        }
 
         &:last-child {
           margin-bottom: 0;
@@ -251,7 +255,7 @@
                 height: 24px;
                 margin-left: 10px;
 
-                color: #4aa956;
+                color: var(--main-green);
                 font-weight: bold;
                 text-align: center;
 
@@ -281,7 +285,7 @@
           width: 24px;
           height: 24px;
 
-          background-color: #4aa956;
+          background-color: var(--main-green);
 
           content: '';
         }

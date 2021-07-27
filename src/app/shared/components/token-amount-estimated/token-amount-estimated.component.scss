@@ -20,7 +20,7 @@
     float: right;
     overflow: hidden;
 
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-weight: 400;
     font-size: 14px;
     text-align: right;
@@ -64,7 +64,7 @@
     flex-grow: 1;
     margin-right: 20px;
 
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-weight: 400;
     font-size: 14px;
   }

@@ -1,6 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostBinding,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 import { TuiAppearance } from '@taiga-ui/core';
 import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rubic-button',
@@ -8,7 +19,9 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
   styleUrls: ['./rubic-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RubicButtonComponent {
+export class RubicButtonComponent implements OnInit, OnDestroy {
+  @HostBinding('class') @Input('class') classList: string;
+
   @Input() appearance: TuiAppearance | string = 'primary';
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
@@ -35,7 +48,19 @@ export class RubicButtonComponent {
 
   public _disabled = false;
 
-  constructor() {}
+  public themeSubscription$: Subscription;
+
+  constructor(private readonly themeService: ThemeService) {}
+
+  public ngOnInit(): void {
+    this.themeSubscription$ = this.themeService.getTheme().subscribe(el => {
+      this.classList = el === 'dark' ? 'dark' : '';
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.themeSubscription$.unsubscribe();
+  }
 
   public buttonClick(event: Event): void {
     if (!this._disabled) {

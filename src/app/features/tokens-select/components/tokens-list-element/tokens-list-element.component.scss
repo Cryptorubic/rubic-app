@@ -4,6 +4,8 @@
   display: flex;
   align-items: center;
 
+  color: var(--form-bright-text-color);
+
   &__name-container {
     span,
     small {
