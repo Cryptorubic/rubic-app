@@ -30,6 +30,7 @@ import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -153,6 +154,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
         ) {
           this.calculateTrades();
+        }
+        if (
+          settingsForm.autoSlippageTolerance !== form.autoSlippageTolerance &&
+          form.autoSlippageTolerance
+        ) {
+          const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+          if (providerIndex !== -1) {
+            setTimeout(() => {
+              this.setSlippageTolerance(
+                this.providerControllers[providerIndex].tradeProviderInfo.value
+              );
+            });
+          }
         }
         settingsForm = form;
       });
@@ -325,12 +339,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
     this.providerControllers = newProviders;
     const currentProvider = newProviders.find(provider => provider.isSelected);
+    this.setSlippageTolerance(providerName);
 
     if (currentProvider.needApprove !== null) {
       this.tradeStatus = currentProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = currentProvider.needApprove;
+    }
+  }
+
+  private setSlippageTolerance(providerName: INSTANT_TRADES_PROVIDER) {
+    const settingsForm = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    if (settingsForm.value.autoSlippageTolerance) {
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.patchValue({
+        slippageTolerance: defaultSlippageTolerance[this.currentBlockchain][providerName]
+      });
     }
   }
 
