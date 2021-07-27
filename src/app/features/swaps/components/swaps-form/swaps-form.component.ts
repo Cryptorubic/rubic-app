@@ -68,7 +68,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  public loadingStatus: RefreshButtonStatus;
+  public loadingStatus: RefreshButtonStatus = 'stopped';
 
   private formSubscription$: Subscription;
 
