@@ -20,8 +20,10 @@
       </div>
       <tui-input-number
         id="slippageTolerance"
+        [ngModel]="slippageTolerance"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+        [ngModelOptions]="{ standalone: true }"
         [tuiTextfieldLabelOutside]="true"
-        formControlName="slippageTolerance"
         [tuiTextfieldSize]="'s'"
         [max]="50"
         [min]="0.001"
