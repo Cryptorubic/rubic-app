@@ -48,11 +48,15 @@ $white: white;
       background-color: var(--main-green);
       border-color: var(--main-green);
 
+      .provider-panel__token-usd-price,
+      .provider-panel__token-gas-fee,
       .provider-panel__right {
         color: $white;
       }
 
       .provider-panel__provider-name {
+        color: $white;
+
         background-color: var(--main-green);
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
       }
@@ -145,7 +149,6 @@ $white: white;
     flex-direction: column;
     align-items: flex-end;
 
-    color: rgba(144, 144, 144, 0.6);
     font-size: 14px;
   }
 

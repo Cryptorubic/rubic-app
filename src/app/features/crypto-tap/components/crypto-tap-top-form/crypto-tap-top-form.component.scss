@@ -1,39 +1,38 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
-$background-white: #fcfcfc;
-
 .crypto-tap-output {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   min-height: 88px;
+  padding: 20px;
 
   font-family: $sf-pro-font;
 
-  background: $background-white;
-  border-radius: 0 0 14px 14px;
-  box-shadow: 10px 10px 30px rgba(58, 95, 69, 0.1), inset 4px 4px 20px rgba(255, 255, 255, 0.5);
+  background: var(--main-background);
+
+  &__left {
+    margin-right: 20px;
+  }
 
   &__wrapper {
     display: flex;
     flex-direction: column;
 
     width: 100%;
-    padding: 0 20px;
   }
 
   &__amount {
     width: 100%;
 
-    color: #283125;
-    font-weight: 100;
+    color: var(--form-bright-text-color);
+    font-weight: 400;
     font-size: 30px;
     line-height: 36px;
     letter-spacing: 0.1em;
-
-    background: $background-white;
+    text-align: right;
   }
 
   &__right-side {
@@ -47,7 +46,7 @@ $background-white: #fcfcfc;
   &__balance {
     margin-right: 10px;
 
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-size: 14px;
     line-height: 17px;
   }
@@ -64,7 +63,7 @@ $background-white: #fcfcfc;
   white-space: nowrap;
 
   &__error-info {
-    color: #dfcb5f;
+    color: $rubic-warning;
     font-size: 18px;
     font-family: $roboto-font;
     line-height: 21px;
@@ -77,7 +76,7 @@ $background-white: #fcfcfc;
   grid-gap: 8px;
   justify-content: flex-end;
 
-  color: rgba(144, 144, 144, 0.6);
+  color: var(--form-dim-text-color);
   font-size: 14px;
   line-height: 17px;
 

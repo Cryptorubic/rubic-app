@@ -11,7 +11,7 @@
 
   text-align: right;
 
-  @include b($mobile-md) {
+  @include b($mobile-sm) {
     justify-content: flex-start;
   }
 

@@ -20,6 +20,10 @@ import BigNumber from 'bignumber.js';
 export class CryptoTapTopFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
+  @Input() tokens;
+
+  @Input() tokensLoading;
+
   public token: TokenAmount;
 
   public amount: BigNumber;
@@ -28,7 +32,7 @@ export class CryptoTapTopFormComponent implements OnInit, OnDestroy {
 
   public $fromTokenSubscription: Subscription;
 
-  constructor(private cdr: ChangeDetectorRef, private cryptoTapFormService: CryptoTapFormService) {}
+  constructor(private cdr: ChangeDetectorRef, public cryptoTapFormService: CryptoTapFormService) {}
 
   ngOnInit(): void {
     this.token = this.cryptoTapFormService.commonTrade.controls.input.value.fromToken;

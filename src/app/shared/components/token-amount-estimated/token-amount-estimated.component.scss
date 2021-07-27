@@ -51,6 +51,8 @@
     letter-spacing: 0.1em;
     scrollbar-width: none;
 
+    text-align: right;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -82,7 +84,6 @@
   .bottom-amount {
     display: flex;
     flex-direction: column;
-    padding: 7px 20px 15px;
 
     &__tokens-container {
       padding-top: 0;

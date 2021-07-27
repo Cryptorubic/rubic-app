@@ -1,66 +1,25 @@
 @import 'src/scss/vars';
 
-:host {
-  --tui-primary: var(--rubic-base-01);
-  --tui-secondary: var(--rubic-base-01);
-  --tui-primary-hover: var(--rubic-base-01);
-  --tui-secondary-hover: var(--rubic-base-01);
-  --tui-primary-active: #{$rubic-primary};
-  --tui-secondary-active: #{$rubic-primary};
+.theme-toggler {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .theme-toggle {
-    border: 1px solid var(--rubic-base-01);
+  width: 50px;
+  height: 50px;
 
-    transition: 0.3s filter ease-in-out;
+  border: 1px solid var(--rubic-base-01);
+  border-radius: 100%;
 
-    &[data-tui-host-size='l'] {
-      width: 50px;
-      height: 50px;
-    }
+  cursor: pointer;
 
-    ::ng-deep tui-wrapper {
-      background-image: url('/assets/img/icons/day.svg');
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
+  &:hover {
+    background-color: var(--rubic-base-10);
+    box-shadow: $rubic-shadow-button-hover;
+  }
 
-    &_night {
-      ::ng-deep tui-wrapper {
-        background-image: url('/assets/img/icons/night.svg');
-      }
-    }
-
-    ::ng-deep {
-      .toggle {
-        display: none;
-      }
-    }
-
-    &._hovered {
-      background-color: var(--rubic-base-01);
-      box-shadow: $rubic-shadow-button-hover;
-
-    }
-
-    &._pressed {
-      border-color: $rubic-primary;
-      background-color: $rubic-primary;
-      box-shadow: $rubic-shadow-button-active;
-
-      ::ng-deep tui-wrapper {
-        background-image: url('/assets/img/icons/day-light.svg');
-      }
-
-      &.theme-toggle_night {
-        ::ng-deep tui-wrapper {
-          background-image: url('/assets/img/icons/night-light.svg');
-        }
-      }
-    }
-
-    &._focused {
-      border-color: $rubic-primary;
-    }
+  &:focus {
+    border-color: var(--main-green);
   }
 }
 
@@ -93,6 +52,10 @@ html.dark {
 
   body {
     background: transparent;
+
+    #onramper-widget {
+      filter: invert(1) hue-rotate(180deg) opacity(0.8) contrast(0.8);
+    }
 
     .rubic-header .rubic-header__nav,
     .user-profile {
@@ -134,8 +97,6 @@ html.dark {
       height: 100%;
 
       background-image: radial-gradient(circle, var(--primary-color) 0%, rgba(black, 1) 75%);
-
-      transform: scaleX(1.2);
 
       content: '';
     }

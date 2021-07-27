@@ -1,7 +1,5 @@
-  <tui-toggle
-    class="theme-toggle"
-    [ngClass]="{ 'theme-toggle_night': isDark }"
-    [ngModel]="isDark"
-    (click)="switchTheme()"
-    [size]="'l'"
-  ></tui-toggle>
+<div class="theme-toggler" (click)="switchTheme()">
+  <img *ngIf="isDark" src="/assets/img/icons/night.svg" alt="Switch to light">
+  <img *ngIf="!isDark" src="/assets/img/icons/day.svg" alt="Switch to dark">
+</div>
+

@@ -12,6 +12,10 @@ $green: rgb(74, 169, 86);
 
   &__provider-item:first-child {
     grid-column: span 2;
+
+    @include b($mobile-sm-plus) {
+      grid-column: 1;
+    }
   }
 
   &__provider-item:not(:first-child) {
@@ -20,6 +24,10 @@ $green: rgb(74, 169, 86);
 
   &__provider-item:not(:nth-child(2n+1)):last-child {
     grid-column: span 2;
+
+    @include b($mobile-sm-plus) {
+      grid-column: 1;
+    }
 
     ::ng-deep .provider-panel__body {
       flex-direction: row;
@@ -54,11 +62,20 @@ $green: rgb(74, 169, 86);
     grid-gap: 20px;
     grid-template-columns: 1fr 1fr;
     margin-top: 30px;
+
+    @include b($mobile-sm-plus) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__body-top {
     display: flex;
     justify-content: space-between;
+
+    @include b($mobile-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   &__token-amount {

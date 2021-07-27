@@ -33,6 +33,7 @@ import { RubicTogglerThemeComponent } from 'src/app/core/header/components/heade
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { RubicRefreshButtonComponent } from 'src/app/features/swaps/components/rubic-refresh-button/rubic-refresh-button.component';
+import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -73,6 +74,7 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicTokensComponent,
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
+    SwapsHeaderComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -140,7 +142,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicTokensComponent,
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
-    AnalyticsLinkComponent
+    AnalyticsLinkComponent,
+    SwapsHeaderComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

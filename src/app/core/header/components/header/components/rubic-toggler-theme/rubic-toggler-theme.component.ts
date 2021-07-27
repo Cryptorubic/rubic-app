@@ -3,12 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
+  OnInit,
   ViewEncapsulation
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { AbstractTuiThemeSwitcher } from '@taiga-ui/cdk';
 import { DOCUMENT } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rubic-toggler-theme',
@@ -17,10 +20,13 @@ import { DOCUMENT } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class RubicTogglerThemeComponent extends AbstractTuiThemeSwitcher {
+export class RubicTogglerThemeComponent
+  extends AbstractTuiThemeSwitcher
+  implements OnInit, OnDestroy
+{
   public isDark: boolean;
 
-  public readonly themeForm: FormGroup;
+  private themeSubscription$: Subscription;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -28,7 +34,17 @@ export class RubicTogglerThemeComponent extends AbstractTuiThemeSwitcher {
     @Inject(DOCUMENT) document: Document
   ) {
     super(document);
-    this.isDark = this.themeService.isDark;
+  }
+
+  public ngOnInit(): void {
+    this.themeSubscription$ = this.themeService
+      .getTheme()
+      .subscribe(theme => (this.isDark = theme === 'dark'));
+  }
+
+  public ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.themeSubscription$.unsubscribe();
   }
 
   public switchTheme(): void {

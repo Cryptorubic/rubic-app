@@ -46,8 +46,6 @@
   .token-amount-input-container {
     position: relative;
 
-    flex-direction: column;
-    justify-content: flex-start;
     height: auto;
     padding-bottom: 20px;
   }
@@ -57,6 +55,17 @@
 
     &__user-balance-container {
       margin-top: 2px;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .token-amount-input-container {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &_input {
+      text-align: left;
     }
   }
 }

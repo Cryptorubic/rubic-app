@@ -30,6 +30,10 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CryptoTapFormComponent implements OnInit, OnDestroy {
+  public fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+
+  public toBlockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+
   public tokensLoading = true;
 
   public TRADE_STATUS = TRADE_STATUS;
@@ -83,6 +87,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       }
 
       const { toBlockchain } = this.cryptoTapFormService.commonTrade.controls.input.value;
+      this.toBlockchain = toBlockchain;
       this.cryptoTapFormService.commonTrade.controls.input.patchValue({
         toToken: tokens.to.find(token => token.blockchain === toBlockchain)
       });

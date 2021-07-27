@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainItem } from 'src/app/features/swaps/models/BlockchainItem';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
@@ -41,8 +41,12 @@ export class SwapsHeaderComponent {
   }
 
   private getIconUrl(swapType: SWAP_PROVIDER_TYPE): void {
+    const typeIcons = {
+      [SWAP_PROVIDER_TYPE.BRIDGE]: 'bridge.svg',
+      [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'it.svg',
+      [SWAP_PROVIDER_TYPE.CRYPTO_TAP]: 'ct.svg'
+    } as { [SWAP in SWAP_PROVIDER_TYPE]: string };
     const defaultPath = '/assets/images/icons/swap-types/';
-    this.iconUrl =
-      defaultPath + (swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE ? 'it.svg' : 'bridge.svg');
+    this.iconUrl = defaultPath + typeIcons[swapType];
   }
 }
