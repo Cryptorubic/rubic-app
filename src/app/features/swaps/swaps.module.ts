@@ -14,7 +14,7 @@ import {
 } from '@taiga-ui/core';
 import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
 import { SettingsContainerComponent } from 'src/app/features/swaps/components/settings-container/settings-container.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiInputModule,
   TuiInputNumberModule,
@@ -56,7 +56,8 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     TuiTextfieldControllerModule,
     InlineSVGModule,
     TuiHintModule,
-    TokensSelectModule
+    TokensSelectModule,
+    FormsModule
   ],
   entryComponents: [SettingsItComponent, SettingsBridgeComponent],
   providers: [SwapsService, InstantTradesSwapProviderService, BridgesSwapProviderService]

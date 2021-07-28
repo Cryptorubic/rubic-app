@@ -2,8 +2,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
@@ -16,7 +19,7 @@ import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constant
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -25,6 +28,9 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -39,6 +45,10 @@ interface CalculationResult {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
+  @Input() onRefreshTrade: Subject<void>;
+
+  @Output() onRefreshStatusChange = new EventEmitter<RefreshButtonStatus>();
+
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
   public get allowTrade(): boolean {
@@ -90,6 +100,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public formChangesSubscription$: Subscription;
 
+  public settingsFormSubscription$: Subscription;
+
+  public refreshTradeSubscription$: Subscription;
+
   public providerControllers: ProviderControllerData[];
 
   private currentBlockchain: BLOCKCHAIN_NAME;
@@ -107,7 +121,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly settingsService: SettingsService
   ) {
     this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
     this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -118,7 +133,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = formValue.fromAmount;
     this.currentBlockchain = formValue.toBlockchain;
     this.initiateProviders(this.currentBlockchain);
-    this.conditionalCalculate(formValue);
+    setTimeout(() => {
+      this.conditionalCalculate(formValue);
+    });
 
     this.formChangesSubscription$ =
       this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
@@ -127,11 +144,49 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
         this.setupForm(form);
       });
+
+    let settingsForm = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    this.settingsFormSubscription$ =
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(form => {
+        if (
+          (settingsForm.rubicOptimisation !== form.rubicOptimisation ||
+            settingsForm.disableMultihops !== form.disableMultihops) &&
+          this.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
+          this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
+        ) {
+          this.calculateTrades();
+        }
+        if (
+          settingsForm.autoSlippageTolerance !== form.autoSlippageTolerance &&
+          form.autoSlippageTolerance
+        ) {
+          const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+          if (providerIndex !== -1) {
+            setTimeout(() => {
+              this.setSlippageTolerance(
+                this.providerControllers[providerIndex].tradeProviderInfo.value
+              );
+            });
+          }
+        }
+        settingsForm = form;
+      });
+
+    this.refreshTradeSubscription$ = this.onRefreshTrade.subscribe(async () => {
+      if (
+        this.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
+        this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
+      ) {
+        this.calculateTrades();
+      }
+    });
   }
 
   ngOnDestroy() {
     this.cdr.detach();
     this.formChangesSubscription$.unsubscribe();
+    this.settingsFormSubscription$.unsubscribe();
+    this.refreshTradeSubscription$.unsubscribe();
   }
 
   private async conditionalCalculate(form: ControlsValue<SwapFormInput>): Promise<void> {
@@ -141,36 +196,38 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (this.unsupportedItNetworks.includes(form.toBlockchain)) {
       throw new NotSupportedItNetwork();
     }
-    await this.calculateTrades();
+    if (
+      this.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
+      this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
+    ) {
+      await this.calculateTrades();
+    }
   }
 
   public async calculateTrades(): Promise<void> {
-    try {
-      const form = this.swapFormService.commonTrade.controls.input.value;
-      if (
-        !(
-          form.fromToken &&
-          form.toToken &&
-          form.fromBlockchain &&
-          form.fromAmount &&
-          form.toBlockchain &&
-          form.fromAmount.gt(0)
-        )
-      ) {
-        return;
-      }
+    if (!this.allowTrade) {
+      return;
+    }
 
+    this.onRefreshStatusChange.emit('refreshing');
+    try {
       this.prepareControllers();
+      const providersNames = this.providerControllers.map(
+        provider => provider.tradeProviderInfo.value
+      );
       const approveData = this.authService.user?.address
-        ? await this.instantTradeService.getApprove().toPromise()
+        ? await this.instantTradeService.getApprove(providersNames).toPromise()
         : new Array(this.providerControllers.length).fill(null);
-      const tradeData = (await this.instantTradeService.calculateTrades()) as CalculationResult[];
+      const tradeData = (await this.instantTradeService.calculateTrades(
+        providersNames
+      )) as CalculationResult[];
 
       const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
       this.setupControllers(tradeData, approveData, bestProviderIndex);
     } catch (err) {
       this.errorService.catch$(err);
     }
+    this.onRefreshStatusChange.emit('stopped');
   }
 
   private prepareControllers(): void {
@@ -221,40 +278,31 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public async createTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+    if (providerIndex === -1) {
+      this.errorService.throw$(new NoSelectedProviderError());
+    }
     const provider = this.providerControllers[providerIndex];
     const currentTradeState = this.tradeStatus;
 
-    if (providerIndex !== -1) {
-      try {
-        this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-        this.providerControllers[providerIndex] = {
-          ...this.providerControllers[providerIndex],
-          tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-        };
-        this.cdr.detectChanges();
-        await this.instantTradeService.createTrade(
-          provider.tradeProviderInfo.value,
-          provider.trade
-        );
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      } catch (err) {
-        this.providerControllers[providerIndex] = {
-          ...this.providerControllers[providerIndex],
-          tradeState: INSTANT_TRADES_STATUS.ERROR
-        };
-        this.tradeStatus = currentTradeState;
-      }
-      this.providerControllers[providerIndex] = {
-        ...this.providerControllers[providerIndex],
-        tradeState: INSTANT_TRADES_STATUS.COMPLETED
-      };
-      this.tradeStatus = currentTradeState;
-      this.cdr.detectChanges();
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    this.providerControllers[providerIndex] = {
+      ...this.providerControllers[providerIndex],
+      tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+    };
+    this.cdr.detectChanges();
+    this.onRefreshStatusChange.emit('in progress');
 
-      await this.tokensService.recalculateUsersBalance();
-    } else {
-      this.errorService.throw$(new NoSelectedProviderError());
-    }
+    await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
+
+    this.providerControllers[providerIndex] = {
+      ...this.providerControllers[providerIndex],
+      tradeState: INSTANT_TRADES_STATUS.COMPLETED
+    };
+    this.tradeStatus = currentTradeState;
+    this.cdr.detectChanges();
+
+    await this.tokensService.recalculateUsersBalance();
+    this.calculateTrades();
   }
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
@@ -292,12 +340,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
     this.providerControllers = newProviders;
     const currentProvider = newProviders.find(provider => provider.isSelected);
+    this.setSlippageTolerance(providerName);
 
     if (currentProvider.needApprove !== null) {
       this.tradeStatus = currentProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = currentProvider.needApprove;
+    }
+  }
+
+  private setSlippageTolerance(providerName: INSTANT_TRADES_PROVIDER) {
+    const settingsForm = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    if (settingsForm.value.autoSlippageTolerance) {
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.patchValue({
+        slippageTolerance: defaultSlippageTolerance[this.currentBlockchain][providerName]
+      });
     }
   }
 
@@ -332,37 +390,40 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public async approveTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
-    const provider = this.providerControllers[providerIndex];
-    if (providerIndex !== -1) {
-      this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-      this.providerControllers[providerIndex] = {
-        ...this.providerControllers[providerIndex],
-        tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-      };
-      this.cdr.detectChanges();
-
-      try {
-        await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-        this.providerControllers[providerIndex] = {
-          ...this.providerControllers[providerIndex],
-          tradeState: INSTANT_TRADES_STATUS.COMPLETED,
-          needApprove: false
-        };
-        this.cdr.detectChanges();
-      } catch (err) {
-        this.providerControllers[providerIndex] = {
-          ...this.providerControllers[providerIndex],
-          tradeState: INSTANT_TRADES_STATUS.APPROVAL,
-          needApprove: true
-        };
-        this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-        this.errorService.catch$(err);
-      }
-      this.cdr.detectChanges();
-    } else {
+    if (providerIndex === -1) {
       this.errorService.catch$(new NoSelectedProviderError());
     }
+    const provider = this.providerControllers[providerIndex];
+
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+    this.providerControllers[providerIndex] = {
+      ...this.providerControllers[providerIndex],
+      tradeState: INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+    };
+    this.cdr.detectChanges();
+    this.onRefreshStatusChange.emit('in progress');
+
+    try {
+      await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
+
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.COMPLETED,
+        needApprove: false
+      };
+    } catch (err) {
+      this.errorService.catch$(err);
+
+      this.providerControllers[providerIndex] = {
+        ...this.providerControllers[providerIndex],
+        tradeState: INSTANT_TRADES_STATUS.APPROVAL,
+        needApprove: true
+      };
+      this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+    }
+    this.cdr.detectChanges();
+    this.onRefreshStatusChange.emit('stopped');
   }
 
   private async setupForm(form: ControlsValue<SwapFormInput>) {

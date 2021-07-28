@@ -16,10 +16,6 @@
     &_refreshing {
       animation: 0.9s linear 0.1s infinite refreshAnimation;
     }
-
-    &_stopped {
-      animation-iteration-count: 1;
-    }
   }
 
   &__outline-icon {

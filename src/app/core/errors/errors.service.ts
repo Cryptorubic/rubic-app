@@ -45,7 +45,6 @@ export class ErrorsService {
   }
 
   public catch$(error: RubicError): void {
-    // tslint:disable-next-line:no-console
     console.debug(error);
 
     if (error.displayError === false || error.message.includes('Attempt to use a destroyed view')) {

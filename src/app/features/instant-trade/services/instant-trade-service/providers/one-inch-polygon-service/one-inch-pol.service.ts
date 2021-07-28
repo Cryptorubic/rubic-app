@@ -66,13 +66,11 @@ export class OneInchPolService implements ItProvider {
     this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
     const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
     this.settings = {
-      ...form.value,
-      slippageTolerance: form.value.slippageTolerance / 100
+      ...form.value
     };
     form.valueChanges.subscribe(formValue => {
       this.settings = {
-        ...formValue,
-        slippageTolerance: formValue.slippageTolerance / 100
+        ...formValue
       };
     });
     this.loadSupportedTokens();
@@ -161,6 +159,7 @@ export class OneInchPolService implements ItProvider {
     const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
     return {
+      blockchain: this.blockchain,
       from: {
         token: fromToken,
         amount: fromAmount

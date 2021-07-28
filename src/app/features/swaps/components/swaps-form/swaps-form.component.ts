@@ -5,7 +5,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Subject, Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
@@ -13,7 +13,7 @@ import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/br
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -31,6 +31,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
 
   public autoRefresh: boolean;
+
+  public onRefreshTrade = new Subject<void>();
 
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
@@ -66,7 +68,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  public loadingStatus: 'refreshing' | 'stopped' | '';
+  public loadingStatus: RefreshButtonStatus = 'stopped';
 
   private formSubscription$: Subscription;
 
@@ -112,7 +114,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.settingsSubscription$ =
       this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
         this.autoRefresh = settings.autoRefresh;
-        this.itForm.calculateTrades();
       });
 
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
@@ -277,17 +278,5 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
     // Remove null control values.
     formControls.input.patchValue(revertData);
-  }
-
-  public async refreshTrade(): Promise<void> {
-    if (
-      this.itForm.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
-      this.itForm.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
-    ) {
-      this.loadingStatus = 'refreshing';
-      await this.itForm?.calculateTrades();
-      this.loadingStatus = 'stopped';
-      setTimeout(() => (this.loadingStatus = ''), 1000);
-    }
   }
 }

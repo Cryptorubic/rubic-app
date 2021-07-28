@@ -71,7 +71,8 @@
     "myTrades": "Mis Intercambios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿Deseas Cerrar Sesión?",
-    "notAvailable": "En construcción - Rediseño de UX."
+    "notAvailable": "En construcción - Rediseño de UX.",
+    "merch": "Merch shop"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
