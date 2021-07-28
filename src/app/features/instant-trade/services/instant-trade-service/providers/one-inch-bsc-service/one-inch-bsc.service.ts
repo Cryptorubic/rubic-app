@@ -71,13 +71,11 @@ export class OneInchBscService implements ItProvider {
     });
     const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
     this.settings = {
-      ...form.value,
-      slippageTolerance: form.value.slippageTolerance / 100
+      ...form.value
     };
     form.valueChanges.subscribe(formValue => {
       this.settings = {
-        ...formValue,
-        slippageTolerance: formValue.slippageTolerance / 100
+        ...formValue
       };
     });
     this.loadSupportedTokens();
