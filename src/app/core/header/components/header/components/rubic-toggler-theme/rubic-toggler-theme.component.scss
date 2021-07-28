@@ -19,14 +19,14 @@
     }
 
     ::ng-deep tui-wrapper {
-      background-image: url('/assets/img/icons/day.svg');
+      background-image: url('/assets/images/icons/day.svg');
       background-repeat: no-repeat;
       background-position: center center;
     }
 
     &_night {
       ::ng-deep tui-wrapper {
-        background-image: url('/assets/img/icons/night.svg');
+        background-image: url('/assets/images/icons/night.svg');
       }
     }
 
@@ -48,12 +48,12 @@
       box-shadow: $rubic-shadow-button-active;
 
       ::ng-deep tui-wrapper {
-        background-image: url('/assets/img/icons/day-light.svg');
+        background-image: url('/assets/images/icons/day-light.svg');
       }
 
       &.theme-toggle_night {
         ::ng-deep tui-wrapper {
-          background-image: url('/assets/img/icons/night-light.svg');
+          background-image: url('/assets/images/icons/night-light.svg');
         }
       }
     }

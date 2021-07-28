@@ -1,10 +1,5 @@
 @import './mixins';
 
-@include font-face('Josefin Sans', '/assets/fonts/JosefinSans-Regular', normal);
-@include font-face('Josefin Sans', '/assets/fonts/JosefinSans-Bold', bold);
-@include font-face('Ubuntu', '/assets/fonts/Ubuntu-Regular', normal);
-@include font-face('Ubuntu', '/assets/fonts/Ubuntu-Bold', bold);
-
 @include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Thin', 100);
 @include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Extralight', 200);
 @include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Light', 300);
