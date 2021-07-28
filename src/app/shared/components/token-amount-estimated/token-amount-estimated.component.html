@@ -18,23 +18,20 @@
     >
       <span class="bottom-amount__usd">${{ usd | bigNumberFormat: 2 }}</span>
     </div>
-
-    <div class="bottom-amount__footer">
-      <div
-        *ngIf="fee?.token"
-        class="bottom-amount__fee"
-        [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
+    <div
+      *ngIf="fee?.token"
+      class="bottom-amount__fee"
+      [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
+    >
+      <span
+        >{{ 'tradePage.providerFee' | translate }}:
+        {{ fee.amount + '&nbsp;' + fee.token.symbol }} ≈ ${{
+          fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2
+        }}</span
       >
-        <span
-          >{{ 'tradePage.providerFee' | translate }}:
-          {{ fee.amount + '&nbsp;' + fee.token.symbol }} ≈ ${{
-            fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2
-          }}</span
-        >
-      </div>
-      <div class="bottom-amount__additional-content">
-        <ng-content></ng-content>
-      </div>
+    </div>
+    <div class="bottom-amount__additional-content">
+      <ng-content></ng-content>
     </div>
   </ng-container>
 </div>

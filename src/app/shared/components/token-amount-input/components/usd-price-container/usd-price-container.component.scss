@@ -17,6 +17,10 @@
 
   &_hidden {
     visibility: hidden;
+
+    @include b($mobile-sm) {
+      display: none;
+    }
   }
 
   &__price {

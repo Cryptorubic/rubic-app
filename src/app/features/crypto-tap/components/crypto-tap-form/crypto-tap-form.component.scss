@@ -12,6 +12,7 @@
   padding: 30px 40px;
 
   background-color: var(--main-form-background);
+  border-radius: 14px;
   backdrop-filter: blur(50px);
 
   ~ *:not(:last-child) {
@@ -30,11 +31,17 @@
     justify-content: space-between;
 
     margin-bottom: 15px;
-    padding: 15px 20px 30px;
+    padding: 20px;
 
     background-color: var(--main-background);
     border-top: 1px solid var(--rubic-secondary);
     border-radius: 0 0 14px 14px;
+
+    @include b($mobile-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
   }
 
   &__title {

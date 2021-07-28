@@ -17,6 +17,10 @@
     @include b($mobile-md) {
       height: auto;
     }
+
+    @include b($mobile-sm) {
+      flex-direction: column;
+    }
   }
 
   &__footer {

@@ -10,6 +10,10 @@
   max-width: 350px;
   height: 100%;
 
+  @include b($mobile-sm) {
+    align-items: flex-start;
+  }
+
   &__form {
     display: flex;
     flex-direction: column;
@@ -53,6 +57,10 @@
 
     text-align: right;
 
+    @include b($mobile-sm) {
+      text-align: left;
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -63,20 +71,9 @@
   }
 
   &__fee {
-    flex-grow: 1;
-    margin-right: 20px;
-
     color: var(--form-dim-text-color);
     font-weight: 400;
     font-size: 14px;
-  }
-
-  &__footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
   }
 }
 
@@ -108,12 +105,6 @@
 
     &__fee {
       margin-right: 0;
-    }
-
-    &__footer {
-      flex-direction: column;
-      align-items: flex-start;
-      order: 2;
     }
   }
 }
