@@ -1,12 +1,6 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
-.lds-ellipsis-container {
-  span {
-    background: $rubic-primary;
-  }
-}
-
 .dialog-block {
   padding-top: 20px;
 

@@ -3,18 +3,12 @@
 
 /* Global scss */
 @import 'scss/vars';
-@import 'scss/grid';
 @import 'scss/typography';
 @import 'scss/mixins';
 
 /* Elements */
-@import 'scss/elements/dialog';
-@import 'scss/elements/preloader';
-@import 'scss/elements/contracts';
-@import 'scss/elements/buttons';
 @import 'scss/elements/icons';
 @import 'scss/elements/dropdown-labels';
-@import 'scss/elements/form';
 
 /* Global */
 @import 'scss/livechat';
@@ -35,9 +29,6 @@
 }
 
 html {
-  //height: auto !important;
-  //min-height: 100%;
-
   body {
     min-width: 320px;
     height: auto;
@@ -70,6 +61,7 @@ input[type=number] {
 
 button {
   cursor: pointer;
+  border: none;
 }
 
 main.main-content {
@@ -120,19 +112,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
     &:focus {
       color: inherit;
     }
-  }
-}
-
-.mat-tooltip {
-  white-space: pre-line;
-  text-align: center;
-}
-
-.bar {
-  bottom: 10px !important;
-
-  &_vertical {
-    top: 10px !important;
   }
 }
 

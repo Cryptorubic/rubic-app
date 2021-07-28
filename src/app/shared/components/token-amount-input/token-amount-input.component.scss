@@ -49,14 +49,6 @@
     height: auto;
     padding-bottom: 20px;
   }
-
-  .amount-input-container {
-    padding-right: 20px;
-
-    &__user-balance-container {
-      margin-top: 2px;
-    }
-  }
 }
 
 @include b($mobile-sm) {

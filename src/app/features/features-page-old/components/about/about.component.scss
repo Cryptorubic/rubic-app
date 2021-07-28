@@ -261,16 +261,6 @@
 
                 content: '\2022';
               }
-
-              &.done {
-                &::after {
-                  vertical-align: sub;
-
-                  background-image: url('/assets/images/icons/done.svg');
-
-                  content: '';
-                }
-              }
             }
           }
         }

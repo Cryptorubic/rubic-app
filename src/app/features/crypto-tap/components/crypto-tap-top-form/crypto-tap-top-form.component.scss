@@ -38,12 +38,6 @@
       text-align: left;
     }
   }
-
-  &__right-side {
-    align-self: flex-start;
-    width: 44%;
-    max-width: 180px;
-  }
 }
 
 .user-balance-container {
@@ -51,25 +45,6 @@
     color: var(--form-dim-text-color);
     font-size: 14px;
     line-height: 17px;
-  }
-}
-
-.right-side {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  height: 100%;
-  padding: 15px 20px;
-
-  white-space: nowrap;
-
-  &__error-info {
-    color: $rubic-warning;
-    font-size: 18px;
-    font-family: $roboto-font;
-    line-height: 21px;
-    text-align: right;
   }
 }
 
@@ -110,9 +85,5 @@
   .usd-price-container {
     align-items: flex-start;
     justify-content: flex-start;
-  }
-
-  .right-side {
-    padding: 0 20px;
   }
 }

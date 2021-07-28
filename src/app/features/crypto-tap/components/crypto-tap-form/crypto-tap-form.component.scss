@@ -54,55 +54,6 @@
   &__content {
     margin-bottom: 15px;
   }
-
-  &__settings {
-    margin-left: auto;
-
-    cursor: pointer;
-  }
-
-  &__top-part {
-    display: flex;
-
-    > *:first-child {
-      flex-grow: 1;
-
-      border-right: 2px solid var(--rubic-base-01);
-    }
-  }
-
-  &__button {
-    margin-bottom: 15px;
-  }
-
-  &__terms-and-conditions {
-    font-weight: 300;
-    font-size: 14px;
-    text-align: center;
-
-    a {
-      display: block;
-
-      color: $rubic-primary;
-      font-weight: 400;
-    }
-  }
-}
-
-.swaps-volume {
-  display: block;
-  margin-top: 35px;
-}
-
-.swaps-footer {
-  display: block;
-  margin-top: 65px;
-}
-
-.button-reloading {
-  img {
-    animation: spin 0.9s linear 2s;
-  }
 }
 
 @include b($mobile-md) {

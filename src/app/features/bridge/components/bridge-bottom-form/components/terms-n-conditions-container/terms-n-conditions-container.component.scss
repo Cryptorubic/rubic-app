@@ -5,20 +5,17 @@
   flex-direction: column;
   grid-gap: 8px;
 
+  color: var(--form-bright-text-color);
+
   font-weight: 300;
   font-size: 14px;
   text-align: center;
-  color: var(--form-bright-text-color);
 
   a {
     display: block;
 
     color: var(--form-rubic-text-color);
     font-weight: 400;
-  }
-
-  &__error {
-    color: #d82122;
   }
 
   &__address {

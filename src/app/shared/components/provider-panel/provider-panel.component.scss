@@ -168,10 +168,6 @@ $white: white;
     }
   }
 
-  &__currency {
-    margin-left: 10px;
-  }
-
   &__token-usd-price {
     margin-bottom: 10px;
 
@@ -203,28 +199,6 @@ $white: white;
         svg path {
           fill: $rubic-warning;
         }
-      }
-    }
-  }
-
-  &__collapse-toggle {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-
-    flex: 100%;
-    justify-content: center;
-    height: 25px;
-
-    transform: translateX(-50%);
-
-    ::ng-deep svg path {
-      fill: var(--main-green);
-    }
-
-    &_collapsed {
-      ::ng-deep svg {
-        transform: rotate(180deg);
       }
     }
   }
