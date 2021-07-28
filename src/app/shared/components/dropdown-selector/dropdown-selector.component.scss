@@ -18,7 +18,7 @@
     &:hover {
       color: #4aa956;
 
-      background: #f3f9f3;
+      background: var(--selection-color);
     }
 
     &:active {

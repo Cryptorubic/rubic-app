@@ -1,5 +1,7 @@
 @import 'src/scss/vars';
 
+$backgrond-black: rgb(14, 17, 14);
+
 .theme-toggler {
   display: flex;
   align-items: center;
@@ -46,9 +48,13 @@ html.dark {
 
   --tui-base-01: rgba(0, 0, 0, 0.8);
   --tui-primary: rgba(0, 0, 0, 0.8);
+  --tui-secondary: rgba(255, 255, 255, 0.5);
   --tui-text-01: var(--form-bright-text-color);
+  --tui-text-03: var(--form-dim-text-color);
 
-  background: black;
+  --selection-color: rgb(0, 0, 0, 0.5);
+
+  background-color: $backgrond-black;
 
   body {
     background: transparent;
@@ -87,20 +93,25 @@ html.dark {
       filter: invert(1) opacity(0.7) hue-rotate(180deg);
     }
 
-    tui-dialog .content {
+    tui-dropdown-box {
+      --tui-base-01: rgba(0, 0, 0, 0.5);
+
       backdrop-filter: blur(5px);
     }
 
     &::after {
       position: absolute;
       top: -50px;
+      left: calc(50% - 400px);
       z-index: -99;
 
       display: block;
-      width: 100%;
-      height: calc(100% + 50px);
+      width: 800px;
+      height: 800px;
 
-      background-image: radial-gradient(circle, var(--primary-color) 0%, rgba(black, 1) 75%);
+      background-image: radial-gradient(var(--primary-color) 0%, $backgrond-black 70%, $backgrond-black 100%);
+
+      filter: blur(50px);
 
       content: '';
     }

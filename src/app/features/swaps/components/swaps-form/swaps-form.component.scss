@@ -95,8 +95,17 @@
 
     &__settings {
       position: absolute;
-      top: 15px;
+      top: 65px;
       right: 20px;
+      z-index: 100;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .swaps-form {
+    &__settings {
+      top: 80px;
     }
   }
 }

@@ -30,10 +30,13 @@
 
 html {
   body {
+    position: relative;
+
     min-width: 320px;
     height: auto;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 
     background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
 

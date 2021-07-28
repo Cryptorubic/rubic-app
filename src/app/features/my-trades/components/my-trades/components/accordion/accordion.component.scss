@@ -92,8 +92,6 @@ tui-data-list {
 .item {
   color: #808080;
 
-  box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
-
   ::ng-deep {
     .wrapper[automation-id='tui-accordion__item-wrapper'] {
       background: transparent !important;
@@ -106,10 +104,9 @@ tui-data-list {
     .header[automation-id='tui-accordion__item-header'] {
       min-height: 88px;
 
-      background: rgba(255, 255, 255, 0.3);
+      background: var(--main-background);
       border: none;
-      box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
-      
+
       .title[automation-id='tui-accordion__item-title'] {
         overflow: visible;
       }
@@ -244,7 +241,7 @@ tui-data-list {
   align-items: center;
 
   &:not(:last-child) {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--main-background);
   }
 
   &__title {
@@ -256,7 +253,7 @@ tui-data-list {
     height: 100%;
     padding: 16px 29px;
 
-    border-right: 1px solid white;
+    border-right: 1px solid var(--main-background);
   }
 
   &__data {
