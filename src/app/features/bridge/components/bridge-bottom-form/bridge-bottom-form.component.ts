@@ -162,8 +162,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
         const minAmount = this.getMinMaxAmounts('minAmount');
         const maxAmount = this.getMinMaxAmounts('maxAmount');
-        this.maxError = this.fromAmount.gt(maxAmount) ? maxAmount : false;
-        this.minError = this.fromAmount.lt(minAmount) ? minAmount : false;
+        this.maxError = this.fromAmount?.gt(maxAmount) ? maxAmount : false;
+        this.minError = this.fromAmount?.lt(minAmount) ? minAmount : false;
 
         if (
           this.fromBlockchain !== form.fromBlockchain ||
