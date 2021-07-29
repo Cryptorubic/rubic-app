@@ -96,25 +96,22 @@ main.main-content {
   }
 }
 
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-  color: #4aa956;
+a {
+  color: var(--main-green);
   text-decoration: none;
 
   &:hover,
   &:focus {
-    color: #4aa956;
+    color: var(--main-green);
     text-decoration: underline;
   }
 }
 
 .walletconnect-modal__base {
-  a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+  a,
+  a:focus,
+  a:hover {
     color: inherit;
-
-    &:hover,
-    &:focus {
-      color: inherit;
-    }
   }
 }
 
