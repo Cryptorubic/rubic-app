@@ -5,7 +5,8 @@
       [ngClass]="{
         'tui-skeleton': _loading,
         'tui-skeleton_text': _loading,
-        'bottom-amount__tokens-container_wide': _loading
+        'bottom-amount__tokens-container_wide': _loading,
+        'bottom-amount__tokens-container_placeholder': !tokensAmount || tokensAmount === '0'
       }"
     >
       {{ tokensAmount }}

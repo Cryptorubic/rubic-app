@@ -36,7 +36,8 @@ enum ERROR_TYPE {
   TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
   NOT_SELECTED_PROVIDER = 'Provider is not selected',
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
-  MORE_THAN_MAXIMUM = 'Entered amount more than maximum'
+  MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
+  NO_AMOUNT = 'From amount was not entered'
 }
 
 @Component({
@@ -54,6 +55,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
+    this.checkNoAmountError();
     this.checkInsufficientFundsError();
   }
 
@@ -158,6 +160,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
       return this.translateService.instant('errors.chooseSupportedBridge');
     }
+    if (this.errorType[ERROR_TYPE.NO_AMOUNT]) {
+      return 'Enter amount';
+    }
     if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
       return `Minimum amount is ${this.minAmountValue}`;
     }
@@ -255,6 +260,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private checkErrors(): void {
     this.checkInsufficientFundsError();
     this.checkWrongBlockchainError();
+    this.checkNoAmountError();
   }
 
   private checkInsufficientFundsError(): void {
@@ -293,5 +299,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     } finally {
       this.status = currentStatus;
     }
+  }
+
+  private checkNoAmountError(): void {
+    this.errorType[ERROR_TYPE.NO_AMOUNT] = !this._fromAmount || this._fromAmount.eq(0);
   }
 }

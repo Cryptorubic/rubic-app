@@ -31,7 +31,7 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   constructor(private tokensSelectService: TokensSelectService) {}
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.setFormValues(this.formService.commonTrade.controls.input.value);
     this.$formSubscription = this.formService.commonTrade.controls.input.valueChanges.subscribe(
       formValue => {
@@ -40,16 +40,16 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
     );
   }
 
+  public ngOnDestroy(): void {
+    this.$formSubscription.unsubscribe();
+  }
+
   private setFormValues(formValue: ISwapFormInput): void {
     const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
     this.selectedToken = formValue[formKey];
   }
 
-  ngOnDestroy() {
-    this.$formSubscription.unsubscribe();
-  }
-
-  openTokensSelect() {
+  public openTokensSelect(): void {
     const { fromBlockchain, toBlockchain } = this.formService.commonTrade.controls.input.value;
     const [currentBlockchain, enabledCustomTokenBlockchain] =
       this.tokenType === 'from' ? [fromBlockchain, toBlockchain] : [toBlockchain, fromBlockchain];
@@ -74,7 +74,7 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
       });
   }
 
-  clearToken() {
+  public clearToken(): void {
     this.selectedToken = null;
     const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
     this.formService.commonTrade.controls.input.patchValue({ [formKey]: null });

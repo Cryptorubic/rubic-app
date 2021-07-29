@@ -28,7 +28,6 @@
       [loading]="isLoading"
       [tokens]="availableTokens['from']"
       [formService]="swapFormService"
-
     ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">
@@ -37,18 +36,13 @@
 
     <app-instant-trade-bottom-form
       *ngIf="isInstantTrade"
+      [onRefreshTrade]="onRefreshTrade"
+      (onRefreshStatusChange)="loadingStatus = $event"
       [loading]="isLoading"
       [tokens]="availableTokens['to']"
       [formService]="swapFormService"
     ></app-instant-trade-bottom-form>
 
-    <app-instant-trade-bottom-form
-      *ngIf="isInstantTrade"
-      [onRefreshTrade]="onRefreshTrade"
-      (onRefreshStatusChange)="loadingStatus = $event"
-    ></app-instant-trade-bottom-form>
-
-    <app-bridge-bottom-form *ngIf="!isInstantTrade"></app-bridge-bottom-form>
     <app-bridge-bottom-form
       *ngIf="!isInstantTrade"
       [loading]="isLoading"

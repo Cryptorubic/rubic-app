@@ -37,6 +37,10 @@
     @include b($mobile-sm) {
       text-align: left;
     }
+
+    &_placeholder {
+      color: rgb(117, 117, 117);
+    }
   }
 }
 

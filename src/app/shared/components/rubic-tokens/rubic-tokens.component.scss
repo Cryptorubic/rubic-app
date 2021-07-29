@@ -9,6 +9,10 @@
     grid-gap: 8px;
   }
 
+  &__inner-text {
+    white-space: nowrap;
+  }
+
   &__image-container {
     display: flex;
     align-items: center;

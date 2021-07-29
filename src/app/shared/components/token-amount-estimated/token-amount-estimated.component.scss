@@ -63,6 +63,10 @@
     &_wide {
       width: calc(100% - 100px);
     }
+
+    &_placeholder {
+      color: rgb(117, 117, 117);
+    }
   }
 
   &__fee {
