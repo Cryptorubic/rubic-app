@@ -15,7 +15,7 @@ import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 export class RubicTokensComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
-  @Input() tokenType: 'from' | 'to';
+  @Input() formType: 'from' | 'to';
 
   @Input() tokens: AvailableTokenAmount[];
 
@@ -45,21 +45,27 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(formValue: ISwapFormInput): void {
-    const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
     this.selectedToken = formValue[formKey];
   }
 
   public openTokensSelect(): void {
     const { fromBlockchain, toBlockchain } = this.formService.commonTrade.controls.input.value;
     const [currentBlockchain, enabledCustomTokenBlockchain] =
-      this.tokenType === 'from' ? [fromBlockchain, toBlockchain] : [toBlockchain, fromBlockchain];
+      this.formType === 'from' ? [fromBlockchain, toBlockchain] : [toBlockchain, fromBlockchain];
 
     this.tokensSelectService
-      .showDialog(of(this.tokens), currentBlockchain, enabledCustomTokenBlockchain)
+      .showDialog(
+        of(this.tokens),
+        this.formType,
+        currentBlockchain,
+        enabledCustomTokenBlockchain,
+        this.formService
+      )
       .subscribe((token: Token) => {
         if (token) {
           this.selectedToken = token;
-          if (this.tokenType === 'from') {
+          if (this.formType === 'from') {
             this.formService.commonTrade.controls.input.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
@@ -76,7 +82,7 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   public clearToken(): void {
     this.selectedToken = null;
-    const formKey = this.tokenType === 'from' ? 'fromToken' : 'toToken';
+    const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
     this.formService.commonTrade.controls.input.patchValue({ [formKey]: null });
   }
 }

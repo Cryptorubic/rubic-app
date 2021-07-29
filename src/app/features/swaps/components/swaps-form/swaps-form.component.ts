@@ -123,23 +123,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         this.autoRefresh = settings.autoRefresh;
       });
 
-    this.swapType =
-      this.swapFormService.commonTrade.controls.input.value.fromBlockchain ===
-      this.swapFormService.commonTrade.controls.input.value.toBlockchain
-        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
-        : SWAP_PROVIDER_TYPE.BRIDGE;
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
       formValue => {
         this.isLoading = true;
         this.setFormValues(formValue);
         this.isLoading = false;
-        this.fromBlockchain = formValue.fromBlockchain;
-        this.toBlockchain = formValue.toBlockchain;
-        this.swapType =
-          formValue.fromBlockchain === formValue.toBlockchain
-            ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
-            : SWAP_PROVIDER_TYPE.BRIDGE;
       }
     );
   }
@@ -151,6 +140,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private setFormValues(formValue: SwapFormInput): void {
     this.selectedFromAmount = formValue.fromAmount;
+    this.fromBlockchain = formValue.fromBlockchain;
+    this.toBlockchain = formValue.toBlockchain;
+    this.swapType =
+      formValue.fromBlockchain === formValue.toBlockchain
+        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        : SWAP_PROVIDER_TYPE.BRIDGE;
 
     if (this._supportedTokens) {
       this.setAvailableTokens('from');
@@ -242,6 +237,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.selectedToken[tokenType] ||
       (tokenType === 'from' ? formValue.fromToken : formValue.toToken);
     if (!token) {
+      this.selectedToken[tokenType] = token;
       return;
     }
 

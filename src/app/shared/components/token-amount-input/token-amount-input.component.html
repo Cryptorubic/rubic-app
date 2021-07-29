@@ -2,7 +2,7 @@
   <div class="token-amount-input-container__wrapper">
     <app-rubic-tokens
       [loading]="loading"
-      tokenType="from"
+      formType="from"
       [tokens]="tokens"
       [formService]="formService"
     ></app-rubic-tokens>
@@ -15,18 +15,18 @@
   </div>
 
   <div class="token-amount-input-container__wrapper">
-      <label class="token-amount-input-container__input-label">
-        <input
-          autocomplete="off"
-          class="token-amount-input-container__input"
-          name="token-amount"
-          [placeholder]="placeholder"
-          appTokenAmount
-          [formControl]="amountControl"
-          [decimals]="token?.decimals || DEFAULT_DECIMALS"
-          (amountChange)="emitAmountChange($event)"
-        />
-      </label>
+    <label class="token-amount-input-container__input-label">
+      <input
+        autocomplete="off"
+        class="token-amount-input-container__input"
+        name="token-amount"
+        [placeholder]="placeholder"
+        appTokenAmount
+        [formControl]="amountControl"
+        [decimals]="token?.decimals || DEFAULT_DECIMALS"
+        (amountChange)="emitAmountChange($event)"
+      />
+    </label>
 
     <app-usd-price-container [usdPrice]="getUsdPrice()"></app-usd-price-container>
   </div>

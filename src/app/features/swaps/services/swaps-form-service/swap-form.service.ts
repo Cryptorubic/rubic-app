@@ -17,9 +17,9 @@ export class SwapFormService implements FormService {
       input: new FormGroup<SwapFormInput>({
         fromBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
         toBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
-        fromToken: new FormControl<TokenAmount>(),
-        toToken: new FormControl<TokenAmount>(),
-        fromAmount: new FormControl<BigNumber>()
+        fromToken: new FormControl<TokenAmount>(null),
+        toToken: new FormControl<TokenAmount>(null),
+        fromAmount: new FormControl<BigNumber>(null)
       }),
       output: new FormGroup<SwapFormOutput>({
         toAmount: new FormControl<BigNumber>()

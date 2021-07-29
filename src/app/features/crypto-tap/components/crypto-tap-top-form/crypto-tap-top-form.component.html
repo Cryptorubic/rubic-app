@@ -2,30 +2,30 @@
   <div class="crypto-tap-output__left">
     <app-rubic-tokens
       [loading]="tokensLoading"
-      tokenType="from"
+      formType="from"
       [tokens]="tokens"
       [formService]="cryptoTapFormService"
     ></app-rubic-tokens>
     <div class="user-balance-container" *ngIf="token?.amount.gt(0)">
       <span class="user-balance-container__balance"
-      >{{ 'common.have' | translate }}
+        >{{ 'common.have' | translate }}
         {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}</span
       >
     </div>
   </div>
 
-
   <div class="crypto-tap-output__wrapper">
     <div
       class="crypto-tap-output__amount"
-      [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading, 'crypto-tap-output__amount_placeholder': !amount || amount.eq(0) }"
+      [ngClass]="{
+        'tui-skeleton': loading,
+        'tui-skeleton_text': loading,
+        'crypto-tap-output__amount_placeholder': !amount || amount.eq(0)
+      }"
     >
       {{ amount | bigNumberFormat | withRound: 'toClosestValue':token?.decimals || 18 }}
     </div>
-    <div
-      class="usd-price-container"
-      [hidden]="!getUsdPrice() || getUsdPrice().eq(0)"
-    >
+    <div class="usd-price-container" [hidden]="!getUsdPrice() || getUsdPrice().eq(0)">
       <span class="usd-price-container__price">${{ getUsdPrice() | bigNumberFormat: 2 }}</span>
     </div>
   </div>

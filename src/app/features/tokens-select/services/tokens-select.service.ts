@@ -3,9 +3,10 @@ import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TokensSelectComponent } from '../components/tokens-select/tokens-select.component';
-import { AvailableTokenAmount } from '../../../shared/models/tokens/AvailableTokenAmount';
-import { BLOCKCHAIN_NAME } from '../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Injectable()
 export class TokensSelectService {
@@ -16,8 +17,10 @@ export class TokensSelectService {
 
   showDialog(
     tokens: Observable<AvailableTokenAmount[]>,
+    formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
-    enabledCustomTokenBlockchain: BLOCKCHAIN_NAME
+    enabledCustomTokenBlockchain: BLOCKCHAIN_NAME,
+    formService: FormService
   ): Observable<TokenAmount> {
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
@@ -26,7 +29,9 @@ export class TokensSelectService {
         data: {
           tokens,
           currentBlockchain,
-          enabledCustomTokenBlockchain
+          enabledCustomTokenBlockchain,
+          formType,
+          formService
         }
       }
     );

@@ -15,6 +15,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
 
 @Component({
   selector: 'app-tokens-select',
@@ -35,13 +36,29 @@ export class TokensSelectComponent implements OnInit {
 
   private _query = '';
 
+  private readonly formType: 'from' | 'to';
+
+  private readonly formService: FormService;
+
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
 
   set blockchain(value: BLOCKCHAIN_NAME) {
-    this._blockchain = value;
-    this.updateTokensList();
+    if (value) {
+      this._blockchain = value;
+
+      const form = this.formService.commonTrade.controls.input;
+      const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
+      if (!form.value[tokenType]) {
+        const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+        form.patchValue({
+          [blockchainType]: this._blockchain
+        });
+      }
+
+      this.updateTokensList();
+    }
   }
 
   get query(): string {
@@ -59,8 +76,10 @@ export class TokensSelectComponent implements OnInit {
       AvailableTokenAmount,
       {
         tokens: Observable<AvailableTokenAmount[]>;
+        formType: 'from' | 'to';
         enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
         currentBlockchain: BLOCKCHAIN_NAME;
+        formService: FormService;
       }
     >,
     private cdr: ChangeDetectorRef,
@@ -68,7 +87,9 @@ export class TokensSelectComponent implements OnInit {
     private authService: AuthService
   ) {
     this.tokens = context.data.tokens;
+    this.formType = context.data.formType;
     this.enabledCustomTokenBlockchain = context.data.enabledCustomTokenBlockchain;
+    this.formService = context.data.formService;
     this.blockchain = context.data.currentBlockchain;
   }
 

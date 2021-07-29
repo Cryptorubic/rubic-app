@@ -22,6 +22,7 @@ import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -30,6 +31,8 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CryptoTapFormComponent implements OnInit, OnDestroy {
+  public swapType = SWAP_PROVIDER_TYPE.CRYPTO_TAP;
+
   public fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
   public toBlockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
