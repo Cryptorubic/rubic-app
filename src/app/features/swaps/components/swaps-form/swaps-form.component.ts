@@ -5,7 +5,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Subject, Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
@@ -15,6 +15,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -32,6 +33,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
 
   public autoRefresh: boolean;
+
+  public onRefreshTrade = new Subject<void>();
 
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
@@ -67,7 +70,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  public loadingStatus: 'refreshing' | 'stopped' | '';
+  public loadingStatus: RefreshButtonStatus = 'stopped';
 
   private formSubscription$: Subscription;
 
@@ -119,7 +122,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.settingsSubscription$ =
       this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
         this.autoRefresh = settings.autoRefresh;
-        this.itForm.calculateTrades();
       });
 
     this.swapType =
@@ -268,8 +270,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
+    return this.swapsService.getMinMaxAmounts(amountType);
+  }
+
   public onTokenInputAmountChange(amount: string): void {
-    if (!this.selectedFromAmount?.eq(amount)) {
+    if ((this.selectedFromAmount || amount) && !this.selectedFromAmount?.eq(amount)) {
       this.swapFormService.commonTrade.controls.input.patchValue({
         fromAmount: new BigNumber(amount)
       });
@@ -291,17 +297,5 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
     // Remove null control values.
     formControls.input.patchValue(revertData);
-  }
-
-  public async refreshTrade(): Promise<void> {
-    if (
-      this.itForm.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
-      this.itForm.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
-    ) {
-      this.loadingStatus = 'refreshing';
-      await this.itForm?.calculateTrades();
-      this.loadingStatus = 'stopped';
-      setTimeout(() => (this.loadingStatus = ''), 1000);
-    }
   }
 }

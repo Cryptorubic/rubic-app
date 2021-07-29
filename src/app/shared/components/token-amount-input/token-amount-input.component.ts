@@ -42,7 +42,7 @@ export class TokenAmountInputComponent {
 
   @Output() amountChange = new EventEmitter<string>();
 
-  public readonly DEFAULT_DECIMALS = 8;
+  public readonly DEFAULT_DECIMALS = 18;
 
   public amountControl = new FormControl('');
 

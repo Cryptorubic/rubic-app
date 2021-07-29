@@ -71,7 +71,8 @@
     "myTrades": "내 거래",
     "logout": "로그 아웃",
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
-    "notAvailable": "공사중-UX 재 설계."
+    "notAvailable": "공사중-UX 재 설계.",
+    "merch": "Merch shop"
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",

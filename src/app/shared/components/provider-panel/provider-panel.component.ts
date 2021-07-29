@@ -7,6 +7,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 
 export interface InstantTrade<T> {
+  blockchain: BLOCKCHAIN_NAME;
   from: {
     token: T;
     amount: BigNumber;

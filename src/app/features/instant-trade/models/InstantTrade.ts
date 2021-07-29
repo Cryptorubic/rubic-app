@@ -1,18 +1,21 @@
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface InstantTrade {
+  blockchain: BLOCKCHAIN_NAME;
+
   from: {
     token: InstantTradeToken;
     /**
-     * Amount of input in absolute token units (WITHOUT decimals)
+     * Amount of input (WITH decimals)
      */
     amount: BigNumber;
   };
   to: {
     token: InstantTradeToken;
     /**
-     * Amount of output without slippage in absolute token units (WITHOUT decimals)
+     * Amount of output without slippage (WITH decimals)
      */
     amount: BigNumber;
   };

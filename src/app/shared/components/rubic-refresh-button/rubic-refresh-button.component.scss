@@ -1,0 +1,64 @@
+@import 'src/scss/vars';
+
+.refresh-button {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  cursor: pointer;
+
+  img {
+    width: 12px;
+    height: 12px;
+  }
+
+  &__icon {
+    &_refreshing {
+      animation: 0.9s linear 0.1s infinite refreshAnimation;
+    }
+  }
+
+  &__outline-icon {
+    position: absolute;
+    z-index: -1;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  &__timer {
+    display: block;
+
+    transform-origin: 50% 50%;
+
+    animation: linear infinite timerAnimation;
+
+    fill: transparent;
+    stroke: $rubic-primary;
+    stroke-linecap: round;
+    stroke-dasharray: 140;
+    stroke-dashoffset: 140;
+    stroke-width: 2px;
+
+    &_stoped {
+      stroke-dashoffset: 0;
+    }
+  }
+}
+
+@keyframes refreshAnimation {
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes timerAnimation {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

@@ -460,7 +460,7 @@ export class CommonUniswapService {
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toFixed()
         );
       }
     } else {
@@ -469,13 +469,11 @@ export class CommonUniswapService {
         trade.from.token.address
       );
       if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance
-          .div(10 ** trade.from.token.decimals)
-          .toString();
+        const formattedTokensBalance = tokensBalance.div(10 ** trade.from.token.decimals).toFixed();
         throw new InsufficientFundsError(
           trade.from.token.symbol,
           formattedTokensBalance,
-          trade.from.amount.toString()
+          trade.from.amount.toFixed()
         );
       }
     }

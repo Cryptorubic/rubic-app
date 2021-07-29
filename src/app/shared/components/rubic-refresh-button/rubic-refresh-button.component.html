@@ -1,0 +1,24 @@
+<div class="refresh-button" (click)="onRefresh.emit()">
+  <img
+    class="refresh-icon"
+    src="assets/images/icons/reload.svg"
+    width="18"
+    height="18"
+    alt="Reload"
+    #refreshIcon
+  />
+  <svg
+    *ngIf="autoUpdate && status === 'stopped'"
+    class="refresh-button__outline-icon"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      class="refresh-button__timer"
+      [ngStyle]="{ 'animation-duration': refreshTimeout + 's' }"
+      cx="25"
+      cy="25"
+      r="20"
+      transform="rotate(-90)"
+    />
+  </svg>
+</div>

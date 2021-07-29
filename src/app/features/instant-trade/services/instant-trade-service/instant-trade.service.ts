@@ -14,11 +14,9 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/pancake-swap-service/pancake-swap.service';
-import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-bsc-service/one-inch-bsc.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesPostApi';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TranslateService } from '@ngx-translate/core';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
@@ -31,9 +29,15 @@ import CustomError from 'src/app/core/errors/models/custom-error';
   providedIn: 'root'
 })
 export class InstantTradeService {
-  private blockchainsProviders;
-
-  private currentBlockchain: BLOCKCHAIN_NAME;
+  private blockchainsProviders: Partial<
+    {
+      [blockchain in BLOCKCHAIN_NAME]: Partial<
+        {
+          [provider in INSTANT_TRADES_PROVIDER]: ItProvider;
+        }
+      >;
+    }
+  >;
 
   private modalShowing: Subscription;
 
@@ -56,114 +60,11 @@ export class InstantTradeService {
     private readonly web3Public: Web3PublicService,
     private translateService: TranslateService
   ) {
-    this.currentBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.setBlockchainsProviders();
-    this.swapFormService.itProviders.subscribe(providers => {
-      this.blockchainsProviders = providers;
-    });
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
-      if (form.fromBlockchain === form.toBlockchain) {
-        this.currentBlockchain = form.fromBlockchain;
-      }
-    });
-  }
-
-  public async calculateTrades(): Promise<PromiseSettledResult<InstantTrade>[]> {
-    const { fromAmount, fromToken, toToken } =
-      this.swapFormService.commonTrade.controls.input.value;
-    const providersDataPromises = Object.values(
-      this.blockchainsProviders[this.currentBlockchain]
-    ).map(async (provider: ItProvider) => provider.calculateTrade(fromAmount, fromToken, toToken));
-    return Promise.allSettled(providersDataPromises);
-  }
-
-  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
-    try {
-      let tradeInfo;
-      const receipt = await this.blockchainsProviders[this.currentBlockchain][provider].createTrade(
-        trade,
-        {
-          onConfirm: async hash => {
-            if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
-              tradeInfo = {
-                hash,
-                network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain],
-                provider,
-                from_token: trade.from.token.address,
-                to_token: trade.to.token.address,
-                from_amount: Web3PublicService.amountToWei(
-                  trade.from.amount,
-                  trade.from.token.decimals
-                ),
-                to_amount: Web3PublicService.amountToWei(trade.to.amount, trade.to.token.decimals)
-              };
-            } else {
-              tradeInfo = {
-                hash,
-                provider,
-                network: TO_BACKEND_BLOCKCHAINS[this.currentBlockchain]
-              };
-            }
-            await this.postTrade(tradeInfo);
-            this.modalShowing = this.notificationsService
-              .show(this.translateService.instant('notifications.tradeInProgress'), {
-                status: TuiNotification.Info,
-                autoClose: false
-              })
-              .subscribe();
-          }
-        }
-      );
-      this.modalShowing.unsubscribe();
-      this.updateTrade(receipt.transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
-      this.notificationsService
-        .show(this.translateService.instant('notifications.successfulTradeTitle'), {
-          status: TuiNotification.Success
-        })
-        .subscribe();
-      try {
-        await this.instantTradesApiService.notifyInstantTradesBot({
-          provider,
-          blockchain: this.currentBlockchain,
-          walletAddress: receipt.from,
-          trade,
-          txHash: receipt.transactionHash
-        });
-      } catch (err) {
-        const error = new CustomError('Notify Instant Trade bot failed');
-        error.displayError = false;
-        throw error;
-      }
-    } catch (err) {
-      if (err instanceof TransactionRevertedError) {
-        console.error(err);
-      } else {
-        this.errorService.catch$(err);
-      }
-    } finally {
-      if (this.modalShowing) {
-        this.modalShowing.unsubscribe();
-      }
-    }
-  }
-
-  public async postTrade(data: InstantTradesPostApi) {
-    const web3Public = this.web3Public[this.currentBlockchain];
-    await web3Public.getTransactionByHash(data.hash, 0, 60, 1000);
-    timer(1000)
-      .pipe(switchMap(() => this.instantTradesApiService.createTrade(data)))
-      .subscribe();
-  }
-
-  public updateTrade(hash: string, status: INSTANT_TRADES_TRADE_STATUS) {
-    return this.instantTradesApiService.patchTrade(hash, status).subscribe({
-      // tslint:disable-next-line:no-console
-      error: err => console.debug('IT patch request is failed', err)
-    });
   }
 
   private setBlockchainsProviders(): void {
-    this.swapFormService.setItProviders({
+    this.blockchainsProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapService,
@@ -179,25 +80,116 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.QUICKSWAP]: this.quickSwapService,
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapPolygonService
       }
+    };
+  }
+
+  public async calculateTrades(
+    providersNames: INSTANT_TRADES_PROVIDER[]
+  ): Promise<PromiseSettledResult<InstantTrade>[]> {
+    const { fromAmount, fromToken, toToken, fromBlockchain } =
+      this.swapFormService.commonTrade.controls.input.value;
+    const providers = providersNames.map(
+      providerName => this.blockchainsProviders[fromBlockchain][providerName]
+    );
+    const providersDataPromises = providers.map(async (provider: ItProvider) =>
+      provider.calculateTrade(fromAmount, fromToken, toToken)
+    );
+    return Promise.allSettled(providersDataPromises);
+  }
+
+  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
+    try {
+      const receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
+        trade,
+        {
+          onConfirm: async hash => {
+            this.modalShowing = this.notificationsService
+              .show(this.translateService.instant('notifications.tradeInProgress'), {
+                status: TuiNotification.Info,
+                autoClose: false
+              })
+              .subscribe();
+
+            await this.postTrade(hash, provider, trade);
+          }
+        }
+      );
+
+      this.modalShowing.unsubscribe();
+      this.updateTrade(receipt.transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
+      this.notificationsService
+        .show(this.translateService.instant('notifications.successfulTradeTitle'), {
+          status: TuiNotification.Success
+        })
+        .subscribe();
+
+      await this.instantTradesApiService
+        .notifyInstantTradesBot({
+          provider,
+          blockchain: trade.blockchain,
+          walletAddress: receipt.from,
+          trade,
+          txHash: receipt.transactionHash
+        })
+        .catch(_err => {
+          const error = new CustomError('Notify Instant Trade bot failed');
+          error.displayError = false;
+          throw error;
+        });
+    } catch (err) {
+      this.modalShowing?.unsubscribe();
+
+      if (err instanceof TransactionRevertedError) {
+        console.error(err);
+      } else {
+        this.errorService.catch$(err);
+      }
+    }
+  }
+
+  private async postTrade(hash: string, provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade) {
+    const web3Public = this.web3Public[trade.blockchain];
+    await web3Public.getTransactionByHash(hash, 0, 60, 1000);
+    timer(1000)
+      .pipe(
+        switchMap(() =>
+          this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
+        )
+      )
+      .subscribe();
+  }
+
+  private updateTrade(hash: string, status: INSTANT_TRADES_TRADE_STATUS) {
+    return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+      error: err => console.debug('IT patch request is failed', err)
     });
   }
 
-  public needApprove(): Observable<boolean> {
-    const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
-    const providerApproveData = Object.values(
-      this.blockchainsProviders[this.currentBlockchain]
-    ).map((provider: ItProvider) => provider.getAllowance(fromToken.address));
+  public getApprove(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<boolean[]> | never {
+    const { fromToken, fromAmount, fromBlockchain } =
+      this.swapFormService.commonTrade.controls.input.value;
+    const providers = providersNames.map(
+      providerName => this.blockchainsProviders[fromBlockchain][providerName]
+    );
+    const providerApproveData = providers.map((provider: ItProvider) =>
+      provider.getAllowance(fromToken.address).pipe(
+        catchError(err => {
+          console.debug(err);
+          return of(null);
+        })
+      )
+    );
 
     return forkJoin(providerApproveData).pipe(
       map((approveArray: BigNumber[]) => {
-        return approveArray.some(el => fromAmount.gt(el));
+        return approveArray.map(el => fromAmount.gt(el));
       })
     );
   }
 
   public async approve(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
-      await (this.blockchainsProviders[this.currentBlockchain][provider] as ItProvider).approve(
+      await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
         {
           onTransactionHash: () => {
@@ -217,29 +209,8 @@ export class InstantTradeService {
         })
         .subscribe();
     } catch (err) {
-      if (this.modalShowing) {
-        this.modalShowing.unsubscribe();
-      }
+      this.modalShowing?.unsubscribe();
       throw err;
     }
-  }
-
-  public getApprove(): Observable<boolean[]> | never {
-    const { fromToken, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
-    const providers = Object.values(this.blockchainsProviders[this.currentBlockchain]);
-    const providerApproveData = providers.map((provider: ItProvider) =>
-      provider.getAllowance(fromToken.address).pipe(
-        catchError(err => {
-          console.debug(err);
-          return of(null);
-        })
-      )
-    );
-
-    return forkJoin(providerApproveData).pipe(
-      map((approveArray: BigNumber[]) => {
-        return approveArray.map(el => fromAmount.gt(el));
-      })
-    );
   }
 }

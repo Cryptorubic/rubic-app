@@ -20,7 +20,8 @@ export default [
     id: 56,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://old-spring-bird.bsc.quiknode.pro/4b21f182bb32c5addb6385834400044da34d44f8/',
+    rpcLink:
+      'https://damp-old-resonance.bsc.quiknode.pro/6b8be73cc041a07be145ddec1954fe3d6f21248d/',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -33,7 +34,7 @@ export default [
   {
     id: 137,
     name: BLOCKCHAIN_NAME.POLYGON,
-    scannerUrl: 'https://explorer-mainnet.maticvigil.com/',
+    scannerUrl: 'https://polygonscan.com',
     rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {

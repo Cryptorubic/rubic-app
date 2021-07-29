@@ -292,7 +292,7 @@ export class BridgeService {
 
     const amountInWei = amount.multipliedBy(10 ** decimals);
     if (balance.lt(amountInWei)) {
-      const formattedTokensBalance = balance.div(10 ** decimals).toString();
+      const formattedTokensBalance = balance.div(10 ** decimals).toFixed();
       throw new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed());
     }
   }
