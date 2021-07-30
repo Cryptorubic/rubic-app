@@ -10,12 +10,13 @@ $backgrond-black: rgb(14, 17, 14);
   width: 50px;
   height: 50px;
 
+  border: 1px solid var(--rubic-base-01);
   border-radius: 100%;
 
   cursor: pointer;
 
   &:hover {
-    background-color: var(--rubic-base-10);
+    background-color: var(--rubic-base-01);
     box-shadow: $rubic-shadow-button-hover-dim;
   }
 
