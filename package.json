@@ -6,15 +6,17 @@
     "start-with-no-reload": "ng serve --proxy-config proxy.conf.json --host local.rubic.exchange --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --no-live-reload",
     "ng": "ng",
     "postinstall": "node patch-webpack.js",
+    "build": "ng build --prod",
     "build:dev": "ng build",
     "build:dev2": "ng build --configuration dev2",
-    "build": "ng build --prod",
+    "build:analyze": "ng build --stats-json && webpack-bundle-analyzer dist/rubic/stats.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "lint-css": "stylelint '**/*.scss'",
     "pre-commit": "npx lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "unused-css": "ngx-unused-css"
   },
   "private": true,
   "dependencies": {
@@ -97,6 +99,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.6.0",
     "lint-staged": "^10.5.4",
+    "ngx-unused-css": "^3.0.0",
     "prettier": "^2.3.0",
     "protractor": "~7.0.0",
     "stylelint": "^13.13.1",
@@ -106,6 +109,7 @@
     "stylelint-scss": "^3.19.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.1.5"
+    "typescript": "~4.1.5",
+    "webpack-bundle-analyzer": "^4.4.2"
   }
 }

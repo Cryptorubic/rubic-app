@@ -22,6 +22,7 @@ import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -30,6 +31,12 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CryptoTapFormComponent implements OnInit, OnDestroy {
+  public swapType = SWAP_PROVIDER_TYPE.CRYPTO_TAP;
+
+  public fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+
+  public toBlockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+
   public tokensLoading = true;
 
   public TRADE_STATUS = TRADE_STATUS;
@@ -48,15 +55,17 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public $userSubscription: Subscription;
 
-  public blockchainsListFrom = blockchainsList.filter(
-    blockchain => blockchain.symbol === BLOCKCHAIN_NAME.ETHEREUM
-  );
+  public blockchainsListFrom = blockchainsList
+    .filter(blockchain => blockchain.symbol === BLOCKCHAIN_NAME.ETHEREUM)
+    .map(blockchain => blockchain.symbol);
 
-  public blockchainsListTo = blockchainsList.filter(
-    blockchain =>
-      blockchain.symbol === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
-      blockchain.symbol === BLOCKCHAIN_NAME.POLYGON
-  );
+  public blockchainsListTo = blockchainsList
+    .filter(
+      blockchain =>
+        blockchain.symbol === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
+        blockchain.symbol === BLOCKCHAIN_NAME.POLYGON
+    )
+    .map(blockchain => blockchain.symbol);
 
   public availableTokens: FromToAvailableTokens = {
     from: [],
@@ -83,6 +92,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       }
 
       const { toBlockchain } = this.cryptoTapFormService.commonTrade.controls.input.value;
+      this.toBlockchain = toBlockchain;
       this.cryptoTapFormService.commonTrade.controls.input.patchValue({
         toToken: tokens.to.find(token => token.blockchain === toBlockchain)
       });

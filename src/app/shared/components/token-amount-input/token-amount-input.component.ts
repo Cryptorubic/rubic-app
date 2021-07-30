@@ -4,13 +4,13 @@ import {
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
-  OnChanges,
-  SimpleChanges,
   ChangeDetectorRef
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -19,7 +19,13 @@ import { TokenAmount } from '../../models/tokens/TokenAmount';
   styleUrls: ['./token-amount-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnChanges {
+export class TokenAmountInputComponent {
+  @Input() loading: boolean;
+
+  @Input() tokens: AvailableTokenAmount[];
+
+  @Input() formService: FormService;
+
   @Input() placeholder = '0.0';
 
   @Input() token?: TokenAmount;
@@ -34,10 +40,6 @@ export class TokenAmountInputComponent implements OnChanges {
     return new BigNumber(this.amountControl.value.split(',').join('') || 0);
   }
 
-  @Input() minAmount?: number;
-
-  @Input() maxAmount?: number;
-
   @Output() amountChange = new EventEmitter<string>();
 
   public readonly DEFAULT_DECIMALS = 18;
@@ -45,12 +47,6 @@ export class TokenAmountInputComponent implements OnChanges {
   public amountControl = new FormControl('');
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.minAmount || changes.maxAmount) {
-      this.cdr.markForCheck();
-    }
-  }
 
   public onUserBalanceMaxButtonClick(): void {
     const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);

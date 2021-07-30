@@ -1,7 +1,6 @@
 <div class="faq-container">
-  <h2 class="title-section">{{ 'faqPage.title' | translate }}</h2>
-
   <div class="questions-container">
+    <h2 class="title-section">{{ 'faqPage.title' | translate }}</h2>
     <div
       *ngFor="let question of questions"
       [ngClass]="{ 'questions-container__question_active': question.isActive }"

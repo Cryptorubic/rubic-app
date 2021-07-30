@@ -1,0 +1,25 @@
+@import 'src/scss/vars';
+
+.terms-and-conditions {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 8px;
+  margin-top: 16px;
+
+  color: var(--form-bright-text-color);
+
+  font-weight: 300;
+  font-size: 14px;
+  text-align: center;
+
+  a {
+    display: block;
+
+    color: var(--form-rubic-text-color);
+    font-weight: 400;
+  }
+
+  &__address {
+    word-break: break-all;
+  }
+}

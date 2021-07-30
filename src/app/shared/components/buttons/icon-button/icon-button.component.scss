@@ -2,16 +2,17 @@
 
 :host {
   --tui-primary-text: #{$rubic-primary};
-  --tui-primary: white;
+  --tui-primary: var(--main-background);
   --tui-disabled-opacity: 1;
 
   ::ng-deep tui-wrapper {
     &[data-state='hovered'] {
-      background: $grey-background;
+      background-color: var(--rubic-secondary);
     }
 
     &[data-state='pressed'] {
-      background: $text-gray;
+      background: var(--rubic-secondary);
+      box-shadow: $main-shadow;
     }
 
     img {
@@ -19,9 +20,8 @@
       max-height: 27px;
     }
   }
-
 }
 
 .bordered {
-  border: 2px solid $rubic-primary;
+  border: 2px solid var(--main-green);
 }

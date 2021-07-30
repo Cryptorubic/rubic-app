@@ -7,6 +7,7 @@
       [disabled]="disabled"
       (onClick)="openTokensSelect()"
       [tuiHint]="(selectedToken && !disabled) ? tooltip : null"
+      [appearance]="selectedToken ? 'primary' : 'secondary'"
     >
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner">
@@ -23,9 +24,7 @@
           </div>
         </div>
       </ng-container>
-      <span *ngIf="!selectedToken">
-        {{ 'common.chooseToken' | translate }}
-      </span>
+      <span class="tokens__inner-text" *ngIf="!selectedToken">{{ 'common.chooseToken' | translate }}</span>
     </app-rubic-button>
     <a
       [hidden]="!selectedToken"

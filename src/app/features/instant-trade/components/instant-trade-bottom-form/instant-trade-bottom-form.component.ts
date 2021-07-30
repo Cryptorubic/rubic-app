@@ -31,6 +31,9 @@ import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INS
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -49,6 +52,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() onRefreshStatusChange = new EventEmitter<RefreshButtonStatus>();
 
+  @Input() loading: boolean;
+
+  @Input() tokens: AvailableTokenAmount[];
+
+  @Input() formService: FormService;
+
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
   public get allowTrade(): boolean {
@@ -61,10 +70,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         form.fromAmount &&
         form.fromAmount.gt(0)
     );
-  }
-
-  public get isProviderSelected(): boolean {
-    return !this.providerControllers.some(el => el.isSelected);
   }
 
   get tokenInfoUrl(): string {
@@ -81,6 +86,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
+
+  public selectedProvider: ProviderControllerData;
 
   get orderedProviders(): ProviderControllerData[] {
     if (
@@ -114,6 +121,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
+  private currentFromToken: TokenAmount;
+
+  private currentToToken: TokenAmount;
+
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
@@ -132,6 +143,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const formValue = this.swapFormService.commonTrade.controls.input.value;
     this.fromAmount = formValue.fromAmount;
     this.currentBlockchain = formValue.toBlockchain;
+    this.currentFromToken = formValue.fromToken;
+    this.currentToToken = formValue.toToken;
     this.initiateProviders(this.currentBlockchain);
     setTimeout(() => {
       this.conditionalCalculate(formValue);
@@ -140,8 +153,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.formChangesSubscription$ =
       this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
         this.fromAmount = form.fromAmount;
+        if (
+          !form.fromToken ||
+          !form.toToken ||
+          form.fromToken.blockchain !== this.currentFromToken?.blockchain
+        ) {
+          this.selectedProvider = null;
+        }
+        this.currentFromToken = formValue.fromToken;
         this.cdr.detectChanges();
-
         this.setupForm(form);
       });
 
@@ -260,6 +280,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }));
     if (tradeData[bestProviderIndex].value && tradeData[bestProviderIndex].status !== 'rejected') {
       newProviders[bestProviderIndex].isBestRate = true;
+
+      if (!newProviders.some(el => el.isSelected)) {
+        newProviders[bestProviderIndex].isSelected = true;
+        this.selectedProvider = newProviders[bestProviderIndex];
+      }
     }
 
     this.providerControllers = newProviders;
@@ -341,6 +366,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.providerControllers = newProviders;
     const currentProvider = newProviders.find(provider => provider.isSelected);
     this.setSlippageTolerance(providerName);
+    this.selectedProvider = currentProvider;
 
     if (currentProvider.needApprove !== null) {
       this.tradeStatus = currentProvider.needApprove
@@ -444,5 +470,17 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     } catch (err) {
       this.errorService.catch$(err);
     }
+  }
+
+  public getUsdPrice(): string {
+    return this.selectedProvider.trade.to.amount
+      .multipliedBy(this.selectedProvider.trade.to.token.price)
+      .toFixed(2);
+  }
+
+  private clearSelection(): void {
+    this.selectedProvider = null;
+    this.providerControllers = this.providerControllers.map(el => ({ ...el, isSelected: false }));
+    this.cdr.detectChanges();
   }
 }

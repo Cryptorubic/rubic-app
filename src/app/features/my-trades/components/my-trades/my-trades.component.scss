@@ -11,11 +11,8 @@
 
   font-family: $sf-pro-font;
 
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 19px;
-  box-shadow: -30px -30px 80px rgba(255, 255, 255, 0.3),
-    30px 30px 80px rgba(139, 85, 116, 0.1),
-    inset 4px 4px 20px rgba(255, 255, 255, 0.5);
+  background: var(--main-form-background);
+  border-radius: 14px;
   backdrop-filter: blur(24px);
 
   &__table-container {
@@ -30,7 +27,7 @@
   align-items: center;
 
   &__title {
-    color: #283125;
+    color: var(--form-bright-text-color);
     font-weight: 200;
     font-size: 24px;
     line-height: 29px;
@@ -53,7 +50,7 @@
 tui-loader {
   ::ng-deep {
     .loader {
-      stroke: $rubic-primary;
+      stroke: var(--main-green);
     }
   }
 }
