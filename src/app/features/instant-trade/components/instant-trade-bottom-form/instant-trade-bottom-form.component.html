@@ -1,38 +1,36 @@
 <div class="instant-trade-bottom-form">
-  <main class="instant-trade-bottom-form__body">
-    <div class="instant-trade-bottom-form__body-top">
-      <div class="instant-trade-bottom-form__left-part">
-        <app-rubic-tokens
-          [loading]="loading"
-          formType="to"
-          [tokens]="tokens"
-          [formService]="formService"
-        ></app-rubic-tokens>
-        <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
-          Trade Via {{ selectedProvider.tradeProviderInfo.label }}
+    <main class="instant-trade-bottom-form__body">
+      <div class="instant-trade-bottom-form__body-top">
+        <div class="instant-trade-bottom-form__left-part">
+          <app-rubic-tokens
+            [loading]="loading"
+            formType="to"
+            [tokens]="tokens"
+            [formService]="formService"
+          ></app-rubic-tokens>
+          <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
+            {{ 'common.tradeVia' | translate }} {{ selectedProvider.tradeProviderInfo.label }}
+          </div>
+        </div>
+        <div *ngIf="selectedProvider" class="instant-trade-bottom-form__amount">
+          <div class="instant-trade-bottom-form__token-amount">{{ selectedProvider.trade.to.amount }}</div>
+          <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
         </div>
       </div>
-      <div *ngIf="selectedProvider" class="instant-trade-bottom-form__amount">
-        <div class="instant-trade-bottom-form__token-amount">
-          {{ selectedProvider.trade.to.amount }}
+      <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">
+        <div
+          class="instant-trade-bottom-form__provider-item"
+          *ngFor="let provider of orderedProviders; let i = index"
+        >
+          <app-provider-panel
+            [providerControllerData]="provider"
+            (selectProvider)="selectProvider(provider.tradeProviderInfo.value)"
+            [providerIndex]="i"
+          ></app-provider-panel>
         </div>
-        <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
       </div>
-    </div>
-    <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">
-      <div
-        class="instant-trade-bottom-form__provider-item"
-        *ngFor="let provider of orderedProviders; let i = index"
-      >
-        <app-provider-panel
-          [providerControllerData]="provider"
-          (selectProvider)="selectProvider(provider.tradeProviderInfo.value)"
-          [providerIndex]="i"
-        ></app-provider-panel>
-      </div>
-    </div>
-  </main>
-  <footer class="instant-trade-bottom-form__footer"></footer>
+    </main>
+    <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
   <app-analytics-link [tokenInfoUrl]="tokenInfoUrl"></app-analytics-link>
@@ -44,6 +42,5 @@
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (loginEvent)="calculateTrades()"
-    [providerError]="isProviderSelected"
   ></app-swap-button>
 </div>

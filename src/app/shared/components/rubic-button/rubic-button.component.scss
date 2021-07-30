@@ -54,6 +54,10 @@
       border: 0;
     }
 
+    &._with-dropdown:focus {
+      background-color: inherit;
+    }
+
     &._disabled {
       border: 0;
 

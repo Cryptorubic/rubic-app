@@ -82,7 +82,7 @@ export class CommonUniswapService {
             SWAP_METHOD.TOKENS_TO_TOKENS,
             [amountIn, amountOutMin, path, walletAddress, deadline],
             walletAddress
-          );
+          )
         }
       }
 

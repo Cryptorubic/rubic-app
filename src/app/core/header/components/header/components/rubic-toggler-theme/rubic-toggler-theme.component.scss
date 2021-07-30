@@ -36,7 +36,7 @@ html.dark {
 
   --rubic-secondary: rgba(106, 111, 107, 0.8);
 
-  --form-bright-text-color: rgb(255, 255, 255);
+  --form-bright-text-color: rgba(255, 255, 255, 0.9);
   --form-bright-reversed-text-color: rgb(0, 0, 0);
 
   --rubic-base-01: rgb(0, 0, 0);
@@ -47,9 +47,11 @@ html.dark {
   --rubic-base-13: rgba(0, 0, 0, 0.35);
 
   --tui-base-01: rgba(0, 0, 0, 0.8);
+  --tui-base-02: init;
   --tui-primary: rgba(0, 0, 0, 0.8);
   --tui-secondary: rgba(255, 255, 255, 0.5);
   --tui-text-01: var(--form-bright-text-color);
+  --tui-text-02: var(--form-dim-text-color);
   --tui-text-03: var(--form-dim-text-color);
 
   --selection-color: rgb(0, 0, 0, 0.5);
@@ -64,7 +66,7 @@ html.dark {
     }
 
     #onramper-widget {
-      filter: invert(1) hue-rotate(180deg) opacity(0.8) contrast(0.8);
+      filter: invert(1) hue-rotate(180deg) opacity(0.8) contrast(0.95);
     }
 
     .rubic-header .rubic-header__nav,

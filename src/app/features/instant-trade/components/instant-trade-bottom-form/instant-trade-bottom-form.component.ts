@@ -33,6 +33,7 @@ import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-but
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -69,10 +70,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         form.fromAmount &&
         form.fromAmount.gt(0)
     );
-  }
-
-  public get isProviderSelected(): boolean {
-    return !this.providerControllers.some(el => el.isSelected);
   }
 
   get tokenInfoUrl(): string {
@@ -124,9 +121,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
-  private currentFromToken: any;
+  private currentFromToken: TokenAmount;
 
-  private currentToToken: any;
+  private currentToToken: TokenAmount;
 
   constructor(
     public readonly swapFormService: SwapFormService,
@@ -276,6 +273,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }));
     if (tradeData[bestProviderIndex].value && tradeData[bestProviderIndex].status !== 'rejected') {
       newProviders[bestProviderIndex].isBestRate = true;
+
+      if (!newProviders.some(el => el.isSelected)) {
+        newProviders[bestProviderIndex].isSelected = true;
+      }
     }
 
     this.providerControllers = newProviders;

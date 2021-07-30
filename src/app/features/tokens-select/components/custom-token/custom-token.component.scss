@@ -6,9 +6,8 @@
   padding-top: 22px;
 
   &__button {
-    ::ng-deep button {
-      margin-top: 15px;
-    }
+    display: block;
+    margin-top: 15px;
   }
 
 

@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
@@ -34,7 +34,6 @@ enum ERROR_TYPE {
   WRONG_BLOCKCHAIN = 'Wrong user network',
   NOT_SUPPORTED_BRIDGE = 'Not supported bridge',
   TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
-  NOT_SELECTED_PROVIDER = 'Provider is not selected',
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
   NO_AMOUNT = 'From amount was not entered'
@@ -87,10 +86,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() set isTronAddressNotSet(value: boolean) {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
-  }
-
-  @Input() set providerError(value: boolean) {
-    this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER] = value;
   }
 
   @Output() approveClick = new EventEmitter<void>();
@@ -156,33 +151,42 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   // eslint-disable-next-line consistent-return
-  get errorText(): string {
+  get errorText(): Observable<string> {
+    let translateParams = {
+      key: 'Unknown Error',
+      interpolateParams: {}
+    } as { key: string, interpolateParams?: unknown };
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
-      return this.translateService.instant('errors.chooseSupportedBridge');
+      translateParams = { key: 'errors.chooseSupportedBridge' };
     }
     if (this.errorType[ERROR_TYPE.NO_AMOUNT]) {
-      return 'Enter amount';
+      translateParams = { key: 'errors.noEnteredAmount' };
     }
     if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
-      return `Minimum amount is ${this.minAmountValue}`;
+      translateParams = {
+        key: 'errors.minimumAmount',
+        interpolateParams: { amount: this.fromToken?.blockchain || '' }
+      };
     }
     if (this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]) {
-      return `Maximum amount is ${this.maxAmountValue}`;
+      translateParams = {
+        key: 'errors.maximumAmount',
+        interpolateParams: { amount: this.maxAmountValue || '' }
+      };
     }
     if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
-      return this.translateService.instant('errors.InsufficientBalance');
+      translateParams = { key: 'errors.InsufficientBalance' };
     }
     if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
-      return this.translateService.instant('errors.setTronAddress');
+      translateParams = { key: 'errors.setTronAddress' };
     }
     if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      return this.translateService.instant('errors.chooseNetworkWallet', {
-        blockchain: this.fromToken?.blockchain || ''
-      });
+      translateParams = {
+        key: 'errors.chooseNetworkWallet',
+        interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
+      };
     }
-    if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
-      return this.translateService.instant('errors.noSelectedProvider');
-    }
+    return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
   }
 
   constructor(
