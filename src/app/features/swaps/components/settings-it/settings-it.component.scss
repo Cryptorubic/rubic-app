@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 :host {
   color: var(--form-bright-text-color);
@@ -43,6 +44,10 @@
 
   &__toggle {
     margin-left: 15px;
+
+    @include b($mobile-sm) {
+      transform: scale(1.25);
+    }
   }
 
   &__form-row {

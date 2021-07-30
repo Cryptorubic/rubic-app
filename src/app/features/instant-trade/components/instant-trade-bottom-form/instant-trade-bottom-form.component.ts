@@ -153,11 +153,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.formChangesSubscription$ =
       this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
         this.fromAmount = form.fromAmount;
-        this.cdr.detectChanges();
-        if (!form.fromToken || !form.toToken) {
+        if (
+          !form.fromToken ||
+          !form.toToken ||
+          form.fromToken.blockchain !== this.currentFromToken?.blockchain
+        ) {
           this.selectedProvider = null;
         }
-
+        this.currentFromToken = formValue.fromToken;
+        this.cdr.detectChanges();
         this.setupForm(form);
       });
 

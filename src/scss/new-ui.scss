@@ -18,6 +18,10 @@ tui-hint-box {
   backdrop-filter: blur(5px);
 }
 
+tui-loader._loading {
+  overflow: visible !important;
+}
+
 .select {
   display: inline-flex;
   align-items: center;
@@ -29,7 +33,6 @@ tui-hint-box {
 
   background-color: transparent;
 
-  border: 1px solid var(--rubic-base-01);
   border-radius: 156px;
   cursor: pointer;
 

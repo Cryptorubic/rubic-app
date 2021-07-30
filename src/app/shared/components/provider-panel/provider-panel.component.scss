@@ -85,6 +85,12 @@ $white: white;
 
       .provider-panel__amount {
         font-size: 20px;
+
+        &_error {
+          @include b($mobile-sm) {
+            font-size: 16px;
+          }
+        }
       }
     }
   }
@@ -174,6 +180,10 @@ $white: white;
       width: 100%;
 
       font-size: 20px;
+
+      @include b($mobile-sm) {
+        font-size: 16px;
+      }
     }
   }
 

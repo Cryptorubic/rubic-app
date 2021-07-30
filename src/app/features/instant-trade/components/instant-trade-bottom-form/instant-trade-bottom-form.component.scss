@@ -17,6 +17,10 @@ $green: rgb(74, 169, 86);
   &__provider-item:not(:first-child) {
     width: calc(50% - 10px);
 
+    @include b($mobile-md) {
+      width: 100%;
+    }
+
     &::ng-deep .provider-panel__amount {
       width: 100%;
     }

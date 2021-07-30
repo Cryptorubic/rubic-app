@@ -93,18 +93,8 @@
     display: block;
     margin-right: 54px;
 
-    transition: 0.3s ease-in-out opacity;
-
     img {
       display: block;
-    }
-
-    &:hover {
-      opacity: 0.5;
-    }
-
-    &:active {
-      opacity: 1;
     }
   }
 
@@ -149,10 +139,6 @@
     &__logo {
       img {
         width: 95px;
-      }
-
-      &:hover {
-        opacity: 1;
       }
     }
   }
