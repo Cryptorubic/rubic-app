@@ -20,7 +20,8 @@ export class TokensSelectService {
     tokens: Observable<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
-    form: FormGroup<ISwapFormInput>
+    form: FormGroup<ISwapFormInput>,
+    allowedBlockchains: BLOCKCHAIN_NAME[] | undefined
   ): Observable<TokenAmount> {
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
@@ -30,7 +31,8 @@ export class TokensSelectService {
           tokens,
           currentBlockchain,
           formType,
-          form
+          form,
+          allowedBlockchains
         }
       }
     );

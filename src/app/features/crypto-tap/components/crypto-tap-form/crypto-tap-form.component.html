@@ -14,6 +14,7 @@
       [loading]="tradeStatus === TRADE_STATUS.LOADING"
       [tokens]="availableTokens['from']"
       [tokensLoading]="tokensLoading"
+      [blockchainsListFrom]="blockchainsListFrom"
     ></app-crypto-tap-top-form>
 
     <div class="swaps-form__bottom">
@@ -23,6 +24,7 @@
         formType="to"
         [tokens]="availableTokens['to']"
         [formService]="cryptoTapFormService"
+        [allowedBlockchains]="blockchainsListTo"
       ></app-rubic-tokens>
       <app-amount-estimated
         [loading]="tradeStatus === TRADE_STATUS.LOADING"

@@ -5,6 +5,7 @@
       formType="from"
       [tokens]="tokens"
       [formService]="cryptoTapFormService"
+      [allowedBlockchains]="blockchainsListFrom"
     ></app-rubic-tokens>
     <div class="user-balance-container" *ngIf="token?.amount.gt(0)">
       <span class="user-balance-container__balance"

@@ -6,6 +6,7 @@ import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -20,6 +21,8 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() formService: FormService;
+
+  @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
 
   @Input() disabled = false;
 
@@ -58,7 +61,8 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
         of(this.tokens),
         this.formType,
         currentBlockchain,
-        this.formService.commonTrade.controls.input
+        this.formService.commonTrade.controls.input,
+        this.allowedBlockchains
       )
       .subscribe((token: Token) => {
         if (token) {

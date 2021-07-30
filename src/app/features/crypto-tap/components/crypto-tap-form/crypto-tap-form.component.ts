@@ -55,15 +55,17 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public $userSubscription: Subscription;
 
-  public blockchainsListFrom = blockchainsList.filter(
-    blockchain => blockchain.symbol === BLOCKCHAIN_NAME.ETHEREUM
-  );
+  public blockchainsListFrom = blockchainsList
+    .filter(blockchain => blockchain.symbol === BLOCKCHAIN_NAME.ETHEREUM)
+    .map(blockchain => blockchain.symbol);
 
-  public blockchainsListTo = blockchainsList.filter(
-    blockchain =>
-      blockchain.symbol === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
-      blockchain.symbol === BLOCKCHAIN_NAME.POLYGON
-  );
+  public blockchainsListTo = blockchainsList
+    .filter(
+      blockchain =>
+        blockchain.symbol === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
+        blockchain.symbol === BLOCKCHAIN_NAME.POLYGON
+    )
+    .map(blockchain => blockchain.symbol);
 
   public availableTokens: FromToAvailableTokens = {
     from: [],
