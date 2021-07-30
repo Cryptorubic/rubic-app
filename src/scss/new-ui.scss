@@ -14,6 +14,14 @@ html {
   box-sizing: inherit;
 }
 
+tui-hint-box {
+  backdrop-filter: blur(5px);
+}
+
+tui-loader._loading {
+  overflow: visible !important;
+}
+
 .select {
   display: inline-flex;
   align-items: center;
@@ -25,19 +33,24 @@ html {
 
   background-color: transparent;
 
-  border: 1px solid $rubic-base-01;
+  border: 1px solid var(--rubic-base-01);
   border-radius: 156px;
   cursor: pointer;
 
   transition: 0.3s all ease-in-out;
 
   &:hover {
-    background-color: $rubic-base-01;
+    background-color: var(--rubic-base-01);
+    box-shadow: $rubic-shadow-button-hover-dim;
   }
 
   &:focus {
-    background-color: $rubic-base-01;
+    background-color: var(--rubic-base-01);
     border-color: $rubic-primary;
+  }
+
+  &:active {
+    box-shadow: $rubic-shadow-button-active;
   }
 
   &__current {
@@ -53,72 +66,6 @@ html {
   }
 
   &_wallets {
-    background-color: $rubic-base-01;
-  }
-
-  &:hover {
-    box-shadow: $rubic-shadow-button-hover;
-  }
-
-  &:active {
-    box-shadow: $rubic-shadow-button-active;
-  }
-}
-
-.button-link {
-  display: inline-block;
-  padding: 14px 20px;
-
-  font-size: $rubic-font-size-01;
-  text-decoration: none;
-
-  border: 1px solid transparent;
-  border-radius: 175px;
-
-  transition: 0.3s all ease-in-out;
-
-  &:hover,
-  &_active {
-    background-color: $rubic-base-01;
-  }
-
-  &:hover {
-    box-shadow: $rubic-shadow-button-hover;
-  }
-
-  &:active,
-  &_active:active {
-    color: $rubic-base-01 !important;
-
-    background-color: $rubic-primary;
-    box-shadow: $rubic-shadow-button-active;
-  }
-
-  &:focus {
-    border-color: $rubic-primary;
-  }
-
-  &_disabled {
-    color: $rubic-text-disable !important;
-
-    pointer-events: none;
-  }
-
-  &_error {
-    color: $rubic-base-01;
-
-    background-color: #dc3545;
-
-    &:hover {
-      background-color: #bb2d3b;
-    }
-
-    &:active {
-      background-color: #bb2d3b;
-    }
-
-    &:focus {
-      border-color: #bb2d3b;
-    }
+    background-color: var(--rubic-base-01);
   }
 }

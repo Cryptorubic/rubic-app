@@ -31,7 +31,8 @@
     "minutes": "minutes",
     "swap": "Swap",
     "approve": "Approve",
-    "switchTo": "Switch to {{ networkName }} network"
+    "switchTo": "Switch to {{ networkName }} network",
+    "tradeVia": "Trade Via "
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -49,7 +50,7 @@
     "notSupportedNetwork": "{{networkToChoose}} is not supported by selected wallet provider.",
     "signReject": "You have rejected a sign-in with your wallet. Please confirm a sign-in with your wallet, in order to fully utilize our application.",
     "lowGas": "Transaction gas is too low. There is not enough gas to cover minimal cost of the transaction. Try increasing supplied gas",
-    "noSelectedProvider": "You have not selected any swap provider",
+    "noSelectedProvider": "Select swap provider",
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
     "notSupportedBridge": "This bridge is currently unavailable. Please select a supported bridge.",
     "insufficientLiquidity": "Insufficient liquidity for this trade. Try to enable multihops trading.",
@@ -59,7 +60,10 @@
     "chooseSupportedBridge": "Choose supported bridge",
     "InsufficientBalance": "Insufficient balance",
     "setTronAddress": "Set TRON address in settings",
-    "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet"
+    "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet",
+    "noEnteredAmount": "Enter an amount",
+    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
   },
   "navigation": {
     "about": "About",
@@ -349,14 +353,16 @@
     }
   },
   "bridgePage": {
+    "title": "Bridge assets with low gas fees",
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
     "approveProgressMessage": "You accepted the approve transaction and the exchange has started. Please wait until the trade is complete.",
     "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade.",
     "whatIs": "What is ",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to this address"
   },
   "instantTrades": {
+    "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "gasFee": "Est. gas fee",
     "useOptimization": "Use Rubic optimization",
@@ -397,7 +403,7 @@
   },
   "tradePage": {
     "getBefore": "You will get",
-    "getMiddle": "tokens to the",
+    "getMiddle": "tokens to this address",
     "getAfter": "after the trade is complete",
     "providerFee": "Provider fee",
     "rbcLowFees": "Use RBC for low fees",

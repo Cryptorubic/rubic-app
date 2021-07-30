@@ -5,7 +5,8 @@
       'provider-panel__content_best-rate': providerData.isBestRate,
       'provider-panel__content_loading': loading,
       'provider-panel__content_selected': providerData.isActive,
-      'provider-panel__content_error': hasError
+      'provider-panel__content_error': hasError,
+      'provider-panel__content_small': providerIndex !== 0
     }"
     (click)="activateProvider()"
   >
@@ -50,16 +51,17 @@
           class="provider-panel__token-gas-fee"
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >
-          {{ 'instantTrades.gasFee' | translate }} {{ providerData.gasFeeInEth?.toFixed(5) }} ETH
+          {{ 'instantTrades.gasFee' | translate }}
+          <ng-container *ngIf="providerIndex === 0 || !providerData.gasFeeInUsd">{{ providerData.gasFeeInEth?.toFixed(5) }} ETH</ng-container>
           <ng-container *ngIf="providerData.gasFeeInUsd.gt(0)">
             ≈
             ${{ providerData.gasFeeInUsd.toFixed(2) }}
-            <div
-              class="provider-panel__hint"
-              [inlineSVG]="'/assets/images/icons/hint.svg'"
-              [tuiHint]="'instantTrades.gasFeeMessage' | translate"
-            ></div>
           </ng-container>
+          <div
+            class="provider-panel__hint"
+            [inlineSVG]="'/assets/images/icons/hint.svg'"
+            [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+          ></div>
         </div>
       </div>
     </div>

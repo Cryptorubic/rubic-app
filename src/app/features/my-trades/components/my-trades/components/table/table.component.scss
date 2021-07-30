@@ -1,5 +1,4 @@
 @import 'src/scss/vars';
-
 @import '../styles';
 
 .table {
@@ -9,7 +8,6 @@
   font-weight: 300;
 
   border-radius: 14px;
-  box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
 
   &_hidden {
     display: none;
@@ -18,16 +16,15 @@
   thead {
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
-    box-shadow: -30px -30px 80px #fff0, 30px 30px 80px rgba(84, 129, 90, 0.15), inset 4px 4px 50px rgba(255, 255, 255, 0.6);
   }
 
   th,
   td {
-    color: #808080;
+    color: var(--rubic-base-12);
     font-weight: inherit;
     font-family: inherit;
 
-    border-color: white;
+    border-color: var(--main-background);
     border-style: solid;
     border-width: 0;
     border-right-width: 1px;
@@ -44,7 +41,7 @@
     font-size: 18px;
     line-height: 21px;
 
-    background: rgba(255, 255, 255, 0.6);
+    background-color: var(--main-background);
 
     &:first-child {
       border-top-left-radius: 14px;
@@ -83,7 +80,7 @@
     font-size: 16px;
     line-height: 19px;
 
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--main-form-background);
     border-bottom-width: 1px;
 
     .transaction-link {
@@ -183,6 +180,8 @@
 
 tui-table-pagination {
   ::ng-deep {
+    color: var(--form-dim-text-color);
+
     span {
       font-weight: 400;
       font-size: 14px;
@@ -191,7 +190,7 @@ tui-table-pagination {
     }
 
     button {
-      color: $rubic-primary;
+      color: var(--main-green);
     }
   }
 }

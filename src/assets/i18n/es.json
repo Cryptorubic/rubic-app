@@ -31,7 +31,8 @@
     "minutes": "minutos",
     "swap": "Intercambio",
     "approve": "Aprobar",
-    "switchTo": "Switch to {{ networkName }} network"
+    "switchTo": "Switch to {{ networkName }} network",
+    "tradeVia": "Trade Via "
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -59,7 +60,10 @@
     "chooseSupportedBridge": "Elija un puente compatible",
     "InsufficientBalance": "Saldo insuficiente",
     "setTronAddress": "Establecer la dirección TRON en la configuración",
-    "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera"
+    "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
+    "noEnteredAmount": "Enter an amount",
+    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
   },
   "navigation": {
     "about": "Información",
@@ -349,6 +353,7 @@
     }
   },
   "bridgePage": {
+    "title": "Bridge assets with low gas fees",
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
     "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
@@ -357,6 +362,7 @@
     "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada"
   },
   "instantTrades": {
+    "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
     "gasFee": "Costo de tarifas estimado:",
     "useOptimization": "Utilice la optimización de Rubic",
@@ -397,7 +403,7 @@
   },
   "tradePage": {
     "getBefore": "You will get",
-    "getMiddle": "tokens para el",
+    "getMiddle": "tokens to this address",
     "getAfter": "after the trade is complete",
     "providerFee": "Tarifa de proveedor",
     "rbcLowFees": "Use RBC por tarifas bajas",

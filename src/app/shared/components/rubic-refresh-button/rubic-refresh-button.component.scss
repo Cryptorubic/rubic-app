@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .refresh-button {
   position: relative;
@@ -7,10 +8,26 @@
   align-items: center;
   justify-content: center;
 
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
 
   cursor: pointer;
+
+  @include b($mobile-md) {
+    position: absolute;
+    top: 60px;
+    right: 50px;
+    z-index: 10;
+  }
+
+  @include b($mobile-sm) {
+    top: 75px;
+  }
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
 
   &__icon {
     &_refreshing {
@@ -36,8 +53,8 @@
     fill: transparent;
     stroke: $rubic-primary;
     stroke-linecap: round;
-    stroke-dasharray: 140;
-    stroke-dashoffset: 140;
+    stroke-dasharray: 174;
+    stroke-dashoffset: 174;
     stroke-width: 2px;
 
     &_stoped {

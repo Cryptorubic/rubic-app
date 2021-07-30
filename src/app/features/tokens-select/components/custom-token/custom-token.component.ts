@@ -5,16 +5,13 @@ import {
   Output,
   EventEmitter,
   Inject,
-  Injector,
-  ChangeDetectorRef
+  Injector
 } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
-import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-custom-token',

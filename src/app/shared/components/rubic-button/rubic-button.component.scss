@@ -1,15 +1,16 @@
 @import 'src/scss/vars';
 
+
 :host {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-primary: #{$rubic-base-01};
-  --tui-primary-hover: #{$rubic-base-01};
+  --tui-primary: var(--rubic-base-01);
+  --tui-primary-hover: var(--rubic-base-01);
   --tui-focus: transparent;
+  --tui-primary-text: #{$rubic-text-color-main};
 
   [tuiButton] {
-    --tui-primary-text: #{$rubic-text-color-main};
-    --tui-link: #{$rubic-primary};
+    --tui-link: var(--primary-color);
     font-weight: 500;
     font-size: $rubic-font-size-01;
 
@@ -22,22 +23,22 @@
     }
 
     &._hovered {
-      --tui-secondary-hover: #{$rubic-base-01};
-      --tui-primary-text: #{$rubic-primary};
-      --tui-link-hover: #{$rubic-primary};
+      --tui-secondary-hover: var(--rubic-base-01);
+      --tui-primary-text: var(--primary-color);
+      --tui-link-hover: var(--primary-color);
 
-      background-color: $rubic-base-01;
-      box-shadow: $rubic-shadow-button-hover;
+      background-color: var(--rubic-base-01);
+      box-shadow: $rubic-shadow-button-hover-dim;
     }
 
     &._pressed {
-      --tui-secondary-active: #{$rubic-primary};
-      --tui-primary-active: #{$rubic-primary};
-      --tui-primary-text: #{$rubic-base-01};
-      --tui-text-01: #{$rubic-base-01};
-      --tui-link: #{$rubic-base-01};
+      --tui-secondary-active: var(--primary-color);
+      --tui-primary-active: var(--primary-color);
+      --tui-primary-text: var(--rubic-base-01);
+      --tui-text-01: var(--rubic-base-01);
+      --tui-link: var(--rubic-base-01);
 
-      background-color: $rubic-primary;
+      background-color: var(--primary-color);
       box-shadow: $rubic-shadow-button-active;
 
       ::ng-deep img {
@@ -46,21 +47,24 @@
     }
 
     &._focused:not(&._pressed) {
-      border-color: $rubic-primary;
+      border-color: var(--primary-color);
     }
 
     &._focused::after {
       border: 0;
     }
 
+    &._with-dropdown:focus {
+      background-color: inherit;
+    }
+
     &._disabled {
       border: 0;
 
       ::ng-deep tui-wrapper {
-        color: rgba($rubic-text-disable, 0.6);
+        color: rgba($rubic-text-disable, 0.7);
 
-        background-color: rgba($rubic-disable, 0.6);
-        box-shadow: $rubic-shadow-button-disabled;
+        background-color: var(--main-background);
         opacity: 1 !important;
       }
     }
@@ -88,7 +92,7 @@
     &[data-appearance='outline'] {
       font-weight: 500;
 
-      border: 1px solid $rubic-primary;
+      border: 1px solid var(--primary-color);
     }
 
     &[data-appearance='secondary'] {
@@ -105,23 +109,23 @@
     tui-wrapper[data-appearance='secondary'] {
       color: white;
 
-      background-color: $rubic-primary;
+      background-color: var(--primary-color);
 
       &[data-state='hovered'] {
-        box-shadow: $rubic-shadow-button-hover;
+        box-shadow: $rubic-shadow-button-hover-dim;
       }
 
       &[data-state='pressed'] {
-        color: $rubic-primary;
+        color: var(--primary-color);
 
-        background-color: white !important;
-        box-shadow: $rubic-shadow-button-active;
+        background-color: var(--rubic-base-01) !important;
+        box-shadow: $rubic-shadow-button-hover-dim;
       }
 
       &[data-state='disabled'] {
         color: rgba(white, 0.4);
 
-        background-color: rgba($rubic-primary, 0.4);
+        background-color: rgba(var(--primary-color) / 0.4);
         border: 0;
       }
     }
@@ -133,5 +137,5 @@
 }
 
 ::ng-deep .loader {
-  stroke: #{$rubic-primary} !important;
+  stroke: var(--primary-color) !important;
 }

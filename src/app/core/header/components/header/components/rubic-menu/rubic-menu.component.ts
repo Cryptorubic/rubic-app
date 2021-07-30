@@ -20,7 +20,6 @@ import { UserInterface } from '../../../../../services/auth/models/user.interfac
 import { AuthService } from '../../../../../services/auth/auth.service';
 import { IBlockchain } from '../../../../../../shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from '../../../../../services/blockchain/provider-connector/provider-connector.service';
-import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -78,13 +77,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.isOpened = false;
   }
 
-  public toggleConfirmModal(): void {
-    this.dialogService
-      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), {
-        size: 's',
-        label: this.translateService.instant('navigation.logoutMessage')
-      })
-      .subscribe();
+  public logout(): void {
+    this.authService.signOut().subscribe();
   }
 
   isLinkActive(url) {

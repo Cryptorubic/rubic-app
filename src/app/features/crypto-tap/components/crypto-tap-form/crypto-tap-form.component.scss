@@ -11,8 +11,8 @@
   margin-bottom: 35px;
   padding: 30px 40px;
 
-  background-color: rgba(white, 0.5);
-  border-radius: 19px;
+  background-color: var(--main-form-background);
+  border-radius: 14px;
   backdrop-filter: blur(50px);
 
   ~ *:not(:last-child) {
@@ -26,6 +26,24 @@
     margin-bottom: 20px;
   }
 
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 15px;
+    padding: 20px;
+
+    background-color: var(--main-background);
+    border-top: 1px solid var(--rubic-secondary);
+    border-radius: 0 0 14px 14px;
+
+    @include b($mobile-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+  }
+
   &__title {
     margin: 0 5px 0 0;
 
@@ -36,74 +54,6 @@
   &__content {
     margin-bottom: 15px;
   }
-
-  &__settings {
-    margin-left: auto;
-
-    cursor: pointer;
-  }
-
-  &__top-part {
-    display: flex;
-
-    > *:first-child {
-      flex-grow: 1;
-
-      border-right: 2px solid $rubic-base-01;
-    }
-  }
-
-  &__delimiter {
-    position: relative;
-
-    margin-bottom: 15px;
-
-    > * {
-      position: absolute;
-      top: 7.5px;
-      left: 50%;
-
-      transform: translate(-50%, -50%);
-    }
-  }
-
-  &__button {
-    margin-bottom: 15px;
-  }
-
-  &__terms-and-conditions {
-    font-weight: 300;
-    font-size: 14px;
-    text-align: center;
-
-    a {
-      display: block;
-
-      color: $rubic-primary;
-      font-weight: 400;
-    }
-  }
-}
-
-.swaps-volume {
-  display: block;
-  margin-top: 35px;
-}
-
-.swaps-footer {
-  display: block;
-  margin-top: 65px;
-}
-
-.button-reloading {
-  img {
-    animation: spin 0.9s linear 2s;
-  }
-}
-
-app-amount-estimated {
-  display: block;
-  margin-bottom: 15px;
 }
 
 @include b($mobile-md) {
@@ -121,15 +71,7 @@ app-amount-estimated {
         display: block;
 
         border-right: 0;
-        border-bottom: 2px solid $rubic-base-01;
-      }
-    }
-
-    &__delimiter {
-      margin-bottom: 6px;
-
-      > * {
-        top: 0;
+        border-bottom: 2px solid var(--rubic-base-01);
       }
     }
 

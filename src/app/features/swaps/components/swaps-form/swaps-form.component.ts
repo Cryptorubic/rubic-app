@@ -13,6 +13,7 @@ import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/br
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 type SelectedToken = {
@@ -74,6 +75,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public settingsSubscription$: Subscription;
 
+  public fromBlockchain: BLOCKCHAIN_NAME;
+
+  public toBlockchain: BLOCKCHAIN_NAME;
+
+  public swapType: SWAP_PROVIDER_TYPE;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
@@ -133,6 +140,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private setFormValues(formValue: SwapFormInput): void {
     this.selectedFromAmount = formValue.fromAmount;
+    this.fromBlockchain = formValue.fromBlockchain;
+    this.toBlockchain = formValue.toBlockchain;
+    this.swapType =
+      formValue.fromBlockchain === formValue.toBlockchain
+        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        : SWAP_PROVIDER_TYPE.BRIDGE;
 
     if (this._supportedTokens) {
       this.setAvailableTokens('from');
@@ -144,30 +157,33 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   private setAvailableTokens(tokenType: 'from' | 'to'): void {
-    const oppositeBlockchainName = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
-    const oppositeBlockchain =
-      this.swapFormService.commonTrade.controls.input.value[oppositeBlockchainName];
-
     const oppositeTokenName = tokenType === 'from' ? 'toToken' : 'fromToken';
     const oppositeToken = this.swapFormService.commonTrade.controls.input.value[oppositeTokenName];
 
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {
-      Object.values(blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.symbol;
-
-        this._supportedTokens[blockchain][blockchain].forEach(token => {
-          const foundToken = this._supportedTokens[oppositeBlockchain][blockchain].find(
-            supportedToken => supportedToken.address?.toLowerCase() === token.address?.toLowerCase()
+      Object.values(blockchainsList).forEach(fromBlockchain => {
+        Object.values(blockchainsList).forEach(toBlockchain => {
+          this._supportedTokens[fromBlockchain.symbol][toBlockchain.symbol].forEach(
+            supportedToken => {
+              const foundToken = tokens.find(
+                token =>
+                  token.blockchain === supportedToken.blockchain &&
+                  token.address.toLowerCase() === supportedToken.address.toLowerCase()
+              );
+              if (!foundToken) {
+                tokens.push({
+                  ...supportedToken,
+                  available: true
+                });
+              }
+            }
           );
-
-          tokens.push({
-            ...token,
-            available: !!foundToken
-          });
         });
       });
     } else {
+      const oppositeBlockchain = oppositeToken.blockchain;
+
       this._supportedTokens[oppositeBlockchain][oppositeBlockchain].forEach(token => {
         tokens.push({
           ...token,
@@ -221,6 +237,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.selectedToken[tokenType] ||
       (tokenType === 'from' ? formValue.fromToken : formValue.toToken);
     if (!token) {
+      this.selectedToken[tokenType] = token;
       return;
     }
 

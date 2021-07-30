@@ -8,7 +8,7 @@
   color: $rubic-base-05;
   font-family: $sf-pro-font;
 
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: var(--main-form-background);
   border-radius: 19px;
 
   backdrop-filter: blur(20px);

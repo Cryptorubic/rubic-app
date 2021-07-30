@@ -15,6 +15,8 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormGroup } from '@ngneat/reactive-forms';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 
 @Component({
   selector: 'app-tokens-select',
@@ -25,23 +27,38 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 export class TokensSelectComponent implements OnInit {
   public tokens: Observable<AvailableTokenAmount[]>;
 
-  public enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
-
   public customToken: AvailableTokenAmount;
 
   public tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
 
+  public allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
   private _query = '';
+
+  private readonly formType: 'from' | 'to';
+
+  private readonly form: FormGroup<ISwapFormInput>;
 
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
 
   set blockchain(value: BLOCKCHAIN_NAME) {
-    this._blockchain = value;
-    this.updateTokensList();
+    if (value) {
+      this._blockchain = value;
+
+      const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
+      if (!this.form.value[tokenType]) {
+        const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+        this.form.patchValue({
+          [blockchainType]: this._blockchain
+        });
+      }
+
+      this.updateTokensList();
+    }
   }
 
   get query(): string {
@@ -59,8 +76,10 @@ export class TokensSelectComponent implements OnInit {
       AvailableTokenAmount,
       {
         tokens: Observable<AvailableTokenAmount[]>;
-        enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
+        formType: 'from' | 'to';
         currentBlockchain: BLOCKCHAIN_NAME;
+        form: FormGroup<ISwapFormInput>;
+        allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
       }
     >,
     private cdr: ChangeDetectorRef,
@@ -68,7 +87,10 @@ export class TokensSelectComponent implements OnInit {
     private authService: AuthService
   ) {
     this.tokens = context.data.tokens;
-    this.enabledCustomTokenBlockchain = context.data.enabledCustomTokenBlockchain;
+    this.formType = context.data.formType;
+    this.form = context.data.form;
+    this.allowedBlockchains = context.data.allowedBlockchains;
+
     this.blockchain = context.data.currentBlockchain;
   }
 
@@ -137,7 +159,9 @@ export class TokensSelectComponent implements OnInit {
         return;
       }
 
-      const blockchainToken: BlockchainToken = await web3Public.getTokenInfo(this.query);
+      const blockchainToken: BlockchainToken = await web3Public
+        .getTokenInfo(this.query)
+        .catch(() => null);
 
       if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals != null) {
         const amount = this.authService.user?.address
@@ -146,6 +170,9 @@ export class TokensSelectComponent implements OnInit {
             )
           : new BigNumber(0);
 
+        const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
+        const oppositeToken = this.form.value[oppositeTokenType];
+
         this.customToken = {
           ...blockchainToken,
           rank: 0,
@@ -153,9 +180,7 @@ export class TokensSelectComponent implements OnInit {
           amount,
           price: 0,
           usedInIframe: true,
-          available:
-            !this.enabledCustomTokenBlockchain ||
-            this.blockchain === this.enabledCustomTokenBlockchain
+          available: !oppositeToken || this.blockchain === oppositeToken.blockchain
         };
 
         this.cdr.detectChanges();

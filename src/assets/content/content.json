@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$11,607,516",
-    "bridgeVolume": "$10,713,218"
+    "instantTradesVolume": "$11,669,759",
+    "bridgeVolume": "$10,876,871"
   },
   "team": [
     {
@@ -166,58 +166,6 @@
       "img": "SvenMichael.jpg",
       "name": "Sven Michael",
       "role": "Business Development"
-    }
-  ],
-  "collaborations": [
-    {
-      "title": "Binance Smart Chain",
-      "img": "Binance.svg",
-      "url": "https://coinmarketcap.com/ru/headlines/news/binance-smart-chain-bags-yet-another-defi-integration/"
-    },
-    {
-      "title": "Polygon",
-      "img": "Polygon.svg",
-      "url": "https://twitter.com/maticnetwork/status/1314563396629458944?s=20"
-    },
-    {
-      "title": "MyWish",
-      "img": "Mywish.svg",
-      "url": "https://mywish.io/"
-    },
-    {
-      "title": "1inch",
-      "img": "OneInch.svg",
-      "url": "https://1inch.exchange/"
-    },
-    {
-      "title": "PROBIT",
-      "img": "PROBIT.svg",
-      "url": "https://medium.com/probit-exchange/probit-exchange-lists-rubic-rbc-5948f21ea3be"
-    },
-    {
-      "title": "Uniswap",
-      "img": "Uniswap.svg",
-      "url": "https://app.uniswap.org/#/swap?inputCurrency=0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3"
-    },
-    {
-      "title": "DashNext",
-      "img": "DashNext.svg",
-      "url": "https://dashnext.org/"
-    },
-    {
-      "title": "Gate",
-      "img": "Gate.svg",
-      "url": "https://www.gate.io/"
-    },
-    {
-      "title": "Pancake",
-      "img": "Pancake.svg",
-      "url": "https://exchange.pancakeswap.finance/#/swap?outputCurrency=0x8E3BCC334657560253B83f08331d85267316e08a"
-    },
-    {
-      "title": "Cryptokek",
-      "img": "Cryptokek.svg",
-      "url": "https://cryptokek.com/"
     }
   ]
 }

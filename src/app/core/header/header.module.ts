@@ -14,7 +14,6 @@ import {
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
-import { LogoutConfirmModalComponent } from './components/header/components/logout-confirm-modal/logout-confirm-modal.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -26,7 +25,6 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     HeaderComponent,
     LoginButtonComponent,
     UserProfileComponent,
-    LogoutConfirmModalComponent,
     MobileMenuTogglerComponent,
     WalletsModalComponent,
     RubicMenuComponent
@@ -46,6 +44,6 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     TuiGroupModule
   ],
   exports: [HeaderComponent, LoginButtonComponent],
-  entryComponents: [WalletsModalComponent, LogoutConfirmModalComponent]
+  entryComponents: [WalletsModalComponent]
 })
 export class HeaderModule {}
