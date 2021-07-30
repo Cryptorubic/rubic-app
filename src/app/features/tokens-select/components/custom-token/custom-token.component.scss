@@ -1,20 +1,34 @@
+@import 'src/scss/vars';
+
 :host {
   width: 100%;
 }
 
 .custom-token {
-  padding-top: 22px;
+  position: relative;
+  left: -12px;
+
+  padding-top: 15px;
+
+  &__element {
+    padding: 5px 10px;
+
+    border-radius: 15px;
+
+    cursor: default;
+
+    &_disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+
+      &:hover {
+        background-color: unset;
+      }
+    }
+  }
 
   &__button {
     display: block;
     margin-top: 15px;
-  }
-
-
-  &_disabled {
-    ::ng-deep > div {
-      cursor: not-allowed;
-      opacity: 0.4;
-    }
   }
 }
