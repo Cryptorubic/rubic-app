@@ -54,6 +54,9 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.themeSubscription$ = this.themeService.getTheme().subscribe(el => {
+      if (!this.classList) {
+        this.classList = '';
+      }
       this.classList =
         el === 'dark' ? `${this.classList} dark` : this.classList.replace(' dark', '');
     });

@@ -25,8 +25,8 @@
   }
 
   img {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
   }
 
   &__icon {
@@ -53,8 +53,8 @@
     fill: transparent;
     stroke: $rubic-primary;
     stroke-linecap: round;
-    stroke-dasharray: 140;
-    stroke-dashoffset: 140;
+    stroke-dasharray: 174;
+    stroke-dashoffset: 174;
     stroke-width: 2px;
 
     &_stoped {

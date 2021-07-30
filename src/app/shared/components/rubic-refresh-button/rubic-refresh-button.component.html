@@ -2,8 +2,8 @@
   <img
     class="refresh-icon"
     src="assets/images/icons/reload.svg"
-    width="15"
-    height="15"
+    width="18"
+    height="18"
     alt="Reload"
     #refreshIcon
   />
@@ -14,10 +14,10 @@
   >
     <circle
       class="refresh-button__timer"
-      [ngStyle]="{ 'animation-duration': refreshTimeout + 's' }"
+      [ngStyle]="{ 'animation-duration': refreshTimeout * 2 + 's' }"
       cx="15"
       cy="15"
-      r="12"
+      r="14"
       transform="rotate(-90)"
     />
   </svg>
