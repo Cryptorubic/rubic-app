@@ -172,7 +172,8 @@ export class SushiSwapEthService implements ItProvider {
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
-        abi
+        abi,
+        trade.estimatedGas
       );
     }
 
@@ -181,7 +182,8 @@ export class SushiSwapEthService implements ItProvider {
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
-        abi
+        abi,
+        trade.estimatedGas
       );
     }
 
@@ -189,7 +191,8 @@ export class SushiSwapEthService implements ItProvider {
       uniSwapTrade,
       options,
       this.sushiswapContractAddress,
-      abi
+      abi,
+      trade.estimatedGas
     );
   }
 }

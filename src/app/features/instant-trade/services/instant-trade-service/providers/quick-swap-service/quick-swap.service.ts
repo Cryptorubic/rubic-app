@@ -175,7 +175,8 @@ export class QuickSwapService implements ItProvider {
         uniSwapTrade,
         options,
         quickSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas
       );
     }
 
@@ -184,7 +185,8 @@ export class QuickSwapService implements ItProvider {
         uniSwapTrade,
         options,
         quickSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas
       );
     }
 
@@ -192,7 +194,8 @@ export class QuickSwapService implements ItProvider {
       uniSwapTrade,
       options,
       quickSwapContracts.address,
-      abi
+      abi,
+      trade.estimatedGas
     );
   }
 }

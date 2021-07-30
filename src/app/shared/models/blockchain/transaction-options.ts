@@ -4,7 +4,7 @@ export type TransactionOptions = {
   onTransactionHash?: (hash: string) => void;
   inWei?: boolean;
   data?: string;
-  gas?: string;
+  gas?: BigNumber | string;
   gasPrice?: string;
   value?: BigNumber | string;
 };

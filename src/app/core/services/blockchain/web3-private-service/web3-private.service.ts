@@ -123,7 +123,7 @@ export class Web3PrivateService {
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas || this.defaultMockGas
+            gas: options.gas.toString(10) || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
           ...(options.gasPrice && { gasPrice: options.gasPrice })
