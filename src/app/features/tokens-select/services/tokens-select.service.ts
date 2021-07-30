@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { FormGroup } from '@ngneat/reactive-forms';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { TokensSelectComponent } from '../components/tokens-select/tokens-select.component';
 
 @Injectable()
@@ -19,8 +20,7 @@ export class TokensSelectService {
     tokens: Observable<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
-    enabledCustomTokenBlockchain: BLOCKCHAIN_NAME,
-    formService: FormService
+    form: FormGroup<ISwapFormInput>
   ): Observable<TokenAmount> {
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
@@ -29,9 +29,8 @@ export class TokensSelectService {
         data: {
           tokens,
           currentBlockchain,
-          enabledCustomTokenBlockchain,
           formType,
-          formService
+          form
         }
       }
     );

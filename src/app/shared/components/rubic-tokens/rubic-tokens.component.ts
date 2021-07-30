@@ -51,16 +51,14 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   public openTokensSelect(): void {
     const { fromBlockchain, toBlockchain } = this.formService.commonTrade.controls.input.value;
-    const [currentBlockchain, enabledCustomTokenBlockchain] =
-      this.formType === 'from' ? [fromBlockchain, toBlockchain] : [toBlockchain, fromBlockchain];
+    const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
     this.tokensSelectService
       .showDialog(
         of(this.tokens),
         this.formType,
         currentBlockchain,
-        enabledCustomTokenBlockchain,
-        this.formService
+        this.formService.commonTrade.controls.input
       )
       .subscribe((token: Token) => {
         if (token) {

@@ -15,7 +15,8 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { FormGroup } from '@ngneat/reactive-forms';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 
 @Component({
   selector: 'app-tokens-select',
@@ -25,8 +26,6 @@ import { FormService } from 'src/app/shared/models/swaps/FormService';
 })
 export class TokensSelectComponent implements OnInit {
   public tokens: Observable<AvailableTokenAmount[]>;
-
-  public enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
 
   public customToken: AvailableTokenAmount;
 
@@ -38,7 +37,7 @@ export class TokensSelectComponent implements OnInit {
 
   private readonly formType: 'from' | 'to';
 
-  private readonly formService: FormService;
+  private readonly form: FormGroup<ISwapFormInput>;
 
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
@@ -48,11 +47,10 @@ export class TokensSelectComponent implements OnInit {
     if (value) {
       this._blockchain = value;
 
-      const form = this.formService.commonTrade.controls.input;
       const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
-      if (!form.value[tokenType]) {
+      if (!this.form.value[tokenType]) {
         const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-        form.patchValue({
+        this.form.patchValue({
           [blockchainType]: this._blockchain
         });
       }
@@ -77,9 +75,8 @@ export class TokensSelectComponent implements OnInit {
       {
         tokens: Observable<AvailableTokenAmount[]>;
         formType: 'from' | 'to';
-        enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
         currentBlockchain: BLOCKCHAIN_NAME;
-        formService: FormService;
+        form: FormGroup<ISwapFormInput>;
       }
     >,
     private cdr: ChangeDetectorRef,
@@ -88,8 +85,7 @@ export class TokensSelectComponent implements OnInit {
   ) {
     this.tokens = context.data.tokens;
     this.formType = context.data.formType;
-    this.enabledCustomTokenBlockchain = context.data.enabledCustomTokenBlockchain;
-    this.formService = context.data.formService;
+    this.form = context.data.form;
     this.blockchain = context.data.currentBlockchain;
   }
 
@@ -158,7 +154,9 @@ export class TokensSelectComponent implements OnInit {
         return;
       }
 
-      const blockchainToken: BlockchainToken = await web3Public.getTokenInfo(this.query);
+      const blockchainToken: BlockchainToken = await web3Public
+        .getTokenInfo(this.query)
+        .catch(() => null);
 
       if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals != null) {
         const amount = this.authService.user?.address
@@ -167,6 +165,9 @@ export class TokensSelectComponent implements OnInit {
             )
           : new BigNumber(0);
 
+        const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
+        const oppositeToken = this.form.value[oppositeTokenType];
+
         this.customToken = {
           ...blockchainToken,
           rank: 0,
@@ -174,9 +175,7 @@ export class TokensSelectComponent implements OnInit {
           amount,
           price: 0,
           usedInIframe: true,
-          available:
-            !this.enabledCustomTokenBlockchain ||
-            this.blockchain === this.enabledCustomTokenBlockchain
+          available: !oppositeToken || this.blockchain === oppositeToken.blockchain
         };
 
         this.cdr.detectChanges();
