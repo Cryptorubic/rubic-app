@@ -31,7 +31,8 @@
     "minutes": "의사록",
     "swap": "교환",
     "approve": "승인",
-    "switchTo": "Switch to {{ networkName }} network"
+    "switchTo": "Switch to {{ networkName }} network",
+    "tradeVia": "Trade Via "
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -59,7 +60,10 @@
     "chooseSupportedBridge": "지원되는 브리지 선택",
     "InsufficientBalance": "잔액 불충분",
     "setTronAddress": "설정에서 TRON 주소 설정",
-    "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요"
+    "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요",
+    "noEnteredAmount": "Enter an amount",
+    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
   },
   "navigation": {
     "about": "소개",
@@ -349,6 +353,7 @@
     }
   },
   "bridgePage": {
+    "title": "Bridge assets with low GAS fees",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
     "successMessage": "크로스 체인 스왑 프로세스가 시작되었습니다. 두 블록 체인에 의해 거래가 완료 될 때까지 기다려주십시오.",
     "approveProgressMessage": "승인 거래를 수락하고 교환이 시작되었습니다. 거래가 완료 될 때까지 기다려주세요.",
@@ -357,6 +362,7 @@
     "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다"
   },
   "instantTrades": {
+    "title": "Swap assets with low GAS fees",
     "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",
     "gasFee": "예상 가스 수수료",
     "useOptimization": "Rubic 최적화 사용",

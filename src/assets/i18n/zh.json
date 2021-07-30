@@ -31,7 +31,8 @@
     "minutes": "分鐘",
     "swap": "交換",
     "approve": "批准",
-    "switchTo": "Switch to {{ networkName }} network"
+    "switchTo": "Switch to {{ networkName }} network",
+    "tradeVia": "Trade Via "
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -59,7 +60,10 @@
     "chooseSupportedBridge": "選擇支持的網橋",
     "InsufficientBalance": "餘額不足",
     "setTronAddress": "在設置中設置波場地址",
-    "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡"
+    "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡",
+    "noEnteredAmount": "Enter an amount",
+    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
   },
   "navigation": {
     "about": "关于",
@@ -349,6 +353,7 @@
     }
   },
   "bridgePage": {
+    "title": "Bridge assets with low GAS fees",
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",
     "successMessage": "跨链交换的过程已经开始。请等待双方区块链完成交易。",
     "approveProgressMessage": "您接受了批准交易並且交易已經開始。 請等待交易完成。",
@@ -357,6 +362,7 @@
     "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址"
   },
   "instantTrades": {
+    "title": "Swap assets with low GAS fees",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
     "gasFee": "gas费用估计值",
     "useOptimization": "使用Rubic優化",
