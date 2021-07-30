@@ -48,11 +48,13 @@ html.dark {
 
   --tui-base-01: rgba(0, 0, 0, 0.8);
   --tui-base-02: init;
+  --tui-base-03: rgb(110, 110, 110);
   --tui-primary: rgba(0, 0, 0, 0.8);
   --tui-secondary: rgba(255, 255, 255, 0.5);
   --tui-text-01: var(--form-bright-text-color);
   --tui-text-02: var(--form-dim-text-color);
   --tui-text-03: var(--form-dim-text-color);
+  --tui-font-text-s: rgb(255, 255, 255, 0.52);
 
   --selection-color: rgb(0, 0, 0, 0.5);
 
