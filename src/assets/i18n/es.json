@@ -353,7 +353,7 @@
     }
   },
   "bridgePage": {
-    "title": "Bridge assets with low GAS fees",
+    "title": "Bridge assets with low gas fees",
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
     "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
@@ -362,7 +362,7 @@
     "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada"
   },
   "instantTrades": {
-    "title": "Swap assets with low GAS fees",
+    "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
     "gasFee": "Costo de tarifas estimado:",
     "useOptimization": "Utilice la optimización de Rubic",
