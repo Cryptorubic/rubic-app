@@ -11,23 +11,19 @@ $green: rgb(74, 169, 86);
   border-radius: 0 0 14px 14px;
 
   &__provider-item:first-child {
-    grid-column: span 2;
-
-    @include b($mobile-sm-plus) {
-      grid-column: 1;
-    }
+    width: 100%;
   }
 
   &__provider-item:not(:first-child) {
-    grid-column: span 1;
+    width: calc(50% - 10px);
+
+    &::ng-deep .provider-panel__amount {
+      width: 100%;
+    }
   }
 
   &__provider-item:not(:nth-child(2n+1)):last-child {
-    grid-column: span 2;
-
-    @include b($mobile-sm-plus) {
-      grid-column: 1;
-    }
+    width: 100%;
 
     ::ng-deep .provider-panel__body {
       flex-direction: row;
@@ -54,14 +50,10 @@ $green: rgb(74, 169, 86);
   }
 
   &__providers {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     grid-gap: 20px;
-    grid-template-columns: 1fr 1fr;
     margin-top: 30px;
-
-    @include b($mobile-sm-plus) {
-      grid-template-columns: 1fr;
-    }
   }
 
   &__body-top {

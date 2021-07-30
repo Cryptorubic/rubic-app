@@ -37,11 +37,16 @@ tui-hint-box {
 
   &:hover {
     background-color: var(--rubic-base-01);
+    box-shadow: $rubic-shadow-button-hover-dim;
   }
 
   &:focus {
     background-color: var(--rubic-base-01);
     border-color: $rubic-primary;
+  }
+
+  &:active {
+    box-shadow: $rubic-shadow-button-active;
   }
 
   &__current {
@@ -58,13 +63,5 @@ tui-hint-box {
 
   &_wallets {
     background-color: var(--rubic-base-01);
-  }
-
-  &:hover {
-    box-shadow: $rubic-shadow-button-hover;
-  }
-
-  &:active {
-    box-shadow: $rubic-shadow-button-active;
   }
 }

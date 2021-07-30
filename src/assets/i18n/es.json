@@ -397,7 +397,7 @@
   },
   "tradePage": {
     "getBefore": "You will get",
-    "getMiddle": "tokens para el",
+    "getMiddle": "tokens to this address",
     "getAfter": "after the trade is complete",
     "providerFee": "Tarifa de proveedor",
     "rbcLowFees": "Use RBC por tarifas bajas",

@@ -353,16 +353,16 @@
     }
   },
   "bridgePage": {
-    "title": "Bridge: trade any token with low GAS fee",
+    "title": "Bridge assets with low GAS fees",
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
     "approveProgressMessage": "You accepted the approve transaction and the exchange has started. Please wait until the trade is complete.",
     "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade.",
     "whatIs": "What is ",
-    "getTokens": "You will get {{ toBlockchainName }} tokens to the selected address"
+    "getTokens": "You will get {{ toBlockchainName }} tokens to this address"
   },
   "instantTrades": {
-    "title": "Swap: trade any token with low GAS fee",
+    "title": "Swap assets with low GAS fees",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "gasFee": "Est. gas fee",
     "useOptimization": "Use Rubic optimization",
@@ -403,7 +403,7 @@
   },
   "tradePage": {
     "getBefore": "You will get",
-    "getMiddle": "tokens to the",
+    "getMiddle": "tokens to this address",
     "getAfter": "after the trade is complete",
     "providerFee": "Provider fee",
     "rbcLowFees": "Use RBC for low fees",

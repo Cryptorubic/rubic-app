@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 .refresh-button {
   position: relative;
@@ -11,6 +12,17 @@
   height: 30px;
 
   cursor: pointer;
+
+  @include b($mobile-md) {
+    position: absolute;
+    top: 60px;
+    right: 50px;
+    z-index: 10;
+  }
+
+  @include b($mobile-sm) {
+    top: 75px;
+  }
 
   img {
     width: 12px;

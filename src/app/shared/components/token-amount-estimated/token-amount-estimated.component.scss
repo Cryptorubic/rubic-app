@@ -15,7 +15,7 @@
   }
 
   &__usd-container {
-    display: inline-block;
+    display: inline-flex;
     float: right;
     overflow: hidden;
 
@@ -94,7 +94,7 @@
       text-align: left;
 
       span {
-        margin-left: 0;
+        margin-left: auto;
       }
     }
 
@@ -104,6 +104,16 @@
 
     &__fee {
       margin-right: 0;
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .bottom-amount {
+    &__usd-container {
+      span {
+        margin-left: 0;
+      }
     }
   }
 }

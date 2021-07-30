@@ -28,7 +28,7 @@
 
     &._hovered {
       background-color: var(--rubic-base-01);
-      box-shadow: $rubic-shadow-button-hover;
+      box-shadow: $rubic-shadow-button-hover-dim;
     }
 
     &._focused {

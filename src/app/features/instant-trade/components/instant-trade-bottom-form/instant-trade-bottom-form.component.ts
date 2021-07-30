@@ -276,6 +276,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       if (!newProviders.some(el => el.isSelected)) {
         newProviders[bestProviderIndex].isSelected = true;
+        this.selectedProvider = newProviders[bestProviderIndex];
       }
     }
 

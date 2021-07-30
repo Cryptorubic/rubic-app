@@ -396,8 +396,8 @@
     "receive": "收到"
   },
   "tradePage": {
-    "getBefore": "交易完成后，你将获得",
-    "getMiddle": "令牌到",
+    "getBefore": "You will get",
+    "getMiddle": "tokens to this address",
     "getAfter": "",
     "providerFee": "提供者費用",
     "rbcLowFees": "使用 RBC 收取低費用",

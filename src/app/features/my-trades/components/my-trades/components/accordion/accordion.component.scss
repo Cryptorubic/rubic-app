@@ -37,7 +37,7 @@
 
     ::ng-deep {
       > .wrapper > button {
-        background: rgba(255, 255, 255, 0.7);
+        background: var(--main-background);
       }
     }
   }
@@ -94,8 +94,6 @@ tui-data-list {
 
   ::ng-deep {
     .wrapper[automation-id='tui-accordion__item-wrapper'] {
-      background: transparent !important;
-
       &::after {
         border: none;
       }

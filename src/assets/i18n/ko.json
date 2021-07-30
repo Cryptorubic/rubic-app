@@ -396,8 +396,8 @@
     "receive": "받다"
   },
   "tradePage": {
-    "getBefore": "당신은 얻을 것이다",
-    "getMiddle": "토큰을",
+    "getBefore": "You will get",
+    "getMiddle": "tokens to this address",
     "getAfter": "거래가 완료된 후",
     "providerFee": "제공자 수수료",
     "rbcLowFees": "저렴한 수수료로 RBC 사용",

@@ -17,7 +17,7 @@ $backgrond-black: rgb(14, 17, 14);
 
   &:hover {
     background-color: var(--rubic-base-10);
-    box-shadow: $rubic-shadow-button-hover;
+    box-shadow: $rubic-shadow-button-hover-dim;
   }
 
   &:focus {
@@ -60,6 +60,14 @@ html.dark {
 
   body {
     background: transparent;
+
+    .sort-by-dropdown {
+      --tui-base-02: var(--main-form-background);
+    }
+
+    .settings__button-auto:not(.settings__button-auto_active) {
+      border-color: var(--rubic-base-02);
+    }
 
     .blockchain-aside__blockchains-list button tui-wrapper {
       --rubic-secondary: rgba(0, 0, 0, 0.8);

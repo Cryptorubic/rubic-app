@@ -140,6 +140,7 @@ $white: white;
     display: flex;
     flex: 4;
     align-items: center;
+    width: 100%;
     margin-right: 10px;
   }
 
@@ -154,11 +155,19 @@ $white: white;
 
   &__amount {
     display: flex;
+    overflow-x: auto;
 
     font-weight: 300;
     font-size: 24px;
     line-height: 1.2;
     letter-spacing: 2px;
+
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
 
     &_error {
       display: block;

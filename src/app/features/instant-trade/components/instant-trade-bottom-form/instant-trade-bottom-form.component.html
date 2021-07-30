@@ -13,7 +13,9 @@
           </div>
         </div>
         <div *ngIf="selectedProvider" class="instant-trade-bottom-form__amount">
-          <div class="instant-trade-bottom-form__token-amount">{{ selectedProvider.trade.to.amount }}</div>
+          <div class="instant-trade-bottom-form__token-amount">
+            {{ selectedProvider.trade.to.amount | bigNumberFormat | withRound: 'toClosestValue' : selectedProvider.trade.to.token.decimals || 1 }}
+          </div>
           <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
         </div>
       </div>

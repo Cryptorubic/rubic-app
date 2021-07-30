@@ -9,7 +9,7 @@
         'bottom-amount__tokens-container_placeholder': !tokensAmount || tokensAmount === '0'
       }"
     >
-      {{ tokensAmount }}
+      {{ tokensAmount | bigNumberFormat | withRound: 'toClosestValue' }}
     </div>
 
     <div

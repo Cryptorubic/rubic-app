@@ -1,3 +1,6 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
 .user-balance-container {
   &__balance {
     margin-right: 10px;
@@ -17,5 +20,9 @@
     text-transform: uppercase;
 
     background-color: transparent;
+
+    @include b($mobile-sm) {
+      font-size: 18px;
+    }
   }
 }

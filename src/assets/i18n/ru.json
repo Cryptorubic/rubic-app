@@ -396,8 +396,8 @@
     "receive": "Получить"
   },
   "tradePage": {
-    "getBefore": "Вы получите",
-    "getMiddle": "токены на",
+    "getBefore": "You will get",
+    "getMiddle": "tokens to this address",
     "getAfter": "после завершения сделки",
     "providerFee": "Комиссия провайдера",
     "rbcLowFees": "Использовать RBC для низкой комиссии",

@@ -28,7 +28,7 @@
       --tui-link-hover: var(--primary-color);
 
       background-color: var(--rubic-base-01);
-      box-shadow: $rubic-shadow-button-hover;
+      box-shadow: $rubic-shadow-button-hover-dim;
     }
 
     &._pressed {
@@ -118,8 +118,8 @@
       &[data-state='pressed'] {
         color: var(--primary-color);
 
-        background-color: white !important;
-        box-shadow: $rubic-shadow-button-active;
+        background-color: var(--rubic-base-01) !important;
+        box-shadow: $rubic-shadow-button-hover-dim;
       }
 
       &[data-state='disabled'] {
