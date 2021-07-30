@@ -112,7 +112,7 @@
       background-color: var(--primary-color);
 
       &[data-state='hovered'] {
-        box-shadow: $rubic-shadow-button-hover;
+        box-shadow: $rubic-shadow-button-hover-dim;
       }
 
       &[data-state='pressed'] {

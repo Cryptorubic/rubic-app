@@ -165,13 +165,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
       translateParams = {
         key: 'errors.minimumAmount',
-        interpolateParams: { amount: this.fromToken?.blockchain || '' }
+        interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.blockchain }
       };
     }
     if (this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]) {
       translateParams = {
         key: 'errors.maximumAmount',
-        interpolateParams: { amount: this.maxAmountValue || '' }
+        interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.blockchain }
       };
     }
     if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {

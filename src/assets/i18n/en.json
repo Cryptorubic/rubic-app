@@ -62,8 +62,8 @@
     "setTronAddress": "Set TRON address in settings",
     "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet",
     "noEnteredAmount": "Enter an amount",
-    "minimumAmount": "Minimum amount is {{amount}}",
-    "maximumAmount": "Maximum amount is {{amount}}"
+    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
   },
   "navigation": {
     "about": "About",
