@@ -122,7 +122,9 @@ export class CommonUniswapService {
           );
           return gas || ethToTokensEstimatedGas[path.length - 2];
         }
-        this.httpService.get('', {}, 'https://www.etherchain.org/api/gasPriceOracle').subscribe(res => console.log(res));
+        this.httpService
+          .get('', {}, 'https://www.etherchain.org/api/gasPriceOracle')
+          .subscribe(res => console.log(res));
         return ethToTokensEstimatedGas[path.length - 2];
       }
       return ethToTokensEstimatedGas[path.length - 2];
@@ -176,7 +178,8 @@ export class CommonUniswapService {
     } = {},
     contractAddress: string,
     abi: AbiItem[],
-    gasLimit: BigNumber
+    gasLimit: BigNumber,
+    gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
       contractAddress,
@@ -186,7 +189,8 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
-        gas: gasLimit
+        gas: gasLimit,
+        gasPrice
       }
     );
   }
@@ -199,7 +203,8 @@ export class CommonUniswapService {
     } = {},
     contractAddress: string,
     abi: AbiItem[],
-    gasLimit: BigNumber
+    gasLimit: BigNumber,
+    gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
       contractAddress,
@@ -208,7 +213,8 @@ export class CommonUniswapService {
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
-        gas: gasLimit
+        gas: gasLimit,
+        gasPrice
       }
     );
   }
@@ -221,7 +227,8 @@ export class CommonUniswapService {
     } = {},
     contractAddress: string,
     abi: AbiItem[],
-    gasLimit: BigNumber
+    gasLimit: BigNumber,
+    gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
       contractAddress,
@@ -230,7 +237,8 @@ export class CommonUniswapService {
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
-        gas: gasLimit
+        gas: gasLimit,
+        gasPrice
       }
     );
   }
@@ -314,7 +322,8 @@ export class CommonUniswapService {
       gasData: {
         estimatedGas,
         gasFeeInEth,
-        gasFeeInUsd
+        gasFeeInUsd,
+        gasPrice
       }
     };
   }
@@ -431,7 +440,8 @@ export class CommonUniswapService {
         gasData: {
           estimatedGas,
           gasFeeInUsd,
-          gasFeeInEth
+          gasFeeInEth,
+          gasPrice
         },
         profit
       };

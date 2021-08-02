@@ -196,7 +196,8 @@ export class UniSwapService implements ItProvider {
         options,
         this.uniswapContractAddress,
         abi,
-        trade.estimatedGas
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -206,7 +207,8 @@ export class UniSwapService implements ItProvider {
         options,
         this.uniswapContractAddress,
         abi,
-        trade.estimatedGas
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -215,7 +217,8 @@ export class UniSwapService implements ItProvider {
       options,
       this.uniswapContractAddress,
       abi,
-      trade.estimatedGas
+      trade.estimatedGas,
+      trade.gasPrice
     );
   }
 }

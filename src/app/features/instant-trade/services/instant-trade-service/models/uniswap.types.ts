@@ -19,6 +19,7 @@ interface Gas {
   estimatedGas;
   gasFeeInUsd;
   gasFeeInEth;
+  gasPrice?;
 }
 
 enum SWAP_METHOD {

@@ -17,6 +17,7 @@ import {
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { defaultGasPrice } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol-constnants';
 import {
   abi,
   ethToTokensEstimatedGas,
@@ -125,6 +126,8 @@ export class SushiSwapPolygonService implements ItProvider {
       estimatedGasArray
     );
 
+    const gasPrice = defaultGasPrice.gt(gasData.gasPrice) ? defaultGasPrice : gasData.gasPrice;
+
     return {
       blockchain: this.blockchain,
       from: {
@@ -138,6 +141,7 @@ export class SushiSwapPolygonService implements ItProvider {
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation
@@ -173,7 +177,8 @@ export class SushiSwapPolygonService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        trade.estimatedGas
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -183,7 +188,8 @@ export class SushiSwapPolygonService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        trade.estimatedGas
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -192,7 +198,8 @@ export class SushiSwapPolygonService implements ItProvider {
       options,
       this.sushiswapContractAddress,
       abi,
-      trade.estimatedGas
+      trade.estimatedGas,
+      trade.gasPrice
     );
   }
 }

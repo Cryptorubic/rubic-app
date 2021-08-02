@@ -5,6 +5,6 @@ export type TransactionOptions = {
   inWei?: boolean;
   data?: string;
   gas?: BigNumber | string;
-  gasPrice?: string;
+  gasPrice?: BigNumber | string;
   value?: BigNumber | string;
 };
