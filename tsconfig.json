@@ -21,6 +21,14 @@
       "dom",
       "esnext"
     ],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths" : {
+      "stream": ["./node_modules/stream-browserify"],
+      "assert": ["./node_modules/assert"],
+      "https": ["./node_modules/https-browserify"],
+      "os": ["./node_modules/os-browserify"],
+      "http": ["./node_modules/stream-http"],
+      "crypto": ["./node_modules/crypto-browserify"]
+    }
   }
 }
