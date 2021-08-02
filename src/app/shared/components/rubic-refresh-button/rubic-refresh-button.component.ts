@@ -37,7 +37,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   @Input() set autoUpdate(value: boolean) {
     this._autoUpdate = value;
     if (value) {
-      if (status === 'stopped') {
+      if (this.status === 'stopped') {
         this.setupTimer();
       }
     } else {

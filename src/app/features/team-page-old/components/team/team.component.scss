@@ -14,7 +14,7 @@ $font-family: 'Ubuntu', Arial, sans-serif;
   font-weight: normal;
   font-family: $font-family !important;
 
-  background-color: white;
+  background-color: var(--main-background);
   border-radius: 10px;
 
   &__container {
@@ -26,7 +26,7 @@ $font-family: 'Ubuntu', Arial, sans-serif;
     width: 100%;
     margin: 0 0 55px;
 
-    color: $rubic-primary;
+    color: var(--main-green);
     font-weight: bold;
     font-size: 28px;
     line-height: 44px;

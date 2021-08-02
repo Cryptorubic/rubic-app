@@ -3,18 +3,12 @@
 
 /* Global scss */
 @import 'scss/vars';
-@import 'scss/grid';
 @import 'scss/typography';
 @import 'scss/mixins';
 
 /* Elements */
-@import 'scss/elements/dialog';
-@import 'scss/elements/preloader';
-@import 'scss/elements/contracts';
-@import 'scss/elements/buttons';
 @import 'scss/elements/icons';
 @import 'scss/elements/dropdown-labels';
-@import 'scss/elements/form';
 
 /* Global */
 @import 'scss/livechat';
@@ -36,13 +30,16 @@
 
 html {
   height: auto !important;
-  min-height: 100%;
+  overflow-x: hidden;
 
   body {
+    position: relative;
+
     min-width: 320px;
     height: auto;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 
     background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
 
@@ -70,6 +67,7 @@ input[type=number] {
 
 button {
   cursor: pointer;
+  border: none;
 }
 
 main.main-content {
@@ -101,38 +99,22 @@ main.main-content {
   }
 }
 
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-  color: #4aa956;
+a {
+  color: var(--main-green);
   text-decoration: none;
 
   &:hover,
   &:focus {
-    color: #4aa956;
+    color: var(--main-green);
     text-decoration: underline;
   }
 }
 
 .walletconnect-modal__base {
-  a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+  a,
+  a:focus,
+  a:hover {
     color: inherit;
-
-    &:hover,
-    &:focus {
-      color: inherit;
-    }
-  }
-}
-
-.mat-tooltip {
-  white-space: pre-line;
-  text-align: center;
-}
-
-.bar {
-  bottom: 10px !important;
-
-  &_vertical {
-    top: 10px !important;
   }
 }
 

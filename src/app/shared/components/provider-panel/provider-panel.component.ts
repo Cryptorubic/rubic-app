@@ -80,6 +80,8 @@ interface ProviderData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderPanelComponent {
+  @Input() public providerIndex: number;
+
   /**
    * Setup provider data.
    * @param data provider controller data.
@@ -89,11 +91,6 @@ export class ProviderPanelComponent {
       this.setupProviderData(data);
     }
   }
-
-  /**
-   * Provider selection event.
-   */
-  @Output() public collapseProvider: EventEmitter<boolean>;
 
   /**
    * Provider selection event.
@@ -132,7 +129,6 @@ export class ProviderPanelComponent {
 
   constructor() {
     this.loading = false;
-    this.collapseProvider = new EventEmitter<boolean>();
     this.selectProvider = new EventEmitter<void>();
   }
 
@@ -141,7 +137,6 @@ export class ProviderPanelComponent {
    */
   public activateProvider(): void {
     if (!this.loading && !this.hasError) {
-      this.collapseProvider.emit(!this.providerData.isCollapsed);
       this.selectProvider.emit();
     }
   }
@@ -199,7 +194,7 @@ export class ProviderPanelComponent {
     }
   }
 
-  getUsdPrice(): string {
+  public getUsdPrice(): string {
     return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
   }
 }

@@ -1,6 +1,67 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
+
+.button-link {
+  display: inline-block;
+  padding: 14px 20px;
+
+  font-size: $rubic-font-size-01;
+  text-decoration: none;
+
+  border: 1px solid transparent;
+  border-radius: 175px;
+
+  transition: 0.3s all ease-in-out;
+
+  &:hover,
+  &_active {
+    text-decoration: none;
+
+    background-color: var(--rubic-base-01);
+  }
+
+  &:hover {
+    box-shadow: $rubic-shadow-button-hover-dim;
+  }
+
+  &:active,
+  &_active:active {
+    color: var(--rubic-base-01) !important;
+
+    background-color: $rubic-primary;
+    box-shadow: $rubic-shadow-button-active;
+  }
+
+  &:focus {
+    border-color: $rubic-primary;
+  }
+
+  &_disabled {
+    color: $rubic-text-disable !important;
+
+    pointer-events: none;
+  }
+
+  &_error {
+    color: var(--rubic-base-01);
+
+    background-color: #dc3545;
+
+    &:hover {
+      background-color: #bb2d3b;
+    }
+
+    &:active {
+      background-color: #bb2d3b;
+    }
+
+    &:focus {
+      border-color: #bb2d3b;
+    }
+  }
+}
+
 .rubic-header {
   position: relative;
 
@@ -32,18 +93,8 @@
     display: block;
     margin-right: 54px;
 
-    transition: 0.3s ease-in-out opacity;
-
     img {
       display: block;
-    }
-
-    &:hover {
-      opacity: 0.5;
-    }
-
-    &:active {
-      opacity: 1;
     }
   }
 
@@ -58,28 +109,6 @@
 
     transform: translateX(-50%);
   }
-}
-
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn).header__link {
-  padding: 7px 9px;
-
-  color: white !important;
-  font-weight: bold;
-  font-size: 14px;
-
-
-  background-color: $rubic-primary;
-  border-radius: 10px;
-
-  &:hover,
-  &:focus {
-    text-decoration: none;
-  }
-}
-
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):hover,
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
-  text-decoration: none;
 }
 
 @include b($desktop) {
@@ -110,10 +139,6 @@ a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn):focus {
     &__logo {
       img {
         width: 95px;
-      }
-
-      &:hover {
-        opacity: 1;
       }
     }
   }

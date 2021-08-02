@@ -8,7 +8,7 @@ import {
   OnChanges,
   ChangeDetectorRef
 } from '@angular/core';
-import { AvailableTokenAmount } from '../../../../shared/models/tokens/AvailableTokenAmount';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 
 @Component({
   selector: 'app-tokens-list',

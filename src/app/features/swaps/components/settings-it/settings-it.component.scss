@@ -1,4 +1,9 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+:host {
+  color: var(--form-bright-text-color);
+}
 
 .settings {
   min-width: 265px;
@@ -25,9 +30,8 @@
     padding: 8px 15px;
 
     background: none;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 20px;
-    box-shadow: 10px 10px 30px 0 rgba(58, 95, 69, 0.1), -15px -15px 80px 0 rgba(255, 255, 255, 1), 4px 4px 20px 0 rgba(255, 255, 255, 0.5) inset;
 
     cursor: pointer;
 
@@ -40,6 +44,10 @@
 
   &__toggle {
     margin-left: 15px;
+
+    @include b($mobile-sm) {
+      transform: scale(1.25);
+    }
   }
 
   &__form-row {
@@ -71,6 +79,8 @@
 
   ::ng-deep {
     tui-wrapper[data-appearance='textfield'] {
+      color: var(--form-bright-text-color);
+
       border-radius: 100px;
       box-shadow: none;
 

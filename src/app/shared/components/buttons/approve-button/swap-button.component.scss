@@ -38,13 +38,13 @@ $point-radius: 26px;
     line-height: $point-radius;
     text-align: center;
 
-    background-color: white;
+    background-color: var(--main-background);
     border-radius: 50%;
 
     &[disabled=true] {
       color: rgba(144, 144, 144, 0.6);
 
-      background-color: rgba(225, 225, 225, 0.6);
+      background-color: var(--main-form-background);
     }
   }
 }

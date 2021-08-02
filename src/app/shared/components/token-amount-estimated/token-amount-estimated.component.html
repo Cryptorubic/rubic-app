@@ -1,40 +1,38 @@
 <div class="bottom-amount">
   <ng-container *ngIf="!hidden">
     <div
+      class="bottom-amount__tokens-container"
+      [ngClass]="{
+        'tui-skeleton': _loading,
+        'tui-skeleton_text': _loading,
+        'bottom-amount__tokens-container_wide': _loading,
+        'bottom-amount__tokens-container_placeholder': !tokensAmount || tokensAmount === '0'
+      }"
+    >
+      {{ tokensAmount | bigNumberFormat | withRound: 'toClosestValue' }}
+    </div>
+
+    <div
       *ngIf="usd"
       class="bottom-amount__usd-container"
       [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
     >
       <span class="bottom-amount__usd">${{ usd | bigNumberFormat: 2 }}</span>
     </div>
-
     <div
-      class="bottom-amount__tokens-container"
-      [ngClass]="{
-        'tui-skeleton': _loading,
-        'tui-skeleton_text': _loading,
-        'bottom-amount__tokens-container_wide': _loading
-      }"
+      *ngIf="fee?.token"
+      class="bottom-amount__fee"
+      [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
     >
-      <span class="bottom-amount__tokens">{{ tokensAmount }}</span>
-    </div>
-
-    <div class="bottom-amount__footer">
-      <div
-        *ngIf="fee?.token"
-        class="bottom-amount__fee"
-        [ngClass]="{ 'tui-skeleton': _loading, 'tui-skeleton_text': _loading }"
+      <span
+        >{{ 'tradePage.providerFee' | translate }}:
+        {{ fee.amount + '&nbsp;' + fee.token.symbol }} ≈ ${{
+          fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2
+        }}</span
       >
-        <span
-          >{{ 'tradePage.providerFee' | translate }}:
-          {{ fee.amount + '&nbsp;' + fee.token.symbol }} ≈ ${{
-            fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2
-          }}</span
-        >
-      </div>
-      <div class="bottom-amount__additional-content">
-        <ng-content></ng-content>
-      </div>
+    </div>
+    <div class="bottom-amount__additional-content">
+      <ng-content></ng-content>
     </div>
   </ng-container>
 </div>

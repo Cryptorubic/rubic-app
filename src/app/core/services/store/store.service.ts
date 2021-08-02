@@ -7,6 +7,7 @@ import { WALLET_NAME } from '../../header/components/header/components/wallets-m
 interface Store {
   provider: WALLET_NAME;
   settings: unknown;
+  theme: 'dark' | 'light';
 }
 
 @Injectable({

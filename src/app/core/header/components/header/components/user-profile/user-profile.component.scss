@@ -6,13 +6,13 @@
   height: 50px;
   padding: 13px 21px;
 
-  background-color: $rubic-base-01;
+  background-color: var(--tui-base-01);
   border-radius: 50px;
 
   transition: 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: $rubic-shadow-button-hover;
+    box-shadow: $rubic-shadow-button-hover-dim;
 
     cursor: pointer;
   }
@@ -25,11 +25,6 @@
       display: block;
       height: auto;
     }
-  }
-
-  &__dropdown-nav {
-    display: flex;
-    flex-direction: column;
   }
 
   &__address {
