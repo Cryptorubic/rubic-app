@@ -123,10 +123,10 @@ export class Web3PrivateService {
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas || this.defaultMockGas
+            gas: options.gas.toString(10) || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice })
+          ...(options.gasPrice && { gasPrice: options.gasPrice.toString(10) })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
@@ -244,7 +244,8 @@ export class Web3PrivateService {
         .send({
           from: this.address,
           ...(options.value && { value: options.value }),
-          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

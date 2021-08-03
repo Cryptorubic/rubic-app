@@ -28,6 +28,7 @@ import {
 import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
+import { defaultGasPrice } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol-constnants';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +129,8 @@ export class QuickSwapService implements ItProvider {
       estimatedGasArray
     );
 
+    const gasPrice = defaultGasPrice.gt(gasData.gasPrice) ? defaultGasPrice : gasData.gasPrice;
+
     return {
       blockchain: this.blockchain,
       from: {
@@ -141,6 +144,7 @@ export class QuickSwapService implements ItProvider {
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation
@@ -175,7 +179,9 @@ export class QuickSwapService implements ItProvider {
         uniSwapTrade,
         options,
         quickSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -184,7 +190,9 @@ export class QuickSwapService implements ItProvider {
         uniSwapTrade,
         options,
         quickSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -192,7 +200,9 @@ export class QuickSwapService implements ItProvider {
       uniSwapTrade,
       options,
       quickSwapContracts.address,
-      abi
+      abi,
+      trade.estimatedGas,
+      trade.gasPrice
     );
   }
 }

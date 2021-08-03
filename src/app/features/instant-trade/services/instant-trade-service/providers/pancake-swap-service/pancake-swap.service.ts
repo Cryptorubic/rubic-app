@@ -175,7 +175,8 @@ export class PancakeSwapService implements ItProvider {
         uniSwapTrade,
         options,
         pancakeSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas
       );
     }
 
@@ -184,7 +185,8 @@ export class PancakeSwapService implements ItProvider {
         uniSwapTrade,
         options,
         pancakeSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas
       );
     }
 
@@ -192,7 +194,8 @@ export class PancakeSwapService implements ItProvider {
       uniSwapTrade,
       options,
       pancakeSwapContracts.address,
-      abi
+      abi,
+      trade.estimatedGas
     );
   }
 }
