@@ -15,7 +15,8 @@ import {
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
   quickSwapContracts,
-  WETH
+  WETH,
+  defaultGasPrice
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
 import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
@@ -28,7 +29,6 @@ import {
 import { Observable } from 'rxjs';
 import { CommonUniswapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-uniswap/common-uniswap.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
-import { defaultGasPrice } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol-constnants';
 
 @Injectable({
   providedIn: 'root'

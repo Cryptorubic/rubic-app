@@ -85,7 +85,7 @@ export class CommonUniswapService {
             SWAP_METHOD.TOKENS_TO_TOKENS,
             [amountIn, amountOutMin, path, walletAddress, deadline],
             walletAddress
-          )
+          );
         }
       }
 
@@ -190,7 +190,7 @@ export class CommonUniswapService {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
         gas: gasLimit,
-        gasPrice
+        gasPrice: gasPrice.multipliedBy(10 ** 18)
       }
     );
   }
@@ -214,7 +214,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        gasPrice
+        gasPrice: gasPrice.multipliedBy(10 ** 18)
       }
     );
   }
@@ -238,7 +238,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        gasPrice
+        gasPrice: gasPrice.multipliedBy(10 ** 18)
       }
     );
   }

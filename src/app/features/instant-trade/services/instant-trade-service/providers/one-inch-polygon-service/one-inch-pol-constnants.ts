@@ -1,3 +1,3 @@
 import BigNumber from 'bignumber.js';
 
-export const defaultGasPrice = new BigNumber(0.000000005); // ETH
+export const defaultGasPrice = new BigNumber(5000000000); // Wei

@@ -17,7 +17,6 @@ import {
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { defaultGasPrice } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol-constnants';
 import {
   abi,
   ethToTokensEstimatedGas,
@@ -26,7 +25,8 @@ import {
   sushiSwapPolygonContracts,
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
-  WETH
+  WETH,
+  defaultGasPrice
 } from './sushi-swap-polygon.constants';
 
 @Injectable({
