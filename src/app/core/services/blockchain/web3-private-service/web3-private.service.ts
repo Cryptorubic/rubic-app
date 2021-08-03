@@ -5,6 +5,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
+import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -199,12 +200,19 @@ export class Web3PrivateService {
     }
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
 
+    const gasLimit = await contract.methods
+      .approve(spenderAddress, rawValue.toFixed(0))
+      .estimateGas({
+        from: this.address,
+        ...(this.defaultMockGas && { gas: this.defaultMockGas })
+      });
+
     return new Promise((resolve, reject) => {
       contract.methods
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
-          ...(this.defaultMockGas && { gas: this.defaultMockGas })
+          gas: gasLimit
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

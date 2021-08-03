@@ -190,7 +190,7 @@ export class CommonUniswapService {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
         gas: gasLimit,
-        gasPrice: gasPrice.multipliedBy(10 ** 18)
+        ...(gasPrice && { gasPrice })
       }
     );
   }
@@ -214,7 +214,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        gasPrice: gasPrice.multipliedBy(10 ** 18)
+        ...(gasPrice && { gasPrice })
       }
     );
   }
@@ -238,7 +238,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        gasPrice: gasPrice.multipliedBy(10 ** 18)
+        ...(gasPrice && { gasPrice })
       }
     );
   }

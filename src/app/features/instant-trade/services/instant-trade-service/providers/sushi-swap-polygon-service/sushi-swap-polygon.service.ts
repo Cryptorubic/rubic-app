@@ -171,6 +171,8 @@ export class SushiSwapPolygonService implements ItProvider {
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
+    const gasPriceInWei = trade.gasPrice.multipliedBy(10 ** 18);
+
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
@@ -178,7 +180,7 @@ export class SushiSwapPolygonService implements ItProvider {
         this.sushiswapContractAddress,
         abi,
         trade.estimatedGas,
-        trade.gasPrice
+        gasPriceInWei
       );
     }
 
@@ -189,7 +191,7 @@ export class SushiSwapPolygonService implements ItProvider {
         this.sushiswapContractAddress,
         abi,
         trade.estimatedGas,
-        trade.gasPrice
+        gasPriceInWei
       );
     }
 
@@ -199,7 +201,7 @@ export class SushiSwapPolygonService implements ItProvider {
       this.sushiswapContractAddress,
       abi,
       trade.estimatedGas,
-      trade.gasPrice
+      gasPriceInWei
     );
   }
 }
