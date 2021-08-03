@@ -124,8 +124,8 @@ export class Web3PrivateService {
     value: BigNumber | string,
     options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
-    return this.web3.eth
-      .call({
+    try {
+      await this.web3.eth.call({
         from: this.address,
         to: toAddress,
         value: options.inWei ? value.toString() : this.ethToWei(value),
@@ -134,12 +134,12 @@ export class Web3PrivateService {
         }),
         ...(options.data && { data: options.data }),
         ...(options.gasPrice && { gasPrice: options.gasPrice })
-      })
-      .then(() => this.sendTransaction(toAddress, value, options))
-      .catch(err => {
-        console.error(`Tokens transfer error. ${err}`);
-        throw Web3PrivateService.parseError(err);
       });
+      return this.sendTransaction(toAddress, value, options);
+    } catch (err) {
+      console.error(`Tokens transfer error. ${err}`);
+      throw Web3PrivateService.parseError(err);
+    }
   }
 
   /**
@@ -268,25 +268,23 @@ export class Web3PrivateService {
     options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
-    return contract.methods[methodName](...methodArguments)
-      .call({
+    try {
+      await contract.methods[methodName](...methodArguments).call({
         from: this.address,
         ...(options.value && { value: options.value }),
         ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
-      })
-      .then(() =>
-        this.executeContractMethod(
-          contractAddress,
-          contractAbi,
-          methodName,
-          methodArguments,
-          options
-        )
-      )
-      .catch(err => {
-        console.error(`Method execution error. ${err}`);
-        throw Web3PrivateService.parseError(err);
       });
+      return this.executeContractMethod(
+        contractAddress,
+        contractAbi,
+        methodName,
+        methodArguments,
+        options
+      );
+    } catch (err) {
+      console.error(`Method execution error. ${err}`);
+      throw Web3PrivateService.parseError(err);
+    }
   }
 
   /**

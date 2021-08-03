@@ -65,7 +65,8 @@ module.exports = {
             allow: ['debug', 'error', 'info']
           }
         ],
-        'no-empty': ["error", { "allowEmptyCatch": true }]
+        'no-empty': ["error", { "allowEmptyCatch": true }],
+        '@typescript-eslint/return-await': 'off'
       }
     },
     {
