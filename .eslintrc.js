@@ -64,7 +64,8 @@ module.exports = {
           {
             allow: ['debug', 'error', 'info']
           }
-        ]
+        ],
+        'no-empty': ["error", { "allowEmptyCatch": true }]
       }
     },
     {

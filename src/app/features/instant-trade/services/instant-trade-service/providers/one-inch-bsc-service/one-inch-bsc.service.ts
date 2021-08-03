@@ -182,6 +182,11 @@ export class OneInchBscService implements ItProvider {
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     await this.commonOneinch.checkSettings(this.blockchain, this.providerConnectorService);
+    await this.commonOneinch.checkBalance(
+      trade,
+      this.web3Public,
+      this.providerConnectorService.address
+    );
 
     const { fromTokenAddress, toTokenAddress } =
       this.commonOneinch.getOneInchTokenSpecificAddresses(
@@ -221,7 +226,7 @@ export class OneInchBscService implements ItProvider {
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 
-    return this.web3Private.sendTransaction(
+    return this.web3Private.trySendTransaction(
       oneInchTrade.tx.to,
       fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmount,
       trxOptions
