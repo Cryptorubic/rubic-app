@@ -41,7 +41,7 @@ tui-loader._loading {
 
   &:hover {
     background-color: var(--rubic-base-01);
-    box-shadow: $rubic-shadow-button-hover-dim;
+    box-shadow: var(--rubic-shadow-button-hover-dim);
   }
 
   &:focus {
@@ -50,7 +50,7 @@ tui-loader._loading {
   }
 
   &:active {
-    box-shadow: $rubic-shadow-button-active;
+    box-shadow: var(--rubic-shadow-button-active);
   }
 
   &__current {

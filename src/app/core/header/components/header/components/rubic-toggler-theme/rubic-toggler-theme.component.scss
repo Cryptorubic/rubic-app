@@ -17,7 +17,7 @@ $backgrond-black: rgb(14, 17, 14);
 
   &:hover {
     background-color: var(--rubic-base-01);
-    box-shadow: $rubic-shadow-button-hover-dim;
+    box-shadow: var(--rubic-shadow-button-hover-dim);
   }
 
   &:focus {
@@ -57,6 +57,11 @@ html.dark {
   --tui-font-text-sы: rgb(255, 255, 255, 0.52);
 
   --selection-color: rgb(0, 0, 0, 0.5);
+
+  --rubic-shadow-button-hover: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
+  --rubic-shadow-button-hover-dim: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
+  --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
+  --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
 
   background-color: $backgrond-black;
 
