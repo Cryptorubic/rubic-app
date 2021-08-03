@@ -127,14 +127,32 @@ export class TokensService {
     ];
     const promises = [];
 
+    const splitAndMergeRequests = (
+      tokensAddresses: string[],
+      blockchain: BLOCKCHAIN_NAME,
+      parallelRequestsNumber: number
+    ) => {
+      const chunkSize = Math.ceil(tokensAddresses.length / parallelRequestsNumber);
+      return Promise.all(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        [...new Array(parallelRequestsNumber)].map((elem, index) =>
+          this.web3PublicService[blockchain].getTokensBalances(
+            this.userAddress,
+            tokensAddresses.slice(index * chunkSize, (index + 1) * chunkSize)
+          )
+        )
+      );
+    };
+
     blockchains.forEach(blockchain => {
       promises.push(
-        this.web3PublicService[blockchain].getTokensBalances(
-          this.userAddress,
+        splitAndMergeRequests(
           tokens
             .filter(token => token.blockchain === blockchain)
             .map(token => token.address)
-            .toArray()
+            .toArray(),
+          blockchain,
+          30
         )
       );
     });
@@ -142,7 +160,7 @@ export class TokensService {
     const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
       weiBalance.div(10 ** token.decimals);
 
-    const balances = await Promise.all(promises);
+    const balances = (await Promise.all(promises)).map(elem => elem.flat());
     const tokensWithBalance: TokenAmount[][] = [];
     blockchains.forEach((blockchain, blockchainIndex) =>
       tokensWithBalance.push(
