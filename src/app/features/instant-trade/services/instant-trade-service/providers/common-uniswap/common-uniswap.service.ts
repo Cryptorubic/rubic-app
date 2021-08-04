@@ -122,7 +122,6 @@ export class CommonUniswapService {
           );
           return gas || ethToTokensEstimatedGas[path.length - 2];
         }
-        this.httpService.get('', {}, 'https://www.etherchain.org/api/gasPriceOracle').subscribe();
         return ethToTokensEstimatedGas[path.length - 2];
       }
       return ethToTokensEstimatedGas[path.length - 2];
