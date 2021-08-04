@@ -212,7 +212,7 @@ export class Web3PrivateService {
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
-          gas: gasLimit
+          gas: new BigNumber(gasLimit).multipliedBy(1.1).toFixed(0)
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
