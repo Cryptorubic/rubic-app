@@ -1,11 +1,13 @@
 <tui-root>
 
   <ng-template [ngIf]="isBackendAvailable">
-    <app-header></app-header>
-    <main class="main-content">
-      <router-outlet></router-outlet>
-    </main>
-    <app-rubic-footer class="footer"></app-rubic-footer>
+    <div class="wrapper">
+      <app-header></app-header>
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+      <app-rubic-footer class="footer"></app-rubic-footer>
+    </div>
   </ng-template>
 
   <ng-container ngProjectAs="tuiOverDialogs">
