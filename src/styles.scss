@@ -129,6 +129,10 @@ tui-dropdown-box {
   position: absolute;
   top: 54px;
   right: 54px;
+  @include b(1240) {
+    top: 45px;
+    right: 109px;
+  }
   z-index: -100;
 
   display: block;
