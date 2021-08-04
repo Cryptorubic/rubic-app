@@ -63,7 +63,9 @@ html.dark {
   --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
   --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
 
-  background-color: $backgrond-black;
+  &_colored {
+    background-color: $backgrond-black;
+  }
 
   body {
     background: transparent;
@@ -116,7 +118,7 @@ html.dark {
       backdrop-filter: blur(5px);
     }
 
-    &::after {
+    .gradient {
       position: absolute;
       top: -50px;
       left: calc(50% - 400px);

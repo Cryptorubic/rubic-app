@@ -125,6 +125,47 @@ tui-dropdown-box {
   border-radius: 18px !important;
 }
 
+.wave {
+  position: absolute;
+  top: 54px;
+  right: 54px;
+  z-index: -100;
+
+  display: block;
+  width: 2px;
+  height: 2px;
+
+  border-radius: 100%;
+  box-shadow: 0 0 0 0 #212121;
+
+  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::after {
+    position: absolute;
+    content: '';
+    width: 2px;
+    height: 2px;
+    background-color: #ebf1ec;
+
+    transition-property: background-color;
+    transition-delay: 0.3s;
+  }
+
+  &_active {
+    box-shadow: 0 0 0 calc(1.42 * max(100vw, 100vh)) rgb(14, 17, 14);
+
+    &::after {
+      background-color: rgb(14, 17, 14);
+
+      transition-delay: unset;
+    }
+  }
+
+  &_no-transition {
+    transition: none;
+  }
+}
+
 @include b($mobile-md) {
   tui-dropdown-box {
     min-width: 155px;
