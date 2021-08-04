@@ -6,6 +6,7 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -212,7 +213,7 @@ export class Web3PrivateService {
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
-          gas: new BigNumber(gasLimit).multipliedBy(1.1).toFixed(0)
+          gas: Web3PublicService.calculateGasMargin(new BigNumber(gasLimit))
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

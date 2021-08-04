@@ -214,7 +214,7 @@ export class OneInchPolService implements ItProvider {
       .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
-    const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.1).toFixed(0);
+    const increasedGas = Web3PublicService.calculateGasMargin(new BigNumber(oneInchTrade.tx.gas));
 
     const gasPrice = defaultGasPrice.gt(oneInchTrade.tx.gasPrice)
       ? defaultGasPrice.toString(10)

@@ -15,6 +15,10 @@ import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.s
 export class Web3PublicService {
   private readonly connectionLinks: ConnectionLink[];
 
+  static calculateGasMargin(amount: BigNumber, percent: number = 1.1) {
+    return amount.multipliedBy(percent).toFixed(0);
+  }
+
   static amountToWei(amount: BigNumber | string, decimals: number): string {
     return new BigNumber(amount || '0').times(new BigNumber(10).pow(decimals)).toFixed(0);
   }

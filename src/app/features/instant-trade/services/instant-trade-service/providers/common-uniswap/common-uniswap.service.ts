@@ -122,9 +122,7 @@ export class CommonUniswapService {
           );
           return gas || ethToTokensEstimatedGas[path.length - 2];
         }
-        this.httpService
-          .get('', {}, 'https://www.etherchain.org/api/gasPriceOracle')
-          .subscribe(res => console.log(res));
+        this.httpService.get('', {}, 'https://www.etherchain.org/api/gasPriceOracle').subscribe();
         return ethToTokensEstimatedGas[path.length - 2];
       }
       return ethToTokensEstimatedGas[path.length - 2];
@@ -190,7 +188,7 @@ export class CommonUniswapService {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice })
+        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
       }
     );
   }
@@ -214,7 +212,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice })
+        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
       }
     );
   }
@@ -238,7 +236,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice })
+        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
       }
     );
   }
