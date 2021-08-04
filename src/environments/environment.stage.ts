@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   environmentName: 'stage',
   apiBaseUrl: '//stage-api.rubic.exchange/api'
 };
