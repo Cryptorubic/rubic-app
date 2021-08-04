@@ -212,7 +212,7 @@ export class OneInchEthService implements ItProvider {
       .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
-    const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
+    const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.1).toFixed(0);
 
     const trxOptions = {
       onTransactionHash: options.onConfirm,
