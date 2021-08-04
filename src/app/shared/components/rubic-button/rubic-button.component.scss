@@ -28,7 +28,7 @@
       --tui-link-hover: var(--primary-color);
 
       background-color: var(--rubic-base-01);
-      box-shadow: $rubic-shadow-button-hover-dim;
+      box-shadow: var(--rubic-shadow-button-hover-dim);
     }
 
     &._pressed {
@@ -39,7 +39,7 @@
       --tui-link: var(--rubic-base-01);
 
       background-color: var(--primary-color);
-      box-shadow: $rubic-shadow-button-active;
+      box-shadow: var(--rubic-shadow-button-active);
 
       ::ng-deep img {
         filter: brightness(10);
@@ -101,7 +101,7 @@
   }
 
   [tuiButton][bordered=true] {
-    box-shadow: $rubic-shadow-button-hover;
+    box-shadow: var(--rubic-shadow-button-hover);
   }
 
 
@@ -112,14 +112,18 @@
       background-color: var(--primary-color);
 
       &[data-state='hovered'] {
-        box-shadow: $rubic-shadow-button-hover-dim;
+        box-shadow: var(--rubic-shadow-button-hover-dim);
       }
 
       &[data-state='pressed'] {
         color: var(--primary-color);
 
         background-color: var(--rubic-base-01) !important;
-        box-shadow: $rubic-shadow-button-hover-dim;
+        box-shadow: var(--rubic-shadow-button-hover-dim);
+
+        :host-context(html.dark) & {
+          color: var(--rubic-base-02);
+        }
       }
 
       &[data-state='disabled'] {

@@ -25,6 +25,10 @@ $white: white;
 
       &:hover {
         box-shadow: 10px 10px 10px rgba(58, 95, 69, 0.1), -15px -15px 20px rgba(255, 255, 255, 0.2);
+
+        :host-context(html.dark) & {
+          box-shadow: -7px -7px 6px 2px rgb(3 6 4 / 20%);
+        }
       }
     }
 

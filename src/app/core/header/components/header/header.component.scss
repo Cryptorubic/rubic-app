@@ -22,7 +22,7 @@
   }
 
   &:hover {
-    box-shadow: $rubic-shadow-button-hover-dim;
+    box-shadow: var(--rubic-shadow-button-hover-dim);
   }
 
   &:active,
@@ -30,7 +30,11 @@
     color: var(--rubic-base-01) !important;
 
     background-color: $rubic-primary;
-    box-shadow: $rubic-shadow-button-active;
+    box-shadow: var(--rubic-shadow-button-active);
+
+    :host-context(html.dark) & {
+      color: var(--rubic-base-02) !important;
+    }
   }
 
   &:focus {

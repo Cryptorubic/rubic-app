@@ -2,12 +2,14 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Inject,
   OnDestroy,
   OnInit,
+  Renderer2,
+  ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { AbstractTuiThemeSwitcher } from '@taiga-ui/cdk';
 import { DOCUMENT } from '@angular/common';

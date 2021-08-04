@@ -2,8 +2,8 @@
   "name": "rubic",
   "version": "1.0.3",
   "scripts": {
-    "start": "ng serve --proxy-config proxy.conf.json --host local.rubic.exchange --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
-    "start-with-no-reload": "ng serve --proxy-config proxy.conf.json --host local.rubic.exchange --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --no-live-reload",
+    "start": "node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json --host local.rubic.exchange --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key",
+    "start-with-no-reload": "node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json --host local.rubic.exchange --port 4224 --disable-host-check  --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --no-live-reload",
     "ng": "ng",
     "postinstall": "node scripts/patch-webpack.js",
     "build": "ng build --configuration production && npm run compress-images",

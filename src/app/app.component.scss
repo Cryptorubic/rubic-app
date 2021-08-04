@@ -15,3 +15,22 @@ app-spinner {
     width: 100%;
   }
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  > :first-child {
+    flex: 0;
+  }
+
+  > :nth-child(2) {
+    flex: 1;
+    align-self: center;
+  }
+
+  > :last-child {
+    flex: 0;
+  }
+}
