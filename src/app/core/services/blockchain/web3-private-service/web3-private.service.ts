@@ -69,7 +69,9 @@ export class Web3PrivateService {
         .transfer(toAddress, amount.toString())
         .send({
           from: this.address,
-          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas.toString(10) || this.defaultMockGas
+          })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
@@ -131,10 +133,10 @@ export class Web3PrivateService {
         to: toAddress,
         value: options.inWei ? value.toString() : this.ethToWei(value),
         ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas || this.defaultMockGas
+          gas: options.gas.toString(10) || this.defaultMockGas
         }),
         ...(options.data && { data: options.data }),
-        ...(options.gasPrice && { gasPrice: options.gasPrice })
+        ...(options.gasPrice && { gasPrice: options.gasPrice.toString(10) })
       });
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
@@ -280,7 +282,9 @@ export class Web3PrivateService {
       await contract.methods[methodName](...methodArguments).call({
         from: this.address,
         ...(options.value && { value: options.value }),
-        ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+        ...((options.gas || this.defaultMockGas) && {
+          gas: options.gas.toString(10) || this.defaultMockGas
+        })
       });
       return this.executeContractMethod(
         contractAddress,
@@ -320,8 +324,10 @@ export class Web3PrivateService {
         .send({
           from: this.address,
           ...(options.value && { value: options.value }),
-          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice })
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas.toString(10) || this.defaultMockGas
+          }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice.toString(10) })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
