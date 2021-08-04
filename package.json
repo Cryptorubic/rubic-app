@@ -9,6 +9,7 @@
     "build": "ng build --configuration production && npm run compress-images",
     "build:dev": "ng build && npm run compress-images",
     "build:dev2": "ng build --configuration dev2 && npm run compress-images",
+    "build:stage": "ng build --configuration stage && npm run compress-images",
     "build:analyze": "ng build --stats-json && webpack-bundle-analyzer dist/rubic/stats.json && npm run compress-images",
     "test": "ng test",
     "lint": "ng lint",
