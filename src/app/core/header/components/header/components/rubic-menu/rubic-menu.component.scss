@@ -12,11 +12,15 @@
     width: 100%;
     height: 2px;
 
-    background-color: $rubic-base-04;
+    background-color: #4b604fff;
     border-radius: 5px;
 
     transition: 0.3s ease-in-out;
     transition-property: opacity, transform;
+
+    :host-context(html.dark) & {
+      background-color: $rubic-primary;
+    }
   }
 
   &_opened {
@@ -199,4 +203,4 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
       display: block;
     }
   }
-} 
+}

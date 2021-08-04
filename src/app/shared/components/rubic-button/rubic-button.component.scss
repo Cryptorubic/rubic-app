@@ -120,6 +120,10 @@
 
         background-color: var(--rubic-base-01) !important;
         box-shadow: var(--rubic-shadow-button-hover-dim);
+
+        :host-context(html.dark) & {
+          color: var(--rubic-base-02);
+        }
       }
 
       &[data-state='disabled'] {
