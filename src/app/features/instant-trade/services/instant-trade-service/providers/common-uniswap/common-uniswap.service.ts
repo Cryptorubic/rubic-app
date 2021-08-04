@@ -26,6 +26,8 @@ import { ItSettingsForm } from 'src/app/features/swaps/services/settings-service
 import { AbiItem } from 'web3-utils';
 import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { HttpService } from 'src/app/core/services/http/http.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +36,8 @@ export class CommonUniswapService {
   constructor(
     private readonly web3Private: Web3PrivateService,
     public providerConnectorService: ProviderConnectorService,
-    private readonly coingeckoApiService: CoingeckoApiService
+    private readonly coingeckoApiService: CoingeckoApiService,
+    private readonly httpService: HttpService
   ) {}
 
   public getAllowance(
@@ -106,7 +109,7 @@ export class CommonUniswapService {
   ): Promise<BigNumber> {
     try {
       if (walletAddress) {
-        const balance = await web3Public.getBalance(walletAddress);
+        const balance = await web3Public.getBalance(walletAddress, { inWei: true });
         if (balance.gte(amountIn)) {
           const gas = await web3Public.getEstimatedGas(
             abi,
@@ -168,7 +171,9 @@ export class CommonUniswapService {
       onApprove?: (hash: string) => void;
     } = {},
     contractAddress: string,
-    abi: AbiItem[]
+    abi: AbiItem[],
+    gasLimit: string | BigNumber,
+    gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -177,7 +182,9 @@ export class CommonUniswapService {
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
-        value: trade.amountIn
+        value: trade.amountIn,
+        gas: gasLimit,
+        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
       }
     );
   }
@@ -189,7 +196,9 @@ export class CommonUniswapService {
       onApprove?: (hash: string) => void;
     } = {},
     contractAddress: string,
-    abi: AbiItem[]
+    abi: AbiItem[],
+    gasLimit: string | BigNumber,
+    gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -197,7 +206,9 @@ export class CommonUniswapService {
       SWAP_METHOD.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
-        onTransactionHash: options.onConfirm
+        onTransactionHash: options.onConfirm,
+        gas: gasLimit,
+        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
       }
     );
   }
@@ -209,14 +220,20 @@ export class CommonUniswapService {
       onApprove?: (hash: string) => void;
     } = {},
     contractAddress: string,
-    abi: AbiItem[]
+    abi: AbiItem[],
+    gasLimit: string | BigNumber,
+    gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
       abi,
       SWAP_METHOD.TOKENS_TO_TOKENS,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
-      { onTransactionHash: options.onConfirm }
+      {
+        onTransactionHash: options.onConfirm,
+        gas: gasLimit,
+        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+      }
     );
   }
 
@@ -299,7 +316,8 @@ export class CommonUniswapService {
       gasData: {
         estimatedGas,
         gasFeeInEth,
-        gasFeeInUsd
+        gasFeeInUsd,
+        gasPrice
       }
     };
   }
@@ -416,7 +434,8 @@ export class CommonUniswapService {
         gasData: {
           estimatedGas,
           gasFeeInUsd,
-          gasFeeInEth
+          gasFeeInEth,
+          gasPrice
         },
         profit
       };

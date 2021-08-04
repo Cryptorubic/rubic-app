@@ -25,7 +25,8 @@ import {
   sushiSwapPolygonContracts,
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
-  WETH
+  WETH,
+  defaultGasPrice
 } from './sushi-swap-polygon.constants';
 
 @Injectable({
@@ -125,6 +126,8 @@ export class SushiSwapPolygonService implements ItProvider {
       estimatedGasArray
     );
 
+    const gasPrice = defaultGasPrice.gt(gasData.gasPrice) ? defaultGasPrice : gasData.gasPrice;
+
     return {
       blockchain: this.blockchain,
       from: {
@@ -138,6 +141,7 @@ export class SushiSwapPolygonService implements ItProvider {
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation
@@ -167,12 +171,16 @@ export class SushiSwapPolygonService implements ItProvider {
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
+    const gasPriceInWei = trade.gasPrice.multipliedBy(10 ** 18);
+
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
-        abi
+        abi,
+        trade.estimatedGas,
+        gasPriceInWei
       );
     }
 
@@ -181,7 +189,9 @@ export class SushiSwapPolygonService implements ItProvider {
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
-        abi
+        abi,
+        trade.estimatedGas,
+        gasPriceInWei
       );
     }
 
@@ -189,7 +199,9 @@ export class SushiSwapPolygonService implements ItProvider {
       uniSwapTrade,
       options,
       this.sushiswapContractAddress,
-      abi
+      abi,
+      trade.estimatedGas,
+      gasPriceInWei
     );
   }
 }

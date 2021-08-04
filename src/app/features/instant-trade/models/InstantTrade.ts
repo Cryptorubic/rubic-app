@@ -36,6 +36,12 @@ interface InstantTrade {
   gasFeeInEth: BigNumber;
 
   /**
+   * Gas price in Ether
+   */
+
+  gasPrice?: BigNumber;
+
+  /**
    * Additional options
    */
   options?: any;
