@@ -189,9 +189,9 @@ export class UniSwapService implements ItProvider {
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
-    console.info('gas limit before increase: ', trade.estimatedGas);
-    const increasedGas = trade.estimatedGas.multipliedBy(1.2);
-    console.info('gas limit after increase: ', increasedGas);
+
+    const increasedGas = trade.estimatedGas.multipliedBy(1.2).toFixed(0);
+
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,

@@ -178,7 +178,7 @@ export class CommonUniswapService {
     } = {},
     contractAddress: string,
     abi: AbiItem[],
-    gasLimit: BigNumber,
+    gasLimit: string | BigNumber,
     gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
@@ -203,7 +203,7 @@ export class CommonUniswapService {
     } = {},
     contractAddress: string,
     abi: AbiItem[],
-    gasLimit: BigNumber,
+    gasLimit: string | BigNumber,
     gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
@@ -227,7 +227,7 @@ export class CommonUniswapService {
     } = {},
     contractAddress: string,
     abi: AbiItem[],
-    gasLimit: BigNumber,
+    gasLimit: string | BigNumber,
     gasPrice?: BigNumber
   ): Promise<TransactionReceipt> {
     return this.web3Private.executeContractMethod(
