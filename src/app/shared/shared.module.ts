@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { DynamicModule } from 'ng-dynamic-component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -91,7 +90,6 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
   imports: [
     CommonModule,
     TranslateModule,
-    DynamicModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,

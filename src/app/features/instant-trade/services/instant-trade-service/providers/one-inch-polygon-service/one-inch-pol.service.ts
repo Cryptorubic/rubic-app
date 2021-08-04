@@ -223,7 +223,7 @@ export class OneInchPolService implements ItProvider {
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 
-    return this.web3Private.sendTransaction(
+    return this.web3Private.trySendTransaction(
       oneInchTrade.tx.to,
       fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmount,
       trxOptions

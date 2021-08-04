@@ -82,13 +82,12 @@ export class CommonUniswapService {
             SWAP_METHOD.TOKENS_TO_TOKENS,
             [amountIn, amountOutMin, path, walletAddress, deadline],
             walletAddress
-          )
+          );
         }
       }
 
       return estimatedGas || tokensToTokensEstimatedGas[path.length - 2];
     } catch (e) {
-      // tslint:disable-next-line:no-console
       console.debug(e);
       return tokensToTokensEstimatedGas[path.length - 2];
     }
@@ -123,7 +122,6 @@ export class CommonUniswapService {
       }
       return ethToTokensEstimatedGas[path.length - 2];
     } catch (e) {
-      // tslint:disable-next-line:no-console
       console.debug(e);
       return ethToTokensEstimatedGas[path.length - 2];
     }
@@ -158,7 +156,6 @@ export class CommonUniswapService {
 
       return estimatedGas || tokensToEthEstimatedGas[path.length - 2];
     } catch (e) {
-      // tslint:disable-next-line:no-console
       console.debug(e);
       return tokensToEthEstimatedGas[path.length - 2];
     }
@@ -173,7 +170,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[]
   ): Promise<TransactionReceipt> {
-    return this.web3Private.executeContractMethod(
+    return this.web3Private.tryExecuteContractMethod(
       contractAddress,
       abi,
       SWAP_METHOD.ETH_TO_TOKENS,
@@ -194,7 +191,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[]
   ): Promise<TransactionReceipt> {
-    return this.web3Private.executeContractMethod(
+    return this.web3Private.tryExecuteContractMethod(
       contractAddress,
       abi,
       SWAP_METHOD.TOKENS_TO_ETH,
@@ -214,7 +211,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[]
   ): Promise<TransactionReceipt> {
-    return this.web3Private.executeContractMethod(
+    return this.web3Private.tryExecuteContractMethod(
       contractAddress,
       abi,
       SWAP_METHOD.TOKENS_TO_TOKENS,
