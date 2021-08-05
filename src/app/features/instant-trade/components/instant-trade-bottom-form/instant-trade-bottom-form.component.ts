@@ -34,6 +34,7 @@ import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constan
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { debounceTime } from 'rxjs/operators';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -150,8 +151,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.conditionalCalculate(formValue);
     });
 
-    this.formChangesSubscription$ =
-      this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(form => {
+    this.formChangesSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe(form => {
         this.fromAmount = form.fromAmount;
         if (
           !form.fromToken ||

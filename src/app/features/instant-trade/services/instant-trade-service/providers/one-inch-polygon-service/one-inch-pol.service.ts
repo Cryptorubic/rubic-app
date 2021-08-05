@@ -29,6 +29,7 @@ import { CommonOneinchService } from 'src/app/features/instant-trade/services/in
 import { Observable, throwError } from 'rxjs';
 import { OneinchRefreshError } from 'src/app/core/errors/models/instant-trade/oneinch-refresh.error';
 import { TranslateService } from '@ngx-translate/core';
+import { defaultGasPrice } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-polygon-service/one-inch-pol-constnants';
 
 @Injectable({
   providedIn: 'root'
@@ -213,17 +214,21 @@ export class OneInchPolService implements ItProvider {
       .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
-    const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
+    const increasedGas = Web3Public.calculateGasMargin(oneInchTrade.tx.gas);
+
+    const gasPrice = defaultGasPrice.gt(oneInchTrade.tx.gasPrice)
+      ? defaultGasPrice.toString(10)
+      : oneInchTrade.tx.gasPrice;
 
     const trxOptions = {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
       gas: increasedGas,
-      gasPrice: oneInchTrade.tx.gasPrice,
+      gasPrice,
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 
-    return this.web3Private.sendTransaction(
+    return this.web3Private.trySendTransaction(
       oneInchTrade.tx.to,
       fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmount,
       trxOptions

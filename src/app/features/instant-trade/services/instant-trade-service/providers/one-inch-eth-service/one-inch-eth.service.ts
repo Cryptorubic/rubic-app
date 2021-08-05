@@ -212,7 +212,7 @@ export class OneInchEthService implements ItProvider {
       .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
-    const increasedGas = new BigNumber(oneInchTrade.tx.gas).multipliedBy(1.25).toFixed(0);
+    const increasedGas = Web3Public.calculateGasMargin(oneInchTrade.tx.gas);
 
     const trxOptions = {
       onTransactionHash: options.onConfirm,
@@ -222,7 +222,7 @@ export class OneInchEthService implements ItProvider {
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 
-    return this.web3Private.sendTransaction(
+    return this.web3Private.trySendTransaction(
       oneInchTrade.tx.to,
       fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmount,
       trxOptions

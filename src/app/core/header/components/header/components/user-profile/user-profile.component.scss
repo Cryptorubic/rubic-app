@@ -12,7 +12,7 @@
   transition: 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: $rubic-shadow-button-hover-dim;
+    box-shadow: var(--rubic-shadow-button-hover-dim);
 
     cursor: pointer;
   }
@@ -20,7 +20,7 @@
   &__chain-icon {
     width: 25px;
     margin-right: 10px;
-    
+
     img {
       display: block;
       height: auto;

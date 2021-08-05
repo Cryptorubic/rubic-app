@@ -170,12 +170,15 @@ export class PancakeSwapService implements ItProvider {
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
+    const increasedGas = Web3Public.calculateGasMargin(trade.estimatedGas, 1.2);
+
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
         pancakeSwapContracts.address,
-        abi
+        abi,
+        increasedGas
       );
     }
 
@@ -184,7 +187,8 @@ export class PancakeSwapService implements ItProvider {
         uniSwapTrade,
         options,
         pancakeSwapContracts.address,
-        abi
+        abi,
+        increasedGas
       );
     }
 
@@ -192,7 +196,8 @@ export class PancakeSwapService implements ItProvider {
       uniSwapTrade,
       options,
       pancakeSwapContracts.address,
-      abi
+      abi,
+      increasedGas
     );
   }
 }

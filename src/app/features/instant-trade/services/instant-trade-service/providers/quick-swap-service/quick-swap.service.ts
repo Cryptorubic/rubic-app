@@ -15,7 +15,8 @@ import {
   tokensToEthEstimatedGas,
   tokensToTokensEstimatedGas,
   quickSwapContracts,
-  WETH
+  WETH,
+  defaultGasPrice
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/quick-swap-service/quick-swap-constants';
 import { TransactionReceipt } from 'web3-eth';
 import { UniSwapTrade } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap.types';
@@ -128,6 +129,8 @@ export class QuickSwapService implements ItProvider {
       estimatedGasArray
     );
 
+    const gasPrice = defaultGasPrice.gt(gasData.gasPrice) ? defaultGasPrice : gasData.gasPrice;
+
     return {
       blockchain: this.blockchain,
       from: {
@@ -141,6 +144,7 @@ export class QuickSwapService implements ItProvider {
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation
@@ -170,12 +174,16 @@ export class QuickSwapService implements ItProvider {
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
+    const gasPriceInWei = trade.gasPrice.multipliedBy(10 ** 18);
+
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
         quickSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas,
+        gasPriceInWei
       );
     }
 
@@ -184,7 +192,9 @@ export class QuickSwapService implements ItProvider {
         uniSwapTrade,
         options,
         quickSwapContracts.address,
-        abi
+        abi,
+        trade.estimatedGas,
+        gasPriceInWei
       );
     }
 
@@ -192,7 +202,9 @@ export class QuickSwapService implements ItProvider {
       uniSwapTrade,
       options,
       quickSwapContracts.address,
-      abi
+      abi,
+      trade.estimatedGas,
+      gasPriceInWei
     );
   }
 }
