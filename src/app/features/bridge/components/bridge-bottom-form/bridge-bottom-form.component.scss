@@ -8,8 +8,9 @@
   &__container {
     display: flex;
     justify-content: space-between;
-    height: 100px;
-    padding: 20px;
+
+    min-height: 105px;
+    padding: 15px 20px 30px;
 
     background-color: var(--main-background);
     border-radius: 0 0 14px 14px;
@@ -24,6 +25,8 @@
   }
 
   &__footer {
+    margin-top: 15px;
+
     @include b($mobile-md) {
       padding: 15px 20px 0;
     }

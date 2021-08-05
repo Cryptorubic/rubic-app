@@ -4,7 +4,6 @@
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  margin-bottom: 15px;
   padding: 15px 20px 30px;
 
   background-color: var(--main-background);
@@ -64,6 +63,8 @@ $green: rgb(74, 169, 86);
     display: flex;
     justify-content: space-between;
 
+    min-height: 60px;
+
     @include b($mobile-sm) {
       flex-direction: column;
       align-items: flex-start;
@@ -95,6 +96,13 @@ $green: rgb(74, 169, 86);
     line-height: 17px;
     letter-spacing: 0.1em;
     text-align: right;
+  }
+
+  &__swap {
+    app-swap-button {
+      display: block;
+      margin-top: 15px;
+    }
   }
 }
 
