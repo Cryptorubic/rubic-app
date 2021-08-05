@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { BehaviorSubject, EMPTY, forkJoin, from, NEVER, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, throwError } from 'rxjs';
 
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -24,9 +24,6 @@ import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypt
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
 import { CryptoTapFullPriceFeeInfo } from 'src/app/features/crypto-tap/models/CryptoTapFullPriceFeeInfo';
-import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
-import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 
@@ -105,29 +102,6 @@ export class CryptoTapService {
       );
   }
 
-  private checkSettings(): boolean {
-    const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-
-    if (!this.providerConnectorService.isProviderActive) {
-      this.errorService.catch$(new WalletError());
-      return false;
-    }
-
-    if (!this.authService.user?.address) {
-      this.errorService.catch$(new AccountError());
-      return false;
-    }
-    if (
-      this.providerConnectorService.networkName !== blockchain &&
-      (this.providerConnectorService.networkName !== `${blockchain}_TESTNET` || !this.isTestingMode)
-    ) {
-      this.errorService.catch$(new NetworkError(blockchain));
-      return false;
-    }
-
-    return true;
-  }
-
   private async checkBalance(token: TokenAmount, fromAmount: BigNumber): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     const amountInWei = fromAmount.multipliedBy(10 ** token.decimals);
@@ -161,9 +135,7 @@ export class CryptoTapService {
 
   public createTrade(onTransactionHash: (hash: string) => void): Observable<TransactionReceipt> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    if (!this.checkSettings()) {
-      return NEVER;
-    }
+    this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
 
     const { fromToken, toToken } = this.cryptoTapFormService.commonTrade.controls.input.value;
     const { fromAmount } = this.cryptoTapFormService.commonTrade.controls.output.value;
@@ -232,9 +204,7 @@ export class CryptoTapService {
     const { fromToken: token } = this.cryptoTapFormService.commonTrade.controls.input.value;
     const { fromAmount } = this.cryptoTapFormService.commonTrade.controls.output.value;
 
-    if (!this.checkSettings()) {
-      return EMPTY;
-    }
+    this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
 
     return forkJoin([this.needApprove(fromAmount), this.checkBalance(token, fromAmount)]).pipe(
       mergeMap(([needApprove]) => {

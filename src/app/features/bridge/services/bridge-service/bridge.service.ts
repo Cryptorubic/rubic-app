@@ -17,9 +17,6 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
-import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -207,7 +204,7 @@ export class BridgeService {
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
-          this.checkSettings(bridgeTrade.fromBlockchain);
+          this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
           await this.checkBalance(
             bridgeTrade.fromBlockchain,
@@ -249,7 +246,7 @@ export class BridgeService {
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
-        this.checkSettings(bridgeTrade.fromBlockchain);
+        this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
         await this.checkBalance(
           bridgeTrade.fromBlockchain,
@@ -294,24 +291,6 @@ export class BridgeService {
     if (balance.lt(amountInWei)) {
       const formattedTokensBalance = balance.div(10 ** decimals).toFixed();
       throw new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed());
-    }
-  }
-
-  private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
-    if (!this.providerConnectorService.isProviderActive) {
-      throw new WalletError();
-    }
-
-    if (!this.providerConnectorService.address) {
-      throw new AccountError();
-    }
-
-    if (
-      this.providerConnectorService.network?.name !== blockchain &&
-      (!this.useTestingModeService.isTestingMode.getValue() ||
-        this.providerConnectorService.network?.name !== `${blockchain}_TESTNET`)
-    ) {
-      throw new NetworkError(blockchain);
     }
   }
 }

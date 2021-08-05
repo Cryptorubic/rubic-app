@@ -10,11 +10,6 @@ import {
 import { map, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
-import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { from, Observable, of } from 'rxjs';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -69,21 +64,7 @@ export class CommonOneinchService {
     selectedBlockchain: BLOCKCHAIN_NAME,
     providerConnector: ProviderConnectorService
   ): void {
-    if (!providerConnector.isProviderActive) {
-      throw new WalletError();
-    }
-    if (!providerConnector.address) {
-      throw new AccountError();
-    }
-    if (providerConnector.networkName !== selectedBlockchain) {
-      if (providerConnector.networkName !== `${selectedBlockchain}_TESTNET`) {
-        if (providerConnector.providerName === WALLET_NAME.METAMASK) {
-          throw new NetworkError(selectedBlockchain);
-        } else {
-          throw new NotSupportedNetworkError(selectedBlockchain);
-        }
-      }
-    }
+    providerConnector.checkSettings(selectedBlockchain);
   }
 
   public async checkBalance(trade: InstantTrade, web3: Web3Public, address: string): Promise<void> {
