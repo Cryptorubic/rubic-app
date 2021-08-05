@@ -68,13 +68,31 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  public readonly TRADE_STATUS = TRADE_STATUS;
+
+  public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  private readonly onCalculateTrade: Subject<void>;
+
+  private bridgeTokensPairs: BlockchainsBridgeTokens[];
+
+  public toBlockchain: BLOCKCHAIN_NAME;
+
+  public isBridgeSupported: boolean;
+
+  public fromAmount: BigNumber;
+
   public minError: false | number;
 
   public maxError: false | number;
 
-  public TRADE_STATUS = TRADE_STATUS;
+  public toWalletAddress: string;
 
-  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+  public tronAddress: string;
+
+  public needApprove: boolean;
+
+  public tradeStatus: TRADE_STATUS;
 
   private formSubscription$: Subscription;
 
@@ -87,28 +105,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   private bridgeTokensSubscription$: Subscription;
 
   private calculateTradeSubscription$: Subscription;
-
-  private fromBlockchain: BLOCKCHAIN_NAME;
-
-  public toBlockchain: BLOCKCHAIN_NAME;
-
-  public needApprove: boolean;
-
-  public fromAmount: BigNumber;
-
-  public minmaxError = false;
-
-  public tradeStatus: TRADE_STATUS;
-
-  public isBridgeSupported;
-
-  public toWalletAddress: string;
-
-  public tronAddress: string;
-
-  private readonly onCalculateTrade: Subject<void>;
-
-  private bridgeTokensPairs: BlockchainsBridgeTokens[];
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -125,7 +121,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   get whatIsBlockchain(): BlockchainInfo {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     const nonEthBlockchain =
       toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
     return BLOCKCHAINS_INFO[nonEthBlockchain];
@@ -186,18 +182,18 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(form: SwapFormInput): void {
-    this.fromBlockchain = form.fromBlockchain;
     this.toBlockchain = form.toBlockchain;
     this.fromAmount = form.fromAmount;
+    this.cdr.detectChanges();
 
     this.setToWalletAddress();
-    this.checkMinMaxAmounts();
 
     this.conditionalCalculate();
   }
 
   private setToWalletAddress(): void {
-    if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
+    const { toBlockchain } = this.swapFormService.inputValue;
+    if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
       this.toWalletAddress = this.tronAddress;
     } else {
       this.toWalletAddress = this.authService.user?.address;
@@ -242,6 +238,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
       return;
     }
+
+    this.checkMinMaxAmounts();
 
     this.onCalculateTrade.next();
   }
@@ -400,6 +398,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const maxAmount = this.getMinMaxAmounts('maxAmount');
     this.maxError = fromAmount?.gt(maxAmount) ? maxAmount : false;
     this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
+    this.cdr.detectChanges();
   }
 
   private getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
