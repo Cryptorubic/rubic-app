@@ -25,6 +25,18 @@ export class SwapFormService implements FormService {
     return this.input.valueChanges;
   }
 
+  public get output(): FormGroup<SwapFormOutput> {
+    return this.commonTrade.controls.output;
+  }
+
+  public get outputValue(): SwapFormOutput {
+    return this.output.value;
+  }
+
+  public get outputValueChanges(): Observable<SwapFormOutput> {
+    return this.output.valueChanges;
+  }
+
   constructor() {
     this.commonTrade = new FormGroup<SwapForm>({
       input: new FormGroup<SwapFormInput>({

@@ -278,10 +278,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    return this.swapsService.getMinMaxAmounts(amountType);
-  }
-
   public onTokenInputAmountChange(amount: string): void {
     if ((this.selectedFromAmount || amount) && !this.selectedFromAmount?.eq(amount)) {
       this.swapFormService.commonTrade.controls.input.patchValue({

@@ -152,7 +152,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.setupCalculatingTrades();
-
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.formChangesSubscription$ = this.swapFormService.inputValueChanges
@@ -261,7 +260,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private conditionalCalculate(): Promise<void> {
+  private conditionalCalculate(): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
 
     if (fromBlockchain !== toBlockchain) {
@@ -470,6 +469,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
+
+      this.tokensService.recalculateUsersBalance();
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,

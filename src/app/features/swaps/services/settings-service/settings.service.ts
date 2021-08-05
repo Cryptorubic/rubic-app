@@ -43,6 +43,18 @@ export class SettingsService {
     return this.instantTrade.valueChanges;
   }
 
+  public get bridge(): AbstractControlOf<BridgeSettingsForm> {
+    return this.settingsForm.controls.BRIDGE;
+  }
+
+  public get bridgeValue(): BridgeSettingsForm {
+    return this.bridge.value;
+  }
+
+  public get bridgeValueChanges(): Observable<BridgeSettingsForm> {
+    return this.bridge.valueChanges;
+  }
+
   constructor(private readonly storeService: StoreService) {
     this.defaultSettings = {
       autoSlippageTolerance: true,
