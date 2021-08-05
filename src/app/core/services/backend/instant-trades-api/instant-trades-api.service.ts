@@ -12,9 +12,9 @@ import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
-import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 import { QueryParamsService } from '../../query-params/query-params.service';
@@ -85,8 +85,8 @@ export class InstantTradesApiService {
         provider,
         from_token: trade.from.token.address,
         to_token: trade.to.token.address,
-        from_amount: Web3PublicService.amountToWei(trade.from.amount, trade.from.token.decimals),
-        to_amount: Web3PublicService.amountToWei(trade.to.amount, trade.to.token.decimals)
+        from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
+        to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
       };
     } else {
       tradeInfo = {
@@ -139,7 +139,7 @@ export class InstantTradesApiService {
       return {
         blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
         symbol: token.symbol,
-        amount: Web3PublicService.weiToAmount(amount, token.decimals).toFixed(),
+        amount: Web3Public.fromWei(amount, token.decimals).toFixed(),
         image: token.image
       };
     }
