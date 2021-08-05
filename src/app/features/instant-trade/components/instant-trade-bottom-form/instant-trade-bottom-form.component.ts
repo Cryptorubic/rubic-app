@@ -36,6 +36,7 @@ import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -190,6 +191,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     if (!this.allowTrade) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
+      this.selectedProvider = null;
       this.cdr.detectChanges();
       return;
     }
@@ -415,7 +417,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public getUsdPrice(): string {
     const tradeTo = this.selectedProvider.trade.to;
-    return tradeTo.amount.multipliedBy(tradeTo.token.price).toFixed(2);
+    return tradeTo.amount.multipliedBy(tradeTo.token.price).toFormat(2, BIG_NUMBER_FORMAT);
   }
 
   private setProviderState(

@@ -71,6 +71,10 @@ $green: rgb(74, 169, 86);
     }
   }
 
+  &__amount {
+    text-align: right;
+  }
+
   &__token-amount {
     max-width: 300px;
     margin-bottom: 13px;
