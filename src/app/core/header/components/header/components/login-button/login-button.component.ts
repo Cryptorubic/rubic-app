@@ -2,7 +2,7 @@ import { Component, Inject, Injector, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TuiAppearance, TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component';
 
@@ -14,7 +14,7 @@ import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component'
 export class LoginButtonComponent {
   public $currentUser: Observable<UserInterface>;
 
-  @Input() appearance: string;
+  @Input() appearance: TuiAppearance | string = 'primary';
 
   constructor(
     private readonly authService: AuthService,

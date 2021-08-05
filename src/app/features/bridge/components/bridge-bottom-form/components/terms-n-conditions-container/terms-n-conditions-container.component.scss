@@ -12,14 +12,11 @@
   font-size: 14px;
   text-align: center;
 
-  a {
+  &__address {
     display: block;
 
     color: var(--form-rubic-text-color);
     font-weight: 400;
-  }
-
-  &__address {
     word-break: break-all;
   }
 }
