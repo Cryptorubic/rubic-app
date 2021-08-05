@@ -95,9 +95,9 @@ export class CryptoTapService {
       .get(`estimate_amount/`, { fsym: fromToken.symbol, tsym: toToken.symbol }, this.baseApiUrl)
       .pipe(
         map((response: EstimatedAmountResponse) => ({
-          fromAmount: Web3PublicService.weiToAmount(response.from_amount, fromToken.decimals),
-          toAmount: Web3PublicService.weiToAmount(response.to_amount, toToken.decimals),
-          fee: Web3PublicService.weiToAmount(response.fee_amount, fromToken.decimals)
+          fromAmount: Web3Public.fromWei(response.from_amount, fromToken.decimals),
+          toAmount: Web3Public.fromWei(response.to_amount, toToken.decimals),
+          fee: Web3Public.fromWei(response.fee_amount, fromToken.decimals)
         }))
       );
   }
@@ -120,10 +120,7 @@ export class CryptoTapService {
         token.address
       );
       if (tokensBalance.lt(amountInWei)) {
-        const formattedTokensBalance = Web3PublicService.weiToAmount(
-          tokensBalance,
-          token.decimals
-        ).toFixed();
+        const formattedTokensBalance = Web3Public.fromWei(tokensBalance, token.decimals).toFixed();
         throw new InsufficientFundsError(
           token.symbol,
           formattedTokensBalance,
@@ -156,7 +153,7 @@ export class CryptoTapService {
             'deposit',
             [toNetwork],
             {
-              value: Web3PublicService.amountToWei(fromAmount, fromToken.decimals),
+              value: Web3Public.toWei(fromAmount, fromToken.decimals),
               onTransactionHash,
               gas: estimatedGas
             }

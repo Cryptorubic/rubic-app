@@ -7,6 +7,7 @@ import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/Blockchain
 import { AbiItem } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -15,10 +16,6 @@ import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.s
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
-
-  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1) {
-    return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
-  }
 
   constructor(
     private web3: Web3,
@@ -50,6 +47,27 @@ export class Web3Public {
    */
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
+
+  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1) {
+    return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
+  }
+
+  static toWei(amount: BigNumber | string | number, decimals = 18): string {
+    return new BigNumber(amount || 0).times(new BigNumber(10).pow(decimals)).toFixed(0);
+  }
+
+  static fromWei(amountInWei: BigNumber | string | number, decimals = 18): BigNumber {
+    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
+  }
+
+  public static addressToBytes32(address: string): string {
+    if (address.slice(0, 2) !== '0x' || address.length !== 42) {
+      console.error('Wrong address format');
+      throw new UndefinedError();
+    }
+
+    return `0x${address.slice(2).padStart(64, '0')}`;
+  }
 
   /**
    * @description gets account balance in Eth units
