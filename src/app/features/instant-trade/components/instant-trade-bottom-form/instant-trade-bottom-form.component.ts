@@ -73,9 +73,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
-  private currentFromToken: TokenAmount;
+  private fromToken: TokenAmount;
 
-  private currentToToken: TokenAmount;
+  private toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
@@ -170,15 +170,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.currentBlockchain === form.fromBlockchain &&
       this.fromAmount &&
       this.fromAmount.eq(form.fromAmount) &&
-      this.tokensService.isOnlyBalanceUpdated(this.currentFromToken, form.fromToken) &&
-      this.tokensService.isOnlyBalanceUpdated(this.currentToToken, form.toToken)
+      this.tokensService.isOnlyBalanceUpdated(this.fromToken, form.fromToken) &&
+      this.tokensService.isOnlyBalanceUpdated(this.toToken, form.toToken)
     ) {
       return;
     }
 
     this.fromAmount = form.fromAmount;
-    this.currentFromToken = form.fromToken;
-    this.currentToToken = form.toToken;
+    this.fromToken = form.fromToken;
+    this.toToken = form.toToken;
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&

@@ -26,6 +26,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -76,9 +77,15 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private bridgeTokensPairs: BlockchainsBridgeTokens[];
 
+  private fromBlockchain: BLOCKCHAIN_NAME;
+
   public toBlockchain: BLOCKCHAIN_NAME;
 
   public isBridgeSupported: boolean;
+
+  private fromToken: TokenAmount;
+
+  private toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
@@ -165,11 +172,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.setToWalletAddress();
       });
 
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
+    this.userSubscription$ = this.authService.getCurrentUser().subscribe(() => {
       this.setToWalletAddress();
-      if (user?.address) {
-        this.conditionalCalculate();
-      }
     });
   }
 
@@ -182,7 +186,21 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(form: SwapFormInput): void {
+    if (
+      this.fromBlockchain === form.fromBlockchain &&
+      this.toBlockchain === form.toBlockchain &&
+      this.fromAmount &&
+      this.fromAmount.eq(form.fromAmount) &&
+      this.tokensService.isOnlyBalanceUpdated(this.fromToken, form.fromToken) &&
+      this.tokensService.isOnlyBalanceUpdated(this.toToken, form.toToken)
+    ) {
+      return;
+    }
+
+    this.fromBlockchain = form.fromBlockchain;
     this.toBlockchain = form.toBlockchain;
+    this.fromToken = form.fromToken;
+    this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
 
