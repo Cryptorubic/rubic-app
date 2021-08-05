@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { AbstractControlOf } from '@ngneat/reactive-forms/lib/types';
+import { Observable } from 'rxjs';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -28,6 +30,18 @@ export class SettingsService {
   private readonly defaultSettings: ItSettingsForm;
 
   public settingsForm: FormGroup<SettingsForm>;
+
+  public get instantTrade(): AbstractControlOf<ItSettingsForm> {
+    return this.settingsForm.controls.INSTANT_TRADE;
+  }
+
+  public get instantTradeValue(): ItSettingsForm {
+    return this.instantTrade.value;
+  }
+
+  public get instantTradeValueChanges(): Observable<ItSettingsForm> {
+    return this.instantTrade.valueChanges;
+  }
 
   constructor(private readonly storeService: StoreService) {
     this.defaultSettings = {

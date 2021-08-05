@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { Observable } from 'rxjs';
 import { SwapForm, SwapFormInput, SwapFormOutput } from '../../models/SwapForm';
 
 @Injectable({
@@ -11,6 +12,18 @@ import { SwapForm, SwapFormInput, SwapFormOutput } from '../../models/SwapForm';
 })
 export class SwapFormService implements FormService {
   public commonTrade: FormGroup<SwapForm>;
+
+  public get input(): FormGroup<SwapFormInput> {
+    return this.commonTrade.controls.input;
+  }
+
+  public get inputValue(): SwapFormInput {
+    return this.input.value;
+  }
+
+  public get inputValueChanges(): Observable<SwapFormInput> {
+    return this.input.valueChanges;
+  }
 
   constructor() {
     this.commonTrade = new FormGroup<SwapForm>({

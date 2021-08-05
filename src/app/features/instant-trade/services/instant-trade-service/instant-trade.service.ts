@@ -19,7 +19,6 @@ import { ItProvider } from 'src/app/features/instant-trade/services/instant-trad
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TranslateService } from '@ngx-translate/core';
-import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-bsc-service/sushi-swap-bsc.service';
@@ -98,6 +97,7 @@ export class InstantTradeService {
   }
 
   public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
+    let transactionHash: string;
     try {
       const receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
         trade,
@@ -109,6 +109,7 @@ export class InstantTradeService {
                 autoClose: false
               })
               .subscribe();
+            transactionHash = hash;
 
             await this.postTrade(hash, provider, trade);
           }
@@ -116,7 +117,7 @@ export class InstantTradeService {
       );
 
       this.modalShowing.unsubscribe();
-      this.updateTrade(receipt.transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
+      this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
       this.notificationsService
         .show(this.translateService.instant('notifications.successfulTradeTitle'), {
           status: TuiNotification.Success
@@ -129,7 +130,7 @@ export class InstantTradeService {
           blockchain: trade.blockchain,
           walletAddress: receipt.from,
           trade,
-          txHash: receipt.transactionHash
+          txHash: transactionHash
         })
         .catch(_err => {
           const error = new CustomError('Notify Instant Trade bot failed');
@@ -138,12 +139,9 @@ export class InstantTradeService {
         });
     } catch (err) {
       this.modalShowing?.unsubscribe();
+      this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.REJECTED);
 
-      if (err instanceof TransactionRevertedError) {
-        console.error(err);
-      } else {
-        this.errorService.catch$(err);
-      }
+      throw err;
     }
   }
 

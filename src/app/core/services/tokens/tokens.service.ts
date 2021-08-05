@@ -187,4 +187,14 @@ export class TokensService {
       tap((token: TokenAmount) => this._tokens.next(this._tokens.getValue().push(token)))
     );
   }
+
+  public isOnlyBalanceUpdated(prevToken: TokenAmount, nextToken: TokenAmount): boolean {
+    if (!prevToken || !nextToken) {
+      return false;
+    }
+    return (
+      prevToken.blockchain === nextToken.blockchain &&
+      prevToken.address.toLowerCase() === nextToken.address.toLowerCase()
+    );
+  }
 }

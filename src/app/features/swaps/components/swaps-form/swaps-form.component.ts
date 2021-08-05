@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -51,6 +51,15 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get loadingStatus(): RefreshButtonStatus {
+    return this._loadingStatus;
+  }
+
+  public set loadingStatus(status: RefreshButtonStatus) {
+    this._loadingStatus = status;
+    this.cdr.detectChanges();
+  }
+
   private _supportedTokens: SupportedTokensInfo;
 
   private _bridgeTokensPairs: BlockchainsBridgeTokens[];
@@ -69,7 +78,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  public loadingStatus: RefreshButtonStatus = 'stopped';
+  private _loadingStatus: RefreshButtonStatus = 'stopped';
 
   private formSubscription$: Subscription;
 
@@ -84,7 +93,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
