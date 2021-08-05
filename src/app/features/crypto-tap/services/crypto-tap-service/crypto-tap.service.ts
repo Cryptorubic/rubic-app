@@ -109,19 +109,19 @@ export class CryptoTapService {
     const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
     if (!this.providerConnectorService.isProviderActive) {
-      this.errorService.catch$(new WalletError());
+      this.errorService.catch(new WalletError());
       return false;
     }
 
     if (!this.authService.user?.address) {
-      this.errorService.catch$(new AccountError());
+      this.errorService.catch(new AccountError());
       return false;
     }
     if (
       this.providerConnectorService.networkName !== blockchain &&
       (this.providerConnectorService.networkName !== `${blockchain}_TESTNET` || !this.isTestingMode)
     ) {
-      this.errorService.catch$(new NetworkError(blockchain));
+      this.errorService.catch(new NetworkError(blockchain));
       return false;
     }
 

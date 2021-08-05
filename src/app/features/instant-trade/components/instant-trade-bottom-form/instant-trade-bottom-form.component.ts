@@ -247,7 +247,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
       this.setupControllers(tradeData, approveData, bestProviderIndex);
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
     }
     this.onRefreshStatusChange.emit('stopped');
   }
@@ -306,7 +306,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async createTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     if (providerIndex === -1) {
-      this.errorService.throw$(new NoSelectedProviderError());
+      this.errorService.throw(new NoSelectedProviderError());
     }
     const provider = this.providerControllers[providerIndex];
     const currentTradeState = this.tradeStatus;
@@ -345,7 +345,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        this.errorService.catch$(new NotSupportedItNetwork());
+        this.errorService.catch(new NotSupportedItNetwork());
     }
   }
 
@@ -419,7 +419,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async approveTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     if (providerIndex === -1) {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.catch(new NoSelectedProviderError());
     }
     const provider = this.providerControllers[providerIndex];
 
@@ -441,7 +441,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         needApprove: false
       };
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
 
       this.providerControllers[providerIndex] = {
         ...this.providerControllers[providerIndex],
@@ -470,7 +470,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       await this.conditionalCalculate(form);
       this.cdr.detectChanges();
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
     }
   }
 

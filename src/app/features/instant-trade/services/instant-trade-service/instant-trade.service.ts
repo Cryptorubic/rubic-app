@@ -142,7 +142,7 @@ export class InstantTradeService {
       if (err instanceof TransactionRevertedError) {
         console.error(err);
       } else {
-        this.errorService.catch$(err);
+        this.errorService.catch(err);
       }
     }
   }

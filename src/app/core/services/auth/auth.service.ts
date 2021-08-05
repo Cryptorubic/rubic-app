@@ -161,7 +161,7 @@ export class AuthService {
         error = new SignRejectError();
       }
       this.headerStore.setWalletsLoadingStatus(false);
-      this.errorService.catch$(error);
+      this.errorService.catch(error);
       this.$currentUser.next(null);
       this.isAuthProcess = false;
     }

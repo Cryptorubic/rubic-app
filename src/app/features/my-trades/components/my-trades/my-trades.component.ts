@@ -174,7 +174,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
           }));
           this.tableData$.next(tableData);
 
-          this.errorsService.catch$(err);
+          this.errorsService.catch(err);
         }
       );
   }

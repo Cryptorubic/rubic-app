@@ -148,7 +148,7 @@ export class ProviderConnectorService {
       }
       this.providerName = provider;
     } catch (e) {
-      this.errorService.catch$(e);
+      this.errorService.catch(e);
     }
   }
 
@@ -200,10 +200,10 @@ export class ProviderConnectorService {
           await this.addChain(networkName);
           await this.provider.switchChain(chainId);
         } catch (err) {
-          this.errorService.catch$(err);
+          this.errorService.catch(err);
         }
       } else {
-        this.errorService.catch$(switchError);
+        this.errorService.catch(switchError);
       }
     }
   }

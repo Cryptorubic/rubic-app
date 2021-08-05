@@ -197,7 +197,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           }
           this.cdr.detectChanges();
         },
-        err => this.errorsService.catch$(err)
+        err => this.errorsService.catch(err)
       );
   }
 
@@ -240,7 +240,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
         err => {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch$(err);
+          this.errorsService.catch(err);
         }
       );
   }
@@ -281,7 +281,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
         err => {
           tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.errorsService.catch$(err);
+          this.errorsService.catch(err);
         }
       );
   }

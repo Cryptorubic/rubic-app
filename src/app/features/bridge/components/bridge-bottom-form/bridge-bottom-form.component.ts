@@ -264,7 +264,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       if (fee === null) {
         this.tradeStatus = TRADE_STATUS.DISABLED;
         this.cdr.detectChanges();
-        this.errorsService.catch$(new UndefinedError());
+        this.errorsService.catch(new UndefinedError());
         return;
       }
 
@@ -329,7 +329,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         err => {
           tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.errorsService.catch$(err);
+          this.errorsService.catch(err);
           this.cdr.detectChanges();
         }
       );
@@ -374,7 +374,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         err => {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch$(err);
+          this.errorsService.catch(err);
           this.cdr.detectChanges();
         }
       );

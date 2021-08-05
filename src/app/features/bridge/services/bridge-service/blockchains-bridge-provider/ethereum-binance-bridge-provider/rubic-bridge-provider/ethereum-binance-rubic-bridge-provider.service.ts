@@ -180,7 +180,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const spenderAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
 
     if (token.symbol !== 'RBC') {
-      this.errorService.throw$(new WrongToken());
+      this.errorService.throw(new WrongToken());
     }
 
     return this.needApprove(bridgeTrade).pipe(
@@ -202,7 +202,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const { token } = bridgeTrade;
 
     if (token.symbol !== 'RBC') {
-      this.errorService.throw$(new WrongToken());
+      this.errorService.throw(new WrongToken());
     }
 
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];

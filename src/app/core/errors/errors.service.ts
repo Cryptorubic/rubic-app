@@ -15,36 +15,17 @@ export class ErrorsService {
     private translateService: TranslateService
   ) {}
 
-  public throw$(error: RubicError): never {
-    // tslint:disable-next-line:no-console
-    console.debug(error);
-
-    const options = {
-      label: this.translateService.instant('common.error'),
-      status: TuiNotification.Error,
-      data: {},
-      autoClose: 7000
-    };
-
-    if (error?.type === 'component') {
-      const errorComponent = new PolymorpheusComponent(
-        error.component || UndefinedErrorComponent,
-        this.injector
-      );
-      options.data = error?.data;
-      this.notificationsService.show(errorComponent, options).subscribe();
-      throw error;
-    }
-
-    const text = error?.translateKey
-      ? this.translateService.instant(error.translateKey)
-      : error.message;
-    this.notificationsService.show(text, options).subscribe();
+  /**
+   * @deprecated
+   * @param error
+   */
+  public throw(error: RubicError): never {
+    this.catch(error);
 
     throw error;
   }
 
-  public catch$(error: RubicError): void {
+  public catch(error: RubicError): void {
     console.debug(error);
 
     if (error.displayError === false || error.message.includes('Attempt to use a destroyed view')) {
