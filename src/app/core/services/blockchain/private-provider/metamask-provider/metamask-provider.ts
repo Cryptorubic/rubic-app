@@ -6,6 +6,7 @@ import { MetamaskError } from 'src/app/core/errors/models/provider/MetamaskError
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
+import { CoinbaseExtensionError } from 'src/app/core/errors/models/provider/CoinbaseExtensionError';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -50,6 +51,11 @@ export class MetamaskProvider extends PrivateProvider {
     if (!ethereum) {
       throw new MetamaskError();
     }
+
+    if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
+      throw new CoinbaseExtensionError();
+    }
+
     web3.setProvider(ethereum);
     this.core = ethereum;
     this.core.on('chainChanged', (chain: string) => {

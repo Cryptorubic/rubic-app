@@ -57,8 +57,8 @@ export class WalletsModalComponent {
         name: 'Coinbase wallet',
         value: WALLET_NAME.WALLET_LINK,
         img: './assets/images/icons/wallets/coinbase.png',
-        desktopOnly: true,
-        display: false
+        desktopOnly: false,
+        display: true
       },
       {
         name: 'WalletConnect',

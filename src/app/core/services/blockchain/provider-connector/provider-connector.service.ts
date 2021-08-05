@@ -114,38 +114,42 @@ export class ProviderConnectorService {
   }
 
   public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<void> {
-    switch (provider) {
-      case WALLET_NAME.WALLET_LINK: {
-        this.provider = new WalletLinkProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService,
-          chainId
-        );
-        break;
+    try {
+      switch (provider) {
+        case WALLET_NAME.WALLET_LINK: {
+          this.provider = new WalletLinkProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService,
+            chainId
+          );
+          break;
+        }
+        case WALLET_NAME.WALLET_CONNECT: {
+          this.provider = new WalletConnectProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService
+          );
+          break;
+        }
+        case WALLET_NAME.METAMASK:
+        default: {
+          this.provider = new MetamaskProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService
+          ) as PrivateProvider;
+          await (this.provider as MetamaskProvider).setupDefaultValues();
+        }
       }
-      case WALLET_NAME.WALLET_CONNECT: {
-        this.provider = new WalletConnectProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        );
-        break;
-      }
-      case WALLET_NAME.METAMASK:
-      default: {
-        this.provider = new MetamaskProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        ) as PrivateProvider;
-        await (this.provider as MetamaskProvider).setupDefaultValues();
-      }
+      this.providerName = provider;
+    } catch (e) {
+      this.errorService.catch$(e);
     }
-    this.providerName = provider;
   }
 
   public async connectDefaultProvider(): Promise<void> {

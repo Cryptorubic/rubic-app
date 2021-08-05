@@ -37,6 +37,7 @@
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
     "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
+    "removeCoinbaseExtension": "La extensión del navegador Coinbase entra en conflicto con la extensión Metamask. Desactive o elimine la extensión Conibase para continuar, o elija otra billetera para conectarse.",
     "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
     "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del puente Binance de 3 operaciones como máximo en 30 minutos. Espere y vuelva a intentarlo más tarde. Si aún tiene problemas, comuníquese con nuestro",
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
