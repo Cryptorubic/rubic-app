@@ -99,7 +99,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public minmaxError = false;
 
-  public tradeStatus;
+  public tradeStatus: TRADE_STATUS;
 
   public isBridgeSupported;
 

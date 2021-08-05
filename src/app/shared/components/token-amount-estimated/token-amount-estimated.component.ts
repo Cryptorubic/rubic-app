@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
+import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 
 @Component({
   selector: 'app-amount-estimated',
@@ -20,14 +21,20 @@ import BigNumber from 'bignumber.js';
 export class AmountEstimatedComponent implements OnInit, OnDestroy {
   @Input() set loading(value: boolean) {
     this._loading = value;
-    this.hidden = false;
+    if (value) {
+      this.hidden = false;
+    }
+  }
+
+  get loading(): boolean {
+    return this._loading;
   }
 
   @Input() disabled: boolean;
 
   @Input() formService: FormService;
 
-  public _loading: boolean;
+  private _loading: boolean;
 
   public usd: string;
 
@@ -45,22 +52,24 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.formSubscription$ = this.formService.commonTrade.controls.output.valueChanges.subscribe(
-      output => {
-        if (output.toAmount.isNaN()) {
-          this.hidden = true;
-          this.cdr.detectChanges();
-          return;
-        }
-        this.hidden = false;
-        const { toToken } = this.formService.commonTrade.controls.input.value;
-        this.tokensAmount = output.toAmount.toFixed();
-        this.usd = toToken?.price && output.toAmount.multipliedBy(toToken.price).toFixed(2);
-        // @ts-ignore
-        this.fee = output.fee;
+    this.formSubscription$ = this.formService.outputValueChanges.subscribe(form => {
+      if (!form.toAmount || form.toAmount.isNaN()) {
+        this.hidden = true;
         this.cdr.detectChanges();
+        return;
       }
-    );
+
+      this.hidden = false;
+
+      const { toToken } = this.formService.inputValue;
+      const toAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
+      this.tokensAmount = toAmount.toFixed();
+      this.usd = toToken?.price && toAmount.multipliedBy(toToken.price).toFixed(2);
+
+      this.fee = (form as CryptoTapFormOutput).fee;
+
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnDestroy() {

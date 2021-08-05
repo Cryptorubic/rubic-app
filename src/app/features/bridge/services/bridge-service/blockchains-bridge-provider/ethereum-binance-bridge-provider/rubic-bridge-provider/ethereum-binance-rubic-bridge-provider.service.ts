@@ -18,6 +18,7 @@ import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { AbiItem } from 'web3-utils';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 import EthereumContractAbi from './abi/EthereumContractAbi';
 import BinanceContractAbi from './abi/BinanceContractAbi';
@@ -30,7 +31,7 @@ interface RubicTrade {
   };
   amount: BigNumber;
   swapContractAddress: string;
-  swapContractAbi: any[];
+  swapContractAbi: AbiItem[];
 }
 
 @Injectable()
