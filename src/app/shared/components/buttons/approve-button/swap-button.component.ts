@@ -271,7 +271,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   private async checkInsufficientFundsError(): Promise<void> {
-    if (!this._fromAmount || !this.fromToken) {
+    if (!this._fromAmount || !this.fromToken || !this.authService.user.address) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
       return;
