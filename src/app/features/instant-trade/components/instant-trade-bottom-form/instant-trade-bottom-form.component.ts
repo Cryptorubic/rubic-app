@@ -31,12 +31,12 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -53,7 +53,7 @@ interface CalculationResult {
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   @Input() onRefreshTrade: Subject<void>;
 
-  @Output() onRefreshStatusChange = new EventEmitter<RefreshButtonStatus>();
+  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Input() loading: boolean;
 
@@ -170,7 +170,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
 
     this.refreshTradeSubscription$ = this.onRefreshTrade.subscribe(() =>
-      this.onCalculateTrade.next()
+      this.conditionalCalculate()
     );
   }
 
@@ -273,11 +273,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      this.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
-      this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
+      !this.allowTrade ||
+      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
-      this.onCalculateTrade.next();
+      return;
     }
+
+    this.onCalculateTrade.next();
   }
 
   private setupCalculatingTrades(): void {
@@ -288,16 +291,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTradeSubscription$ = this.onCalculateTrade
       .pipe(
         switchMap(() => {
-          if (
-            !this.allowTrade ||
-            this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-            this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
-          ) {
-            return of(null);
-          }
-
           this.prepareControllers();
-          this.onRefreshStatusChange.emit('refreshing');
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
@@ -312,12 +307,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
             map(([approveData, tradeData]) => {
               this.setupControllers(tradeData, approveData);
-              this.onRefreshStatusChange.emit('stopped');
-            }),
-            catchError(err => {
-              this.errorService.catch$(err);
-              this.onRefreshStatusChange.emit('stopped');
-              return of(null);
+              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             })
           );
         })
@@ -476,7 +466,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       providerIndex,
       INSTANT_TRADES_STATUS.TX_IN_PROGRESS
     );
-    this.onRefreshStatusChange.emit('in progress');
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
@@ -498,7 +488,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       );
     }
     this.cdr.detectChanges();
-    this.onRefreshStatusChange.emit('stopped');
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
   }
 
   public async createTrade(): Promise<void> {
@@ -513,7 +503,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       providerIndex,
       INSTANT_TRADES_STATUS.TX_IN_PROGRESS
     );
-    this.onRefreshStatusChange.emit('in progress');
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
       await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
@@ -521,7 +511,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tokensService.recalculateUsersBalance();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.onCalculateTrade.next();
+      this.conditionalCalculate();
     } catch (err) {
       this.errorService.catch$(err);
 
@@ -531,7 +521,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         INSTANT_TRADES_STATUS.COMPLETED
       );
       this.cdr.detectChanges();
-      this.onRefreshStatusChange.emit('stopped');
+      this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }
   }
 }

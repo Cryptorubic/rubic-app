@@ -21,7 +21,7 @@ import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
-import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -36,7 +36,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public loading = true;
 
-  public loadingStatus: RefreshButtonStatus;
+  public loadingStatus: REFRESH_BUTTON_STATUS;
 
   public isDesktop: boolean;
 
@@ -62,7 +62,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
-    this.loadingStatus = 'refreshing';
+    this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
     this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address || null;
@@ -70,7 +70,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
     this.isDataUpdatingSubscription$ = this.myTradesService.isDataUpdating$.subscribe(() => {
       this.loading = true;
-      this.loadingStatus = 'refreshing';
+      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
       this.cdr.detectChanges();
     });
 
@@ -106,7 +106,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.loading = false;
-      this.loadingStatus = 'stopped';
+      this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
       this.cdr.detectChanges();
     });
   }
@@ -114,7 +114,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   public refreshTable(): void {
     if (!this.loading) {
       this.loading = true;
-      this.loadingStatus = 'refreshing';
+      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
       this.myTradesService.updateTableTrades();
     }
   }

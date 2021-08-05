@@ -14,7 +14,7 @@ import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -51,11 +51,11 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  public get loadingStatus(): RefreshButtonStatus {
+  public get loadingStatus(): REFRESH_BUTTON_STATUS {
     return this._loadingStatus;
   }
 
-  public set loadingStatus(status: RefreshButtonStatus) {
+  public set loadingStatus(status: REFRESH_BUTTON_STATUS) {
     this._loadingStatus = status;
     this.cdr.detectChanges();
   }
@@ -78,7 +78,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  private _loadingStatus: RefreshButtonStatus = 'stopped';
+  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
   private formSubscription$: Subscription;
 
