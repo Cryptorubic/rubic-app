@@ -96,7 +96,7 @@ const bnb: TokenAmount = {
   amount: new BigNumber(0)
 };
 
-const wrbc: TokenAmount = {
+const brbc: TokenAmount = {
   name: 'Wrapped Rubic',
   symbol: 'BRBC',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -122,4 +122,4 @@ const matic: TokenAmount = {
   amount: new BigNumber(0)
 };
 
-export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb, wrbc, matic];
+export const coingeckoTestTokens = [eth, weenus, yeenus, xeenus, wsatt, rbc, bnb, brbc, matic];

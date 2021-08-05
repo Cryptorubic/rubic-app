@@ -36,15 +36,24 @@ interface RubicTrade {
 
 @Injectable()
 export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridgeProvider {
-  private static readonly RubicMaxAmount = 50000;
-
-  private isTestingMode = false;
-
   private readonly apiUrl = 'https://swap.rubic.exchange/api/v1/';
 
-  private EthereumSmartContractAddress = '0x8E3BCC334657560253B83f08331d85267316e08a';
-
-  private BinanceSmartContractAddress = '0xE77b0E832A58aFc2fcDaed060E8D701d97533086';
+  private rubicConfig = {
+    [BLOCKCHAIN_NAME.ETHEREUM]: {
+      minAmount: 200,
+      maxAmount: 50000,
+      swapContractAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
+      swapContractAbi: EthereumContractAbi,
+      rubicTokenAddress: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'
+    },
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+      minAmount: 200,
+      maxAmount: 50000,
+      swapContractAddress: '0xE77b0E832A58aFc2fcDaed060E8D701d97533086',
+      swapContractAbi: BinanceContractAbi,
+      rubicTokenAddress: '0x8e3bcc334657560253b83f08331d85267316e08a'
+    }
+  };
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -61,52 +70,51 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
     useTestingMode.isTestingMode.subscribe(value => {
       if (value) {
-        this.EthereumSmartContractAddress = '0xd806e441b27f4f827710469b0acb4e045e62b676';
-        this.BinanceSmartContractAddress = '0x17caca02ddf472f62bfed5165facf7a6b5c72926';
-        this.isTestingMode = true;
+        this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM] = {
+          ...this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM],
+          swapContractAddress: '0xd806e441b27f4f827710469b0acb4e045e62b676',
+          rubicTokenAddress: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9'
+        };
+        this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN] = {
+          ...this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
+          swapContractAddress: '0x17caca02ddf472f62bfed5165facf7a6b5c72926',
+          rubicTokenAddress: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8'
+        };
+
+        this.loadRubicTokenInfo();
       }
     });
   }
 
-  private loadRubicTokenInfo(): void {
-    this.httpClient
-      .get(`${this.apiUrl}dex/Rubic/`)
-      .pipe(
-        map((response: any) => {
-          const ethToken = response.tokens.find(token => token.symbol === 'RBC');
-          const bscToken = response.tokens.find(token => token.symbol === 'BRBC');
-          return {
-            symbol: 'RBC',
-            image: '',
-            rank: 0,
+  private async loadRubicTokenInfo(): Promise<void> {
+    const fees = await this.fetchFees();
 
-            blockchainToken: {
-              [BLOCKCHAIN_NAME.ETHEREUM]: {
-                address: ethToken.token_address,
-                name: 'Rubic',
-                symbol: ethToken.symbol,
-                decimals: ethToken.decimals,
+    const bridgeToken = {
+      symbol: 'RBC',
+      image: '',
+      rank: 0,
 
-                minAmount: response.min_swap_amount,
-                maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
-              },
-              [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-                address: bscToken.token_address,
-                name: 'Rubic',
-                symbol: bscToken.symbol,
-                decimals: bscToken.decimals,
-
-                minAmount: response.min_swap_amount,
-                maxAmount: EthereumBinanceRubicBridgeProviderService.RubicMaxAmount
-              }
-            } as BlockchainsTokens,
-
-            fromEthFee: bscToken.fee,
-            toEthFee: ethToken.fee
-          };
-        })
-      )
-      .subscribe(rubicToken => this.tokens$.next(List([rubicToken])));
+      blockchainToken: {
+        [BLOCKCHAIN_NAME.ETHEREUM]: {
+          address: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].rubicTokenAddress,
+          name: 'Rubic',
+          symbol: 'RBC',
+          decimals: 18,
+          minAmount: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].minAmount,
+          maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].maxAmount
+        },
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+          address: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].rubicTokenAddress,
+          name: 'Rubic',
+          symbol: 'BRBC',
+          decimals: 18,
+          minAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].minAmount,
+          maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].maxAmount
+        }
+      } as BlockchainsTokens,
+      ...fees
+    };
+    this.tokens$.next(List([bridgeToken]));
   }
 
   public getProviderType(): BRIDGE_PROVIDER {
@@ -157,11 +165,9 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
     return from(
       web3Public.getAllowance(
-        tokenFrom.address,
+        this.rubicConfig[bridgeTrade.fromBlockchain].rubicTokenAddress,
         this.providerConnectorService.address,
-        bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
-          ? this.EthereumSmartContractAddress
-          : this.BinanceSmartContractAddress
+        this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress
       )
     ).pipe(
       map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
@@ -171,10 +177,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
     const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
-    const spenderAddress =
-      bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
-        ? this.EthereumSmartContractAddress
-        : this.BinanceSmartContractAddress;
+    const spenderAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
 
     if (token.symbol !== 'RBC') {
       this.errorService.throw$(new WrongToken());
@@ -205,29 +208,16 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
     const trade: RubicTrade = {
       token: {
-        address: token.blockchainToken[bridgeTrade.fromBlockchain].address,
+        address: this.rubicConfig[bridgeTrade.fromBlockchain].rubicTokenAddress,
         decimals: token.blockchainToken[bridgeTrade.fromBlockchain].decimals
       }
     } as RubicTrade;
 
-    if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      trade.token.symbol = 'RBC';
-      trade.swapContractAddress = this.EthereumSmartContractAddress;
-      trade.swapContractAbi = EthereumContractAbi;
-    } else {
-      trade.token.symbol = 'BRBC';
-      trade.swapContractAddress = this.BinanceSmartContractAddress;
-      trade.swapContractAbi = BinanceContractAbi;
-    }
+    trade.token.symbol = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 'RBC' : 'BRBC';
+    trade.swapContractAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
+    trade.swapContractAbi = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAbi;
 
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
-
-    if (this.isTestingMode) {
-      trade.token.address =
-        bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM
-          ? '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9'
-          : '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8';
-    }
 
     const onApprove = bridgeTrade.onTransactionHash;
     await this.provideAllowance(trade, web3Public, onApprove);
@@ -275,5 +265,29 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         }
       );
     }
+  }
+
+  private async fetchFees(): Promise<{ fromEthFee: number; toEthFee: number }> {
+    const RUBIC_DECIMALS = 18;
+    const loadFee = (blockchain: BLOCKCHAIN_NAME): Promise<string> => {
+      const web3Public: Web3Public = this.web3PublicService[blockchain];
+      return web3Public.callContractMethod(
+        this.rubicConfig[blockchain].swapContractAddress,
+        this.rubicConfig[blockchain].swapContractAbi,
+        'feeAmountOfBlockchain',
+        { methodArguments: [blockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2] }
+      ) as Promise<string>;
+    };
+
+    const fees = (
+      await Promise.all(
+        [BLOCKCHAIN_NAME.ETHEREUM, BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].map(loadFee)
+      )
+    ).map(fee => new BigNumber(fee).div(10 ** RUBIC_DECIMALS).toNumber());
+
+    return {
+      fromEthFee: fees[0],
+      toEthFee: fees[1]
+    };
   }
 }

@@ -111,57 +111,79 @@ export class TokensService {
   public async recalculateUsersBalance(
     tokens: List<TokenAmount> = this._tokens.getValue()
   ): Promise<void> {
-    if (!tokens.size) {
-      return;
-    }
+    try {
+      if (!tokens.size) {
+        return;
+      }
 
-    if (!this.userAddress) {
-      this.setDefaultTokenAmounts(tokens);
-      return;
-    }
+      if (!this.userAddress) {
+        this.setDefaultTokenAmounts(tokens);
+        return;
+      }
 
-    const blockchains: BLOCKCHAIN_NAME[] = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON
-    ];
-    const promises = [];
+      const blockchains: BLOCKCHAIN_NAME[] = [
+        BLOCKCHAIN_NAME.ETHEREUM,
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        BLOCKCHAIN_NAME.POLYGON
+      ];
+      const promises = [];
 
-    blockchains.forEach(blockchain => {
-      promises.push(
-        this.web3PublicService[blockchain].getTokensBalances(
-          this.userAddress,
+      const splitAndMergeRequests = (
+        tokensAddresses: string[],
+        blockchain: BLOCKCHAIN_NAME,
+        parallelRequestsNumber: number
+      ) => {
+        const chunkSize = Math.ceil(tokensAddresses.length / parallelRequestsNumber);
+        return Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          [...new Array(parallelRequestsNumber)].map((elem, index) =>
+            this.web3PublicService[blockchain].getTokensBalances(
+              this.userAddress,
+              tokensAddresses.slice(index * chunkSize, (index + 1) * chunkSize)
+            )
+          )
+        );
+      };
+
+      blockchains.forEach(blockchain => {
+        promises.push(
+          splitAndMergeRequests(
+            tokens
+              .filter(token => token.blockchain === blockchain)
+              .map(token => token.address)
+              .toArray(),
+            blockchain,
+            30
+          )
+        );
+      });
+
+      const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
+        weiBalance.div(10 ** token.decimals);
+
+      const balances = (await Promise.all(promises)).map(elem => elem.flat());
+      const tokensWithBalance: TokenAmount[][] = [];
+      blockchains.forEach((blockchain, blockchainIndex) =>
+        tokensWithBalance.push(
           tokens
             .filter(token => token.blockchain === blockchain)
-            .map(token => token.address)
+            .map((token, tokenIndex) => ({
+              ...token,
+              amount: getRelativeBalance(token, balances[blockchainIndex][tokenIndex]) || undefined
+            }))
             .toArray()
         )
       );
-    });
 
-    const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
-      weiBalance.div(10 ** token.decimals);
-
-    const balances = await Promise.all(promises);
-    const tokensWithBalance: TokenAmount[][] = [];
-    blockchains.forEach((blockchain, blockchainIndex) =>
       tokensWithBalance.push(
-        tokens
-          .filter(token => token.blockchain === blockchain)
-          .map((token, tokenIndex) => ({
-            ...token,
-            amount: getRelativeBalance(token, balances[blockchainIndex][tokenIndex]) || undefined
-          }))
-          .toArray()
-      )
-    );
+        tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
+      );
 
-    tokensWithBalance.push(
-      tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
-    );
-
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      this._tokens.next(List(tokensWithBalance.flat()));
+      if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+        this._tokens.next(List(tokensWithBalance.flat()));
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
