@@ -126,6 +126,7 @@
   &__address {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
 
     cursor: default;
 
@@ -134,7 +135,7 @@
     }
 
     img {
-      margin-right: 10px;
+      margin-right: 18px;
     }
   }
 
