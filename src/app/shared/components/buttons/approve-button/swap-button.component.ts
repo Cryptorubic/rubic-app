@@ -27,6 +27,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -155,7 +157,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     let translateParams = {
       key: 'Unknown Error',
       interpolateParams: {}
-    } as { key: string, interpolateParams?: unknown };
+    } as { key: string; interpolateParams?: unknown };
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
       translateParams = { key: 'errors.chooseSupportedBridge' };
     }
@@ -198,7 +200,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
     private translateService: TranslateService,
-    private readonly bridgeService: BridgeService
+    private readonly bridgeService: BridgeService,
+    private readonly web3PublicService: Web3PublicService
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -255,26 +258,35 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.fromBlockchain = form.fromBlockchain;
     this.tokensFilled = Boolean(form.fromToken && form.toToken);
     this.fromToken = form.fromToken;
-    this.checkErrors();
-
-    this.dataLoading = false;
-    this.cdr.detectChanges();
+    this.checkErrors().then(() => {
+      this.dataLoading = false;
+      this.cdr.detectChanges();
+    });
   }
 
-  private checkErrors(): void {
-    this.checkInsufficientFundsError();
+  private async checkErrors(): Promise<void> {
+    await this.checkInsufficientFundsError();
     this.checkWrongBlockchainError();
     this.checkNoAmountError();
   }
 
-  private checkInsufficientFundsError(): void {
+  private async checkInsufficientFundsError(): Promise<void> {
     if (!this._fromAmount || !this.fromToken) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
       return;
     }
 
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = this.fromToken.amount.lt(this._fromAmount);
+    let balance = this.fromToken.amount;
+    if (!this.fromToken.amount.isFinite()) {
+      balance = (
+        await (<Web3Public>(
+          this.web3PublicService[this.fromToken.blockchain]
+        )).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
+      ).div(10 ** this.fromToken.decimals);
+    }
+
+    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
     this.cdr.detectChanges();
   }
 
