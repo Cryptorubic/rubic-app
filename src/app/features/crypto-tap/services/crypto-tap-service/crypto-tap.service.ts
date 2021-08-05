@@ -24,7 +24,6 @@ import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypt
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
 import { CryptoTapFullPriceFeeInfo } from 'src/app/features/crypto-tap/models/CryptoTapFullPriceFeeInfo';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 
 interface EstimatedAmountResponse {
@@ -104,30 +103,7 @@ export class CryptoTapService {
 
   private async checkBalance(token: TokenAmount, fromAmount: BigNumber): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    const amountInWei = fromAmount.multipliedBy(10 ** token.decimals);
-
-    if (web3Public.isNativeAddress(token.address)) {
-      const balance = await web3Public.getBalance(this.authService.user.address, {
-        inWei: true
-      });
-      if (balance.lt(amountInWei)) {
-        const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toFixed());
-      }
-    } else {
-      const tokensBalance = await web3Public.getTokenBalance(
-        this.authService.user.address,
-        token.address
-      );
-      if (tokensBalance.lt(amountInWei)) {
-        const formattedTokensBalance = Web3Public.fromWei(tokensBalance, token.decimals).toFixed();
-        throw new InsufficientFundsError(
-          token.symbol,
-          formattedTokensBalance,
-          fromAmount.toFixed()
-        );
-      }
-    }
+    return web3Public.checkBalance(token, fromAmount, this.authService.user.address);
   }
 
   public createTrade(onTransactionHash: (hash: string) => void): Observable<TransactionReceipt> {

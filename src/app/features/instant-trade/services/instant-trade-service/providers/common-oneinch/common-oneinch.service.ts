@@ -10,7 +10,6 @@ import {
 import { map, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { from, Observable, of } from 'rxjs';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -67,32 +66,12 @@ export class CommonOneinchService {
     providerConnector.checkSettings(selectedBlockchain);
   }
 
-  public async checkBalance(trade: InstantTrade, web3: Web3Public, address: string): Promise<void> {
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
-
-    if (web3.isNativeAddress(trade.from.token.address)) {
-      const balance = await web3.getBalance(address, {
-        inWei: true
-      });
-      if (balance.lt(amountIn)) {
-        const formattedBalance = web3.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toFixed()
-        );
-      }
-    } else {
-      const tokensBalance = await web3.getTokenBalance(address, trade.from.token.address);
-      if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance.div(10 ** trade.from.token.decimals).toFixed();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toFixed()
-        );
-      }
-    }
+  public async checkBalance(
+    trade: InstantTrade,
+    web3Public: Web3Public,
+    userAddress: string
+  ): Promise<void> {
+    return web3Public.checkBalance(trade.from.token, trade.from.amount, userAddress);
   }
 
   public getAllowance(

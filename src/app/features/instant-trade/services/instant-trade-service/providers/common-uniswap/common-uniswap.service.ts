@@ -12,7 +12,6 @@ import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTrad
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -443,33 +442,10 @@ export class CommonUniswapService {
   }
 
   async checkBalance(trade: InstantTrade, web3Public: Web3Public): Promise<void> {
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
-
-    if (web3Public.isNativeAddress(trade.from.token.address)) {
-      const balance = await web3Public.getBalance(this.providerConnectorService.address, {
-        inWei: true
-      });
-      if (balance.lt(amountIn)) {
-        const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toFixed()
-        );
-      }
-    } else {
-      const tokensBalance = await web3Public.getTokenBalance(
-        this.providerConnectorService.address,
-        trade.from.token.address
-      );
-      if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance.div(10 ** trade.from.token.decimals).toFixed();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toFixed()
-        );
-      }
-    }
+    return web3Public.checkBalance(
+      trade.from.token,
+      trade.from.amount,
+      this.providerConnectorService.address
+    );
   }
 }

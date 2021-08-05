@@ -26,10 +26,10 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
+import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
-import InsufficientFundsError from '../../../../core/errors/models/instant-trade/InsufficientFundsError';
 
 @Injectable()
 export class BridgeService {
@@ -205,14 +205,10 @@ export class BridgeService {
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
           this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
+
           const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-          await this.checkBalance(
-            bridgeTrade.fromBlockchain,
-            token.address,
-            token.symbol,
-            token.decimals,
-            bridgeTrade.amount
-          );
+          await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
+
           return bridgeTrade;
         }),
         mergeMap((bridgeTrade: BridgeTrade) => {
@@ -247,14 +243,10 @@ export class BridgeService {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
+
         const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
-        await this.checkBalance(
-          bridgeTrade.fromBlockchain,
-          token.address,
-          token.symbol,
-          token.decimals,
-          bridgeTrade.amount
-        );
+        await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
+
         return bridgeTrade;
       }),
       mergeMap((bridgeTrade: BridgeTrade) => {
@@ -271,26 +263,10 @@ export class BridgeService {
 
   private async checkBalance(
     fromBlockchain: BLOCKCHAIN_NAME,
-    tokenAddress: string,
-    symbol: string,
-    decimals: number,
+    token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
-
-    let balance;
-    if (web3Public.isNativeAddress(tokenAddress)) {
-      balance = await web3Public.getBalance(this.authService.user.address, {
-        inWei: true
-      });
-    } else {
-      balance = await web3Public.getTokenBalance(this.authService.user.address, tokenAddress);
-    }
-
-    const amountInWei = amount.multipliedBy(10 ** decimals);
-    if (balance.lt(amountInWei)) {
-      const formattedTokensBalance = balance.div(10 ** decimals).toFixed();
-      throw new InsufficientFundsError(symbol, formattedTokensBalance, amount.toFixed());
-    }
+    return web3Public.checkBalance(token, amount, this.authService.user.address);
   }
 }
