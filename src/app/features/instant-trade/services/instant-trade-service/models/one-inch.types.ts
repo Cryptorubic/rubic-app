@@ -26,6 +26,7 @@ export interface OneInchSwapResponse {
     gasPrice: string;
     gas: number;
   };
+  toTokenAmount: string;
   error?: number;
 }
 

@@ -15,10 +15,7 @@ import { CoingeckoApiService } from 'src/app/core/services/external-api/coingeck
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
 import CustomError from 'src/app/core/errors/models/custom-error';
-import {
-  OneInchQuoteResponse,
-  OneInchSwapResponse
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch.types';
+import { OneInchSwapResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch.types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import {
   ItSettingsForm,
@@ -123,12 +120,16 @@ export class OneInchEthService implements ItProvider {
       throw new CustomError(this.translateService.instant('errors.1inchNotSupportedToken'));
     }
 
+    const amount = fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0);
+
     const tradeParams = {
       params: {
         fromTokenAddress,
         toTokenAddress,
-        amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
-      } as {
+        amount,
+        slippage: this.settings.slippageTolerance.toString(),
+        fromAddress: this.providerConnectorService.address
+      } as unknown as {
         [param: string]: string;
       }
     };
@@ -136,8 +137,8 @@ export class OneInchEthService implements ItProvider {
       tradeParams.params.mainRouteParts = '1';
     }
 
-    const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}quote`, tradeParams)
+    const oneInchTrade: OneInchSwapResponse = (await this.httpClient
+      .get(`${this.apiBaseUrl}swap`, tradeParams)
       .pipe(
         catchError(err => {
           if (err.status === 500) {
@@ -146,13 +147,12 @@ export class OneInchEthService implements ItProvider {
           return throwError(new CustomError(err.error.message));
         })
       )
-      .toPromise()) as OneInchQuoteResponse;
+      .toPromise()) as OneInchSwapResponse;
 
     if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
       throw new OneinchQuoteError();
     }
-
-    const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
+    const estimatedGas = new BigNumber(oneInchTrade.tx.gas);
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
     const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
     const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
