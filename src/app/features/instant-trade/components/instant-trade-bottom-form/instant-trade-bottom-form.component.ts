@@ -22,7 +22,6 @@ import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
@@ -95,7 +94,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private calculateTradeSubscription$: Subscription;
 
-  public get allowTrade(): boolean {
+  get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(
       form.fromBlockchain &&
@@ -107,22 +106,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  public get tokenInfoUrl(): string {
-    const { fromToken, toToken } = this.swapFormService.inputValue;
-    let tokenAddress;
-    if (
-      toToken?.address &&
-      toToken.address !== NATIVE_TOKEN_ADDRESS &&
-      this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
-    ) {
-      tokenAddress = toToken?.address;
-    } else {
-      tokenAddress = fromToken?.address;
-    }
-    return tokenAddress ? `t/${tokenAddress}` : '';
-  }
-
-  public get orderedProviders(): ProviderControllerData[] {
+  get orderedProviders(): ProviderControllerData[] {
     if (
       !this.providersOrderCache?.length ||
       this.providerControllers.some(item => item.isBestRate)

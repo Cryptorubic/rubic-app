@@ -21,7 +21,6 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
@@ -111,7 +110,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private bridgeTokensPairs: BlockchainsBridgeTokens[];
 
-  public get allowTrade(): boolean {
+  get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.inputValue;
     return (
@@ -125,26 +124,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  public get whatIsBlockchain(): BlockchainInfo {
+  get whatIsBlockchain(): BlockchainInfo {
     const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
     const nonEthBlockchain =
       toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
     return BLOCKCHAINS_INFO[nonEthBlockchain];
-  }
-
-  public get tokenInfoUrl(): string {
-    const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
-    let tokenAddress;
-    if (
-      toToken?.address &&
-      toToken.address !== NATIVE_TOKEN_ADDRESS &&
-      this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
-    ) {
-      tokenAddress = toToken?.address;
-    } else {
-      tokenAddress = fromToken?.address;
-    }
-    return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
   constructor(

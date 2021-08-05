@@ -39,7 +39,7 @@
   <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
-  <app-analytics-link [tokenInfoUrl]="tokenInfoUrl"></app-analytics-link>
+  <app-analytics-link [formService]="swapFormService"></app-analytics-link>
   <app-swap-button
     [needApprove]="needApprove"
     [status]="tradeStatus"
