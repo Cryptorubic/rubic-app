@@ -126,7 +126,9 @@ export class SushiSwapPolygonService implements ItProvider {
       estimatedGasArray
     );
 
-    const gasPrice = defaultGasPrice.gt(gasData.gasPrice) ? defaultGasPrice : gasData.gasPrice;
+    const gasPrice = defaultGasPrice.gt(gasData.gasPrice)
+      ? defaultGasPrice.toFixed()
+      : gasData.gasPrice;
 
     return {
       blockchain: this.blockchain,
@@ -179,7 +181,8 @@ export class SushiSwapPolygonService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        increasedGas
+        increasedGas,
+        trade.gasPrice
       );
     }
 
@@ -189,7 +192,8 @@ export class SushiSwapPolygonService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        increasedGas
+        increasedGas,
+        trade.gasPrice
       );
     }
 
@@ -198,7 +202,8 @@ export class SushiSwapPolygonService implements ItProvider {
       options,
       this.sushiswapContractAddress,
       abi,
-      increasedGas
+      increasedGas,
+      trade.gasPrice
     );
   }
 }
