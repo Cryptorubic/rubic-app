@@ -44,6 +44,7 @@
     "rubicError": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
     "noQrCode": "qrCode를 스캔했는지 확인하십시오",
+    "walletlinkWrongNetwork": "Coinbase 애플리케이션에서 {{ networkToChoose }} 네트워크가 선택되어 있는지 확인하십시오. 코인베이스 애플리케이션에서 네트워크를 변경하려면 하단 패널의 설정으로 이동하여 \"Active Network\" 탭을 선택합니다.",
     "noWallet": "연결된 지갑이 없습니다.",
     "retrievingTokensError": "토큰 검색 오류",
     "wrongToken": "루빅 브릿지는 루빅 토큰 만 지원합니다.",
