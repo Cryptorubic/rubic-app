@@ -44,6 +44,7 @@
     "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
+    "walletlinkWrongNetwork": "Please make sure that the {{ networkToChoose }} network is selected in the Coinbase application. To change the network in the coinbase application, go to the settings in the bottom panel and select the \"Active Network\" tab.",
     "noWallet": "You have not connected any wallet",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",

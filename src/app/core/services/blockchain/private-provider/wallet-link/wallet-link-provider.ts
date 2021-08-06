@@ -9,6 +9,10 @@ import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import BigNumber from 'bignumber.js';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { WalletlinkWrongNetwork } from 'src/app/core/errors/models/provider/WalletlinkWrongNetwork';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
@@ -49,7 +53,7 @@ export class WalletLinkProvider extends PrivateProvider {
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
     errorService: ErrorsService,
-    blockchainId?: number
+    blockchainId: number
   ) {
     super(errorService);
     this.isEnabled = false;
@@ -65,10 +69,16 @@ export class WalletLinkProvider extends PrivateProvider {
         darkMode: false
       };
 
-      const chainId = blockchainId || 42;
+      if (!blockchainId) {
+        console.error('WalletLink works only with predefined chainId');
+        throw new UndefinedError();
+      }
+
+      const chainId = blockchainId;
       const chain = BlockchainsInfo.getBlockchainById(chainId);
       const walletLink = new WalletLink(this.defaultWalletParams);
       this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
+      this.selectedChain = chainId.toString();
     }
 
     this.onAddressChanges = accountChange;
@@ -92,25 +102,35 @@ export class WalletLinkProvider extends PrivateProvider {
     try {
       const [address] = await this.core.send('eth_requestAccounts');
 
-      const chain = BlockchainsInfo.getBlockchainById(42);
-      this.onNetworkChanges.next(chain);
+      const activeChain = (await this.core.request({ method: 'eth_chainId' })) as string;
+      const chainInfo = BlockchainsInfo.getBlockchainById(this.selectedChain);
+
+      if (!new BigNumber(activeChain).eq(this.selectedChain)) {
+        throw new WalletlinkWrongNetwork(chainInfo.label);
+      }
+
+      this.onNetworkChanges.next(chainInfo);
       this.onAddressChanges.next(address);
       this.selectedAddress = address;
-      this.selectedChain = chain.name;
+      this.selectedChain = chainInfo.name;
       this.isEnabled = true;
     } catch (error) {
-      throw new WalletlinkError();
+      if (!(error instanceof RubicError)) {
+        throw new WalletlinkError();
+      } else {
+        throw error;
+      }
     }
   }
 
   public async deActivate(): Promise<void> {
-    this.core.close();
+    this.core.disconnect();
     this.onAddressChanges.next(undefined);
     this.onNetworkChanges.next(undefined);
     this.isEnabled = false;
   }
 
-  public addToken(token: Token): Promise<void> {
+  public async addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       throw new WalletlinkError();
     }
@@ -118,17 +138,19 @@ export class WalletLinkProvider extends PrivateProvider {
       throw new NetworkError(token.blockchain);
     }
 
-    return this.core.request({
+    await this.core.request({
       method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image
+      params: [
+        {
+          type: 'ERC20',
+          options: {
+            address: token.address,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            image: token.image
+          }
         }
-      } as any
+      ]
     });
   }
 

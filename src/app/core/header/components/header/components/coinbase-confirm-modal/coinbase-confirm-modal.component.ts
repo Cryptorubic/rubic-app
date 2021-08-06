@@ -14,7 +14,6 @@ import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-inf
 export class CoinbaseConfirmModalComponent {
   public availableBlockchains: IBlockchain[] = [
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM),
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN),
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.POLYGON)
   ];
 

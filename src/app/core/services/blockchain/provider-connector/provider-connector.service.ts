@@ -86,13 +86,21 @@ export class ProviderConnectorService {
    * Setup provider based on local storage.
    */
   public async installProvider(): Promise<void> {
-    const provider = this.storage.getItem('provider') as WALLET_NAME;
+    const provider = this.storage.getItem('provider');
+    if (provider === WALLET_NAME.WALLET_LINK) {
+      const chainId = this.storage.getItem('chainId');
+      await this.connectProvider(provider, chainId);
+      return;
+    }
     await this.connectProvider(provider);
   }
 
   public async activate(): Promise<void> {
     await this.provider.activate();
     this.storage.setItem('provider', this.provider.name);
+    if (this.provider.name === WALLET_NAME.WALLET_LINK) {
+      this.storage.setItem('chainId', this.provider.network.id);
+    }
   }
 
   // eslint-disable-next-line

@@ -15,7 +15,6 @@ import { CoinbaseConfirmModalComponent } from 'src/app/core/header/components/he
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { first } from 'rxjs/operators';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
 
