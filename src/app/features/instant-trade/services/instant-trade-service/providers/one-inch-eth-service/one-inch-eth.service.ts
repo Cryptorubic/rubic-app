@@ -165,6 +165,7 @@ export class OneInchEthService implements ItProvider {
     }
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const gasPrice = Web3Public.toWei(await this.web3Public.getGasPriceInETH());
     const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
     const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
@@ -180,7 +181,8 @@ export class OneInchEthService implements ItProvider {
       },
       estimatedGas,
       gasFeeInUsd,
-      gasFeeInEth
+      gasFeeInEth,
+      gasPrice
     };
   }
 
@@ -227,6 +229,7 @@ export class OneInchEthService implements ItProvider {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
       gas: oneInchTrade.tx.gas.toFixed(0),
+      gasPrice: trade.gasPrice,
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 

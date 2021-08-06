@@ -175,7 +175,8 @@ export class SushiSwapEthService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        increasedGas
+        increasedGas,
+        trade.gasPrice
       );
     }
 
@@ -185,7 +186,8 @@ export class SushiSwapEthService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        increasedGas
+        increasedGas,
+        trade.gasPrice
       );
     }
 
@@ -194,7 +196,8 @@ export class SushiSwapEthService implements ItProvider {
       options,
       this.sushiswapContractAddress,
       abi,
-      increasedGas
+      increasedGas,
+      trade.gasPrice
     );
   }
 }

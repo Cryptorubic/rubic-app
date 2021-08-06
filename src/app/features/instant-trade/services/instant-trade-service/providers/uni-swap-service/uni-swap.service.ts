@@ -138,11 +138,12 @@ export class UniSwapService implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
+        amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice: gasData.gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation

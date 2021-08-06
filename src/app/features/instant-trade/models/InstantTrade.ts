@@ -36,10 +36,9 @@ interface InstantTrade {
   gasFeeInEth: BigNumber;
 
   /**
-   * Gas price in Ether
+   * Gas price in Wei
    */
-
-  gasPrice?: BigNumber;
+  gasPrice?: string;
 
   /**
    * Additional options

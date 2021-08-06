@@ -164,7 +164,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[],
     gasLimit: string | BigNumber,
-    gasPrice?: BigNumber
+    gasPrice?: string
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -175,7 +175,7 @@ export class CommonUniswapService {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+        gasPrice
       }
     );
   }
@@ -189,7 +189,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[],
     gasLimit: string | BigNumber,
-    gasPrice?: BigNumber
+    gasPrice?: string
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -199,7 +199,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+        gasPrice
       }
     );
   }
@@ -213,7 +213,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[],
     gasLimit: string | BigNumber,
-    gasPrice?: BigNumber
+    gasPrice?: string
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -223,7 +223,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+        gasPrice
       }
     );
   }
@@ -281,7 +281,7 @@ export class CommonUniswapService {
       this.providerConnectorService.isProviderActive && this.providerConnectorService?.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * settings.deadline;
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await web3Public.getGasPriceInETH();
+    const gasPriceInEth = await web3Public.getGasPriceInETH();
 
     const amountOutMin = route.outputAbsoluteAmount
       .multipliedBy(new BigNumber(1).minus(settings.slippageTolerance))
@@ -299,7 +299,7 @@ export class CommonUniswapService {
       abi
     );
 
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+    const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
     return {
@@ -308,7 +308,7 @@ export class CommonUniswapService {
         estimatedGas,
         gasFeeInEth,
         gasFeeInUsd,
-        gasPrice
+        gasPrice: Web3Public.toWei(gasPriceInEth)
       }
     };
   }
@@ -389,7 +389,7 @@ export class CommonUniswapService {
     const deadline = Math.floor(Date.now() / 1000) + 60 * settings.deadline;
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await web3Public.getGasPriceInETH();
+    const gasPriceInEth = await web3Public.getGasPriceInETH();
 
     const promises: Promise<{
       route: UniswapRoute;
@@ -412,7 +412,7 @@ export class CommonUniswapService {
         abi
       );
 
-      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
       const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
       const profit = route.outputAbsoluteAmount
@@ -426,7 +426,7 @@ export class CommonUniswapService {
           estimatedGas,
           gasFeeInUsd,
           gasFeeInEth,
-          gasPrice
+          gasPrice: Web3Public.toWei(gasPriceInEth)
         },
         profit
       };

@@ -175,7 +175,6 @@ export class QuickSwapService implements ItProvider {
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
     const increasedGas = Web3Public.calculateGasMargin(trade.estimatedGas, 1.2);
-    const gasPriceInWei = trade.gasPrice.multipliedBy(10 ** 18);
 
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
@@ -183,8 +182,7 @@ export class QuickSwapService implements ItProvider {
         options,
         quickSwapContracts.address,
         abi,
-        increasedGas,
-        gasPriceInWei
+        increasedGas
       );
     }
 
@@ -194,8 +192,7 @@ export class QuickSwapService implements ItProvider {
         options,
         quickSwapContracts.address,
         abi,
-        increasedGas,
-        gasPriceInWei
+        increasedGas
       );
     }
 
@@ -204,8 +201,7 @@ export class QuickSwapService implements ItProvider {
       options,
       quickSwapContracts.address,
       abi,
-      increasedGas,
-      gasPriceInWei
+      increasedGas
     );
   }
 }
