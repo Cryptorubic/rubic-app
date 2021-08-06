@@ -50,7 +50,7 @@ export class Web3Public {
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
 
-  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1) {
+  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1): string {
     return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
   }
 

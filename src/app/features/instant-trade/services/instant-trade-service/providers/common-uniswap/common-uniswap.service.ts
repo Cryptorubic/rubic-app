@@ -299,13 +299,14 @@ export class CommonUniswapService {
       abi
     );
 
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
+    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, 1.2);
+    const gasFeeInEth = new BigNumber(increasedGas).multipliedBy(gasPriceInEth);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
     return {
       route,
       gasData: {
-        estimatedGas,
+        estimatedGas: increasedGas,
         gasFeeInEth,
         gasFeeInUsd,
         gasPrice: Web3Public.toWei(gasPriceInEth)
@@ -412,7 +413,8 @@ export class CommonUniswapService {
         abi
       );
 
-      const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
+      const increasedGas = Web3Public.calculateGasMargin(estimatedGas, 1.2);
+      const gasFeeInEth = new BigNumber(increasedGas).multipliedBy(gasPriceInEth);
       const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
       const profit = route.outputAbsoluteAmount
@@ -423,7 +425,7 @@ export class CommonUniswapService {
       return {
         route,
         gasData: {
-          estimatedGas,
+          estimatedGas: increasedGas,
           gasFeeInUsd,
           gasFeeInEth,
           gasPrice: Web3Public.toWei(gasPriceInEth)

@@ -138,6 +138,7 @@ export class SushiSwapEthService implements ItProvider {
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice: gasData.gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation
@@ -167,15 +168,13 @@ export class SushiSwapEthService implements ItProvider {
 
     const uniSwapTrade: UniSwapTrade = { amountIn, amountOutMin, path, to, deadline };
 
-    const increasedGas = Web3Public.calculateGasMargin(trade.estimatedGas, 1.2);
-
     if (this.web3Public.isNativeAddress(trade.from.token.address)) {
       return this.commonUniswap.createEthToTokensTrade(
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
         abi,
-        increasedGas,
+        trade.estimatedGas,
         trade.gasPrice
       );
     }
@@ -186,7 +185,7 @@ export class SushiSwapEthService implements ItProvider {
         options,
         this.sushiswapContractAddress,
         abi,
-        increasedGas,
+        trade.estimatedGas,
         trade.gasPrice
       );
     }
@@ -196,7 +195,7 @@ export class SushiSwapEthService implements ItProvider {
       options,
       this.sushiswapContractAddress,
       abi,
-      increasedGas,
+      trade.estimatedGas,
       trade.gasPrice
     );
   }

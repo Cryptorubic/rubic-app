@@ -23,7 +23,7 @@ interface InstantTrade {
   /**
    * Amount of predicted gas limit in absolute gas units
    */
-  estimatedGas: BigNumber;
+  estimatedGas: string | BigNumber;
 
   /**
    * Amount of predicted gas fee in usd$
