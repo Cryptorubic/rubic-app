@@ -17,6 +17,8 @@
   &__usd-container {
     display: inline-flex;
     float: right;
+
+    min-width: 50px;
     overflow: hidden;
 
     color: var(--form-dim-text-color);
@@ -27,6 +29,10 @@
 
     span {
       margin-left: 10px;
+    }
+
+    &_placeholder {
+      color: rgb(117, 117, 117);
     }
   }
 
@@ -41,6 +47,7 @@
 
   &__tokens-container {
     width: 100%;
+    min-width: 200px;
     height: 40px;
     overflow: auto;
 
@@ -52,16 +59,8 @@
 
     text-align: right;
 
-    @include b($mobile-sm) {
-      text-align: left;
-    }
-
     &::-webkit-scrollbar {
       display: none;
-    }
-
-    &_wide {
-      width: calc(100% - 100px);
     }
 
     &_placeholder {
@@ -114,6 +113,10 @@
       span {
         margin-left: 0;
       }
+    }
+
+    &__tokens-container {
+      text-align: left;
     }
   }
 }

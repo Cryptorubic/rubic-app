@@ -10,7 +10,9 @@
     }"
     (click)="activateProvider()"
   >
-    <div class="provider-panel__provider-name">{{ 'common.via' | translate }} {{ providerData.name }}</div>
+    <div class="provider-panel__provider-name">
+      {{ 'common.via' | translate }} {{ providerData.name }}
+    </div>
     <div
       *ngIf="providerData.isBestRate"
       class="provider-panel__best-rate"
@@ -22,12 +24,17 @@
       <div class="provider-panel__left">
         <div
           class="provider-panel__amount"
-          [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading, 'provider-panel__amount_error': hasError }"
+          [ngClass]="{
+            'tui-skeleton': loading,
+            'tui-skeleton-text': loading,
+            'provider-panel__amount_error': hasError
+          }"
         >
           {{
-            (providerData.amount?.toString(10)
+            (providerData.amount
+              | bigNumberFormat
               | withRound: 'toClosestValue':tradeData?.to?.token.decimals) ||
-            'Trading is not available'
+              'Trading is not available'
           }}
           <div
             *ngIf="hasError"
@@ -52,10 +59,11 @@
           [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton-text': loading }"
         >
           {{ 'instantTrades.gasFee' | translate }}
-          <ng-container *ngIf="providerIndex === 0 || !providerData.gasFeeInUsd">{{ providerData.gasFeeInEth?.toFixed(5) }} ETH</ng-container>
+          <ng-container *ngIf="providerIndex === 0 || !providerData.gasFeeInUsd"
+            >{{ providerData.gasFeeInEth?.toFixed(5) }} ETH</ng-container
+          >
           <ng-container *ngIf="providerData.gasFeeInUsd.gt(0)">
-            ≈
-            ${{ providerData.gasFeeInUsd.toFixed(2) }}
+            ≈ ${{ providerData.gasFeeInUsd.toFixed(2) }}
           </ng-container>
           <div
             class="provider-panel__hint"

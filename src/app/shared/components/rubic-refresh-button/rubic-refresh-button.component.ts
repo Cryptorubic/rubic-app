@@ -11,7 +11,11 @@ import {
 } from '@angular/core';
 import { fromEvent } from 'rxjs';
 
-export type RefreshButtonStatus = 'refreshing' | 'in progress' | 'stopped';
+export enum REFRESH_BUTTON_STATUS {
+  REFRESHING = 'refreshing',
+  IN_PROGRESS = 'in progress',
+  STOPPED = 'stopped'
+}
 
 @Component({
   selector: 'app-rubic-refresh-button',
@@ -20,13 +24,13 @@ export type RefreshButtonStatus = 'refreshing' | 'in progress' | 'stopped';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
-  @Input() set loadingStatus(status: RefreshButtonStatus) {
+  @Input() set loadingStatus(status: REFRESH_BUTTON_STATUS) {
     this.status = status;
-    if (this.autoUpdate && status === 'stopped') {
+    if (this.autoUpdate && status === REFRESH_BUTTON_STATUS.STOPPED) {
       this.setupTimer();
     } else {
       clearTimeout(this.timer);
-      if (status === 'refreshing') {
+      if (status === REFRESH_BUTTON_STATUS.REFRESHING) {
         setTimeout(() => {
           this.refreshIconElement.nativeElement.classList.add('refresh-button__icon_refreshing');
         });
@@ -37,7 +41,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   @Input() set autoUpdate(value: boolean) {
     this._autoUpdate = value;
     if (value) {
-      if (this.status === 'stopped') {
+      if (this.status === REFRESH_BUTTON_STATUS.STOPPED) {
         this.setupTimer();
       }
     } else {
@@ -53,7 +57,9 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   @ViewChild('refreshIcon', { static: true }) refreshIconElement: ElementRef;
 
-  public status: RefreshButtonStatus;
+  public REFRESH_BUTTON_STATUS = REFRESH_BUTTON_STATUS;
+
+  public status: REFRESH_BUTTON_STATUS;
 
   private _autoUpdate: boolean;
 
@@ -75,7 +81,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
       this.refreshIconElement.nativeElement,
       'animationiteration'
     ).subscribe(() => {
-      if (this.status !== 'refreshing') {
+      if (this.status !== REFRESH_BUTTON_STATUS.REFRESHING) {
         this.refreshIconElement.nativeElement.classList.remove('refresh-button__icon_refreshing');
       }
     });

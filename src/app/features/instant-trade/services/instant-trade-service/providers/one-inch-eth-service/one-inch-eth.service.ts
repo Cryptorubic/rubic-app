@@ -24,10 +24,9 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
-import { OneinchRefreshError } from 'src/app/core/errors/models/instant-trade/oneinch-refresh.error';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
@@ -123,11 +122,13 @@ export class OneInchEthService implements ItProvider {
       throw new CustomError(this.translateService.instant('errors.1inchNotSupportedToken'));
     }
 
+    const amount = fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0);
+
     const tradeParams = {
       params: {
         fromTokenAddress,
         toTokenAddress,
-        amount: fromAmount.multipliedBy(10 ** fromToken.decimals).toFixed(0)
+        amount
       } as {
         [param: string]: string;
       }
@@ -136,24 +137,35 @@ export class OneInchEthService implements ItProvider {
       tradeParams.params.mainRouteParts = '1';
     }
 
-    const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}quote`, tradeParams)
-      .pipe(
-        catchError(err => {
-          if (err.status === 500) {
-            return throwError(new OneinchRefreshError());
-          }
-          return throwError(new CustomError(err.error.message));
-        })
-      )
-      .toPromise()) as OneInchQuoteResponse;
+    let estimatedGas: BigNumber;
+    let toTokenAmount: string;
+    try {
+      tradeParams.params = {
+        ...tradeParams.params,
+        slippage: this.settings.slippageTolerance.toString(),
+        fromAddress: this.providerConnectorService.address
+      };
+      const oneInchTrade: OneInchSwapResponse = (await this.httpClient
+        .get(`${this.apiBaseUrl}swap`, tradeParams)
+        .toPromise()) as OneInchSwapResponse;
 
-    if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      throw new OneinchQuoteError();
+      estimatedGas = new BigNumber(oneInchTrade.tx.gas);
+      toTokenAmount = oneInchTrade.toTokenAmount;
+    } catch (_err) {
+      const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
+        .get(`${this.apiBaseUrl}quote`, tradeParams)
+        .toPromise()) as OneInchQuoteResponse;
+
+      if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
+        throw new OneinchQuoteError();
+      }
+
+      estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
+      toTokenAmount = oneInchTrade.toTokenAmount;
     }
 
-    const estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const gasPrice = Web3Public.toWei(await this.web3Public.getGasPriceInETH());
     const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
     const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
 
@@ -165,11 +177,12 @@ export class OneInchEthService implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: new BigNumber(oneInchTrade.toTokenAmount).div(10 ** toToken.decimals)
+        amount: new BigNumber(toTokenAmount).div(10 ** toToken.decimals)
       },
       estimatedGas,
       gasFeeInUsd,
-      gasFeeInEth
+      gasFeeInEth,
+      gasPrice
     };
   }
 
@@ -212,13 +225,11 @@ export class OneInchEthService implements ItProvider {
       .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
-    const increasedGas = Web3Public.calculateGasMargin(oneInchTrade.tx.gas);
-
     const trxOptions = {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
-      gas: increasedGas,
-      gasPrice: oneInchTrade.tx.gasPrice,
+      gas: oneInchTrade.tx.gas.toFixed(0),
+      gasPrice: trade.gasPrice,
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 

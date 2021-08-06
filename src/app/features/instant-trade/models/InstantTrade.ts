@@ -23,7 +23,7 @@ interface InstantTrade {
   /**
    * Amount of predicted gas limit in absolute gas units
    */
-  estimatedGas: BigNumber;
+  estimatedGas: string | BigNumber;
 
   /**
    * Amount of predicted gas fee in usd$
@@ -36,10 +36,9 @@ interface InstantTrade {
   gasFeeInEth: BigNumber;
 
   /**
-   * Gas price in Ether
+   * Gas price in Wei
    */
-
-  gasPrice?: BigNumber;
+  gasPrice?: string;
 
   /**
    * Additional options

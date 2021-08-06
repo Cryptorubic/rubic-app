@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { map, mergeMap, tap } from 'rxjs/operators';
-import { BehaviorSubject, EMPTY, forkJoin, from, NEVER, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, throwError } from 'rxjs';
 
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -24,10 +24,6 @@ import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypt
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
 import { CryptoTapApiService } from 'src/app/core/services/backend/crypto-tap-api/crypto-tap-api.service';
 import { CryptoTapFullPriceFeeInfo } from 'src/app/features/crypto-tap/models/CryptoTapFullPriceFeeInfo';
-import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
-import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 
 interface EstimatedAmountResponse {
@@ -98,72 +94,21 @@ export class CryptoTapService {
       .get(`estimate_amount/`, { fsym: fromToken.symbol, tsym: toToken.symbol }, this.baseApiUrl)
       .pipe(
         map((response: EstimatedAmountResponse) => ({
-          fromAmount: Web3PublicService.weiToAmount(response.from_amount, fromToken.decimals),
-          toAmount: Web3PublicService.weiToAmount(response.to_amount, toToken.decimals),
-          fee: Web3PublicService.weiToAmount(response.fee_amount, fromToken.decimals)
+          fromAmount: Web3Public.fromWei(response.from_amount, fromToken.decimals),
+          toAmount: Web3Public.fromWei(response.to_amount, toToken.decimals),
+          fee: Web3Public.fromWei(response.fee_amount, fromToken.decimals)
         }))
       );
   }
 
-  private checkSettings(): boolean {
-    const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-
-    if (!this.providerConnectorService.isProviderActive) {
-      this.errorService.catch(new WalletError());
-      return false;
-    }
-
-    if (!this.authService.user?.address) {
-      this.errorService.catch(new AccountError());
-      return false;
-    }
-    if (
-      this.providerConnectorService.networkName !== blockchain &&
-      (this.providerConnectorService.networkName !== `${blockchain}_TESTNET` || !this.isTestingMode)
-    ) {
-      this.errorService.catch(new NetworkError(blockchain));
-      return false;
-    }
-
-    return true;
-  }
-
   private async checkBalance(token: TokenAmount, fromAmount: BigNumber): Promise<void> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    const amountInWei = fromAmount.multipliedBy(10 ** token.decimals);
-
-    if (web3Public.isNativeAddress(token.address)) {
-      const balance = await web3Public.getBalance(this.authService.user.address, {
-        inWei: true
-      });
-      if (balance.lt(amountInWei)) {
-        const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(token.symbol, formattedBalance, fromAmount.toFixed());
-      }
-    } else {
-      const tokensBalance = await web3Public.getTokenBalance(
-        this.authService.user.address,
-        token.address
-      );
-      if (tokensBalance.lt(amountInWei)) {
-        const formattedTokensBalance = Web3PublicService.weiToAmount(
-          tokensBalance,
-          token.decimals
-        ).toFixed();
-        throw new InsufficientFundsError(
-          token.symbol,
-          formattedTokensBalance,
-          fromAmount.toFixed()
-        );
-      }
-    }
+    return web3Public.checkBalance(token, fromAmount, this.authService.user.address);
   }
 
   public createTrade(onTransactionHash: (hash: string) => void): Observable<TransactionReceipt> {
     const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    if (!this.checkSettings()) {
-      return NEVER;
-    }
+    this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
 
     const { fromToken, toToken } = this.cryptoTapFormService.commonTrade.controls.input.value;
     const { fromAmount } = this.cryptoTapFormService.commonTrade.controls.output.value;
@@ -184,7 +129,7 @@ export class CryptoTapService {
             'deposit',
             [toNetwork],
             {
-              value: Web3PublicService.amountToWei(fromAmount, fromToken.decimals),
+              value: Web3Public.toWei(fromAmount, fromToken.decimals),
               onTransactionHash,
               gas: estimatedGas
             }
@@ -232,9 +177,7 @@ export class CryptoTapService {
     const { fromToken: token } = this.cryptoTapFormService.commonTrade.controls.input.value;
     const { fromAmount } = this.cryptoTapFormService.commonTrade.controls.output.value;
 
-    if (!this.checkSettings()) {
-      return EMPTY;
-    }
+    this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
 
     return forkJoin([this.needApprove(fromAmount), this.checkBalance(token, fromAmount)]).pipe(
       mergeMap(([needApprove]) => {

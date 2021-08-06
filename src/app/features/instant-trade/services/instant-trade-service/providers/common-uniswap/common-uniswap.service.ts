@@ -11,13 +11,7 @@ import { TransactionReceipt } from 'web3-eth';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
-import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -26,8 +20,6 @@ import { ItSettingsForm } from 'src/app/features/swaps/services/settings-service
 import { AbiItem } from 'web3-utils';
 import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { HttpService } from 'src/app/core/services/http/http.service';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +28,7 @@ export class CommonUniswapService {
   constructor(
     private readonly web3Private: Web3PrivateService,
     public providerConnectorService: ProviderConnectorService,
-    private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly httpService: HttpService
+    private readonly coingeckoApiService: CoingeckoApiService
   ) {}
 
   public getAllowance(
@@ -173,7 +164,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[],
     gasLimit: string | BigNumber,
-    gasPrice?: BigNumber
+    gasPrice?: string
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -184,7 +175,7 @@ export class CommonUniswapService {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+        gasPrice
       }
     );
   }
@@ -198,7 +189,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[],
     gasLimit: string | BigNumber,
-    gasPrice?: BigNumber
+    gasPrice?: string
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -208,7 +199,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+        gasPrice
       }
     );
   }
@@ -222,7 +213,7 @@ export class CommonUniswapService {
     contractAddress: string,
     abi: AbiItem[],
     gasLimit: string | BigNumber,
-    gasPrice?: BigNumber
+    gasPrice?: string
   ): Promise<TransactionReceipt> {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
@@ -232,7 +223,7 @@ export class CommonUniswapService {
       {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
-        ...(gasPrice && { gasPrice: gasPrice.toString(10) })
+        gasPrice
       }
     );
   }
@@ -290,7 +281,7 @@ export class CommonUniswapService {
       this.providerConnectorService.isProviderActive && this.providerConnectorService?.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * settings.deadline;
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await web3Public.getGasPriceInETH();
+    const gasPriceInEth = await web3Public.getGasPriceInETH();
 
     const amountOutMin = route.outputAbsoluteAmount
       .multipliedBy(new BigNumber(1).minus(settings.slippageTolerance))
@@ -308,16 +299,17 @@ export class CommonUniswapService {
       abi
     );
 
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, 1.2);
+    const gasFeeInEth = new BigNumber(increasedGas).multipliedBy(gasPriceInEth);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
     return {
       route,
       gasData: {
-        estimatedGas,
+        estimatedGas: increasedGas,
         gasFeeInEth,
         gasFeeInUsd,
-        gasPrice
+        gasPrice: Web3Public.toWei(gasPriceInEth)
       }
     };
   }
@@ -398,7 +390,7 @@ export class CommonUniswapService {
     const deadline = Math.floor(Date.now() / 1000) + 60 * settings.deadline;
 
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
-    const gasPrice = await web3Public.getGasPriceInETH();
+    const gasPriceInEth = await web3Public.getGasPriceInETH();
 
     const promises: Promise<{
       route: UniswapRoute;
@@ -421,7 +413,8 @@ export class CommonUniswapService {
         abi
       );
 
-      const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
+      const increasedGas = Web3Public.calculateGasMargin(estimatedGas, 1.2);
+      const gasFeeInEth = new BigNumber(increasedGas).multipliedBy(gasPriceInEth);
       const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
       const profit = route.outputAbsoluteAmount
@@ -432,10 +425,10 @@ export class CommonUniswapService {
       return {
         route,
         gasData: {
-          estimatedGas,
+          estimatedGas: increasedGas,
           gasFeeInUsd,
           gasFeeInEth,
-          gasPrice
+          gasPrice: Web3Public.toWei(gasPriceInEth)
         },
         profit
       };
@@ -447,51 +440,14 @@ export class CommonUniswapService {
   }
 
   public checkSettings(selectedBlockchain: BLOCKCHAIN_NAME) {
-    if (!this.providerConnectorService.isProviderActive) {
-      throw new WalletError();
-    }
-    if (!this.providerConnectorService.address) {
-      throw new AccountError();
-    }
-    if (this.providerConnectorService.networkName !== selectedBlockchain) {
-      if (this.providerConnectorService.networkName !== `${selectedBlockchain}_TESTNET`) {
-        if (this.providerConnectorService.providerName === WALLET_NAME.METAMASK) {
-          throw new NetworkError(selectedBlockchain);
-        } else {
-          throw new NotSupportedNetworkError(selectedBlockchain);
-        }
-      }
-    }
+    this.providerConnectorService.checkSettings(selectedBlockchain);
   }
 
   async checkBalance(trade: InstantTrade, web3Public: Web3Public): Promise<void> {
-    const amountIn = trade.from.amount.multipliedBy(10 ** trade.from.token.decimals).toFixed(0);
-
-    if (web3Public.isNativeAddress(trade.from.token.address)) {
-      const balance = await web3Public.getBalance(this.providerConnectorService.address, {
-        inWei: true
-      });
-      if (balance.lt(amountIn)) {
-        const formattedBalance = web3Public.weiToEth(balance);
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedBalance,
-          trade.from.amount.toFixed()
-        );
-      }
-    } else {
-      const tokensBalance = await web3Public.getTokenBalance(
-        this.providerConnectorService.address,
-        trade.from.token.address
-      );
-      if (tokensBalance.lt(amountIn)) {
-        const formattedTokensBalance = tokensBalance.div(10 ** trade.from.token.decimals).toFixed();
-        throw new InsufficientFundsError(
-          trade.from.token.symbol,
-          formattedTokensBalance,
-          trade.from.amount.toFixed()
-        );
-      }
-    }
+    return web3Public.checkBalance(
+      trade.from.token,
+      trade.from.amount,
+      this.providerConnectorService.address
+    );
   }
 }

@@ -62,10 +62,7 @@
           </button>
         </a>
 
-        <a
-          href="https://shop.rubic.exchange/"
-          class="data-list__link"
-        >
+        <a href="https://shop.rubic.exchange/" class="data-list__link">
           <button tuiOption class="data-list__option">
             {{ 'navigation.merch' | translate }}
           </button>
@@ -102,15 +99,15 @@
 
       <tui-opt-group *ngIf="($currentUser | async)?.address" class="rubic-menu__mobile">
         <button tuiOption class="data-list__address">
-            <img
-              *ngIf="currentBlockchain?.imagePath"
-              class="rubic-menu__chain-icon"
-              [src]="currentBlockchain?.imagePath"
-              alt="($currentBlockchain | async)?.name"
-              width="25"
-              height="25"
-            />
-            {{ ($currentUser | async)?.address | shortAddress: 5:3 }}
+          <img
+            *ngIf="currentBlockchain?.imagePath"
+            class="rubic-menu__chain-icon"
+            [src]="currentBlockchain?.imagePath"
+            alt="($currentBlockchain | async)?.name"
+            width="25"
+            height="25"
+          />
+          {{ ($currentUser | async)?.address | shortAddress: 5:3 }}
         </button>
 
         <a
@@ -124,11 +121,7 @@
           </button>
         </a>
 
-        <button
-          tuiOption
-          (click)="logout()"
-          class="data-list__option data-list__option_logout"
-        >
+        <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">
           {{ 'navigation.logout' | translate }}
         </button>
       </tui-opt-group>

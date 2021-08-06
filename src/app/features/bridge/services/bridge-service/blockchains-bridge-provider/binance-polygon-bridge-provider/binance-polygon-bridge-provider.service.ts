@@ -129,7 +129,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
           evoToken.index,
           bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).toFixed(),
           destination,
-          Web3PublicService.addressToBytes32(this.authService.user.address)
+          Web3Public.addressToBytes32(this.authService.user.address)
         ],
         {
           onTransactionHash
