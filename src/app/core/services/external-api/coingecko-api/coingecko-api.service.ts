@@ -12,7 +12,7 @@ export class CoingeckoApiService {
 
   public async getEtherPriceInUsd(): Promise<BigNumber> {
     try {
-      return await this.getTokenUsdPriceByCoingeckoId('ethereum');
+      return this.getTokenUsdPriceByCoingeckoId('ethereum');
     } catch (coingeckoError) {
       console.debug('Coingecko is not alive');
       return new BigNumber(0);

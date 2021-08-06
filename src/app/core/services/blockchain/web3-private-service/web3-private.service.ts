@@ -136,7 +136,7 @@ export class Web3PrivateService {
           gas: options.gas.toString(10) || this.defaultMockGas
         }),
         ...(options.data && { data: options.data }),
-        ...(options.gasPrice && { gasPrice: options.gasPrice.toString(10) })
+        ...(options.gasPrice && { gasPrice: options.gasPrice })
       });
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
@@ -174,7 +174,7 @@ export class Web3PrivateService {
             gas: options.gas.toString(10) || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice.toString(10) })
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
@@ -284,7 +284,8 @@ export class Web3PrivateService {
         ...(options.value && { value: options.value }),
         ...((options.gas || this.defaultMockGas) && {
           gas: options.gas.toString(10) || this.defaultMockGas
-        })
+        }),
+        ...(options.gasPrice && { gasPrice: options.gasPrice })
       });
       return this.executeContractMethod(
         contractAddress,
@@ -327,7 +328,7 @@ export class Web3PrivateService {
           ...((options.gas || this.defaultMockGas) && {
             gas: options.gas.toString(10) || this.defaultMockGas
           }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice.toString(10) })
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
