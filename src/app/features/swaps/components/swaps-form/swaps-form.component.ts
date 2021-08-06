@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -14,7 +14,7 @@ import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { RefreshButtonStatus } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -51,6 +51,15 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get loadingStatus(): REFRESH_BUTTON_STATUS {
+    return this._loadingStatus;
+  }
+
+  public set loadingStatus(status: REFRESH_BUTTON_STATUS) {
+    this._loadingStatus = status;
+    this.cdr.detectChanges();
+  }
+
   private _supportedTokens: SupportedTokensInfo;
 
   private _bridgeTokensPairs: BlockchainsBridgeTokens[];
@@ -69,7 +78,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  public loadingStatus: RefreshButtonStatus = 'stopped';
+  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
   private formSubscription$: Subscription;
 
@@ -84,7 +93,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -266,10 +276,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         [formKey]: this.selectedToken[tokenType]
       });
     }
-  }
-
-  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    return this.swapsService.getMinMaxAmounts(amountType);
   }
 
   public onTokenInputAmountChange(amount: string): void {
