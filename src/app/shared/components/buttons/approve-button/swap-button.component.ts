@@ -150,37 +150,30 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     });
   }
 
-  // eslint-disable-next-line consistent-return
   get errorText(): Observable<string> {
     let translateParams = {
       key: 'Unknown Error',
       interpolateParams: {}
-    } as { key: string, interpolateParams?: unknown };
+    } as { key: string; interpolateParams?: unknown };
     if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
       translateParams = { key: 'errors.chooseSupportedBridge' };
-    }
-    if (this.errorType[ERROR_TYPE.NO_AMOUNT]) {
+    } else if (this.errorType[ERROR_TYPE.NO_AMOUNT]) {
       translateParams = { key: 'errors.noEnteredAmount' };
-    }
-    if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
+    } else if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
       translateParams = {
         key: 'errors.minimumAmount',
-        interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.blockchain }
+        interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.symbol }
       };
-    }
-    if (this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]) {
+    } else if (this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]) {
       translateParams = {
         key: 'errors.maximumAmount',
-        interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.blockchain }
+        interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.symbol }
       };
-    }
-    if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
+    } else if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
       translateParams = { key: 'errors.InsufficientBalance' };
-    }
-    if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
+    } else if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
       translateParams = { key: 'errors.setTronAddress' };
-    }
-    if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
+    } else if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
       translateParams = {
         key: 'errors.chooseNetworkWallet',
         interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
