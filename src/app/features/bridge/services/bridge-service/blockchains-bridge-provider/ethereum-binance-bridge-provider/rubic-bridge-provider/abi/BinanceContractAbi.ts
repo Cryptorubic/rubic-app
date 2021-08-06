@@ -1,3 +1,5 @@
+import { AbiItem } from 'web3-utils';
+
 export default [
   {
     type: 'constructor',
@@ -577,4 +579,4 @@ export default [
     outputs: [],
     stateMutability: 'nonpayable'
   }
-];
+] as AbiItem[];

@@ -12,14 +12,13 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { UserInterface } from '../../../../../services/auth/models/user.interface';
-import { AuthService } from '../../../../../services/auth/auth.service';
-import { IBlockchain } from '../../../../../../shared/models/blockchain/IBlockchain';
-import { ProviderConnectorService } from '../../../../../services/blockchain/provider-connector/provider-connector.service';
 
 @Component({
   selector: 'app-rubic-menu',
