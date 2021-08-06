@@ -18,11 +18,12 @@ import { filter, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { NotificationsService } from 'src/app/core/notifications/notifications.service';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -81,8 +82,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     private cryptoTapTokenService: CryptoTapTokensService,
     private authService: AuthService,
     private errorsService: ErrorsService,
-    private notificationsService: TuiNotificationsService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   ngOnInit(): void {
@@ -211,13 +212,14 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
       this.cdr.detectChanges();
-      approveInProgressSubscription$ = this.notificationsService
-        .show(this.translate.instant('bridgePage.progressMessage'), {
+      approveInProgressSubscription$ = this.notificationsService.show(
+        this.translate.instant('bridgePage.progressMessage'),
+        {
           label: 'Trade in progress',
           status: TuiNotification.Info,
           autoClose: false
-        })
-        .subscribe();
+        }
+      );
     };
 
     this.cryptoTapService
@@ -227,13 +229,11 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
         (_res: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
 
-          this.notificationsService
-            .show(this.translate.instant('bridgePage.successMessage'), {
-              label: 'Successful trade',
-              status: TuiNotification.Success,
-              autoClose: 15000
-            })
-            .subscribe();
+          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
+            label: 'Successful trade',
+            status: TuiNotification.Success,
+            autoClose: 15000
+          });
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
         },
@@ -251,13 +251,14 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       this.cdr.detectChanges();
-      tradeInProgressSubscription$ = this.notificationsService
-        .show(this.translate.instant('bridgePage.progressMessage'), {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translate.instant('bridgePage.progressMessage'),
+        {
           label: 'Trade in progress',
           status: TuiNotification.Info,
           autoClose: false
-        })
-        .subscribe();
+        }
+      );
     };
 
     this.cryptoTapService
@@ -267,13 +268,11 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
         (_res: TransactionReceipt) => {
           tradeInProgressSubscription$.unsubscribe();
 
-          this.notificationsService
-            .show(this.translate.instant('bridgePage.successMessage'), {
-              label: 'Successful trade',
-              status: TuiNotification.Success,
-              autoClose: 15000
-            })
-            .subscribe();
+          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
+            label: 'Successful trade',
+            status: TuiNotification.Success,
+            autoClose: 15000
+          });
           this.tradeStatus = null;
           this.cdr.detectChanges();
           this.calculateTrade();

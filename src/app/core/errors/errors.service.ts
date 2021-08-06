@@ -1,18 +1,19 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { NotificationsService } from 'src/app/core/notifications/notifications.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
   constructor(
-    private readonly notificationsService: TuiNotificationsService,
+    private readonly notificationsService: NotificationsService,
     @Inject(Injector) private injector: Injector,
-    private translateService: TranslateService
+    private readonly translateService: TranslateService
   ) {}
 
   public throw$(error: RubicError): never {
@@ -32,14 +33,14 @@ export class ErrorsService {
         this.injector
       );
       options.data = error?.data;
-      this.notificationsService.show(errorComponent, options).subscribe();
+      this.notificationsService.show(errorComponent, options);
       throw error;
     }
 
     const text = error?.translateKey
       ? this.translateService.instant(error.translateKey)
       : error.message;
-    this.notificationsService.show(text, options).subscribe();
+    this.notificationsService.show(text, options);
 
     throw error;
   }
@@ -66,13 +67,13 @@ export class ErrorsService {
       if (error?.data) {
         options.data = error.data;
       }
-      this.notificationsService.show(errorComponent, options).subscribe();
+      this.notificationsService.show(errorComponent, options);
       return;
     }
 
     const text = error?.translateKey
       ? this.translateService.instant(error.translateKey)
       : error.message;
-    this.notificationsService.show(text, options).subscribe();
+    this.notificationsService.show(text, options);
   }
 }

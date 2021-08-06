@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { OneInchEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/one-inch-eth-service/one-inch-eth.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { forkJoin, Observable, of, Subscription, timer } from 'rxjs';
 import { UniSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/uni-swap-service/uni-swap.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -23,6 +23,7 @@ import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import CustomError from 'src/app/core/errors/models/custom-error';
+import { NotificationsService } from 'src/app/core/notifications/notifications.service';
 
 @Injectable({
   providedIn: 'root'
@@ -55,9 +56,9 @@ export class InstantTradeService {
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
-    @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private notificationsService: NotificationsService
   ) {
     this.setBlockchainsProviders();
   }
@@ -102,12 +103,13 @@ export class InstantTradeService {
         trade,
         {
           onConfirm: async hash => {
-            this.modalShowing = this.notificationsService
-              .show(this.translateService.instant('notifications.tradeInProgress'), {
+            this.modalShowing = this.notificationsService.show(
+              this.translateService.instant('notifications.tradeInProgress'),
+              {
                 status: TuiNotification.Info,
                 autoClose: false
-              })
-              .subscribe();
+              }
+            );
             transactionHash = hash;
 
             await this.postTrade(hash, provider, trade);
@@ -117,11 +119,12 @@ export class InstantTradeService {
 
       this.modalShowing.unsubscribe();
       this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
-      this.notificationsService
-        .show(this.translateService.instant('notifications.successfulTradeTitle'), {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.successfulTradeTitle'),
+        {
           status: TuiNotification.Success
-        })
-        .subscribe();
+        }
+      );
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
@@ -191,21 +194,23 @@ export class InstantTradeService {
         trade.from.token.address,
         {
           onTransactionHash: () => {
-            this.modalShowing = this.notificationsService
-              .show(this.translateService.instant('notifications.approveInProgress'), {
+            this.modalShowing = this.notificationsService.show(
+              this.translateService.instant('notifications.approveInProgress'),
+              {
                 status: TuiNotification.Info,
                 autoClose: false
-              })
-              .subscribe();
+              }
+            );
           }
         }
       );
       this.modalShowing.unsubscribe();
-      this.notificationsService
-        .show(this.translateService.instant('notifications.successApprove'), {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.successApprove'),
+        {
           status: TuiNotification.Success
-        })
-        .subscribe();
+        }
+      );
     } catch (err) {
       this.modalShowing?.unsubscribe();
       throw err;
