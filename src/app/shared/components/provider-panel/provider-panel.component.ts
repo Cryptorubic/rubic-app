@@ -5,6 +5,7 @@ import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INS
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 
 export interface InstantTrade<T> {
   blockchain: BLOCKCHAIN_NAME;
@@ -195,6 +196,8 @@ export class ProviderPanelComponent {
   }
 
   public getUsdPrice(): string {
-    return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
+    return this.tradeData.to.amount
+      .multipliedBy(this.tradeData.to.token.price)
+      .toFormat(2, BIG_NUMBER_FORMAT);
   }
 }

@@ -7,6 +7,9 @@ import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/Blockchain
 import { AbiItem } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -46,6 +49,27 @@ export class Web3Public {
    */
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
+
+  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1): string {
+    return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
+  }
+
+  static toWei(amount: BigNumber | string | number, decimals = 18): string {
+    return new BigNumber(amount || 0).times(new BigNumber(10).pow(decimals)).toFixed(0);
+  }
+
+  static fromWei(amountInWei: BigNumber | string | number, decimals = 18): BigNumber {
+    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
+  }
+
+  public static addressToBytes32(address: string): string {
+    if (address.slice(0, 2) !== '0x' || address.length !== 42) {
+      console.error('Wrong address format');
+      throw new UndefinedError();
+    }
+
+    return `0x${address.slice(2).padStart(64, '0')}`;
+  }
 
   /**
    * @description gets account balance in Eth units
@@ -356,5 +380,32 @@ export class Web3Public {
     );
     const result = await contract.methods.aggregate(calls).call();
     return result.returnData;
+  }
+
+  public async checkBalance(
+    token: { address: string; symbol: string; decimals: number },
+    amount: BigNumber,
+    userAddress: string
+  ): Promise<void> {
+    let balance: BigNumber;
+    if (this.isNativeAddress(token.address)) {
+      balance = await this.getBalance(userAddress, {
+        inWei: true
+      });
+    } else {
+      balance = await this.getTokenBalance(userAddress, token.address);
+    }
+
+    const amountAbsolute = Web3Public.toWei(amount, token.decimals);
+    if (balance.lt(amountAbsolute)) {
+      const formattedTokensBalance = Web3Public.fromWei(balance, token.decimals).toFormat(
+        BIG_NUMBER_FORMAT
+      );
+      throw new InsufficientFundsError(
+        token.symbol,
+        formattedTokensBalance,
+        amount.toFormat(BIG_NUMBER_FORMAT)
+      );
+    }
   }
 }

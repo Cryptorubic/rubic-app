@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { AbiItem } from 'web3-utils';
 
+export const defaultGasPrice = new BigNumber(5000000000); // Wei
+
 export const sushiSwapPolygonContracts = {
   address: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
   testnetAddress: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506'

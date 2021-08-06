@@ -138,6 +138,7 @@ export class SushiSwapEthService implements ItProvider {
       estimatedGas: gasData.estimatedGas,
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
+      gasPrice: gasData.gasPrice,
       options: {
         path: route.path,
         gasOptimization: this.settings.rubicOptimisation
@@ -172,7 +173,9 @@ export class SushiSwapEthService implements ItProvider {
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
-        abi
+        abi,
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -181,7 +184,9 @@ export class SushiSwapEthService implements ItProvider {
         uniSwapTrade,
         options,
         this.sushiswapContractAddress,
-        abi
+        abi,
+        trade.estimatedGas,
+        trade.gasPrice
       );
     }
 
@@ -189,7 +194,9 @@ export class SushiSwapEthService implements ItProvider {
       uniSwapTrade,
       options,
       this.sushiswapContractAddress,
-      abi
+      abi,
+      trade.estimatedGas,
+      trade.gasPrice
     );
   }
 }

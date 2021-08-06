@@ -1,4 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import { of, Subscription } from 'rxjs';
@@ -11,7 +18,8 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 @Component({
   selector: 'app-rubic-tokens',
   templateUrl: './rubic-tokens.component.html',
-  styleUrls: ['./rubic-tokens.component.scss']
+  styleUrls: ['./rubic-tokens.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicTokensComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
@@ -32,7 +40,10 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   private $formSubscription: Subscription;
 
-  constructor(private tokensSelectService: TokensSelectService) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly tokensSelectService: TokensSelectService
+  ) {}
 
   public ngOnInit(): void {
     this.setFormValues(this.formService.commonTrade.controls.input.value);
@@ -50,10 +61,11 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
   private setFormValues(formValue: ISwapFormInput): void {
     const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
     this.selectedToken = formValue[formKey];
+    this.cdr.detectChanges();
   }
 
   public openTokensSelect(): void {
-    const { fromBlockchain, toBlockchain } = this.formService.commonTrade.controls.input.value;
+    const { fromBlockchain, toBlockchain } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
     this.tokensSelectService
@@ -61,19 +73,19 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
         of(this.tokens),
         this.formType,
         currentBlockchain,
-        this.formService.commonTrade.controls.input,
+        this.formService.input,
         this.allowedBlockchains
       )
       .subscribe((token: Token) => {
         if (token) {
           this.selectedToken = token;
           if (this.formType === 'from') {
-            this.formService.commonTrade.controls.input.patchValue({
+            this.formService.input.patchValue({
               fromBlockchain: token.blockchain,
               fromToken: token
             });
           } else {
-            this.formService.commonTrade.controls.input.patchValue({
+            this.formService.input.patchValue({
               toToken: token,
               toBlockchain: token.blockchain
             });
@@ -85,6 +97,6 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
   public clearToken(): void {
     this.selectedToken = null;
     const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
-    this.formService.commonTrade.controls.input.patchValue({ [formKey]: null });
+    this.formService.input.patchValue({ [formKey]: null });
   }
 }

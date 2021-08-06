@@ -5,6 +5,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -68,7 +69,9 @@ export class Web3PrivateService {
         .transfer(toAddress, amount.toString())
         .send({
           from: this.address,
-          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas?.toString(10) || this.defaultMockGas
+          })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
@@ -130,7 +133,7 @@ export class Web3PrivateService {
         to: toAddress,
         value: options.inWei ? value.toString() : this.ethToWei(value),
         ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas || this.defaultMockGas
+          gas: options.gas?.toString(10) || this.defaultMockGas
         }),
         ...(options.data && { data: options.data }),
         ...(options.gasPrice && { gasPrice: options.gasPrice })
@@ -168,7 +171,7 @@ export class Web3PrivateService {
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas || this.defaultMockGas
+            gas: options.gas?.toString(10) || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
           ...(options.gasPrice && { gasPrice: options.gasPrice })
@@ -234,12 +237,19 @@ export class Web3PrivateService {
     }
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
 
+    const gasLimit = await contract.methods
+      .approve(spenderAddress, rawValue.toFixed(0))
+      .estimateGas({
+        from: this.address,
+        ...(this.defaultMockGas && { gas: this.defaultMockGas })
+      });
+
     return new Promise((resolve, reject) => {
       contract.methods
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
-          ...(this.defaultMockGas && { gas: this.defaultMockGas })
+          gas: Web3Public.calculateGasMargin(gasLimit)
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
@@ -272,7 +282,10 @@ export class Web3PrivateService {
       await contract.methods[methodName](...methodArguments).call({
         from: this.address,
         ...(options.value && { value: options.value }),
-        ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+        ...((options.gas || this.defaultMockGas) && {
+          gas: options.gas?.toString(10) || this.defaultMockGas
+        }),
+        ...(options.gasPrice && { gasPrice: options.gasPrice })
       });
       return this.executeContractMethod(
         contractAddress,
@@ -312,7 +325,10 @@ export class Web3PrivateService {
         .send({
           from: this.address,
           ...(options.value && { value: options.value }),
-          ...((options.gas || this.defaultMockGas) && { gas: options.gas || this.defaultMockGas })
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas?.toString(10) || this.defaultMockGas
+          }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

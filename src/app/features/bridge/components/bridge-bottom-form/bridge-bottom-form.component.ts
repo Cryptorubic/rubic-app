@@ -8,10 +8,10 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { forkJoin, of, Subscription } from 'rxjs';
+import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
-import { debounceTime, first } from 'rxjs/operators';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -21,11 +21,12 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -68,13 +69,37 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  public readonly TRADE_STATUS = TRADE_STATUS;
+
+  public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  private readonly onCalculateTrade: Subject<void>;
+
+  private bridgeTokensPairs: BlockchainsBridgeTokens[];
+
+  private fromBlockchain: BLOCKCHAIN_NAME;
+
+  public toBlockchain: BLOCKCHAIN_NAME;
+
+  public isBridgeSupported: boolean;
+
+  private fromToken: TokenAmount;
+
+  private toToken: TokenAmount;
+
+  public fromAmount: BigNumber;
+
   public minError: false | number;
 
   public maxError: false | number;
 
-  public TRADE_STATUS = TRADE_STATUS;
+  public toWalletAddress: string;
 
-  public BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+  public tronAddress: string;
+
+  public needApprove: boolean;
+
+  public tradeStatus: TRADE_STATUS;
 
   private formSubscription$: Subscription;
 
@@ -84,44 +109,29 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private unsupportedBridgeSubscription$: Subscription;
 
-  private fromBlockchain: BLOCKCHAIN_NAME;
+  private bridgeTokensSubscription$: Subscription;
 
-  public toBlockchain: BLOCKCHAIN_NAME;
+  private calculateTradeSubscription$: Subscription;
 
-  public needApprove: boolean;
-
-  public fromAmount: BigNumber;
-
-  public minmaxError = false;
-
-  public tradeStatus = TRADE_STATUS.DISABLED;
-
-  public isBridgeSupported;
-
-  public toWalletAddress: string;
-
-  public tronAddress: string;
+  get allowTrade(): boolean {
+    const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
+      this.swapFormService.inputValue;
+    return (
+      fromBlockchain &&
+      toBlockchain &&
+      fromToken &&
+      toToken &&
+      fromAmount &&
+      !fromAmount.isNaN() &&
+      fromAmount.gt(0)
+    );
+  }
 
   get whatIsBlockchain(): BlockchainInfo {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.commonTrade.controls.input.value;
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     const nonEthBlockchain =
       toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
     return BLOCKCHAINS_INFO[nonEthBlockchain];
-  }
-
-  get tokenInfoUrl(): string {
-    const { fromToken, toToken } = this.swapFormService.commonTrade.controls.input.value;
-    let tokenAddress;
-    if (
-      toToken?.address &&
-      toToken.address !== NATIVE_TOKEN_ADDRESS &&
-      this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(toToken.address)
-    ) {
-      tokenAddress = toToken?.address;
-    } else {
-      tokenAddress = fromToken?.address;
-    }
-    return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
   constructor(
@@ -138,48 +148,37 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     @Inject(Injector) private readonly injector: Injector,
     private readonly translate: TranslateService,
     private readonly tokensService: TokensService
-  ) {}
+  ) {
+    this.isBridgeSupported = true;
+    this.onCalculateTrade = new Subject<void>();
+  }
 
   ngOnInit() {
-    this.fromBlockchain = this.swapFormService.commonTrade.controls.input.value.fromBlockchain;
-    this.toBlockchain = this.swapFormService.commonTrade.controls.input.value.toBlockchain;
+    this.setupCalculating();
+    this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.tronAddress = this.settingsService.settingsForm.controls.BRIDGE.value.tronAddress;
-    if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
-      this.toWalletAddress = this.tronAddress;
-    }
+    this.bridgeTokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
+      this.bridgeTokensPairs = tokens;
+    });
 
-    this.isBridgeSupported = true;
-    this.calculateTrade();
-
-    this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges
-      .pipe(debounceTime(500))
+      .pipe(startWith(this.swapFormService.inputValue))
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsSubscription$ =
-      this.settingsService.settingsForm.controls.BRIDGE.valueChanges.subscribe(settings => {
+    this.settingsSubscription$ = this.settingsService.bridgeValueChanges
+      .pipe(startWith(this.settingsService.bridgeValue))
+      .subscribe(settings => {
         this.tronAddress = settings.tronAddress;
-        if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
-          this.toWalletAddress = this.tronAddress;
-        }
-
-        this.cdr.detectChanges();
+        this.setToWalletAddress();
       });
 
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-      if (user?.address) {
-        if (this.toBlockchain !== BLOCKCHAIN_NAME.TRON) {
-          this.toWalletAddress = user.address;
-        }
-
-        this.calculateTrade();
-        this.cdr.detectChanges();
-      }
+    this.userSubscription$ = this.authService.getCurrentUser().subscribe(() => {
+      this.setToWalletAddress();
     });
   }
 
   ngOnDestroy() {
+    this.bridgeTokensSubscription$.unsubscribe();
     this.formSubscription$.unsubscribe();
     this.settingsSubscription$.unsubscribe();
     this.userSubscription$.unsubscribe();
@@ -187,32 +186,41 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(form: SwapFormInput): void {
-    this.fromAmount = form.fromAmount;
-
-    const minAmount = this.getMinMaxAmounts('minAmount');
-    const maxAmount = this.getMinMaxAmounts('maxAmount');
-    this.maxError = this.fromAmount?.gt(maxAmount) ? maxAmount : false;
-    this.minError = this.fromAmount?.lt(minAmount) ? minAmount : false;
-
-    if (this.fromBlockchain !== form.fromBlockchain || this.toBlockchain !== form.toBlockchain) {
-      this.isBridgeSupported = true;
-      this.unsupportedBridgeSubscription$?.unsubscribe();
+    if (
+      this.fromBlockchain === form.fromBlockchain &&
+      this.toBlockchain === form.toBlockchain &&
+      this.fromAmount &&
+      this.fromAmount.eq(form.fromAmount) &&
+      this.tokensService.isOnlyBalanceUpdated(this.fromToken, form.fromToken) &&
+      this.tokensService.isOnlyBalanceUpdated(this.toToken, form.toToken)
+    ) {
+      return;
     }
 
+    this.fromBlockchain = form.fromBlockchain;
     this.toBlockchain = form.toBlockchain;
-    if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
+    this.fromToken = form.fromToken;
+    this.toToken = form.toToken;
+    this.fromAmount = form.fromAmount;
+    this.cdr.detectChanges();
+
+    this.setToWalletAddress();
+
+    this.conditionalCalculate();
+  }
+
+  private setToWalletAddress(): void {
+    const { toBlockchain } = this.swapFormService.inputValue;
+    if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
       this.toWalletAddress = this.tronAddress;
     } else {
       this.toWalletAddress = this.authService.user?.address;
     }
-
-    this.calculateTrade();
     this.cdr.detectChanges();
   }
 
-  private calculateTrade(): void {
-    const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
-      this.swapFormService.commonTrade.controls.input.value;
+  private conditionalCalculate(): void {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
 
     if (fromBlockchain === toBlockchain) {
       return;
@@ -220,6 +228,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     if (!this.bridgeService.isBridgeSupported()) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
+
       if (this.isBridgeSupported) {
         this.isBridgeSupported = false;
         this.unsupportedBridgeSubscription$ = this.notificationsService
@@ -230,65 +239,132 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           })
           .subscribe();
       }
+
+      this.cdr.detectChanges();
       return;
     }
+
     this.isBridgeSupported = true;
     this.unsupportedBridgeSubscription$?.unsubscribe();
+    this.cdr.detectChanges();
 
-    if (
-      !fromBlockchain ||
-      !toBlockchain ||
-      !fromToken ||
-      !toToken ||
-      !fromAmount ||
-      fromAmount.eq(0) ||
-      fromAmount.isNaN()
-    ) {
-      this.swapFormService.commonTrade.controls.output.patchValue({
+    if (!this.allowTrade) {
+      this.tradeStatus = TRADE_STATUS.DISABLED;
+      this.swapFormService.output.patchValue({
         toAmount: new BigNumber(NaN)
       });
-      this.tradeStatus = TRADE_STATUS.DISABLED;
+      this.cdr.detectChanges();
       return;
     }
 
-    this.tradeStatus = TRADE_STATUS.LOADING;
+    this.checkMinMaxAmounts();
+
+    this.onCalculateTrade.next();
+  }
+
+  private setupCalculating(): void {
+    if (this.calculateTradeSubscription$) {
+      return;
+    }
+
+    this.calculateTradeSubscription$ = this.onCalculateTrade
+      .pipe(
+        switchMap(() => {
+          this.tradeStatus = TRADE_STATUS.LOADING;
+          this.cdr.detectChanges();
+
+          const needApprove$ = this.authService.user?.address
+            ? this.bridgeService.needApprove()
+            : of(false);
+
+          return forkJoin([this.bridgeService.getFee(), needApprove$]).pipe(
+            map(([fee, needApprove]) => {
+              this.needApprove = needApprove;
+
+              if (fee === null) {
+                this.tradeStatus = TRADE_STATUS.DISABLED;
+                this.errorsService.catch$(new UndefinedError());
+                this.cdr.detectChanges();
+                return;
+              }
+
+              const { fromAmount } = this.swapFormService.inputValue;
+              const toAmount = fromAmount.minus(fee);
+              this.swapFormService.output.patchValue({
+                toAmount
+              });
+
+              if (
+                this.minError ||
+                this.maxError ||
+                !toAmount ||
+                toAmount.isNaN() ||
+                toAmount.eq(0) ||
+                !this.toWalletAddress
+              ) {
+                this.tradeStatus = TRADE_STATUS.DISABLED;
+              } else {
+                this.tradeStatus = needApprove
+                  ? TRADE_STATUS.READY_TO_APPROVE
+                  : TRADE_STATUS.READY_TO_SWAP;
+              }
+              this.cdr.detectChanges();
+            })
+          );
+        })
+      )
+      .subscribe();
+  }
+
+  public approveTrade() {
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
 
-    const needApprove$ = this.authService.user?.address
-      ? this.bridgeService.needApprove()
-      : of(false);
-
-    forkJoin([this.bridgeService.getFee(), needApprove$]).subscribe(([fee, needApprove]) => {
-      this.needApprove = needApprove;
-
-      if (fee === null) {
-        this.tradeStatus = TRADE_STATUS.DISABLED;
+    let approveInProgressSubscription$: Subscription;
+    const bridgeTradeRequest: BridgeTradeRequest = {
+      onTransactionHash: () => {
         this.cdr.detectChanges();
-        this.errorsService.catch$(new UndefinedError());
-        return;
+        approveInProgressSubscription$ = this.notificationsService
+          .show(this.translate.instant('bridgePage.approveProgressMessage'), {
+            label: this.translate.instant('notifications.approveInProgress'),
+            status: TuiNotification.Info,
+            autoClose: false
+          })
+          .subscribe();
       }
+    };
 
-      const toAmount = fromAmount.minus(fee);
-      this.swapFormService.commonTrade.controls.output.patchValue({
-        toAmount
-      });
-      this.tradeStatus = needApprove ? TRADE_STATUS.READY_TO_APPROVE : TRADE_STATUS.READY_TO_SWAP;
-      this.minmaxError = !this.swapService.checkMinMax(fromAmount);
-      if (
-        this.minmaxError ||
-        !toAmount ||
-        toAmount.isNaN() ||
-        toAmount.eq(0) ||
-        !this.toWalletAddress
-      ) {
-        this.tradeStatus = TRADE_STATUS.DISABLED;
-      }
-      this.cdr.detectChanges();
-    });
+    this.bridgeService
+      .approve(bridgeTradeRequest)
+      .pipe(first())
+      .subscribe(
+        (_: TransactionReceipt) => {
+          approveInProgressSubscription$.unsubscribe();
+          this.notificationsService
+            .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
+              label: this.translate.instant('notifications.successApprove'),
+              status: TuiNotification.Success,
+              autoClose: 15000
+            })
+            .subscribe();
+
+          this.tokensService.recalculateUsersBalance();
+
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.cdr.detectChanges();
+        },
+        err => {
+          approveInProgressSubscription$?.unsubscribe();
+          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+          this.errorsService.catch$(err);
+          this.cdr.detectChanges();
+        }
+      );
   }
 
   public createTrade() {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    this.cdr.detectChanges();
 
     let tradeInProgressSubscription$: Subscription;
     const bridgeTradeRequest: BridgeTradeRequest = {
@@ -319,12 +395,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             })
             .subscribe();
 
-          this.tradeStatus = null;
-          this.cdr.detectChanges();
-
-          this.calculateTrade();
-
           this.tokensService.recalculateUsersBalance();
+
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.conditionalCalculate();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
@@ -335,52 +409,29 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  public approveTrade() {
-    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
+  private checkMinMaxAmounts(): void {
+    const { fromAmount } = this.swapFormService.inputValue;
 
-    let approveInProgressSubscription$: Subscription;
-    const bridgeTradeRequest: BridgeTradeRequest = {
-      onTransactionHash: () => {
-        this.cdr.detectChanges();
-        approveInProgressSubscription$ = this.notificationsService
-          .show(this.translate.instant('bridgePage.approveProgressMessage'), {
-            label: this.translate.instant('notifications.approveInProgress'),
-            status: TuiNotification.Info,
-            autoClose: false
-          })
-          .subscribe();
-      }
-    };
-
-    this.bridgeService
-      .approve(bridgeTradeRequest)
-      .pipe(first())
-      .subscribe(
-        (_: TransactionReceipt) => {
-          approveInProgressSubscription$.unsubscribe();
-          this.notificationsService
-            .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
-              label: this.translate.instant('notifications.successApprove'),
-              status: TuiNotification.Success,
-              autoClose: 15000
-            })
-            .subscribe();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
-
-          this.tokensService.recalculateUsersBalance();
-        },
-        err => {
-          approveInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch$(err);
-          this.cdr.detectChanges();
-        }
-      );
+    const minAmount = this.getMinMaxAmounts('minAmount');
+    const maxAmount = this.getMinMaxAmounts('maxAmount');
+    this.maxError = fromAmount?.gt(maxAmount) ? maxAmount : false;
+    this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
+    this.cdr.detectChanges();
   }
 
   private getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    return this.swapService.getMinMaxAmounts(amountType);
+    const { fromToken, fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+
+    return this.bridgeTokensPairs
+      .find(
+        bridgeTokensPair =>
+          bridgeTokensPair.fromBlockchain === fromBlockchain &&
+          bridgeTokensPair.toBlockchain === toBlockchain
+      )
+      ?.bridgeTokens.find(
+        bridgeToken =>
+          bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
+          fromToken?.address.toLowerCase()
+      )?.blockchainToken[fromBlockchain][amountType];
   }
 }

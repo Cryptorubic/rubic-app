@@ -12,7 +12,7 @@ import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.s
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
-import { TableData } from 'src/app/features/my-trades/components/my-trades/components/table-data';
+import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
 import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
 
@@ -22,7 +22,7 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent extends TableData implements OnInit {
+export class TableComponent extends AbstractTableDataComponent implements OnInit {
   @Input() loading: boolean;
 
   @Input() tableData$: BehaviorSubject<TableRow[]>;
