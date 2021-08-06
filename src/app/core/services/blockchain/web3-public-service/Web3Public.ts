@@ -19,10 +19,6 @@ import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.s
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
 
-  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1): string {
-    return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
-  }
-
   constructor(
     private web3: Web3,
     private blockchain: IBlockchain,
