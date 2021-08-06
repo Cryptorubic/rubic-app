@@ -53,17 +53,26 @@ export class WalletLinkProvider extends PrivateProvider {
   ) {
     super(errorService);
     this.isEnabled = false;
-    this.defaultWalletParams = {
-      appName: 'Rubic',
-      appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
-      darkMode: false
-    };
+
+    // @ts-ignore
+    if (window.ethereum && window.ethereum.isCoinbaseWallet === true) {
+      // mobile coinbase browser
+      this.core = window.ethereum;
+    } else {
+      this.defaultWalletParams = {
+        appName: 'Rubic',
+        appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
+        darkMode: false
+      };
+
+      const chainId = blockchainId || 42;
+      const chain = BlockchainsInfo.getBlockchainById(chainId);
+      const walletLink = new WalletLink(this.defaultWalletParams);
+      this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
+    }
+
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
-    const chainId = blockchainId || 42;
-    const chain = BlockchainsInfo.getBlockchainById(chainId);
-    const walletLink = new WalletLink(this.defaultWalletParams);
-    this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
     web3.setProvider(this.core);
   }
 

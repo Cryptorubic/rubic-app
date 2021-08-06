@@ -5,6 +5,7 @@ export default [
   {
     id: 1,
     name: BLOCKCHAIN_NAME.ETHEREUM,
+    label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
     rpcLink: 'https://damp-misty-hill.quiknode.pro/c5c252ef9e1c07505eaf8109044b87b8e792f54c/',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
@@ -19,6 +20,7 @@ export default [
   {
     id: 56,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
     rpcLink:
       'https://damp-old-resonance.bsc.quiknode.pro/6b8be73cc041a07be145ddec1954fe3d6f21248d/',
@@ -34,6 +36,7 @@ export default [
   {
     id: 137,
     name: BLOCKCHAIN_NAME.POLYGON,
+    label: 'Polygon',
     scannerUrl: 'https://polygonscan.com',
     rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     imagePath: 'assets/images/icons/coins/polygon.svg',
@@ -48,6 +51,7 @@ export default [
   {
     id: 100,
     name: BLOCKCHAIN_NAME.XDAI,
+    label: 'XDai',
     scannerUrl: 'https://blockscout.com/xdai/mainnet',
     rpcLink: 'https://rpc.xdaichain.com/',
     imagePath: 'assets/images/icons/coins/xdai.svg',
@@ -62,6 +66,7 @@ export default [
   {
     id: NaN,
     name: BLOCKCHAIN_NAME.TRON,
+    label: 'Tron',
     scannerUrl: '',
     rpcLink: '',
     imagePath: 'assets/images/icons/coins/tron.svg',
@@ -77,6 +82,7 @@ export default [
   {
     id: 42,
     name: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
+    label: 'Ethereum',
     scannerUrl: 'https://kovan.etherscan.io/',
     rpcLink: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     imagePath: 'assets/images/icons/coins/kovan.png',
@@ -91,6 +97,7 @@ export default [
   {
     id: 97,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
+    label: 'Binance Smart Chain',
     scannerUrl: 'https://testnet.bscscan.com/',
     rpcLink: 'https://data-seed-prebsc-1-s1.binance.org:8545',
     imagePath: 'assets/images/icons/coins/bnb.svg',
@@ -105,6 +112,7 @@ export default [
   {
     id: 80001,
     name: BLOCKCHAIN_NAME.POLYGON_TESTNET,
+    label: 'Polygon',
     scannerUrl: 'https://explorer-mumbai.maticvigil.com/',
     rpcLink: 'https://rpc-mumbai.maticvigil.com',
     imagePath: 'assets/images/icons/coins/polygon.svg',
