@@ -15,16 +15,18 @@ import { CoingeckoApiService } from 'src/app/core/services/external-api/coingeck
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Injectable } from '@angular/core';
 import CustomError from 'src/app/core/errors/models/custom-error';
-import { OneInchSwapResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch.types';
+import {
+  OneInchQuoteResponse,
+  OneInchSwapResponse
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/one-inch.types';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common-oneinch/common-oneinch.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/it-provider';
-import { OneinchRefreshError } from 'src/app/core/errors/models/instant-trade/oneinch-refresh.error';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
@@ -126,10 +128,8 @@ export class OneInchEthService implements ItProvider {
       params: {
         fromTokenAddress,
         toTokenAddress,
-        amount,
-        slippage: this.settings.slippageTolerance.toString(),
-        fromAddress: this.providerConnectorService.address
-      } as unknown as {
+        amount
+      } as {
         [param: string]: string;
       }
     };
@@ -137,22 +137,33 @@ export class OneInchEthService implements ItProvider {
       tradeParams.params.mainRouteParts = '1';
     }
 
-    const oneInchTrade: OneInchSwapResponse = (await this.httpClient
-      .get(`${this.apiBaseUrl}swap`, tradeParams)
-      .pipe(
-        catchError(err => {
-          if (err.status === 500) {
-            return throwError(new OneinchRefreshError());
-          }
-          return throwError(new CustomError(err.error.message));
-        })
-      )
-      .toPromise()) as OneInchSwapResponse;
+    let estimatedGas: BigNumber;
+    let toTokenAmount: string;
+    try {
+      tradeParams.params = {
+        ...tradeParams.params,
+        slippage: this.settings.slippageTolerance.toString(),
+        fromAddress: this.providerConnectorService.address
+      };
+      const oneInchTrade: OneInchSwapResponse = (await this.httpClient
+        .get(`${this.apiBaseUrl}swap`, tradeParams)
+        .toPromise()) as OneInchSwapResponse;
 
-    if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
-      throw new OneinchQuoteError();
+      estimatedGas = new BigNumber(oneInchTrade.tx.gas);
+      toTokenAmount = oneInchTrade.toTokenAmount;
+    } catch (_err) {
+      const oneInchTrade: OneInchQuoteResponse = (await this.httpClient
+        .get(`${this.apiBaseUrl}quote`, tradeParams)
+        .toPromise()) as OneInchQuoteResponse;
+
+      if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
+        throw new OneinchQuoteError();
+      }
+
+      estimatedGas = new BigNumber(oneInchTrade.estimatedGas);
+      toTokenAmount = oneInchTrade.toTokenAmount;
     }
-    const estimatedGas = new BigNumber(oneInchTrade.tx.gas);
+
     const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
     const gasFeeInUsd = await this.web3Public.getGasFee(estimatedGas, ethPrice);
     const gasFeeInEth = await this.web3Public.getGasFee(estimatedGas, new BigNumber(1));
@@ -165,7 +176,7 @@ export class OneInchEthService implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: new BigNumber(oneInchTrade.toTokenAmount).div(10 ** toToken.decimals)
+        amount: new BigNumber(toTokenAmount).div(10 ** toToken.decimals)
       },
       estimatedGas,
       gasFeeInUsd,
@@ -212,13 +223,10 @@ export class OneInchEthService implements ItProvider {
       .pipe(catchError(err => this.commonOneinch.specifyError(err, this.blockchain)))
       .toPromise()) as OneInchSwapResponse;
 
-    const increasedGas = Web3Public.calculateGasMargin(oneInchTrade.tx.gas);
-
     const trxOptions = {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
-      gas: increasedGas,
-      gasPrice: oneInchTrade.tx.gasPrice,
+      gas: oneInchTrade.tx.gas.toFixed(0),
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
     };
 
