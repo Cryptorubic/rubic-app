@@ -85,8 +85,7 @@ export class InstantTradeService {
   public async calculateTrades(
     providersNames: INSTANT_TRADES_PROVIDER[]
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
-    const { fromAmount, fromToken, toToken, fromBlockchain } =
-      this.swapFormService.commonTrade.controls.input.value;
+    const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
@@ -139,7 +138,9 @@ export class InstantTradeService {
         });
     } catch (err) {
       this.modalShowing?.unsubscribe();
-      this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.REJECTED);
+      if (transactionHash) {
+        this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.REJECTED);
+      }
 
       throw err;
     }
@@ -164,8 +165,7 @@ export class InstantTradeService {
   }
 
   public getApprove(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<boolean[]> | never {
-    const { fromToken, fromAmount, fromBlockchain } =
-      this.swapFormService.commonTrade.controls.input.value;
+    const { fromToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
