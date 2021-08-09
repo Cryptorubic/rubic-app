@@ -58,8 +58,7 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private translateService: TranslateService
   ) {
     this.setBlockchainsProviders();
   }
@@ -112,9 +111,7 @@ export class InstantTradeService {
               .subscribe();
             transactionHash = hash;
 
-            await this.postTrade(hash, provider, trade).then(() =>
-              this.counterNotificationsService.UpdateUnseen(1)
-            );
+            await this.postTrade(hash, provider, trade);
           }
         }
       );

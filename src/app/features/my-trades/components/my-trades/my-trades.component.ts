@@ -22,6 +22,9 @@ import { TableRow } from 'src/app/features/my-trades/components/my-trades/models
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { NavigationStart, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -57,8 +60,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly errorsService: ErrorsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly tokensService: TokensService
-  ) {}
+    private readonly tokensService: TokensService,
+    private readonly counterNotificationsService: CounterNotificationsService,
+    private router: Router
+  ) {
+    this.router.events.pipe(filter(event => event instanceof NavigationStart)).subscribe(() => {
+      this.counterNotificationsService.resetCounter(this.cdr);
+    });
+  }
 
   ngOnInit(): void {
     this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;

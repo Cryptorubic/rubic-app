@@ -59,6 +59,7 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
       }
       this.classList =
         el === 'dark' ? `${this.classList} dark` : this.classList.replace(' dark', '');
+
     });
   }
 

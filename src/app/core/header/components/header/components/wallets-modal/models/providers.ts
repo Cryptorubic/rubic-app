@@ -11,3 +11,7 @@ export interface WalletProvider {
   desktopOnly: boolean;
   display: boolean;
 }
+
+export interface UnreadTrades {
+  [userAddress: string]: number;
+}

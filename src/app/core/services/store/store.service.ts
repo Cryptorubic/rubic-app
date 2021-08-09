@@ -2,9 +2,13 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
-import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
+import {
+  UnreadTrades,
+  WALLET_NAME
+} from '../../header/components/header/components/wallets-modal/models/providers';
 
 interface Store {
+  unreadTrades: UnreadTrades;
   provider: WALLET_NAME;
   settings: unknown;
   theme: 'dark' | 'light';

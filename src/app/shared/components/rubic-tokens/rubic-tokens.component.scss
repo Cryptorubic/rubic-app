@@ -8,6 +8,7 @@
     display: flex;
     grid-gap: 8px;
     align-items: center;
+    padding-bottom: 1px;
   }
 
   &__inner-text {
@@ -67,16 +68,38 @@
   }
 
   &__clear {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     padding: 4px;
 
     background-color: $grey-background;
+    border: 1px solid $grey-background;
     border-radius: 50%;
+
+    transition: 0.1s ease-in-out;
+
+    &:hover {
+      border-color: $rubic-primary;
+    }
   }
 
   &__clear-mobile {
     display: none;
+  }
+
+  &__btn.dark {
+    .tokens__clear {
+      background-color: $rubic-base-03;
+      border-color: $rubic-base-03;
+
+      &:hover {
+        border-color: white;
+      }
+    }
+
+    .tokens__clear-icon {
+      filter: brightness(10);
+    }
   }
 }
 

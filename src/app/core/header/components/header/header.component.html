@@ -6,11 +6,11 @@
   <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
 
   <nav class="rubic-header__nav">
+    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order Book</span>
     <a class="button-link" routerLink="/" [class.button-link_active]="isLinkActive('/')"> Swaps </a>
     <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">
       Crypto Tap
     </a>
-    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order Book</span>
   </nav>
 
   <div class="rubic-header__profile">
@@ -23,7 +23,7 @@
 
       <tui-badge
         class="notification-counter"
-        *ngIf="($trades | async)?.length"
+        *ngIf="countNotifications"
         size="s"
         [value]="countNotifications"
       ></tui-badge>
@@ -31,7 +31,7 @@
 
     <app-login-button
       class="rubic-header__login"
-      *ngIf="!($currentUser | async)?.address"
+      *ngIf="!($currentUser | async)"
     ></app-login-button>
     <app-user-profile
       class="rubic-header__profile-user"

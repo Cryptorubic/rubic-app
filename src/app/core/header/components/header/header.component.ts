@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
@@ -57,7 +57,10 @@ export class HeaderComponent implements AfterViewInit {
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
-    this.countNotifications = this.counterNotificationsService.unseenCount;
+    this.counterNotificationsService.unreadTradesChange.subscribe(res => {
+      this.countNotifications = res;
+      this.cdr.detectChanges();
+    });
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
