@@ -2,7 +2,6 @@ import { Inject, Injectable, NgZone } from '@angular/core';
 import {
   TuiNotificationContentContext,
   TuiNotificationOptions,
-  TuiNotificationOptionsWithData,
   TuiNotificationsService
 } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
