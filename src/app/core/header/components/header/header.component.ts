@@ -19,6 +19,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -40,6 +41,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public $trades: Observable<TableTrade[]>;
 
+  public countNotifications: number;
+
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
@@ -49,10 +52,12 @@ export class HeaderComponent implements AfterViewInit {
     private readonly storeService: StoreService,
     private router: Router,
     private readonly errorService: ErrorsService,
-    private readonly myTradesService: MyTradesService
+    private readonly myTradesService: MyTradesService,
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
+    this.countNotifications = this.counterNotificationsService.unseenCount;
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();

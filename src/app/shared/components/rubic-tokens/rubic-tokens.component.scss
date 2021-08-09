@@ -7,6 +7,7 @@
   &__inner {
     display: flex;
     grid-gap: 8px;
+    align-items: center;
   }
 
   &__inner-text {
@@ -65,6 +66,15 @@
     }
   }
 
+  &__clear {
+    width: 16px;
+    height: 16px;
+    padding: 4px;
+
+    background-color: $grey-background;
+    border-radius: 50%;
+  }
+
   &__clear-mobile {
     display: none;
   }
@@ -77,6 +87,10 @@
     justify-content: flex-start;
 
     border-radius: 0;
+    
+    &__clear {
+      display: none;
+    }
     
     &__clear-mobile {
       display: block;

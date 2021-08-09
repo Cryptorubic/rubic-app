@@ -45,7 +45,12 @@
       <tr tuiTr *tuiLet="getTableTrade(item) as trade">
         <ng-container *ngIf="trade">
           <td *tuiCell="'Status'" tuiTd class="status">
-            <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
+            <a
+              class="transaction-link"
+              safetyLink
+              [link]="getTransactionLink(trade)"
+              title="{{ 'common.checkOnScanner' | translate }}"
+            >
               <div class="status__text">
                 <div
                   class="status-circle"
@@ -64,13 +69,20 @@
                 >
                   <div class="status-circle__inner"></div>
                 </div>
-                <span class="status__text">{{ translationStatusKeys[trade.status] | translate }}</span>
+                <span class="status__text">{{
+                  translationStatusKeys[trade.status] | translate
+                }}</span>
+                <img
+                  [src]="'assets/images/icons/scanner.svg'"
+                  alt="{{ 'common.checkOnScanner' | translate }}"
+                />
               </div>
             </a>
 
             <app-rubic-button
               *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
               size="s"
+              appearance="secondary"
               [loading]="item.inProgress"
               (onClick)="onReceivePolygonBridgeTrade.emit(trade)"
               >{{ 'tradesTable.receive' | translate }}</app-rubic-button

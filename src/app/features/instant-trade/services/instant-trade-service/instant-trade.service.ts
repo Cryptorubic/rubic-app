@@ -23,6 +23,7 @@ import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import CustomError from 'src/app/core/errors/models/custom-error';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 
 @Injectable({
   providedIn: 'root'
@@ -57,7 +58,8 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.setBlockchainsProviders();
   }
@@ -110,7 +112,9 @@ export class InstantTradeService {
               .subscribe();
             transactionHash = hash;
 
-            await this.postTrade(hash, provider, trade);
+            await this.postTrade(hash, provider, trade).then(() =>
+              this.counterNotificationsService.UpdateUnseen(1)
+            );
           }
         }
       );

@@ -6,7 +6,6 @@
       [loading]="loading"
       [disabled]="disabled"
       (onClick)="openTokensSelect()"
-      [tuiHint]="(selectedToken && !disabled) ? tooltip : null"
       [appearance]="selectedToken ? 'primary' : 'secondary'"
     >
       <ng-container *ngIf="selectedToken">
@@ -22,9 +21,20 @@
           <div class="tokens__symbol">
             {{ selectedToken.symbol }}
           </div>
+          <div>
+            <div class="tokens__clear" (click)="clearToken(); $event.stopPropagation()">
+              <img
+                class="tokens__clear-icon"
+                src="assets/images/icons/close.svg"
+                [alt]="'common.clearToken' | translate"
+              />
+            </div>
+          </div>
         </div>
       </ng-container>
-      <span class="tokens__inner-text" *ngIf="!selectedToken">{{ 'common.chooseToken' | translate }}</span>
+      <span class="tokens__inner-text" *ngIf="!selectedToken">{{
+        'common.chooseToken' | translate
+      }}</span>
     </app-rubic-button>
     <a
       [hidden]="!selectedToken"
@@ -33,13 +43,18 @@
       rel="noopener"
       target="_blank"
     >
-      <img [src]="'assets/images/icons/scanner.svg'" alt="{{ 'common.checkOnScanner' | translate }}" />
+      <img
+        [src]="'assets/images/icons/scanner.svg'"
+        alt="{{ 'common.checkOnScanner' | translate }}"
+      />
     </a>
   </div>
-  <a class="tokens__clear-mobile"
-     href="#"
-     *ngIf="selectedToken"
-     (click)="clearToken(); $event.preventDefault();">
+  <a
+    class="tokens__clear-mobile"
+    href="#"
+    *ngIf="selectedToken"
+    (click)="clearToken(); $event.preventDefault()"
+  >
     {{ 'common.clearToken' | translate }}
   </a>
 </div>

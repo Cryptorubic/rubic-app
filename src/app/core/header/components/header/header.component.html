@@ -25,7 +25,7 @@
         class="notification-counter"
         *ngIf="($trades | async)?.length"
         size="s"
-        [value]="($trades | async)?.length"
+        [value]="countNotifications"
       ></tui-badge>
     </a>
 

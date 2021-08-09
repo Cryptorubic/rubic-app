@@ -41,7 +41,7 @@
       background-color: var(--primary-color);
       box-shadow: var(--rubic-shadow-button-active);
 
-      ::ng-deep img {
+      ::ng-deep img:not(.tokens__clear-icon) {
         filter: brightness(10);
       }
     }
