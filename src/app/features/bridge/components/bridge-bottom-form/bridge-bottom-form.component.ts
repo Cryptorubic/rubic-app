@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,6 +27,7 @@ import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -144,10 +145,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private web3PublicService: Web3PublicService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    private readonly notificationsService: TuiNotificationsService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translate: TranslateService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly notificationsService: NotificationsService
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade = new Subject<void>();
@@ -231,13 +232,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
       if (this.isBridgeSupported) {
         this.isBridgeSupported = false;
-        this.unsupportedBridgeSubscription$ = this.notificationsService
-          .show(this.translate.instant('errors.notSupportedBridge'), {
+        this.unsupportedBridgeSubscription$ = this.notificationsService.show(
+          this.translate.instant('errors.notSupportedBridge'),
+          {
             label: this.translate.instant('common.error'),
             status: TuiNotification.Error,
             autoClose: false
-          })
-          .subscribe();
+          }
+        );
       }
 
       this.cdr.detectChanges();
@@ -324,13 +326,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const bridgeTradeRequest: BridgeTradeRequest = {
       onTransactionHash: () => {
         this.cdr.detectChanges();
-        approveInProgressSubscription$ = this.notificationsService
-          .show(this.translate.instant('bridgePage.approveProgressMessage'), {
+        approveInProgressSubscription$ = this.notificationsService.show(
+          this.translate.instant('bridgePage.approveProgressMessage'),
+          {
             label: this.translate.instant('notifications.approveInProgress'),
             status: TuiNotification.Info,
             autoClose: false
-          })
-          .subscribe();
+          }
+        );
       }
     };
 
@@ -340,13 +343,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(
         (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
-          this.notificationsService
-            .show(this.translate.instant('bridgePage.approveSuccessMessage'), {
+          this.notificationsService.show(
+            this.translate.instant('bridgePage.approveSuccessMessage'),
+            {
               label: this.translate.instant('notifications.successApprove'),
               status: TuiNotification.Success,
               autoClose: 15000
-            })
-            .subscribe();
+            }
+          );
 
           this.tokensService.recalculateUsersBalance();
 
@@ -371,13 +375,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.cdr.detectChanges();
-        tradeInProgressSubscription$ = this.notificationsService
-          .show(this.translate.instant('bridgePage.progressMessage'), {
+        tradeInProgressSubscription$ = this.notificationsService.show(
+          this.translate.instant('bridgePage.progressMessage'),
+          {
             label: this.translate.instant('notifications.tradeInProgress'),
             status: TuiNotification.Info,
             autoClose: false
-          })
-          .subscribe();
+          }
+        );
       }
     };
 
@@ -387,13 +392,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(
         (_: TransactionReceipt) => {
           tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService
-            .show(this.translate.instant('bridgePage.successMessage'), {
-              label: this.translate.instant('notifications.successfulTradeTitle'),
-              status: TuiNotification.Success,
-              autoClose: 15000
-            })
-            .subscribe();
+          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
+            label: this.translate.instant('notifications.successfulTradeTitle'),
+            status: TuiNotification.Success,
+            autoClose: 15000
+          });
 
           this.tokensService.recalculateUsersBalance();
 
