@@ -113,6 +113,16 @@
 
     transform: translateX(-50%);
   }
+
+  &__profile-trades {
+    position: relative;
+  }
+}
+
+.notification-counter {
+  position: absolute;
+  top: -5px;
+  right: 0;
 }
 
 @include b($desktop) {

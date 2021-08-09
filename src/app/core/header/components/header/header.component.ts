@@ -16,8 +16,10 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { HeaderStore } from '../../services/header.store';
 import { Router } from '@angular/router';
+import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
+import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { HeaderStore } from '../../services/header.store';
 
 @Component({
   selector: 'app-header',
@@ -36,6 +38,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public $currentUser: Observable<UserInterface>;
 
+  public $trades: Observable<TableTrade[]>;
+
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
@@ -43,14 +47,16 @@ export class HeaderComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
-    private router : Router,
-    private readonly errorService: ErrorsService
+    private router: Router,
+    private readonly errorService: ErrorsService,
+    private readonly myTradesService: MyTradesService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
+    this.$trades = myTradesService.tableTrades$;
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
       const scrolledHeight = 50;
