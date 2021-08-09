@@ -4,7 +4,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { NotificationsService } from 'src/app/core/notifications/notifications.service';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 
 @Injectable({
   providedIn: 'root'

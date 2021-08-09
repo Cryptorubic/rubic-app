@@ -22,7 +22,7 @@ import { TableRow } from 'src/app/features/my-trades/components/my-trades/models
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { NotificationsService } from 'src/app/core/notifications/notifications.service';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 
 const DESKTOP_WIDTH = 1240;
 

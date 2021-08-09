@@ -23,7 +23,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import { NotificationsService } from 'src/app/core/notifications/notifications.service';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 
 @Component({
   selector: 'app-crypto-tap-form',

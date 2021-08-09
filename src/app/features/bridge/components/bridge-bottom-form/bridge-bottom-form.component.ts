@@ -27,7 +27,7 @@ import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { NotificationsService } from 'src/app/core/notifications/notifications.service';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
