@@ -115,6 +115,7 @@ export class WalletsModalComponent {
     // mobile browser without injected walletLink provider (e.g. mobile chrome)
     if (this.isMobile && provider === WALLET_NAME.WALLET_LINK && !this.window.ethereum) {
       this.redirectToCoinbaseBrowser();
+      return;
     }
 
     this.headerStore.setWalletsLoadingStatus(true);
