@@ -18,6 +18,8 @@ import { PrivateProvider } from '../private-provider';
 import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
 
 export class WalletLinkProvider extends PrivateProvider {
+  private isMobileMode = false;
+
   private isEnabled: boolean;
 
   private readonly defaultWalletParams: WalletLinkOptions;
@@ -53,7 +55,7 @@ export class WalletLinkProvider extends PrivateProvider {
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
     errorService: ErrorsService,
-    blockchainId: number
+    blockchainId?: number
   ) {
     super(errorService);
     this.isEnabled = false;
@@ -62,6 +64,7 @@ export class WalletLinkProvider extends PrivateProvider {
     if (window.ethereum && window.ethereum.isCoinbaseWallet === true) {
       // mobile coinbase browser
       this.core = window.ethereum;
+      this.isMobileMode = true;
     } else {
       this.defaultWalletParams = {
         appName: 'Rubic',
@@ -70,7 +73,7 @@ export class WalletLinkProvider extends PrivateProvider {
       };
 
       if (!blockchainId) {
-        console.error('WalletLink works only with predefined chainId');
+        console.error('Desktop walletLink works only with predefined chainId');
         throw new UndefinedError();
       }
 
@@ -100,13 +103,18 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public async activate(): Promise<void> {
     try {
-      const [address] = await this.core.send('eth_requestAccounts');
+      const [address] = await this.core.request({ method: 'eth_requestAccounts' });
 
       const activeChain = (await this.core.request({ method: 'eth_chainId' })) as string;
-      const chainInfo = BlockchainsInfo.getBlockchainById(this.selectedChain);
+      const chainInfo = BlockchainsInfo.getBlockchainById(parseInt(activeChain).toString());
 
-      if (!new BigNumber(activeChain).eq(this.selectedChain)) {
-        throw new WalletlinkWrongNetwork(chainInfo.label);
+      // in desktop version selected into modal chain should match mobile app selected chain
+      if (!this.isMobileMode) {
+        if (!new BigNumber(activeChain).eq(this.selectedChain)) {
+          throw new WalletlinkWrongNetwork(
+            BlockchainsInfo.getBlockchainById(this.selectedChain).label
+          );
+        }
       }
 
       this.onNetworkChanges.next(chainInfo);

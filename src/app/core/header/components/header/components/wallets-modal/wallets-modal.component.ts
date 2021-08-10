@@ -15,6 +15,7 @@ import { CoinbaseConfirmModalComponent } from 'src/app/core/header/components/he
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { WINDOW } from 'src/app/core/models/window';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
 
@@ -41,15 +42,36 @@ export class WalletsModalComponent {
     return new AsyncPipe(this.cdr).transform(this.$mobileDisplayStatus);
   }
 
-  private setupMetamaskDeepLinking(): void {
+  private redirectToMetamaskBrowser(): void {
     const metamaskAppLink = 'https://metamask.app.link/dapp/';
-    window.location.assign(`${metamaskAppLink}${window.location.hostname}`);
+    this.window.location.assign(`${metamaskAppLink}${this.window.location.hostname}`);
+  }
+
+  private redirectToCoinbaseBrowser(): void {
+    let walletLinkAppLink: string;
+    switch (this.window.location.hostname.split('.')[0]) {
+      case 'stage':
+        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
+        break;
+      case 'dev':
+        walletLinkAppLink = 'https://go.cb-w.com/D0GNLvaHBib';
+        break;
+      case 'dev2':
+        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
+        break;
+      case 'rubic':
+      default:
+        walletLinkAppLink = 'https://go.cb-w.com/IJZCq1fHBib';
+        break;
+    }
+    this.window.location.assign(walletLinkAppLink);
   }
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
+    @Inject(WINDOW) private readonly window: Window,
     private readonly translateService: TranslateService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
@@ -84,15 +106,21 @@ export class WalletsModalComponent {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
-    // mobile browser without injected provider (e.g. mobile chrome)
-    if (this.isMobile && provider === WALLET_NAME.METAMASK && !window.ethereum) {
-      this.setupMetamaskDeepLinking();
+    // mobile browser without injected metamask provider (e.g. mobile chrome)
+    if (this.isMobile && provider === WALLET_NAME.METAMASK && !this.window.ethereum) {
+      this.redirectToMetamaskBrowser();
       return;
+    }
+
+    // mobile browser without injected walletLink provider (e.g. mobile chrome)
+    if (this.isMobile && provider === WALLET_NAME.WALLET_LINK && !this.window.ethereum) {
+      this.redirectToCoinbaseBrowser();
     }
 
     this.headerStore.setWalletsLoadingStatus(true);
 
-    if (provider === WALLET_NAME.WALLET_LINK) {
+    // desktop coinbase
+    if (!this.isMobile && provider === WALLET_NAME.WALLET_LINK) {
       this.dialogService
         .open<BLOCKCHAIN_NAME>(
           new PolymorpheusComponent(CoinbaseConfirmModalComponent, this.injector),
