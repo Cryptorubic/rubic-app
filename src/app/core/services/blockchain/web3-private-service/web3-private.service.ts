@@ -70,7 +70,7 @@ export class Web3PrivateService {
         .send({
           from: this.address,
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas?.toString(10) || this.defaultMockGas
+            gas: options.gas || this.defaultMockGas
           })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
@@ -133,7 +133,7 @@ export class Web3PrivateService {
         to: toAddress,
         value: options.inWei ? value.toString() : this.ethToWei(value),
         ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas?.toString(10) || this.defaultMockGas
+          gas: options.gas || this.defaultMockGas
         }),
         ...(options.data && { data: options.data }),
         ...(options.gasPrice && { gasPrice: options.gasPrice })
@@ -171,7 +171,7 @@ export class Web3PrivateService {
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas?.toString(10) || this.defaultMockGas
+            gas: options.gas || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
           ...(options.gasPrice && { gasPrice: options.gasPrice })
@@ -243,13 +243,14 @@ export class Web3PrivateService {
         from: this.address,
         ...(this.defaultMockGas && { gas: this.defaultMockGas })
       });
+    const gasMargin = 1.1;
 
     return new Promise((resolve, reject) => {
       contract.methods
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
-          gas: Web3Public.calculateGasMargin(gasLimit)
+          gas: Web3Public.calculateGasMargin(gasLimit, gasMargin)
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
@@ -283,7 +284,7 @@ export class Web3PrivateService {
         from: this.address,
         ...(options.value && { value: options.value }),
         ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas?.toString(10) || this.defaultMockGas
+          gas: options.gas || this.defaultMockGas
         }),
         ...(options.gasPrice && { gasPrice: options.gasPrice })
       });
@@ -295,7 +296,7 @@ export class Web3PrivateService {
         options
       );
     } catch (err) {
-      console.error(`Method execution error. ${err}`);
+      console.error('Method execution error: ', err);
       throw Web3PrivateService.parseError(err);
     }
   }
@@ -326,7 +327,7 @@ export class Web3PrivateService {
           from: this.address,
           ...(options.value && { value: options.value }),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas?.toString(10) || this.defaultMockGas
+            gas: options.gas || this.defaultMockGas
           }),
           ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
