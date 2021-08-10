@@ -326,13 +326,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           : INSTANT_TRADES_STATUS.ERROR,
       error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
     }));
+    this.providerControllers = newProviders;
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     if (bestProviderIndex !== -1) {
       newProviders[bestProviderIndex].isBestRate = true;
       newProviders[bestProviderIndex].isSelected = true;
 
-      this.providerControllers = newProviders;
       this.selectedProvider = newProviders[bestProviderIndex];
 
       this.tradeStatus = this.selectedProvider.needApprove
