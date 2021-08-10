@@ -7,7 +7,6 @@ import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
   ItSettingsForm,
   SettingsService
@@ -29,6 +28,7 @@ import {
   UniswapV2CalculatedInfo,
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +50,7 @@ export class CommonUniswapV2Service {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
-    private readonly coingeckoApiService: CoingeckoApiService
+    private readonly tokensService: TokensService
   ) {
     this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address;
@@ -348,7 +348,7 @@ export class CommonUniswapV2Service {
     }
 
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const ethPrice = await this.tokensService.getEthPriceInUsd();
     const gasPriceInUsd = gasPriceInEth.multipliedBy(ethPrice);
 
     return { gasPrice, gasPriceInEth, gasPriceInUsd };

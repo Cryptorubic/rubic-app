@@ -7,16 +7,13 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { map, tap } from 'rxjs/operators';
-
-const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
-
-const BRBC_ADDRESS = '0x8e3bcc334657560253b83f08331d85267316e08a';
+import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 @Injectable({
   providedIn: 'root'
@@ -36,12 +33,13 @@ export class TokensService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly useTestingMode: UseTestingModeService
+    private readonly useTestingMode: UseTestingModeService,
+    private readonly coingeckoApiService: CoingeckoApiService
   ) {
     this.tokensApiService.getTokensList().subscribe(
       tokens => {
         if (!this.isTestingMode) {
-          this.setDefaultTokenAmounts(this.setCustomRanks(tokens));
+          this.setDefaultTokenAmounts(tokens);
           this.recalculateUsersBalance();
         }
       },
@@ -64,39 +62,6 @@ export class TokensService {
 
   public setTokens(tokens: List<TokenAmount>): void {
     this._tokens.next(tokens);
-  }
-
-  private setCustomRanks(tokens: List<Token>): List<Token> {
-    return tokens.map(token => {
-      if (token.blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-        if (token.address === RBC_ADDRESS) {
-          return {
-            ...token,
-            rank: 1
-          };
-        }
-        if (token.address === NATIVE_TOKEN_ADDRESS) {
-          return {
-            ...token,
-            rank: 0.99
-          };
-        }
-      } else if (token.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-        if (token.address === BRBC_ADDRESS) {
-          return {
-            ...token,
-            rank: 1
-          };
-        }
-        if (token.address === NATIVE_TOKEN_ADDRESS) {
-          return {
-            ...token,
-            rank: 0.99
-          };
-        }
-      }
-      return token;
-    });
   }
 
   private setDefaultTokenAmounts(tokens: List<Token> = this._tokens.getValue()): void {
@@ -218,5 +183,15 @@ export class TokensService {
       prevToken.blockchain === nextToken.blockchain &&
       prevToken.address.toLowerCase() === nextToken.address.toLowerCase()
     );
+  }
+
+  public async getEthPriceInUsd(): Promise<number> {
+    const eth = this._tokens
+      .getValue()
+      .find(
+        token =>
+          token.blockchain === BLOCKCHAIN_NAME.ETHEREUM && token.address === NATIVE_TOKEN_ADDRESS
+      );
+    return this.coingeckoApiService.getEtherPriceInUsdByCoingecko(eth?.price || 0);
   }
 }

@@ -21,7 +21,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionReceipt } from 'web3-eth';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
@@ -31,6 +30,7 @@ import { OneinchTokensResponse } from 'src/app/features/instant-trade/services/i
 import { OneinchApproveResponse } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchApproveResponse';
 import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchQuoteRequest';
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -59,7 +59,7 @@ export class CommonOneinchService {
     private readonly settingsService: SettingsService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
-    private readonly coingeckoApiService: CoingeckoApiService,
+    private readonly tokensService: TokensService,
     private readonly translateService: TranslateService
   ) {
     this.oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
@@ -263,7 +263,7 @@ export class CommonOneinchService {
     }
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
-    const ethPrice = await this.coingeckoApiService.getEtherPriceInUsd();
+    const ethPrice = await this.tokensService.getEthPriceInUsd();
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
     return { gasPrice, gasFeeInEth, gasFeeInUsd };
