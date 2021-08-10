@@ -55,7 +55,7 @@ export class ErrorsService {
       label: this.translateService.instant('common.error'),
       status: TuiNotification.Error,
       data: {},
-      autoClose: 7000
+      autoClose: 700000
     };
 
     if (error?.type === 'component') {

@@ -143,3 +143,13 @@
 ::ng-deep .loader {
   stroke: var(--primary-color) !important;
 }
+
+:host(.tokens__btn) {
+  [tuiButton] {
+    &[data-tui-host-size='s'] {
+      ::ng-deep .wrapper {
+        padding-right: 10px;
+      }
+    }
+  }
+}

@@ -45,6 +45,8 @@ html.dark {
   --rubic-base-11: rgb(0, 0, 0, 1);
   --rubic-base-12: rgba(255, 255, 255, 0.8);
   --rubic-base-13: rgba(0, 0, 0, 0.35);
+  --rubic-base-14: #2c2c2c;
+  --rubic-base-15: white;
 
   --tui-base-01: rgba(0, 0, 0, 0.8);
   --tui-base-02: init;
@@ -62,6 +64,8 @@ html.dark {
   --rubic-shadow-button-hover-dim: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
   --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
   --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
+
+  --rubic-filter-brightness: brightness(10);
 
   &_colored {
     background-color: $backgrond-black;
