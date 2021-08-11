@@ -4,7 +4,7 @@ import { Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem } from 'web3-utils';
+import { AbiItem, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -69,6 +69,10 @@ export class Web3Public {
     }
 
     return `0x${address.slice(2).padStart(64, '0')}`;
+  }
+
+  public static toChecksumAddress(address: string): string {
+    return toChecksumAddress(address);
   }
 
   /**
