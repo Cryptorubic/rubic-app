@@ -225,7 +225,7 @@ export class OneInchPolService implements ItProvider {
       .toPromise()) as OneInchSwapResponse;
 
     const gasPrice = defaultGasPrice.gt(oneInchTrade.tx.gasPrice)
-      ? defaultGasPrice.toString(10)
+      ? defaultGasPrice.toFixed()
       : oneInchTrade.tx.gasPrice;
 
     const trxOptions = {

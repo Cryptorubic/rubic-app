@@ -15,7 +15,7 @@ import {
   TableRowKeyValue
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { TableData } from 'src/app/features/my-trades/components/my-trades/components/table-data';
+import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { filter } from 'rxjs/operators';
@@ -28,7 +28,7 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   styleUrls: ['./accordion.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AccordionComponent extends TableData implements OnInit, OnDestroy {
+export class AccordionComponent extends AbstractTableDataComponent implements OnInit, OnDestroy {
   @Input() tableData$: BehaviorSubject<TableRow[]>;
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
