@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -17,6 +17,8 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, mapTo } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tokens-select',
@@ -82,9 +84,10 @@ export class TokensSelectComponent implements OnInit {
         allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
       }
     >,
-    private cdr: ChangeDetectorRef,
-    private web3PublicService: Web3PublicService,
-    private authService: AuthService
+    private readonly cdr: ChangeDetectorRef,
+    private readonly web3PublicService: Web3PublicService,
+    private readonly authService: AuthService,
+    private readonly httpClient: HttpClient
   ) {
     this.tokens = context.data.tokens;
     this.formType = context.data.formType;
@@ -173,10 +176,12 @@ export class TokensSelectComponent implements OnInit {
         const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
         const oppositeToken = this.form.value[oppositeTokenType];
 
+        const image = await this.fetchTokenImage(blockchainToken);
+
         this.customToken = {
           ...blockchainToken,
           rank: 0,
-          image: 'assets/images/icons/coins/default-token-ico.webp',
+          image,
           amount,
           price: 0,
           usedInIframe: true,
@@ -186,5 +191,28 @@ export class TokensSelectComponent implements OnInit {
         this.cdr.detectChanges();
       }
     }
+  }
+
+  private fetchTokenImage(token: BlockchainToken): Promise<string> {
+    const blockchains = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
+      [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
+    };
+    const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
+      blockchains[token.blockchain]
+    }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
+
+    return this.httpClient
+      .get(image)
+      .pipe(
+        mapTo(image),
+        catchError((err: HttpErrorResponse) => {
+          return err.status === 200
+            ? of(image)
+            : of('assets/images/icons/coins/default-token-ico.webp');
+        })
+      )
+      .toPromise();
   }
 }

@@ -153,34 +153,48 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   get errorText(): Observable<string> {
-    let translateParams = {
-      key: 'Unknown Error',
-      interpolateParams: {}
-    } as { key: string; interpolateParams?: unknown };
-    if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
-      translateParams = { key: 'errors.chooseSupportedBridge' };
-    } else if (this.errorType[ERROR_TYPE.NO_AMOUNT]) {
-      translateParams = { key: 'errors.noEnteredAmount' };
-    } else if (this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM]) {
-      translateParams = {
-        key: 'errors.minimumAmount',
-        interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.symbol }
-      };
-    } else if (this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]) {
-      translateParams = {
-        key: 'errors.maximumAmount',
-        interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.symbol }
-      };
-    } else if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
-      translateParams = { key: 'errors.InsufficientBalance' };
-    } else if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
-      translateParams = { key: 'errors.setTronAddress' };
-    } else if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      translateParams = {
-        key: 'errors.chooseNetworkWallet',
-        interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
-      };
+    let translateParams: { key: string; interpolateParams?: unknown };
+    const err = this.errorType;
+
+    switch (true) {
+      case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
+        translateParams = { key: 'errors.chooseSupportedBridge' };
+        break;
+      case err[ERROR_TYPE.NO_AMOUNT]:
+        translateParams = { key: 'errors.noEnteredAmount' };
+        break;
+      case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
+        translateParams = {
+          key: 'errors.minimumAmount',
+          interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.symbol }
+        };
+        break;
+      case err[ERROR_TYPE.MORE_THAN_MAXIMUM]:
+        translateParams = {
+          key: 'errors.maximumAmount',
+          interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.symbol }
+        };
+        break;
+      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
+        translateParams = { key: 'errors.InsufficientBalance' };
+        break;
+      case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
+        translateParams = { key: 'errors.setTronAddress' };
+        break;
+      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]:
+        translateParams = {
+          key: 'errors.chooseNetworkWallet',
+          interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
+        };
+        break;
+      default:
+        translateParams = {
+          key: 'Unknown Error',
+          interpolateParams: {}
+        };
+        break;
     }
+
     return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
   }
 

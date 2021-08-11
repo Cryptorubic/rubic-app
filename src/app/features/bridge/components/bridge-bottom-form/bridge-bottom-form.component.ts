@@ -221,6 +221,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private conditionalCalculate(): void {
+    if (!this.fromToken?.address || !this.toToken?.address) {
+      this.maxError = false;
+      this.minError = false;
+    }
+
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
 
     if (fromBlockchain === toBlockchain) {
