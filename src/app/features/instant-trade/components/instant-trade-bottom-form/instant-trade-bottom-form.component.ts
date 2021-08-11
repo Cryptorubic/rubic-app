@@ -356,8 +356,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         const { gasFeeInUsd, to } = trade;
         const amountInUsd = to.amount?.multipliedBy(to.token.price);
 
-        if (amountInUsd && gasFeeInUsd) {
-          const profit = amountInUsd.minus(gasFeeInUsd);
+        if (amountInUsd) {
+          const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
           return profit.gt(bestRate.profit)
             ? {
                 index: i,

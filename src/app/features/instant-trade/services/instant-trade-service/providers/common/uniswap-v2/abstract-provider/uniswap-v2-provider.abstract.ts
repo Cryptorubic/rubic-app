@@ -20,8 +20,6 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 export class UniswapV2ProviderAbstract implements ItProvider {
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  private readonly shouldCalculateGas: boolean;
-
   private WETHAddress: string;
 
   private contractAddress: string;
@@ -32,7 +30,6 @@ export class UniswapV2ProviderAbstract implements ItProvider {
 
   constructor(
     blockchain: BLOCKCHAIN_NAME,
-    shouldCalculateGas: boolean,
     contractAddressNetMode: ContractAddressNetMode,
     wethAddressNetMode: WethAddressNetMode,
     routingProvidersNetMode: RoutingProvidersNetMode,
@@ -41,7 +38,6 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     private readonly useTestingModeService: UseTestingModeService
   ) {
     this.blockchain = blockchain;
-    this.shouldCalculateGas = shouldCalculateGas;
     this.maxTransitTokens = maxTransitTokens;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
@@ -85,7 +81,6 @@ export class UniswapV2ProviderAbstract implements ItProvider {
       this.contractAddress,
       this.routingProviders,
       this.maxTransitTokens,
-      this.shouldCalculateGas,
       minGasPrice
     );
   }

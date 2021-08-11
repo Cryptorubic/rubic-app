@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import BigNumber from 'bignumber.js';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
@@ -83,11 +82,7 @@ export class ProviderPanelComponent {
   @Output() public selectProvider: EventEmitter<void>;
 
   public get gasFeeDisplay(): boolean {
-    return (
-      this.tradeData.gasFeeInEth &&
-      this.tradeData.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-      this.tradeData.blockchain !== BLOCKCHAIN_NAME.POLYGON
-    );
+    return !!this.tradeData.gasFeeInEth && !!this.tradeData.gasFeeInUsd;
   }
 
   public tradeData: InstantTrade;

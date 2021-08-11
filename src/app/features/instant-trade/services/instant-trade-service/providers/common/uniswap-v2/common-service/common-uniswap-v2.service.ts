@@ -29,6 +29,7 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { shouldCalculateGasInBlockchain } from '../../../../constants/shouldCalculateGasInBlockchain';
 
 @Injectable({
   providedIn: 'root'
@@ -264,7 +265,6 @@ export class CommonUniswapV2Service {
     contractAddress: string,
     routingProviders: string[],
     maxTransitTokens: number,
-    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<InstantTrade> {
     let fromTokenAddress = fromToken.address;
@@ -288,8 +288,12 @@ export class CommonUniswapV2Service {
     }
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+
+    const shouldCalculateGas = shouldCalculateGasInBlockchain[blockchain];
     const { gasPrice, gasPriceInEth, gasPriceInUsd } = await this.getGasPrices(
+      blockchain,
       web3Public,
+      shouldCalculateGas,
       minGasPrice
     );
 
@@ -308,8 +312,12 @@ export class CommonUniswapV2Service {
     );
 
     const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.GAS_MARGIN);
-    const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
-    const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
+    let gasFeeInEth;
+    let gasFeeInUsd;
+    if (shouldCalculateGas) {
+      gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
+      gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
+    }
 
     return {
       blockchain,
@@ -332,12 +340,14 @@ export class CommonUniswapV2Service {
   }
 
   private async getGasPrices(
+    blockchain: BLOCKCHAIN_NAME,
     web3Public: Web3Public,
+    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<{
     gasPrice: string;
-    gasPriceInEth: BigNumber;
-    gasPriceInUsd: BigNumber;
+    gasPriceInEth?: BigNumber;
+    gasPriceInUsd?: BigNumber;
   }> {
     const web3GasPrice = await web3Public.getGasPrice();
     let gasPrice: string;
@@ -347,9 +357,13 @@ export class CommonUniswapV2Service {
       gasPrice = web3GasPrice;
     }
 
-    const gasPriceInEth = Web3Public.fromWei(gasPrice);
-    const ethPrice = await this.tokensService.getEthPriceInUsd();
-    const gasPriceInUsd = gasPriceInEth.multipliedBy(ethPrice);
+    let gasPriceInEth;
+    let gasPriceInUsd;
+    if (shouldCalculateGas) {
+      gasPriceInEth = Web3Public.fromWei(gasPrice);
+      const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
+      gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
+    }
 
     return { gasPrice, gasPriceInEth, gasPriceInUsd };
   }

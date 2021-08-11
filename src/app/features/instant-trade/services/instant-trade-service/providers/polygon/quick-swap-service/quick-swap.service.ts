@@ -4,7 +4,6 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { Injectable } from '@angular/core';
 import { quickSwapConstants } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap-constants';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { shouldCalculateGas } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGas';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,6 @@ export class QuickSwapService extends UniswapV2ProviderAbstract {
     const blockchain = BLOCKCHAIN_NAME.POLYGON;
     super(
       blockchain,
-      shouldCalculateGas[blockchain],
       quickSwapConstants.contractAddressNetMode,
       quickSwapConstants.wethAddressNetMode,
       quickSwapConstants.routingProvidersNetMode,

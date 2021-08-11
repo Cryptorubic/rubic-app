@@ -4,7 +4,6 @@ import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/
 import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-provider/uniswap-v2-provider.abstract';
 import { sushiSwapPolygonConstants } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon-constants';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { shouldCalculateGas } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGas';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,6 @@ export class SushiSwapPolygonService extends UniswapV2ProviderAbstract {
     const blockchain = BLOCKCHAIN_NAME.POLYGON;
     super(
       blockchain,
-      shouldCalculateGas[blockchain],
       sushiSwapPolygonConstants.contractAddressNetMode,
       sushiSwapPolygonConstants.wethAddressNetMode,
       sushiSwapPolygonConstants.routingProvidersNetMode,

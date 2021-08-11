@@ -33,12 +33,12 @@ interface InstantTrade {
   /**
    * Amount of predicted gas fee in usd$
    */
-  gasFeeInUsd: BigNumber;
+  gasFeeInUsd?: BigNumber;
 
   /**
    * Amount of predicted gas fee in Ether
    */
-  gasFeeInEth: BigNumber;
+  gasFeeInEth?: BigNumber;
 
   /**
    * Additional options

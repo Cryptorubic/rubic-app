@@ -185,13 +185,13 @@ export class TokensService {
     );
   }
 
-  public async getEthPriceInUsd(): Promise<number> {
-    const eth = this._tokens
+  public async getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
+    const nativeCoin = this._tokens
       .getValue()
-      .find(
-        token =>
-          token.blockchain === BLOCKCHAIN_NAME.ETHEREUM && token.address === NATIVE_TOKEN_ADDRESS
-      );
-    return this.coingeckoApiService.getEtherPriceInUsdByCoingecko(eth?.price || 0);
+      .find(token => token.blockchain === blockchain && token.address === NATIVE_TOKEN_ADDRESS);
+    return this.coingeckoApiService.getNativeCoinPriceInUsdByCoingecko(
+      blockchain,
+      nativeCoin?.price
+    );
   }
 }
