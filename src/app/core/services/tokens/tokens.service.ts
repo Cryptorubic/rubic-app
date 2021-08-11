@@ -40,7 +40,7 @@ export class TokensService {
       tokens => {
         if (!this.isTestingMode) {
           this.setDefaultTokenAmounts(tokens);
-          this.recalculateUsersBalance();
+          this.calculateUserTokensBalances();
         }
       },
       err => console.error('Error retrieving tokens', err)
@@ -48,14 +48,14 @@ export class TokensService {
 
     this.authService.getCurrentUser().subscribe(user => {
       this.userAddress = user?.address;
-      this.recalculateUsersBalance();
+      this.calculateUserTokensBalances();
     });
 
     useTestingMode.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
         this._tokens.next(List(coingeckoTestTokens));
-        this.recalculateUsersBalance();
+        this.calculateUserTokensBalances();
       }
     });
   }
@@ -73,82 +73,61 @@ export class TokensService {
     );
   }
 
-  public async recalculateUsersBalance(
+  public async calculateUserTokensBalances(
     tokens: List<TokenAmount> = this._tokens.getValue()
   ): Promise<void> {
-    try {
-      if (!tokens.size) {
-        return;
-      }
+    if (!tokens.size) {
+      return;
+    }
 
-      if (!this.userAddress) {
-        this.setDefaultTokenAmounts(tokens);
-        return;
-      }
+    if (!this.userAddress) {
+      this.setDefaultTokenAmounts(tokens);
+      return;
+    }
 
-      const blockchains: BLOCKCHAIN_NAME[] = [
-        BLOCKCHAIN_NAME.ETHEREUM,
-        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        BLOCKCHAIN_NAME.POLYGON
-      ];
-      const promises = [];
+    const blockchains: BLOCKCHAIN_NAME[] = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      BLOCKCHAIN_NAME.POLYGON
+    ];
+    const promises = [];
 
-      const splitAndMergeRequests = (
-        tokensAddresses: string[],
-        blockchain: BLOCKCHAIN_NAME,
-        parallelRequestsNumber: number
-      ) => {
-        const chunkSize = Math.ceil(tokensAddresses.length / parallelRequestsNumber);
-        return Promise.all(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          [...new Array(parallelRequestsNumber)].map((elem, index) =>
-            this.web3PublicService[blockchain].getTokensBalances(
-              this.userAddress,
-              tokensAddresses.slice(index * chunkSize, (index + 1) * chunkSize)
-            )
-          )
-        );
-      };
+    blockchains.forEach(blockchain => {
+      promises.push(
+        this.web3PublicService[blockchain].getTokensBalances(
+          this.userAddress,
+          tokens
+            .filter(token => token.blockchain === blockchain)
+            .map(token => token.address)
+            .toArray()
+        )
+      );
+    });
 
-      blockchains.forEach(blockchain => {
-        promises.push(
-          splitAndMergeRequests(
-            tokens
-              .filter(token => token.blockchain === blockchain)
-              .map(token => token.address)
-              .toArray(),
-            blockchain,
-            30
-          )
-        );
-      });
-
-      const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
-        weiBalance.div(10 ** token.decimals);
-
-      const balances = (await Promise.all(promises)).map(elem => elem.flat());
-      const tokensWithBalance: TokenAmount[][] = [];
-      blockchains.forEach((blockchain, blockchainIndex) =>
+    const balancesSettled = await Promise.allSettled(promises);
+    const tokensWithBalance: TokenAmount[][] = [];
+    blockchains.forEach((blockchain, blockchainIndex) => {
+      if (balancesSettled[blockchainIndex].status === 'fulfilled') {
+        const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
+          .value;
         tokensWithBalance.push(
           tokens
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
-              amount: getRelativeBalance(token, balances[blockchainIndex][tokenIndex]) || undefined
+              amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
             }))
             .toArray()
-        )
-      );
-
-      tokensWithBalance.push(
-        tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
-      );
-
-      if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-        this._tokens.next(List(tokensWithBalance.flat()));
+        );
       }
-    } catch (e) {
-      console.error(e);
+    });
+
+    tokensWithBalance.push(
+      tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
+    );
+
+    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+      this._tokens.next(List(tokensWithBalance.flat()));
     }
   }
 

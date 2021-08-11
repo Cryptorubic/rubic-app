@@ -357,7 +357,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             }
           );
 
-          this.tokensService.recalculateUsersBalance();
+          this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -403,7 +403,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             autoClose: 15000
           });
 
-          this.tokensService.recalculateUsersBalance();
+          this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();
