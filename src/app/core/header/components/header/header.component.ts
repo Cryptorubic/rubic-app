@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';

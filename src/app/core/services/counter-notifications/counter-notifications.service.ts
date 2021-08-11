@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,26 +13,34 @@ export class CounterNotificationsService {
 
   public unreadTradesChange: Subject<number> = new Subject<number>();
 
+  public $currentUser: Observable<UserInterface>;
+
   constructor(
-    private readonly store: StoreService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly storeService: StoreService,
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly authService: AuthService
   ) {
-    this.unreadTrades =
-      (this.store.getItem('unreadTrades'[this.providerConnectorService?.address]) as number) || 0;
-    console.log(this.unreadTrades);
+    this.$currentUser = this.authService.getCurrentUser();
+    this.$currentUser.subscribe(user => {
+      const unreadTradesJSON = this.storeService.getItem('unreadTrades');
+      if (unreadTradesJSON) {
+        this.unreadTrades = JSON.parse(unreadTradesJSON as string)[user?.address];
+        this.unreadTradesChange.next(this.unreadTrades);
+      }
+    });
   }
 
-  public updateUnseen(count: number) {
+  public updateUnseen(count: number = 1) {
     this.unreadTrades += count;
-    this.store.setItem('unreadTrades'[this.providerConnectorService?.address], this.unreadTrades);
+    const data = JSON.stringify({ [this.providerConnectorService?.address]: this.unreadTrades });
+    this.storeService.setItem('unreadTrades', data, true);
     this.unreadTradesChange.next(this.unreadTrades);
-    console.log(this.unreadTrades);
   }
 
-  public resetCounter(cdr: ChangeDetectorRef) {
+  public resetCounter() {
     this.unreadTrades += 0;
-    this.store.setItem('unreadTrades'[this.providerConnectorService?.address], 0);
+    const data = JSON.stringify({ [this.providerConnectorService?.address]: 0 });
+    this.storeService.setItem('unreadTrades', data, true);
     this.unreadTradesChange.next(0);
-    cdr.detectChanges();
   }
 }

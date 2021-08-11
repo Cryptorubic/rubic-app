@@ -22,7 +22,7 @@ import { TableRow } from 'src/app/features/my-trades/components/my-trades/models
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { NavigationStart, Router } from '@angular/router';
+import { ActivationStart, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 
@@ -64,8 +64,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
   ) {
-    this.router.events.pipe(filter(event => event instanceof NavigationStart)).subscribe(() => {
-      this.counterNotificationsService.resetCounter(this.cdr);
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(e => {
+      this.counterNotificationsService.resetCounter();
+      this.cdr.detectChanges();
     });
   }
 
