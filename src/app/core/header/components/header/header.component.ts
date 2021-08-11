@@ -75,7 +75,11 @@ export class HeaderComponent implements AfterViewInit, OnInit {
   }
 
   public ngOnInit() {
-    this.$currentUser.subscribe(user => this.cdr.detectChanges());
+    this.$currentUser.subscribe(user => {
+      if (user) {
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   public ngAfterViewInit(): void {

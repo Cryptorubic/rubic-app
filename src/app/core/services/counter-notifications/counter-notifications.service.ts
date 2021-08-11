@@ -25,7 +25,6 @@ export class CounterNotificationsService {
     private readonly authService: AuthService,
     private readonly myTradesService: MyTradesService
   ) {
-    this.$currentUser = this.authService.getCurrentUser();
     this.myTradesService.tableTrades$.subscribe(trades => {
       if (trades) {
         this.unreadReceived = trades.filter(
@@ -34,7 +33,7 @@ export class CounterNotificationsService {
         this.unreadTradesChange.next(this.unreadTrades + this.unreadReceived);
       }
     });
-    this.$currentUser.subscribe(user => {
+    this.authService.getCurrentUser().subscribe(user => {
       const unreadTradesJSON = this.storeService.getItem('unreadTrades');
       if (unreadTradesJSON) {
         this.unreadTrades = JSON.parse(unreadTradesJSON as string)[user?.address];
@@ -51,9 +50,8 @@ export class CounterNotificationsService {
   }
 
   public resetCounter() {
-    this.unreadTrades += 0;
     const data = JSON.stringify({ [this.providerConnectorService?.address]: 0 });
     this.storeService.setItem('unreadTrades', data, true);
-    this.unreadTradesChange.next(0 + this.unreadReceived);
+    this.unreadTradesChange.next(this.unreadReceived);
   }
 }

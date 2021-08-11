@@ -66,7 +66,6 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   ) {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       this.counterNotificationsService.resetCounter();
-      console.log('reset counter');
       this.cdr.detectChanges();
     });
   }

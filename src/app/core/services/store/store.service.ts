@@ -55,6 +55,7 @@ export class StoreService {
       ...this.$dataSubject.value,
       [key]: value
     };
+
     const jsonData = JSON.stringify(newData);
 
     if (!this.isIframe && !isCookie) {
