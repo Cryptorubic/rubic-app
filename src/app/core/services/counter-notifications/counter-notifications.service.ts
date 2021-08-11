@@ -5,6 +5,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
+import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,13 @@ export class CounterNotificationsService {
     private readonly myTradesService: MyTradesService
   ) {
     this.$currentUser = this.authService.getCurrentUser();
-    this.myTradesService.getUnreadTrades().subscribe(count => {
-      this.unreadReceived = count;
+    this.myTradesService.tableTrades$.subscribe(trades => {
+      if (trades) {
+        this.unreadReceived = trades.filter(
+          trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+        ).length;
+        this.unreadTradesChange.next(this.unreadTrades + this.unreadReceived);
+      }
     });
     this.$currentUser.subscribe(user => {
       const unreadTradesJSON = this.storeService.getItem('unreadTrades');

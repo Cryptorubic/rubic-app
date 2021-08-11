@@ -24,7 +24,6 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import { HttpClient } from '@angular/common/http';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 
 interface PanamaStatusResponse {
   data: {
@@ -88,18 +87,18 @@ export class MyTradesService {
     });
   }
 
-  public getUnreadTrades(): Observable<number> {
-    this.updateTableTrades();
-    if (this.tableTrades$) {
-      return this.tableTrades$.pipe(
-        map(
-          trades =>
-            trades.filter(trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING).length
-        )
-      );
-    }
-    return of(0);
-  }
+  // public getUnreadTrades(): Observable<number> {
+  //   this.updateTableTrades();
+  //   if (this.tableTrades$) {
+  //     return this.tableTrades$.pipe(
+  //       map(
+  //         trades =>
+  //           trades.filter(trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING).length
+  //       )
+  //     );
+  //   }
+  //   return of(0);
+  // }
 
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
