@@ -50,7 +50,7 @@ export class Web3Public {
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
 
-  static calculateGasMargin(amount: BigNumber | string | number, percent: number = 1.1): string {
+  static calculateGasMargin(amount: BigNumber | string | number, percent: number): string {
     return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
   }
 
@@ -140,6 +140,14 @@ export class Web3Public {
       ...(value && { value })
     });
     return new BigNumber(gasLimit);
+  }
+
+  /**
+   * @description calculates the average price per unit of gas according to web3
+   * @return average gas price in Wei
+   */
+  public async getGasPrice(): Promise<string> {
+    return this.web3.eth.getGasPrice();
   }
 
   /**

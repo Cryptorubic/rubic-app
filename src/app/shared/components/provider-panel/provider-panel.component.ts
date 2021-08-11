@@ -2,29 +2,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import BigNumber from 'bignumber.js';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
-
-export interface InstantTrade<T> {
-  blockchain: BLOCKCHAIN_NAME;
-  from: {
-    token: T;
-    amount: BigNumber;
-  };
-  to: {
-    token: T;
-    amount: BigNumber;
-  };
-  estimatedGas: BigNumber;
-  gasFeeInUsd: BigNumber;
-  gasFeeInEth: BigNumber;
-  options?: unknown;
-}
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 
 export interface ProviderControllerData {
-  trade: InstantTrade<TokenAmount>;
+  trade: InstantTrade;
   tradeState: INSTANT_TRADES_STATUS;
   tradeProviderInfo: {
     label: string;
@@ -49,7 +32,7 @@ interface ProviderData {
   /**
    * Amount of predicted gas limit in absolute gas units.
    */
-  estimatedGas: BigNumber;
+  gasLimit: string;
   /**
    * Amount of predicted gas fee in usd$.
    */
@@ -99,14 +82,10 @@ export class ProviderPanelComponent {
   @Output() public selectProvider: EventEmitter<void>;
 
   public get gasFeeDisplay(): boolean {
-    return (
-      this.tradeData.gasFeeInEth &&
-      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.POLYGON
-    );
+    return !!this.tradeData.gasFeeInEth && !!this.tradeData.gasFeeInUsd;
   }
 
-  public tradeData: InstantTrade<TokenAmount>;
+  public tradeData: InstantTrade;
 
   /**
    * Provider data.
@@ -151,7 +130,7 @@ export class ProviderPanelComponent {
     this.providerData = {
       name: data.tradeProviderInfo.label,
       amount: data.trade?.to?.amount,
-      estimatedGas: data.trade?.estimatedGas,
+      gasLimit: data.trade?.gasLimit,
       gasFeeInEth: data.trade?.gasFeeInEth,
       gasFeeInUsd: data.trade?.gasFeeInUsd,
       isBestRate: data.isBestRate,
