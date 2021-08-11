@@ -25,6 +25,7 @@ import { SushiSwapBscService } from 'src/app/features/instant-trade/services/ins
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
+import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 
 @Injectable({
   providedIn: 'root'
@@ -89,13 +90,14 @@ export class InstantTradeService {
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
+    const shouldCalculateGas = shouldCalculateGasInBlockchain[fromBlockchain];
     const minGasPrice = minGasPriceInBlockchain[fromBlockchain];
 
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
     const providersDataPromises = providers.map(async (provider: ItProvider) =>
-      provider.calculateTrade(fromToken, fromAmount, toToken, minGasPrice)
+      provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas, minGasPrice)
     );
     return Promise.allSettled(providersDataPromises);
   }

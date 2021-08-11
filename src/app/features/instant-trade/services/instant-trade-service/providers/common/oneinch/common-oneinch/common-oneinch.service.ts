@@ -31,7 +31,6 @@ import { OneinchApproveResponse } from 'src/app/features/instant-trade/services/
 import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchQuoteRequest';
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { shouldCalculateGasInBlockchain } from '../../../../constants/shouldCalculateGasInBlockchain';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -149,6 +148,7 @@ export class CommonOneinchService {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
+    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<InstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
@@ -175,6 +175,7 @@ export class CommonOneinchService {
     const { gasPrice, gasFeeInEth, gasFeeInUsd } = await this.getGasPriceAndFees(
       blockchain,
       estimatedGas,
+      shouldCalculateGas,
       minGasPrice
     );
 
@@ -251,6 +252,7 @@ export class CommonOneinchService {
   private async getGasPriceAndFees(
     blockchain: BLOCKCHAIN_NAME,
     estimatedGas: BigNumber,
+    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<{ gasPrice: string; gasFeeInEth?: BigNumber; gasFeeInUsd?: BigNumber }> {
     const web3Public: Web3Public = this.web3PublicService[blockchain];
@@ -265,7 +267,7 @@ export class CommonOneinchService {
 
     let gasFeeInEth;
     let gasFeeInUsd;
-    if (shouldCalculateGasInBlockchain[blockchain]) {
+    if (shouldCalculateGas) {
       const gasPriceInEth = Web3Public.fromWei(gasPrice);
       gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
       const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);

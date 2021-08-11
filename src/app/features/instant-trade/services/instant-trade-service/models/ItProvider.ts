@@ -15,6 +15,7 @@ export interface ItProvider {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
+    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ) => Promise<InstantTrade>;
   getAllowance: (tokenAddress: string) => Observable<BigNumber>;

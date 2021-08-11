@@ -33,6 +33,7 @@ export abstract class OneinchProviderAbstract implements ItProvider {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
+    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<InstantTrade> {
     return this.commonOneinchService.calculateTrade(
@@ -40,6 +41,7 @@ export abstract class OneinchProviderAbstract implements ItProvider {
       fromToken,
       fromAmount,
       toToken,
+      shouldCalculateGas,
       minGasPrice
     );
   }

@@ -29,7 +29,6 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { shouldCalculateGasInBlockchain } from '../../../../constants/shouldCalculateGasInBlockchain';
 
 @Injectable({
   providedIn: 'root'
@@ -265,6 +264,7 @@ export class CommonUniswapV2Service {
     contractAddress: string,
     routingProviders: string[],
     maxTransitTokens: number,
+    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<InstantTrade> {
     let fromTokenAddress = fromToken.address;
@@ -289,7 +289,6 @@ export class CommonUniswapV2Service {
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
 
-    const shouldCalculateGas = shouldCalculateGasInBlockchain[blockchain];
     const { gasPrice, gasPriceInEth, gasPriceInUsd } = await this.getGasPrices(
       blockchain,
       web3Public,
