@@ -94,6 +94,8 @@ export class AuthService {
       try {
         const success = await this.providerConnectorService.installProvider();
         if (!success) {
+          this.$currentUser.next(null);
+          this.isAuthProcess = false;
           return;
         }
       } catch (error) {

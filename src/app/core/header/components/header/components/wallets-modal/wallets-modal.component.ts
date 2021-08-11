@@ -3,7 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Injector
+  Injector,
+  OnInit
 } from '@angular/core';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Observable } from 'rxjs';
@@ -16,6 +17,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WINDOW } from 'src/app/core/models/window';
+import { BrowserService } from 'src/app/core/services/browser/browser.service';
+import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
 
@@ -25,7 +28,7 @@ import { HeaderStore } from '../../../../services/header.store';
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WalletsModalComponent {
+export class WalletsModalComponent implements OnInit {
   public readonly $walletsLoading: Observable<boolean>;
 
   private readonly allProviders: WalletProvider[];
@@ -40,6 +43,18 @@ export class WalletsModalComponent {
 
   public get isMobile(): boolean {
     return new AsyncPipe(this.cdr).transform(this.$mobileDisplayStatus);
+  }
+
+  private deepLinkRedirectIfSupported(provider: WALLET_NAME): void {
+    switch (provider) {
+      case WALLET_NAME.METAMASK:
+        this.redirectToMetamaskBrowser();
+        break;
+      case WALLET_NAME.WALLET_LINK:
+        this.redirectToCoinbaseBrowser();
+        break;
+      default:
+    }
   }
 
   private redirectToMetamaskBrowser(): void {
@@ -76,7 +91,8 @@ export class WalletsModalComponent {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly browserService: BrowserService
   ) {
     this.$walletsLoading = this.headerStore.getWalletsLoadingStatus();
     this.$mobileDisplayStatus = this.headerStore.getMobileDisplayStatus();
@@ -105,23 +121,30 @@ export class WalletsModalComponent {
     ];
   }
 
-  public async connectProvider(provider: WALLET_NAME): Promise<void> {
-    // mobile browser without injected metamask provider (e.g. mobile chrome)
-    if (this.isMobile && provider === WALLET_NAME.METAMASK && !this.window.ethereum) {
-      this.redirectToMetamaskBrowser();
+  ngOnInit() {
+    if (this.browserService.currentBrowser === BROWSER.METAMASK) {
+      this.connectProvider(WALLET_NAME.METAMASK);
       return;
     }
 
-    // mobile browser without injected walletLink provider (e.g. mobile chrome)
-    if (this.isMobile && provider === WALLET_NAME.WALLET_LINK && !this.window.ethereum) {
-      this.redirectToCoinbaseBrowser();
+    if (this.browserService.currentBrowser === BROWSER.COINBASE) {
+      this.connectProvider(WALLET_NAME.WALLET_LINK);
+    }
+  }
+
+  public async connectProvider(provider: WALLET_NAME): Promise<void> {
+    if (this.browserService.currentBrowser === BROWSER.MOBILE) {
+      this.deepLinkRedirectIfSupported(provider);
       return;
     }
 
     this.headerStore.setWalletsLoadingStatus(true);
 
     // desktop coinbase
-    if (!this.isMobile && provider === WALLET_NAME.WALLET_LINK) {
+    if (
+      this.browserService.currentBrowser === BROWSER.DESKTOP &&
+      provider === WALLET_NAME.WALLET_LINK
+    ) {
       this.dialogService
         .open<BLOCKCHAIN_NAME>(
           new PolymorpheusComponent(CoinbaseConfirmModalComponent, this.injector),
