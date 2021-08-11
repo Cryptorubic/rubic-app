@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {
   TuiButtonModule,
   TuiHintModule,
+  TuiLoaderModule,
   TuiManualHintModule,
   TuiScrollbarModule,
   TuiSvgModule,
@@ -42,7 +43,8 @@ import { CustomTokenWarningModalComponent } from './components/custom-token-warn
     TuiButtonModule,
     ScrollingModule,
     TuiHintModule,
-    TuiManualHintModule
+    TuiManualHintModule,
+    TuiLoaderModule
   ],
   providers: [TokensSelectService],
   entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]
