@@ -129,7 +129,9 @@ export class QuickSwapService implements ItProvider {
       estimatedGasArray
     );
 
-    const gasPrice = defaultGasPrice.gt(gasData.gasPrice) ? defaultGasPrice : gasData.gasPrice;
+    const gasPrice = defaultGasPrice.gt(gasData.gasPrice)
+      ? defaultGasPrice.toFixed(0)
+      : gasData.gasPrice;
 
     return {
       blockchain: this.blockchain,
@@ -182,7 +184,8 @@ export class QuickSwapService implements ItProvider {
         options,
         quickSwapContracts.address,
         abi,
-        increasedGas
+        increasedGas,
+        trade.gasPrice
       );
     }
 
@@ -192,7 +195,8 @@ export class QuickSwapService implements ItProvider {
         options,
         quickSwapContracts.address,
         abi,
-        increasedGas
+        increasedGas,
+        trade.gasPrice
       );
     }
 
@@ -201,7 +205,8 @@ export class QuickSwapService implements ItProvider {
       options,
       quickSwapContracts.address,
       abi,
-      increasedGas
+      increasedGas,
+      trade.gasPrice
     );
   }
 }

@@ -8,10 +8,11 @@ import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Directive, EventEmitter, Output } from '@angular/core';
 
-@Injectable()
-export abstract class TableData {
+@Directive()
+// eslint-disable-next-line @angular-eslint/directive-class-suffix
+export abstract class AbstractTableDataComponent {
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   protected constructor(

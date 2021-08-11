@@ -70,7 +70,7 @@ export class Web3PrivateService {
         .send({
           from: this.address,
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas.toString(10) || this.defaultMockGas
+            gas: options.gas?.toString(10) || this.defaultMockGas
           })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
@@ -133,7 +133,7 @@ export class Web3PrivateService {
         to: toAddress,
         value: options.inWei ? value.toString() : this.ethToWei(value),
         ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas.toString(10) || this.defaultMockGas
+          gas: options.gas?.toString(10) || this.defaultMockGas
         }),
         ...(options.data && { data: options.data }),
         ...(options.gasPrice && { gasPrice: options.gasPrice })
@@ -171,7 +171,7 @@ export class Web3PrivateService {
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas.toString(10) || this.defaultMockGas
+            gas: options.gas?.toString(10) || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
           ...(options.gasPrice && { gasPrice: options.gasPrice })
@@ -283,7 +283,7 @@ export class Web3PrivateService {
         from: this.address,
         ...(options.value && { value: options.value }),
         ...((options.gas || this.defaultMockGas) && {
-          gas: options.gas.toString(10) || this.defaultMockGas
+          gas: options.gas?.toString(10) || this.defaultMockGas
         }),
         ...(options.gasPrice && { gasPrice: options.gasPrice })
       });
@@ -326,7 +326,7 @@ export class Web3PrivateService {
           from: this.address,
           ...(options.value && { value: options.value }),
           ...((options.gas || this.defaultMockGas) && {
-            gas: options.gas.toString(10) || this.defaultMockGas
+            gas: options.gas?.toString(10) || this.defaultMockGas
           }),
           ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
