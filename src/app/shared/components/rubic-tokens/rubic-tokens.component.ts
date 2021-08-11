@@ -34,6 +34,8 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   @Input() disabled = false;
 
+  @Input() idPrefix: string = '';
+
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public selectedToken: Token;
@@ -64,7 +66,7 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  public openTokensSelect(): void {
+  public openTokensSelect(idPrefix: string): void {
     const { fromBlockchain, toBlockchain } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
@@ -74,7 +76,8 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
         this.formType,
         currentBlockchain,
         this.formService.input,
-        this.allowedBlockchains
+        this.allowedBlockchains,
+        idPrefix
       )
       .subscribe((token: Token) => {
         if (token) {
