@@ -7,7 +7,8 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit
+  AfterViewInit,
+  OnInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -17,9 +18,9 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
-import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { switchMap } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -28,7 +29,7 @@ import { HeaderStore } from '../../services/header.store';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent implements AfterViewInit, OnInit {
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -52,19 +53,17 @@ export class HeaderComponent implements AfterViewInit {
     private readonly storeService: StoreService,
     private router: Router,
     private readonly errorService: ErrorsService,
-    private readonly myTradesService: MyTradesService,
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
-    this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.counterNotificationsService.unreadTradesChange.subscribe(res => {
       this.countNotifications = res;
       this.cdr.detectChanges();
     });
+    this.loadUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
-    this.$trades = myTradesService.tableTrades$;
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
       const scrolledHeight = 50;
@@ -73,6 +72,10 @@ export class HeaderComponent implements AfterViewInit {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
+  }
+
+  public ngOnInit() {
+    this.$currentUser.subscribe(user => this.cdr.detectChanges());
   }
 
   public ngAfterViewInit(): void {

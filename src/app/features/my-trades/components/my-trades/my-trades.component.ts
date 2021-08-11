@@ -64,8 +64,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
   ) {
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(e => {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       this.counterNotificationsService.resetCounter();
+      console.log('reset counter');
       this.cdr.detectChanges();
     });
   }
@@ -87,6 +88,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     this.tableTradesSubscription$ = this.myTradesService.tableTrades$.subscribe(tableTrades => {
       if (tableTrades) {
         this.updateTableData(tableTrades);
+        console.log('table data');
       }
     });
   }
