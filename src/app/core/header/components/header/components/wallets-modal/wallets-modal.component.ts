@@ -99,7 +99,7 @@ export class WalletsModalComponent {
         name: 'WalletConnect',
         value: WALLET_NAME.WALLET_CONNECT,
         img: './assets/images/icons/wallets/walletconnect.svg',
-        desktopOnly: true,
+        desktopOnly: false,
         display: true
       }
     ];
