@@ -92,7 +92,10 @@ export class AuthService {
     this.isAuthProcess = true;
     if (!this.providerConnectorService.provider) {
       try {
-        this.providerConnectorService.installProvider();
+        const success = await this.providerConnectorService.installProvider();
+        if (!success) {
+          return;
+        }
       } catch (error) {
         error.displayError = false;
         throw error;

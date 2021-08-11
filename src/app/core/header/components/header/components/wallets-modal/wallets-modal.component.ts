@@ -148,8 +148,10 @@ export class WalletsModalComponent {
     }
 
     try {
-      await this.providerConnectorService.connectProvider(provider);
-      await this.authService.signIn();
+      const connectionSuccessful = await this.providerConnectorService.connectProvider(provider);
+      if (connectionSuccessful) {
+        await this.authService.signIn();
+      }
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }

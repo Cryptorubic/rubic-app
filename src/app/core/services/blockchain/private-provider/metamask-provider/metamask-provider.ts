@@ -48,10 +48,11 @@ export class MetamaskProvider extends PrivateProvider {
     this.onNetworkChanges = chainChange;
 
     const { ethereum } = window;
-    if (!ethereum) {
+    if (!ethereum?.isMetaMask) {
       throw new MetamaskError();
     }
 
+    // installed coinbase chrome extension
     if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
       throw new CoinbaseExtensionError();
     }

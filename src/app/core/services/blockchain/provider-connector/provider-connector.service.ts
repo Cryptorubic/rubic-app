@@ -91,17 +91,16 @@ export class ProviderConnectorService {
   /**
    * Setup provider based on local storage.
    */
-  public async installProvider(): Promise<void> {
+  public async installProvider(): Promise<boolean> {
     const provider = this.storage.getItem('provider');
     if (!provider) {
-      return;
+      return false;
     }
     if (provider === WALLET_NAME.WALLET_LINK) {
       const chainId = this.storage.getItem('chainId');
-      await this.connectProvider(provider, chainId);
-      return;
+      return this.connectProvider(provider, chainId);
     }
-    await this.connectProvider(provider);
+    return this.connectProvider(provider);
   }
 
   public async activate(): Promise<void> {
@@ -130,7 +129,7 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<void> {
+  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
       switch (provider) {
         case WALLET_NAME.WALLET_LINK: {
@@ -164,8 +163,10 @@ export class ProviderConnectorService {
         }
       }
       this.providerName = provider;
+      return true;
     } catch (e) {
       this.errorService.catch(e);
+      return false;
     }
   }
 
