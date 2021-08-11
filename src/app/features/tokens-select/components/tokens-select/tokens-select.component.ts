@@ -37,6 +37,8 @@ export class TokensSelectComponent implements OnInit {
 
   public loading = false;
 
+  public idPrefix: string;
+
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
   private _query = '';
@@ -84,6 +86,7 @@ export class TokensSelectComponent implements OnInit {
         currentBlockchain: BLOCKCHAIN_NAME;
         form: FormGroup<ISwapFormInput>;
         allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+        idPrefix: string;
       }
     >,
     private readonly cdr: ChangeDetectorRef,
@@ -95,6 +98,7 @@ export class TokensSelectComponent implements OnInit {
     this.formType = context.data.formType;
     this.form = context.data.form;
     this.allowedBlockchains = context.data.allowedBlockchains;
+    this.idPrefix = context.data.idPrefix;
 
     this.blockchain = context.data.currentBlockchain;
   }
