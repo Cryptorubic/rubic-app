@@ -3,6 +3,7 @@
     <ul class="blockchain-aside__blockchains-list">
       <li *ngFor="let blockchainName of blockchains">
         <app-icon-button
+          [id]="idPrefix + 'Network_' + blockchainName"
           [icon]="blockchainImages[blockchainName]"
           [disabled]="blockchain === blockchainName"
           [border]="blockchain === blockchainName"

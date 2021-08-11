@@ -5,6 +5,7 @@
   <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
   <div class="tokens-select__content">
     <app-blockchains-aside
+      [idPrefix]="idPrefix"
       [(blockchain)]="blockchain"
       [allowedBlockchains]="allowedBlockchains"
     ></app-blockchains-aside>
