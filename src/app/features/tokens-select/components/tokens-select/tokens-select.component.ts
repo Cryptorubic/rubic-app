@@ -35,6 +35,8 @@ export class TokensSelectComponent implements OnInit {
 
   public allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
 
+  public loading = false;
+
   public idPrefix: string;
 
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
@@ -115,13 +117,17 @@ export class TokensSelectComponent implements OnInit {
 
   private updateTokensList(): void {
     this.customToken = null;
-    this.tokens.subscribe(tokens => {
+    this.tokens.subscribe(async tokens => {
       const currentBlockchainTokens = tokens.filter(token => token.blockchain === this.blockchain);
       const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
       this.tokensToShow$.next(sortedAndFilteredTokens);
 
       if (!sortedAndFilteredTokens.length) {
-        this.tryParseQueryAsCustomToken();
+        this.loading = true;
+        this.cdr.detectChanges();
+        await this.tryParseQueryAsCustomToken();
+        this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -192,7 +198,7 @@ export class TokensSelectComponent implements OnInit {
           available: !oppositeToken || this.blockchain === oppositeToken.blockchain
         };
 
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       }
     }
   }
