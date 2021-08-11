@@ -135,8 +135,8 @@ export class Web3PrivateService {
         ...((options.gas || this.defaultMockGas) && {
           gas: options.gas || this.defaultMockGas
         }),
-        ...(options.data && { data: options.data }),
-        ...(options.gasPrice && { gasPrice: options.gasPrice })
+        ...(options.data && { data: options.data })
+        // ...(options.gasPrice && { gasPrice: options.gasPrice }) doesn't work on mobile
       });
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
@@ -285,8 +285,8 @@ export class Web3PrivateService {
         ...(options.value && { value: options.value }),
         ...((options.gas || this.defaultMockGas) && {
           gas: options.gas || this.defaultMockGas
-        }),
-        ...(options.gasPrice && { gasPrice: options.gasPrice })
+        })
+        // ...(options.gasPrice && { gasPrice: options.gasPrice }) doesn't work on mobile
       });
       return this.executeContractMethod(
         contractAddress,
