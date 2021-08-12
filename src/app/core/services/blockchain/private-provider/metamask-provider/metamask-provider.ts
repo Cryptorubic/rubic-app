@@ -7,6 +7,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { CoinbaseExtensionError } from 'src/app/core/errors/models/provider/CoinbaseExtensionError';
+import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
@@ -115,6 +116,13 @@ export class MetamaskProvider extends PrivateProvider {
       this.onNetworkChanges.next(this.getNetwork());
       this.onAddressChanges.next(this.selectedAddress);
     } catch (error) {
+      if (
+        error.code === 4001 ||
+        // metamask browser
+        error.message?.toLowerCase().includes('user denied message signature')
+      ) {
+        throw new SignRejectError();
+      }
       throw new MetamaskError();
     }
   }

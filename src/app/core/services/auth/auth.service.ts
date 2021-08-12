@@ -179,7 +179,13 @@ export class AuthService {
       this.providerConnectorService.deActivate();
 
       let error = err;
-      if (err.code === 4001) {
+      if (
+        err.code === 4001 ||
+        // metamask browser
+        err.message?.toLowerCase().includes('user denied message signature') ||
+        // coinbase browser
+        err.message?.toLowerCase().includes('sign message cancelled')
+      ) {
         error = new SignRejectError();
       }
       this.headerStore.setWalletsLoadingStatus(false);
