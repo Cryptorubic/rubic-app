@@ -56,8 +56,8 @@ export class HeaderComponent implements AfterViewInit, OnInit {
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.$currentUser = this.authService.getCurrentUser();
-    this.counterNotificationsService.unreadTradesChange.subscribe(res => {
-      this.countNotifications = res;
+    this.counterNotificationsService.unreadTradesChange$.subscribe(count => {
+      this.countNotifications = count;
       this.cdr.detectChanges();
     });
     this.loadUser();

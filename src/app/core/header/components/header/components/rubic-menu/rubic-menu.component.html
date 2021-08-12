@@ -6,6 +6,12 @@
         <div class="burger-menu__line"></div>
         <div class="burger-menu__line"></div>
       </div>
+      <tui-badge
+        class="notification-counter"
+        *ngIf="countNotifications"
+        size="s"
+        [value]="countNotifications"
+      ></tui-badge>
     </app-rubic-button-circle>
   </div>
 </tui-hosted-dropdown>

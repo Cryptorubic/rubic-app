@@ -50,7 +50,7 @@ export class StoreService {
     this.$dataSubject.next(newData);
   }
 
-  public setItem(key: keyof Store, value: unknown, isCookie?: boolean): void {
+  public setItem(key: keyof Store, value: unknown): void {
     const newData = {
       ...this.$dataSubject.value,
       [key]: value
@@ -58,7 +58,7 @@ export class StoreService {
 
     const jsonData = JSON.stringify(newData);
 
-    if (!this.isIframe && !isCookie) {
+    if (!this.isIframe) {
       localStorage.setItem(this.storageKey, jsonData);
     } else {
       this.document.cookie = `${this.storageKey}=${jsonData}`;

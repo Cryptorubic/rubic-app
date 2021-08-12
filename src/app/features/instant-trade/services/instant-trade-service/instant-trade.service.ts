@@ -58,7 +58,8 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     @Inject(TuiNotificationsService) private readonly notificationsService: TuiNotificationsService,
     private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private counterNotificationsService: CounterNotificationsService
   ) {
     this.setBlockchainsProviders();
   }

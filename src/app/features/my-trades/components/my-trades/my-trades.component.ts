@@ -87,7 +87,6 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     this.tableTradesSubscription$ = this.myTradesService.tableTrades$.subscribe(tableTrades => {
       if (tableTrades) {
         this.updateTableData(tableTrades);
-        console.log('table data');
       }
     });
   }
