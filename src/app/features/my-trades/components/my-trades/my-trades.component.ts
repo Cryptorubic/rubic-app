@@ -61,8 +61,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly tokensService: TokensService,
-    private readonly notificationsService: NotificationsService
-  ) {}
+    private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
   ) {
