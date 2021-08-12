@@ -21,10 +21,8 @@
           <div class="tokens__symbol">
             {{ selectedToken.symbol }}
           </div>
-          <div>
-            <div class="tokens__clear" (click)="clearToken(); $event.stopPropagation()">
-              <div class="tokens__clear-icon"></div>
-            </div>
+          <div class="tokens__clear" (click)="clearToken(); $event.stopPropagation()">
+            <div class="tokens__clear-icon"></div>
           </div>
         </div>
       </ng-container>

@@ -46,7 +46,7 @@ export class CounterNotificationsService {
     });
   }
 
-  public updateUnseen(count: number = 1) {
+  public updateUnread(count: number = 1) {
     this.unreadTrades += count;
     const data = JSON.stringify({ [this.providerConnectorService?.address]: this.unreadTrades });
     this.document.cookie = `${this.cookieKey}=${data}`;

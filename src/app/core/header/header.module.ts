@@ -43,7 +43,6 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     TuiHintModule,
     TuiHostedDropdownModule,
     TuiGroupModule,
-    TuiBadgeModule,
     TuiBadgeModule
   ],
   exports: [HeaderComponent, LoginButtonComponent],

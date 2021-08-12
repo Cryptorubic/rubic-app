@@ -7,8 +7,7 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit,
-  OnInit
+  AfterViewInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -20,7 +19,6 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
-import { switchMap } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -29,7 +27,7 @@ import { HeaderStore } from '../../services/header.store';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent implements AfterViewInit, OnInit {
+export class HeaderComponent implements AfterViewInit {
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -72,14 +70,6 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
-  }
-
-  public ngOnInit() {
-    this.$currentUser.subscribe(user => {
-      if (user) {
-        this.cdr.detectChanges();
-      }
-    });
   }
 
   public ngAfterViewInit(): void {

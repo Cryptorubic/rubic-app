@@ -223,6 +223,10 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
     &__mobile {
       display: block;
     }
+
+    &__container {
+      min-width: 160px;
+    }
   }
 
   .notification-counter {

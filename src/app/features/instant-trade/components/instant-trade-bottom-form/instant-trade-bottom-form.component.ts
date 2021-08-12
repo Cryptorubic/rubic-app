@@ -496,7 +496,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     try {
       await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
-      this.counterNotificationsService.updateUnseen();
+      this.counterNotificationsService.updateUnread();
       this.tokensService.recalculateUsersBalance();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;

@@ -87,19 +87,6 @@ export class MyTradesService {
     });
   }
 
-  // public getUnreadTrades(): Observable<number> {
-  //   this.updateTableTrades();
-  //   if (this.tableTrades$) {
-  //     return this.tableTrades$.pipe(
-  //       map(
-  //         trades =>
-  //           trades.filter(trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING).length
-  //       )
-  //     );
-  //   }
-  //   return of(0);
-  // }
-
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
       mergeMap(trades => {
