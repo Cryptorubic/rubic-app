@@ -124,4 +124,4 @@ export default [
       decimals: 18
     }
   }
-];
+] as const;

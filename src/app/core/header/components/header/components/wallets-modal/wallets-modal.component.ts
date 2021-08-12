@@ -45,15 +45,16 @@ export class WalletsModalComponent implements OnInit {
     return new AsyncPipe(this.cdr).transform(this.$mobileDisplayStatus);
   }
 
-  private deepLinkRedirectIfSupported(provider: WALLET_NAME): void {
+  private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
     switch (provider) {
       case WALLET_NAME.METAMASK:
         this.redirectToMetamaskBrowser();
-        break;
+        return true;
       case WALLET_NAME.WALLET_LINK:
         this.redirectToCoinbaseBrowser();
-        break;
+        return true;
       default:
+        return false;
     }
   }
 
@@ -134,8 +135,10 @@ export class WalletsModalComponent implements OnInit {
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
     if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-      this.deepLinkRedirectIfSupported(provider);
-      return;
+      const redirected = this.deepLinkRedirectIfSupported(provider);
+      if (redirected) {
+        return;
+      }
     }
 
     this.headerStore.setWalletsLoadingStatus(true);
