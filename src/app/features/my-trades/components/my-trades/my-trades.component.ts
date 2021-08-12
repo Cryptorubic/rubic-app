@@ -12,7 +12,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
-import { TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -22,7 +22,8 @@ import { TableRow } from 'src/app/features/my-trades/components/my-trades/models
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { ActivationStart, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 
@@ -56,11 +57,12 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly myTradesService: MyTradesService,
     private readonly authService: AuthService,
     private readonly translate: TranslateService,
-    private readonly notificationsService: TuiNotificationsService,
     private readonly errorsService: ErrorsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly tokensService: TokensService,
+    private readonly notificationsService: NotificationsService
+  ) {}
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
   ) {
@@ -149,13 +151,14 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
     let tradeInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
-      tradeInProgressSubscription$ = this.notificationsService
-        .show(this.translate.instant('bridgePage.progressMessage'), {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translate.instant('bridgePage.progressMessage'),
+        {
           label: this.translate.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
           autoClose: false
-        })
-        .subscribe();
+        }
+      );
     };
 
     this.myTradesService
@@ -163,13 +166,11 @@ export class MyTradesComponent implements OnInit, OnDestroy {
       .subscribe(
         _receipt => {
           tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService
-            .show(this.translate.instant('bridgePage.successMessage'), {
-              label: this.translate.instant('notifications.successfulTradeTitle'),
-              status: TuiNotification.Success,
-              autoClose: 15000
-            })
-            .subscribe();
+          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
+            label: this.translate.instant('notifications.successfulTradeTitle'),
+            status: TuiNotification.Success,
+            autoClose: 15000
+          });
 
           this.refreshTable();
 

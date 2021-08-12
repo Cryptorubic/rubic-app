@@ -328,13 +328,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           : INSTANT_TRADES_STATUS.ERROR,
       error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
     }));
+    this.providerControllers = newProviders;
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     if (bestProviderIndex !== -1) {
       newProviders[bestProviderIndex].isBestRate = true;
       newProviders[bestProviderIndex].isSelected = true;
 
-      this.providerControllers = newProviders;
       this.selectedProvider = newProviders[bestProviderIndex];
 
       this.tradeStatus = this.selectedProvider.needApprove
@@ -358,8 +358,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         const { gasFeeInUsd, to } = trade;
         const amountInUsd = to.amount?.multipliedBy(to.token.price);
 
-        if (amountInUsd && gasFeeInUsd) {
-          const profit = amountInUsd.minus(gasFeeInUsd);
+        if (amountInUsd) {
+          const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
           return profit.gt(bestRate.profit)
             ? {
                 index: i,

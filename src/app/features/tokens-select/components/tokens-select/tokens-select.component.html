@@ -5,18 +5,20 @@
   <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
   <div class="tokens-select__content">
     <app-blockchains-aside
+      [idPrefix]="idPrefix"
       [(blockchain)]="blockchain"
       [allowedBlockchains]="allowedBlockchains"
     ></app-blockchains-aside>
     <app-tokens-list
-      *ngIf="!customToken"
+      *ngIf="!customToken && !loading"
       [tokens]="tokensToShow$ | async"
       (tokenSelect)="onTokenSelect($event)"
     ></app-tokens-list>
     <app-custom-token
-      *ngIf="customToken"
+      *ngIf="customToken && !loading"
       (tokenSelected)="onTokenSelect($event)"
       [token]="customToken"
     ></app-custom-token>
+    <tui-loader [showLoader]="loading" size="xl"></tui-loader>
   </div>
 </section>

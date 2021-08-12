@@ -13,6 +13,8 @@ export class BlockchainsAsideComponent {
 
   @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
 
+  @Input() idPrefix: string;
+
   @Output() blockchainChange = new EventEmitter<BLOCKCHAIN_NAME>();
 
   public allBlockchains: BLOCKCHAIN_NAME[] = [

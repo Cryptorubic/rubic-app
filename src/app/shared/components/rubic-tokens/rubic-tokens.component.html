@@ -2,10 +2,12 @@
   <div class="tokens__container">
     <app-rubic-button
       class="tokens__btn"
+      [id]="formType === 'from' ? idPrefix + 'token1' : idPrefix + 'token2'"
       [size]="'s'"
       [loading]="loading"
       [disabled]="disabled"
-      (onClick)="openTokensSelect()"
+      (onClick)="openTokensSelect(idPrefix)"
+      [tuiHint]="selectedToken && !disabled ? tooltip : null"
       [appearance]="selectedToken ? 'primary' : 'secondary'"
     >
       <ng-container *ngIf="selectedToken">

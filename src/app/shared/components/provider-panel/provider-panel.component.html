@@ -20,7 +20,7 @@
     >
       <div [inlineSVG]="'assets/images/icons/Best-rate.svg'"></div>
     </div>
-    <div class="provider-panel__body">
+    <div *ngIf="providerData" class="provider-panel__body">
       <div class="provider-panel__left">
         <div
           class="provider-panel__amount"
@@ -45,7 +45,8 @@
           ></div>
         </div>
       </div>
-      <div *ngIf="providerData.estimatedGas" class="provider-panel__right">
+
+      <div *ngIf="tradeData" class="provider-panel__right">
         <div
           *ngIf="tradeData.to.amount && tradeData.to.token.price && tradeData.to.token.price > 0.01"
           class="provider-panel__token-usd-price"
