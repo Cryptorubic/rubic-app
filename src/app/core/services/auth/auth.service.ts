@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
+import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
@@ -80,11 +81,22 @@ export class AuthService {
    * @param address wallet address
    * @param nonce nonce to sign
    * @param signature signed nonce
+   * @param wallet wallet provider
    * @return Authentication key.
    */
-  private sendSignedNonce(address: string, nonce: string, signature: string): Promise<void> {
+  private sendSignedNonce(
+    address: string,
+    nonce: string,
+    signature: string,
+    wallet: WALLET_NAME
+  ): Promise<void> {
     return this.httpService
-      .post('metamask/login/', { address, message: nonce, signed_message: signature })
+      .post('metamask/login/', {
+        address,
+        message: nonce,
+        signed_message: signature,
+        wallet
+      })
       .toPromise();
   }
 
@@ -92,7 +104,12 @@ export class AuthService {
     this.isAuthProcess = true;
     if (!this.providerConnectorService.provider) {
       try {
-        this.providerConnectorService.installProvider();
+        const success = await this.providerConnectorService.installProvider();
+        if (!success) {
+          this.$currentUser.next(null);
+          this.isAuthProcess = false;
+          return;
+        }
       } catch (error) {
         error.displayError = false;
         throw error;
@@ -147,7 +164,12 @@ export class AuthService {
       }
       const nonce = metamaskLoginBody.payload.message;
       const signature = await this.providerConnectorService.signPersonal(nonce);
-      await this.sendSignedNonce(this.providerConnectorService.address, nonce, signature);
+      await this.sendSignedNonce(
+        this.providerConnectorService.address,
+        nonce,
+        signature,
+        this.providerConnectorService.provider.name
+      );
 
       this.$currentUser.next({ address: this.providerConnectorService.address });
       this.isAuthProcess = false;
@@ -157,11 +179,17 @@ export class AuthService {
       this.providerConnectorService.deActivate();
 
       let error = err;
-      if (err.code === 4001) {
+      if (
+        err.code === 4001 ||
+        // metamask browser
+        err.message?.toLowerCase().includes('user denied message signature') ||
+        // coinbase browser
+        err.message?.toLowerCase().includes('sign message cancelled')
+      ) {
         error = new SignRejectError();
       }
       this.headerStore.setWalletsLoadingStatus(false);
-      this.errorService.catch$(error);
+      this.errorService.catch(error);
       this.$currentUser.next(null);
       this.isAuthProcess = false;
     }

@@ -16,8 +16,8 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { HeaderStore } from '../../services/header.store';
 import { Router } from '@angular/router';
+import { HeaderStore } from '../../services/header.store';
 
 @Component({
   selector: 'app-header',
@@ -43,7 +43,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
-    private router : Router,
+    private router: Router,
     private readonly errorService: ErrorsService
   ) {
     this.loadUser();
@@ -72,7 +72,7 @@ export class HeaderComponent implements AfterViewInit {
       try {
         await this.authService.loadUser();
       } catch (err) {
-        this.errorService.catch$(err);
+        this.errorService.catch(err);
       }
     }
   }

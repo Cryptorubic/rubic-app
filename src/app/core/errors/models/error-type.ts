@@ -1,1 +1,5 @@
-export type ErrorType = 'component' | 'text';
+export enum ERROR_TYPE {
+  TEXT = 'TEXT',
+  COMPONENT = 'COMPONENT',
+  RAW_MESSAGE = 'RAW_MESSAGE'
+}

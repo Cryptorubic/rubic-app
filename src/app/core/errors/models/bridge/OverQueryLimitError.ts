@@ -1,9 +1,10 @@
 import { OverQueryLimitErrorComponent } from 'src/app/core/errors/components/over-query-limit-error/over-query-limit-error.component';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 
-export class OverQueryLimitError extends RubicError {
+export class OverQueryLimitError extends RubicError<ERROR_TYPE.COMPONENT> {
   constructor() {
-    super('component', null, null, OverQueryLimitErrorComponent);
+    super(OverQueryLimitErrorComponent);
     Object.setPrototypeOf(this, OverQueryLimitError.prototype);
   }
 }

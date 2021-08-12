@@ -28,7 +28,7 @@ export class AppComponent {
         try {
           this.queryParamsService.setupQueryParams(queryParams);
         } catch (err) {
-          this.errorService.catch$(err);
+          this.errorService.catch(err);
         }
       }
     );
