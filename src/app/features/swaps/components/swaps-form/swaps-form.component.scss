@@ -3,7 +3,12 @@
 
 :host {
   width: 100%;
+
   max-width: 610px;
+
+  @include iframe-horizontal {
+    max-width: unset;
+  }
 }
 
 .swaps-form {
@@ -40,7 +45,7 @@
 
     cursor: pointer;
   }
-  
+
   &__delimiter {
     position: relative;
 

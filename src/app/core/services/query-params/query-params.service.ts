@@ -37,7 +37,9 @@ export class QueryParamsService {
     }
   };
 
-  private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
+  private readonly _isIframe$ = new BehaviorSubject<boolean>(undefined);
+
+  private readonly _iframeAppearance$ = new BehaviorSubject<'vertical' | 'horizontal'>(undefined);
 
   public currentQueryParams: QueryParams;
 
@@ -48,7 +50,11 @@ export class QueryParamsService {
   private readonly _theme$ = new BehaviorSubject<string>('default');
 
   public get isIframe$(): Observable<boolean> {
-    return this._isIframe$.asObservable();
+    return this._isIframe$.asObservable().pipe(filter(value => value !== undefined));
+  }
+
+  public get iframeAppearance$(): Observable<'vertical' | 'horizontal'> {
+    return this._iframeAppearance$.asObservable().pipe(filter(value => value !== undefined));
   }
 
   public get theme$(): Observable<string> {
@@ -293,9 +299,16 @@ export class QueryParamsService {
   }
 
   private setIframeStatus(queryParams: QueryParams) {
-    if (queryParams.iframe === 'true') {
+    if (!queryParams.hasOwnProperty('iframe')) {
+      return;
+    }
+
+    if (queryParams.iframe === 'vertical' || queryParams.iframe === 'horizontal') {
       this._isIframe$.next(true);
-      this.document.body.classList.add('iframe');
+      this._iframeAppearance$.next(queryParams.iframe);
+      this.document
+        .getElementsByTagName('html')[0]
+        .classList.add('iframe', `iframe-${queryParams.iframe}`);
       return;
     }
     this._isIframe$.next(false);

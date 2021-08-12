@@ -1,33 +1,5 @@
 // ****** mixins ******
 
-@mixin dropdown-arrow($size, $direction, $thickness) {
-  position: absolute;
-  top: calc(50% - #{$size});
-
-  display: block;
-  width: $size;
-  height: $size;
-
-  border-color: rgba(0, 0, 0, 0.47);
-  border-style: solid;
-  border-width: 0 $thickness $thickness 0;
-
-  content: '';
-
-  @if $direction == bottom {
-    transform: rotate(45deg);
-  }
-  @if $direction == left {
-    transform: rotate(135deg);
-  }
-  @if $direction == top {
-    transform: rotate(225deg);
-  }
-  @if $direction == right {
-    transform: rotate(0deg);
-  }
-}
-
 @mixin font-face(
   $font-family,
   $file-path,
@@ -52,51 +24,7 @@
   }
 }
 
-@mixin notext {
-  overflow: hidden;
 
-  text-indent: -9999px;
-}
-
-@mixin placeholderColor($input-text-color) {
-  &::-webkit-input-placeholder {
-    color: $input-text-color;
-  }
-
-  &::-moz-placeholder {
-    color: $input-text-color;
-
-    opacity: 1;
-  }
-
-  &:-ms-input-placeholder {
-    color: $input-text-color;
-  }
-
-  &::placeholder {
-    color: $input-text-color;
-
-    opacity: 1;
-  }
-
-  &:focus::-webkit-input-placeholder {
-    color: transparent;
-  }
-
-  &:focus:-moz-placeholder {
-    color: transparent;
-
-    opacity: 1;
-  }
-
-  &:focus:-ms-input-placeholder {
-    color: transparent;
-  }
-
-  &:focus::placeholder {
-    color: transparent;
-  }
-}
 
 @mixin clearfix {
   &::after {
@@ -107,23 +35,20 @@
   }
 }
 
-// clear select without default button
-@mixin clearSelect {
-  border-radius: 0;
-
-  appearance: none;
-}
-
-// elements get appended with "__" and the $name
-@mixin e($name) {
-  @at-root #{&}_#{$name} {
+@mixin iframe-horizontal {
+  :host-context(html.iframe-horizontal) & {
     @content;
   }
 }
 
-// modifiers get appended with "--" and the $name
-@mixin m($name) {
-  @at-root #{&}--#{$name} {
+@mixin iframe-vertical {
+  :host-context(html.iframe-vertical) & {
+    @content;
+  }
+}
+
+@mixin iframe {
+  :host-context(html.iframe) & {
     @content;
   }
 }
@@ -161,20 +86,7 @@
     @content;
   }
 }
-/*
-  Max height mixin
- */
-@mixin mh($height) {
-  @media screen and (max-height: $height + 'px') {
-    @content;
-  }
-}
 
-@mixin ie() {
-  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-    @content;
-  }
-}
 
 @mixin before-img($display, $width, $height, $position) {
   @at-root #{&}:before {
@@ -213,77 +125,5 @@
       position: relative;
     }
     @content;
-  }
-}
-
-/* rem font size with fallback | usage:
-	p {
-		@include font-size(14px)
-	}*/
-
-@function calculateRem($size) {
-  $remSize: $size / 16px;
-  @return $remSize * 1rem;
-}
-
-@mixin font-size($size) {
-  font-size: $size;
-  font-size: calculateRem($size);
-}
-
-@mixin textCut($col, $height) {
-  max-height: $height;
-  overflow: hidden;
-}
-
-// button gradient
-@mixin btn-gradient($cText, $cHover, $direction, $cFirst, $cSecons, $cThird, $hover) {
-  color: $cText;
-
-  background-image: linear-gradient($direction, $cFirst 0%, $cSecons 51%, cThird 100%);
-  background-size: 200% auto;
-
-  transition: 0.5s;
-
-  &:hover {
-    color: $cHover;
-    text-decoration: none;
-
-    background-position: $hover;
-    box-shadow: 0px 20px 30px -15px $cThird;
-  }
-}
-
-@mixin gradient($top, $bottom) {
-  background: $top;
-  background: -moz-linear-gradient(top, $top 0%, $bottom 100%);
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0%, $top),
-    color-stop(100%, $bottom)
-  );
-  background: -webkit-linear-gradient(top, $top 0%, $bottom 100%);
-  background: -o-linear-gradient(top, $top 0%, $bottom 100%);
-  background: -ms-linear-gradient(top, $top 0%, $bottom 100%);
-  background: linear-gradient(to bottom, $top 0%, $bottom 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{$top}', endColorstr='#{$bottom} ', GradientType=0);
-}
-
-@mixin button-color($bgcolor, $size) {
-  @if $bgcolor == none {
-    background-color: transparent;
-  }
-  @if $bgcolor != none {
-    background-color: $bgcolor;
-  }
-
-  font-size: $size;
-
-  &:hover {
-    @if $bgcolor != none {
-      box-shadow: 0px 0px 15px -4px $bgcolor;
-    }
   }
 }

@@ -8,7 +8,7 @@ interface AllQueryParams {
   fromChain: BLOCKCHAIN_NAME;
   toChain: BLOCKCHAIN_NAME;
   amount: string;
-  iframe: string;
+  iframe: 'vertical' | 'horizontal';
   hidden: string;
   hideSelection: string;
   background: string;

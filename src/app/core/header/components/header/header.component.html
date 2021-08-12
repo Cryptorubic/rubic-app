@@ -1,11 +1,11 @@
-<header class="rubic-header">
+<header class="rubic-header" *ngLet="((isIframe$ | async) !== true) as fullVersion">
   <a class="rubic-header__logo" routerLink="/">
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
   </a>
 
-  <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
+  <app-rubic-menu *ngIf="fullVersion" class="rubic-header__menu"></app-rubic-menu>
 
-  <nav class="rubic-header__nav">
+  <nav *ngIf="fullVersion" class="rubic-header__nav">
     <a class="button-link"
        routerLink="/"
        [class.button-link_active]="isLinkActive('/')">
@@ -20,15 +20,17 @@
   </nav>
 
   <div class="rubic-header__profile">
-    <a class="rubic-header__profile-trades button-link"
+    <a *ngIf="fullVersion"
+       class="rubic-header__profile-trades button-link"
        routerLink="my-trades"
-       routerLinkActive="button-link_active">
-      {{ 'navigation.myTrades' | translate }}
+       routerLinkActive="button-link_active"
+    >
+       {{ 'navigation.myTrades' | translate }}
     </a>
 
     <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
     <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
-    <app-rubic-language-select></app-rubic-language-select>
+    <app-rubic-language-select *ngIf="fullVersion"></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>
 </header>

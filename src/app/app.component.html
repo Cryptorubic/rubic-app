@@ -1,18 +1,24 @@
 <tui-root>
 
   <ng-template [ngIf]="isBackendAvailable">
-    <div class="wrapper">
+    <div *ngIf="isIframe === false" class="wrapper">
       <app-header></app-header>
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
       <app-rubic-footer class="footer"></app-rubic-footer>
     </div>
+    <div *ngIf="isIframe === true" class="wrapper">
+      <app-header></app-header>
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
   </ng-template>
 
   <ng-container ngProjectAs="tuiOverDialogs">
     <app-maintenance *ngIf="isBackendAvailable === false"></app-maintenance>
-    <app-spinner *ngIf="isBackendAvailable === undefined"></app-spinner>
+    <app-spinner *ngIf="isBackendAvailable === undefined || isIframe === undefined"></app-spinner>
   </ng-container>
 
   <ng-container ngProjectAs="tuiOverNotifications">

@@ -54,4 +54,4 @@
   </main>
 </div>
 
-<app-rubic-volume></app-rubic-volume>
+<app-rubic-volume *ngIf="(isIframe$ | async) !== true"></app-rubic-volume>

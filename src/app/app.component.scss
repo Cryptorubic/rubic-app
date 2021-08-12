@@ -33,4 +33,9 @@ app-spinner {
   > :last-child {
     flex: 0;
   }
+
+  :host-context(html.iframe-horizontal) & {
+    width: 1000px;
+    margin: 0 auto;
+  }
 }

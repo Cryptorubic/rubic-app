@@ -33,6 +33,7 @@ import { RubicLanguageSelectComponent } from 'src/app/core/header/components/hea
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -85,7 +86,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     ShortenAmountPipe,
     // Directives.
     SafetyLinkDirective,
-    TokenAmountDirective
+    TokenAmountDirective,
+    LetDirective
   ],
   imports: [
     CommonModule,
@@ -141,7 +143,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
-    SwapsHeaderComponent
+    SwapsHeaderComponent,
+    LetDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

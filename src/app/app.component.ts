@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { first } from 'rxjs/operators';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -14,6 +15,8 @@ import { QueryParamsService } from './core/services/query-params/query-params.se
 })
 export class AppComponent {
   public isBackendAvailable: boolean;
+
+  public isIframe = undefined;
 
   constructor(
     private readonly healthcheckService: HealthcheckService,
@@ -35,6 +38,10 @@ export class AppComponent {
     setTimeout(() => {
       queryParamsSubscription$.unsubscribe();
     });
+
+    this.queryParamsService.isIframe$
+      .pipe(first())
+      .subscribe(isIframe => (this.isIframe = isIframe));
 
     this.setupLanguage();
 

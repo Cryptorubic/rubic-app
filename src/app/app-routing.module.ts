@@ -7,10 +7,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
-    path: 'bridge',
-    redirectTo: 'cross-chain/bridge'
-  },
-  {
     path: 'crypto-tap',
     loadChildren: () =>
       import('./features/crypto-tap/crypto-tap.module').then(m => m.CryptoTapModule)
