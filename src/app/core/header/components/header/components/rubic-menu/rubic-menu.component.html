@@ -8,9 +8,9 @@
       </div>
       <tui-badge
         class="notification-counter"
-        *ngIf="countNotifications"
+        *ngIf="$countUnread | async"
         size="s"
-        [value]="countNotifications"
+        [value]="$countUnread | async"
       ></tui-badge>
     </app-rubic-button-circle>
   </div>

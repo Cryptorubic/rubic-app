@@ -7,7 +7,6 @@
       [loading]="loading"
       [disabled]="disabled"
       (onClick)="openTokensSelect(idPrefix)"
-      [tuiHint]="selectedToken && !disabled ? tooltip : null"
       [appearance]="selectedToken ? 'primary' : 'secondary'"
     >
       <ng-container *ngIf="selectedToken">
@@ -54,10 +53,3 @@
     {{ 'common.clearToken' | translate }}
   </a>
 </div>
-
-<ng-template #tooltip>
-  <div class="tokens__clear-container" (click)="clearToken()">
-    <span>{{ 'common.clearToken' | translate }}</span>
-    <tui-svg class="icon" src="tuiIconCloseCircleLarge"></tui-svg>
-  </div>
-</ng-template>

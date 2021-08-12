@@ -8,7 +8,7 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 export class TokenAmountDirective {
   @Input() set decimals(value: number) {
     this._decimals = value;
-    this.onChange();
+    setTimeout(() => this.onChange());
   }
 
   @Output() amountChange = new EventEmitter<string>();
@@ -27,6 +27,7 @@ export class TokenAmountDirective {
   private onChange(): void {
     const nativeValue: string = this.elementRef.nativeElement.value;
     let value = nativeValue.replaceAll(',', '');
+
     let caretPosition = this.elementRef.nativeElement.selectionStart;
 
     if (nativeValue && nativeValue[nativeValue.length - 1] === ',') {

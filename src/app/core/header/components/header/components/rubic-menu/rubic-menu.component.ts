@@ -32,9 +32,9 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public isOpened = false;
 
-  public countNotifications: number;
-
   public $currentUser: Observable<UserInterface>;
+
+  public $countUnread: Observable<number>;
 
   public currentBlockchain: IBlockchain;
 
@@ -54,10 +54,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     @Inject(Injector) private injector: Injector
   ) {
     this.$currentUser = this.authService.getCurrentUser();
-    this.counterNotificationsService.unreadTradesChange$.subscribe(count => {
-      this.countNotifications = count;
-      this.cdr.detectChanges();
-    });
+    this.$countUnread = this.counterNotificationsService.unreadTradesObservable;
   }
 
   public ngAfterViewInit(): void {

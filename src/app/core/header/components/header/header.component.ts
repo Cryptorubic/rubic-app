@@ -7,7 +7,8 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit
+  AfterViewInit,
+  OnInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -17,7 +18,6 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
-import { HeaderStore } from '../../services/header.store';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { HeaderStore } from '../../services/header.store';
@@ -28,7 +28,7 @@ import { HeaderStore } from '../../services/header.store';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent implements AfterViewInit, OnInit {
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -56,10 +56,6 @@ export class HeaderComponent implements AfterViewInit {
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
-    this.counterNotificationsService.unreadTradesChange$.subscribe(count => {
-      this.countNotifications = count;
-      this.cdr.detectChanges();
-    });
     this.loadUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
@@ -72,6 +68,13 @@ export class HeaderComponent implements AfterViewInit {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
+  }
+
+  public ngOnInit() {
+    this.counterNotificationsService.unreadTradesObservable.subscribe(count => {
+      this.countNotifications = count;
+      this.cdr.detectChanges();
+    });
   }
 
   public ngAfterViewInit(): void {

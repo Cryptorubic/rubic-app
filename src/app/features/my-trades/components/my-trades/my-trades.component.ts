@@ -23,8 +23,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 
 const DESKTOP_WIDTH = 1240;
@@ -64,14 +63,10 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
-  ) {
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      this.counterNotificationsService.resetCounter();
-      this.cdr.detectChanges();
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.counterNotificationsService.resetCounter();
     this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
     this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 

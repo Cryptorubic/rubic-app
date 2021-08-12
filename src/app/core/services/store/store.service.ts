@@ -5,6 +5,7 @@ import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
 
 interface Store {
+  unreadTrades: number;
   provider: WALLET_NAME;
   settings: unknown;
   theme: 'dark' | 'light';
