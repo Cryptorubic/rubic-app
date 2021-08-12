@@ -214,7 +214,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        this.errorService.catch$(new NotSupportedItNetwork());
+        this.errorService.catch(new NotSupportedItNetwork());
     }
   }
 
@@ -255,7 +255,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.unsupportedItNetworks.includes(toBlockchain)) {
-      this.errorService.catch$(new NotSupportedItNetwork());
+      this.errorService.catch(new NotSupportedItNetwork());
       this.cdr.detectChanges();
       return;
     }
@@ -444,7 +444,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async approveTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     if (providerIndex === -1) {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.catch(new NoSelectedProviderError());
     }
 
     const provider = this.providerControllers[providerIndex];
@@ -467,7 +467,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         false
       );
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_APPROVE,
@@ -483,7 +483,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async createTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     if (providerIndex === -1) {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.catch(new NoSelectedProviderError());
     }
 
     const provider = this.providerControllers[providerIndex];
@@ -502,7 +502,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,

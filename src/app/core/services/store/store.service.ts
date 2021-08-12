@@ -8,6 +8,7 @@ interface Store {
   provider: WALLET_NAME;
   settings: unknown;
   theme: 'dark' | 'light';
+  chainId: number;
 }
 
 @Injectable({
@@ -46,7 +47,7 @@ export class StoreService {
     this.$dataSubject.next(newData);
   }
 
-  public setItem(key: keyof Store, value: unknown): void {
+  public setItem<T extends keyof Store>(key: T, value: Store[T]): void {
     const newData = {
       ...this.$dataSubject.value,
       [key]: value
@@ -62,7 +63,7 @@ export class StoreService {
     this.$dataSubject.next(newData);
   }
 
-  public getItem(key: keyof Store): unknown {
+  public getItem<T extends keyof Store>(key: T): Store[T] {
     return this.$dataSubject.value?.[key];
   }
 

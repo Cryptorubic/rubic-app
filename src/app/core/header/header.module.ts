@@ -20,6 +20,7 @@ import { UserProfileComponent } from './components/header/components/user-profil
 import { HeaderComponent } from './components/header/header.component';
 import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
+import { CoinbaseConfirmModalComponent } from './components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     UserProfileComponent,
     MobileMenuTogglerComponent,
     WalletsModalComponent,
-    RubicMenuComponent
+    RubicMenuComponent,
+    CoinbaseConfirmModalComponent
   ],
   imports: [
     CommonModule,

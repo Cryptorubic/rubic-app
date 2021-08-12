@@ -84,7 +84,7 @@ export class PanamaBridgeProviderService {
     return this.httpClient.get(`${this.apiUrl}tokens/${token.symbol}/networks`).pipe(
       map((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
-          this.errorService.throw$(new RetrievingTokensError());
+          this.errorService.throw(new RetrievingTokensError());
         }
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),

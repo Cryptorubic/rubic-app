@@ -17,6 +17,7 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
+import { HeaderStore } from '../../services/header.store';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { HeaderStore } from '../../services/header.store';
@@ -53,6 +54,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly errorService: ErrorsService,
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
+    this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.counterNotificationsService.unreadTradesChange$.subscribe(count => {
       this.countNotifications = count;
@@ -83,7 +85,7 @@ export class HeaderComponent implements AfterViewInit {
       try {
         await this.authService.loadUser();
       } catch (err) {
-        this.errorService.catch$(err);
+        this.errorService.catch(err);
       }
     }
   }
