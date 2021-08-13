@@ -13,11 +13,39 @@
 
   background-color: var(--main-background);
 
+  @include iframe-horizontal {
+    position: relative;
+
+    width: 283px;
+    height: 50px;
+    padding: 0 7px 0 16px;
+
+    border-radius: 10px;
+  }
+
   &__wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+
+    @include iframe-horizontal {
+      justify-content: center;
+
+      &:first-child {
+        order: 2;
+      }
+
+      &:nth-child(2) {
+        order: 1;
+      }
+
+      app-usd-price-container {
+        position: absolute;
+        bottom: -33px;
+        left: 0;
+      }
+    }
   }
 
   &__input-label {
@@ -39,6 +67,11 @@
     background-color: transparent;
 
     border: none;
+
+    @include iframe-horizontal {
+      font-size: 20px;
+      text-align: left;
+    }
   }
 }
 

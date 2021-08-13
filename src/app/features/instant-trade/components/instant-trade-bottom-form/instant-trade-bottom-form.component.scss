@@ -1,5 +1,10 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
+
+:host {
+  @include iframe-horizontal {
+    display: flex;
+  }
+}
 
 $green: rgb(74, 169, 86);
 

@@ -80,6 +80,12 @@
       right: 20px;
     }
   }
+
+  &__content {
+    @include iframe-horizontal {
+      display: flex;
+    }
+  }
 }
 
 @include b($mobile-md) {

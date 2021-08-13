@@ -30,6 +30,7 @@
       }}</span>
     </app-rubic-button>
     <a
+      *noFrame
       [hidden]="!selectedToken"
       [href]="selectedToken?.address | scannerLink: selectedToken?.blockchain:ADDRESS_TYPE.TOKEN"
       [tuiHint]="'common.checkOnScanner' | translate"

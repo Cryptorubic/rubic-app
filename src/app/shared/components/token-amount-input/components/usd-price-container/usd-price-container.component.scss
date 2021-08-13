@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 .usd-price-container {
   display: flex;
@@ -13,6 +12,13 @@
 
   @include b($mobile-sm) {
     justify-content: flex-start;
+  }
+
+  @include iframe-horizontal {
+    padding: 5px 10px;
+
+    background-color: var(--main-background);
+    border-radius: 10px;
   }
 
   &_hidden {
@@ -30,5 +36,9 @@
     text-overflow: ellipsis;
 
     cursor: default;
+
+    @include iframe-horizontal {
+      font-size: 12px;
+    }
   }
 }
