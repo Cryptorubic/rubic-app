@@ -4,6 +4,7 @@ import { finalize, first, mergeMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { MetamaskLoginInterface, UserInterface } from './models/user.interface';
@@ -38,7 +39,8 @@ export class AuthService {
     private readonly httpService: HttpService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly store: StoreService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly iframeService: IframeService
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
@@ -145,9 +147,9 @@ export class AuthService {
   /**
    * @description Initiate authentication via metamask.
    */
-  public async signIn(loginWithoutBackend: boolean = false): Promise<void> {
+  public async signIn(): Promise<void> {
     try {
-      if (loginWithoutBackend) {
+      if (this.iframeService.isIframe) {
         await this.serverlessSignIn();
         return;
       }
@@ -174,42 +176,28 @@ export class AuthService {
       this.$currentUser.next({ address: this.providerConnectorService.address });
       this.isAuthProcess = false;
     } catch (err) {
-      this.$currentUser.next(null);
-      this.isAuthProcess = false;
-      this.providerConnectorService.deActivate();
-
-      let error = err;
-      if (
-        err.code === 4001 ||
-        // metamask browser
-        err.message?.toLowerCase().includes('user denied message signature') ||
-        // coinbase browser
-        err.message?.toLowerCase().includes('sign message cancelled')
-      ) {
-        error = new SignRejectError();
-      }
-      this.headerStore.setWalletsLoadingStatus(false);
-      this.errorService.catch(error);
-      this.$currentUser.next(null);
-      this.isAuthProcess = false;
+      this.catchSignIn(err);
     }
   }
 
   public async serverlessSignIn(): Promise<void> {
-    this.isAuthProcess = true;
-    await this.providerConnectorService.connectDefaultProvider();
-    const permissions = await this.providerConnectorService.requestPermissions();
-    const accountsPermission = permissions.find(
-      permission => permission.parentCapability === 'eth_accounts'
-    );
-    if (accountsPermission) {
-      await this.providerConnectorService.activate();
-      const { address } = this.providerConnectorService;
-      this.$currentUser.next({ address } || null);
-    } else {
-      this.$currentUser.next(null);
+    try {
+      this.isAuthProcess = true;
+      const permissions = await this.providerConnectorService.requestPermissions();
+      const accountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      );
+      if (accountsPermission) {
+        await this.providerConnectorService.activate();
+        const { address } = this.providerConnectorService;
+        this.$currentUser.next({ address } || null);
+      } else {
+        this.$currentUser.next(null);
+      }
+      this.isAuthProcess = false;
+    } catch (err) {
+      this.catchSignIn(err);
     }
-    this.isAuthProcess = false;
   }
 
   /**
@@ -229,5 +217,26 @@ export class AuthService {
     this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
     this.store.clearStorage();
+  }
+
+  private catchSignIn(err) {
+    this.$currentUser.next(null);
+    this.isAuthProcess = false;
+    this.providerConnectorService.deActivate();
+
+    let error = err;
+    if (
+      err.code === 4001 ||
+      // metamask browser
+      err.message?.toLowerCase().includes('user denied message signature') ||
+      // coinbase browser
+      err.message?.toLowerCase().includes('sign message cancelled')
+    ) {
+      error = new SignRejectError();
+    }
+    this.headerStore.setWalletsLoadingStatus(false);
+    this.errorService.catch(error);
+    this.$currentUser.next(null);
+    this.isAuthProcess = false;
   }
 }

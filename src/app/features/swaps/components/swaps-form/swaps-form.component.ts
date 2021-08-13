@@ -15,7 +15,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -98,9 +98,9 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     public readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
-    queryParamsService: QueryParamsService
+    iframeService: IframeService
   ) {
-    this.isIframe$ = queryParamsService.isIframe$;
+    this.isIframe$ = iframeService.isIframe$;
   }
 
   ngOnInit(): void {

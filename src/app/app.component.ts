@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { first } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -16,22 +17,23 @@ import { QueryParamsService } from './core/services/query-params/query-params.se
 export class AppComponent {
   public isBackendAvailable: boolean;
 
-  public isIframe = undefined;
+  public isIframe$: Observable<boolean>;
 
   constructor(
-    private readonly healthcheckService: HealthcheckService,
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly errorService: ErrorsService
+    healthcheckService: HealthcheckService,
+    queryParamsService: QueryParamsService,
+    activatedRoute: ActivatedRoute,
+    errorService: ErrorsService,
+    iframeService: IframeService
   ) {
-    const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
+    const queryParamsSubscription$ = activatedRoute.queryParams.subscribe(
       (queryParams: QueryParams) => {
         try {
-          this.queryParamsService.setupQueryParams(queryParams);
+          queryParamsService.setupQueryParams(queryParams);
         } catch (err) {
-          this.errorService.catch(err);
+          errorService.catch(err);
         }
       }
     );
@@ -39,15 +41,11 @@ export class AppComponent {
       queryParamsSubscription$.unsubscribe();
     });
 
-    this.queryParamsService.isIframe$
-      .pipe(first())
-      .subscribe(isIframe => (this.isIframe = isIframe));
+    this.isIframe$ = iframeService.isIframe$;
 
     this.setupLanguage();
 
-    this.healthcheckService
-      .healthCheck()
-      .then(isAvailable => (this.isBackendAvailable = isAvailable));
+    healthcheckService.healthCheck().then(isAvailable => (this.isBackendAvailable = isAvailable));
   }
 
   private setupLanguage(): void {

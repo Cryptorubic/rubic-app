@@ -12,6 +12,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { QueryParams } from './models/query-params';
@@ -37,10 +38,6 @@ export class QueryParamsService {
     }
   };
 
-  private readonly _isIframe$ = new BehaviorSubject<boolean>(undefined);
-
-  private readonly _iframeAppearance$ = new BehaviorSubject<'vertical' | 'horizontal'>(undefined);
-
   public currentQueryParams: QueryParams;
 
   private readonly _hiddenNetworks$ = new BehaviorSubject<string[]>([]);
@@ -48,14 +45,6 @@ export class QueryParamsService {
   private readonly _tokensSelectionDisabled$ = new BehaviorSubject<boolean>(false);
 
   private readonly _theme$ = new BehaviorSubject<string>('default');
-
-  public get isIframe$(): Observable<boolean> {
-    return this._isIframe$.asObservable().pipe(filter(value => value !== undefined));
-  }
-
-  public get iframeAppearance$(): Observable<'vertical' | 'horizontal'> {
-    return this._iframeAppearance$.asObservable().pipe(filter(value => value !== undefined));
-  }
 
   public get theme$(): Observable<string> {
     return this._theme$.asObservable();
@@ -75,7 +64,8 @@ export class QueryParamsService {
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService
+    private readonly swapsService: SwapsService,
+    private readonly iframeService: IframeService
   ) {
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
       this.setQueryParams({
@@ -303,15 +293,7 @@ export class QueryParamsService {
       return;
     }
 
-    if (queryParams.iframe === 'vertical' || queryParams.iframe === 'horizontal') {
-      this._isIframe$.next(true);
-      this._iframeAppearance$.next(queryParams.iframe);
-      this.document
-        .getElementsByTagName('html')[0]
-        .classList.add('iframe', `iframe-${queryParams.iframe}`);
-      return;
-    }
-    this._isIframe$.next(false);
+    this.iframeService.setIframeStatus(queryParams.iframe);
   }
 
   private setHiddenStatus(queryParams: QueryParams) {

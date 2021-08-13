@@ -11,7 +11,7 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { AbstractTuiThemeSwitcher } from '@taiga-ui/cdk';
 import { DOCUMENT } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-rubic-toggler-theme',
@@ -34,10 +34,10 @@ export class RubicTogglerThemeComponent
     private readonly cdr: ChangeDetectorRef,
     private readonly themeService: ThemeService,
     @Inject(DOCUMENT) document: Document,
-    queryParamsService: QueryParamsService
+    iframeService: IframeService
   ) {
     super(document);
-    this.isIframe$ = queryParamsService.isIframe$;
+    this.isIframe$ = iframeService.isIframe$;
   }
 
   public ngOnInit(): void {

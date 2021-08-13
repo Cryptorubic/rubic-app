@@ -9,14 +9,14 @@ import {
   ChangeDetectorRef,
   AfterViewInit
 } from '@angular/core';
-import { AsyncPipe, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -42,13 +42,13 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
-    private readonly queryParamsService: QueryParamsService,
+    private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
     private router: Router,
     private readonly errorService: ErrorsService
   ) {
-    this.isIframe$ = queryParamsService.isIframe$;
+    this.isIframe$ = this.iframeService.isIframe$;
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
@@ -69,7 +69,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   private async loadUser(): Promise<void> {
-    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.isIframe$);
+    const { isIframe } = this.iframeService;
     this.storeService.fetchData(isIframe);
     if (!isIframe) {
       try {

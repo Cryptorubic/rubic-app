@@ -29,6 +29,7 @@ import { BridgeService } from 'src/app/features/bridge/services/bridge-service/b
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -208,7 +209,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     @Inject(INJECTOR) private readonly injector: Injector,
     private translateService: TranslateService,
     private readonly bridgeService: BridgeService,
-    private readonly web3PublicService: Web3PublicService
+    private readonly web3PublicService: Web3PublicService,
+    private readonly iframeService: IframeService
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -220,15 +222,20 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.needLoginLoading = true;
-    this.needLogin = true;
-    this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-      if (user !== undefined) {
-        this.needLoginLoading = false;
-        this.needLogin = !user?.address;
-      }
-      this.cdr.detectChanges();
-    });
+    if (this.iframeService.isIframe) {
+      this.needLoginLoading = false;
+      this.needLogin = true;
+    } else {
+      this.needLoginLoading = true;
+      this.needLogin = true;
+      this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
+        if (user !== undefined) {
+          this.needLoginLoading = false;
+          this.needLogin = !user?.address;
+        }
+        this.cdr.detectChanges();
+      });
+    }
 
     this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
