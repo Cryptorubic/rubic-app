@@ -147,8 +147,8 @@
 :host(.tokens__btn) {
   [tuiButton] {
     &[data-tui-host-size='s'] {
-      ::ng-deep .wrapper {
-        padding-right: 10px;
+      ::ng-deep .tokens__clear {
+        margin-right: -5px;
       }
     }
   }

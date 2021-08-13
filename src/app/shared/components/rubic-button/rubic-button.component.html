@@ -1,5 +1,6 @@
 <tui-loader [showLoader]="loading" [overlay]="true">
   <button
+    [pseudoHovered]="pseudoHovered"
     tuiButton
     [shape]="'rounded'"
     type="button"
@@ -9,7 +10,6 @@
     [disabled]="_disabled"
     [attr.bordered]="_border"
     (click)="buttonClick($event)"
-    tabindex="100"
   >
     <ng-content></ng-content>
   </button>

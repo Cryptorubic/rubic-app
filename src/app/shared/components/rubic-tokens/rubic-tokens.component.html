@@ -8,6 +8,8 @@
       [disabled]="disabled"
       (onClick)="openTokensSelect(idPrefix)"
       [appearance]="selectedToken ? 'primary' : 'secondary'"
+      [pseudoHovered]="buttonHovered"
+      (mouseleave)="buttonHovered = null"
     >
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner">
@@ -22,7 +24,12 @@
           <div class="tokens__symbol">
             {{ selectedToken.symbol }}
           </div>
-          <div class="tokens__clear" (click)="clearToken(); $event.stopPropagation()">
+          <div
+            class="tokens__clear"
+            (mouseenter)="buttonHovered = false"
+            (mouseleave)="buttonHovered = true"
+            (click)="clearToken(); $event.stopPropagation()"
+          >
             <div class="tokens__clear-icon"></div>
           </div>
         </div>

@@ -75,9 +75,15 @@
     padding: 5px;
 
     background-color: #{var(--rubic-base-14)};
+    border: 1px solid #{var(--rubic-base-14)};
     border-radius: 50%;
 
     transition: 0.1s ease-in-out;
+
+    &:hover {
+      background-color: var(--rubic-base-01);
+      border-color: var(--primary-color);
+    }
 
     &-icon {
       position: relative;
