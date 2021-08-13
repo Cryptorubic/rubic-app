@@ -44,7 +44,6 @@ const routes: Routes = [
   }
 ];
 
-// @TODO: scrollPositionRestoration: 'disabled' is temporary solution for fix scroll problem
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
