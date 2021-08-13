@@ -18,7 +18,7 @@ import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constant
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
-import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -37,6 +37,7 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';

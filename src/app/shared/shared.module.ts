@@ -34,6 +34,7 @@ import { RubicSelectWalletComponent } from 'src/app/core/header/components/heade
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
+import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -87,7 +88,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
-    LetDirective
+    LetDirective,
+    NoFrameDirective
   ],
   imports: [
     CommonModule,
@@ -144,7 +146,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
     SwapsHeaderComponent,
-    LetDirective
+    LetDirective,
+    NoFrameDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

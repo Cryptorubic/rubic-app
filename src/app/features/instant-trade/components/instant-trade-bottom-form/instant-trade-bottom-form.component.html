@@ -29,6 +29,7 @@
         *ngFor="let provider of orderedProviders; let i = index"
       >
         <app-provider-panel
+          *noFrame
           [providerControllerData]="provider"
           (selectProvider)="selectProvider(provider)"
           [providerIndex]="i"

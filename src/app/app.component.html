@@ -1,18 +1,12 @@
-<tui-root *ngLet="(isIframe$ | async) !== true as fullVersion">
+<tui-root>
 
   <ng-template [ngIf]="isBackendAvailable">
-    <div *ngIf="fullVersion" class="wrapper">
+    <div class="wrapper">
       <app-header></app-header>
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
-      <app-rubic-footer class="footer"></app-rubic-footer>
-    </div>
-    <div *ngIf="!fullVersion" class="wrapper">
-      <app-header></app-header>
-      <main class="main-content">
-        <router-outlet></router-outlet>
-      </main>
+      <app-rubic-footer *noFrame class="footer"></app-rubic-footer>
     </div>
   </ng-template>
 

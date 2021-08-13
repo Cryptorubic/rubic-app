@@ -36,8 +36,6 @@ export class HeaderComponent implements AfterViewInit {
 
   public $currentUser: Observable<UserInterface>;
 
-  public isIframe$: Observable<boolean>;
-
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
@@ -48,7 +46,6 @@ export class HeaderComponent implements AfterViewInit {
     private router: Router,
     private readonly errorService: ErrorsService
   ) {
-    this.isIframe$ = this.iframeService.isIframe$;
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;

@@ -3,8 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Observable } from 'rxjs';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -17,16 +15,13 @@ import { QueryParamsService } from './core/services/query-params/query-params.se
 export class AppComponent {
   public isBackendAvailable: boolean;
 
-  public isIframe$: Observable<boolean>;
-
   constructor(
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
     healthcheckService: HealthcheckService,
     queryParamsService: QueryParamsService,
     activatedRoute: ActivatedRoute,
-    errorService: ErrorsService,
-    iframeService: IframeService
+    errorService: ErrorsService
   ) {
     const queryParamsSubscription$ = activatedRoute.queryParams.subscribe(
       (queryParams: QueryParams) => {
@@ -40,8 +35,6 @@ export class AppComponent {
     setTimeout(() => {
       queryParamsSubscription$.unsubscribe();
     });
-
-    this.isIframe$ = iframeService.isIframe$;
 
     this.setupLanguage();
 

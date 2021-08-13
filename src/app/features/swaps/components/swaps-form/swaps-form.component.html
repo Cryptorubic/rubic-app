@@ -1,57 +1,60 @@
-<div class="swaps-form">
-  <header class="swaps-form__header">
-    <h1 class="swaps-form__title">
-      {{ (isInstantTrade ? 'instantTrades.title' : 'bridgePage.title') | translate }}
-    </h1>
-    <app-rubic-refresh-button
-      class="swaps-form__refresh"
-      *ngIf="isInstantTrade && allowTrade"
-      (onRefresh)="onRefreshTrade.next()"
-      [loadingStatus]="loadingStatus"
-      [autoUpdate]="autoRefresh"
-    ></app-rubic-refresh-button>
+<ng-container>
+  <div class="swaps-form">
+    <header *noFrame class="swaps-form__header">
+      <h1 class="swaps-form__title">
+        {{ (isInstantTrade ? 'instantTrades.title' : 'bridgePage.title') | translate }}
+      </h1>
+      <app-rubic-refresh-button
+        class="swaps-form__refresh"
+        *ngIf="isInstantTrade && allowTrade"
+        (onRefresh)="onRefreshTrade.next()"
+        [loadingStatus]="loadingStatus"
+        [autoUpdate]="autoRefresh"
+      ></app-rubic-refresh-button>
 
-    <div class="swaps-form__settings">
-      <app-settings-container></app-settings-container>
-    </div>
-  </header>
+      <div class="swaps-form__settings">
+        <app-settings-container></app-settings-container>
+      </div>
+    </header>
 
-  <main class="swaps-form__content">
-    <app-swaps-header
-      [fromBlockchain]="fromBlockchain"
-      [toBlockchain]="toBlockchain"
-      [swapType]="swapType"
-    ></app-swaps-header>
+    <main class="swaps-form__content">
+      <app-swaps-header
+        *noFrame
+        [fromBlockchain]="fromBlockchain"
+        [toBlockchain]="toBlockchain"
+        [swapType]="swapType"
+      ></app-swaps-header>
 
-    <app-token-amount-input
-      [token]="selectedToken.from"
-      [amount]="selectedFromAmount"
-      (amountChange)="onTokenInputAmountChange($event)"
-      [loading]="isLoading"
-      [tokens]="availableTokens['from']"
-      [formService]="swapFormService"
-    ></app-token-amount-input>
+      <app-token-amount-input
+        [token]="selectedToken.from"
+        [amount]="selectedFromAmount"
+        (amountChange)="onTokenInputAmountChange($event)"
+        [loading]="isLoading"
+        [tokens]="availableTokens['from']"
+        [formService]="swapFormService"
+      ></app-token-amount-input>
 
-    <div class="swaps-form__delimiter">
-      <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
-    </div>
+      <div class="swaps-form__delimiter">
+        <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
+      </div>
 
-    <app-instant-trade-bottom-form
-      *ngIf="isInstantTrade"
-      [onRefreshTrade]="onRefreshTrade"
-      (onRefreshStatusChange)="loadingStatus = $event"
-      [loading]="isLoading"
-      [tokens]="availableTokens['to']"
-      [formService]="swapFormService"
-    ></app-instant-trade-bottom-form>
+      <app-instant-trade-bottom-form
+        *ngIf="isInstantTrade"
+        [onRefreshTrade]="onRefreshTrade"
+        (onRefreshStatusChange)="loadingStatus = $event"
+        [loading]="isLoading"
+        [tokens]="availableTokens['to']"
+        [formService]="swapFormService"
+      ></app-instant-trade-bottom-form>
 
-    <app-bridge-bottom-form
-      *ngIf="!isInstantTrade"
-      [loading]="isLoading"
-      [tokens]="availableTokens['to']"
-      [formService]="swapFormService"
-    ></app-bridge-bottom-form>
-  </main>
-</div>
+      <app-bridge-bottom-form
+        *ngIf="!isInstantTrade"
+        [loading]="isLoading"
+        [tokens]="availableTokens['to']"
+        [formService]="swapFormService"
+      ></app-bridge-bottom-form>
+    </main>
+  </div>
 
-<app-rubic-volume *ngIf="(isIframe$ | async) !== true"></app-rubic-volume>
+  <app-rubic-volume *noFrame></app-rubic-volume>
+</ng-container>
