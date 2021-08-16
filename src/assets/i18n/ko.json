@@ -458,7 +458,8 @@
   },
   "volume": {
     "title": "누적 거래량",
-    "instantTrades": "즉시 거래",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "크로스-체인 스왑"
   },
   "notifications": {

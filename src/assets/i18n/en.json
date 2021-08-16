@@ -458,7 +458,8 @@
   },
   "volume": {
     "title": "Accumulated Transaction Volume",
-    "instantTrades": "Instant Trades",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "Cross-Chain Swaps"
   },
   "notifications": {

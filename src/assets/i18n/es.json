@@ -458,7 +458,8 @@
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
-    "instantTrades": "Intercambios instantáneos",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "Ntercambios entre plataformas"
   },
   "notifications": {

@@ -458,7 +458,8 @@
   },
   "volume": {
     "title": "累計交易量",
-    "instantTrades": "支持即时交易",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "跨鏈掉期"
   },
   "notifications": {

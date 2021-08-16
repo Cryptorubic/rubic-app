@@ -458,7 +458,8 @@
   },
   "volume": {
     "title": "Накопленный Объем Операций",
-    "instantTrades": "Мгновенные сделки",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "Кросс-чейн обмены"
   },
   "notifications": {
