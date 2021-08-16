@@ -464,6 +464,7 @@
   "notifications": {
     "tradeInProgress": "Сделка в процессе выполнения",
     "successfulTradeTitle": "Сделка проведена успешно",
+    "successfulTradeParagraph": "Check transaction in <a href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно"
   }

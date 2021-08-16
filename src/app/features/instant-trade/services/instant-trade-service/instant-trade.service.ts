@@ -26,6 +26,8 @@ import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 
 @Injectable({
   providedIn: 'root'
@@ -125,12 +127,9 @@ export class InstantTradeService {
 
       this.modalShowing.unsubscribe();
       this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
-      this.notificationsService.show(
-        this.translateService.instant('notifications.successfulTradeTitle'),
-        {
-          status: TuiNotification.Success
-        }
-      );
+      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+        status: TuiNotification.Success
+      });
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({

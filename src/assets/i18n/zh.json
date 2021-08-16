@@ -464,6 +464,7 @@
   "notifications": {
     "tradeInProgress": "進行中的交易",
     "successfulTradeTitle": "成功的交易",
+    "successfulTradeParagraph": "Check transaction in <a href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功"
   }

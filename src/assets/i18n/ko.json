@@ -464,6 +464,7 @@
   "notifications": {
     "tradeInProgress": "진행중인 거래",
     "successfulTradeTitle": "성공적인 거래",
+    "successfulTradeParagraph": "Check transaction in <a href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인"
   }

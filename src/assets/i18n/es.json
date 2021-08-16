@@ -464,6 +464,7 @@
   "notifications": {
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
+    "successfulTradeParagraph": "Check transaction in <a href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa"
   }

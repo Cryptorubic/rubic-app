@@ -51,6 +51,7 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
+import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +86,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     ShortenAmountPipe,
     // Directives.
     SafetyLinkDirective,
-    TokenAmountDirective
+    TokenAmountDirective,
+    SuccessTrxNotificationComponent
   ],
   imports: [
     CommonModule,
@@ -143,6 +145,7 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     AnalyticsLinkComponent,
     SwapsHeaderComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe]
+  providers: [ScannerLinkPipe, WithRoundPipe],
+  entryComponents: [SuccessTrxNotificationComponent]
 })
 export class SharedModule {}
