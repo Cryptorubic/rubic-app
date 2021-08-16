@@ -23,9 +23,9 @@
 
       <tui-badge
         class="notification-counter"
-        *ngIf="countNotifications"
+        *ngIf="countNotifications$ | async"
         size="s"
-        [value]="countNotifications"
+        [value]="countNotifications$ | async"
       ></tui-badge>
     </a>
 

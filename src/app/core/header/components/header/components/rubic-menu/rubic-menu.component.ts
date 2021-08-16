@@ -54,7 +54,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     @Inject(Injector) private injector: Injector
   ) {
     this.$currentUser = this.authService.getCurrentUser();
-    this.$countUnread = this.counterNotificationsService.unreadTradesObservable;
+    this.$countUnread = this.counterNotificationsService.unread$;
   }
 
   public ngAfterViewInit(): void {

@@ -18,7 +18,7 @@ interface Store {
 export class StoreService {
   private readonly $dataSubject: BehaviorSubject<Store>;
 
-  private readonly storageKey: string;
+  private readonly storageKey = 'rubicData';
 
   public get $data(): Observable<Store> {
     return this.$dataSubject.asObservable();
@@ -30,7 +30,6 @@ export class StoreService {
     private readonly cookieService: CookieService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.storageKey = 'rubicData';
     this.$dataSubject = new BehaviorSubject<Store>(null);
   }
 

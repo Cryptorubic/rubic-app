@@ -28,7 +28,7 @@ import { HeaderStore } from '../../services/header.store';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent implements AfterViewInit, OnInit {
+export class HeaderComponent implements AfterViewInit {
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
@@ -39,9 +39,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
 
   public $currentUser: Observable<UserInterface>;
 
-  public $trades: Observable<TableTrade[]>;
-
-  public countNotifications: number;
+  public countNotifications$: Observable<number>;
 
   constructor(
     @Inject(PLATFORM_ID) platformId,
@@ -68,13 +66,7 @@ export class HeaderComponent implements AfterViewInit, OnInit {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
-  }
-
-  public ngOnInit() {
-    this.counterNotificationsService.unreadTradesObservable.subscribe(count => {
-      this.countNotifications = count;
-      this.cdr.detectChanges();
-    });
+    this.countNotifications$ = this.counterNotificationsService.unread$;
   }
 
   public ngAfterViewInit(): void {
