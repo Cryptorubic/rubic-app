@@ -53,6 +53,7 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
+import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
-    NoFrameDirective
+    NoFrameDirective,
+    OnlyFrameDirective
   ],
   imports: [
     CommonModule,

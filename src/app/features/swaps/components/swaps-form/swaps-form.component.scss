@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 :host {
   width: 100%;
@@ -19,6 +18,13 @@
   background-color: var(--main-form-background);
   border-radius: 19px;
   backdrop-filter: blur(50px);
+
+  @include iframe-horizontal {
+
+    display: flex;
+    align-items: center;
+    padding: 20px;
+  }
 
   ~ *:not(:last-child) {
     display: block;
@@ -51,11 +57,25 @@
 
     background-color: var(--main-background);
 
+    @include iframe-horizontal {
+      display: flex;
+      align-items: center;
+
+      background-color: unset;
+    }
+
     > * {
       position: absolute;
       left: 50%;
 
       transform: translate(-50%, -50%);
+
+      @include iframe-horizontal {
+        position: static;
+        left: unset;
+
+        transform: unset;
+      }
     }
 
     &::before,
@@ -84,6 +104,8 @@
   &__content {
     @include iframe-horizontal {
       display: flex;
+      justify-content: space-between;
+      width: 100%;
     }
   }
 }

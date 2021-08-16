@@ -8,9 +8,11 @@
           [tokens]="tokens"
           [formService]="formService"
         ></app-rubic-tokens>
-        <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
-          {{ 'common.tradeVia' | translate }} {{ selectedProvider.tradeProviderInfo.label }}
-        </div>
+        <ng-container *noFrame>
+          <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
+            {{ 'common.tradeVia' | translate }} {{ selectedProvider.tradeProviderInfo.label }}
+          </div>
+        </ng-container>
       </div>
       <div *ngIf="selectedProvider" class="instant-trade-bottom-form__amount">
         <div class="instant-trade-bottom-form__token-amount">
@@ -23,19 +25,20 @@
         <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
       </div>
     </div>
-    <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">
-      <div
-        class="instant-trade-bottom-form__provider-item"
-        *ngFor="let provider of orderedProviders; let i = index"
-      >
-        <app-provider-panel
-          *noFrame
-          [providerControllerData]="provider"
-          (selectProvider)="selectProvider(provider)"
-          [providerIndex]="i"
-        ></app-provider-panel>
+    <ng-container *noFrame>
+      <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">
+        <div
+          class="instant-trade-bottom-form__provider-item"
+          *ngFor="let provider of orderedProviders; let i = index"
+        >
+          <app-provider-panel
+            [providerControllerData]="provider"
+            (selectProvider)="selectProvider(provider)"
+            [providerIndex]="i"
+          ></app-provider-panel>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </main>
   <footer class="instant-trade-bottom-form__footer"></footer>
 </div>

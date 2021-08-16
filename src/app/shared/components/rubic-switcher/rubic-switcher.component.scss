@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@import 'src/styles';
 
 .switcher {
   display: flex;
@@ -11,6 +11,12 @@
   border-radius: 67px;
 
   cursor: pointer;
+
+  @include iframe-horizontal {
+    height: 30px;
+
+    background-color: unset;
+  }
 
   img {
     margin: auto;

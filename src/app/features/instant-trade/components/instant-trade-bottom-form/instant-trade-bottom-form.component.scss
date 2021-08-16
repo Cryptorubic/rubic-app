@@ -14,6 +14,16 @@ $green: rgb(74, 169, 86);
   background-color: var(--main-background);
   border-radius: 0 0 14px 14px;
 
+  @include iframe-horizontal {
+    position: relative;
+
+    width: 283px;
+    height: 50px;
+    padding: 0 7px 0 16px;
+
+    border-radius: 10px;
+  }
+
   &__provider-item:first-child {
     width: 100%;
   }
@@ -43,6 +53,10 @@ $green: rgb(74, 169, 86);
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+
+    @include iframe-horizontal {
+      order: 2;
+    }
   }
 
   &__provider-badge {
@@ -64,11 +78,25 @@ $green: rgb(74, 169, 86);
     margin-top: 30px;
   }
 
+  &__body {
+    @include iframe-horizontal {
+      height: 100%;
+    }
+  }
+
   &__body-top {
     display: flex;
     justify-content: space-between;
 
     min-height: 60px;
+
+    @include iframe-horizontal {
+      align-items: center;
+
+      height: 100%;
+
+      min-height: unset;
+    }
 
     @include b($mobile-sm) {
       flex-direction: column;
@@ -78,6 +106,10 @@ $green: rgb(74, 169, 86);
 
   &__amount {
     text-align: right;
+
+    @include iframe-horizontal {
+      order: 1;
+    }
   }
 
   &__token-amount {
@@ -94,6 +126,13 @@ $green: rgb(74, 169, 86);
 
     scrollbar-width: none;
 
+    @include iframe-horizontal {
+      margin-bottom: 0;
+
+      font-size: 20px;
+
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -105,6 +144,19 @@ $green: rgb(74, 169, 86);
     line-height: 17px;
     letter-spacing: 0.1em;
     text-align: right;
+
+    @include iframe-horizontal {
+      position: absolute;
+      bottom: -33px;
+      left: 0;
+
+      padding: 5px 10px;
+
+      font-size: 12px;
+
+      background-color: var(--main-background);
+      border-radius: 10px;
+    }
   }
 
   &__swap {
@@ -112,6 +164,11 @@ $green: rgb(74, 169, 86);
       display: block;
 
       margin-top: 16px;
+
+      @include iframe-horizontal {
+        margin-top: 0;
+        margin-left: 12px;
+      }
     }
   }
 }
