@@ -16,6 +16,11 @@ const routes: Routes = [
       import('./features/crypto-tap/crypto-tap.module').then(m => m.CryptoTapModule)
   },
   {
+    path: 'buy-crypto',
+    loadChildren: () =>
+      import('./features/buy-crypto/buy-crypto.module').then(m => m.BuyCryptoModule)
+  },
+  {
     path: 'about',
     loadChildren: () =>
       import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule)
@@ -39,13 +44,12 @@ const routes: Routes = [
   }
 ];
 
-// @TODO: scrollPositionRestoration: 'disabled' is temporary solution for fix scroll problem
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
       anchorScrolling: 'enabled',
       onSameUrlNavigation: 'reload',
-      scrollPositionRestoration: 'disabled',
+      scrollPositionRestoration: 'enabled',
       relativeLinkResolution: 'legacy'
     })
   ],

@@ -1,53 +1,36 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
   constructor(
-    private readonly notificationsService: TuiNotificationsService,
+    private readonly notificationsService: NotificationsService,
     @Inject(Injector) private injector: Injector,
     private translateService: TranslateService
   ) {}
 
-  public throw$(error: RubicError): never {
-    // tslint:disable-next-line:no-console
-    console.debug(error);
+  /**
+   * @deprecated
+   * @param error
+   */
+  public throw(error: RubicError<ERROR_TYPE>): never {
+    this.catch(error);
 
-    const options = {
-      label: this.translateService.instant('common.error'),
-      status: TuiNotification.Error,
-      data: {},
-      autoClose: 7000
-    };
-
-    if (error?.type === 'component') {
-      const errorComponent = new PolymorpheusComponent(
-        error.component || UndefinedErrorComponent,
-        this.injector
-      );
-      options.data = error?.data;
-      this.notificationsService.show(errorComponent, options).subscribe();
-      throw error;
-    }
-
-    const text = error?.translateKey
-      ? this.translateService.instant(error.translateKey)
-      : error.message;
-    this.notificationsService.show(text, options).subscribe();
     throw error;
   }
 
-  public catch$(error: RubicError): void {
-    // tslint:disable-next-line:no-console
+  public catch(error: RubicError<ERROR_TYPE>): void {
     console.debug(error);
 
-    if (error.displayError === false) {
+    if (error.displayError === false || error.message.includes('Attempt to use a destroyed view')) {
       return;
     }
 
@@ -58,7 +41,7 @@ export class ErrorsService {
       autoClose: 7000
     };
 
-    if (error?.type === 'component') {
+    if (error?.type === ERROR_TYPE.COMPONENT) {
       const errorComponent = new PolymorpheusComponent(
         error.component || UndefinedErrorComponent,
         this.injector
@@ -66,13 +49,13 @@ export class ErrorsService {
       if (error?.data) {
         options.data = error.data;
       }
-      this.notificationsService.show(errorComponent, options).subscribe();
+      this.notificationsService.show(errorComponent, options);
       return;
     }
 
     const text = error?.translateKey
-      ? this.translateService.instant(error.translateKey)
+      ? this.translateService.instant(error.translateKey, error?.data)
       : error.message;
-    this.notificationsService.show(text, options).subscribe();
+    this.notificationsService.show(text, options);
   }
 }

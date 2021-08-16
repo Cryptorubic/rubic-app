@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { DynamicModule } from 'ng-dynamic-component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -32,7 +31,8 @@ import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-block
 import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
-import { RubicRefreshButtonComponent } from 'src/app/features/swaps/components/rubic-refresh-button/rubic-refresh-button.component';
+import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
+import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -48,6 +48,9 @@ import { RubicButtonComponent } from './components/rubic-button/rubic-button.com
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
+import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
+import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
+import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +73,10 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
     RubicTokensComponent,
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
+    SwapsHeaderComponent,
+    UserBalanceContainerComponent,
+    UsdPriceContainerComponent,
+    AnalyticsLinkComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -83,7 +90,6 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
   imports: [
     CommonModule,
     TranslateModule,
-    DynamicModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
@@ -133,7 +139,9 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
     SafetyLinkDirective,
     RubicTokensComponent,
     RubicBlockchainsComponent,
-    RubicRefreshButtonComponent
+    RubicRefreshButtonComponent,
+    AnalyticsLinkComponent,
+    SwapsHeaderComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

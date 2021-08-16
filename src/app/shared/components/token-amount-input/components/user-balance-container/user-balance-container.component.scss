@@ -1,0 +1,28 @@
+@import 'src/scss/mixins';
+@import 'src/scss/vars';
+
+.user-balance-container {
+  &__balance {
+    margin-right: 10px;
+
+    color: var(--form-dim-text-color);
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  &__max-button {
+    padding: 0;
+
+    color: var(--form-rubic-text-color);
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+
+    background-color: transparent;
+
+    @include b($mobile-sm) {
+      font-size: 18px;
+    }
+  }
+}

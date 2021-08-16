@@ -2,27 +2,13 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import BigNumber from 'bignumber.js';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
-
-export interface InstantTrade<T> {
-  from: {
-    token: T;
-    amount: BigNumber;
-  };
-  to: {
-    token: T;
-    amount: BigNumber;
-  };
-  estimatedGas: BigNumber;
-  gasFeeInUsd: BigNumber;
-  gasFeeInEth: BigNumber;
-  options?: unknown;
-}
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 
 export interface ProviderControllerData {
-  trade: InstantTrade<TokenAmount>;
+  trade: InstantTrade;
   tradeState: INSTANT_TRADES_STATUS;
   tradeProviderInfo: {
     label: string;
@@ -32,7 +18,7 @@ export interface ProviderControllerData {
   isSelected: boolean;
   isCollapsed: boolean;
   needApprove: boolean;
-  error?: RubicError;
+  error?: RubicError<ERROR_TYPE>;
 }
 
 interface ProviderData {
@@ -47,7 +33,7 @@ interface ProviderData {
   /**
    * Amount of predicted gas limit in absolute gas units.
    */
-  estimatedGas: BigNumber;
+  gasLimit: string;
   /**
    * Amount of predicted gas fee in usd$.
    */
@@ -79,6 +65,8 @@ interface ProviderData {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProviderPanelComponent {
+  @Input() public providerIndex: number;
+
   /**
    * Setup provider data.
    * @param data provider controller data.
@@ -92,22 +80,13 @@ export class ProviderPanelComponent {
   /**
    * Provider selection event.
    */
-  @Output() public collapseProvider: EventEmitter<boolean>;
-
-  /**
-   * Provider selection event.
-   */
   @Output() public selectProvider: EventEmitter<void>;
 
   public get gasFeeDisplay(): boolean {
-    return (
-      this.tradeData.gasFeeInEth &&
-      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
-      this.tradeData.to.token.blockchain !== BLOCKCHAIN_NAME.POLYGON
-    );
+    return !!this.tradeData.gasFeeInEth && !!this.tradeData.gasFeeInUsd;
   }
 
-  public tradeData: InstantTrade<TokenAmount>;
+  public tradeData: InstantTrade;
 
   /**
    * Provider data.
@@ -131,7 +110,6 @@ export class ProviderPanelComponent {
 
   constructor() {
     this.loading = false;
-    this.collapseProvider = new EventEmitter<boolean>();
     this.selectProvider = new EventEmitter<void>();
   }
 
@@ -140,7 +118,6 @@ export class ProviderPanelComponent {
    */
   public activateProvider(): void {
     if (!this.loading && !this.hasError) {
-      this.collapseProvider.emit(!this.providerData.isCollapsed);
       this.selectProvider.emit();
     }
   }
@@ -154,7 +131,7 @@ export class ProviderPanelComponent {
     this.providerData = {
       name: data.tradeProviderInfo.label,
       amount: data.trade?.to?.amount,
-      estimatedGas: data.trade?.estimatedGas,
+      gasLimit: data.trade?.gasLimit,
       gasFeeInEth: data.trade?.gasFeeInEth,
       gasFeeInUsd: data.trade?.gasFeeInUsd,
       isBestRate: data.isBestRate,
@@ -164,7 +141,7 @@ export class ProviderPanelComponent {
     };
     if (this.hasError) {
       this.providerData.error =
-        data?.error?.type === 'text'
+        data?.error?.type === ERROR_TYPE.TEXT
           ? data.error.translateKey || data.error.message
           : 'errors.rubicError';
     }
@@ -198,7 +175,9 @@ export class ProviderPanelComponent {
     }
   }
 
-  getUsdPrice(): string {
-    return this.tradeData.to.amount.multipliedBy(this.tradeData.to.token.price).toFixed(2);
+  public getUsdPrice(): string {
+    return this.tradeData.to.amount
+      .multipliedBy(this.tradeData.to.token.price)
+      .toFormat(2, BIG_NUMBER_FORMAT);
   }
 }

@@ -38,6 +38,12 @@ tui-dialog {
   }
 }
 
+tui-dialog-host {
+  > div {
+    backdrop-filter: blur(12px);
+  }
+}
+
 tui-notification {
   .close {
     top: 10px !important;

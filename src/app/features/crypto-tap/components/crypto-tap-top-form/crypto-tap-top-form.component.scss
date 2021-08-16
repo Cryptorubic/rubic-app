@@ -1,74 +1,56 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
-$background-white: #fcfcfc;
-
 .crypto-tap-output {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   min-height: 88px;
+  padding: 20px;
 
   font-family: $sf-pro-font;
 
-  background: $background-white;
-  border-radius: 0 0 14px 14px;
-  box-shadow: 10px 10px 30px rgba(58, 95, 69, 0.1), inset 4px 4px 20px rgba(255, 255, 255, 0.5);
+  background: var(--main-background);
+
+  &__left {
+    margin-right: 20px;
+  }
 
   &__wrapper {
     display: flex;
     flex-direction: column;
 
     width: 100%;
-    padding: 0 20px;
   }
 
   &__amount {
     width: 100%;
 
-    color: #283125;
-    font-weight: 100;
+    color: var(--form-bright-text-color);
+    font-weight: 400;
     font-size: 30px;
     line-height: 36px;
     letter-spacing: 0.1em;
+    text-align: right;
 
-    background: $background-white;
-  }
+    @include b($mobile-sm) {
+      text-align: left;
+    }
 
-  &__right-side {
-    align-self: flex-start;
-    width: 44%;
-    max-width: 180px;
+    &_placeholder {
+      color: rgb(117, 117, 117);
+    }
   }
 }
 
 .user-balance-container {
-  &__balance {
-    margin-right: 10px;
+  margin-top: 10px;
 
-    color: rgba(144, 144, 144, 0.6);
+  &__balance {
+    color: var(--form-dim-text-color);
     font-size: 14px;
     line-height: 17px;
-  }
-}
-
-.right-side {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  height: 100%;
-  padding: 15px 20px;
-
-  white-space: nowrap;
-
-  &__error-info {
-    color: #dfcb5f;
-    font-size: 18px;
-    font-family: $roboto-font;
-    line-height: 21px;
-    text-align: right;
   }
 }
 
@@ -77,7 +59,7 @@ $background-white: #fcfcfc;
   grid-gap: 8px;
   justify-content: flex-end;
 
-  color: rgba(144, 144, 144, 0.6);
+  color: var(--form-dim-text-color);
   font-size: 14px;
   line-height: 17px;
 
@@ -95,12 +77,11 @@ $background-white: #fcfcfc;
   }
 }
 
-@include b($mobile-md) {
+@include b($mobile-sm) {
   .crypto-tap-output {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: 7px 0 25px;
 
     &__wrapper {
       margin-bottom: 3px;
@@ -110,9 +91,5 @@ $background-white: #fcfcfc;
   .usd-price-container {
     align-items: flex-start;
     justify-content: flex-start;
-  }
-
-  .right-side {
-    padding: 0 20px;
   }
 }

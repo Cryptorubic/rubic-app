@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
@@ -27,6 +27,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -34,7 +36,9 @@ enum ERROR_TYPE {
   WRONG_BLOCKCHAIN = 'Wrong user network',
   NOT_SUPPORTED_BRIDGE = 'Not supported bridge',
   TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
-  NOT_SELECTED_PROVIDER = 'Provider is not selected'
+  LESS_THAN_MINIMUM = 'Entered amount less than minimum',
+  MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
+  NO_AMOUNT = 'From amount was not entered'
 }
 
 @Component({
@@ -52,8 +56,31 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
+    this.checkNoAmountError();
     this.checkInsufficientFundsError();
   }
+
+  @Input() set minAmount(value: false | number) {
+    if (value) {
+      this.minAmountValue = value;
+      this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
+    } else {
+      this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
+    }
+  }
+
+  private minAmountValue: number;
+
+  @Input() set maxAmount(value: false | number) {
+    if (value) {
+      this.maxAmountValue = value;
+      this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
+    } else {
+      this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
+    }
+  }
+
+  private maxAmountValue: number;
 
   @Input() set isBridgeNotSupported(value: boolean) {
     this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value || false;
@@ -61,10 +88,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() set isTronAddressNotSet(value: boolean) {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
-  }
-
-  @Input() set providerError(value: boolean) {
-    this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER] = value;
   }
 
   @Output() approveClick = new EventEmitter<void>();
@@ -87,9 +110,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   private isTestingMode: boolean;
 
+  private fromBlockchain: BLOCKCHAIN_NAME;
+
   private fromToken: TokenAmount;
 
   private _fromAmount: BigNumber;
+
+  private authServiceSubscription$: Subscription;
 
   private useTestingModeSubscription$: Subscription;
 
@@ -100,6 +127,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
   }
+
+  public tokensFilled: boolean;
 
   public get allowChangeNetwork(): boolean {
     const unsupportedItBlockchains = [BLOCKCHAIN_NAME.XDAI, BLOCKCHAIN_NAME.TRON];
@@ -123,25 +152,50 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     });
   }
 
-  // eslint-disable-next-line consistent-return
-  get errorText(): string {
-    if (this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]) {
-      return this.translateService.instant('errors.chooseSupportedBridge');
+  get errorText(): Observable<string> {
+    let translateParams: { key: string; interpolateParams?: unknown };
+    const err = this.errorType;
+
+    switch (true) {
+      case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
+        translateParams = { key: 'errors.chooseSupportedBridge' };
+        break;
+      case err[ERROR_TYPE.NO_AMOUNT]:
+        translateParams = { key: 'errors.noEnteredAmount' };
+        break;
+      case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
+        translateParams = {
+          key: 'errors.minimumAmount',
+          interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.symbol }
+        };
+        break;
+      case err[ERROR_TYPE.MORE_THAN_MAXIMUM]:
+        translateParams = {
+          key: 'errors.maximumAmount',
+          interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.symbol }
+        };
+        break;
+      case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
+        translateParams = { key: 'errors.InsufficientBalance' };
+        break;
+      case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
+        translateParams = { key: 'errors.setTronAddress' };
+        break;
+      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]:
+        translateParams = {
+          key: 'errors.chooseNetworkWallet',
+          interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
+        };
+        break;
+      default:
+        translateParams = {
+          key: 'Unknown Error',
+          interpolateParams: {}
+        };
+        break;
     }
-    if (this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS]) {
-      return this.translateService.instant('errors.InsufficientBalance');
-    }
-    if (this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS]) {
-      return this.translateService.instant('errors.setTronAddress');
-    }
-    if (this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]) {
-      return this.translateService.instant('errors.chooseNetworkWallet', {
-        blockchain: this.fromToken.blockchain
-      });
-    }
-    if (this.errorType[ERROR_TYPE.NOT_SELECTED_PROVIDER]) {
-      return this.translateService.instant('errors.noSelectedProvider');
-    }
+
+    return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
   }
 
   constructor(
@@ -153,7 +207,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     private readonly dialogService: TuiDialogService,
     @Inject(INJECTOR) private readonly injector: Injector,
     private translateService: TranslateService,
-    private readonly bridgeService: BridgeService
+    private readonly bridgeService: BridgeService,
+    private readonly web3PublicService: Web3PublicService
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -167,16 +222,20 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.needLoginLoading = true;
     this.needLogin = true;
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       if (user !== undefined) {
         this.needLoginLoading = false;
         this.needLogin = !user?.address;
       }
+      this.cdr.detectChanges();
     });
 
     this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
       isTestingMode => {
         this.isTestingMode = isTestingMode;
+        if (isTestingMode) {
+          this.checkErrors();
+        }
       }
     );
 
@@ -193,6 +252,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.authServiceSubscription$.unsubscribe();
     this.useTestingModeSubscription$?.unsubscribe();
     this.formServiceSubscription$?.unsubscribe();
     this.providerConnectorServiceSubscription$?.unsubscribe();
@@ -202,38 +262,47 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.dataLoading = true;
     this.cdr.detectChanges();
 
+    this.fromBlockchain = form.fromBlockchain;
+    this.tokensFilled = Boolean(form.fromToken && form.toToken);
     this.fromToken = form.fromToken;
-    this.checkErrors();
-
-    this.dataLoading = false;
-    this.cdr.detectChanges();
+    this.checkErrors().then(() => {
+      this.dataLoading = false;
+      this.cdr.detectChanges();
+    });
   }
 
-  private checkErrors(): void {
-    this.checkInsufficientFundsError();
+  private async checkErrors(): Promise<void> {
+    await this.checkInsufficientFundsError();
     this.checkWrongBlockchainError();
+    this.checkNoAmountError();
   }
 
-  private checkInsufficientFundsError(): void {
-    if (!this._fromAmount || !this.fromToken) {
+  private async checkInsufficientFundsError(): Promise<void> {
+    if (!this._fromAmount || !this.fromToken || !this.authService.user?.address) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
       return;
     }
 
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = this.fromToken.amount.lt(this._fromAmount);
+    let balance = this.fromToken.amount;
+    if (!this.fromToken.amount.isFinite()) {
+      balance = (
+        await (<Web3Public>(
+          this.web3PublicService[this.fromToken.blockchain]
+        )).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
+      ).div(10 ** this.fromToken.decimals);
+    }
+
+    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
     this.cdr.detectChanges();
   }
 
   private checkWrongBlockchainError(): void {
     if (this.providerConnectorService.provider) {
-      const fromBlockchain = this.fromToken?.blockchain;
       const userBlockchain = this.providerConnectorService.network?.name;
-
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        fromBlockchain &&
-        fromBlockchain !== userBlockchain &&
-        (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
+        this.fromBlockchain !== userBlockchain &&
+        (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
     }
@@ -249,9 +318,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     const currentStatus = this.status;
     this.status = TRADE_STATUS.LOADING;
     try {
-      await this.providerConnectorService.switchChain(this.fromToken?.blockchain);
+      await this.providerConnectorService.switchChain(this.fromBlockchain);
     } finally {
       this.status = currentStatus;
     }
+  }
+
+  private checkNoAmountError(): void {
+    this.errorType[ERROR_TYPE.NO_AMOUNT] = !this._fromAmount || this._fromAmount.eq(0);
   }
 }

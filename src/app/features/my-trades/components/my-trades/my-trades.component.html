@@ -2,7 +2,7 @@
   <div class="my-trades__header header">
     <div class="header__title">{{ 'myTrades.title' | translate }}</div>
     <app-rubic-refresh-button
-      (refresh)="refreshTable()"
+      (onRefresh)="refreshTable()"
       [loadingStatus]="loadingStatus"
     ></app-rubic-refresh-button>
   </div>

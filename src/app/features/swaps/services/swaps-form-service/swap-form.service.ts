@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import BigNumber from 'bignumber.js';
-import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { Observable } from 'rxjs';
 import { SwapForm, SwapFormInput, SwapFormOutput } from '../../models/SwapForm';
 
 @Injectable({
@@ -14,25 +13,38 @@ import { SwapForm, SwapFormInput, SwapFormOutput } from '../../models/SwapForm';
 export class SwapFormService implements FormService {
   public commonTrade: FormGroup<SwapForm>;
 
-  private readonly instantTradeProviders: BehaviorSubject<ProviderControllerData[]>;
-
-  public setItProviders(providers) {
-    this.instantTradeProviders.next(providers);
+  public get input(): FormGroup<SwapFormInput> {
+    return this.commonTrade.controls.input;
   }
 
-  public get itProviders(): Observable<ProviderControllerData[]> {
-    return this.instantTradeProviders.asObservable();
+  public get inputValue(): SwapFormInput {
+    return this.input.value;
+  }
+
+  public get inputValueChanges(): Observable<SwapFormInput> {
+    return this.input.valueChanges;
+  }
+
+  public get output(): FormGroup<SwapFormOutput> {
+    return this.commonTrade.controls.output;
+  }
+
+  public get outputValue(): SwapFormOutput {
+    return this.output.value;
+  }
+
+  public get outputValueChanges(): Observable<SwapFormOutput> {
+    return this.output.valueChanges;
   }
 
   constructor() {
-    this.instantTradeProviders = new BehaviorSubject([]);
     this.commonTrade = new FormGroup<SwapForm>({
       input: new FormGroup<SwapFormInput>({
         fromBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
         toBlockchain: new FormControl<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM),
-        fromToken: new FormControl<TokenAmount>(),
-        toToken: new FormControl<TokenAmount>(),
-        fromAmount: new FormControl<BigNumber>()
+        fromToken: new FormControl<TokenAmount>(null),
+        toToken: new FormControl<TokenAmount>(null),
+        fromAmount: new FormControl<BigNumber>(null)
       }),
       output: new FormGroup<SwapFormOutput>({
         toAmount: new FormControl<BigNumber>()

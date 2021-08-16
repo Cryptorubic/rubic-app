@@ -8,8 +8,9 @@
   height: 475px;
   margin: 0 auto;
   padding: 10px;
+  border-radius: 14px;
 
-  background-color: #fafafa;
+  background-color: var(--main-form-background);
   cursor: pointer;
 
   transition: transform 0.1s linear;
@@ -29,6 +30,8 @@
     margin-bottom: 25px;
     object-fit: cover;
     object-position: 50% 2%;
+
+    border-radius: 14px;
   }
 
   &__description {

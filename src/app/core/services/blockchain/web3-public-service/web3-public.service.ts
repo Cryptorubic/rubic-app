@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ConnectionLink from '../types/ConnectionLink';
 import { Web3Public } from './Web3Public';
@@ -13,14 +12,6 @@ import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.s
 })
 export class Web3PublicService {
   private readonly connectionLinks: ConnectionLink[];
-
-  static amountToWei(amount: BigNumber | string, decimals: number): string {
-    return new BigNumber(amount || '0').times(new BigNumber(10).pow(decimals)).toFixed(0);
-  }
-
-  static weiToAmount(amountInWei: BigNumber | string | number, decimals: number): BigNumber {
-    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
-  }
 
   constructor(publicProvider: PublicProviderService, useTestingModeService: UseTestingModeService) {
     this.connectionLinks = publicProvider.connectionLinks;

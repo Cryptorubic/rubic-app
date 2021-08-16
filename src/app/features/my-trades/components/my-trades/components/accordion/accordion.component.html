@@ -1,6 +1,6 @@
 <div class="sort-by-dropdown" *ngIf="visibleData?.length">
   <tui-hosted-dropdown tuiDropdownAlign="left" [content]="dropdown" [(open)]="isDropdownOpened">
-    <button tuiButton type="button" appearance="flat" [iconRight]="icon">
+    <button class="sort-by-dropdown" tuiButton type="button" appearance="flat" [iconRight]="icon">
       <span class="title" *ngIf="selectedColumn.value !== 'FromTo'">{{
         selectedColumn.translateKey | translate
       }}</span>

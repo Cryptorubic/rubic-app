@@ -4,7 +4,6 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { debounceTime } from 'rxjs/operators';
-import BigNumber from 'bignumber.js';
 import { SwapProvider } from '../swap-provider';
 import { BridgesSwapProviderService } from '../../../bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { InstantTradesSwapProviderService } from '../../../instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
@@ -66,32 +65,5 @@ export class SwapsService {
         this._swapProvider = this.bridgesSwapProvider;
       }
     });
-  }
-
-  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    const { fromToken, toToken, fromBlockchain, toBlockchain } =
-      this.swapFormService.commonTrade.controls.input.value;
-    if (!fromToken || !toToken || fromBlockchain === toBlockchain) {
-      return null;
-    }
-
-    return this._bridgeTokensPairs
-      .getValue()
-      .find(
-        bridgeTokensPair =>
-          bridgeTokensPair.fromBlockchain === fromBlockchain &&
-          bridgeTokensPair.toBlockchain === toBlockchain
-      )
-      ?.bridgeTokens.find(
-        bridgeToken =>
-          bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
-          fromToken.address.toLowerCase()
-      )?.blockchainToken[fromBlockchain][amountType];
-  }
-
-  public checkMinMax(amount: BigNumber): boolean {
-    const minAmount = this.getMinMaxAmounts('minAmount');
-    const maxAmount = this.getMinMaxAmounts('maxAmount');
-    return amount.gte(minAmount) && amount.lte(maxAmount);
   }
 }

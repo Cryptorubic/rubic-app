@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -15,6 +15,10 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { FormGroup } from '@ngneat/reactive-forms';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, mapTo } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tokens-select',
@@ -25,23 +29,42 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 export class TokensSelectComponent implements OnInit {
   public tokens: Observable<AvailableTokenAmount[]>;
 
-  public enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
-
   public customToken: AvailableTokenAmount;
 
   public tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
 
+  public allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+
+  public loading = false;
+
+  public idPrefix: string;
+
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
   private _query = '';
+
+  private readonly formType: 'from' | 'to';
+
+  private readonly form: FormGroup<ISwapFormInput>;
 
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
 
   set blockchain(value: BLOCKCHAIN_NAME) {
-    this._blockchain = value;
-    this.updateTokensList();
+    if (value) {
+      this._blockchain = value;
+
+      const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
+      if (!this.form.value[tokenType]) {
+        const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+        this.form.patchValue({
+          [blockchainType]: this._blockchain
+        });
+      }
+
+      this.updateTokensList();
+    }
   }
 
   get query(): string {
@@ -59,16 +82,24 @@ export class TokensSelectComponent implements OnInit {
       AvailableTokenAmount,
       {
         tokens: Observable<AvailableTokenAmount[]>;
-        enabledCustomTokenBlockchain: BLOCKCHAIN_NAME;
+        formType: 'from' | 'to';
         currentBlockchain: BLOCKCHAIN_NAME;
+        form: FormGroup<ISwapFormInput>;
+        allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+        idPrefix: string;
       }
     >,
-    private cdr: ChangeDetectorRef,
-    private web3PublicService: Web3PublicService,
-    private authService: AuthService
+    private readonly cdr: ChangeDetectorRef,
+    private readonly web3PublicService: Web3PublicService,
+    private readonly authService: AuthService,
+    private readonly httpClient: HttpClient
   ) {
     this.tokens = context.data.tokens;
-    this.enabledCustomTokenBlockchain = context.data.enabledCustomTokenBlockchain;
+    this.formType = context.data.formType;
+    this.form = context.data.form;
+    this.allowedBlockchains = context.data.allowedBlockchains;
+    this.idPrefix = context.data.idPrefix;
+
     this.blockchain = context.data.currentBlockchain;
   }
 
@@ -86,13 +117,17 @@ export class TokensSelectComponent implements OnInit {
 
   private updateTokensList(): void {
     this.customToken = null;
-    this.tokens.subscribe(tokens => {
+    this.tokens.subscribe(async tokens => {
       const currentBlockchainTokens = tokens.filter(token => token.blockchain === this.blockchain);
       const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
       this.tokensToShow$.next(sortedAndFilteredTokens);
 
       if (!sortedAndFilteredTokens.length) {
-        this.tryParseQueryAsCustomToken();
+        this.loading = true;
+        this.cdr.detectChanges();
+        await this.tryParseQueryAsCustomToken();
+        this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -137,7 +172,9 @@ export class TokensSelectComponent implements OnInit {
         return;
       }
 
-      const blockchainToken: BlockchainToken = await web3Public.getTokenInfo(this.query);
+      const blockchainToken: BlockchainToken = await web3Public
+        .getTokenInfo(this.query)
+        .catch(() => null);
 
       if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals != null) {
         const amount = this.authService.user?.address
@@ -146,20 +183,46 @@ export class TokensSelectComponent implements OnInit {
             )
           : new BigNumber(0);
 
+        const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
+        const oppositeToken = this.form.value[oppositeTokenType];
+
+        const image = await this.fetchTokenImage(blockchainToken);
+
         this.customToken = {
           ...blockchainToken,
           rank: 0,
-          image: 'assets/images/icons/coins/default-token-ico.webp',
+          image,
           amount,
           price: 0,
           usedInIframe: true,
-          available:
-            !this.enabledCustomTokenBlockchain ||
-            this.blockchain === this.enabledCustomTokenBlockchain
+          available: !oppositeToken || this.blockchain === oppositeToken.blockchain
         };
 
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       }
     }
+  }
+
+  private fetchTokenImage(token: BlockchainToken): Promise<string> {
+    const blockchains = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
+      [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
+    };
+    const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
+      blockchains[token.blockchain]
+    }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
+
+    return this.httpClient
+      .get(image)
+      .pipe(
+        mapTo(image),
+        catchError((err: HttpErrorResponse) => {
+          return err.status === 200
+            ? of(image)
+            : of('assets/images/icons/coins/default-token-ico.webp');
+        })
+      )
+      .toPromise();
   }
 }

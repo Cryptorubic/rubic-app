@@ -4,12 +4,21 @@
   </header>
   <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
   <div class="tokens-select__content">
-    <app-blockchains-aside [(blockchain)]="blockchain"></app-blockchains-aside>
+    <app-blockchains-aside
+      [idPrefix]="idPrefix"
+      [(blockchain)]="blockchain"
+      [allowedBlockchains]="allowedBlockchains"
+    ></app-blockchains-aside>
     <app-tokens-list
-      *ngIf="!customToken"
+      *ngIf="!customToken && !loading"
       [tokens]="tokensToShow$ | async"
       (tokenSelect)="onTokenSelect($event)"
     ></app-tokens-list>
-    <app-custom-token  *ngIf="customToken" (tokenSelected)="onTokenSelect($event)" [token]="customToken"></app-custom-token>
+    <app-custom-token
+      *ngIf="customToken && !loading"
+      (tokenSelected)="onTokenSelect($event)"
+      [token]="customToken"
+    ></app-custom-token>
+    <tui-loader [showLoader]="loading" size="xl"></tui-loader>
   </div>
 </section>

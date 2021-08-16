@@ -3,18 +3,12 @@
 
 /* Global scss */
 @import 'scss/vars';
-@import 'scss/grid';
 @import 'scss/typography';
 @import 'scss/mixins';
 
 /* Elements */
-@import 'scss/elements/dialog';
-@import 'scss/elements/preloader';
-@import 'scss/elements/contracts';
-@import 'scss/elements/buttons';
 @import 'scss/elements/icons';
 @import 'scss/elements/dropdown-labels';
-@import 'scss/elements/form';
 
 /* Global */
 @import 'scss/livechat';
@@ -36,13 +30,16 @@
 
 html {
   height: auto !important;
-  min-height: 100%;
+  overflow-x: hidden;
 
   body {
+    position: relative;
+
     min-width: 320px;
     height: auto;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 
     background: linear-gradient(180deg, rgba(239, 243, 241, 1) 0%, rgba(120, 193, 135, 1) 100%);
 
@@ -70,11 +67,12 @@ input[type=number] {
 
 button {
   cursor: pointer;
+  border: none;
 }
 
 main.main-content {
+  width: 100%;
   max-width: 1440px;
-  margin: 0 auto;
   padding: 0 20px 60px;
   display: flex;
   justify-content: center;
@@ -101,38 +99,22 @@ main.main-content {
   }
 }
 
-a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-  color: #4aa956;
+a {
+  color: var(--main-green);
   text-decoration: none;
 
   &:hover,
   &:focus {
-    color: #4aa956;
+    color: var(--main-green);
     text-decoration: underline;
   }
 }
 
 .walletconnect-modal__base {
-  a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
+  a,
+  a:focus,
+  a:hover {
     color: inherit;
-
-    &:hover,
-    &:focus {
-      color: inherit;
-    }
-  }
-}
-
-.mat-tooltip {
-  white-space: pre-line;
-  text-align: center;
-}
-
-.bar {
-  bottom: 10px !important;
-
-  &_vertical {
-    top: 10px !important;
   }
 }
 
@@ -142,6 +124,51 @@ tui-dropdown-box {
 
   border: none !important;
   border-radius: 18px !important;
+}
+
+.wave {
+  position: absolute;
+  top: 54px;
+  right: 54px;
+  @include b(1240) {
+    top: 45px;
+    right: 109px;
+  }
+  z-index: -100;
+
+  display: block;
+  width: 2px;
+  height: 2px;
+
+  border-radius: 100%;
+  box-shadow: 0 0 0 0 #212121;
+
+  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::after {
+    position: absolute;
+    content: '';
+    width: 2px;
+    height: 2px;
+    background-color: #ebf1ec;
+
+    transition-property: background-color;
+    transition-delay: 0.3s;
+  }
+
+  &_active {
+    box-shadow: 0 0 0 calc(1.42 * max(100vw, 100vh)) rgb(14, 17, 14);
+
+    &::after {
+      background-color: rgb(14, 17, 14);
+
+      transition-delay: unset;
+    }
+  }
+
+  &_no-transition {
+    transition: none;
+  }
 }
 
 @include b($mobile-md) {

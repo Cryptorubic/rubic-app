@@ -1,42 +1,7 @@
 @import 'vars';
 @import 'mixins';
 
-
-// svg:hover,
-// object:hover {
-//   filter: invert(156.9%) sepia(39%) saturate(2307%) hue-rotate(66deg)
-//     brightness(134%) contrast(107%);
-// }
-
 .span {
-  &-icon-svg {
-    position: relative;
-
-    overflow: hidden;
-
-    cursor: pointer;
-
-    &-link {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-
-      width: 100%;
-      height: 100%;
-
-      cursor: pointer;
-
-      &:hover {
-        ~ svg,
-        ~ object {
-          filter: invert(156.9%) sepia(39%) saturate(2307%) hue-rotate(66deg)
-            brightness(134%) contrast(107%);
-        }
-      }
-    }
-  }
-
   &-roadmap-month,
   &-roadmap-quarter {
     margin-bottom: 5px;
@@ -75,17 +40,6 @@
   }
 }
 
-.h1 {
-  &-title {
-    margin: 10px 0;
-
-    font-weight: normal;
-    font-size: 7vw;
-    font-style: normal;
-    text-align: center;
-  }
-}
-
 .cl {
   &-green {
     color: var(--main-green);
@@ -93,22 +47,6 @@
 }
 
 .p {
-  &-info {
-    &-text {
-      font-weight: normal;
-      font-size: 18px;
-      font-style: normal;
-      line-height: 28px;
-    }
-  }
-
-  &-roadmap-text {
-    color: black;
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 27px;
-  }
-
   &-text {
     &-benefits {
       font-weight: normal;
@@ -154,51 +92,15 @@
 
         content: '\2022';
       }
-
-      &.done {
-        &::before {
-          content: "";
-          background-image: url("/assets/images/icons/done.svg");
-          vertical-align: sub;
-        }
-      }
     }
-
   }
 }
 
 .h3 {
-  &-info {
-    &-text {
-      font-weight: 500;
-      font-size: 27px;
-      font-style: normal;
-      line-height: 27px;
-    }
-  }
-
   &-block {
-    &-title {
-      font-weight: normal;
-      font-size: 50px;
-      font-style: normal;
-      line-height: 50px;
-    }
-
     &-title-s1 {
       font-size: 28px;
       line-height: 44px;
-    }
-  }
-}
-
-.p {
-  &-info {
-    &-text {
-      font-weight: normal;
-      font-size: 18px;
-      font-style: normal;
-      line-height: 28px;
     }
   }
 }

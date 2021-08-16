@@ -31,17 +31,20 @@
     "minutes": "minutos",
     "swap": "Intercambio",
     "approve": "Aprobar",
-    "switchTo": "Switch to {{ networkName }} network"
+    "switchTo": "Switch to {{ networkName }} network",
+    "tradeVia": "Trade Via "
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
     "noMetamaskInstalled": "Asegúrate que tengas una billetera activa de Metamask y que ésta esté conectada.\nSino, puedes descargarla desde y conectar la billeta con el botón de Conectar la Billetera.",
+    "removeCoinbaseExtension": "La extensión del navegador Coinbase entra en conflicto con la extensión Metamask. Desactive o elimine la extensión Conibase para continuar, o elija otra billetera para conectarse.",
     "wrongNetwork": "Has seleccionado la red principal incorrecta. Elige {{ networkToChoose }} en MetaMask.",
     "OverQueryLimit": "Ha intentado ejecutar demasiadas operaciones en un corto período de tiempo y excedió las restricciones del puente Binance de 3 operaciones como máximo en 30 minutos. Espere y vuelva a intentarlo más tarde. Si aún tiene problemas, comuníquese con nuestro",
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
     "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
     "noQrCode": "Asegúrese de haber escaneado qrCode",
+    "walletlinkWrongNetwork": "Asegúrese de que la red {{networkToChoose}} esté seleccionada en la aplicación Coinbase. Para cambiar la red en la aplicación coinbase, vaya a la configuración en el panel inferior y seleccione la pestaña \"Active Network\".",
     "noWallet": "No has conectado ninguna billetera",
     "retrievingTokensError": "Error al recuperar tokens",
     "wrongToken": "El puente de rubic solo admite token de rubic.",
@@ -59,7 +62,10 @@
     "chooseSupportedBridge": "Elija un puente compatible",
     "InsufficientBalance": "Saldo insuficiente",
     "setTronAddress": "Establecer la dirección TRON en la configuración",
-    "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera"
+    "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
+    "noEnteredAmount": "Enter an amount",
+    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
   },
   "navigation": {
     "about": "Información",
@@ -71,7 +77,8 @@
     "myTrades": "Mis Intercambios",
     "logout": "Cerrar sesión",
     "logoutMessage": "¿Deseas Cerrar Sesión?",
-    "notAvailable": "En construcción - Rediseño de UX."
+    "notAvailable": "En construcción - Rediseño de UX.",
+    "merch": "Merch shop"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -348,6 +355,7 @@
     }
   },
   "bridgePage": {
+    "title": "Bridge assets with low gas fees",
     "progressMessage": "Has aceptado la transacción y se ha iniciado el intercambio. Por favor, espera hasta que éste sea completado",
     "successMessage": "El proceso de intercambio entre plataformas se ha inicializado. Por favor, espere a que el intercambio sea completado por ambas plataformas.",
     "approveProgressMessage": "Aceptaste la transacción aprobada y el intercambio ha comenzado. Espere hasta que se complete el intercambio.",
@@ -356,6 +364,7 @@
     "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada"
   },
   "instantTrades": {
+    "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
     "gasFee": "Costo de tarifas estimado:",
     "useOptimization": "Utilice la optimización de Rubic",
@@ -396,7 +405,7 @@
   },
   "tradePage": {
     "getBefore": "You will get",
-    "getMiddle": "tokens para el",
+    "getMiddle": "tokens to this address",
     "getAfter": "after the trade is complete",
     "providerFee": "Tarifa de proveedor",
     "rbcLowFees": "Use RBC por tarifas bajas",
@@ -424,6 +433,10 @@
       "title": "Conectar billetera",
       "new": "¿Nuevo en Ethereum?",
       "learnMore": "Más información sobre carteras"
+    },
+    "coinbaseSelectNetworkModal": {
+      "title": "Elija la red de origen",
+      "text": "Seleccione una red de origen de swaps. Al conectar una billetera Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar la billetera Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente o usa una billetera diferente."
     }
   },
   "settings": {

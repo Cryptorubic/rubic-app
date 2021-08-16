@@ -2,9 +2,9 @@
 @import 'src/scss/mixins';
 
 $border-radius: 14px;
-$green: rgb(74, 169, 96);
 $default-transition: 0.2s ease-in-out;
 $white: white;
+
 
 .provider-panel {
   &__content {
@@ -13,8 +13,8 @@ $white: white;
     box-sizing: border-box;
     padding: 20px;
 
-    background: $white;
-    border: 1px solid $white;
+    background: var(--rubic-base-10);
+    border: 1px solid transparent;
     border-left-width: 5px;
     border-radius: $border-radius;
 
@@ -25,16 +25,20 @@ $white: white;
 
       &:hover {
         box-shadow: 10px 10px 10px rgba(58, 95, 69, 0.1), -15px -15px 20px rgba(255, 255, 255, 0.2);
+
+        :host-context(html.dark) & {
+          box-shadow: -7px -7px 6px 2px rgb(3 6 4 / 20%);
+        }
       }
     }
 
     &:not(&_loading):not(&_selected):not(&_error):hover {
-      border: 1px solid $green;
+      border: 1px solid var(--main-green);
       border-left-width: 5px;
 
       .provider-panel__best-rate {
-        border-top-color: $green;
-        border-right-color: $green;
+        border-top-color: var(--main-green);
+        border-right-color: var(--main-green);
       }
     }
 
@@ -45,11 +49,20 @@ $white: white;
     &_selected {
       color: $white;
 
-      background-color: $green;
-      border-color: $green;
+      background-color: var(--main-green);
+      border-color: var(--main-green);
 
+      .provider-panel__token-usd-price,
+      .provider-panel__token-gas-fee,
       .provider-panel__right {
         color: $white;
+      }
+
+      .provider-panel__provider-name {
+        color: $white;
+
+        background-color: var(--main-green);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
       }
 
       .provider-panel__hint {
@@ -60,8 +73,29 @@ $white: white;
     }
 
     &_best-rate {
-      border-left-color: $green;
+      border-left-color: var(--main-green);
       border-left-width: 5px;
+    }
+
+    &_small {
+      .provider-panel__token-usd-price {
+        display: none;
+      }
+
+      .provider-panel__body {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .provider-panel__amount {
+        font-size: 20px;
+
+        &_error {
+          @include b($mobile-sm) {
+            font-size: 16px;
+          }
+        }
+      }
     }
   }
 
@@ -78,12 +112,12 @@ $white: white;
     width: 28px;
     height: 28px;
 
-    background: $white;
+    background: var(--main-background);
     border-radius: 100%;
     box-shadow: 0 3px 6px rgba(black, 0.16);
 
     &_selected {
-      background-color: $green;
+      background-color: var(--main-green);
 
       ::ng-deep svg path {
         fill: $white;
@@ -98,12 +132,12 @@ $white: white;
 
     padding: 2px 6px;
 
-    color: rgb(128, 128, 128);
+    color: var(--rubic-base-12);
     font-weight: 300;
     font-size: 14px;
     text-transform: capitalize;
 
-    background: #f3f9f3;
+    background: var(--rubic-base-11);
     border-radius: 3px;
   }
 
@@ -116,6 +150,7 @@ $white: white;
     display: flex;
     flex: 4;
     align-items: center;
+    width: 100%;
     margin-right: 10px;
   }
 
@@ -125,39 +160,49 @@ $white: white;
     flex-direction: column;
     align-items: flex-end;
 
-    color: rgba(144, 144, 144, 0.6);
     font-size: 14px;
   }
 
   &__amount {
     display: flex;
+    overflow-x: auto;
 
     font-weight: 300;
     font-size: 24px;
     line-height: 1.2;
     letter-spacing: 2px;
 
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+
     &_error {
       display: block;
       width: 100%;
 
       font-size: 20px;
-    }
-  }
 
-  &__currency {
-    margin-left: 10px;
+      @include b($mobile-sm) {
+        font-size: 16px;
+      }
+    }
   }
 
   &__token-usd-price {
     margin-bottom: 10px;
 
+    color: var(--form-dim-text-color);
     letter-spacing: 0.1em;
   }
 
   &__token-gas-fee {
     display: flex;
     align-items: center;
+
+    color: var(--form-dim-text-color);
   }
 
   &__hint {
@@ -177,28 +222,6 @@ $white: white;
         svg path {
           fill: $rubic-warning;
         }
-      }
-    }
-  }
-
-  &__collapse-toggle {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-
-    flex: 100%;
-    justify-content: center;
-    height: 25px;
-
-    transform: translateX(-50%);
-
-    ::ng-deep svg path {
-      fill: $green;
-    }
-
-    &_collapsed {
-      ::ng-deep svg {
-        transform: rotate(180deg);
       }
     }
   }

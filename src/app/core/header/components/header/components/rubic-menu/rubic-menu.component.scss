@@ -12,11 +12,15 @@
     width: 100%;
     height: 2px;
 
-    background-color: $rubic-base-04;
+    background-color: #4b604fff;
     border-radius: 5px;
 
     transition: 0.3s ease-in-out;
     transition-property: opacity, transform;
+
+    :host-context(html.dark) & {
+      background-color: $rubic-primary;
+    }
   }
 
   &_opened {
@@ -34,15 +38,6 @@
       }
     }
   }
-
-  &__nav {
-    display: flex;
-    flex-direction: column;
-
-    a {
-      margin-bottom: 2px;
-    }
-  }
 }
 
 .data-list {
@@ -53,7 +48,7 @@
     min-height: initial !important;
     margin: 0;
 
-    color: black;
+    color: var(--form-bright-text-color);
 
     border: none;
     border-radius: 156px;
@@ -61,19 +56,19 @@
     transition: all 0.35s ease;
 
     &:hover {
-      color: #4aa956;
+      color: var(--main-green);
 
-      background: #f3f9f3;
+      background-color: var(--selection-color);
     }
 
     &:active {
       color: white;
 
-      background: $rubic-primary;
+      background-color: $rubic-primary;
 
       ::ng-deep {
         a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-          color: $rubic-base-01;
+          color: var(--rubic-base-01);
           text-decoration: none;
         }
       }
@@ -106,7 +101,7 @@
       }
 
       a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-        color: $rubic-base-02;
+        color: var(--rubic-base-02);
         text-decoration: none;
 
         transition: 0.35s color ease;
@@ -122,26 +117,25 @@
         color: $rubic-primary;
 
         &:active {
-          color: $rubic-base-01;
+          color: var(--rubic-base-01);
         }
       }
     }
   }
 
   &__address {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
     cursor: default;
 
     &:hover {
       background: transparent;
     }
-  }
-
-  &__address-container {
-    display: flex;
-    align-items: center;
 
     img {
-      margin-right: 10px;
+      margin-right: 18px;
     }
   }
 
@@ -210,4 +204,4 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
       display: block;
     }
   }
-} 
+}

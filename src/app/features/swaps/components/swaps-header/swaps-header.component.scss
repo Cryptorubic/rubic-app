@@ -1,0 +1,62 @@
+:host {
+  display: block;
+  padding: 5px;
+
+  background-color: var(--main-background);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.swaps-header {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 50px;
+  padding: 10px;
+
+  background-image: linear-gradient(135deg,
+  var(--form-header-color-1) 0%,
+  var(--form-header-color-1) 50%,
+  var(--form-header-color-2) 50%,
+  var(--form-header-color-2) 100%);
+  border-radius: 14px;
+
+  &__blockchain {
+    display: flex;
+    align-items: center;
+
+    height: 35px;
+    padding: 7px 15px;
+
+    color: var(--form-bright-text-color);
+    font-weight: 500;
+    font-size: 16px;
+
+    background-color: var(--main-background);
+    border-radius: 35px;
+
+    img {
+      width: auto;
+      height: 100%;
+      margin-right: 10px;
+    }
+
+    span {
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    left: 50%;
+
+    border-radius: 100%;
+    box-shadow: 0 2px 10px rgba(#3a5f45, 0.2);
+
+    transform: translate(-50%);
+  }
+}

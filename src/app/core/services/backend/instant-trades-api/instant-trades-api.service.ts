@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
-import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import {
+  FROM_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_BLOCKCHAINS
+} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesPostApi';
@@ -9,9 +12,9 @@ import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
-import { Web3PublicService } from '../../blockchain/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 import { QueryParamsService } from '../../query-params/query-params.service';
@@ -62,17 +65,41 @@ export class InstantTradesApiService {
 
   /**
    * @description send request to server for add trade
-   * @param tradeInfo data body for request
    * @return instant trade object
    */
-  public createTrade(tradeInfo: InstantTradesPostApi): Observable<InstantTradesResponseApi | null> {
+  public createTrade(
+    hash: string,
+    provider: INSTANT_TRADES_PROVIDER,
+    trade: InstantTrade,
+    blockchain: BLOCKCHAIN_NAME
+  ): Observable<InstantTradesResponseApi | null> {
     if (this.isIframe) {
       return of(null);
+    }
+
+    let tradeInfo: InstantTradesPostApi;
+    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
+      tradeInfo = {
+        hash,
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        provider,
+        from_token: trade.from.token.address,
+        to_token: trade.to.token.address,
+        from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
+        to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
+      };
+    } else {
+      tradeInfo = {
+        hash,
+        provider,
+        network: TO_BACKEND_BLOCKCHAINS[blockchain]
+      };
     }
 
     if (this.isTestingMode) {
       tradeInfo.network = 'ethereum-test';
     }
+
     return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo).pipe(delay(1000));
   }
 
@@ -100,10 +127,7 @@ export class InstantTradesApiService {
       .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
-          swaps
-            // @ts-ignore TODO hotfix
-            .filter(swap => swap.status !== 'not_in_mempool')
-            .map(swap => this.parseTradeApiToTableTrade(swap))
+          swaps.map(swap => this.parseTradeApiToTableTrade(swap))
         )
       );
   }
@@ -115,15 +139,20 @@ export class InstantTradesApiService {
       return {
         blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
         symbol: token.symbol,
-        amount: Web3PublicService.weiToAmount(amount, token.decimals).toFixed(),
+        amount: Web3Public.fromWei(amount, token.decimals).toFixed(),
         image: token.image
       };
+    }
+
+    let provider = tradeApi.contract.name;
+    if (provider === 'pancakeswap_old') {
+      provider = INSTANT_TRADES_PROVIDER.PANCAKESWAP;
     }
 
     return {
       transactionHash: tradeApi.hash,
       status: tradeApi.status,
-      provider: tradeApi.contract.name,
+      provider,
       fromToken: getTableToken('from'),
       toToken: getTableToken('to'),
       date: new Date(tradeApi.status_updated_at)

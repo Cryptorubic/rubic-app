@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { AbstractControlOf } from '@ngneat/reactive-forms/lib/types';
+import { Observable } from 'rxjs';
 
 export interface ItSettingsForm {
+  autoSlippageTolerance: boolean;
   slippageTolerance: number;
   deadline: number;
   disableMultihops: boolean;
@@ -28,9 +31,34 @@ export class SettingsService {
 
   public settingsForm: FormGroup<SettingsForm>;
 
+  public get instantTrade(): AbstractControlOf<ItSettingsForm> {
+    return this.settingsForm.controls.INSTANT_TRADE;
+  }
+
+  public get instantTradeValue(): ItSettingsForm {
+    return this.instantTrade.value;
+  }
+
+  public get instantTradeValueChanges(): Observable<ItSettingsForm> {
+    return this.instantTrade.valueChanges;
+  }
+
+  public get bridge(): AbstractControlOf<BridgeSettingsForm> {
+    return this.settingsForm.controls.BRIDGE;
+  }
+
+  public get bridgeValue(): BridgeSettingsForm {
+    return this.bridge.value;
+  }
+
+  public get bridgeValueChanges(): Observable<BridgeSettingsForm> {
+    return this.bridge.valueChanges;
+  }
+
   constructor(private readonly storeService: StoreService) {
     this.defaultSettings = {
-      slippageTolerance: 0.15,
+      autoSlippageTolerance: true,
+      slippageTolerance: 1,
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
@@ -58,6 +86,7 @@ export class SettingsService {
   private createForm(): void {
     this.settingsForm = new FormGroup<SettingsForm>({
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup({
+        autoSlippageTolerance: new FormControl<boolean>(this.defaultSettings.autoSlippageTolerance),
         slippageTolerance: new FormControl<number>(this.defaultSettings.slippageTolerance),
         deadline: new FormControl<number>(this.defaultSettings.deadline),
         disableMultihops: new FormControl<boolean>(this.defaultSettings.disableMultihops),

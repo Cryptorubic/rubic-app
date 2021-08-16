@@ -12,7 +12,7 @@
   height: 100%;
   padding: 25px 20px;
 
-  background-color: $rubic-base-03;
+  background-color: var(--rubic-base-03);
   border-top-left-radius: 14px;
 
   &__list {

@@ -2,25 +2,26 @@
 @import 'src/scss/mixins';
 
 .bottom-amount {
-  box-sizing: border-box;
-  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
 
-  background-color: #fcfcfc;
-  border-radius: 0 0 14px 14px;
+  max-width: 350px;
+  height: 100%;
 
-  &__form {
-    display: flex;
-    flex-direction: column;
+  @include b($mobile-sm) {
+    align-items: flex-start;
   }
 
   &__usd-container {
-    display: inline-block;
+    display: inline-flex;
     float: right;
-    width: 31%;
-    margin-bottom: 10px;
+
+    min-width: 50px;
     overflow: hidden;
 
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-weight: 400;
     font-size: 14px;
     text-align: right;
@@ -29,58 +30,48 @@
     span {
       margin-left: 10px;
     }
-  }
 
-  &__usd,
-  &__tokens {
-    width: 100%;
-    padding: 0;
-
-    letter-spacing: 0.1em;
-
-    background: none;
-    border: none;
+    &_placeholder {
+      color: rgb(117, 117, 117);
+    }
   }
 
   &__usd {
     overflow: hidden;
 
+    letter-spacing: 0.1em;
+
     text-align: right;
     text-overflow: ellipsis;
   }
 
-  &__tokens {
-    font-weight: 100;
-    font-size: 30px;
-    line-height: 36px;
-    text-align: left;
-  }
-
   &__tokens-container {
-    display: flex;
-    padding-top: 5px;
-    overflow: hidden;
+    width: 100%;
+    min-width: 200px;
+    height: 40px;
+    overflow: auto;
 
-    &_wide {
-      width: calc(100% - 100px);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 40px;
+    letter-spacing: 0.1em;
+    scrollbar-width: none;
+
+    text-align: right;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &_placeholder {
+      color: rgb(117, 117, 117);
     }
   }
 
   &__fee {
-    flex-grow: 1;
-    margin-right: 20px;
-
-    color: rgba(144, 144, 144, 0.6);
+    color: var(--form-dim-text-color);
     font-weight: 400;
     font-size: 14px;
-  }
-
-  &__footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
   }
 }
 
@@ -88,7 +79,6 @@
   .bottom-amount {
     display: flex;
     flex-direction: column;
-    padding: 7px 20px 15px;
 
     &__tokens-container {
       padding-top: 0;
@@ -103,7 +93,7 @@
       text-align: left;
 
       span {
-        margin-left: 0;
+        margin-left: auto;
       }
     }
 
@@ -114,11 +104,19 @@
     &__fee {
       margin-right: 0;
     }
+  }
+}
 
-    &__footer {
-      flex-direction: column;
-      align-items: flex-start;
-      order: 2;
+@include b($mobile-sm) {
+  .bottom-amount {
+    &__usd-container {
+      span {
+        margin-left: 0;
+      }
+    }
+
+    &__tokens-container {
+      text-align: left;
     }
   }
 }

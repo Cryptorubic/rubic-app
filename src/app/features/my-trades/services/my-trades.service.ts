@@ -21,7 +21,6 @@ import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import { HttpClient } from '@angular/common/http';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
@@ -115,10 +114,7 @@ export class MyTradesService {
   private prepareBridgeData(trade: TableTrade): TableTrade {
     let fromSymbol = trade.fromToken.symbol;
     let toSymbol = trade.toToken.symbol;
-    if (
-      trade.fromToken.blockchain === BLOCKCHAIN_NAME.POLYGON ||
-      trade.toToken.blockchain === BLOCKCHAIN_NAME.POLYGON
-    ) {
+    if (trade.provider === 'polygon') {
       fromSymbol = this.tokens.find(
         token =>
           token.blockchain === trade.fromToken.blockchain &&
@@ -152,18 +148,12 @@ export class MyTradesService {
     return this._tableTrades$.getValue()?.find(trade => trade.date.getTime() === date.getTime());
   }
 
-  private checkSettings(blockchain: BLOCKCHAIN_NAME): void {
-    if (this.providerConnectorService.network?.name !== blockchain) {
-      throw new NetworkError(blockchain);
-    }
-  }
-
   public depositPolygonBridgeTradeAfterCheckpoint(
     burnTransactionHash: string,
     onTransactionHash: (hash: string) => void
   ): Observable<TransactionReceipt> {
     try {
-      this.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
+      this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
     } catch (err) {
       return throwError(err);
     }

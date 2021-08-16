@@ -7,6 +7,11 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
+import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
+import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
+import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
+import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
@@ -66,7 +71,8 @@ export class ProviderConnectorService {
 
   constructor(
     private readonly storage: StoreService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly useTestingModeService: UseTestingModeService
   ) {
     this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
@@ -85,16 +91,27 @@ export class ProviderConnectorService {
   /**
    * Setup provider based on local storage.
    */
-  public async installProvider(): Promise<void> {
-    const provider = this.storage.getItem('provider') as WALLET_NAME;
-    await this.connectProvider(provider);
+  public async installProvider(): Promise<boolean> {
+    const provider = this.storage.getItem('provider');
+    if (!provider) {
+      return false;
+    }
+    if (provider === WALLET_NAME.WALLET_LINK) {
+      const chainId = this.storage.getItem('chainId');
+      return this.connectProvider(provider, chainId);
+    }
+    return this.connectProvider(provider);
   }
 
   public async activate(): Promise<void> {
     await this.provider.activate();
     this.storage.setItem('provider', this.provider.name);
+    if (this.provider.name === WALLET_NAME.WALLET_LINK) {
+      this.storage.setItem('chainId', this.provider.network.id);
+    }
   }
 
+  // eslint-disable-next-line
   public async requestPermissions(): Promise<any[]> {
     return this.provider.requestPermissions();
   }
@@ -112,39 +129,45 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<void> {
-    switch (provider) {
-      case WALLET_NAME.WALLET_LINK: {
-        this.provider = new WalletLinkProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService,
-          chainId
-        );
-        break;
+  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<boolean> {
+    try {
+      switch (provider) {
+        case WALLET_NAME.WALLET_LINK: {
+          this.provider = new WalletLinkProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService,
+            chainId
+          );
+          break;
+        }
+        case WALLET_NAME.WALLET_CONNECT: {
+          this.provider = new WalletConnectProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService
+          );
+          break;
+        }
+        case WALLET_NAME.METAMASK:
+        default: {
+          this.provider = new MetamaskProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService
+          ) as PrivateProvider;
+          await (this.provider as MetamaskProvider).setupDefaultValues();
+        }
       }
-      case WALLET_NAME.WALLET_CONNECT: {
-        this.provider = new WalletConnectProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        );
-        break;
-      }
-      case WALLET_NAME.METAMASK:
-      default: {
-        this.provider = new MetamaskProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        ) as PrivateProvider;
-        await (this.provider as MetamaskProvider).setupDefaultValues();
-      }
+      this.providerName = provider;
+      return true;
+    } catch (e) {
+      this.errorService.catch(e);
+      return false;
     }
-    this.providerName = provider;
   }
 
   public async connectDefaultProvider(): Promise<void> {
@@ -157,18 +180,48 @@ export class ProviderConnectorService {
     this.providerName = WALLET_NAME.METAMASK;
   }
 
+  public checkSettings(selectedBlockchain: BLOCKCHAIN_NAME): void {
+    if (!this.isProviderActive) {
+      throw new WalletError();
+    }
+    if (!this.address) {
+      throw new AccountError();
+    }
+
+    const isTestingMode = this.useTestingModeService.isTestingMode.getValue();
+    if (
+      this.networkName !== selectedBlockchain &&
+      (!isTestingMode || this.networkName !== `${selectedBlockchain}_TESTNET`)
+    ) {
+      if (this.providerName === WALLET_NAME.METAMASK) {
+        throw new NetworkError(selectedBlockchain);
+      } else {
+        throw new NotSupportedNetworkError(selectedBlockchain);
+      }
+    }
+  }
+
   public async addChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
-    const defaultPolygonRpc = 'https://rpc-mainnet.maticvigil.com';
+    const defaultData = {
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+        name: 'Binance Smart Chain Mainnet',
+        rpc: 'https://bsc-dataseed1.binance.org'
+      },
+      [BLOCKCHAIN_NAME.POLYGON]: {
+        name: 'Matic(Polygon) Mainnet',
+        rpc: 'https://rpc-mainnet.matic.network'
+      }
+    };
     const params = {
       chainId: `0x${network.id.toString(16)}`,
-      chainName: network.name,
+      chainName: defaultData[network.name]?.name || network.name,
       nativeCurrency: {
         name: network.nativeCoin.name,
         symbol: network.nativeCoin.symbol,
         decimals: 18
       },
-      rpcUrls: [networkName === BLOCKCHAIN_NAME.POLYGON ? defaultPolygonRpc : network.rpcLink],
+      rpcUrls: [defaultData[network.name]?.rpc || network.rpcLink],
       blockExplorerUrls: [network.scannerUrl],
       iconUrls: [`https://rubic.exchange/${network.imagePath}`]
     } as AddEthChainParams;
@@ -186,10 +239,10 @@ export class ProviderConnectorService {
           await this.addChain(networkName);
           await this.provider.switchChain(chainId);
         } catch (err) {
-          this.errorService.catch$(err);
+          this.errorService.catch(err);
         }
       } else {
-        this.errorService.catch$(switchError);
+        this.errorService.catch(switchError);
       }
     }
   }

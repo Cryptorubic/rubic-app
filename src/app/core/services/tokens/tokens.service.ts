@@ -7,16 +7,13 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { map, tap } from 'rxjs/operators';
-
-const RBC_ADDRESS = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
-
-const BRBC_ADDRESS = '0x8e3bcc334657560253b83f08331d85267316e08a';
+import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 @Injectable({
   providedIn: 'root'
@@ -36,12 +33,13 @@ export class TokensService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly useTestingMode: UseTestingModeService
+    private readonly useTestingMode: UseTestingModeService,
+    private readonly coingeckoApiService: CoingeckoApiService
   ) {
     this.tokensApiService.getTokensList().subscribe(
       tokens => {
         if (!this.isTestingMode) {
-          this.setDefaultTokenAmounts(this.setCustomRanks(tokens));
+          this.setDefaultTokenAmounts(tokens);
           this.recalculateUsersBalance();
         }
       },
@@ -66,39 +64,6 @@ export class TokensService {
     this._tokens.next(tokens);
   }
 
-  private setCustomRanks(tokens: List<Token>): List<Token> {
-    return tokens.map(token => {
-      if (token.blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-        if (token.address === RBC_ADDRESS) {
-          return {
-            ...token,
-            rank: 1
-          };
-        }
-        if (token.address === NATIVE_TOKEN_ADDRESS) {
-          return {
-            ...token,
-            rank: 0.99
-          };
-        }
-      } else if (token.blockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-        if (token.address === BRBC_ADDRESS) {
-          return {
-            ...token,
-            rank: 1
-          };
-        }
-        if (token.address === NATIVE_TOKEN_ADDRESS) {
-          return {
-            ...token,
-            rank: 0.99
-          };
-        }
-      }
-      return token;
-    });
-  }
-
   private setDefaultTokenAmounts(tokens: List<Token> = this._tokens.getValue()): void {
     this._tokens.next(
       tokens.map(token => ({
@@ -111,57 +76,79 @@ export class TokensService {
   public async recalculateUsersBalance(
     tokens: List<TokenAmount> = this._tokens.getValue()
   ): Promise<void> {
-    if (!tokens.size) {
-      return;
-    }
+    try {
+      if (!tokens.size) {
+        return;
+      }
 
-    if (!this.userAddress) {
-      this.setDefaultTokenAmounts(tokens);
-      return;
-    }
+      if (!this.userAddress) {
+        this.setDefaultTokenAmounts(tokens);
+        return;
+      }
 
-    const blockchains: BLOCKCHAIN_NAME[] = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON
-    ];
-    const promises = [];
+      const blockchains: BLOCKCHAIN_NAME[] = [
+        BLOCKCHAIN_NAME.ETHEREUM,
+        BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        BLOCKCHAIN_NAME.POLYGON
+      ];
+      const promises = [];
 
-    blockchains.forEach(blockchain => {
-      promises.push(
-        this.web3PublicService[blockchain].getTokensBalances(
-          this.userAddress,
+      const splitAndMergeRequests = (
+        tokensAddresses: string[],
+        blockchain: BLOCKCHAIN_NAME,
+        parallelRequestsNumber: number
+      ) => {
+        const chunkSize = Math.ceil(tokensAddresses.length / parallelRequestsNumber);
+        return Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          [...new Array(parallelRequestsNumber)].map((elem, index) =>
+            this.web3PublicService[blockchain].getTokensBalances(
+              this.userAddress,
+              tokensAddresses.slice(index * chunkSize, (index + 1) * chunkSize)
+            )
+          )
+        );
+      };
+
+      blockchains.forEach(blockchain => {
+        promises.push(
+          splitAndMergeRequests(
+            tokens
+              .filter(token => token.blockchain === blockchain)
+              .map(token => token.address)
+              .toArray(),
+            blockchain,
+            30
+          )
+        );
+      });
+
+      const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
+        weiBalance.div(10 ** token.decimals);
+
+      const balances = (await Promise.all(promises)).map(elem => elem.flat());
+      const tokensWithBalance: TokenAmount[][] = [];
+      blockchains.forEach((blockchain, blockchainIndex) =>
+        tokensWithBalance.push(
           tokens
             .filter(token => token.blockchain === blockchain)
-            .map(token => token.address)
+            .map((token, tokenIndex) => ({
+              ...token,
+              amount: getRelativeBalance(token, balances[blockchainIndex][tokenIndex]) || undefined
+            }))
             .toArray()
         )
       );
-    });
 
-    const getRelativeBalance = (token: Token, weiBalance: BigNumber): BigNumber =>
-      weiBalance.div(10 ** token.decimals);
-
-    const balances = await Promise.all(promises);
-    const tokensWithBalance: TokenAmount[][] = [];
-    blockchains.forEach((blockchain, blockchainIndex) =>
       tokensWithBalance.push(
-        tokens
-          .filter(token => token.blockchain === blockchain)
-          .map((token, tokenIndex) => ({
-            ...token,
-            amount: getRelativeBalance(token, balances[blockchainIndex][tokenIndex]) || undefined
-          }))
-          .toArray()
-      )
-    );
+        tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
+      );
 
-    tokensWithBalance.push(
-      tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
-    );
-
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      this._tokens.next(List(tokensWithBalance.flat()));
+      if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+        this._tokens.next(List(tokensWithBalance.flat()));
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -185,6 +172,26 @@ export class TokensService {
         amount
       })),
       tap((token: TokenAmount) => this._tokens.next(this._tokens.getValue().push(token)))
+    );
+  }
+
+  public isOnlyBalanceUpdated(prevToken: TokenAmount, nextToken: TokenAmount): boolean {
+    if (!prevToken || !nextToken) {
+      return false;
+    }
+    return (
+      prevToken.blockchain === nextToken.blockchain &&
+      prevToken.address.toLowerCase() === nextToken.address.toLowerCase()
+    );
+  }
+
+  public async getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
+    const nativeCoin = this._tokens
+      .getValue()
+      .find(token => token.blockchain === blockchain && token.address === NATIVE_TOKEN_ADDRESS);
+    return this.coingeckoApiService.getNativeCoinPriceInUsdByCoingecko(
+      blockchain,
+      nativeCoin?.price
     );
   }
 }

@@ -7,24 +7,29 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg';
-import { TuiDataListModule, TuiHintModule, TuiHostedDropdownModule } from '@taiga-ui/core';
+import {
+  TuiDataListModule,
+  TuiGroupModule,
+  TuiHintModule,
+  TuiHostedDropdownModule
+} from '@taiga-ui/core';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
-import { LogoutConfirmModalComponent } from './components/header/components/logout-confirm-modal/logout-confirm-modal.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
+import { CoinbaseConfirmModalComponent } from './components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     LoginButtonComponent,
     UserProfileComponent,
-    LogoutConfirmModalComponent,
     MobileMenuTogglerComponent,
     WalletsModalComponent,
-    RubicMenuComponent
+    RubicMenuComponent,
+    CoinbaseConfirmModalComponent
   ],
   imports: [
     CommonModule,
@@ -37,9 +42,10 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
     InlineSVGModule.forRoot(),
     TuiDataListModule,
     TuiHintModule,
-    TuiHostedDropdownModule
+    TuiHostedDropdownModule,
+    TuiGroupModule
   ],
   exports: [HeaderComponent, LoginButtonComponent],
-  entryComponents: [WalletsModalComponent, LogoutConfirmModalComponent]
+  entryComponents: [WalletsModalComponent]
 })
 export class HeaderModule {}

@@ -1,25 +1,31 @@
 <div class="crypto-tap-output">
-  <div class="crypto-tap-output__wrapper">
-    <div
-      class="crypto-tap-output__amount"
-      [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }"
-    >
-      {{ amount | bigNumberFormat | withRound: 'toClosestValue':token?.decimals || 18 }}
-    </div>
-
+  <div class="crypto-tap-output__left">
+    <app-rubic-tokens
+      idPrefix="crypto_tap_"
+      [loading]="tokensLoading"
+      formType="from"
+      [tokens]="tokens"
+      [formService]="cryptoTapFormService"
+      [allowedBlockchains]="blockchainsListFrom"
+    ></app-rubic-tokens>
     <div class="user-balance-container" *ngIf="token?.amount.gt(0)">
-      <span class="user-balance-container__balance"
-        >{{ 'common.have' | translate }}
-        {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}</span
-      >
+      {{ 'common.have' | translate }}
+      {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}
     </div>
   </div>
 
-  <div class="crypto-tap-output__right-side right-side">
+  <div class="crypto-tap-output__wrapper">
     <div
-      class="right-side__usd-price-container usd-price-container"
-      [hidden]="!getUsdPrice() || getUsdPrice().eq(0)"
+      class="crypto-tap-output__amount"
+      [ngClass]="{
+        'tui-skeleton': loading,
+        'tui-skeleton_text': loading,
+        'crypto-tap-output__amount_placeholder': !amount || amount.eq(0)
+      }"
     >
+      {{ amount | bigNumberFormat | withRound: 'toClosestValue':token?.decimals || 18 }}
+    </div>
+    <div class="usd-price-container" [hidden]="!getUsdPrice() || getUsdPrice().eq(0)">
       <span class="usd-price-container__price">${{ getUsdPrice() | bigNumberFormat: 2 }}</span>
     </div>
   </div>

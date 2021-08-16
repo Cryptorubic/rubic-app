@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BlockchainsInfo } from '../../../../core/services/blockchain/blockchain-info';
+import { ChangeDetectionStrategy, Component, Output, EventEmitter, Input } from '@angular/core';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -11,9 +11,13 @@ import { BlockchainsInfo } from '../../../../core/services/blockchain/blockchain
 export class BlockchainsAsideComponent {
   @Input() blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
+  @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+
+  @Input() idPrefix: string;
+
   @Output() blockchainChange = new EventEmitter<BLOCKCHAIN_NAME>();
 
-  public blockchains: BLOCKCHAIN_NAME[] = [
+  public allBlockchains: BLOCKCHAIN_NAME[] = [
     BLOCKCHAIN_NAME.ETHEREUM,
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     BLOCKCHAIN_NAME.POLYGON,
@@ -21,6 +25,13 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.XDAI,
     BLOCKCHAIN_NAME.HARMONY
   ];
+
+  public get blockchains(): BLOCKCHAIN_NAME[] {
+    if (this.allowedBlockchains) {
+      return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
+    }
+    return this.allBlockchains;
+  }
 
   public blockchainImages = Object.fromEntries(
     this.blockchains.map(blockchainName => [

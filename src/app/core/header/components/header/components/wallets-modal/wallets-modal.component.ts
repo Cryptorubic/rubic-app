@@ -1,10 +1,24 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Injector,
+  OnInit
+} from '@angular/core';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext } from '@taiga-ui/core';
+import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
+import { CoinbaseConfirmModalComponent } from 'src/app/core/header/components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
+import { TranslateService } from '@ngx-translate/core';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { WINDOW } from 'src/app/core/models/window';
+import { BrowserService } from 'src/app/core/services/browser/browser.service';
+import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
 import { WALLET_NAME, WalletProvider } from './models/providers';
 import { HeaderStore } from '../../../../services/header.store';
 
@@ -14,7 +28,7 @@ import { HeaderStore } from '../../../../services/header.store';
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WalletsModalComponent {
+export class WalletsModalComponent implements OnInit {
   public readonly $walletsLoading: Observable<boolean>;
 
   private readonly allProviders: WalletProvider[];
@@ -31,17 +45,55 @@ export class WalletsModalComponent {
     return new AsyncPipe(this.cdr).transform(this.$mobileDisplayStatus);
   }
 
-  private setupMetamaskDeepLinking(): void {
+  private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
+    switch (provider) {
+      case WALLET_NAME.METAMASK:
+        this.redirectToMetamaskBrowser();
+        return true;
+      case WALLET_NAME.WALLET_LINK:
+        this.redirectToCoinbaseBrowser();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  private redirectToMetamaskBrowser(): void {
     const metamaskAppLink = 'https://metamask.app.link/dapp/';
-    window.location.assign(`${metamaskAppLink}${window.location.hostname}`);
+    this.window.location.assign(`${metamaskAppLink}${this.window.location.hostname}`);
+  }
+
+  private redirectToCoinbaseBrowser(): void {
+    let walletLinkAppLink: string;
+    switch (this.window.location.hostname.split('.')[0]) {
+      case 'stage':
+        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
+        break;
+      case 'dev':
+        walletLinkAppLink = 'https://go.cb-w.com/D0GNLvaHBib';
+        break;
+      case 'dev2':
+        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
+        break;
+      case 'rubic':
+      default:
+        walletLinkAppLink = 'https://go.cb-w.com/IJZCq1fHBib';
+        break;
+    }
+    this.window.location.assign(walletLinkAppLink);
   }
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector,
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly translateService: TranslateService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
-    private readonly cdr: ChangeDetectorRef // @Inject(DOCUMENT) private readonly document: Document, // private readonly renderer: Renderer2
+    private readonly cdr: ChangeDetectorRef,
+    private readonly browserService: BrowserService
   ) {
     this.$walletsLoading = this.headerStore.getWalletsLoadingStatus();
     this.$mobileDisplayStatus = this.headerStore.getMobileDisplayStatus();
@@ -50,39 +102,82 @@ export class WalletsModalComponent {
         name: 'MetaMask',
         value: WALLET_NAME.METAMASK,
         img: './assets/images/icons/wallets/metamask.svg',
-        desktopOnly: false
+        desktopOnly: false,
+        display: true
       },
-      // {
-      //   name: 'Coinbase wallet',
-      //   value: WALLET_NAME.WALLET_LINK,
-      //   img: './assets/images/icons/wallets/coinbase.png',
-      //   desktopOnly: true
-      // },
+      {
+        name: 'Coinbase wallet',
+        value: WALLET_NAME.WALLET_LINK,
+        img: './assets/images/icons/wallets/coinbase.png',
+        desktopOnly: false,
+        display: true
+      },
       {
         name: 'WalletConnect',
         value: WALLET_NAME.WALLET_CONNECT,
         img: './assets/images/icons/wallets/walletconnect.svg',
-        desktopOnly: true
+        desktopOnly: false,
+        display: true
       }
     ];
   }
 
-  public async connectProvider(provider: WALLET_NAME): Promise<void> {
-    if (this.isMobile && provider === WALLET_NAME.METAMASK && !window.ethereum) {
-      this.setupMetamaskDeepLinking();
+  ngOnInit() {
+    if (this.browserService.currentBrowser === BROWSER.METAMASK) {
+      this.connectProvider(WALLET_NAME.METAMASK);
       return;
     }
-    // @TODO Uncomment when fix mobile wallets.
-    // if (
-    //   provider ===
-    //   WALLET_NAME.WALLET_CONNECT /** && /iPad|iPhone|iPod/.test(navigator.platform) * */
-    // ) {
-    //   setTimeout(() => this.setupIosWalletsModal(), 500);
-    // }
+
+    if (this.browserService.currentBrowser === BROWSER.COINBASE) {
+      this.connectProvider(WALLET_NAME.WALLET_LINK);
+    }
+  }
+
+  public async connectProvider(provider: WALLET_NAME): Promise<void> {
+    if (this.browserService.currentBrowser === BROWSER.MOBILE) {
+      const redirected = this.deepLinkRedirectIfSupported(provider);
+      if (redirected) {
+        return;
+      }
+    }
+
     this.headerStore.setWalletsLoadingStatus(true);
+
+    // desktop coinbase
+    if (
+      this.browserService.currentBrowser === BROWSER.DESKTOP &&
+      provider === WALLET_NAME.WALLET_LINK
+    ) {
+      this.dialogService
+        .open<BLOCKCHAIN_NAME>(
+          new PolymorpheusComponent(CoinbaseConfirmModalComponent, this.injector),
+          {
+            dismissible: true,
+            label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
+            size: 'm'
+          }
+        )
+        .subscribe({
+          next: blockchainName => {
+            if (blockchainName) {
+              this.providerConnectorService.connectProvider(
+                provider,
+                BlockchainsInfo.getBlockchainByName(blockchainName).id
+              );
+              this.authService.signIn();
+              this.close();
+            }
+          },
+          complete: () => this.headerStore.setWalletsLoadingStatus(false)
+        });
+      return;
+    }
+
     try {
-      await this.providerConnectorService.connectProvider(provider);
-      await this.authService.signIn();
+      const connectionSuccessful = await this.providerConnectorService.connectProvider(provider);
+      if (connectionSuccessful) {
+        await this.authService.signIn();
+      }
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
     }
@@ -94,20 +189,4 @@ export class WalletsModalComponent {
     this.headerStore.setWalletsLoadingStatus(false);
     this.context.completeWith();
   }
-
-  // @TODO Uncomment when fix mobile wallets.
-  // private setupIosWalletsModal(): void {
-  //   const walletElements = this.document.querySelectorAll(
-  //     '#walletconnect-wrapper .walletconnect-connect__button__icon_anchor'
-  //   );
-  //   walletElements.forEach(el => {
-  //     const wallet = el.querySelector('.walletconnect-connect__button__text').textContent;
-  //     const deepLink =
-  // tslint:disable-next-line:max-line-length
-  //       'trust://wc?uri=wc%3Abbce77de-1fad-4bf3-a489-1734ad0ee5ed%401%3Fbridge%3Dhttps%253A%252F%252Fbridge.walletconnect.org%26key%3D4e5cb09af0367885cb93c836d826d2bfffa3845dad12531ccd770985b3f1d076';
-  //     if (wallet === 'Trust') {
-  //       this.renderer.setAttribute(el, 'href', deepLink);
-  //     }
-  //   });
-  // }
 }

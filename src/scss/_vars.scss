@@ -1,13 +1,44 @@
 // ***** vars *****
 :root {
-  --main-font: 'Josefin Sans', Arial, sans-serif;
+  --main-font: 'SF-Pro', Roboto, Arial, sans-serif;
 
   --container-max-width: 1440px;
   --main-green: #4aa956;
 
   --green-btn-border-hover-bg: #e5f5e7;
 
+  --primary-color: rgb(74, 169, 86);
+
   --tui-text-font: 'Ubuntu', Arial, sans-serif !important;
+
+  --main-form-background: rgba(255, 255, 255, 0.5);
+  --main-background: rgba(255, 255, 255, 1);
+
+  --rubic-base-03: rgba(250, 250, 250, 0.9);
+  --rubic-secondary: rgb(244, 245, 244);
+
+  --form-header-color-1: rgb(235, 243, 236);
+  --form-header-color-2: rgb(245, 249, 246);
+
+  --form-bright-text-color: rgb(0, 0, 0);
+  --form-bright-reversed-text-color: rgb(255, 255, 255);
+  --form-dim-text-color: rgb(143, 143, 143, 60%);
+  --form-rubic-text-color: rgb(74, 169, 86);
+
+  --rubic-base-01: rgb(255, 255, 255);
+  --rubic-base-02: rgb(0, 0, 0);
+
+  --rubic-base-10: rgb(250, 250, 250);
+  --rubic-base-11: rgb(243, 249, 243);
+  --rubic-base-12: rgb(128, 128, 128);
+  --rubic-base-13: rgba(255, 255, 255, 0.3);
+
+  --selection-color: rgb(243 249 243);
+
+  --rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
+  --rubic-shadow-button-hover-dim: -5px -5px 15px rgba(255, 255, 255, 0.1), 5px 5px 15px rgba(59, 130, 67, 0.2);
+  --rubic-shadow-button-active: -5px -5px 30px rgba(172, 219, 178, 0.5), 5px 5px 30px rgba(59, 130, 67, 0.5);
+  --rubic-shadow-button-disabled: -15px -15px 80px #fff, 10px 10px 30px rgba(58, 95, 69, 0.1), inset 4px 4px 20px rgba(255, 255, 255, 0.5);
 }
 
 // ***** typography *****
@@ -15,9 +46,6 @@ $sf-pro-font: SF-Pro, sans-serif;
 $roboto-font: Roboto, sans-serif;
 
 // ***** colors *****
-$rubic-base-01: #fff;
-$rubic-base-02: #000;
-$rubic-base-03: rgba(250, 250, 250, 0.9);
 $rubic-base-04: #4b604f;
 $rubic-base-05: #639d6a;
 $rubic-base-06: #5c7d60;
@@ -26,7 +54,6 @@ $rubic-base-08: #fcfcfd;
 $rubic-base-09: #9db8a1;
 
 $rubic-primary: #4aa956;
-$rubic-secondary: #f4f5f4;
 $rubic-disable: #e1e1e1;
 $rubic-warning: #dfcb5f;
 
@@ -40,7 +67,7 @@ $tablet: 768;
 $mobile-md: 651;
 $mobile-md-minus: 599;
 $mobile-sm-plus: 560;
-$mobile-sm: 401;
+$mobile-sm: 420;
 
 // ***** shadows *****
 $shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
@@ -57,8 +84,3 @@ $text-gray: #a8a8a8;
 $rubic-font-size-main: 14px;
 $rubic-font-size-01: 16px;
 $rubic-font-size-02: 18px;
-
-// box-shadows
-$rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
-$rubic-shadow-button-active: -5px -5px 30px rgba(172, 219, 178, 0.5), 5px 5px 30px rgba(59, 130, 67, 0.5);
-$rubic-shadow-button-disabled: -15px -15px 80px #fff, 10px 10px 30px rgba(58, 95, 69, 0.1), inset 4px 4px 20px rgba(255, 255, 255, 0.5);

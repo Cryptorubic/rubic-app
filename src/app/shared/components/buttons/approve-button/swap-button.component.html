@@ -4,6 +4,7 @@
     [loading]="needLoginLoading"
     [fullWidth]="true"
     (onClick)="onLogin()"
+    [appearance]="tokensFilled ? 'secondary' : 'primary'"
   >
     {{ 'navigation.login' | translate }}
   </app-rubic-button>
@@ -94,7 +95,7 @@
         [disabled]="true"
         appearance="secondary"
       >
-        {{ errorText }}
+        {{ errorText | async }}
       </app-rubic-button>
     </ng-container>
   </ng-template>

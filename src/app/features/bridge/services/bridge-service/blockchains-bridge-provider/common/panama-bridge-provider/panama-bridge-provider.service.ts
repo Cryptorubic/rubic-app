@@ -57,7 +57,6 @@ export class PanamaBridgeProviderService {
       .pipe(
         map((response: PanamaResponse) => {
           if (response.code !== this.PANAMA_SUCCESS_CODE) {
-            // tslint:disable-next-line:no-console
             console.debug('Error retrieving panama tokens', response);
             return List([]);
           }
@@ -85,7 +84,7 @@ export class PanamaBridgeProviderService {
     return this.httpClient.get(`${this.apiUrl}tokens/${token.symbol}/networks`).pipe(
       map((res: PanamaResponse) => {
         if (res.code !== this.PANAMA_SUCCESS_CODE) {
-          this.errorService.throw$(new RetrievingTokensError());
+          this.errorService.throw(new RetrievingTokensError());
         }
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),
@@ -141,10 +140,12 @@ export class PanamaBridgeProviderService {
     const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
 
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
+    let txHash;
 
     const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {
         bridgeTrade.onTransactionHash(hash);
+        txHash = hash;
       }
       await this.bridgeApiService.postPanamaTransaction(
         binanceId,
@@ -179,7 +180,7 @@ export class PanamaBridgeProviderService {
     }
     this.bridgeApiService.notifyBridgeBot(
       bridgeTrade,
-      binanceId,
+      txHash,
       this.providerConnectorService.address
     );
     return receipt;

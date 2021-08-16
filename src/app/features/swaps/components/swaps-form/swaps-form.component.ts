@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Subject, Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
@@ -13,7 +13,8 @@ import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/br
 import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -32,6 +33,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public autoRefresh: boolean;
 
+  public onRefreshTrade = new Subject<void>();
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -46,6 +49,15 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         form.fromToken &&
         form.toToken
     );
+  }
+
+  public get loadingStatus(): REFRESH_BUTTON_STATUS {
+    return this._loadingStatus;
+  }
+
+  public set loadingStatus(status: REFRESH_BUTTON_STATUS) {
+    this._loadingStatus = status;
+    this.cdr.detectChanges();
   }
 
   private _supportedTokens: SupportedTokensInfo;
@@ -66,16 +78,23 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public isLoading = true;
 
-  public loadingStatus: 'refreshing' | 'stopped' | '';
+  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
   private formSubscription$: Subscription;
 
   public settingsSubscription$: Subscription;
 
+  public fromBlockchain: BLOCKCHAIN_NAME;
+
+  public toBlockchain: BLOCKCHAIN_NAME;
+
+  public swapType: SWAP_PROVIDER_TYPE;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -112,7 +131,6 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.settingsSubscription$ =
       this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
         this.autoRefresh = settings.autoRefresh;
-        this.itForm.calculateTrades();
       });
 
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
@@ -132,6 +150,12 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private setFormValues(formValue: SwapFormInput): void {
     this.selectedFromAmount = formValue.fromAmount;
+    this.fromBlockchain = formValue.fromBlockchain;
+    this.toBlockchain = formValue.toBlockchain;
+    this.swapType =
+      formValue.fromBlockchain === formValue.toBlockchain
+        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        : SWAP_PROVIDER_TYPE.BRIDGE;
 
     if (this._supportedTokens) {
       this.setAvailableTokens('from');
@@ -143,30 +167,33 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   private setAvailableTokens(tokenType: 'from' | 'to'): void {
-    const oppositeBlockchainName = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
-    const oppositeBlockchain =
-      this.swapFormService.commonTrade.controls.input.value[oppositeBlockchainName];
-
     const oppositeTokenName = tokenType === 'from' ? 'toToken' : 'fromToken';
     const oppositeToken = this.swapFormService.commonTrade.controls.input.value[oppositeTokenName];
 
     const tokens: AvailableTokenAmount[] = [];
     if (!oppositeToken) {
-      Object.values(blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.symbol;
-
-        this._supportedTokens[blockchain][blockchain].forEach(token => {
-          const foundToken = this._supportedTokens[oppositeBlockchain][blockchain].find(
-            supportedToken => supportedToken.address?.toLowerCase() === token.address?.toLowerCase()
+      Object.values(blockchainsList).forEach(fromBlockchain => {
+        Object.values(blockchainsList).forEach(toBlockchain => {
+          this._supportedTokens[fromBlockchain.symbol][toBlockchain.symbol].forEach(
+            supportedToken => {
+              const foundToken = tokens.find(
+                token =>
+                  token.blockchain === supportedToken.blockchain &&
+                  token.address.toLowerCase() === supportedToken.address.toLowerCase()
+              );
+              if (!foundToken) {
+                tokens.push({
+                  ...supportedToken,
+                  available: true
+                });
+              }
+            }
           );
-
-          tokens.push({
-            ...token,
-            available: !!foundToken
-          });
         });
       });
     } else {
+      const oppositeBlockchain = oppositeToken.blockchain;
+
       this._supportedTokens[oppositeBlockchain][oppositeBlockchain].forEach(token => {
         tokens.push({
           ...token,
@@ -220,6 +247,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.selectedToken[tokenType] ||
       (tokenType === 'from' ? formValue.fromToken : formValue.toToken);
     if (!token) {
+      this.selectedToken[tokenType] = token;
       return;
     }
 
@@ -250,12 +278,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
-    return this.swapsService.getMinMaxAmounts(amountType);
-  }
-
   public onTokenInputAmountChange(amount: string): void {
-    if (!this.selectedFromAmount?.eq(amount)) {
+    if ((this.selectedFromAmount || amount) && !this.selectedFromAmount?.eq(amount)) {
       this.swapFormService.commonTrade.controls.input.patchValue({
         fromAmount: new BigNumber(amount)
       });
@@ -277,17 +301,5 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
     // Remove null control values.
     formControls.input.patchValue(revertData);
-  }
-
-  public async refreshTrade(): Promise<void> {
-    if (
-      this.itForm.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
-      this.itForm.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
-    ) {
-      this.loadingStatus = 'refreshing';
-      await this.itForm?.calculateTrades();
-      this.loadingStatus = 'stopped';
-      setTimeout(() => (this.loadingStatus = ''), 1000);
-    }
   }
 }

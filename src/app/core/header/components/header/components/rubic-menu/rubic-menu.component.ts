@@ -12,15 +12,13 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { UserInterface } from '../../../../../services/auth/models/user.interface';
-import { AuthService } from '../../../../../services/auth/auth.service';
-import { IBlockchain } from '../../../../../../shared/models/blockchain/IBlockchain';
-import { ProviderConnectorService } from '../../../../../services/blockchain/provider-connector/provider-connector.service';
-import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -54,7 +52,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.$currentUser = this.authService.getCurrentUser();
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.cdr.detectChanges();
     this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(network => {
       this.currentBlockchain = network;
@@ -65,7 +63,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._onNetworkChanges$.unsubscribe();
     this._onAddressChanges$.unsubscribe();
   }
@@ -78,13 +76,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.isOpened = false;
   }
 
-  public toggleConfirmModal(): void {
-    this.dialogService
-      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), {
-        size: 's',
-        label: this.translateService.instant('navigation.logoutMessage')
-      })
-      .subscribe();
+  public logout(): void {
+    this.authService.signOut().subscribe();
   }
 
   isLinkActive(url) {

@@ -15,12 +15,10 @@ import { Observable, Subscription } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
-import { LogoutConfirmModalComponent } from '../logout-confirm-modal/logout-confirm-modal.component';
 
 @Component({
   selector: 'app-user-profile',
@@ -95,13 +93,8 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  public toggleConfirmModal(): void {
-    this.dialogService
-      .open(new PolymorpheusComponent(LogoutConfirmModalComponent, this.injector), {
-        size: 's',
-        label: this.translateService.instant('navigation.logoutMessage')
-      })
-      .subscribe();
+  public logout(): void {
+    this.authService.signOut().subscribe();
   }
 
   public getDropdownStatus(status) {

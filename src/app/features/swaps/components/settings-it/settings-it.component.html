@@ -1,7 +1,9 @@
 <div class="settings">
   <form [formGroup]="instantTradeForm" class="settings__form">
     <div class="settings__form-row settings__form-row_large-input">
-      <label for="slippageTolerance">{{ 'settings.instantTrades.slippageTitle' | translate }}</label>
+      <label for="slippageTolerance">{{
+        'settings.instantTrades.slippageTitle' | translate
+      }}</label>
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
@@ -10,21 +12,23 @@
     </div>
     <div class="settings__form-row settings__form-row_united">
       <div
-        (click)="autoSlippage = true"
+        (click)="setAutoSlippageTolerance(!instantTradeForm.value.autoSlippageTolerance)"
         class="settings__button-auto"
-        [ngClass]="{ 'settings__button-auto_active': autoSlippage }"
+        [ngClass]="{ 'settings__button-auto_active': instantTradeForm.value.autoSlippageTolerance }"
       >
         Auto
       </div>
       <tui-input-number
         id="slippageTolerance"
+        [ngModel]="slippageTolerance"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+        [ngModelOptions]="{ standalone: true }"
         [tuiTextfieldLabelOutside]="true"
-        formControlName="slippageTolerance"
         [tuiTextfieldSize]="'s'"
         [max]="50"
         [min]="0.001"
         [postfix]="'%'"
-      >0.15%
+        >0.15%
       </tui-input-number>
     </div>
     <div class="settings__form-row settings__form-row_small-input">
@@ -44,16 +48,18 @@
         [max]="240"
         [min]="1"
         [tuiTextfieldSize]="'s'"
-      >20
+        >20
       </tui-input-number>
       <span> {{ 'common.minutes' | translate }}</span>
     </div>
 
     <div class="settings__form-row">
-      <label for="disableMultihops">{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
+      <label for="disableMultihops">{{
+        'settings.instantTrades.multihopsTitle' | translate
+      }}</label>
       <div
-        class='settings__hint'
-        [inlineSVG]='"/assets/images/icons/hint.svg"'
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.multihops' | translate"
       ></div>
       <tui-toggle
@@ -64,7 +70,9 @@
     </div>
 
     <div class="settings__form-row">
-      <label for="rubicOptimisation">{{ 'settings.instantTrades.rubicOptimisationTitle' | translate }}</label>
+      <label for="rubicOptimisation">{{
+        'settings.instantTrades.rubicOptimisationTitle' | translate
+      }}</label>
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
@@ -80,8 +88,8 @@
     <div class="settings__form-row">
       <label for="autoRefresh">{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
       <div
-        class='settings__hint'
-        [inlineSVG]='"/assets/images/icons/hint.svg"'
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
         [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
       ></div>
       <tui-toggle

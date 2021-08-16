@@ -4,36 +4,109 @@
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  margin-bottom: 15px;
   padding: 15px 20px 30px;
 
-  background-color: #fcfcfc;
+  background-color: var(--main-background);
   border-radius: 0 0 14px 14px;
 
-  &__provider-item:not(:last-child) {
-    margin-bottom: 15px;
+  &__provider-item:first-child {
+    width: 100%;
   }
-  
-  &__header {
+
+  &__provider-item:not(:first-child) {
+    width: calc(50% - 10px);
+
+    @include b($mobile-md) {
+      width: 100%;
+    }
+
+    &::ng-deep .provider-panel__amount {
+      width: 100%;
+    }
+  }
+
+  &__provider-item:not(:nth-child(2n+1)):last-child {
+    width: 100%;
+
+    ::ng-deep .provider-panel__body {
+      flex-direction: row;
+    }
+  }
+
+  &__left-part {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &__provider-badge {
+    padding: 2px 6px;
+
+    color: var(--form-bright-text-color);
+    font-weight: 300;
+    font-size: 14px;
+    text-transform: capitalize;
+
+    background: var(--rubic-base-10);
+    border-radius: 3px;
+  }
+
+  &__providers {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 20px;
+    margin-top: 30px;
+  }
+
+  &__body-top {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+
+    min-height: 60px;
+
+    @include b($mobile-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
-  &__title {
-    margin: 0;
-
-    font-weight: 300;
-    font-size: 16px;
+  &__amount {
+    text-align: right;
   }
 
-  &__analytics {
-    span {
-      margin-left: 10px;
+  &__token-amount {
+    max-width: 300px;
+    margin-bottom: 13px;
 
-      color: $green;
-      font-weight: 500;
-      font-size: 16px;
+    overflow: auto;
+
+    color: var(--form-bright-text-color);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 40px;
+    letter-spacing: 0.1em;
+
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__usd-amount {
+    color: var(--form-dim-text-color);
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  &__swap {
+    app-swap-button {
+      display: block;
+
+      margin-top: 16px;
     }
   }
 }
@@ -41,7 +114,7 @@ $green: rgb(74, 169, 86);
 @include b($mobile-md) {
   .instant-trade-bottom-form {
     &__swap {
-      padding: 0 20px
+      padding: 0 20px;
     }
   }
 }

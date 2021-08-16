@@ -58,26 +58,6 @@
   text-indent: -9999px;
 }
 
-.clearfix::after {
-  display: table;
-  clear: both;
-
-  content: '';
-}
-
-.centered {
-  display: table;
-  width: 100%;
-  height: 100%;
-
-  > * {
-    display: table-cell;
-
-    text-align: center;
-    vertical-align: middle;
-  }
-}
-
 @mixin placeholderColor($input-text-color) {
   &::-webkit-input-placeholder {
     color: $input-text-color;

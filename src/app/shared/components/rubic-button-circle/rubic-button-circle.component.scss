@@ -3,8 +3,8 @@
 :host {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
-  --tui-primary-hover: $rubic-base-01;
-  --tui-secondary-hover: $rubic-base-01;
+  --tui-primary-hover: var(--rubic-base-01);
+  --tui-secondary-hover: var(--rubic-base-01);
   --tui-primary-active: $rubic-primary;
   --tui-secondary-active: $rubic-primary;
   --tui-disabled-opacity: 1;
@@ -27,22 +27,22 @@
     }
 
     &._hovered {
-      background-color: $rubic-base-01;
-      box-shadow: $rubic-shadow-button-hover;
+      background-color: var(--rubic-base-01);
+      box-shadow: var(--rubic-shadow-button-hover-dim);
     }
 
     &._focused {
-      background-color: $rubic-base-01;
+      background-color: var(--rubic-base-01);
       border-color: $rubic-primary;
     }
 
     &._pressed {
       background-color: $rubic-primary;
       border-color: $rubic-primary;
-      box-shadow: $rubic-shadow-button-active;
+      box-shadow: var(--rubic-shadow-button-active);
 
       ::ng-deep .burger-menu__line {
-        background-color: $rubic-base-01;
+        background-color: white;
       }
     }
 
@@ -64,7 +64,7 @@
       background-color: transparent;
 
       &._hovered {
-        background-color: $rubic-base-01;
+        background-color: var(--rubic-base-01);
       }
 
       &._pressed {
