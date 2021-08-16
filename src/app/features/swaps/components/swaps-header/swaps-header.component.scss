@@ -43,6 +43,11 @@
       height: 100%;
       margin-right: 10px;
     }
+
+    span {
+      position: relative;
+      top: 1px;
+    }
   }
 
   &__icon {

@@ -212,7 +212,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
       default:
-        this.errorService.catch$(new NotSupportedItNetwork());
+        this.errorService.catch(new NotSupportedItNetwork());
     }
   }
 
@@ -253,7 +253,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (this.unsupportedItNetworks.includes(toBlockchain)) {
-      this.errorService.catch$(new NotSupportedItNetwork());
+      this.errorService.catch(new NotSupportedItNetwork());
       this.cdr.detectChanges();
       return;
     }
@@ -326,13 +326,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           : INSTANT_TRADES_STATUS.ERROR,
       error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
     }));
+    this.providerControllers = newProviders;
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
     if (bestProviderIndex !== -1) {
       newProviders[bestProviderIndex].isBestRate = true;
       newProviders[bestProviderIndex].isSelected = true;
 
-      this.providerControllers = newProviders;
       this.selectedProvider = newProviders[bestProviderIndex];
 
       this.tradeStatus = this.selectedProvider.needApprove
@@ -356,8 +356,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         const { gasFeeInUsd, to } = trade;
         const amountInUsd = to.amount?.multipliedBy(to.token.price);
 
-        if (amountInUsd && gasFeeInUsd) {
-          const profit = amountInUsd.minus(gasFeeInUsd);
+        if (amountInUsd) {
+          const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
           return profit.gt(bestRate.profit)
             ? {
                 index: i,
@@ -442,7 +442,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async approveTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     if (providerIndex === -1) {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.catch(new NoSelectedProviderError());
     }
 
     const provider = this.providerControllers[providerIndex];
@@ -465,7 +465,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         false
       );
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_APPROVE,
@@ -481,7 +481,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public async createTrade(): Promise<void> {
     const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
     if (providerIndex === -1) {
-      this.errorService.catch$(new NoSelectedProviderError());
+      this.errorService.catch(new NoSelectedProviderError());
     }
 
     const provider = this.providerControllers[providerIndex];
@@ -500,7 +500,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
     } catch (err) {
-      this.errorService.catch$(err);
+      this.errorService.catch(err);
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,

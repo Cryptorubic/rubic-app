@@ -1,15 +1,11 @@
 <div class="swaps-header">
   <div class="swaps-header__blockchain">
-    <img
-      [src]="fromBlockchainItem?.image"
-      [alt]="fromBlockchainItem?.visibleName">
-    {{ fromBlockchainItem?.visibleName }}
+    <img [src]="fromBlockchainItem?.image" [alt]="fromBlockchainItem?.visibleName" />
+    <span>{{ fromBlockchainItem?.visibleName }}</span>
   </div>
-  <img [src]="iconUrl" alt="Swap type" class="swaps-header__icon">
+  <img [src]="iconUrl" alt="Swap type" class="swaps-header__icon" />
   <div class="swaps-header__blockchain">
-    <img
-      [src]="toBlockchainItem?.image"
-      [alt]="toBlockchainItem?.visibleName">
-    {{ toBlockchainItem?.visibleName }}
+    <img [src]="toBlockchainItem?.image" [alt]="toBlockchainItem?.visibleName" />
+    <span>{{ toBlockchainItem?.visibleName }}</span>
   </div>
 </div>
