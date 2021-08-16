@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
-import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/sushi-swap-harmony/sushi-swap-harmony.service';
+import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
@@ -72,7 +72,7 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,

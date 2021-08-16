@@ -1,20 +1,21 @@
 import { AbiItem } from 'web3-utils';
 import BigNumber from 'bignumber.js';
+import { UniswapV2Constants } from '../../../models/uniswap-v2/UniswapV2Constants';
 
-export const WONE = {
-  address: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE https://explorer.harmony.one/
-  testnetAddress: 'one1cqeqx6z3fdukzftdv27hhjvyvg7q7lm9yhykcm' // WONE https://explorer.pops.one/
+export const wethAddressNetMode = {
+  mainnet: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE https://explorer.harmony.one/
+  testnet: 'one1cqeqx6z3fdukzftdv27hhjvyvg7q7lm9yhykcm' // WONE https://explorer.pops.one/
 };
 
-export const routingProviders = {
-  addresses: [
+export const routingProvidersNetMode = {
+  mainnet: [
     '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE
     '0xef977d2f931c1978db5f6747666fa1eacb0d0339', // DAI
     '0x985458e523db3d53125813ed68c274899e9dfab4', // USDC
     '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f', // USDT
     '0x3095c7557bcb296ccc6e363de01b760ba031f2d9' // WBTC
   ],
-  testnetAddresses: [
+  testnet: [
     'one1cqeqx6z3fdukzftdv27hhjvyvg7q7lm9yhykcm' // WONE
   ]
 };
@@ -43,8 +44,15 @@ export const ethToTokensEstimatedGas = [
 ];
 
 export const sushiSwapHarmonyContracts = {
-  address: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
-  testnetAddress: '0x5546e0295c7bb85b2fC00883B6025BA0Db06e50A'
+  mainnet: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+  testnet: '0x5546e0295c7bb85b2fC00883B6025BA0Db06e50A'
+};
+
+export const sushiSwapHarmonyConstants: UniswapV2Constants = {
+  contractAddressNetMode: sushiSwapHarmonyContracts,
+  wethAddressNetMode,
+  routingProvidersNetMode,
+  maxTransitTokens
 };
 
 export const abi = [
