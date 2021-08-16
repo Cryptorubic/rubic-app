@@ -1,0 +1,21 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+     <img class="modal__success-image" src="assets/images/icons/success.svg" alt="success">
+     <h2 class="modal__title">{{ 'modals.successTxModal.title' | translate }}</h2>
+    </main>
+    <footer class="modal__footer">
+      <a class="modal__footer-link" routerLink="/my-trades">
+        {{ 'modals.successTxModal.seeDetails' | translate }}
+        <span inlineSVG="assets/images/icons/link-arrow.svg"></span>
+      </a>
+      <app-rubic-button
+        fullWidth
+        appearance="secondary"
+        (click)="closeModal()"
+      >
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </footer>
+  </div>
+</div>

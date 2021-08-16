@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { OneInchEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { forkJoin, Observable, of, Subscription, timer } from 'rxjs';
 import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -26,6 +26,10 @@ import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SuccessTxModalComponent } from '../../../../shared/components/success-tx-modal/success-tx-modal.component';
+import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
+import { ScannerLinkPipe } from '../../../../shared/pipes/scanner-link.pipe';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +64,10 @@ export class InstantTradeService {
     private readonly swapFormService: SwapFormService,
     private readonly web3Public: Web3PublicService,
     private translateService: TranslateService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private injector: Injector,
+    private scannerLinkPipe: ScannerLinkPipe
   ) {
     this.setBlockchainsProviders();
   }
@@ -131,6 +138,12 @@ export class InstantTradeService {
           status: TuiNotification.Success
         }
       );
+
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's'
+        })
+        .subscribe();
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({

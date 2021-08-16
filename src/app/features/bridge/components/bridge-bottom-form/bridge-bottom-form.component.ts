@@ -28,10 +28,12 @@ import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
+import { SuccessTxModalComponent } from '../../../../shared/components/success-tx-modal/success-tx-modal.component';
 
 interface BlockchainInfo {
   name: string;
@@ -402,6 +404,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             status: TuiNotification.Success,
             autoClose: 15000
           });
+
+          this.dialogService
+            .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+              size: 's'
+            })
+            .subscribe();
 
           this.tokensService.recalculateUsersBalance();
 
