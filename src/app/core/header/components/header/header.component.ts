@@ -17,6 +17,9 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -44,7 +47,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
     private router: Router,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly swapFormService: SwapFormService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -83,6 +87,25 @@ export class HeaderComponent implements AfterViewInit {
   @HostListener('window:resize', ['$event'])
   public onResize() {
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
+  }
+
+  public navigateToBridge(): void {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    this.queryParamsService.setQueryParams({
+      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      amount: undefined,
+      from: undefined,
+      to: undefined
+    });
   }
 
   isLinkActive(url) {

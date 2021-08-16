@@ -21,6 +21,10 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { NAVIGATION_LIST } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-list';
 import { HeaderStore } from '../../../../services/header.store';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -50,6 +54,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly providerConnectorService: ProviderConnectorService,
     private translateService: TranslateService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly swapFormService: SwapFormService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector
   ) {
@@ -79,6 +85,25 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public closeMenu() {
     this.isOpened = false;
+  }
+
+  public navigateToBridge(): void {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    this.queryParamsService.setQueryParams({
+      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      amount: undefined,
+      from: undefined,
+      to: undefined
+    });
   }
 
   public logout(): void {

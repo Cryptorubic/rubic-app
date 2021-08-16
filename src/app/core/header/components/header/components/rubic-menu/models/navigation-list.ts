@@ -38,5 +38,11 @@ export const NAVIGATION_LIST = [
     type: 'external',
     link: 'https://shop.rubic.exchange',
     imagePath: ``
+  },
+  {
+    translateKey: 'Crypto Tap',
+    type: 'internal',
+    link: 'crypto-tap',
+    imagePath: ''
   }
 ] as NavigationItem[];

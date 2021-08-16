@@ -51,12 +51,11 @@
         </a>
 
         <a
-          routerLink="crypto-tap"
-          (click)="closeMenu()"
+          (click)="navigateToBridge()"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
         >
-          <button tuiOption class="data-list__option">Crypto Tap</button>
+          <button tuiOption class="data-list__option">Bridge</button>
         </a>
 
         <button
@@ -64,7 +63,7 @@
           class="data-list__option data-list__option_disabled"
           tuiHint="{{ 'navigation.notAvailable' | translate }}"
         >
-          Order Book
+          Cross Chain
         </button>
       </tui-opt-group>
 

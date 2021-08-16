@@ -12,11 +12,11 @@
       Swaps
     </a>
     <a class="button-link"
-       routerLink="/crypto-tap"
+       (click)="navigateToBridge()"
        routerLinkActive="button-link_active">
-      Crypto Tap
+      Bridge
     </a>
-    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order Book</span>
+    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Cross Chain</span>
   </nav>
 
   <div class="rubic-header__profile">
