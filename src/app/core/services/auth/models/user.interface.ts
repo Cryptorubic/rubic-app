@@ -1,4 +1,4 @@
-export interface MetamaskLoginInterface {
+export interface WalletLoginInterface {
   code: string;
   payload: {
     user?: {
