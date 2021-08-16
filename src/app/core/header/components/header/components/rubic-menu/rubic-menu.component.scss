@@ -44,6 +44,7 @@
   padding: 0;
 
   &__option {
+    justify-content: flex-start;
     height: 45px;
     min-height: initial !important;
     margin: 0;
@@ -95,16 +96,26 @@
     }
 
     ::ng-deep {
-      > * {
-        display: flex;
-        width: 100%;
-      }
-
       a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
         color: var(--rubic-base-02);
         text-decoration: none;
 
         transition: 0.35s color ease;
+      }
+    }
+  }
+
+  &__option-image {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+
+    ::ng-deep svg {
+      width: auto;
+      height: 100%;
+
+      path {
+        fill: var(--rubic-base-02);
       }
     }
   }

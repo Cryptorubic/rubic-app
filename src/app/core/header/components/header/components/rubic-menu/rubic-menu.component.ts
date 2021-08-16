@@ -18,6 +18,8 @@ import { UserInterface } from 'src/app/core/services/auth/models/user.interface'
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
+import { NAVIGATION_LIST } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-list';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({
@@ -39,6 +41,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   private _onAddressChanges$: Subscription;
 
+  public readonly navigationList: NavigationItem[];
+
   constructor(
     private router: Router,
     private headerStore: HeaderStore,
@@ -50,6 +54,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     @Inject(Injector) private injector: Injector
   ) {
     this.$currentUser = this.authService.getCurrentUser();
+    this.navigationList = NAVIGATION_LIST;
   }
 
   public ngAfterViewInit(): void {
