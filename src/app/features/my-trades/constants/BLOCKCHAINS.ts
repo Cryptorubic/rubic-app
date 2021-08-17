@@ -33,6 +33,11 @@ export const BLOCKCHAINS: Blockchains = {
     name: 'Polygon',
     img: `${imageBaseSrc}polygon.svg`
   },
+  [BLOCKCHAIN_NAME.POLYGON]: {
+    key: BLOCKCHAIN_NAME.POLYGON,
+    name: 'Harmony',
+    img: `${imageBaseSrc}harmony.svg`
+  },
   [BLOCKCHAIN_NAME.TRON]: {
     key: BLOCKCHAIN_NAME.TRON,
     name: 'TRON',

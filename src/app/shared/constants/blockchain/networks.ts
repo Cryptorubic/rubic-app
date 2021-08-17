@@ -137,5 +137,20 @@ export default [
       symbol: 'MATIC',
       decimals: 18
     }
+  },
+  {
+    id: 1666700000,
+    name: BLOCKCHAIN_NAME.HARMONY_TESTNET,
+    label: 'Harmony',
+    scannerUrl: 'https://explorer.pops.one/',
+    rpcLink: 'https://api.s0.b.hmny.io',
+    imagePath: 'assets/images/icons/coins/harmony.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.HARMONY_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ONE',
+      symbol: 'ONE',
+      decimals: 18
+    }
   }
 ] as const;

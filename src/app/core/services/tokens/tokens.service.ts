@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
-import { List } from 'immutable';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Token } from 'src/app/shared/models/tokens/Token';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, forkJoin, from, Observable, of} from 'rxjs';
+import {List} from 'immutable';
+import {TokenAmount} from 'src/app/shared/models/tokens/TokenAmount';
+import {coingeckoTestTokens} from 'src/test/tokens/coingecko-tokens';
+import {AuthService} from 'src/app/core/services/auth/auth.service';
+import {UseTestingModeService} from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import {TokensApiService} from 'src/app/core/services/backend/tokens-api/tokens-api.service';
+import {BLOCKCHAIN_NAME} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import {Token} from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { map, tap } from 'rxjs/operators';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import {Web3PublicService} from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import {Web3Public} from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import {map, tap} from 'rxjs/operators';
+import {CoingeckoApiService} from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
+import {NATIVE_TOKEN_ADDRESS} from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 @Injectable({
   providedIn: 'root'
@@ -89,7 +89,8 @@ export class TokensService {
       const blockchains: BLOCKCHAIN_NAME[] = [
         BLOCKCHAIN_NAME.ETHEREUM,
         BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        BLOCKCHAIN_NAME.POLYGON
+        BLOCKCHAIN_NAME.POLYGON,
+        BLOCKCHAIN_NAME.HARMONY
       ];
       const promises = [];
 
