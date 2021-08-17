@@ -75,7 +75,7 @@ export class AuthService {
    * @description Fetch authorized user address or auth message in case there's no authorized user.
    */
   private fetchMetamaskLoginBody(): Observable<MetamaskLoginInterface> {
-    return this.httpService.get('metamask/login/', {});
+    return this.httpService.get('auth/wallets/login/', {});
   }
 
   /**
@@ -87,7 +87,12 @@ export class AuthService {
    */
   private sendSignedNonce(address: string, nonce: string, signature: string): Promise<void> {
     return this.httpService
-      .post('metamask/login/', { address, message: nonce, signed_message: signature })
+      .post('auth/wallets/login/', {
+        address,
+        message: nonce,
+        signedMessage: signature,
+        walletProvider: 'metamask'
+      })
       .toPromise();
   }
 
@@ -184,7 +189,7 @@ export class AuthService {
    * @description Logout request to backend.
    */
   public signOut(): Observable<string> {
-    return this.httpService.post('metamask/logout/', {}).pipe(
+    return this.httpService.post('auth/wallets/logout', {}).pipe(
       finalize(() => {
         this.providerConnectorService.deActivate();
         this.$currentUser.next(null);
