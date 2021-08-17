@@ -54,6 +54,7 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
+import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective
+    OnlyFrameDirective,
+    IframeBlockchainIndicatorComponent
   ],
   imports: [
     CommonModule,
@@ -150,7 +152,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     SwapsHeaderComponent,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective
+    OnlyFrameDirective,
+    IframeBlockchainIndicatorComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

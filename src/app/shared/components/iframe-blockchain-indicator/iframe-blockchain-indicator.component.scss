@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+
+.blockchain-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+
+  background-color: var(--main-background);
+
+  border-radius: 10px;
+
+  img {
+    max-width: 24px;
+    max-height: 24px;
+  }
+}

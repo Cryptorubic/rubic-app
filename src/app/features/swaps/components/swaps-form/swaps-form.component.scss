@@ -111,6 +111,16 @@
       width: 100%;
     }
   }
+
+  &__block {
+    @include iframe {
+      display: flex;
+
+      app-iframe-blockchain-indicator {
+        margin-right: 10px;
+      }
+    }
+  }
 }
 
 @include b($mobile-md) {
