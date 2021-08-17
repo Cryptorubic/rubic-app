@@ -35,6 +35,7 @@ import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-he
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
+import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -53,7 +54,6 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
-import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 
 @NgModule({
   declarations: [
@@ -149,7 +149,8 @@ import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-fra
     AnalyticsLinkComponent,
     SwapsHeaderComponent,
     LetDirective,
-    NoFrameDirective
+    NoFrameDirective,
+    OnlyFrameDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

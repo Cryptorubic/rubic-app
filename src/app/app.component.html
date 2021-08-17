@@ -1,12 +1,20 @@
 <tui-root>
 
   <ng-template [ngIf]="isBackendAvailable">
-    <div class="wrapper">
+    <div class="wrapper" *noFrame>
       <app-header></app-header>
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
-      <app-rubic-footer *noFrame class="footer"></app-rubic-footer>
+      <app-rubic-footer class="footer"></app-rubic-footer>
+    </div>
+    <div class="iframe-wrapper" *onlyFrame="'any'">
+      <div class="iframe-content">
+        <app-header></app-header>
+        <main class="main-content">
+          <router-outlet></router-outlet>
+        </main>
+      </div>
     </div>
   </ng-template>
 

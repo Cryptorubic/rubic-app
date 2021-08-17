@@ -1,6 +1,7 @@
 <header class="rubic-header">
   <a class="rubic-header__logo" routerLink="/">
-    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+    <img *noFrame src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+    <img *onlyFrame="'any'" src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
   </a>
 
   <app-rubic-menu *noFrame class="rubic-header__menu"></app-rubic-menu>
@@ -28,7 +29,9 @@
        {{ 'navigation.myTrades' | translate }}
     </a>
 
-    <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
+    <ng-container *noFrame>
+      <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
+    </ng-container>
     <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
     <app-rubic-language-select *noFrame></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>

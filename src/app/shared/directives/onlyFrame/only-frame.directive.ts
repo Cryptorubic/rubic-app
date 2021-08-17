@@ -15,7 +15,7 @@ export class OnlyFrameDirective<T> implements OnDestroy {
   ) {}
 
   @Input()
-  set onlyFrame(value: 'horizontal' | 'vertical' | undefined) {
+  set onlyFrame(value: 'horizontal' | 'vertical' | 'any' | undefined) {
     this.$iframeSubscription = this.iframeService.iframeAppearance$.subscribe(appearance => {
       const appearanceValues = ['horizontal', 'vertical'];
       if (!appearanceValues.includes(appearance)) {
@@ -23,7 +23,7 @@ export class OnlyFrameDirective<T> implements OnDestroy {
         return;
       }
 
-      if (!value || appearance === value) {
+      if (!value || value === 'any' || appearance === value) {
         this.viewContainer.createEmbeddedView(this.templateRef);
       } else {
         this.viewContainer.clear();

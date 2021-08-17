@@ -39,3 +39,28 @@ app-spinner {
     margin: 0 auto;
   }
 }
+
+.iframe-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1180px;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.iframe-content {
+  position: relative;
+
+  width: 100%;
+
+  app-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+
+    padding: 15px 40px;
+  }
+}
