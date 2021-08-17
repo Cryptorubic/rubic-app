@@ -4,6 +4,7 @@ import { BLOCKCHAIN_NAME } from './BLOCKCHAIN_NAME';
 export interface IBlockchain {
   id: number;
   name: BLOCKCHAIN_NAME;
+  label: string;
   scannerUrl: string;
   rpcLink: string;
   imagePath: string;

@@ -4,6 +4,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 
 @Injectable({
@@ -13,39 +14,20 @@ export class ErrorsService {
   constructor(
     private readonly notificationsService: NotificationsService,
     @Inject(Injector) private injector: Injector,
-    private readonly translateService: TranslateService
+    private translateService: TranslateService
   ) {}
 
-  public throw$(error: RubicError): never {
-    // tslint:disable-next-line:no-console
-    console.debug(error);
-
-    const options = {
-      label: this.translateService.instant('common.error'),
-      status: TuiNotification.Error,
-      data: {},
-      autoClose: 7000
-    };
-
-    if (error?.type === 'component') {
-      const errorComponent = new PolymorpheusComponent(
-        error.component || UndefinedErrorComponent,
-        this.injector
-      );
-      options.data = error?.data;
-      this.notificationsService.show(errorComponent, options);
-      throw error;
-    }
-
-    const text = error?.translateKey
-      ? this.translateService.instant(error.translateKey)
-      : error.message;
-    this.notificationsService.show(text, options);
+  /**
+   * @deprecated
+   * @param error
+   */
+  public throw(error: RubicError<ERROR_TYPE>): never {
+    this.catch(error);
 
     throw error;
   }
 
-  public catch$(error: RubicError): void {
+  public catch(error: RubicError<ERROR_TYPE>): void {
     console.debug(error);
 
     if (error.displayError === false || error.message.includes('Attempt to use a destroyed view')) {
@@ -59,7 +41,7 @@ export class ErrorsService {
       autoClose: 7000
     };
 
-    if (error?.type === 'component') {
+    if (error?.type === ERROR_TYPE.COMPONENT) {
       const errorComponent = new PolymorpheusComponent(
         error.component || UndefinedErrorComponent,
         this.injector
@@ -72,7 +54,7 @@ export class ErrorsService {
     }
 
     const text = error?.translateKey
-      ? this.translateService.instant(error.translateKey)
+      ? this.translateService.instant(error.translateKey, error?.data)
       : error.message;
     this.notificationsService.show(text, options);
   }

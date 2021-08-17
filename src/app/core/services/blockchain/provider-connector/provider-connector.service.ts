@@ -91,14 +91,24 @@ export class ProviderConnectorService {
   /**
    * Setup provider based on local storage.
    */
-  public async installProvider(): Promise<void> {
-    const provider = this.storage.getItem('provider') as WALLET_NAME;
-    await this.connectProvider(provider);
+  public async installProvider(): Promise<boolean> {
+    const provider = this.storage.getItem('provider');
+    if (!provider) {
+      return false;
+    }
+    if (provider === WALLET_NAME.WALLET_LINK) {
+      const chainId = this.storage.getItem('chainId');
+      return this.connectProvider(provider, chainId);
+    }
+    return this.connectProvider(provider);
   }
 
   public async activate(): Promise<void> {
     await this.provider.activate();
     this.storage.setItem('provider', this.provider.name);
+    if (this.provider.name === WALLET_NAME.WALLET_LINK) {
+      this.storage.setItem('chainId', this.provider.network.id);
+    }
   }
 
   // eslint-disable-next-line
@@ -119,39 +129,45 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<void> {
-    switch (provider) {
-      case WALLET_NAME.WALLET_LINK: {
-        this.provider = new WalletLinkProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService,
-          chainId
-        );
-        break;
+  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<boolean> {
+    try {
+      switch (provider) {
+        case WALLET_NAME.WALLET_LINK: {
+          this.provider = new WalletLinkProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService,
+            chainId
+          );
+          break;
+        }
+        case WALLET_NAME.WALLET_CONNECT: {
+          this.provider = new WalletConnectProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService
+          );
+          break;
+        }
+        case WALLET_NAME.METAMASK:
+        default: {
+          this.provider = new MetamaskProvider(
+            this.web3,
+            this.$networkChangeSubject,
+            this.$addressChangeSubject,
+            this.errorService
+          ) as PrivateProvider;
+          await (this.provider as MetamaskProvider).setupDefaultValues();
+        }
       }
-      case WALLET_NAME.WALLET_CONNECT: {
-        this.provider = new WalletConnectProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        );
-        break;
-      }
-      case WALLET_NAME.METAMASK:
-      default: {
-        this.provider = new MetamaskProvider(
-          this.web3,
-          this.$networkChangeSubject,
-          this.$addressChangeSubject,
-          this.errorService
-        ) as PrivateProvider;
-        await (this.provider as MetamaskProvider).setupDefaultValues();
-      }
+      this.providerName = provider;
+      return true;
+    } catch (e) {
+      this.errorService.catch(e);
+      return false;
     }
-    this.providerName = provider;
   }
 
   public async connectDefaultProvider(): Promise<void> {
@@ -223,10 +239,10 @@ export class ProviderConnectorService {
           await this.addChain(networkName);
           await this.provider.switchChain(chainId);
         } catch (err) {
-          this.errorService.catch$(err);
+          this.errorService.catch(err);
         }
       } else {
-        this.errorService.catch$(switchError);
+        this.errorService.catch(switchError);
       }
     }
   }
