@@ -24,7 +24,7 @@
         <app-rubic-button
           [fullWidth]="true"
           (onClick)="swapClick.emit()"
-          [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
+          [loading]="status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
           appearance="secondary"
           >Swap</app-rubic-button
@@ -35,7 +35,6 @@
             class="timeline__point"
             [attr.disabled]="
               status === TRADE_STATUS.READY_TO_SWAP ||
-              status === TRADE_STATUS.SWAP_IN_PROGRESS ||
               status === TRADE_STATUS.DISABLED
             "
           >
@@ -60,7 +59,7 @@
         [fullWidth]="true"
         (onClick)="swapClick.emit()"
         [loading]="
-          status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || dataLoading
+          status === TRADE_STATUS.LOADING || dataLoading
         "
         [disabled]="status === TRADE_STATUS.DISABLED"
         appearance="secondary"
