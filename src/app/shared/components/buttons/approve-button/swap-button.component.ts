@@ -181,12 +181,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
         translateParams = { key: 'errors.setTronAddress' };
         break;
-      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]:
+      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         translateParams = {
           key: 'errors.chooseNetworkWallet',
           interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
         };
         break;
+      }
       default:
         translateParams = {
           key: 'Unknown Error',
@@ -301,7 +302,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.providerConnectorService.provider) {
       const userBlockchain = this.providerConnectorService.network?.name;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        this.fromBlockchain !== userBlockchain &&
+        (this.fromBlockchain !== userBlockchain && this.fromToken?.blockchain !== userBlockchain) &&
         (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
