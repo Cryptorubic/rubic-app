@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@import 'src/styles';
 
 .user-profile {
   display: flex;
@@ -11,10 +11,21 @@
 
   transition: 0.3s ease-in-out;
 
+  @include iframe {
+    height: 40px;
+    padding: 0 20px;
+
+    background-color: var(--main-background);
+  }
+
   &:hover {
     box-shadow: var(--rubic-shadow-button-hover-dim);
 
     cursor: pointer;
+
+    @include iframe {
+      cursor: default;
+    }
   }
 
   &__chain-icon {

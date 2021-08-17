@@ -29,10 +29,14 @@
        {{ 'navigation.myTrades' | translate }}
     </a>
 
-    <ng-container *noFrame>
-      <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
+    <ng-container *ngIf="!($currentUser | async)?.address; else loggedIn">
+      <app-login-button class="rubic-header__login" *noFrame></app-login-button>
     </ng-container>
-    <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
+    <ng-template #loggedIn>
+      <app-user-profile class="rubic-header__profile-user"></app-user-profile>
+      <app-iframe-logout-button *onlyFrame="'any'"></app-iframe-logout-button>
+    </ng-template>
+
     <app-rubic-language-select *noFrame></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>

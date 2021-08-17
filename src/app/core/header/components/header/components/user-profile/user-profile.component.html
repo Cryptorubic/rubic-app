@@ -1,4 +1,5 @@
 <app-dropdown-selector
+  *noFrame
   (opened)="getDropdownStatus($event)"
   [dropdownButtonTemplate]="dropdownButtonTemplate"
   [dropdownOptionsTemplates]="dropdownOptionsTemplates"
@@ -24,3 +25,19 @@
 <ng-template #dropdownOptionTemplate>
   <div (click)="logout()">{{ 'navigation.logout' | translate }}</div>
 </ng-template>
+
+<ng-container *onlyFrame="'any'">
+  <div class="user-profile">
+    <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
+      <img
+        (click)="useTestingMode()"
+        [src]="currentBlockchain?.imagePath"
+        alt="($currentBlockchain | async)?.name"
+        width="25"
+        height="25">
+    </div>
+    <div class="user-profile__address">
+      {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
+    </div>
+  </div>
+</ng-container>

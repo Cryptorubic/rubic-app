@@ -78,6 +78,12 @@
     padding: 0;
   }
 
+  @include iframe-horizontal {
+    app-iframe-logout-button {
+      margin-left: 10px;
+    }
+  }
+
   &__disabled-link {
     color: #909090;
     font-size: 16px;
@@ -91,6 +97,10 @@
 
   &__profile {
     grid-gap: 10px;
+
+    @include iframe {
+      grid-gap: 0;
+    }
   }
 
   &__nav {

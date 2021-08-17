@@ -22,11 +22,11 @@
   @include iframe-horizontal {
 
     display: flex;
-    align-items: center;
+    align-items: flex-end;
 
     min-height: 180px;
     margin-bottom: 0;
-    padding: 0 20px;
+    padding: 0 20px 55px;
   }
 
   ~ *:not(:last-child) {
