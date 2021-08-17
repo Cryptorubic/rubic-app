@@ -10,6 +10,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.ETHEREUM]: Blockchain;
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Blockchain;
   [BLOCKCHAIN_NAME.POLYGON]: Blockchain;
+  [BLOCKCHAIN_NAME.HARMONY]: Blockchain;
   [BLOCKCHAIN_NAME.TRON]: Blockchain;
   [BLOCKCHAIN_NAME.XDAI]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
@@ -33,8 +34,8 @@ export const BLOCKCHAINS: Blockchains = {
     name: 'Polygon',
     img: `${imageBaseSrc}polygon.svg`
   },
-  [BLOCKCHAIN_NAME.POLYGON]: {
-    key: BLOCKCHAIN_NAME.POLYGON,
+  [BLOCKCHAIN_NAME.HARMONY]: {
+    key: BLOCKCHAIN_NAME.HARMONY,
     name: 'Harmony',
     img: `${imageBaseSrc}harmony.svg`
   },
