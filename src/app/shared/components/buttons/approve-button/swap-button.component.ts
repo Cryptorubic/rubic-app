@@ -288,9 +288,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     let balance = this.fromToken.amount;
     if (!this.fromToken.amount.isFinite()) {
       balance = (
-        await (<Web3Public>(
-          this.web3PublicService[this.fromToken.blockchain]
-        )).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
+        await (
+          this.web3PublicService[this.fromToken.blockchain] as Web3Public
+        ).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
       ).div(10 ** this.fromToken.decimals);
     }
 
@@ -302,7 +302,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.providerConnectorService.provider) {
       const userBlockchain = this.providerConnectorService.network?.name;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        (this.fromBlockchain !== userBlockchain && this.fromToken?.blockchain !== userBlockchain) &&
+        this.fromBlockchain !== userBlockchain &&
+        this.fromToken?.blockchain !== userBlockchain &&
         (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
