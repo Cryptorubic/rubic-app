@@ -72,7 +72,7 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,

@@ -357,7 +357,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           return bestRate;
         }
         const { gasFeeInUsd, to } = trade;
-        const amountInUsd = to.amount?.multipliedBy(to.token.price);
+        const amountInUsd = to.token.price ? to.amount?.multipliedBy(to.token.price) : to.amount;
 
         if (amountInUsd) {
           const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
@@ -420,7 +420,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public getUsdPrice(): string {
     const tradeTo = this.selectedProvider.trade.to;
-    return tradeTo.amount.multipliedBy(tradeTo.token.price).toFormat(2, BIG_NUMBER_FORMAT);
+    const usdPrice = tradeTo.amount.multipliedBy(tradeTo.token.price);
+    if (usdPrice.isNaN()) {
+      return '';
+    }
+    return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
   }
 
   private setProviderState(
