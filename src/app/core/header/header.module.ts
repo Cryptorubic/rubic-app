@@ -21,6 +21,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
 import { CoinbaseConfirmModalComponent } from './components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
+import { IframeSettingsButtonComponent } from './components/header/components/iframe-settings-button/iframe-settings-button.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { CoinbaseConfirmModalComponent } from './components/header/components/co
     WalletsModalComponent,
     RubicMenuComponent,
     CoinbaseConfirmModalComponent,
-    IframeLogoutButtonComponent
+    IframeLogoutButtonComponent,
+    IframeSettingsButtonComponent
   ],
   imports: [
     CommonModule,
