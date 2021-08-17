@@ -259,7 +259,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.authServiceSubscription$.unsubscribe();
+    if (!this.iframeService.isIframe) {
+      this.authServiceSubscription$.unsubscribe();
+    }
     this.useTestingModeSubscription$?.unsubscribe();
     this.formServiceSubscription$?.unsubscribe();
     this.providerConnectorServiceSubscription$?.unsubscribe();
