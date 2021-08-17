@@ -1,6 +1,22 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
+.cube-image {
+  max-height: 350px;
+}
+
+.instruction-image {
+  ::ng-deep svg {
+    rect {
+      fill: var(--main-form-background);
+    }
+
+    path[fill='black'] {
+      fill: var(--form-bright-text-color);
+    }
+  }
+}
+
 .about-page {
   font-weight: normal;
 
