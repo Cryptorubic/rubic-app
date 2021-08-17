@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -12,12 +13,13 @@ import { QueryParamsService } from './core/services/query-params/query-params.se
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   public isBackendAvailable: boolean;
 
   constructor(
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
+    private readonly iframeService: IframeService,
     healthcheckService: HealthcheckService,
     queryParamsService: QueryParamsService,
     activatedRoute: ActivatedRoute,
@@ -39,6 +41,12 @@ export class AppComponent {
     this.setupLanguage();
 
     healthcheckService.healthCheck().then(isAvailable => (this.isBackendAvailable = isAvailable));
+  }
+
+  ngAfterViewInit() {
+    if (this.iframeService.isIframe) {
+      document.getElementById('chat-widget-container')?.remove();
+    }
   }
 
   private setupLanguage(): void {
