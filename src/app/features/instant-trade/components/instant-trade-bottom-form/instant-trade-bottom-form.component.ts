@@ -553,6 +553,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           providerIndex,
           INSTANT_TRADES_STATUS.COMPLETED
         );
+      } else {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       }
       this.cdr.detectChanges();
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
