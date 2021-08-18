@@ -40,6 +40,8 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   public selectedToken: Token;
 
+  public buttonHovered: boolean = null;
+
   private $formSubscription: Subscription;
 
   constructor(

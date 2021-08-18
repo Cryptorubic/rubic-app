@@ -5,6 +5,7 @@ import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
 
 interface Store {
+  unreadTrades: number;
   provider: WALLET_NAME;
   settings: unknown;
   theme: 'dark' | 'light';
@@ -17,7 +18,7 @@ interface Store {
 export class StoreService {
   private readonly $dataSubject: BehaviorSubject<Store>;
 
-  private readonly storageKey: string;
+  private readonly storageKey = 'rubicData';
 
   public get $data(): Observable<Store> {
     return this.$dataSubject.asObservable();
@@ -29,7 +30,6 @@ export class StoreService {
     private readonly cookieService: CookieService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.storageKey = 'rubicData';
     this.$dataSubject = new BehaviorSubject<Store>(null);
   }
 
@@ -52,7 +52,9 @@ export class StoreService {
       ...this.$dataSubject.value,
       [key]: value
     };
+
     const jsonData = JSON.stringify(newData);
+
     if (!this.isIframe) {
       localStorage.setItem(this.storageKey, jsonData);
     } else {

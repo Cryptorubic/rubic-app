@@ -7,7 +7,8 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit
+  AfterViewInit,
+  OnInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -17,6 +18,8 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
+import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -36,6 +39,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public $currentUser: Observable<UserInterface>;
 
+  public countNotifications$: Observable<number>;
+
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
@@ -44,10 +49,12 @@ export class HeaderComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
     private router: Router,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
+    this.loadUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
@@ -59,6 +66,7 @@ export class HeaderComponent implements AfterViewInit {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
+    this.countNotifications$ = this.counterNotificationsService.unread$;
   }
 
   public ngAfterViewInit(): void {

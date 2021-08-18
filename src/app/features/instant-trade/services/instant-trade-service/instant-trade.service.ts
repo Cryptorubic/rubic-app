@@ -140,11 +140,7 @@ export class InstantTradeService {
           trade,
           txHash: transactionHash
         })
-        .catch(_err => {
-          const error = new CustomError('Notify Instant Trade bot failed');
-          error.displayError = false;
-          throw error;
-        });
+        .catch(_err => {});
     } catch (err) {
       this.modalShowing?.unsubscribe();
       if (transactionHash) {
