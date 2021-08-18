@@ -1,11 +1,18 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {FormService} from 'src/app/shared/models/swaps/FormService';
-import {startWith} from 'rxjs/operators';
-import {NATIVE_TOKEN_ADDRESS} from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import {BLOCKCHAIN_NAME} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import {Web3PublicService} from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import {Subscription} from 'rxjs';
-import {TokenAmount} from 'src/app/shared/models/tokens/TokenAmount';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { startWith } from 'rxjs/operators';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Subscription } from 'rxjs';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 const WETH_ADDRESSES = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
