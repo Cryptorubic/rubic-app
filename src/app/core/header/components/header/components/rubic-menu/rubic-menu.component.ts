@@ -18,6 +18,7 @@ import { UserInterface } from 'src/app/core/services/auth/models/user.interface'
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({
@@ -33,6 +34,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public $currentUser: Observable<UserInterface>;
 
+  public $countUnread: Observable<number>;
+
   public currentBlockchain: IBlockchain;
 
   private _onNetworkChanges$: Subscription;
@@ -46,10 +49,12 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly providerConnectorService: ProviderConnectorService,
     private translateService: TranslateService,
+    private readonly counterNotificationsService: CounterNotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector
   ) {
     this.$currentUser = this.authService.getCurrentUser();
+    this.$countUnread = this.counterNotificationsService.unread$;
   }
 
   public ngAfterViewInit(): void {

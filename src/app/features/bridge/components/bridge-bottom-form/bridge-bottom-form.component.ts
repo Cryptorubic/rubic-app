@@ -28,6 +28,7 @@ import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -148,7 +149,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     @Inject(Injector) private readonly injector: Injector,
     private readonly translate: TranslateService,
     private readonly tokensService: TokensService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade = new Subject<void>();
@@ -403,6 +405,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             autoClose: 15000
           });
 
+          this.counterNotificationsService.updateUnread();
           this.tokensService.recalculateUsersBalance();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;

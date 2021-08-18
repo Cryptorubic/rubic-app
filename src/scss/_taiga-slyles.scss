@@ -54,6 +54,16 @@ tui-notification {
   font-size: $rubic-font-size-01;
 }
 
+tui-notifications-host {
+  margin-top: 71px;
+}
+
+@include b($desktop) {
+  tui-notifications-host {
+    margin-top: 58px;
+  }
+}
+
 @include b($mobile-md-minus) {
   tui-dialog {
     height: 100vh;
