@@ -26,6 +26,8 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
 
   @Input() size: TuiSizeXS | TuiSizeXL = 'l';
 
+  @Input() pseudoHovered: boolean | null = null;
+
   @Input('bordered') set setBorder(border: boolean | '') {
     this._border = border === '' || border;
   }

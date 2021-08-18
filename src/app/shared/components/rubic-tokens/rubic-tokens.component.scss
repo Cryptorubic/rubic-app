@@ -7,6 +7,8 @@
   &__inner {
     display: flex;
     grid-gap: 8px;
+    align-items: center;
+    padding-bottom: 1px;
   }
 
   &__inner-text {
@@ -65,6 +67,56 @@
     }
   }
 
+  &__clear {
+    position: relative;
+
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+
+    background-color: #{var(--rubic-base-14)};
+    border: 1px solid #{var(--rubic-base-14)};
+    border-radius: 50%;
+
+    transition: 0.1s ease-in-out;
+
+    &:hover {
+      background-color: var(--rubic-base-01);
+      border-color: var(--primary-color);
+    }
+
+    &-icon {
+      position: relative;
+
+      display: flex;
+      justify-content: center;
+      height: 100%;
+
+      &::before,
+      &::after {
+        position: absolute;
+
+        width: 2px;
+        height: 100%;
+
+        background-color: var(--rubic-base-15);
+        border-radius: 10px;
+
+        content: '';
+      }
+
+      &::before {
+        transform: rotate(45deg);
+      }
+
+      &::after {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+
+
+
   &__clear-mobile {
     display: none;
   }
@@ -77,6 +129,10 @@
     justify-content: flex-start;
 
     border-radius: 0;
+    
+    &__clear {
+      display: none;
+    }
     
     &__clear-mobile {
       display: block;

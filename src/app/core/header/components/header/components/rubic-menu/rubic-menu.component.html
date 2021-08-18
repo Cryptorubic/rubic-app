@@ -6,6 +6,12 @@
         <div class="burger-menu__line"></div>
         <div class="burger-menu__line"></div>
       </div>
+      <tui-badge
+        class="notification-counter"
+        *ngIf="$countUnread | async"
+        size="s"
+        [value]="$countUnread | async"
+      ></tui-badge>
     </app-rubic-button-circle>
   </div>
 </tui-hosted-dropdown>
