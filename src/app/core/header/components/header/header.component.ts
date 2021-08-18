@@ -7,8 +7,7 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit,
-  OnInit
+  AfterViewInit
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -18,10 +17,8 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { HeaderStore } from '../../services/header.store';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
-
+import { HeaderStore } from '../../services/header.store';
 
 @Component({
   selector: 'app-header',
