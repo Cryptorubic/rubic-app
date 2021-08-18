@@ -51,12 +51,6 @@
       &:nth-child(2) {
         order: 1;
       }
-
-      app-usd-price-container {
-        position: absolute;
-        bottom: -33px;
-        left: 0;
-      }
     }
   }
 
@@ -83,6 +77,19 @@
     @include iframe-horizontal {
       font-size: 20px;
       text-align: left;
+    }
+  }
+
+  &__iframe-info-cards {
+    position: absolute;
+    bottom: -33px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+
+    app-usd-price-container {
+      margin-right: 5px;
     }
   }
 }
