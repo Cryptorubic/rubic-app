@@ -88,7 +88,8 @@ export class TokensService {
     const blockchains: BLOCKCHAIN_NAME[] = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON
+      BLOCKCHAIN_NAME.POLYGON,
+      BLOCKCHAIN_NAME.HARMONY
     ];
     const promises = [];
 
