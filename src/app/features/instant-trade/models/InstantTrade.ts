@@ -23,7 +23,7 @@ interface InstantTrade {
   /**
    * Amount of predicted gas limit in absolute gas units
    */
-  gasLimit: string;
+  gasLimit?: string;
 
   /**
    * Gas price in Wei

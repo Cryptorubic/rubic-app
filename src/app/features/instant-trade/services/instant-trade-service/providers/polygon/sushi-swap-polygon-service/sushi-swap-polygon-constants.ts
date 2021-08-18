@@ -12,7 +12,7 @@ const sushiSwapPolygonContractAddressNetMode: ContractAddressNetMode = {
 
 const wethAddressNetMode: WethAddressNetMode = {
   mainnet: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-  testnet: ''
+  testnet: '0x13c038147aa2c91cf1fdb6f17a12f27715a4ca99'
 };
 
 const routingProvidersNetMode: RoutingProvidersNetMode = {
@@ -22,7 +22,9 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
     '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // USDT
     '0x831753DD7087CaC61aB5644b308642cc1c33Dc13' // QUICK
   ],
-  testnet: []
+  testnet: [
+    '0x13c038147aa2c91cf1fdb6f17a12f27715a4ca99' // WETH
+  ]
 };
 
 const maxTransitTokens = 3;
