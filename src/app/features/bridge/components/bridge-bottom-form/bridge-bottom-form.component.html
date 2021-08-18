@@ -12,7 +12,7 @@
     ></app-amount-estimated>
   </div>
 
-  <app-analytics-link [formService]="swapFormService"></app-analytics-link>
+  <app-analytics-link *noFrame [formService]="swapFormService"></app-analytics-link>
 
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
@@ -30,6 +30,7 @@
       ></app-swap-button>
     </div>
     <app-terms-n-conditions-container
+      *noFrame
       [whatIsBlockchain]="whatIsBlockchain"
       [toWalletAddress]="toWalletAddress"
       [isBridgeSupported]="isBridgeSupported"

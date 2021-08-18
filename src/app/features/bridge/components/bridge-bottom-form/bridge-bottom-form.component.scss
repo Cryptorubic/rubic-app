@@ -5,6 +5,10 @@
   display: flex;
   flex-direction: column;
 
+  @include iframe-horizontal {
+    flex-direction: row;
+  }
+
   &__container {
     display: flex;
     justify-content: space-between;
@@ -14,6 +18,19 @@
 
     background-color: var(--main-background);
     border-radius: 0 0 14px 14px;
+
+    @include iframe-horizontal {
+      position: relative;
+
+      flex-direction: row-reverse;
+      align-items: center;
+      width: 363px;
+      height: 50px;
+      min-height: unset;
+      padding: 0 7px 0 16px;
+
+      border-radius: 10px;
+    }
 
     @include b($mobile-md) {
       height: auto;
@@ -26,6 +43,11 @@
 
   &__footer {
     margin-top: 16px;
+
+    @include iframe-horizontal {
+      margin-top: 0;
+      margin-left: 12px;
+    }
 
     @include b($mobile-md) {
       padding: 15px 20px 0;

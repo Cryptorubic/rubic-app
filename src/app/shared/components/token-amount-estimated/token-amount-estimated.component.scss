@@ -15,6 +15,7 @@
   }
 
   &__usd-container {
+    @include iframe-card;
     display: inline-flex;
     float: right;
 
@@ -26,6 +27,16 @@
     font-size: 14px;
     text-align: right;
     text-overflow: ellipsis;
+
+    @include iframe-horizontal {
+      position: absolute;
+      bottom: -33px;
+      left: 0;
+
+      span {
+        margin-left: 0;
+      };
+    }
 
     span {
       margin-left: 10px;
@@ -58,6 +69,13 @@
     scrollbar-width: none;
 
     text-align: right;
+
+    @include iframe-horizontal {
+      margin-bottom: 0;
+
+      font-size: 20px;
+      text-align: left;
+    }
 
     &::-webkit-scrollbar {
       display: none;

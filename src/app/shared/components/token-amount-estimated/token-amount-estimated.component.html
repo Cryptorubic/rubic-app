@@ -21,6 +21,8 @@
     >
       <span class="bottom-amount__usd" *ngIf="usd">${{ usd | bigNumberFormat: 2 }}</span>
     </div>
+
+    <!-- for Crypto tap -->
     <div
       *ngIf="fee?.token"
       class="bottom-amount__fee"
