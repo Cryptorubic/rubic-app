@@ -1,9 +1,12 @@
-@import 'src/scss/mixins';
-@import 'src/scss/vars';
+@import 'src/styles';
 
 .user-balance-container {
   margin-top: 10px;
-  
+
+  @include iframe {
+    margin-top: 0;
+  }
+
   &__balance {
     margin-right: 10px;
 

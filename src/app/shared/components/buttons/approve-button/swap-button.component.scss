@@ -1,4 +1,12 @@
+@import 'src/styles';
+
 $point-radius: 26px;
+
+:host {
+  @include iframe {
+    width: 180px;
+  }
+}
 
 .buttons {
   display: grid;
@@ -53,6 +61,14 @@ $point-radius: 26px;
   ::ng-deep {
     .content {
       color: rgb(216, 120, 121);
+    }
+  }
+}
+
+app-rubic-button[network-error=true] {
+  @include iframe {
+    ::ng-deep button span {
+      font-size: 14px;
     }
   }
 }
