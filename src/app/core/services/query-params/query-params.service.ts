@@ -86,7 +86,7 @@ export class QueryParamsService {
   }
 
   public setupQueryParams(queryParams: QueryParams): void {
-    if (queryParams) {
+    if (queryParams && Object.keys(queryParams).length !== 0) {
       this.setIframeStatus(queryParams);
       this.setHiddenStatus(queryParams);
       this.setTopTokens(queryParams);
