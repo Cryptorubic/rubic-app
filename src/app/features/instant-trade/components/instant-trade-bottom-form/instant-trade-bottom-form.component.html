@@ -24,7 +24,7 @@
         </div>
         <div class="instant-trade-bottom-form__usd-amount" *noFrame>${{ getUsdPrice() }}</div>
         <div class="instant-trade-bottom-form__iframe-info" *onlyFrame="'horizontal'">
-          <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
+          <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice() }}</div>
           <div *ngIf="selectedProvider?.trade.gasFeeInUsd?.gt(0)">
             Est. fee ${{ selectedProvider?.trade.gasFeeInUsd.toFixed(2) }}
           </div>

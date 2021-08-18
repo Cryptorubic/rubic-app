@@ -3,9 +3,8 @@
 @mixin font-face(
   $font-family,
   $file-path,
-  $weight: normal,
-  $style: normal,
-  $asset-pipeline: false
+  $weight,
+  $style: normal
 ) {
   @font-face {
     font-weight: $weight;
@@ -13,14 +12,8 @@
     font-style: $style;
     font-display: swap;
 
-    @if $asset-pipeline==true {
-      src: font-url('#{$file-path}.woff2') format('woff2'),
-        font-url('#{$file-path}.woff') format('woff'), font-url('#{$file-path}.eot'),
-        font-url('#{$file-path}.ttf') format('truetype');
-    } @else {
-      src: url('#{$file-path}.woff2') format('woff2'), url('#{$file-path}.woff') format('woff'),
-        url('#{$file-path}.eot'), url('#{$file-path}.ttf') format('truetype');
-    }
+    src: url('#{$file-path}.woff2') format('woff2'), url('#{$file-path}.woff') format('woff'),
+      url('#{$file-path}.eot'), url('#{$file-path}.ttf') format('truetype');
   }
 }
 
@@ -58,6 +51,8 @@
     display: block;
     height: 27px;
     padding: 5px 10px;
+
+    color: var(--form-dim-text-color);
 
     font-size: 12px;
     line-height: 17px;
