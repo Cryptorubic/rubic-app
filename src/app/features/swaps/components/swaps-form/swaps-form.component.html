@@ -4,9 +4,9 @@
       {{ (isInstantTrade ? 'instantTrades.title' : 'bridgePage.title') | translate }}
     </h1>
     <app-rubic-refresh-button
-      class="swaps-form__refresh"
       *ngIf="isInstantTrade && allowTrade"
-      (onRefresh)="onRefreshTrade.next()"
+      type="autoRefresh"
+      class="swaps-form__refresh"
       [loadingStatus]="loadingStatus"
       [autoUpdate]="autoRefresh"
     ></app-rubic-refresh-button>
