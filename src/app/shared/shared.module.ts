@@ -52,6 +52,7 @@ import { UserBalanceContainerComponent } from './components/token-amount-input/c
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
+import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,8 @@ import { SuccessTrxNotificationComponent } from './components/success-trx-notifi
     UserBalanceContainerComponent,
     UsdPriceContainerComponent,
     AnalyticsLinkComponent,
+    SuccessTrxNotificationComponent,
+    GasIndicatorComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -86,8 +89,7 @@ import { SuccessTrxNotificationComponent } from './components/success-trx-notifi
     ShortenAmountPipe,
     // Directives.
     SafetyLinkDirective,
-    TokenAmountDirective,
-    SuccessTrxNotificationComponent
+    TokenAmountDirective
   ],
   imports: [
     CommonModule,
@@ -143,7 +145,8 @@ import { SuccessTrxNotificationComponent } from './components/success-trx-notifi
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
-    SwapsHeaderComponent
+    SwapsHeaderComponent,
+    GasIndicatorComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]

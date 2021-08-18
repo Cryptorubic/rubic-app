@@ -5,7 +5,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { combineLatest, Subject, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
@@ -15,6 +15,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { HeaderStore } from 'src/app/core/header/services/header.store';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -90,12 +91,17 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public swapType: SWAP_PROVIDER_TYPE;
 
+  public isMobile$: Observable<boolean>;
+
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    private readonly headerStore: HeaderStore
+  ) {
+    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
+  }
 
   ngOnInit(): void {
     combineLatest([

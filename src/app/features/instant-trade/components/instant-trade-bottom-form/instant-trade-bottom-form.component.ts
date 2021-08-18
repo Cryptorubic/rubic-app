@@ -37,6 +37,8 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { AsyncPipe } from '@angular/common';
+import { GasService } from 'src/app/core/services/gas-service/gas.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -129,7 +131,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
     private readonly tokensService: TokensService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly gasService: GasService
   ) {
     this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
     this.onCalculateTrade = new Subject<void>();
@@ -493,7 +496,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
-      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
+      const gasPrice = new AsyncPipe(this.cdr).transform(this.gasService.gasPrice);
+      const trade = {
+        ...provider.trade,
+        gasPrice: (gasPrice * 10 ** 9).toString() || provider.trade.gasPrice
+      };
+      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, trade);
 
       this.tokensService.recalculateUsersBalance();
 
