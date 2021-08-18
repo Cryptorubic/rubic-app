@@ -225,6 +225,10 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.iframeService.isIframe) {
       this.needLoginLoading = false;
       this.needLogin = true;
+      this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
+        this.needLogin = !user?.address;
+        this.cdr.detectChanges();
+      });
     } else {
       this.needLoginLoading = true;
       this.needLogin = true;
@@ -259,9 +263,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (!this.iframeService.isIframe) {
-      this.authServiceSubscription$.unsubscribe();
-    }
+    this.authServiceSubscription$.unsubscribe();
     this.useTestingModeSubscription$?.unsubscribe();
     this.formServiceSubscription$?.unsubscribe();
     this.providerConnectorServiceSubscription$?.unsubscribe();

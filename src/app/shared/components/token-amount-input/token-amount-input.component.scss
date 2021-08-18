@@ -33,7 +33,19 @@
       justify-content: center;
 
       &:first-child {
+        flex-direction: row-reverse;
         order: 2;
+
+        app-rubic-tokens {
+          display: flex;
+          align-items: center;
+        }
+
+        app-user-balance-container {
+          display: flex;
+          align-items: center;
+          margin-right: 10px;
+        }
       }
 
       &:nth-child(2) {
