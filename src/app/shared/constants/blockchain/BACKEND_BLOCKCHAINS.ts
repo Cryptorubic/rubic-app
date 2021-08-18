@@ -5,12 +5,14 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   'binance-smart-chain': BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   polygon: BLOCKCHAIN_NAME.POLYGON,
   'tron-mainnet': BLOCKCHAIN_NAME.TRON,
-  xdai: BLOCKCHAIN_NAME.XDAI,
+  'xdai-mainnet': BLOCKCHAIN_NAME.XDAI,
+  harmony: BLOCKCHAIN_NAME.HARMONY,
   'ethereum-test': BLOCKCHAIN_NAME.ETHEREUM_TESTNET
 };
 
 export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
-  [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
+  [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
+  [BLOCKCHAIN_NAME.HARMONY]: 'harmony'
 };

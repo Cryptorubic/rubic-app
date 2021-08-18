@@ -1,4 +1,4 @@
-<div class="analytics" *ngIf="tokenInfoUrl">
+<div class="analytics" *ngIf="fromToken?.blockchain !== blockchainNames.HARMONY && tokenInfoUrl">
   <a
     [href]="'https://keks.app/' + tokenInfoUrl"
     target="_blank"

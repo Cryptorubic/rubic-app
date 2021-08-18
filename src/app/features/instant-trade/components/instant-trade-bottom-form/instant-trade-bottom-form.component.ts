@@ -213,6 +213,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       case BLOCKCHAIN_NAME.POLYGON:
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
         break;
+      case BLOCKCHAIN_NAME.HARMONY:
+        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.HARMONY];
+        break;
       default:
         this.errorService.catch(new NotSupportedItNetwork());
     }
@@ -356,7 +359,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           return bestRate;
         }
         const { gasFeeInUsd, to } = trade;
-        const amountInUsd = to.amount?.multipliedBy(to.token.price);
+        const amountInUsd = to.token.price ? to.amount?.multipliedBy(to.token.price) : to.amount;
 
         if (amountInUsd) {
           const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
@@ -419,7 +422,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public getUsdPrice(): string {
     const tradeTo = this.selectedProvider.trade.to;
-    return tradeTo.amount.multipliedBy(tradeTo.token.price).toFormat(2, BIG_NUMBER_FORMAT);
+    const usdPrice = tradeTo.amount.multipliedBy(tradeTo.token.price);
+    if (usdPrice.isNaN()) {
+      return '';
+    }
+    return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
   }
 
   private setProviderState(
