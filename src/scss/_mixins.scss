@@ -53,6 +53,20 @@
   }
 }
 
+@mixin iframe-card {
+  :host-context(html.iframe) & {
+    display: block;
+    height: 27px;
+    padding: 5px 10px;
+
+    font-size: 12px;
+    line-height: 17px;
+
+    background-color: var(--main-background);
+    border-radius: 10px;
+  }
+}
+
 // breakpoints
 @mixin b($point) {
   @if $point==desktop {

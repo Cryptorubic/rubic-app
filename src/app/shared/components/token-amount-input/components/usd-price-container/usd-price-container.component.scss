@@ -1,6 +1,8 @@
 @import 'src/styles';
 
 .usd-price-container {
+
+  @include iframe-card;
   display: flex;
   justify-content: flex-end;
 
@@ -12,13 +14,6 @@
 
   @include b($mobile-sm) {
     justify-content: flex-start;
-  }
-
-  @include iframe-horizontal {
-    padding: 5px 10px;
-
-    background-color: var(--main-background);
-    border-radius: 10px;
   }
 
   &_hidden {

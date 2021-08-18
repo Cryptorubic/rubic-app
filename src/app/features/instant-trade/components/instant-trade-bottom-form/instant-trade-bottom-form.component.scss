@@ -146,18 +146,22 @@ $green: rgb(74, 169, 86);
     line-height: 17px;
     letter-spacing: 0.1em;
     text-align: right;
+  }
 
-    @include iframe-horizontal {
-      position: absolute;
-      bottom: -33px;
-      left: 0;
+  &__iframe-info {
+    position: absolute;
+    bottom: -33px;
+    left: 0;
 
-      padding: 5px 10px;
+    display: flex;
+    align-items: center;
 
-      font-size: 12px;
+    > :first-child {
+      margin-right: 5px;
+    }
 
-      background-color: var(--main-background);
-      border-radius: 10px;
+    > div {
+      @include iframe-card;
     }
   }
 
@@ -184,7 +188,7 @@ $green: rgb(74, 169, 86);
     &__token-amount {
       margin-bottom: 0;
     }
-    
+
     &__usd-amount {
       text-align: left;
     }

@@ -8,18 +8,13 @@
   }
 
   &__balance {
+
+    @include iframe-card;
     margin-right: 10px;
 
     color: var(--form-dim-text-color);
     font-size: 14px;
     line-height: 17px;
-
-    @include iframe-horizontal {
-      padding: 5px 10px;
-
-      background-color: var(--main-background);
-      border-radius: 10px;
-    }
   }
 
   &__max-button {
