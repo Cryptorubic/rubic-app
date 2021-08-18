@@ -14,6 +14,7 @@ import {
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { IframeLogoutButtonComponent } from 'src/app/core/header/components/header/components/iframe-logout-button/iframe-logout-button.component';
+import { TuiBadgeModule } from '@taiga-ui/kit';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -47,7 +48,8 @@ import { IframeSettingsButtonComponent } from './components/header/components/if
     TuiDataListModule,
     TuiHintModule,
     TuiHostedDropdownModule,
-    TuiGroupModule
+    TuiGroupModule,
+    TuiBadgeModule
   ],
   exports: [HeaderComponent, LoginButtonComponent],
   entryComponents: [WalletsModalComponent]

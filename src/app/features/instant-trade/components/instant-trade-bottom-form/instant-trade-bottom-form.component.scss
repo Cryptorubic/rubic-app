@@ -180,5 +180,13 @@ $green: rgb(74, 169, 86);
     &__swap {
       padding: 0 20px;
     }
+
+    &__token-amount {
+      margin-bottom: 0;
+    }
+    
+    &__usd-amount {
+      text-align: left;
+    }
   }
 }

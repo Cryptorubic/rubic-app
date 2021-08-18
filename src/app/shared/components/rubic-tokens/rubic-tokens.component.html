@@ -7,8 +7,9 @@
       [loading]="loading"
       [disabled]="disabled"
       (onClick)="openTokensSelect(idPrefix)"
-      [tuiHint]="selectedToken && !disabled ? tooltip : null"
       [appearance]="selectedToken ? 'primary' : 'secondary'"
+      [pseudoHovered]="buttonHovered"
+      (mouseleave)="buttonHovered = null"
     >
       <ng-container *ngIf="selectedToken">
         <div class="tokens__inner">
@@ -22,6 +23,14 @@
           </div>
           <div class="tokens__symbol">
             {{ selectedToken.symbol }}
+          </div>
+          <div
+            class="tokens__clear"
+            (mouseenter)="buttonHovered = false"
+            (mouseleave)="buttonHovered = true"
+            (click)="clearToken(); $event.stopPropagation()"
+          >
+            <div class="tokens__clear-icon"></div>
           </div>
         </div>
       </ng-container>
@@ -52,10 +61,3 @@
     {{ 'common.clearToken' | translate }}
   </a>
 </div>
-
-<ng-template #tooltip>
-  <div class="tokens__clear-container" (click)="clearToken()">
-    <span>{{ 'common.clearToken' | translate }}</span>
-    <tui-svg class="icon" src="tuiIconCloseCircleLarge"></tui-svg>
-  </div>
-</ng-template>

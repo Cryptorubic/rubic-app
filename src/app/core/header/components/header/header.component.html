@@ -7,26 +7,28 @@
   <app-rubic-menu *noFrame class="rubic-header__menu"></app-rubic-menu>
 
   <nav *noFrame class="rubic-header__nav">
-    <a class="button-link"
-       routerLink="/"
-       [class.button-link_active]="isLinkActive('/')">
-      Swaps
-    </a>
-    <a class="button-link"
-       routerLink="/crypto-tap"
-       routerLinkActive="button-link_active">
+    <a class="button-link" routerLink="/" [class.button-link_active]="isLinkActive('/')"> Swaps</a>
+    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">
       Crypto Tap
     </a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order Book</span>
   </nav>
 
   <div class="rubic-header__profile">
-    <a *noFrame
-       class="rubic-header__profile-trades button-link"
-       routerLink="my-trades"
-       routerLinkActive="button-link_active"
+    <a
+      *noFrame
+      class="rubic-header__profile-trades button-link"
+      routerLink="my-trades"
+      routerLinkActive="button-link_active"
     >
-       {{ 'navigation.myTrades' | translate }}
+      {{ 'navigation.myTrades' | translate }}
+
+      <tui-badge
+        class="notification-counter"
+        *ngIf="countNotifications$ | async"
+        size="s"
+        [value]="countNotifications$ | async"
+      ></tui-badge>
     </a>
 
     <app-iframe-settings-button *onlyFrame="'any'"></app-iframe-settings-button>
@@ -43,7 +45,6 @@
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>
 </header>
-
 
 <ng-template #orderBookTooltip>
   <span>{{ 'navigation.notAvailable' | translate }}</span>
