@@ -63,7 +63,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
-  ) {}
+  ) {
+    this.myTradesService.updateTableTrades();
+  }
 
   ngOnInit(): void {
     this.counterNotificationsService.resetCounter();
