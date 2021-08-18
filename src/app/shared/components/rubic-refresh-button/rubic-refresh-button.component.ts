@@ -1,15 +1,16 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
+  ElementRef,
   EventEmitter,
-  Output,
-  OnInit,
-  OnDestroy,
   Input,
-  ViewChild,
-  ElementRef
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
 } from '@angular/core';
 import { fromEvent } from 'rxjs';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 
 export enum REFRESH_BUTTON_STATUS {
   REFRESHING = 'refreshing',
@@ -24,6 +25,8 @@ export enum REFRESH_BUTTON_STATUS {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
+  @Input() public type: 'refresh' | 'autoRefresh';
+
   @Input() set loadingStatus(status: REFRESH_BUTTON_STATUS) {
     this.status = status;
     if (this.autoUpdate && status === REFRESH_BUTTON_STATUS.STOPPED) {
@@ -72,8 +75,18 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   private refreshIconListener;
 
-  constructor() {
+  public imageUrl: string;
+
+  public get hint(): string {
+    if (this.type === 'autoRefresh') {
+      return this.autoUpdate ? 'Disable auto refresh' : 'Enable auto refresh';
+    }
+    return 'Refresh';
+  }
+
+  constructor(private readonly settingsService: SettingsService) {
     this.autoUpdate = false;
+    this.imageUrl = 'assets/images/icons/reload.svg';
   }
 
   public ngOnInit(): void {
@@ -97,5 +110,29 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
       clearTimeout(this.timer);
       this.onRefresh.emit();
     }, this.refreshTimeout * 1000);
+  }
+
+  public mouseEnter(): void {
+    if (this.type === 'autoRefresh') {
+      if (this._autoUpdate) {
+        this.imageUrl = 'assets/images/icons/reload/pause.svg';
+      } else {
+        this.imageUrl = 'assets/images/icons/reload/play.svg';
+      }
+    }
+  }
+
+  public mouseLeave(): void {
+    this.imageUrl = 'assets/images/icons/reload.svg';
+  }
+
+  public toggleClick(): void {
+    if (this.type === 'autoRefresh') {
+      this.settingsService.settingsForm.controls.INSTANT_TRADE.patchValue({
+        autoRefresh: !this._autoUpdate
+      });
+    } else {
+      this.onRefresh.emit();
+    }
   }
 }

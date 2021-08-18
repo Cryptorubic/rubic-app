@@ -1,11 +1,13 @@
-<div class="refresh-button" (click)="onRefresh.emit()">
+<div class="refresh-button" (click)="toggleClick()">
   <img
     class="refresh-icon"
-    src="assets/images/icons/reload.svg"
+    [src]="imageUrl"
     width="18"
     height="18"
-    alt="Reload"
-    #refreshIcon
+    (mouseenter)="mouseEnter()"
+    (mouseleave)="mouseLeave()"
+    alt="Toggle auto refresh"
+    [tuiHint]="hint"
   />
   <svg
     *ngIf="autoUpdate && status === REFRESH_BUTTON_STATUS.STOPPED"
