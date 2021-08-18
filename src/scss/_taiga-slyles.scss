@@ -81,3 +81,10 @@ tui-notifications-host {
     font-size: $rubic-font-size-main;
   }
 }
+
+
+::ng-deep tui-dialog .content {
+  @include iframe-horizontal {
+    padding: 0 !important;
+  }
+}
