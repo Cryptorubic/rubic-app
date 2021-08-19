@@ -225,7 +225,9 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       )
     );
 
-    const tokens = await Promise.all(tokensInfoPromises);
+    const tokens = (await Promise.all(tokensInfoPromises)).map(responses =>
+      responses.map(response => response.output)
+    );
     const bscTokens = tokens[0].filter(
       token =>
         !EXCLUDED_TOKENS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].includes(token.token.toLowerCase())
@@ -390,14 +392,16 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
     const blockchainPromises: Promise<TokensIdConfig>[] = blockchains.map(async blockchain => {
       const tokenIds = blockchainTokenIds[blockchain.name];
-      const configResponse = await (
-        this.web3PublicService[blockchain.name] as Web3Public
-      ).multicallContractMethod<ConfigResponse>(
-        EVO_ADDRESSES[blockchain.name],
-        EVO_ABI as AbiItem[],
-        'configs',
-        tokenIds.map(id => [id, blockchain.destinationId])
-      );
+      const configResponse = (
+        await (
+          this.web3PublicService[blockchain.name] as Web3Public
+        ).multicallContractMethod<ConfigResponse>(
+          EVO_ADDRESSES[blockchain.name],
+          EVO_ABI as AbiItem[],
+          'configs',
+          tokenIds.map(id => [id, blockchain.destinationId])
+        )
+      ).map(response => response.output);
 
       const result: TokensIdConfig = {};
 

@@ -66,7 +66,8 @@ module.exports = {
           }
         ],
         'no-empty': ["error", { "allowEmptyCatch": true }],
-        '@typescript-eslint/return-await': 'off'
+        '@typescript-eslint/return-await': 'off',
+        'no-continue': 'off'
       }
     },
     {
