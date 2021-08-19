@@ -22,7 +22,8 @@ export class TokensService {
   private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
 
   get tokens(): Observable<List<TokenAmount>> {
-    return this._tokens.asObservable();
+    // TODO: remove pipe after integrate iframe tokens backend
+    return this._tokens.asObservable().pipe(map(tokens => tokens?.slice(0, 30)));
   }
 
   private userAddress: string;

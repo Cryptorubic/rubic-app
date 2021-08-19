@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@import 'src/styles';
 
 .token-card {
   display: flex;
@@ -6,32 +6,63 @@
 
   color: var(--form-bright-text-color);
 
+  @include iframe-horizontal {
+    height: 100%;
+  }
+
   &__name-container {
+    @include iframe-horizontal {
+      width: 60px;
+    }
+
     span,
     small {
       display: block;
+      overflow: hidden;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     span {
       font-size: 16px;
       line-height: 20px;
+
+      @include iframe-horizontal {
+        font-size: 14px;
+        line-height: 16px;
+      }
     }
 
     small {
       font-size: 13px;
       line-height: 18px;
+
+      @include iframe-horizontal {
+        font-size: 12px;
+        line-height: 14px;
+      }
     }
   }
 
   &__image-container {
     display: flex;
-    flex: 0 0 40px;
+    flex: 0 0 30px;
     align-items: center;
     margin-right: 20px;
+
+    @include iframe-horizontal {
+      margin-right: 10px;
+    }
 
     img {
       max-width: 38px;
       max-height: 38px;
+
+      @include iframe-horizontal {
+        max-width: 30px;
+        max-height: 30px;
+      }
     }
   }
 

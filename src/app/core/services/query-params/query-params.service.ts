@@ -59,6 +59,12 @@ export class QueryParamsService {
     return this._tokensSelectionDisabled$.asObservable();
   }
 
+  public get noFrameLink(): string {
+    const urlTree = this.router.parseUrl(this.router.url);
+    delete urlTree.queryParams.iframe;
+    return urlTree.toString();
+  }
+
   constructor(
     private readonly tokensService: TokensService,
     private readonly web3Public: Web3PublicService,

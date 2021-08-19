@@ -1,5 +1,6 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
+
+$token-card-height: 55px;
 
 :host {
   width: 100%;
@@ -34,6 +35,67 @@
   }
 }
 
+.tokens-list-horizontal-iframe {
+  display: flex;
+
+  &__item {
+    min-width: 191px;
+    max-width: 191px;
+    height: $token-card-height;
+    padding: 5px 10px;
+
+    border: 2px solid #626262;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+
+    &:hover {
+      background-color: var(--main-background);
+    }
+
+    &_disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+
+      &:hover {
+        background-color: unset;
+      }
+    }
+
+    &_active,
+    &:active {
+      background-color: var(--main-background);
+      border-color: $rubic-primary;
+    }
+
+    &_active {
+      cursor: not-allowed;
+    }
+  }
+
+  &__item-link {
+    border-color: $rubic-primary;
+
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      line-height: 40px;
+      text-align: center;
+    }
+
+    &:hover {
+      background-color: unset;
+    }
+  }
+}
+
 .nothing-to-show-message {
   position: relative;
   top: 20px;
@@ -54,10 +116,22 @@
   width: 290px;
   margin-right: 0;
   padding-top: 15px;
+
+  @include iframe-horizontal {
+    position: static;
+    left: unset;
+
+    width: 100%;
+    padding-top: 0;
+  }
 }
 
 .tokens-scrollbar {
   height: 400px;
+
+  @include iframe-horizontal {
+    height: $token-card-height + 20px;
+  }
 }
 
 ::ng-deep div.content {

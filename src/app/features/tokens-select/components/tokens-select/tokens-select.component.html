@@ -12,6 +12,7 @@
     <app-tokens-list
       *ngIf="!customToken && !loading"
       [tokens]="tokensToShow$ | async"
+      [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
       (tokenSelect)="onTokenSelect($event)"
     ></app-tokens-list>
     <app-custom-token

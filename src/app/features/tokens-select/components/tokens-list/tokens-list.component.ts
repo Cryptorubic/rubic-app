@@ -9,6 +9,8 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -19,11 +21,20 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 export class TokensListComponent implements OnChanges {
   @Input() tokens: AvailableTokenAmount[] = [];
 
+  @Input() prevSelectedToken: TokenAmount;
+
   @Output() tokenSelect = new EventEmitter<AvailableTokenAmount>();
 
   public hintsShown: boolean[];
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  public get noFrameLink(): string {
+    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+  }
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private readonly queryParamsService: QueryParamsService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
