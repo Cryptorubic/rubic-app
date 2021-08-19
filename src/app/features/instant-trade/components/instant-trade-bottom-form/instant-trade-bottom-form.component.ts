@@ -195,6 +195,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
+    if (!this.fromToken || !this.toToken) {
+      this.ethAndWethTrade = null;
+    }
+
     if (
       this.currentBlockchain !== form.fromBlockchain &&
       form.fromBlockchain === form.toBlockchain
@@ -488,7 +492,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
-      this.tokensService.recalculateUsersBalance();
+      this.tokensService.calculateUserTokensBalances();
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,
@@ -539,8 +543,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     try {
       await this.instantTradeService.createTrade(instantTradeProvider, instantTrade);
+
       this.counterNotificationsService.updateUnread();
-      this.tokensService.recalculateUsersBalance();
+      this.tokensService.calculateUserTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
