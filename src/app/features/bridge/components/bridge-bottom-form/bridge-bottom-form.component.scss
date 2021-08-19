@@ -24,7 +24,7 @@
 
       flex-direction: row-reverse;
       align-items: center;
-      width: 363px;
+      width: $iframe-horizontal-input-width;
       height: 50px;
       min-height: unset;
       padding: 0 7px 0 16px;
@@ -51,6 +51,12 @@
 
     @include b($mobile-md) {
       padding: 15px 20px 0;
+    }
+  }
+
+  &__button {
+    @include iframe-horizontal {
+      width: 180px;
     }
   }
 }

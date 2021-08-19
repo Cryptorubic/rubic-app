@@ -74,7 +74,7 @@
       "
     >
       <app-rubic-button
-        [attr.network-error]="true"
+        [attr.error]="true"
         [fullWidth]="true"
         appearance="secondary"
         (click)="changeNetwork()"
@@ -92,6 +92,7 @@
     >
       <app-rubic-button
         class="error-button"
+        [attr.error]="true"
         [fullWidth]="true"
         [disabled]="true"
         appearance="secondary"
