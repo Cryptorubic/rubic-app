@@ -112,6 +112,11 @@ $green: rgb(74, 169, 86);
     @include iframe-horizontal {
       order: 1;
     }
+
+    &_skeleton {
+      width: 200px;
+      height: 40px;
+    }
   }
 
   &__token-amount {

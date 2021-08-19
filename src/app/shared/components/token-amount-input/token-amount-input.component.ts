@@ -40,6 +40,10 @@ export class TokenAmountInputComponent {
     return new BigNumber(this.amountControl.value.split(',').join('') || 0);
   }
 
+  get usdPrice(): BigNumber {
+    return this.amount.multipliedBy(this.token?.price ?? 0);
+  }
+
   @Output() amountChange = new EventEmitter<string>();
 
   public readonly DEFAULT_DECIMALS = 18;
@@ -51,10 +55,6 @@ export class TokenAmountInputComponent {
   public onUserBalanceMaxButtonClick(): void {
     const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);
     this.amountControl.setValue(amount);
-  }
-
-  public getUsdPrice(): BigNumber {
-    return this.amount.multipliedBy(this.token?.price ?? 0);
   }
 
   public emitAmountChange(amount: string): void {

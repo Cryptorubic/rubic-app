@@ -1,4 +1,4 @@
-<div class="instant-trade-bottom-form">
+<div class="instant-trade-bottom-form" *ngLet="((isIframe$ | async) !== true) as standardMode">
   <main class="instant-trade-bottom-form__body">
     <div class="instant-trade-bottom-form__body-top">
       <div class="instant-trade-bottom-form__left-part">
@@ -15,13 +15,16 @@
         </ng-container>
       </div>
       <div *ngIf="selectedProvider" class="instant-trade-bottom-form__amount">
-        <div class="instant-trade-bottom-form__token-amount">
+        <div class="instant-trade-bottom-form__token-amount" *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton">
           {{
             selectedProvider.trade.to.amount
               | bigNumberFormat
               | withRound: 'toClosestValue':selectedProvider.trade.to.token.decimals || 1
           }}
         </div>
+        <ng-template #iframeSkeleton>
+          <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
+        </ng-template>
         <div class="instant-trade-bottom-form__usd-amount" *noFrame>${{ getUsdPrice() }}</div>
         <div class="instant-trade-bottom-form__iframe-info" *onlyFrame="'horizontal'">
           <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice() }}</div>

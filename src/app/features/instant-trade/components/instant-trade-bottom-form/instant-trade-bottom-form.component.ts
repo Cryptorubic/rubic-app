@@ -37,8 +37,8 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -97,6 +97,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private calculateTradeSubscription$: Subscription;
 
+  public isIframe$: Observable<boolean>;
+
+  public TRADE_STATUS = TRADE_STATUS;
+
   get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(
@@ -132,8 +136,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly web3PublicService: Web3PublicService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    iframeService: IframeService
   ) {
+    this.isIframe$ = iframeService.isIframe$;
     this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
     this.onCalculateTrade = new Subject<void>();
   }
