@@ -109,7 +109,11 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
+  public async createTrade(
+    provider: INSTANT_TRADES_PROVIDER,
+    trade: InstantTrade,
+    confirmCallback?: () => void
+  ): Promise<void> {
     let transactionHash: string;
     try {
       const receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
@@ -124,7 +128,7 @@ export class InstantTradeService {
               }
             );
             transactionHash = hash;
-
+            confirmCallback();
             await this.postTrade(hash, provider, trade);
           }
         }

@@ -374,6 +374,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             autoClose: false
           }
         );
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       }
     };
 
@@ -392,7 +393,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.counterNotificationsService.updateUnread();
           this.tokensService.recalculateUsersBalance();
 
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();
         },
         err => {

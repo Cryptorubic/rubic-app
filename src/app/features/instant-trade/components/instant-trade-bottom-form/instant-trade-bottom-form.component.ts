@@ -510,11 +510,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         ...provider.trade,
         gasPrice: (gasPrice * 10 ** 9).toString() || provider.trade.gasPrice
       };
-      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, trade);
+      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, trade, () => {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.cdr.detectChanges();
+      });
       this.counterNotificationsService.updateUnread();
-      this.tokensService.recalculateUsersBalance();
+      await this.tokensService.recalculateUsersBalance();
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
     } catch (err) {
       this.errorService.catch(err);
