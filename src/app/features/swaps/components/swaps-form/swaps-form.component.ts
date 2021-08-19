@@ -171,72 +171,72 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     const oppositeToken = this.swapFormService.commonTrade.controls.input.value[oppositeTokenName];
 
     const tokens: AvailableTokenAmount[] = [];
-    if (!oppositeToken) {
-      Object.values(blockchainsList).forEach(fromBlockchain => {
-        Object.values(blockchainsList).forEach(toBlockchain => {
-          this._supportedTokens[fromBlockchain.symbol][toBlockchain.symbol].forEach(
-            supportedToken => {
-              const foundToken = tokens.find(
-                token =>
-                  token.blockchain === supportedToken.blockchain &&
-                  token.address.toLowerCase() === supportedToken.address.toLowerCase()
-              );
-              if (!foundToken) {
-                tokens.push({
-                  ...supportedToken,
-                  available: true
-                });
-              }
+    // if (!oppositeToken) {
+    Object.values(blockchainsList).forEach(fromBlockchain => {
+      Object.values(blockchainsList).forEach(toBlockchain => {
+        this._supportedTokens[fromBlockchain.symbol][toBlockchain.symbol].forEach(
+          supportedToken => {
+            const foundToken = tokens.find(
+              token =>
+                token.blockchain === supportedToken.blockchain &&
+                token.address.toLowerCase() === supportedToken.address.toLowerCase()
+            );
+            if (!foundToken) {
+              tokens.push({
+                ...supportedToken,
+                available: true
+              });
             }
-          );
-        });
+          }
+        );
       });
-    } else {
-      const oppositeBlockchain = oppositeToken.blockchain;
-
-      this._supportedTokens[oppositeBlockchain][oppositeBlockchain].forEach(token => {
-        tokens.push({
-          ...token,
-          available:
-            token.blockchain !== oppositeToken.blockchain ||
-            token.address.toLowerCase() !== oppositeToken.address.toLowerCase()
-        });
-      });
-
-      const tokensPairs = this._bridgeTokensPairs
-        .filter(
-          bridgeTokensPair =>
-            bridgeTokensPair.fromBlockchain === oppositeBlockchain ||
-            bridgeTokensPair.toBlockchain === oppositeBlockchain
-        )
-        .map(bridgeTokensPair =>
-          bridgeTokensPair.bridgeTokens.find(
-            bridgeToken =>
-              bridgeToken.blockchainToken[oppositeBlockchain].address?.toLowerCase() ===
-              oppositeToken.address?.toLowerCase()
-          )
-        )
-        .filter(tokenPair => tokenPair);
-      Object.values(blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.symbol;
-        if (oppositeBlockchain === blockchain) {
-          return;
-        }
-
-        this._supportedTokens[blockchain][blockchain].forEach(token => {
-          const foundTokenPair = tokensPairs.find(
-            bridgeToken =>
-              bridgeToken.blockchainToken[blockchain]?.address?.toLowerCase() ===
-              token.address?.toLowerCase()
-          );
-
-          tokens.push({
-            ...token,
-            available: !!foundTokenPair
-          });
-        });
-      });
-    }
+    });
+    // } else {
+    //   const oppositeBlockchain = oppositeToken.blockchain;
+    //
+    //   this._supportedTokens[oppositeBlockchain][oppositeBlockchain].forEach(token => {
+    //     tokens.push({
+    //       ...token,
+    //       available:
+    //         token.blockchain !== oppositeToken.blockchain ||
+    //         token.address.toLowerCase() !== oppositeToken.address.toLowerCase()
+    //     });
+    //   });
+    //
+    //   const tokensPairs = this._bridgeTokensPairs
+    //     .filter(
+    //       bridgeTokensPair =>
+    //         bridgeTokensPair.fromBlockchain === oppositeBlockchain ||
+    //         bridgeTokensPair.toBlockchain === oppositeBlockchain
+    //     )
+    //     .map(bridgeTokensPair =>
+    //       bridgeTokensPair.bridgeTokens.find(
+    //         bridgeToken =>
+    //           bridgeToken.blockchainToken[oppositeBlockchain].address?.toLowerCase() ===
+    //           oppositeToken.address?.toLowerCase()
+    //       )
+    //     )
+    //     .filter(tokenPair => tokenPair);
+    //   Object.values(blockchainsList).forEach(blockchainItem => {
+    //     const blockchain = blockchainItem.symbol;
+    //     if (oppositeBlockchain === blockchain) {
+    //       return;
+    //     }
+    //
+    //     this._supportedTokens[blockchain][blockchain].forEach(token => {
+    //       const foundTokenPair = tokensPairs.find(
+    //         bridgeToken =>
+    //           bridgeToken.blockchainToken[blockchain]?.address?.toLowerCase() ===
+    //           token.address?.toLowerCase()
+    //       );
+    //
+    //       tokens.push({
+    //         ...token,
+    //         available: !!foundTokenPair
+    //       });
+    //     });
+    //   });
+    // }
 
     this.availableTokens[tokenType] = tokens;
   }

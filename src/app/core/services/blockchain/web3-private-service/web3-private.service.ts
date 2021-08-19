@@ -25,7 +25,7 @@ export class Web3PrivateService {
 
   constructor(private readonly providerConnector: ProviderConnectorService) {
     this.web3 = providerConnector.web3;
-    this.defaultMockGas = '400000';
+    // this.defaultMockGas = '400000';
   }
 
   private static parseError(err): Error {

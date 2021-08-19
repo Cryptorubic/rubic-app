@@ -34,7 +34,7 @@
             (providerData.amount
               | bigNumberFormat
               | withRound: 'toClosestValue':tradeData?.to?.token.decimals) ||
-              'Trading is not available'
+              ('tradePage.tradingNotAvailable' | translate)
           }}
           <div
             *ngIf="hasError"

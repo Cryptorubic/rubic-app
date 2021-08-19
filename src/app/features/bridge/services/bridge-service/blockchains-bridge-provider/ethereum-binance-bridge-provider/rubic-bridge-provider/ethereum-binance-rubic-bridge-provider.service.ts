@@ -19,9 +19,21 @@ import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AbiItem } from 'web3-utils';
+import {
+  rubicBridgeContractAddressesNetMode,
+  rubicTokenAddressesNetMode
+} from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/constants/addressesNetMode';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
-import EthereumContractAbi from './abi/EthereumContractAbi';
-import BinanceContractAbi from './abi/BinanceContractAbi';
+import EthereumContractAbi from './constants/abi/EthereumContractAbi';
+import BinanceContractAbi from './constants/abi/BinanceContractAbi';
+
+interface RubicConfig {
+  minAmount: number;
+  maxAmount: number;
+  swapContractAddress: string;
+  swapContractAbi: AbiItem[];
+  rubicTokenAddress: string;
+}
 
 interface RubicTrade {
   token: {
@@ -38,21 +50,9 @@ interface RubicTrade {
 export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridgeProvider {
   private readonly apiUrl = 'https://swap.rubic.exchange/api/v1/';
 
-  private rubicConfig = {
-    [BLOCKCHAIN_NAME.ETHEREUM]: {
-      minAmount: 200,
-      maxAmount: 50000,
-      swapContractAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
-      swapContractAbi: EthereumContractAbi,
-      rubicTokenAddress: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3'
-    },
-    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-      minAmount: 200,
-      maxAmount: 50000,
-      swapContractAddress: '0xE77b0E832A58aFc2fcDaed060E8D701d97533086',
-      swapContractAbi: BinanceContractAbi,
-      rubicTokenAddress: '0x8e3bcc334657560253b83f08331d85267316e08a'
-    }
+  private rubicConfig: {
+    [BLOCKCHAIN_NAME.ETHEREUM]: RubicConfig;
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: RubicConfig;
   };
 
   constructor(
@@ -66,21 +66,50 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   ) {
     super();
 
+    this.rubicConfig = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: {
+        minAmount: 200,
+        maxAmount: 50000,
+        swapContractAddress: rubicBridgeContractAddressesNetMode.mainnet[BLOCKCHAIN_NAME.ETHEREUM],
+        swapContractAbi: EthereumContractAbi,
+        rubicTokenAddress: rubicTokenAddressesNetMode.mainnet[BLOCKCHAIN_NAME.ETHEREUM]
+      },
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+        minAmount: 200,
+        maxAmount: 50000,
+        swapContractAddress:
+          rubicBridgeContractAddressesNetMode.mainnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
+        swapContractAbi: BinanceContractAbi,
+        rubicTokenAddress: rubicTokenAddressesNetMode.mainnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
+      }
+    };
     this.loadRubicTokenInfo();
 
-    useTestingMode.isTestingMode.subscribe(value => {
-      if (value) {
-        this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM] = {
-          ...this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM],
-          swapContractAddress: '0xd806e441b27f4f827710469b0acb4e045e62b676',
-          rubicTokenAddress: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9'
-        };
-        this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN] = {
-          ...this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
-          swapContractAddress: '0x17caca02ddf472f62bfed5165facf7a6b5c72926',
-          rubicTokenAddress: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8'
-        };
+    this.initTestingMode();
+  }
 
+  private initTestingMode(): void {
+    this.useTestingMode.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this.rubicConfig = {
+          [BLOCKCHAIN_NAME.ETHEREUM]: {
+            minAmount: 200,
+            maxAmount: 50000,
+            swapContractAddress:
+              rubicBridgeContractAddressesNetMode.testnet[BLOCKCHAIN_NAME.ETHEREUM],
+            swapContractAbi: EthereumContractAbi,
+            rubicTokenAddress: rubicTokenAddressesNetMode.testnet[BLOCKCHAIN_NAME.ETHEREUM]
+          },
+          [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+            minAmount: 200,
+            maxAmount: 50000,
+            swapContractAddress:
+              rubicBridgeContractAddressesNetMode.testnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
+            swapContractAbi: BinanceContractAbi,
+            rubicTokenAddress:
+              rubicTokenAddressesNetMode.testnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
+          }
+        };
         this.loadRubicTokenInfo();
       }
     });

@@ -277,14 +277,8 @@ export class CommonUniswapV2Service {
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
 
-    const { gasPrice, gasPriceInEth, gasPriceInUsd } = await this.getGasPrices(
-      blockchain,
-      web3Public,
-      shouldCalculateGas,
-      minGasPrice
-    );
-
     const { route, estimatedGas } = await this.getToAmountAndPath(
+      blockchain,
       fromTokenAddress,
       fromAmountAbsolute,
       toTokenClone,
@@ -296,18 +290,10 @@ export class CommonUniswapV2Service {
       shouldCalculateGas,
       estimatedGasPredictionMethod,
       estimatedGasArray,
-      gasPriceInUsd
+      minGasPrice
     );
 
-    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.GAS_MARGIN);
-    let gasFeeInEth;
-    let gasFeeInUsd;
-    if (shouldCalculateGas) {
-      gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
-      gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
-    }
-
-    return {
+    const instantTrade = {
       blockchain,
       from: {
         token: fromToken,
@@ -317,20 +303,35 @@ export class CommonUniswapV2Service {
         token: toToken,
         amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
-      gasLimit: increasedGas,
-      gasPrice,
-      gasFeeInUsd,
-      gasFeeInEth,
       options: {
         path: route.path
       }
+    };
+    if (!shouldCalculateGas) {
+      return instantTrade;
+    }
+
+    const { gasPrice, gasPriceInEth, gasPriceInUsd } = await this.getGasPrices(
+      blockchain,
+      web3Public,
+      minGasPrice
+    );
+    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.GAS_MARGIN);
+    const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
+    const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
+
+    return {
+      ...instantTrade,
+      gasLimit: increasedGas,
+      gasPrice,
+      gasFeeInUsd,
+      gasFeeInEth
     };
   }
 
   private async getGasPrices(
     blockchain: BLOCKCHAIN_NAME,
     web3Public: Web3Public,
-    shouldCalculateGas: boolean,
     minGasPrice?: BigNumber
   ): Promise<{
     gasPrice: string;
@@ -345,18 +346,15 @@ export class CommonUniswapV2Service {
       gasPrice = web3GasPrice;
     }
 
-    let gasPriceInEth;
-    let gasPriceInUsd;
-    if (shouldCalculateGas) {
-      gasPriceInEth = Web3Public.fromWei(gasPrice);
-      const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
-      gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
-    }
+    const gasPriceInEth = Web3Public.fromWei(gasPrice);
+    const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
+    const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
 
     return { gasPrice, gasPriceInEth, gasPriceInUsd };
   }
 
   private async getToAmountAndPath(
+    blockchain: BLOCKCHAIN_NAME,
     fromTokenAddress: string,
     fromAmountAbsolute: string,
     toToken: InstantTradeToken,
@@ -368,7 +366,7 @@ export class CommonUniswapV2Service {
     shouldCalculateGas: boolean,
     gasCalculationMethodName: GasCalculationMethod,
     estimatedGasArray: BigNumber[],
-    gasPriceInUsd: BigNumber
+    minGasPrice?: BigNumber
   ): Promise<UniswapV2CalculatedInfo> {
     const routes = (
       await this.getAllRoutes(
@@ -383,6 +381,12 @@ export class CommonUniswapV2Service {
     ).sort((a, b) => (b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1));
     if (routes.length === 0) {
       throw new InsufficientLiquidityError();
+    }
+
+    if (!shouldCalculateGas) {
+      return {
+        route: routes[0]
+      };
     }
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
@@ -412,6 +416,8 @@ export class CommonUniswapV2Service {
 
     const withGasOptimisation = shouldCalculateGas && this.settings.rubicOptimisation;
     if (withGasOptimisation && toToken.price && this.walletAddress) {
+      const { gasPriceInUsd } = await this.getGasPrices(blockchain, web3Public, minGasPrice);
+
       const promises: Promise<UniswapV2CalculatedInfoWithProfit>[] = routes.map(async route => {
         const estimatedGas = await getEstimatedGas(route);
 

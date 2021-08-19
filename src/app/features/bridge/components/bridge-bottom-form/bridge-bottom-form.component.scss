@@ -7,6 +7,7 @@
 
   &__container {
     display: flex;
+    grid-gap: 20px;
     justify-content: space-between;
 
     min-height: 105px;
@@ -21,6 +22,7 @@
 
     @include b($mobile-sm) {
       flex-direction: column;
+      grid-gap: initial;
     }
   }
 

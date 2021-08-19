@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
-import { List } from 'immutable';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
@@ -14,12 +13,9 @@ import { catchError, filter, first, map, mergeMap, switchMap } from 'rxjs/operat
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -27,6 +23,8 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -43,7 +41,7 @@ export class BridgeService {
 
   private bridgeProvider: BlockchainsBridgeProvider;
 
-  private _backendTokens: List<TokenAmount>;
+  private isTestingMode = false;
 
   constructor(
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
@@ -62,15 +60,13 @@ export class BridgeService {
     private readonly swapFormService: SwapFormService
   ) {
     this.setupBlockchainsProviders();
-    this.setTokens();
-    tokensService.tokens.subscribe(tokens => {
-      this._backendTokens = tokens;
-    });
-
     this.subscribeToFormChanges();
 
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+    this.setTokens();
+
+    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
+        this.isTestingMode = true;
         this.tokens$.next(bridgeTestTokens);
       }
     });
@@ -97,7 +93,7 @@ export class BridgeService {
   }
 
   private subscribeToFormChanges(): void {
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(formData => {
+    this.swapFormService.inputValueChanges.subscribe(formData => {
       this.bridgeProvider =
         this.blockchainsProviders[formData.fromBlockchain]?.[formData.toBlockchain];
     });
@@ -131,7 +127,11 @@ export class BridgeService {
 
     zip(...tokensObservables)
       .pipe(first())
-      .subscribe(tokens => this.tokens$.next(tokens));
+      .subscribe(tokens => {
+        if (!this.isTestingMode) {
+          this.tokens$.next(tokens);
+        }
+      });
   }
 
   public isBridgeSupported(): boolean {
@@ -160,6 +160,7 @@ export class BridgeService {
   public getCurrentBridgeToken(): Observable<BridgeToken> {
     return this.tokens.pipe(
       filter(tokens => !!tokens.length),
+      first(),
       map(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
           this.swapFormService.inputValue;
@@ -167,7 +168,7 @@ export class BridgeService {
           item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
         );
 
-        const bridgeToken = bridgeTokensList.bridgeTokens?.find(
+        const bridgeToken = bridgeTokensList?.bridgeTokens?.find(
           item =>
             item.blockchainToken[fromBlockchain].address.toLowerCase() ===
               fromToken.address.toLowerCase() &&

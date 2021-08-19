@@ -34,6 +34,8 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  @Input() errorText = '';
+
   private _loading: boolean;
 
   public usd: string;

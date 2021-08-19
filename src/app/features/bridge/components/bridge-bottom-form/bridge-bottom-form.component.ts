@@ -11,7 +11,7 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, first, map, startWith, switchMap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -29,6 +29,10 @@ import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/Blockcha
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { CrossChainRoutingService } from 'src/app/features/bridge/services/cross-chain-routing-service/cross-chain-routing.service';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { CrossChainRoutingTrade } from 'src/app/features/bridge/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
@@ -78,7 +82,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
-  private readonly onCalculateTrade: Subject<void>;
+  private readonly onCalculateBridge: Subject<void>;
+
+  private readonly onCalculateRouting: Subject<void>;
 
   private bridgeTokensPairs: BlockchainsBridgeTokens[];
 
@@ -106,6 +112,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public tradeStatus: TRADE_STATUS;
 
+  private crossChainRoutingTrade: CrossChainRoutingTrade;
+
+  public crossChainRoutingErrorText: string;
+
   private formSubscription$: Subscription;
 
   private settingsSubscription$: Subscription;
@@ -114,7 +124,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private bridgeTokensSubscription$: Subscription;
 
-  private calculateTradeSubscription$: Subscription;
+  private calculateBridgeSubscription$: Subscription;
+
+  private calculateRoutingSubscription$: Subscription;
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -151,14 +163,17 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
+    private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.isBridgeSupported = true;
-    this.onCalculateTrade = new Subject<void>();
+    this.onCalculateBridge = new Subject<void>();
+    this.onCalculateRouting = new Subject<void>();
   }
 
   ngOnInit() {
-    this.setupCalculating();
+    this.setupBridgeCalculation();
+    this.setupRoutingCalculation();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.bridgeTokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
@@ -222,7 +237,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  private conditionalCalculate(): void {
+  private isBridgeTrade(): Promise<boolean> {
+    return this.bridgeService
+      .getCurrentBridgeToken()
+      .pipe(map(bridgeToken => !!bridgeToken))
+      .toPromise();
+  }
+
+  private async conditionalCalculate(): Promise<void> {
     if (!this.fromToken?.address || !this.toToken?.address) {
       this.maxError = false;
       this.minError = false;
@@ -253,17 +275,24 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.checkMinMaxAmounts();
+    this.crossChainRoutingErrorText = '';
 
-    this.onCalculateTrade.next();
+    if (await this.isBridgeTrade()) {
+      this.checkMinMaxAmounts();
+      this.onCalculateBridge.next();
+    } else {
+      this.maxError = false;
+      this.minError = false;
+      this.onCalculateRouting.next();
+    }
   }
 
-  private setupCalculating(): void {
-    if (this.calculateTradeSubscription$) {
+  private setupBridgeCalculation(): void {
+    if (this.calculateBridgeSubscription$) {
       return;
     }
 
-    this.calculateTradeSubscription$ = this.onCalculateTrade
+    this.calculateBridgeSubscription$ = this.onCalculateBridge
       .pipe(
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
@@ -312,7 +341,62 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  public approveTrade() {
+  private setupRoutingCalculation(): void {
+    if (this.calculateRoutingSubscription$) {
+      return;
+    }
+
+    this.calculateRoutingSubscription$ = this.onCalculateRouting
+      .pipe(
+        switchMap(() => {
+          this.tradeStatus = TRADE_STATUS.LOADING;
+          this.cdr.detectChanges();
+
+          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+
+          const needApprove$ = this.authService.user?.address
+            ? this.crossChainRoutingService.needApprove(fromToken)
+            : of(false);
+
+          return forkJoin([
+            this.crossChainRoutingService.calculateTrade(fromToken, fromAmount, toToken),
+            needApprove$
+          ]).pipe(
+            map(([trade, needApprove]) => {
+              this.needApprove = needApprove;
+              this.crossChainRoutingTrade = trade;
+
+              const toAmount = trade.tokenOutAmount;
+              this.swapFormService.output.patchValue({
+                toAmount
+              });
+
+              if (!toAmount || toAmount.isNaN() || toAmount.eq(0) || !this.toWalletAddress) {
+                this.tradeStatus = TRADE_STATUS.DISABLED;
+              } else {
+                this.tradeStatus = needApprove
+                  ? TRADE_STATUS.READY_TO_APPROVE
+                  : TRADE_STATUS.READY_TO_SWAP;
+              }
+              this.cdr.detectChanges();
+            }),
+            catchError((err: RubicError<ERROR_TYPE>) => {
+              this.crossChainRoutingErrorText = err.translateKey || err.message;
+              this.swapFormService.output.patchValue({
+                toAmount: new BigNumber(NaN)
+              });
+              this.tradeStatus = TRADE_STATUS.DISABLED;
+              this.cdr.detectChanges();
+
+              return of(null);
+            })
+          );
+        })
+      )
+      .subscribe();
+  }
+
+  public async approveTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
 
@@ -331,36 +415,42 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.bridgeService
-      .approve(bridgeTradeRequest)
-      .pipe(first())
-      .subscribe(
-        (_: TransactionReceipt) => {
-          approveInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
-            this.translate.instant('bridgePage.approveSuccessMessage'),
-            {
-              label: this.translate.instant('notifications.successApprove'),
-              status: TuiNotification.Success,
-              autoClose: 15000
-            }
-          );
-
-          this.tokensService.calculateUserTokensBalances();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
-        },
-        err => {
-          approveInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch(err);
-          this.cdr.detectChanges();
+    let approveObservable;
+    if (await this.isBridgeTrade()) {
+      approveObservable = this.bridgeService.approve(bridgeTradeRequest);
+    } else {
+      approveObservable = this.crossChainRoutingService.approve(
+        this.crossChainRoutingTrade.tokenIn,
+        {
+          onTransactionHash: bridgeTradeRequest.onTransactionHash
         }
       );
+    }
+
+    approveObservable.pipe(first()).subscribe(
+      (_: TransactionReceipt) => {
+        approveInProgressSubscription$.unsubscribe();
+        this.notificationsService.show(this.translate.instant('bridgePage.approveSuccessMessage'), {
+          label: this.translate.instant('notifications.successApprove'),
+          status: TuiNotification.Success,
+          autoClose: 15000
+        });
+
+        this.tokensService.calculateUserTokensBalances();
+
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.cdr.detectChanges();
+      },
+      err => {
+        approveInProgressSubscription$?.unsubscribe();
+        this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
+        this.errorsService.catch(err);
+        this.cdr.detectChanges();
+      }
+    );
   }
 
-  public createTrade() {
+  public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
 
@@ -385,31 +475,40 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.bridgeService
-      .createTrade(bridgeTradeRequest)
-      .pipe(first())
-      .subscribe(
-        (_: TransactionReceipt) => {
-          tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
-            label: this.translate.instant('notifications.successfulTradeTitle'),
-            status: TuiNotification.Success,
-            autoClose: 15000
-          });
-
-          this.counterNotificationsService.updateUnread();
-          this.tokensService.calculateUserTokensBalances();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.conditionalCalculate();
-        },
-        err => {
-          tradeInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.errorsService.catch(err);
-          this.cdr.detectChanges();
+    let createTradeObservable;
+    if (await this.isBridgeTrade()) {
+      createTradeObservable = this.bridgeService.createTrade(bridgeTradeRequest);
+    } else {
+      createTradeObservable = this.crossChainRoutingService.createTrade(
+        this.crossChainRoutingTrade,
+        {
+          onTransactionHash: bridgeTradeRequest.onTransactionHash
         }
       );
+    }
+
+    createTradeObservable.pipe(first()).subscribe(
+      (_: TransactionReceipt) => {
+        tradeInProgressSubscription$.unsubscribe();
+        this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
+          label: this.translate.instant('notifications.successfulTradeTitle'),
+          status: TuiNotification.Success,
+          autoClose: 15000
+        });
+
+        this.counterNotificationsService.updateUnread();
+        this.tokensService.calculateUserTokensBalances();
+
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.conditionalCalculate();
+      },
+      err => {
+        tradeInProgressSubscription$?.unsubscribe();
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.errorsService.catch(err);
+        this.cdr.detectChanges();
+      }
+    );
   }
 
   private checkMinMaxAmounts(): void {

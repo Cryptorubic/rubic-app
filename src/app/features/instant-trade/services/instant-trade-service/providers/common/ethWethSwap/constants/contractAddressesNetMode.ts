@@ -1,5 +1,5 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ContractAddresses } from 'src/app/shared/models/blockchain/NetMode';
+import { ContractAddressesNetMode } from 'src/app/shared/models/blockchain/NetMode';
 
 export const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -10,7 +10,7 @@ export const supportedBlockchains = [
 
 export type SupportedBlockchain = typeof supportedBlockchains[number];
 
-export const contractAddressesNetMode: ContractAddresses<SupportedBlockchain> = {
+export const contractAddressesNetMode: ContractAddressesNetMode<SupportedBlockchain> = {
   mainnet: {
     [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
