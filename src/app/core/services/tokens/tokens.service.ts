@@ -23,7 +23,11 @@ export class TokensService {
 
   get tokens(): Observable<List<TokenAmount>> {
     // TODO: remove pipe after integrate iframe tokens backend
-    return this._tokens.asObservable().pipe(map(tokens => tokens?.slice(0, 30)));
+    return this._tokens
+      .asObservable()
+      .pipe(
+        map(tokens => tokens?.filter(t => t.blockchain === BLOCKCHAIN_NAME.POLYGON).slice(0, 30))
+      );
   }
 
   private userAddress: string;
