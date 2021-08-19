@@ -195,6 +195,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
+    if (!this.fromToken || !this.toToken) {
+      this.ethAndWethTrade = null;
+    }
+
     if (
       this.currentBlockchain !== form.fromBlockchain &&
       form.fromBlockchain === form.toBlockchain
