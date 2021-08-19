@@ -30,7 +30,6 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
@@ -440,16 +439,27 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public handleClick(clickType: 'swap' | 'approve') {
-    this.dialogService
-      .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
-      .subscribe(allowAction => {
-        if (allowAction) {
-          if (clickType === 'swap') {
-            this.createTrade();
-          } else {
-            this.approveTrade();
+    const isPolygonEthBridge =
+      this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+      this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
+    if (isPolygonEthBridge) {
+      this.dialogService
+        .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
+        .subscribe(allowAction => {
+          if (allowAction) {
+            this.doButtonAction(clickType);
           }
-        }
-      });
+        });
+    } else {
+      this.doButtonAction(clickType);
+    }
+  }
+
+  private doButtonAction(clickType: 'swap' | 'approve'): void {
+    if (clickType === 'swap') {
+      this.createTrade();
+    } else {
+      this.approveTrade();
+    }
   }
 }
