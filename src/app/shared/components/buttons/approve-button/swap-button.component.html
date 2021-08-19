@@ -10,50 +10,67 @@
   </app-rubic-button>
 
   <ng-template [ngIf]="!needLogin">
+    <!-- approve button -->
     <ng-container *ngIf="needApprove && !dataLoading && !hasError">
-      <div class="buttons">
+      <ng-container *noFrame>
+        <div class="buttons">
+          <app-rubic-button
+            [fullWidth]="true"
+            (onClick)="approveClick.emit()"
+            [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
+            [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
+            appearance="secondary"
+          >
+            Approve
+          </app-rubic-button>
+          <app-rubic-button
+            [fullWidth]="true"
+            (onClick)="swapClick.emit()"
+            [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
+            [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
+            appearance="secondary"
+            >
+            Swap
+          </app-rubic-button>
+          <div class="buttons__timeline-container timeline">
+            <span class="timeline__connector"></span>
+            <div
+              class="timeline__point"
+              [attr.disabled]="
+                status === TRADE_STATUS.READY_TO_SWAP ||
+                status === TRADE_STATUS.SWAP_IN_PROGRESS ||
+                status === TRADE_STATUS.DISABLED
+              "
+            >
+              1
+            </div>
+            <div
+              class="timeline__point"
+              [attr.disabled]="
+                status === TRADE_STATUS.READY_TO_APPROVE ||
+                status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+                status === TRADE_STATUS.DISABLED
+              "
+            >
+              2
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *onlyFrame="'any'">
         <app-rubic-button
           [fullWidth]="true"
           (onClick)="approveClick.emit()"
-          [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
-          [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
+          [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || !!dataLoading"
+          [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE && status !== TRADE_STATUS.READY_TO_SWAP"
           appearance="secondary"
         >
-          Approve
+          {{ status === TRADE_STATUS.READY_TO_APPROVE ? 'Approve' : 'Swap' }}
         </app-rubic-button>
-        <app-rubic-button
-          [fullWidth]="true"
-          (onClick)="swapClick.emit()"
-          [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
-          [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
-          appearance="secondary"
-          >Swap</app-rubic-button
-        >
-        <div class="buttons__timeline-container timeline">
-          <span class="timeline__connector"></span>
-          <div
-            class="timeline__point"
-            [attr.disabled]="
-              status === TRADE_STATUS.READY_TO_SWAP ||
-              status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-              status === TRADE_STATUS.DISABLED
-            "
-          >
-            1
-          </div>
-          <div
-            class="timeline__point"
-            [attr.disabled]="
-              status === TRADE_STATUS.READY_TO_APPROVE ||
-              status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-              status === TRADE_STATUS.DISABLED
-            "
-          >
-            2
-          </div>
-        </div>
-      </div>
+      </ng-container>
     </ng-container>
+    <!-- approve button -->
 
     <ng-container *ngIf="(!needApprove && !hasError) || dataLoading">
       <app-rubic-button
