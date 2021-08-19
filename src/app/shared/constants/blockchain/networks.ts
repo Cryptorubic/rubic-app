@@ -78,6 +78,20 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 1666600000,
+    name: BLOCKCHAIN_NAME.HARMONY,
+    scannerUrl: 'https://explorer.harmony.one/#/',
+    rpcLink: 'https://api.harmony.one',
+    imagePath: 'assets/images/icons/coins/harmony.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.HARMONY,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ONE',
+      symbol: 'ONE',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,
@@ -121,6 +135,21 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'Polygon',
       symbol: 'MATIC',
+      decimals: 18
+    }
+  },
+  {
+    id: 1666700000,
+    name: BLOCKCHAIN_NAME.HARMONY_TESTNET,
+    label: 'Harmony',
+    scannerUrl: 'https://explorer.pops.one/',
+    rpcLink: 'https://api.s0.b.hmny.io',
+    imagePath: 'assets/images/icons/coins/harmony.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.HARMONY_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'ONE',
+      symbol: 'ONE',
       decimals: 18
     }
   }

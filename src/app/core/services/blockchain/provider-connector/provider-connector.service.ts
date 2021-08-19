@@ -211,6 +211,9 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.POLYGON]: {
         name: 'Matic(Polygon) Mainnet',
         rpc: 'https://rpc-mainnet.matic.network'
+      },
+      [BLOCKCHAIN_NAME.HARMONY]: {
+        name: 'Harmony Mainnet Shard 0'
       }
     };
     const params = {

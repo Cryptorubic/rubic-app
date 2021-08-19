@@ -41,7 +41,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
   }
 
   public get allowTrade(): boolean {
-    const form = this.swapFormService.commonTrade.controls.input.value;
+    const form = this.swapFormService.inputValue;
     return Boolean(
       form.fromAmount &&
         form.fromAmount.gt(0) &&

@@ -20,7 +20,7 @@
               | withRound: 'toClosestValue':selectedProvider.trade.to.token.decimals || 1
           }}
         </div>
-        <div class="instant-trade-bottom-form__usd-amount">${{ getUsdPrice() }}</div>
+        <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice() }}</div>
       </div>
     </div>
     <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">

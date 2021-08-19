@@ -1,3 +1,7 @@
+<!-- HARMONY BANNER -->
+<div class="harmony-banner">Trade Harmony Tokens and earn up to 10% from trading volume</div>
+<!-- HARMONY BANNER -->
+
 <header class="rubic-header">
   <a class="rubic-header__logo" routerLink="/">
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
@@ -16,6 +20,9 @@
        (click)="navigateToBridge()"
        [class.button-link_active]="rootPath && (isInstantTrade$ | async) === false">
       Bridge
+    <a class="button-link" routerLink="/" [class.button-link_active]="isLinkActive('/')"> Swaps</a>
+    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">
+      Crypto Tap
     </a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Cross Chain</span>
   </nav>
@@ -25,8 +32,23 @@
        routerLink="my-trades"
        routerLinkActive="button-link_active">
       {{ 'navigation.myTrades' | translate }}
+
+      <tui-badge
+        class="notification-counter"
+        *ngIf="countNotifications$ | async"
+        size="s"
+        [value]="countNotifications$ | async"
+      ></tui-badge>
     </a>
 
+    <app-login-button
+      class="rubic-header__login"
+      *ngIf="!($currentUser | async)"
+    ></app-login-button>
+    <app-user-profile
+      class="rubic-header__profile-user"
+      *ngIf="($currentUser | async)?.address"
+    ></app-user-profile>
     <app-login-button class="rubic-header__login" *ngIf="!($currentUser | async)?.address"></app-login-button>
     <app-user-profile class="rubic-header__profile-user" *ngIf="($currentUser | async)?.address"></app-user-profile>
     <app-gas-indicator *ngIf="($isMobile| async) === false"></app-gas-indicator>
@@ -34,7 +56,6 @@
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>
 </header>
-
 
 <ng-template #orderBookTooltip>
   <span>{{ 'navigation.notAvailable' | translate }}</span>

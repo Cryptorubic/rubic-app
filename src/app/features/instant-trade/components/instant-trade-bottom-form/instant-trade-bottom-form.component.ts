@@ -37,6 +37,7 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { AsyncPipe } from '@angular/common';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 
@@ -132,6 +133,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly web3PublicService: Web3PublicService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
+    private readonly counterNotificationsService: CounterNotificationsService,
     private readonly gasService: GasService
   ) {
     this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
@@ -213,6 +215,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         break;
       case BLOCKCHAIN_NAME.POLYGON:
         this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
+        break;
+      case BLOCKCHAIN_NAME.HARMONY:
+        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.HARMONY];
         break;
       default:
         this.errorService.catch(new NotSupportedItNetwork());
@@ -357,7 +362,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           return bestRate;
         }
         const { gasFeeInUsd, to } = trade;
-        const amountInUsd = to.amount?.multipliedBy(to.token.price);
+        const amountInUsd = to.token.price ? to.amount?.multipliedBy(to.token.price) : to.amount;
 
         if (amountInUsd) {
           const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
@@ -420,7 +425,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public getUsdPrice(): string {
     const tradeTo = this.selectedProvider.trade.to;
-    return tradeTo.amount.multipliedBy(tradeTo.token.price).toFormat(2, BIG_NUMBER_FORMAT);
+    const usdPrice = tradeTo.amount.multipliedBy(tradeTo.token.price);
+    if (usdPrice.isNaN()) {
+      return '';
+    }
+    return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
   }
 
   private setProviderState(
@@ -502,7 +511,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         gasPrice: (gasPrice * 10 ** 9).toString() || provider.trade.gasPrice
       };
       await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, trade);
-
+      this.counterNotificationsService.updateUnread();
       this.tokensService.recalculateUsersBalance();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;

@@ -41,7 +41,7 @@
       background-color: var(--primary-color);
       box-shadow: var(--rubic-shadow-button-active);
 
-      ::ng-deep img {
+      ::ng-deep img:not(.tokens__clear-icon) {
         filter: brightness(10);
       }
     }
@@ -142,4 +142,14 @@
 
 ::ng-deep .loader {
   stroke: var(--primary-color) !important;
+}
+
+:host(.tokens__btn) {
+  [tuiButton] {
+    &[data-tui-host-size='s'] {
+      ::ng-deep .tokens__clear {
+        margin-right: -5px;
+      }
+    }
+  }
 }
