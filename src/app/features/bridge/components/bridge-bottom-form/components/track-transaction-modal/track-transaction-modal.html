@@ -1,6 +1,10 @@
 <section class="modal">
-  <span class="warning-text">Track the transaction status in My Trades and tap «Receive» when appears to claim tokens in Ethereum network.</span>
-  <div class="buttons-container">
-    <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">{{ 'common.OK' | translate }}</app-rubic-button>
-  </div>
+  <img class="modal__image" src="assets/images/bridge/success-image.svg" alt="Success">
+  <span class="modal__text">Track the transaction status in <a href="/my-trades">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network.</span>
+  <app-rubic-button
+    class="modal__button"
+    fullWidth="true"
+    appearance="secondary"
+    (click)="onConfirm()"
+  >{{ 'common.OK' | translate }}</app-rubic-button>
 </section>
