@@ -1,0 +1,7 @@
+<section class="modal">
+  <span class="warning-text">This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it. </span>
+  <div class="buttons-container">
+    <app-rubic-button fullWidth bordered (click)="onDecline()">{{ 'common.cancel' | translate }}</app-rubic-button>
+    <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">{{ 'common.OK' | translate }}</app-rubic-button>
+  </div>
+</section>

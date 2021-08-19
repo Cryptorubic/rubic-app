@@ -25,8 +25,8 @@
         [isTronAddressNotSet]="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="createTrade()"
-        (approveClick)="approveTrade()"
+        (swapClick)="handleClick('swap')"
+        (approveClick)="handleClick('approve')"
       ></app-swap-button>
     </div>
     <app-terms-n-conditions-container
