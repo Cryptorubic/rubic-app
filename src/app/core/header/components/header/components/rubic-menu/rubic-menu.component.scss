@@ -114,8 +114,12 @@
       width: auto;
       height: 100%;
 
-      path {
+      path[fill='black'] {
         fill: var(--rubic-base-02);
+      }
+
+      path[fill='white'] {
+        fill: var(--rubic-base-11);
       }
     }
   }
@@ -212,9 +216,10 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 .notification-counter {
   position: absolute;
 
-  display: none;
   top: -5px;
   right: 0;
+
+  display: none;
 
   &[data-tui-host-status='default'] {
     color: white;

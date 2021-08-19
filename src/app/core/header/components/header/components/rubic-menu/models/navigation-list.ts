@@ -37,12 +37,12 @@ export const NAVIGATION_LIST = [
     translateKey: 'navigation.merch',
     type: 'external',
     link: 'https://shop.rubic.exchange',
-    imagePath: ``
+    imagePath: `${defaultSrc}shop.svg`
   },
   {
     translateKey: 'Crypto Tap',
     type: 'internal',
     link: 'crypto-tap',
-    imagePath: ''
+    imagePath: `${defaultSrc}crypto.svg`
   }
 ] as NavigationItem[];
