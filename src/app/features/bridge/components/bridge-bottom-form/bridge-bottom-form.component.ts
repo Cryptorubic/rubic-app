@@ -109,8 +109,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private userSubscription$: Subscription;
 
-  private unsupportedBridgeSubscription$: Subscription;
-
   private bridgeTokensSubscription$: Subscription;
 
   private calculateTradeSubscription$: Subscription;
@@ -185,7 +183,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.formSubscription$.unsubscribe();
     this.settingsSubscription$.unsubscribe();
     this.userSubscription$.unsubscribe();
-    this.unsupportedBridgeSubscription$?.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -236,25 +233,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     if (!this.bridgeService.isBridgeSupported()) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
-
-      if (this.isBridgeSupported) {
-        this.isBridgeSupported = false;
-        this.unsupportedBridgeSubscription$ = this.notificationsService.show(
-          this.translate.instant('errors.notSupportedBridge'),
-          {
-            label: this.translate.instant('common.error'),
-            status: TuiNotification.Error,
-            autoClose: false
-          }
-        );
-      }
-
+      this.isBridgeSupported = false;
       this.cdr.detectChanges();
       return;
     }
 
     this.isBridgeSupported = true;
-    this.unsupportedBridgeSubscription$?.unsubscribe();
     this.cdr.detectChanges();
 
     if (!this.allowTrade) {

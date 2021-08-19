@@ -44,7 +44,7 @@ export class TokenAmountInputComponent {
 
   public readonly DEFAULT_DECIMALS = 18;
 
-  public amountControl = new FormControl('123');
+  public amountControl = new FormControl('');
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
