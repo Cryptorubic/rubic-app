@@ -23,10 +23,10 @@ import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
-import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
+import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +56,7 @@ export class InstantTradeService {
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly ethWethSwapProvider: EthWethSwapProviderService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -90,6 +91,28 @@ export class InstantTradeService {
     };
   }
 
+  public getEthAndWethTrade(): InstantTrade | null {
+    const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
+
+    if (
+      !this.ethWethSwapProvider.isEthAndWethSwap(fromBlockchain, fromToken.address, toToken.address)
+    ) {
+      return null;
+    }
+
+    return {
+      blockchain: fromBlockchain,
+      from: {
+        token: fromToken,
+        amount: fromAmount
+      },
+      to: {
+        token: toToken,
+        amount: fromAmount
+      }
+    };
+  }
+
   public async calculateTrades(
     providersNames: INSTANT_TRADES_PROVIDER[]
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
@@ -110,23 +133,30 @@ export class InstantTradeService {
   public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     let transactionHash: string;
     try {
-      const receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
-        trade,
-        {
-          onConfirm: async hash => {
-            this.modalShowing = this.notificationsService.show(
-              this.translateService.instant('notifications.tradeInProgress'),
-              {
-                status: TuiNotification.Info,
-                autoClose: false
-              }
-            );
-            transactionHash = hash;
+      const options = {
+        onConfirm: async hash => {
+          this.modalShowing = this.notificationsService.show(
+            this.translateService.instant('notifications.tradeInProgress'),
+            {
+              status: TuiNotification.Info,
+              autoClose: false
+            }
+          );
+          transactionHash = hash;
 
-            await this.postTrade(hash, provider, trade);
-          }
+          await this.postTrade(hash, provider, trade);
         }
-      );
+      };
+
+      let receipt;
+      if (provider === INSTANT_TRADES_PROVIDER.WRAPPED) {
+        receipt = await this.ethWethSwapProvider.createTrade(trade, options);
+      } else {
+        receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
+          trade,
+          options
+        );
+      }
 
       this.modalShowing.unsubscribe();
       this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
