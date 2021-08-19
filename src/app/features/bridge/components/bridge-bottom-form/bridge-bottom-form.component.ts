@@ -29,6 +29,9 @@ import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/Blockcha
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
+import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -374,6 +377,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             autoClose: false
           }
         );
+        this.dialogService
+          .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
+            size: 's'
+          })
+          .subscribe();
       }
     };
 
@@ -428,5 +436,30 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
           fromToken?.address.toLowerCase()
       )?.blockchainToken[fromBlockchain][amountType];
+  }
+
+  public handleClick(clickType: 'swap' | 'approve') {
+    const isPolygonEthBridge =
+      this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+      this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
+    if (isPolygonEthBridge) {
+      this.dialogService
+        .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
+        .subscribe(allowAction => {
+          if (allowAction) {
+            this.doButtonAction(clickType);
+          }
+        });
+    } else {
+      this.doButtonAction(clickType);
+    }
+  }
+
+  private doButtonAction(clickType: 'swap' | 'approve'): void {
+    if (clickType === 'swap') {
+      this.createTrade();
+    } else {
+      this.approveTrade();
+    }
   }
 }
