@@ -11,11 +11,18 @@ import { EthereumBinanceRubicBridgeProviderService } from 'src/app/features/brid
 import { EthereumPolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
+import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { BridgeBottomFormComponent } from './components/bridge-bottom-form/bridge-bottom-form.component';
 import { TermsNConditionsContainerComponent } from './components/bridge-bottom-form/components/terms-n-conditions-container/terms-n-conditions-container.component';
+import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 
 @NgModule({
-  declarations: [BridgeBottomFormComponent, TermsNConditionsContainerComponent],
+  declarations: [
+    BridgeBottomFormComponent,
+    TermsNConditionsContainerComponent,
+    ReceiveWarningModalComponent,
+    TrackTransactionModalComponent
+  ],
   exports: [BridgeBottomFormComponent],
   imports: [CommonModule, SharedModule],
   providers: [
@@ -29,6 +36,7 @@ import { TermsNConditionsContainerComponent } from './components/bridge-bottom-f
     EthereumXdaiBridgeProviderService,
     BinanceTronBridgeProviderService,
     BinancePolygonBridgeProviderService
-  ]
+  ],
+  entryComponents: [ReceiveWarningModalComponent, TrackTransactionModalComponent]
 })
 export class BridgeModule {}
