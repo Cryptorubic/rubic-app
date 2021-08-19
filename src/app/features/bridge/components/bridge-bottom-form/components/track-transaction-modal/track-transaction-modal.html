@@ -1,6 +1,7 @@
 <section class="modal">
   <img class="modal__image" src="assets/images/bridge/success-image.svg" alt="Success">
-  <span class="modal__text">Track the transaction status in <a href="/my-trades">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network.</span>
+  <h3 class="modal__text-title">{{ 'notifications.tradeInProgress' | translate }}</h3>
+  <span class="modal__text" [innerHTML]="'modals.bridge.trackTrx' | translate"></span>
   <app-rubic-button
     class="modal__button"
     fullWidth="true"

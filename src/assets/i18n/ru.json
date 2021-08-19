@@ -422,6 +422,10 @@
       "title": "Этот токен не указан на Rubic.exchange.",
       "text": "Добавляя его в качестве пользовательского токена, вы подтверждаете, что торгуете с ним на свой страх и риск."
     },
+    "bridge": {
+      "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
+      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+    },
     "tokensListModal": {
       "title": "Выберите токен",
       "unsupportedPairsHint": "Этот токен недоступен для обмена. Пожалуйста, выберите поддерживаемые пары.",
