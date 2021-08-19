@@ -38,6 +38,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -74,11 +75,18 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
-  private fromToken: TokenAmount;
+  public fromToken: TokenAmount;
 
   private toToken: TokenAmount;
 
   public fromAmount: BigNumber;
+
+  public ethAndWethTrade: InstantTrade | null;
+
+  public isEth: {
+    from: boolean;
+    to: boolean;
+  };
 
   public tradeStatus: TRADE_STATUS;
 
@@ -182,6 +190,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
 
+    this.isEth = {
+      from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
+      to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
+    };
+
     if (
       this.currentBlockchain !== form.fromBlockchain &&
       form.fromBlockchain === form.toBlockchain
@@ -281,6 +294,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTradeSubscription$ = this.onCalculateTrade
       .pipe(
         switchMap(() => {
+          this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
+          if (this.ethAndWethTrade) {
+            this.selectedProvider = null;
+            this.needApprove = false;
+            this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+            this.cdr.detectChanges();
+            return of();
+          }
+
           this.prepareControllers();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
@@ -420,9 +442,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getUsdPrice(): string {
-    const tradeTo = this.selectedProvider.trade.to;
-    const usdPrice = tradeTo.amount.multipliedBy(tradeTo.token.price);
+  public getUsdPrice(amount?: BigNumber): string {
+    const usdPrice = (amount || this.selectedProvider?.trade.to.amount).multipliedBy(
+      this.toToken?.price
+    );
     if (usdPrice.isNaN()) {
       return '';
     }
@@ -488,21 +511,34 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async createTrade(): Promise<void> {
-    const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
-    if (providerIndex === -1) {
-      this.errorService.catch(new NoSelectedProviderError());
-    }
-
-    const provider = this.providerControllers[providerIndex];
-    this.setProviderState(
-      TRADE_STATUS.SWAP_IN_PROGRESS,
-      providerIndex,
-      INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-    );
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
+    let providerIndex = -1;
+    let instantTradeProvider: INSTANT_TRADES_PROVIDER;
+    let instantTrade: InstantTrade;
+    if (!this.ethAndWethTrade) {
+      providerIndex = this.providerControllers.findIndex(el => el.isSelected);
+      if (providerIndex === -1) {
+        this.errorService.catch(new NoSelectedProviderError());
+      }
+
+      const provider = this.providerControllers[providerIndex];
+      this.setProviderState(
+        TRADE_STATUS.SWAP_IN_PROGRESS,
+        providerIndex,
+        INSTANT_TRADES_STATUS.TX_IN_PROGRESS
+      );
+
+      instantTradeProvider = provider.tradeProviderInfo.value;
+      instantTrade = provider.trade;
+    } else {
+      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+      instantTradeProvider = INSTANT_TRADES_PROVIDER.WRAPPED;
+      instantTrade = this.ethAndWethTrade;
+    }
+
     try {
-      await this.instantTradeService.createTrade(provider.tradeProviderInfo.value, provider.trade);
+      await this.instantTradeService.createTrade(instantTradeProvider, instantTrade);
       this.counterNotificationsService.updateUnread();
       this.tokensService.recalculateUsersBalance();
 
@@ -511,11 +547,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     } catch (err) {
       this.errorService.catch(err);
 
-      this.setProviderState(
-        TRADE_STATUS.READY_TO_SWAP,
-        providerIndex,
-        INSTANT_TRADES_STATUS.COMPLETED
-      );
+      if (providerIndex !== -1) {
+        this.setProviderState(
+          TRADE_STATUS.READY_TO_SWAP,
+          providerIndex,
+          INSTANT_TRADES_STATUS.COMPLETED
+        );
+      } else {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      }
       this.cdr.detectChanges();
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }

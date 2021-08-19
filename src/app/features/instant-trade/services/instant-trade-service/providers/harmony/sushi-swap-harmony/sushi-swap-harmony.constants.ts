@@ -4,7 +4,7 @@ import { UniswapV2Constants } from '../../../models/uniswap-v2/UniswapV2Constant
 
 export const wethAddressNetMode = {
   mainnet: '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE https://explorer.harmony.one/
-  testnet: 'one1cqeqx6z3fdukzftdv27hhjvyvg7q7lm9yhykcm' // WONE https://explorer.pops.one/
+  testnet: '0xc0320368514b7961256d62bd7bc984623c0f7f65' // WONE https://explorer.pops.one/
 };
 
 export const routingProvidersNetMode = {
@@ -16,7 +16,7 @@ export const routingProvidersNetMode = {
     '0x3095c7557bcb296ccc6e363de01b760ba031f2d9' // WBTC
   ],
   testnet: [
-    'one1cqeqx6z3fdukzftdv27hhjvyvg7q7lm9yhykcm' // WONE
+    '0xc0320368514b7961256d62bd7bc984623c0f7f65' // WONE
   ]
 };
 
