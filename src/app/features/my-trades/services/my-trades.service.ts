@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
+import { BehaviorSubject, EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
 import {
-  BehaviorSubject,
-  combineLatest,
-  forkJoin,
-  Observable,
-  of,
-  Subject,
-  throwError,
-  zip
-} from 'rxjs';
-import { catchError, defaultIfEmpty, filter, map, mergeMap, takeWhile } from 'rxjs/operators';
+  catchError,
+  defaultIfEmpty,
+  filter,
+  map,
+  mergeMap,
+  switchMap,
+  takeWhile,
+  tap,
+  mapTo
+} from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -33,10 +34,6 @@ interface PanamaStatusResponse {
 
 @Injectable()
 export class MyTradesService {
-  private _isDataUpdating$ = new Subject<void>();
-
-  public isDataUpdating$ = this._isDataUpdating$.asObservable();
-
   private _tableTrades$ = new BehaviorSubject<TableTrade[]>(undefined);
 
   public tableTrades$ = this._tableTrades$.asObservable();
@@ -53,38 +50,32 @@ export class MyTradesService {
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService
-  ) {
-    combineLatest([
+  ) {}
+
+  public updateTableTrades(): Observable<TableTrade[]> {
+    return forkJoin([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens.pipe(takeWhile(tokens => tokens.size === 0, true))
-    ]).subscribe(([user, tokens]) => {
-      this.tokens = tokens;
-      this.walletAddress = user?.address || null;
+    ]).pipe(
+      switchMap(([user, tokens]) => {
+        this.tokens = tokens;
+        this.walletAddress = user?.address || null;
 
-      this._isDataUpdating$.next();
+        if (!this.walletAddress || !tokens.size) {
+          return EMPTY;
+        }
 
-      if (tokens.size) {
-        this.updateTableTrades();
-      }
-    });
-  }
-
-  public updateTableTrades(): void {
-    if (!this.walletAddress) {
-      this._tableTrades$.next([]);
-      return;
-    }
-
-    if (!this.tokens.size) {
-      return;
-    }
-
-    zip(
-      this.getBridgeTransactions(),
-      this.instantTradesApiService.getUserTrades(this.walletAddress)
-    ).subscribe(data => {
-      this._tableTrades$.next(data.flat());
-    });
+        return forkJoin([
+          this.getBridgeTransactions(),
+          this.instantTradesApiService.getUserTrades(this.walletAddress)
+        ]).pipe(
+          map(data => {
+            this._tableTrades$.next(data.flat());
+            return data.flat();
+          })
+        );
+      })
+    );
   }
 
   private getBridgeTransactions(): Observable<TableTrade[]> {

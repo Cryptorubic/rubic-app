@@ -49,8 +49,6 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   private isDataUpdatingSubscription$: Subscription;
 
-  private tableTradesSubscription$: Subscription;
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly myTradesService: MyTradesService,
@@ -63,9 +61,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private router: Router
-  ) {
-    this.myTradesService.updateTableTrades();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.counterNotificationsService.resetCounter();
@@ -76,23 +72,13 @@ export class MyTradesComponent implements OnInit, OnDestroy {
       this.walletAddress = user?.address || null;
     });
 
-    this.isDataUpdatingSubscription$ = this.myTradesService.isDataUpdating$.subscribe(() => {
-      this.loading = true;
-      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-      this.cdr.detectChanges();
-    });
-
-    this.tableTradesSubscription$ = this.myTradesService.tableTrades$.subscribe(tableTrades => {
-      if (tableTrades) {
-        this.updateTableData(tableTrades);
-      }
-    });
+    this.myTradesService
+      .updateTableTrades()
+      .subscribe(tableTrades => this.updateTableData(tableTrades));
   }
 
   ngOnDestroy(): void {
     this.userSubscription$.unsubscribe();
-    this.isDataUpdatingSubscription$.unsubscribe();
-    this.tableTradesSubscription$.unsubscribe();
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
@@ -123,7 +109,6 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     if (!this.loading) {
       this.loading = true;
       this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-      this.myTradesService.updateTableTrades();
     }
   }
 
