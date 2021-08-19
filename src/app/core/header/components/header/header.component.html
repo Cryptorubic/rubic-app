@@ -7,13 +7,14 @@
 
   <nav class="rubic-header__nav">
     <a class="button-link"
-       routerLink="/"
-       [class.button-link_active]="isLinkActive('/')">
+       (click)="navigateToSwaps()"
+       [class.button-link_active]="rootPath && (isInstantTrade$ | async)"
+    >
       Swaps
     </a>
     <a class="button-link"
        (click)="navigateToBridge()"
-       routerLinkActive="button-link_active">
+       [class.button-link_active]="rootPath && (isInstantTrade$ | async) === false">
       Bridge
     </a>
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Cross Chain</span>

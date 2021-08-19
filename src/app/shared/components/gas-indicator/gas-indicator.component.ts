@@ -15,7 +15,6 @@ export class GasIndicatorComponent {
   public gasPrice$: Observable<number>;
 
   constructor(private readonly gasService: GasService) {
-    this.gasService.fetchGas();
     this.gasPrice$ = this.gasService.gasPrice;
   }
 }

@@ -8,6 +8,7 @@
     (mouseleave)="mouseLeave()"
     alt="Toggle auto refresh"
     [tuiHint]="hint"
+    #refreshIcon
   />
   <svg
     *ngIf="autoUpdate && status === REFRESH_BUTTON_STATUS.STOPPED"

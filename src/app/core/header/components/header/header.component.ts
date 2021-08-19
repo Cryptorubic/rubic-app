@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { map } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -38,6 +39,12 @@ export class HeaderComponent implements AfterViewInit {
   public pageScrolled: boolean;
 
   public $currentUser: Observable<UserInterface>;
+
+  public readonly isInstantTrade$: Observable<boolean>;
+
+  public get rootPath(): boolean {
+    return window.location.pathname === '/';
+  }
 
   constructor(
     @Inject(PLATFORM_ID) platformId,
@@ -63,6 +70,9 @@ export class HeaderComponent implements AfterViewInit {
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
+    this.isInstantTrade$ = this.swapFormService.input.valueChanges.pipe(
+      map(el => el.fromBlockchain === el.toBlockchain)
+    );
   }
 
   public ngAfterViewInit(): void {
@@ -89,7 +99,29 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  public navigateToBridge(): void {
+  public async navigateToSwaps(): Promise<void> {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+        toChain: BLOCKCHAIN_NAME.ETHEREUM,
+        amount: undefined,
+        from: undefined,
+        to: undefined
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  public async navigateToBridge(): Promise<void> {
     const form = this.swapFormService.commonTrade.controls.input;
     const params = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -99,16 +131,15 @@ export class HeaderComponent implements AfterViewInit {
       fromAmount: null
     } as SwapFormInput;
     form.patchValue(params);
-    this.queryParamsService.setQueryParams({
-      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      amount: undefined,
-      from: undefined,
-      to: undefined
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+        toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        amount: undefined,
+        from: undefined,
+        to: undefined
+      },
+      queryParamsHandling: 'merge'
     });
-  }
-
-  isLinkActive(url) {
-    return window.location.pathname === url;
   }
 }
