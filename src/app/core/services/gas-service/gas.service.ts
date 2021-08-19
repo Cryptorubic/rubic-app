@@ -26,7 +26,7 @@ export class GasService {
   /**
    * Current from blockchain.
    */
-  private readonly fromChain$: Observable<BLOCKCHAIN_NAME>;
+  private readonly fromChain$: Observable<BLOCKCHAIN_NAME | null>;
 
   /**
    * Current gas price subject.
@@ -50,15 +50,14 @@ export class GasService {
     private readonly swapFormService: SwapFormService
   ) {
     this.requestInterval = 60;
-    this.fromChain$ = this.swapFormService.input.controls.fromToken.valueChanges.pipe(
-      map(el => el.blockchain)
-    );
+    this.fromChain$ = this.swapFormService.input.controls.fromBlockchain.valueChanges;
     this.currentNetworkGasPrice$ = new BehaviorSubject<number>(null);
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
       [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this)
     };
+    this.fetchGas();
   }
 
   /**
@@ -84,7 +83,7 @@ export class GasService {
    * @description Get ETH gas from MyWish api.
    * @return Observable<number> Average gas price.
    */
-  private fetchEthGas(): Observable<number> {
+  private fetchEthGas(): Observable<number | null> {
     return this.httpService.get('', null, 'https://gas-api.mywish.io/').pipe(
       map((el: EthGasPriceResponse) => el.average / 10),
       catchError(() => of(null))
@@ -95,7 +94,7 @@ export class GasService {
    * @description Get BSC gas from BscGas api.
    * @return Observable<number> Average gas price.
    */
-  private fetchBscGas(): Observable<number> {
+  private fetchBscGas(): Observable<number | null> {
     return this.httpService.get('', null, 'https://bscgas.info/gas/').pipe(
       map((el: BscGasResponse) => el.standard),
       catchError(() => of(null))
@@ -106,7 +105,7 @@ export class GasService {
    * @description Get Polygon gas from gas station api.
    * @return Observable<number> Average gas price.
    */
-  private fetchPolygonGas(): Observable<number> {
+  private fetchPolygonGas(): Observable<number | null> {
     return this.httpService.get('', null, 'https://gasstation-mainnet.matic.network/').pipe(
       map((el: PolygonGasResponse) => Math.floor(el.standard)),
       catchError(() => of(null))
