@@ -190,6 +190,10 @@
 
   background-color: #0f809c;
 
+  a {
+    color: white;
+  }
+
   @include b($mobile-sm) {
     font-size: 13px;
   }
