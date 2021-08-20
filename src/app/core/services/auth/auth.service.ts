@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
-import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';

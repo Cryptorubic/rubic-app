@@ -12,15 +12,18 @@ import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
-import { CoinbaseConfirmModalComponent } from 'src/app/core/header/components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
+import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WINDOW } from 'src/app/core/models/window';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
-import { WALLET_NAME, WalletProvider } from './models/providers';
-import { HeaderStore } from '../../../../services/header.store';
+import {
+  WALLET_NAME,
+  WalletProvider
+} from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { HeaderStore } from 'src/app/core/header/services/header.store';
 
 @Component({
   selector: 'app-wallets-modal',

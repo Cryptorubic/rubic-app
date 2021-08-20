@@ -7,6 +7,7 @@ import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.component';
 import { SwapsModule } from 'src/app/features/swaps/swaps.module';
 import { MyTradesModule } from 'src/app/features/my-trades/my-trades.module';
+import { WalletsModule } from 'src/app/core/wallets/wallets.module';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
@@ -14,7 +15,6 @@ import { SharedModule } from '../shared/shared.module';
 import { configLoader, httpLoaderFactory } from './app.loaders';
 import { ContentLoaderService } from './services/content-loader/content-loader.service';
 import { HTTPInterceptor } from './interceptors/http-interceptor';
-import { WalletsModalComponent } from './header/components/header/components/wallets-modal/wallets-modal.component';
 import { ErrorsModule } from './errors/errors.module';
 
 @NgModule({
@@ -33,10 +33,10 @@ import { ErrorsModule } from './errors/errors.module';
       multi: true
     }
   ],
-  entryComponents: [WalletsModalComponent],
   imports: [
     CommonModule,
     HeaderModule,
+    WalletsModule,
     ErrorsModule,
     SharedModule,
     TranslateModule.forRoot({

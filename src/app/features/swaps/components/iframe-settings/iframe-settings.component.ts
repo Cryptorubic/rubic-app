@@ -1,11 +1,12 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import {
   BridgeSettingsForm,
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Subscription } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 export interface IframeSettingsForm {
   autoSlippageTolerance: boolean;
@@ -21,31 +22,23 @@ export interface IframeSettingsForm {
   selector: 'app-iframe-settings',
   templateUrl: './iframe-settings.component.html',
   styleUrls: ['./iframe-settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class IframeSettingsComponent implements OnInit, OnDestroy {
+export class IframeSettingsComponent implements OnInit {
   private defaultSlippageTolerance = 1;
 
   public iframeSettingsForm: FormGroup<IframeSettingsForm>;
 
   public slippageTolerance: number;
 
-  private $iframeFormSubscription: Subscription;
-
-  private $itFormSubscription: Subscription;
-
-  private $bridgeFormSubscription: Subscription;
-
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly destroy$: TuiDestroyService
+  ) {}
 
   ngOnInit(): void {
     this.setForm();
-  }
-
-  ngOnDestroy(): void {
-    this.$iframeFormSubscription.unsubscribe();
-    this.$itFormSubscription.unsubscribe();
-    this.$itFormSubscription.unsubscribe();
   }
 
   private setForm(): void {
@@ -68,18 +61,18 @@ export class IframeSettingsComponent implements OnInit, OnDestroy {
     itSettingsForm: AbstractControl<ItSettingsForm>,
     bridgeSettingsForm: AbstractControl<BridgeSettingsForm>
   ): void {
-    this.$iframeFormSubscription = this.iframeSettingsForm.valueChanges.subscribe(settings => {
+    this.iframeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       const { tronAddress, ...itSettings } = settings;
       itSettingsForm.patchValue({ ...itSettings });
       bridgeSettingsForm.patchValue({ tronAddress });
     });
 
-    this.$itFormSubscription = itSettingsForm.valueChanges.subscribe(settings => {
+    itSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
       this.slippageTolerance = settings.slippageTolerance;
     });
 
-    this.$bridgeFormSubscription = bridgeSettingsForm.valueChanges.subscribe(settings => {
+    bridgeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
     });
   }

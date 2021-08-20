@@ -23,6 +23,10 @@ export class IframeService {
     return this._iframeAppearance$.asObservable().pipe(filter(value => value !== undefined));
   }
 
+  public get iframeAppearance(): 'vertical' | 'horizontal' | undefined {
+    return this._iframeAppearance$.getValue();
+  }
+
   constructor(@Inject(DOCUMENT) private document: Document) {}
 
   public setIframeStatus(iframe: string): void {

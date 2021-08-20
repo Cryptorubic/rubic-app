@@ -19,9 +19,7 @@ import { LoginButtonComponent } from './components/header/components/login-butto
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
-import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
-import { CoinbaseConfirmModalComponent } from './components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { IframeSettingsButtonComponent } from './components/header/components/iframe-settings-button/iframe-settings-button.component';
 
 @NgModule({
@@ -30,9 +28,7 @@ import { IframeSettingsButtonComponent } from './components/header/components/if
     LoginButtonComponent,
     UserProfileComponent,
     MobileMenuTogglerComponent,
-    WalletsModalComponent,
     RubicMenuComponent,
-    CoinbaseConfirmModalComponent,
     IframeLogoutButtonComponent,
     IframeSettingsButtonComponent
   ],
@@ -51,7 +47,6 @@ import { IframeSettingsButtonComponent } from './components/header/components/if
     TuiGroupModule,
     TuiBadgeModule
   ],
-  exports: [HeaderComponent, LoginButtonComponent],
-  entryComponents: [WalletsModalComponent]
+  exports: [HeaderComponent, LoginButtonComponent]
 })
 export class HeaderModule {}

@@ -53,6 +53,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       if (isIframe) {
         this.removeLiveChatInIframe();
         this.document.getElementById('gradient')?.remove();
+        this.document.body.style.background = 'linear-gradient(45deg, black, #4aa956)';
       }
     });
   }

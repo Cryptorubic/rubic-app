@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
-import { WALLET_NAME } from '../../header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '../../wallets/components/wallets-modal/models/providers';
 
 interface Store {
   unreadTrades: number;
