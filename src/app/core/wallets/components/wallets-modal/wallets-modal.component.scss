@@ -1,4 +1,4 @@
-@import '../../../../../scss/vars';
+@import 'src/styles';
 
 .modal {
   position: relative;
@@ -6,6 +6,27 @@
   font-weight: 300;
 
   border-radius: 10px;
+
+  @include iframe-horizontal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: $iframe-horizontal-width;
+    height: 100vh;
+    margin: 0 auto;
+  }
+
+  &__content {
+    @include iframe-horizontal {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      height: 180px;
+      max-height: 180px;
+      padding: 0 30px;
+    }
+  }
 
   &__title {
     margin-top: 0;
@@ -33,6 +54,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    @include iframe-horizontal {
+      flex-direction: row;
+      justify-content: center;
+
+      margin-bottom: 15px;
+    }
   }
 
   &__provider-icon {
@@ -70,6 +98,10 @@
 
     transition: 0.2s ease-in-out;
 
+    @include iframe-horizontal {
+      max-width: 240px;
+    }
+
     &[disabled] {
       cursor: not-allowed;
       opacity: 0.5;
@@ -77,6 +109,11 @@
 
     &:not(:last-child) {
       margin-bottom: 20px;
+
+      @include iframe-horizontal {
+        margin-right: 20px;
+        margin-bottom: 0;
+      }
     }
 
     &:not([disabled]):hover {

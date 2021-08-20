@@ -23,11 +23,27 @@ export class TokensService {
 
   get tokens(): Observable<List<TokenAmount>> {
     // TODO: remove pipe after integrate iframe tokens backend
-    return this._tokens
-      .asObservable()
-      .pipe(
-        map(tokens => tokens?.filter(t => t.blockchain === BLOCKCHAIN_NAME.ETHEREUM).slice(0, 30))
-      );
+    return this._tokens.asObservable().pipe(
+      map(tokens =>
+        List(
+          [
+            BLOCKCHAIN_NAME.ETHEREUM,
+            BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+            BLOCKCHAIN_NAME.POLYGON,
+            BLOCKCHAIN_NAME.HARMONY,
+            BLOCKCHAIN_NAME.XDAI,
+            BLOCKCHAIN_NAME.TRON
+          ]
+            .map(blockchain =>
+              tokens
+                .filter(token => token.blockchain === blockchain)
+                .slice(0, 30)
+                .toArray()
+            )
+            .flat()
+        )
+      )
+    );
   }
 
   private userAddress: string;
