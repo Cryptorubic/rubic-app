@@ -85,6 +85,14 @@ export class InstantTradesApiService {
         from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
         to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
       };
+    } else if (provider === INSTANT_TRADES_PROVIDER.WRAPPED) {
+      tradeInfo = {
+        hash,
+        provider,
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        from_token: trade.from.token.address,
+        to_token: trade.to.token.address
+      };
     } else {
       tradeInfo = {
         hash,

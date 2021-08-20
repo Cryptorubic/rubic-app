@@ -30,7 +30,7 @@
             [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
             appearance="secondary"
             >
-            Swap
+            {{ swapButtonText }}
           </app-rubic-button>
           <div class="buttons__timeline-container timeline">
             <span class="timeline__connector"></span>
@@ -66,7 +66,7 @@
           [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE && status !== TRADE_STATUS.READY_TO_SWAP"
           appearance="secondary"
         >
-          {{ (status === TRADE_STATUS.READY_TO_APPROVE || status === TRADE_STATUS.APPROVE_IN_PROGRESS) ? 'Approve' : 'Swap' }}
+          {{ (status === TRADE_STATUS.READY_TO_APPROVE || status === TRADE_STATUS.APPROVE_IN_PROGRESS) ? 'Approve' : swapButtonText }}
         </app-rubic-button>
       </ng-container>
     </ng-container>
@@ -81,7 +81,7 @@
         "
         [disabled]="status === TRADE_STATUS.DISABLED"
         appearance="secondary"
-        >Swap</app-rubic-button
+        >{{ swapButtonText }}</app-rubic-button
       >
     </ng-container>
 

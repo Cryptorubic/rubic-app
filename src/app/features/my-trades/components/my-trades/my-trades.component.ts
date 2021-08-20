@@ -162,7 +162,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
           this.refreshTable();
 
-          this.tokensService.recalculateUsersBalance();
+          this.tokensService.calculateUserTokensBalances();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();

@@ -86,6 +86,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
+  @Input() swapButtonText? = 'Swap';
+
   @Output() approveClick = new EventEmitter<void>();
 
   @Output() swapClick = new EventEmitter<void>();

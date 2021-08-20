@@ -33,9 +33,16 @@
           </div>
         </div>
       </div>
+
+      <div *ngIf="allowTrade && ethAndWethTrade" class="instant-trade-bottom-form__amount">
+        <div class="instant-trade-bottom-form__token-amount">
+          {{ fromAmount | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals || 1 }}
+        </div>
+        <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice(fromAmount) }}</div>
+      </div>
     </div>
     <ng-container *noFrame>
-      <div *ngIf="allowTrade" class="instant-trade-bottom-form__providers">
+      <div *ngIf="allowTrade && !ethAndWethTrade" class="instant-trade-bottom-form__providers">
         <div
           class="instant-trade-bottom-form__provider-item"
           *ngFor="let provider of orderedProviders; let i = index"
@@ -59,6 +66,7 @@
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
+    [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
   ></app-swap-button>

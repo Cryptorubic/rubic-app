@@ -34,6 +34,10 @@ export class AuthService {
     return this.$currentUser.getValue();
   }
 
+  get userAddress(): string {
+    return this.user?.address;
+  }
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
