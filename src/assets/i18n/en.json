@@ -422,6 +422,10 @@
       "title": "Please confirm your import!",
       "text": "This token is not listed on Rubic.exchange.\nBy adding it as a custom token, you confirm that you’re trading with it at your own risk."
     },
+    "bridge": {
+      "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
+      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+    },
     "tokensListModal": {
       "title": "Select a token",
       "unsupportedPairsHint": "This token is unavailable for the swap. Please select supported pairs.",

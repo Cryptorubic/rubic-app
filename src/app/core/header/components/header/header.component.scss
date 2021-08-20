@@ -192,6 +192,7 @@
 
   a {
     color: white;
+    text-decoration: underline;
   }
 
   @include b($mobile-sm) {
