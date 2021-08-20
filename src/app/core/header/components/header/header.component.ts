@@ -18,6 +18,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -39,6 +40,10 @@ export class HeaderComponent implements AfterViewInit {
 
   public countNotifications$: Observable<number>;
 
+  public get noFrameLink(): string {
+    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+  }
+
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
@@ -48,7 +53,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly storeService: StoreService,
     private router: Router,
     private readonly errorService: ErrorsService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();

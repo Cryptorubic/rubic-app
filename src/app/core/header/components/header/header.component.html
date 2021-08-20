@@ -7,9 +7,12 @@
 <!-- HARMONY BANNER -->
 
 <header class="rubic-header">
-  <a class="rubic-header__logo" routerLink="/">
-    <img *noFrame src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
-    <img *onlyFrame="'any'" src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
+  <a *noFrame class="rubic-header__logo" routerLink="/">
+    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
+  </a>
+
+  <a *onlyFrame="'any'" class="rubic-header__logo" rel="noopener noreferrer" target="_blank" [href]="noFrameLink">
+    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
   </a>
 
   <app-rubic-menu *noFrame class="rubic-header__menu"></app-rubic-menu>

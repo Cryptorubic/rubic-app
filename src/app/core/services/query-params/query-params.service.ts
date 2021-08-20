@@ -349,10 +349,12 @@ export class QueryParamsService {
   }
 
   private setBackgroundStatus(queryParams: QueryParams) {
-    if (queryParams.background) {
-      const color = queryParams.background;
-      this.document.body.style.background = this.isHEXColor(color) ? `#${color}` : color;
+    const { background } = queryParams;
+    if (this.isBackgroundValid(background)) {
+      this.document.body.style.background = background;
+      return;
     }
+    this.document.body.classList.add('default-iframe-background');
   }
 
   private setHideSelectionStatus(queryParams: QueryParams) {
@@ -366,5 +368,27 @@ export class QueryParamsService {
     if (theme && (theme === 'dark' || theme === 'light')) {
       this.themeService.setTheme(theme);
     }
+  }
+
+  private isBackgroundValid(stringToTest) {
+    if (stringToTest === '') {
+      return false;
+    }
+    if (stringToTest === 'inherit') {
+      return false;
+    }
+    if (stringToTest === 'transparent') {
+      return false;
+    }
+
+    const image = document.createElement('img');
+    image.style.background = 'rgb(0, 0, 0)';
+    image.style.background = stringToTest;
+    if (image.style.background !== 'rgb(0, 0, 0)') {
+      return true;
+    }
+    image.style.background = 'rgb(255, 255, 255)';
+    image.style.background = stringToTest;
+    return image.style.background !== 'rgb(255, 255, 255)';
   }
 }
