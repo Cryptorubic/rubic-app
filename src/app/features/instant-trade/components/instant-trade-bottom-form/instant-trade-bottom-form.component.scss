@@ -24,6 +24,10 @@ $green: rgb(74, 169, 86);
     border-radius: 10px;
   }
 
+  @include light-iframe {
+    background-color: var(--rubic-base-14);
+  }
+
   &__provider-item:first-child {
     width: 100%;
   }

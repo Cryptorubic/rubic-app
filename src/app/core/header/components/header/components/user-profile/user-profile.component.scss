@@ -18,12 +18,17 @@
     background-color: var(--main-background);
   }
 
+  @include light-iframe {
+    background-color: var(--rubic-base-14);
+  }
+
   &:hover {
     box-shadow: var(--rubic-shadow-button-hover-dim);
 
     cursor: pointer;
 
     @include iframe {
+      box-shadow: none;
       cursor: default;
     }
   }

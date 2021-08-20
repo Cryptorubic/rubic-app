@@ -41,9 +41,9 @@ export class RubicTogglerThemeComponent
   }
 
   public ngOnInit(): void {
-    this.themeSubscription$ = this.themeService
-      .getTheme()
-      .subscribe(theme => (this.isDark = theme === 'dark'));
+    this.themeSubscription$ = this.themeService.theme$.subscribe(
+      theme => (this.isDark = theme === 'dark')
+    );
   }
 
   public ngOnDestroy(): void {

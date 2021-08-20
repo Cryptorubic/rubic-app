@@ -1,3 +1,5 @@
+@import 'src/styles';
+
 :host {
   display: block;
 }
@@ -12,6 +14,10 @@
   background-color: var(--main-background);
 
   border-radius: 10px;
+
+  @include light-iframe {
+    background-color: var(--rubic-base-14);
+  }
 
   img {
     max-width: 24px;

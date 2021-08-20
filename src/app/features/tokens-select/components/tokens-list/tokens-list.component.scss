@@ -58,6 +58,15 @@ $token-card-height: 55px;
       background-color: var(--main-background);
     }
 
+    /* stylelint-disable */
+    @include light-iframe {
+      border: 1px solid #e9e9e9;
+
+      &:hover {
+        background-color: var(--rubic-base-14);
+      }
+    }
+
     &_disabled {
       cursor: not-allowed;
       opacity: 0.4;
@@ -70,7 +79,7 @@ $token-card-height: 55px;
     &_active,
     &:active {
       background-color: var(--main-background);
-      border-color: $rubic-primary;
+      border-color: $rubic-primary !important;
     }
 
     &_active {

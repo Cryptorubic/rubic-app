@@ -29,6 +29,10 @@
     padding: 0 20px 55px;
   }
 
+  @include light-iframe {
+    background-color: white;
+  }
+
   ~ *:not(:last-child) {
     display: block;
     margin-bottom: 35px;

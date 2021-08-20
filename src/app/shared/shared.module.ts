@@ -55,6 +55,7 @@ import { UserBalanceContainerComponent } from './components/token-amount-input/c
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
+import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,8 @@ import { IframeBlockchainIndicatorComponent } from './components/iframe-blockcha
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent
+    IframeBlockchainIndicatorComponent,
+    ThemedIconPipe
   ],
   imports: [
     CommonModule,
@@ -153,7 +155,8 @@ import { IframeBlockchainIndicatorComponent } from './components/iframe-blockcha
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent
+    IframeBlockchainIndicatorComponent,
+    ThemedIconPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })

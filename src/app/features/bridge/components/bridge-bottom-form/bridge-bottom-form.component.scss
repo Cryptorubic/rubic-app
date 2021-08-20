@@ -32,6 +32,10 @@
       border-radius: 10px;
     }
 
+    @include light-iframe {
+      background-color: var(--rubic-base-14);
+    }
+
     @include b($mobile-md) {
       height: auto;
     }
