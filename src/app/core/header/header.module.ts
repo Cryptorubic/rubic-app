@@ -13,6 +13,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
+import { TuiBadgeModule } from '@taiga-ui/kit';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -43,7 +44,8 @@ import { CoinbaseConfirmModalComponent } from './components/header/components/co
     TuiDataListModule,
     TuiHintModule,
     TuiHostedDropdownModule,
-    TuiGroupModule
+    TuiGroupModule,
+    TuiBadgeModule
   ],
   exports: [HeaderComponent, LoginButtonComponent],
   entryComponents: [WalletsModalComponent]

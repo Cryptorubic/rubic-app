@@ -422,6 +422,10 @@
       "title": "가져 오기를 확인하세요!",
       "text": "이 토큰은 Rubic.exchange에 등록되지 않았습니다.\n맞춤 토큰으로 추가하면 자신의 책임하에 거래하고 있음을 확인하게됩니다."
     },
+    "bridge": {
+      "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
+      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+    },
     "tokensListModal": {
       "title": "토큰 선택",
       "unsupportedPairsHint": "此令牌不可用於交換。 請選擇支持的對。\n이 토큰은 스왑에 사용할 수 없습니다. 지원되는 쌍을 선택하십시오.",

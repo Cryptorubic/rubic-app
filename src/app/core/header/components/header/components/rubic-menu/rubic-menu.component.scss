@@ -198,10 +198,38 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 }
 
+.notification-counter {
+  position: absolute;
+
+  display: none;
+  top: -5px;
+  right: 0;
+
+  &[data-tui-host-status='default'] {
+    color: white;
+
+    background-color: var(--main-green);
+  }
+
+  &[data-tui-host-padding='m'][data-tui-host-size='s'] {
+    padding: 1px 0.375rem 0;
+
+    line-height: 20px;
+  }
+}
+
 @include b($desktop) {
   .rubic-menu {
     &__mobile {
       display: block;
     }
+
+    &__container {
+      min-width: 160px;
+    }
+  }
+
+  .notification-counter {
+    display: block;
   }
 }

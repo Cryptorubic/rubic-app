@@ -28,7 +28,10 @@ import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
+import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -110,8 +113,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private userSubscription$: Subscription;
 
-  private unsupportedBridgeSubscription$: Subscription;
-
   private bridgeTokensSubscription$: Subscription;
 
   private calculateTradeSubscription$: Subscription;
@@ -150,7 +151,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     @Inject(Injector) private readonly injector: Injector,
     private readonly translate: TranslateService,
     private readonly tokensService: TokensService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade = new Subject<void>();
@@ -185,7 +187,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.formSubscription$.unsubscribe();
     this.settingsSubscription$.unsubscribe();
     this.userSubscription$.unsubscribe();
-    this.unsupportedBridgeSubscription$?.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -236,25 +237,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     if (!this.bridgeService.isBridgeSupported()) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
-
-      if (this.isBridgeSupported) {
-        this.isBridgeSupported = false;
-        this.unsupportedBridgeSubscription$ = this.notificationsService.show(
-          this.translate.instant('errors.notSupportedBridge'),
-          {
-            label: this.translate.instant('common.error'),
-            status: TuiNotification.Error,
-            autoClose: false
-          }
-        );
-      }
-
+      this.isBridgeSupported = false;
       this.cdr.detectChanges();
       return;
     }
 
     this.isBridgeSupported = true;
-    this.unsupportedBridgeSubscription$?.unsubscribe();
     this.cdr.detectChanges();
 
     if (!this.allowTrade) {
@@ -359,7 +347,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             }
           );
 
-          this.tokensService.recalculateUsersBalance();
+          this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -390,6 +378,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             autoClose: false
           }
         );
+        this.dialogService
+          .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
+            size: 's'
+          })
+          .subscribe();
       }
     };
 
@@ -405,13 +398,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             autoClose: 15000
           });
 
+          this.counterNotificationsService.updateUnread();
+          this.tokensService.calculateUserTokensBalances();
           this.dialogService
             .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
               size: 's'
             })
             .subscribe();
-
-          this.tokensService.recalculateUsersBalance();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();
@@ -449,5 +442,30 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
           fromToken?.address.toLowerCase()
       )?.blockchainToken[fromBlockchain][amountType];
+  }
+
+  public handleClick(clickType: 'swap' | 'approve') {
+    const isPolygonEthBridge =
+      this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+      this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
+    if (isPolygonEthBridge) {
+      this.dialogService
+        .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
+        .subscribe(allowAction => {
+          if (allowAction) {
+            this.doButtonAction(clickType);
+          }
+        });
+    } else {
+      this.doButtonAction(clickType);
+    }
+  }
+
+  private doButtonAction(clickType: 'swap' | 'approve'): void {
+    if (clickType === 'swap') {
+      this.createTrade();
+    } else {
+      this.approveTrade();
+    }
   }
 }

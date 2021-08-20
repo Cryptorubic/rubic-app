@@ -116,5 +116,19 @@ export const INSTANT_TRADE_PROVIDERS = {
       isCollapsed: false,
       needApprove: null
     }
+  ],
+  [BLOCKCHAIN_NAME.HARMONY]: [
+    {
+      trade: null,
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      tradeProviderInfo: {
+        label: 'Sushiswap',
+        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
+      },
+      isBestRate: false,
+      isSelected: false,
+      isCollapsed: false,
+      needApprove: null
+    }
   ]
 };

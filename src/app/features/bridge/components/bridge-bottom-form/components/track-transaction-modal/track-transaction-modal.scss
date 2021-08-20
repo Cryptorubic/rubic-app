@@ -1,0 +1,32 @@
+@import 'src/styles';
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__image {
+    margin-top: 50px;
+    margin-bottom: 30px;
+  }
+
+  &__text {
+    max-width: 280px;
+    margin-bottom: 40px;
+
+    text-align: center;
+  }
+
+  &__text-title {
+    margin-bottom: 15px;
+
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: 1px;
+  }
+
+  &__button {
+    display: block;
+    width: 100%;
+  }
+}

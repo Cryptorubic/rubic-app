@@ -19,6 +19,6 @@
       (tokenSelected)="onTokenSelect($event)"
       [token]="customToken"
     ></app-custom-token>
-    <tui-loader [showLoader]="loading" size="xl"></tui-loader>
+    <tui-loader *ngIf="loading" [showLoader]="loading" size="xl"></tui-loader>
   </div>
 </section>

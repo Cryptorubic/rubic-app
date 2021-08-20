@@ -40,12 +40,12 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     this.blockchain = blockchain;
     this.maxTransitTokens = maxTransitTokens;
 
+    this.WETHAddress = wethAddressNetMode.mainnet;
+    this.contractAddress = contractAddressNetMode.mainnet;
+    this.routingProviders = routingProvidersNetMode.mainnet;
+
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (!isTestingMode) {
-        this.WETHAddress = wethAddressNetMode.mainnet;
-        this.contractAddress = contractAddressNetMode.mainnet;
-        this.routingProviders = routingProvidersNetMode.mainnet;
-      } else {
+      if (isTestingMode) {
         this.WETHAddress = wethAddressNetMode.testnet;
         this.contractAddress = contractAddressNetMode.testnet;
         this.routingProviders = routingProvidersNetMode.testnet;

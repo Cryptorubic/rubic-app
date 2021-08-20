@@ -1,10 +1,10 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
   Input,
-  OnInit,
   OnDestroy,
-  ChangeDetectorRef
+  OnInit
 } from '@angular/core';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { startWith } from 'rxjs/operators';
@@ -29,9 +29,11 @@ const WETH_ADDRESSES = {
 export class AnalyticsLinkComponent implements OnInit, OnDestroy {
   @Input() public formService: FormService;
 
-  private fromToken: TokenAmount;
+  public fromToken: TokenAmount;
 
-  private toToken: TokenAmount;
+  public toToken: TokenAmount;
+
+  public blockchainNames = BLOCKCHAIN_NAME;
 
   private formServiceSub$: Subscription;
 

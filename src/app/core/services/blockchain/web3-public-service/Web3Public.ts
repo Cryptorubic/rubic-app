@@ -16,6 +16,11 @@ import { Call } from '../types/call';
 import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
+interface MulticallResponse {
+  success: boolean;
+  returnData: string;
+}
+
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
 
@@ -337,23 +342,25 @@ export class Web3Public {
     return token;
   }
 
-  public async getTokensBalances(address: string, tokenAddresses: string[]): Promise<BigNumber[]> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddresses[0]);
-    const indexOfNativeCoin = tokenAddresses.findIndex(this.isNativeAddress);
+  public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokensAddresses[0]);
+    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress);
     const promises = [];
 
     if (indexOfNativeCoin !== -1) {
-      tokenAddresses.splice(indexOfNativeCoin, 1);
+      tokensAddresses.splice(indexOfNativeCoin, 1);
       promises[1] = this.getBalance(address, { inWei: true });
     }
-    const calls: Call[] = tokenAddresses.map(tokenAddress => ({
+    const calls: Call[] = tokensAddresses.map(tokenAddress => ({
       target: tokenAddress,
       callData: contract.methods.balanceOf(address).encodeABI()
     }));
     promises[0] = this.multicall(calls);
 
     const results = await Promise.all(promises);
-    const tokensBalances = results[0].map(hexBalance => new BigNumber(hexBalance));
+    const tokensBalances = results[0].map(([success, hexBalance]) =>
+      success ? new BigNumber(hexBalance) : new BigNumber(0)
+    );
 
     if (indexOfNativeCoin !== -1) {
       tokensBalances.splice(indexOfNativeCoin, 0, results[1]);
@@ -366,8 +373,13 @@ export class Web3Public {
     contractAddress: string,
     contractAbi: AbiItem[],
     methodName: string,
-    methodCallsArguments: (string | number)[][]
-  ): Promise<Output[]> {
+    methodCallsArguments: unknown[][]
+  ): Promise<
+    {
+      success: boolean;
+      output: Output;
+    }[]
+  > {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
     const calls: Call[] = methodCallsArguments.map(callArguments => ({
       callData: contract.methods[methodName](...callArguments).encodeABI(),
@@ -380,18 +392,20 @@ export class Web3Public {
       funcSignature => funcSignature.name === methodName
     ).outputs;
 
-    return outputs.map(
-      outputHex => this.web3.eth.abi.decodeParameters(methodOutputAbi, outputHex) as Output
-    );
+    return outputs.map(output => ({
+      success: output.success,
+      output: output.success
+        ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+        : null
+    }));
   }
 
-  private async multicall(calls: Call[]): Promise<string[]> {
+  private async multicall(calls: Call[]): Promise<MulticallResponse[]> {
     const contract = new this.web3.eth.Contract(
-      MULTICALL_ABI as AbiItem[],
+      MULTICALL_ABI,
       this.multicallAddresses[this.blockchain.name]
     );
-    const result = await contract.methods.aggregate(calls).call();
-    return result.returnData;
+    return contract.methods.tryAggregate(false, calls).call();
   }
 
   public async checkBalance(

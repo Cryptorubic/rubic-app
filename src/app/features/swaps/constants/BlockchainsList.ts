@@ -33,5 +33,11 @@ export const blockchainsList: BlockchainItem[] = [
     visibleName: 'Tron',
     image: `${imageBaseSrc}tron.svg`,
     id: null
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.HARMONY,
+    visibleName: 'Harmony',
+    image: `${imageBaseSrc}harmony.svg`,
+    id: null
   }
 ];

@@ -27,7 +27,8 @@ export class QueryParamsService {
       from: {
         [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
-        [BLOCKCHAIN_NAME.POLYGON]: 'MATIC'
+        [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
+        [BLOCKCHAIN_NAME.HARMONY]: 'ONE'
       },
       to: {
         [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
@@ -85,7 +86,7 @@ export class QueryParamsService {
   }
 
   public setupQueryParams(queryParams: QueryParams): void {
-    if (queryParams) {
+    if (queryParams && Object.keys(queryParams).length !== 0) {
       this.setIframeStatus(queryParams);
       this.setHiddenStatus(queryParams);
       this.setTopTokens(queryParams);

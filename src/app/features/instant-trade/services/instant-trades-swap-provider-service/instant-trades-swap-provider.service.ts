@@ -21,7 +21,8 @@ export class InstantTradesSwapProviderService extends SwapProvider {
           BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
           BLOCKCHAIN_NAME.POLYGON,
           BLOCKCHAIN_NAME.TRON,
-          BLOCKCHAIN_NAME.XDAI
+          BLOCKCHAIN_NAME.XDAI,
+          BLOCKCHAIN_NAME.HARMONY
         ];
 
         supportedBlockchains.forEach(

@@ -52,6 +52,13 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'tokens/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/'
+  },
+  [BLOCKCHAIN_NAME.HARMONY]: {
+    baseUrl: 'https://explorer.harmony.one/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/'
   }
 };
 
