@@ -18,7 +18,8 @@
     "pre-commit": "npx lint-staged",
     "prepare": "husky install",
     "unused-css": "ngx-unused-css",
-    "compress-images": "node scripts/compress-images.mjs"
+    "compress-images": "node scripts/compress-images.mjs",
+    "compodoc": "compodoc -p tsconfig.doc.json -s"
   },
   "private": true,
   "dependencies": {
