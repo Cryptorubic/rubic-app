@@ -70,11 +70,21 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
     this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address || null;
-    });
+      this.loading = true;
+      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
-    this.myTradesService
-      .updateTableTrades()
-      .subscribe(tableTrades => this.updateTableData(tableTrades));
+      if (this.walletAddress) {
+        this.myTradesService.updateTableTrades().subscribe(trades => {
+          this.updateTableData(trades);
+        });
+      } else {
+        this.tableData$.next([]);
+        this.loading = false;
+        this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
+      }
+
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnDestroy(): void {
@@ -106,10 +116,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   public refreshTable(): void {
-    if (!this.loading) {
-      this.loading = true;
-      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-    }
+    this.loading = true;
+    this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+    this.myTradesService.updateTableTrades().subscribe(trades => this.updateTableData(trades));
   }
 
   public showConnectWalletModal(): void {

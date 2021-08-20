@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
-import { BehaviorSubject, EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
   defaultIfEmpty,
@@ -53,7 +53,8 @@ export class MyTradesService {
   ) {}
 
   public updateTableTrades(): Observable<TableTrade[]> {
-    return forkJoin([
+    // updateLoadingStatus(true);
+    return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens.pipe(takeWhile(tokens => tokens.size === 0, true))
     ]).pipe(
