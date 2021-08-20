@@ -26,7 +26,7 @@ export class TokensService {
     return this._tokens
       .asObservable()
       .pipe(
-        map(tokens => tokens?.filter(t => t.blockchain === BLOCKCHAIN_NAME.POLYGON).slice(0, 30))
+        map(tokens => tokens?.filter(t => t.blockchain === BLOCKCHAIN_NAME.ETHEREUM).slice(0, 30))
       );
   }
 

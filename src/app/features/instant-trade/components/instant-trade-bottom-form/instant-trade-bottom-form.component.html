@@ -25,7 +25,7 @@
         <ng-template #iframeSkeleton>
           <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
         </ng-template>
-        <div class="instant-trade-bottom-form__usd-amount" *noFrame>${{ getUsdPrice() }}</div>
+        <div class="instant-trade-bottom-form__usd-amount" *noFrame>{{ getUsdPrice() }}</div>
         <div class="instant-trade-bottom-form__iframe-info" *onlyFrame="'horizontal'">
           <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice() }}</div>
           <div *ngIf="selectedProvider?.trade.gasFeeInUsd?.gt(0)">
@@ -38,7 +38,10 @@
         <div class="instant-trade-bottom-form__token-amount">
           {{ fromAmount | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals || 1 }}
         </div>
-        <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice(fromAmount) }}</div>
+        <div class="instant-trade-bottom-form__usd-amount" *noFrame>{{ getUsdPrice(fromAmount) }}</div>
+        <div class="instant-trade-bottom-form__iframe-info" *onlyFrame="'horizontal'">
+          <div class="instant-trade-bottom-form__usd-amount">{{ getUsdPrice(fromAmount) }}</div>
+        </div>
       </div>
     </div>
     <ng-container *noFrame>
