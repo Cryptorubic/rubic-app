@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { List } from 'immutable';
 import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HttpService } from '../../http/http.service';
 import { BackendToken } from './models/BackendToken';
 
@@ -13,7 +14,12 @@ import { BackendToken } from './models/BackendToken';
 export class TokensApiService {
   private readonly getTokensUrl = 'tokens/';
 
-  constructor(private readonly httpService: HttpService) {}
+  private readonly getIframeTokensUrl = 'tokens/iframe/';
+
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly iframeService: IframeService
+  ) {}
 
   private static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
@@ -29,8 +35,15 @@ export class TokensApiService {
   }
 
   public getTokensList(): Observable<List<Token>> {
-    return this.httpService
-      .get(this.getTokensUrl)
-      .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
+    return this.iframeService.isIframe$.pipe(
+      switchMap(isIframe => {
+        const url = isIframe ? this.getIframeTokensUrl : this.getTokensUrl;
+        return this.httpService
+          .get(url)
+          .pipe(
+            map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens))
+          );
+      })
+    );
   }
 }

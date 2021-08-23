@@ -22,28 +22,7 @@ export class TokensService {
   private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
 
   get tokens(): Observable<List<TokenAmount>> {
-    // TODO: remove pipe after integrate iframe tokens backend
-    return this._tokens.asObservable().pipe(
-      map(tokens =>
-        List(
-          [
-            BLOCKCHAIN_NAME.ETHEREUM,
-            BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-            BLOCKCHAIN_NAME.POLYGON,
-            BLOCKCHAIN_NAME.HARMONY,
-            BLOCKCHAIN_NAME.XDAI,
-            BLOCKCHAIN_NAME.TRON
-          ]
-            .map(blockchain =>
-              tokens
-                .filter(token => token.blockchain === blockchain)
-                .slice(0, 30)
-                .toArray()
-            )
-            .flat()
-        )
-      )
-    );
+    return this._tokens.asObservable();
   }
 
   private userAddress: string;
