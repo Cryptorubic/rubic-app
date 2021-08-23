@@ -29,7 +29,6 @@ import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/s
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTxModalComponent } from '../../../../shared/components/success-tx-modal/success-tx-modal.component';
-import ADDRESS_TYPE from '../../../../shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '../../../../shared/pipes/scanner-link.pipe';
 
 @Injectable({
@@ -152,11 +151,13 @@ export class InstantTradeService {
           transactionHash = hash;
 
           await this.postTrade(hash, provider, trade);
-          this.dialogService
-            .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-              size: 's'
-            })
-            .subscribe();
+          if (window.location.pathname === '/') {
+            this.dialogService
+              .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+                size: 's'
+              })
+              .subscribe();
+          }
         }
       };
 

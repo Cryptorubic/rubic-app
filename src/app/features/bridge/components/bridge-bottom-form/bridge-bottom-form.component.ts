@@ -11,7 +11,7 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { first, map, startWith, switchMap, filter } from 'rxjs/operators';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -32,7 +32,6 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
-import { Router, NavigationEnd } from '@angular/router';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -153,16 +152,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
-    private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly router: Router
+    private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade = new Subject<void>();
-    this.router.events
-      .pipe(filter((event: any) => event instanceof NavigationEnd))
-      .subscribe(event => {
-        console.log('this is what your looking for ', event.url);
-      });
   }
 
   ngOnInit() {
@@ -270,8 +263,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     if (this.calculateTradeSubscription$) {
       return;
     }
-
-    this.bridgeService.getCurrentBridgeToken().subscribe(res => console.log(res));
 
     this.calculateTradeSubscription$ = this.onCalculateTrade
       .pipe(
@@ -392,19 +383,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
           this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
-        if (isPolygonEthBridge) {
-          this.dialogService
-            .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
-              size: 's'
-            })
-            .subscribe();
-        } else {
-          this.dialogService
-            .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-              size: 's'
-            })
-            .subscribe();
-        }
+        if (window.location.pathname === '/')
+          if (isPolygonEthBridge) {
+            this.dialogService
+              .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
+                size: 's'
+              })
+              .subscribe();
+          } else {
+            this.dialogService
+              .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+                size: 's'
+              })
+              .subscribe();
+          }
       }
     };
 
