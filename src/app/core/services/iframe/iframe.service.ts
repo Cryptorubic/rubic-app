@@ -27,6 +27,12 @@ export class IframeService {
     return this._iframeAppearance$.getValue();
   }
 
+  public get originDomain(): string {
+    const url =
+      window.location !== window.parent.location ? document.referrer : document.location.href;
+    return new URL(url).hostname;
+  }
+
   constructor(@Inject(DOCUMENT) private document: Document) {}
 
   public setIframeStatus(iframe: string): void {
