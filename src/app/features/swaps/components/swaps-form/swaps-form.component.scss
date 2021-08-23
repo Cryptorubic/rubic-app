@@ -20,13 +20,17 @@
   backdrop-filter: blur(50px);
 
   @include iframe-horizontal {
-
     display: flex;
     align-items: flex-end;
 
     min-height: $iframe-horizontal-height;
     margin-bottom: 0;
     padding: 0 20px 55px;
+  }
+
+  @include iframe-vertical {
+    margin-bottom: 0;
+    padding: 100px 10px 15px;
   }
 
   @include light-iframe {

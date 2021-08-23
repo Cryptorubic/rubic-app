@@ -36,6 +36,7 @@ import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-ref
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
+import { VerticalIframeTokenAmountInputComponent } from 'src/app/shared/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -82,6 +83,7 @@ import { ThemedIconPipe } from './pipes/themed-icon.pipe';
     UserBalanceContainerComponent,
     UsdPriceContainerComponent,
     AnalyticsLinkComponent,
+    VerticalIframeTokenAmountInputComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -138,6 +140,7 @@ import { ThemedIconPipe } from './pipes/themed-icon.pipe';
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
     IconButtonComponent,
+    VerticalIframeTokenAmountInputComponent,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,

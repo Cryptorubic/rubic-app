@@ -26,9 +26,10 @@
       ></app-swaps-header>
 
       <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator [blockchain]="fromBlockchain" *onlyFrame="'any'"></app-iframe-blockchain-indicator>
+        <app-iframe-blockchain-indicator [blockchain]="fromBlockchain" *onlyFrame="'horizontal'"></app-iframe-blockchain-indicator>
 
         <app-token-amount-input
+          *noFrame="'vertical'"
           [token]="selectedToken.from"
           [amount]="selectedFromAmount"
           (amountChange)="onTokenInputAmountChange($event)"
@@ -36,6 +37,16 @@
           [tokens]="availableTokens['from']"
           [formService]="swapFormService"
         ></app-token-amount-input>
+
+        <app-vertical-iframe-token-amount-input
+          *onlyFrame="'vertical'"
+          [token]="selectedToken.from"
+          [amount]="selectedFromAmount"
+          (amountChange)="onTokenInputAmountChange($event)"
+          [loading]="isLoading"
+          [tokens]="availableTokens['from']"
+          [formService]="swapFormService"
+        ></app-vertical-iframe-token-amount-input>
       </div>
 
       <div class="swaps-form__delimiter">
