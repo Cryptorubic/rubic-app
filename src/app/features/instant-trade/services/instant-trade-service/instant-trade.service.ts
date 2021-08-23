@@ -152,6 +152,11 @@ export class InstantTradeService {
           transactionHash = hash;
 
           await this.postTrade(hash, provider, trade);
+          this.dialogService
+            .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+              size: 's'
+            })
+            .subscribe();
         }
       };
 
@@ -173,12 +178,6 @@ export class InstantTradeService {
           status: TuiNotification.Success
         }
       );
-
-      this.dialogService
-        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-          size: 's'
-        })
-        .subscribe();
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
