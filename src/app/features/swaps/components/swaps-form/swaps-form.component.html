@@ -1,7 +1,7 @@
 <div class="swaps-form">
   <header class="swaps-form__header">
     <h1 class="swaps-form__title">
-      {{ (isInstantTrade ? 'instantTrades.title' : 'bridgePage.title') | translate }}
+      {{ 'instantTrades.title' | translate }}
     </h1>
     <app-rubic-refresh-button
       class="swaps-form__refresh"
@@ -46,11 +46,16 @@
     ></app-instant-trade-bottom-form>
 
     <app-bridge-bottom-form
-      *ngIf="!isInstantTrade"
+      *ngIf="isBridge"
       [loading]="isLoading"
       [tokens]="availableTokens['to']"
-      [formService]="swapFormService"
     ></app-bridge-bottom-form>
+
+    <app-cross-chain-routing-bottom-form
+      *ngIf="isCrossChainRouting"
+      [loading]="isLoading"
+      [tokens]="availableTokens['to']"
+    ></app-cross-chain-routing-bottom-form>
   </main>
 </div>
 

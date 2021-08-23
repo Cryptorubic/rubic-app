@@ -16,25 +16,26 @@ import {
   crossChainSwapContractAddresses,
   SupportedCrossChainSwapBlockchain,
   supportedCrossChainSwapBlockchains
-} from 'src/app/features/bridge/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
+} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import {
   TransitTokens,
   transitTokensWithMode
-} from 'src/app/features/bridge/services/cross-chain-routing-service/constants/transitTokens';
+} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
-import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from 'src/app/features/bridge/services/cross-chain-routing-service/models/CROSS_CHAIN_ROUTING_SWAP_METHOD';
-import { CrossChainRoutingTrade } from 'src/app/features/bridge/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CROSS_CHAIN_ROUTING_SWAP_METHOD';
+import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import { crossChainSwapContractAbi } from 'src/app/features/bridge/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: CrossChainRoutingModule
 })
 export class CrossChainRoutingService {
   private routingContractAbi = crossChainSwapContractAbi;

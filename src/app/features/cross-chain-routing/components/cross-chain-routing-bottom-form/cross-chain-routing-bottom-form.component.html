@@ -1,5 +1,5 @@
-<section class="bridge-bottom-form">
-  <div class="bridge-bottom-form__container">
+<section class="bottom-form">
+  <div class="bottom-form__container">
     <app-rubic-tokens
       [loading]="loading"
       formType="to"
@@ -9,30 +9,28 @@
     <app-amount-estimated
       [formService]="swapFormService"
       [loading]="tradeStatus === TRADE_STATUS.LOADING"
+      [errorText]="errorText"
     ></app-amount-estimated>
   </div>
 
   <app-analytics-link [formService]="swapFormService"></app-analytics-link>
 
-  <div class="bridge-bottom-form__footer">
-    <div class="bridge-bottom-form__button">
+  <div class="bottom-form__footer">
+    <div class="bottom-form__button">
       <app-swap-button
         [needApprove]="needApprove"
         [status]="tradeStatus"
         [formService]="swapFormService"
         [fromAmount]="fromAmount"
-        [isBridgeNotSupported]="!isBridgeSupported"
-        [isTronAddressNotSet]="!toWalletAddress && toBlockchain === BLOCKCHAIN_NAME.TRON"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="handleClick('swap')"
-        (approveClick)="handleClick('approve')"
+        (swapClick)="doButtonAction('swap')"
+        (approveClick)="doButtonAction('approve')"
       ></app-swap-button>
     </div>
     <app-terms-n-conditions-container
       [whatIsBlockchain]="whatIsBlockchain"
       [toWalletAddress]="toWalletAddress"
-      [isBridgeSupported]="isBridgeSupported"
       [toBlockchain]="toBlockchain"
     ></app-terms-n-conditions-container>
   </div>

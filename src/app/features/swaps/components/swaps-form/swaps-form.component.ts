@@ -39,6 +39,14 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
+  public get isBridge(): boolean {
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE;
+  }
+
+  public get isCrossChainRouting(): boolean {
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+  }
+
   public get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(

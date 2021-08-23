@@ -1,0 +1,36 @@
+@import 'src/scss/vars';
+@import 'src/scss/mixins';
+
+.bottom-form {
+  display: flex;
+  flex-direction: column;
+
+  &__container {
+    display: flex;
+    grid-gap: 20px;
+    justify-content: space-between;
+
+    min-height: 105px;
+    padding: 15px 20px 30px;
+
+    background-color: var(--main-background);
+    border-radius: 0 0 14px 14px;
+
+    @include b($mobile-md) {
+      height: auto;
+    }
+
+    @include b($mobile-sm) {
+      flex-direction: column;
+      grid-gap: initial;
+    }
+  }
+
+  &__footer {
+    margin-top: 16px;
+
+    @include b($mobile-md) {
+      padding: 15px 20px 0;
+    }
+  }
+}
