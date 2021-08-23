@@ -8,7 +8,6 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -41,12 +40,7 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { AsyncPipe } from '@angular/common';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
-
-interface CalculationResult {
-  status: 'fulfilled' | 'rejected';
-  value?: InstantTrade | null;
-  reason?: Error;
-}
+import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
 
 @Component({
   selector: 'app-instant-trade-bottom-form',
@@ -344,25 +338,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  private setupControllers(
-    tradeData: CalculationResult[],
-    approveData: Array<boolean | null>
-  ): void {
+  private setupControllers(tradeData: InstantTrade[], approveData: Array<boolean | null>): void {
     const newProviders = this.providerControllers.map((controller, index) => ({
       ...controller,
       isSelected: false,
-      trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
+      trade: !tradeData[index]?.error ? tradeData[index] : null,
       isBestRate: false,
       needApprove: approveData[index],
-      tradeState:
-        tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
-          ? INSTANT_TRADES_STATUS.APPROVAL
-          : INSTANT_TRADES_STATUS.ERROR,
-      error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
+      tradeState: !tradeData[index].error
+        ? INSTANT_TRADES_STATUS.APPROVAL
+        : INSTANT_TRADES_STATUS.ERROR,
+      error: tradeData[index].error ? (tradeData as unknown)[index]?.reason : null
     }));
     this.providerControllers = newProviders;
 
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+    const bestProviderIndex = this.calculateBestRate(tradeData);
     if (bestProviderIndex !== -1) {
       newProviders[bestProviderIndex].isBestRate = true;
       newProviders[bestProviderIndex].isSelected = true;
@@ -549,6 +539,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     try {
       await this.instantTradeService.createTrade(instantTradeProvider, instantTrade, () => {
         this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        if (providerIndex !== -1) {
+          this.setProviderState(
+            TRADE_STATUS.READY_TO_SWAP,
+            providerIndex,
+            INSTANT_TRADES_STATUS.COMPLETED
+          );
+        } else {
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        }
         this.cdr.detectChanges();
       });
 
@@ -559,16 +558,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.conditionalCalculate();
     } catch (err) {
       this.errorService.catch(err);
-
-      if (providerIndex !== -1) {
-        this.setProviderState(
-          TRADE_STATUS.READY_TO_SWAP,
-          providerIndex,
-          INSTANT_TRADES_STATUS.COMPLETED
-        );
-      } else {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      }
       this.cdr.detectChanges();
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
     }

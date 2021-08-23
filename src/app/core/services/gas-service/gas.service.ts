@@ -84,7 +84,14 @@ export class GasService {
    * @return Observable<number> Average gas price.
    */
   private fetchEthGas(): Observable<number | null> {
-    return this.httpService.get('', null, 'https://gas-api.mywish.io/').pipe(
+    const gasResponse$ = this.httpService
+      .get('', null, 'https://gas-api.mywish.io/')
+      .pipe(
+        catchError(() =>
+          this.httpService.get('', null, 'https://ethgasstation.info/api/ethgasAPI.json')
+        )
+      );
+    return gasResponse$.pipe(
       map((el: EthGasPriceResponse) => el.average / 10),
       catchError(() => of(null))
     );

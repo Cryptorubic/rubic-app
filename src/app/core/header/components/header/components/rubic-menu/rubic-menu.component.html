@@ -48,17 +48,16 @@
 
       <tui-opt-group class="rubic-menu__mobile">
         <a
-          routerLink="/"
-          (click)="closeMenu()"
-          [class.data-list__link_active]="isLinkActive('/')"
+          (click)="menuClickHandler('swaps')"
+          [class.data-list__link_active]="swapActive"
           class="data-list__link"
         >
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
 
         <a
-          (click)="navigateToBridge()"
-          routerLinkActive="data-list__link_active"
+          (click)="menuClickHandler('bridge')"
+          [class.data-list__link_active]="bridgeActive"
           class="data-list__link"
         >
           <button tuiOption class="data-list__option">Bridge</button>

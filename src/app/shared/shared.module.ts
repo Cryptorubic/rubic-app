@@ -53,6 +53,8 @@ import { UsdPriceContainerComponent } from './components/token-amount-input/comp
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
+import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
+import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/g
     AnalyticsLinkComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
+    PanelErrorContentComponent,
+    PanelContentComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -146,7 +150,9 @@ import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/g
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
     SwapsHeaderComponent,
-    GasIndicatorComponent
+    GasIndicatorComponent,
+    PanelErrorContentComponent,
+    PanelContentComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]

@@ -2,10 +2,10 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, EventEmitter,
   Inject,
-  Injector,
-  OnDestroy,
+  Injector, Input,
+  OnDestroy, Output,
   QueryList,
   TemplateRef,
   ViewChildren
@@ -35,6 +35,14 @@ import { HeaderStore } from '../../../../services/header.store';
 })
 export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
+
+  @Input() public swapActive: boolean;
+
+  @Input() public bridgeActive: boolean;
+
+  @Output() public readonly swapClick: EventEmitter<void>;
+
+  @Output() public readonly bridgeClick: EventEmitter<void>;
 
   public isOpened = false;
 
@@ -66,6 +74,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.$currentUser = this.authService.getCurrentUser();
     this.$countUnread = this.counterNotificationsService.unread$;
     this.navigationList = NAVIGATION_LIST;
+    this.bridgeClick = new EventEmitter<void>();
+    this.swapClick = new EventEmitter<void>();
   }
 
   public ngAfterViewInit(): void {
@@ -92,23 +102,13 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.isOpened = false;
   }
 
-  public navigateToBridge(): void {
-    const form = this.swapFormService.commonTrade.controls.input;
-    const params = {
-      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      fromToken: null,
-      toToken: null,
-      fromAmount: null
-    } as SwapFormInput;
-    form.patchValue(params);
-    this.queryParamsService.setQueryParams({
-      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-      toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      amount: undefined,
-      from: undefined,
-      to: undefined
-    });
+  public menuClickHandler(linkType: 'swaps' | 'bridge'): void {
+    this.closeMenu();
+    if (linkType === 'swaps') {
+      this.swapClick.emit();
+    } else {
+      this.bridgeClick.emit();
+    }
   }
 
   public logout(): void {

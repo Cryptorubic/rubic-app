@@ -5,8 +5,7 @@ $border-radius: 14px;
 $default-transition: 0.2s ease-in-out;
 $white: white;
 
-
-.provider-panel {
+::ng-deep .provider-panel {
   &__content {
     position: relative;
 
@@ -225,26 +224,39 @@ $white: white;
       }
     }
   }
-}
 
-@include b($mobile-md) {
-  .provider-panel {
-    &__body {
-      flex-direction: column;
-      padding-top: 10px;
+  @include b($mobile-md) {
+    .provider-panel {
+      &__body {
+        flex-direction: column;
+        padding-top: 10px;
+      }
+
+      &__right {
+        align-items: flex-start;
+      }
+
+      &__left {
+        margin-right: 0;
+      }
+
+      &__left,
+      &__token-usd-price {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+
+  .tui-skeleton {
+    &.provider-panel__amount {
+      min-height: 24px;
     }
 
-    &__right {
-      align-items: flex-start;
-    }
-
-    &__left {
-      margin-right: 0;
-    }
-
-    &__left,
-    &__token-usd-price {
-      margin-bottom: 5px;
+    &.provider-panel__token-usd-price,
+    &.provider-panel__token-gas-fee {
+      min-height: 20px;
     }
   }
 }
+

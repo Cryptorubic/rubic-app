@@ -29,6 +29,7 @@ import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/s
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Injectable({
   providedIn: 'root'
@@ -115,21 +116,29 @@ export class InstantTradeService {
     };
   }
 
-  public async calculateTrades(
-    providersNames: INSTANT_TRADES_PROVIDER[]
-  ): Promise<PromiseSettledResult<InstantTrade>[]> {
+  public calculateTrades(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<InstantTrade[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     const shouldCalculateGas = shouldCalculateGasInBlockchain[fromBlockchain];
     const minGasPrice = minGasPriceInBlockchain[fromBlockchain];
 
-    const providers = providersNames.map(
-      providerName => this.blockchainsProviders[fromBlockchain][providerName]
-    );
-    const providersDataPromises = providers.map(async (provider: ItProvider) =>
-      provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas, minGasPrice)
-    );
-    return Promise.allSettled(providersDataPromises);
+    const providers$ = providersNames.map(providerName => {
+      const provider = this.blockchainsProviders[fromBlockchain][providerName];
+      return fromPromise(
+        provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas, minGasPrice)
+      ).pipe(
+        catchError(error => {
+          return of({
+            blockchain: null,
+            from: null,
+            to: null,
+            error
+          } as InstantTrade);
+        })
+      );
+    });
+
+    return forkJoin(providers$);
   }
 
   public async createTrade(
@@ -168,7 +177,8 @@ export class InstantTradeService {
       this.modalShowing.unsubscribe();
       this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-        status: TuiNotification.Success
+        status: TuiNotification.Success,
+        autoClose: 15000
       });
 
       await this.instantTradesApiService

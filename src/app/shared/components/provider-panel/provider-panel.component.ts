@@ -1,62 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
-import BigNumber from 'bignumber.js';
-import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
+import { TradeData } from 'src/app/shared/components/provider-panel/models/trade-data';
+import { ProviderData } from 'src/app/shared/components/provider-panel/models/provider-data';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-
-export interface ProviderControllerData {
-  trade: InstantTrade;
-  tradeState: INSTANT_TRADES_STATUS;
-  tradeProviderInfo: {
-    label: string;
-    value: INSTANT_TRADES_PROVIDER;
-  };
-  isBestRate: boolean;
-  isSelected: boolean;
-  isCollapsed: boolean;
-  needApprove: boolean;
-  error?: RubicError<ERROR_TYPE>;
-}
-
-interface ProviderData {
-  /**
-   * Provider name.
-   */
-  name: string;
-  /**
-   * Amount of output without slippage in absolute token units (WITHOUT decimals).
-   */
-  amount: BigNumber;
-  /**
-   * Amount of predicted gas limit in absolute gas units.
-   */
-  gasLimit: string;
-  /**
-   * Amount of predicted gas fee in usd$.
-   */
-  gasFeeInUsd: BigNumber;
-  /**
-   * Amount of predicted gas fee in Ether.
-   */
-  gasFeeInEth: BigNumber;
-  /**
-   * Is provider has best rate.
-   */
-  isBestRate: boolean;
-  /**
-   * Is provider active.
-   */
-  isActive: boolean;
-  /**
-   * Is provider collapsed.
-   */
-  isCollapsed: boolean;
-
-  error: string;
-}
 
 @Component({
   selector: 'app-provider-panel',
@@ -72,9 +20,7 @@ export class ProviderPanelComponent {
    * @param data provider controller data.
    */
   @Input() public set providerControllerData(data: ProviderControllerData) {
-    if (data) {
-      this.setupProviderData(data);
-    }
+    this.calculateProviderState(data);
   }
 
   /**
@@ -82,11 +28,10 @@ export class ProviderPanelComponent {
    */
   @Output() public selectProvider: EventEmitter<void>;
 
-  public get gasFeeDisplay(): boolean {
-    return !!this.tradeData.gasFeeInEth && !!this.tradeData.gasFeeInUsd;
-  }
-
-  public tradeData: InstantTrade;
+  /**
+   * Trade data.
+   */
+  public tradeData: TradeData;
 
   /**
    * Provider data.
@@ -94,22 +39,11 @@ export class ProviderPanelComponent {
   public providerData: ProviderData;
 
   /**
-   * Does current provider loading.
+   * Error translate key.
    */
-  public loading: boolean;
-
-  /**
-   * Does current have errors.
-   */
-  public hasError: boolean;
-
-  /**
-   * Does current provider selected.
-   */
-  public active: boolean;
+  public errorTranslateKey: string;
 
   constructor() {
-    this.loading = false;
     this.selectProvider = new EventEmitter<void>();
   }
 
@@ -117,8 +51,47 @@ export class ProviderPanelComponent {
    * Emit provider selection event to parent component.
    */
   public activateProvider(): void {
-    if (!this.loading && !this.hasError) {
+    if (!this.providerData.loading) {
       this.selectProvider.emit();
+    }
+  }
+
+  /**
+   * @desc Calculate provider state based on controller status.
+   * @param data Provider controller data.
+   */
+  private calculateProviderState(data: ProviderControllerData): void {
+    const hasError = data.tradeState === INSTANT_TRADES_STATUS.ERROR;
+    this.providerData = {
+      name: data.tradeProviderInfo.label,
+      isBestRate: data.isBestRate,
+      isActive: data.isSelected,
+      hasError,
+      loading: this.calculateLoadingStatus(data.tradeState),
+      appearance: this.providerIndex === 0 ? 'normal' : 'small'
+    };
+
+    if (hasError) {
+      this.setupError(data);
+    } else {
+      this.setupProviderData(data);
+    }
+  }
+
+  /**
+   * Calculate loading state.
+   * @param tradeState Instant trade status.
+   * @returns isLoading Is instant trade currently loading.
+   */
+  private calculateLoadingStatus(tradeState: INSTANT_TRADES_STATUS): boolean {
+    switch (tradeState) {
+      case INSTANT_TRADES_STATUS.CALCULATION:
+      case INSTANT_TRADES_STATUS.TX_IN_PROGRESS: {
+        return true;
+      }
+      default: {
+        return false;
+      }
     }
   }
 
@@ -127,57 +100,25 @@ export class ProviderPanelComponent {
    * @param data Provider controller data.
    */
   private setupProviderData(data: ProviderControllerData): void {
-    this.calculateState(data.tradeState);
-    this.providerData = {
-      name: data.tradeProviderInfo.label,
-      amount: data.trade?.to?.amount,
-      gasLimit: data.trade?.gasLimit,
-      gasFeeInEth: data.trade?.gasFeeInEth,
-      gasFeeInUsd: data.trade?.gasFeeInUsd,
-      isBestRate: data.isBestRate,
-      isActive: data.isSelected,
-      isCollapsed: data.isCollapsed,
-      error: null
+    this.tradeData = {
+      amount: data?.trade?.to?.amount,
+      gasLimit: data?.trade?.gasLimit,
+      gasFeeInUsd: data?.trade?.gasFeeInEth,
+      gasFeeInEth: data?.trade?.gasFeeInUsd,
+      usdPrice: data?.trade?.to?.amount
+        .multipliedBy(data?.trade?.to?.token?.price)
+        .toFormat(2, BIG_NUMBER_FORMAT)
     };
-    if (this.hasError) {
-      this.providerData.error =
-        data?.error?.type === ERROR_TYPE.TEXT
-          ? data.error.translateKey || data.error.message
-          : 'errors.rubicError';
-    }
-    this.tradeData = data.trade;
   }
 
   /**
-   * @desc Calculate provider state based on controller status.
-   * @param state Instant trade status.
+   * Setup errors in current instant trade.
+   * @param data Provider controller data.
    */
-  private calculateState(state: INSTANT_TRADES_STATUS): void {
-    switch (state) {
-      case INSTANT_TRADES_STATUS.ERROR: {
-        this.hasError = true;
-        this.loading = false;
-        break;
-      }
-      case INSTANT_TRADES_STATUS.CALCULATION:
-      case INSTANT_TRADES_STATUS.TX_IN_PROGRESS: {
-        this.hasError = false;
-        this.loading = true;
-        break;
-      }
-      case INSTANT_TRADES_STATUS.COMPLETED:
-      case INSTANT_TRADES_STATUS.APPROVAL:
-      default: {
-        this.hasError = false;
-        this.loading = false;
-        break;
-      }
-    }
-  }
-
-  public getUsdPrice(): string {
-    return this.tradeData.to.amount
-      .multipliedBy(this.tradeData.to.token.price)
-      .toFormat(2, BIG_NUMBER_FORMAT);
+  private setupError(data: ProviderControllerData): void {
+    this.errorTranslateKey =
+      data.trade.error?.type === ERROR_TYPE.TEXT
+        ? data.trade.error.translateKey || data.trade.error.message
+        : 'errors.rubicError';
   }
 }

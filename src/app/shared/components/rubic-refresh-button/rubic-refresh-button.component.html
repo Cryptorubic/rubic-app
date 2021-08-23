@@ -1,4 +1,4 @@
-<div class="refresh-button" (click)="toggleClick()">
+<div class="refresh-button">
   <img
     class="refresh-icon"
     [src]="imageUrl"
@@ -8,6 +8,7 @@
     (mouseleave)="mouseLeave()"
     alt="Toggle auto refresh"
     [tuiHint]="hint"
+    (click)="toggleClick()"
     #refreshIcon
   />
   <svg

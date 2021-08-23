@@ -21,7 +21,7 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -77,7 +77,8 @@ export class HeaderComponent implements AfterViewInit {
     }
     this.countNotifications$ = this.counterNotificationsService.unread$;
     this.isInstantTrade$ = this.swapFormService.input.valueChanges.pipe(
-      map(el => el.fromBlockchain === el.toBlockchain)
+      map(el => el.fromBlockchain === el.toBlockchain),
+      startWith(true)
     );
   }
 
