@@ -33,7 +33,12 @@ import {
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap
+} from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
@@ -150,8 +155,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.formChangesSubscription$ = this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => this.setupSwapForm(form));
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            prev.fromToken?.address === next.fromToken?.address &&
+            prev.toToken?.address === next.toToken?.address &&
+            prev.fromAmount === next.fromAmount
+          );
+        })
+      )
+      .subscribe(form => {
+        this.setupSwapForm(form);
+      });
 
     this.settingsFormSubscription$ = this.settingsService.instantTradeValueChanges
       .pipe(startWith(this.settingsService.instantTradeValue))
@@ -545,7 +563,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       await this.instantTradeService.createTrade(instantTradeProvider, instantTrade);
 
       this.counterNotificationsService.updateUnread();
-      this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateUserTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
