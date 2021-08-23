@@ -94,3 +94,13 @@ tui-notifications-host {
     padding: 0 !important;
   }
 }
+
+::ng-deep tui-notifications-host {
+  @include iframe {
+    margin-top: 0 !important;
+
+    > div.wrapper {
+      padding-top: 15px;
+    }
+  }
+}
