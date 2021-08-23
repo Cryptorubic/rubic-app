@@ -14,6 +14,10 @@ export class SuccessTxModalComponent {
     private readonly context: TuiDialogContext<boolean>
   ) {}
 
+  ngOnInit() {
+    setTimeout(() => this.closeModal(), 3000);
+  }
+
   public closeModal() {
     this.context.completeWith(null);
   }
