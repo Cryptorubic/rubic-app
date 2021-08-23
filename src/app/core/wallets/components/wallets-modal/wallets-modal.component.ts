@@ -24,6 +24,8 @@ import {
   WalletProvider
 } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
+import { IframeWalletsWarningComponent } from 'src/app/core/wallets/components/iframe-wallets-warning/iframe-wallets-warning.component';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -96,7 +98,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
-    private readonly browserService: BrowserService
+    private readonly browserService: BrowserService,
+    private readonly iframeService: IframeService
   ) {
     this.$walletsLoading = this.headerStore.getWalletsLoadingStatus();
     this.$mobileDisplayStatus = this.headerStore.getMobileDisplayStatus();
@@ -106,21 +109,24 @@ export class WalletsModalComponent implements OnInit {
         value: WALLET_NAME.METAMASK,
         img: './assets/images/icons/wallets/metamask.svg',
         desktopOnly: false,
-        display: true
+        display: true,
+        supportsInHorizontalIframe: true
       },
       {
         name: 'Coinbase wallet',
         value: WALLET_NAME.WALLET_LINK,
         img: './assets/images/icons/wallets/coinbase.png',
         desktopOnly: false,
-        display: true
+        display: true,
+        supportsInHorizontalIframe: false
       },
       {
         name: 'WalletConnect',
         value: WALLET_NAME.WALLET_CONNECT,
         img: './assets/images/icons/wallets/walletconnect.svg',
         desktopOnly: false,
-        display: true
+        display: true,
+        supportsInHorizontalIframe: false
       }
     ];
   }
@@ -137,6 +143,14 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
+    if (
+      this.iframeService.iframeAppearance === 'horizontal' &&
+      !this.allProviders.find(elem => elem.value === provider)?.supportsInHorizontalIframe
+    ) {
+      this.openIframeWarning();
+      return;
+    }
+
     if (this.browserService.currentBrowser === BROWSER.MOBILE) {
       const redirected = this.deepLinkRedirectIfSupported(provider);
       if (redirected) {
@@ -191,5 +205,17 @@ export class WalletsModalComponent implements OnInit {
   public close(): void {
     this.headerStore.setWalletsLoadingStatus(false);
     this.context.completeWith();
+  }
+
+  private openIframeWarning() {
+    this.dialogService
+      .open<boolean>(new PolymorpheusComponent(IframeWalletsWarningComponent, this.injector), {
+        size: 'fullscreen'
+      })
+      .subscribe(confirm => {
+        if (confirm) {
+          this.connectProvider(WALLET_NAME.METAMASK);
+        }
+      });
   }
 }

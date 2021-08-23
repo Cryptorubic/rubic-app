@@ -1,0 +1,34 @@
+@import 'src/styles';
+
+.iframe-wallets-warning {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: $iframe-horizontal-width;
+  height: 100vh;
+  margin: 0 auto;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 180px;
+    max-height: 180px;
+    padding: 0 30px;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+
+    app-rubic-button {
+      width: 210px;
+    }
+
+    > a {
+      display: block;
+    }
+  }
+}
