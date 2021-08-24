@@ -60,6 +60,8 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public $userSubscription: Subscription;
 
+  public $tradeInProgressSubscription: Subscription;
+
   public blockchainsListFrom = blockchainsList
     .filter(blockchain => blockchain.symbol === BLOCKCHAIN_NAME.ETHEREUM)
     .map(blockchain => blockchain.symbol);
@@ -137,6 +139,13 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       .getCurrentUser()
       .pipe(filter(user => !!user?.address))
       .subscribe(() => this.calculateTrade());
+
+    this.dialogService
+      .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+        size: 's',
+        data: { idPrefix: 'crypto_tap_' }
+      })
+      .subscribe();
   }
 
   ngOnDestroy() {
@@ -257,22 +266,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       this.cdr.detectChanges();
-      tradeInProgressSubscription$ = this.notificationsService.show(
-        this.translate.instant('bridgePage.progressMessage'),
-        {
-          label: 'Trade in progress',
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      );
-      if (window.location.pathname === '/crypto-tap') {
-        this.dialogService
-          .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-            size: 's',
-            data: { idPrefix: 'crypto_tap_' }
-          })
-          .subscribe();
-      }
+      this.notifyTradeInProgress();
     };
 
     this.cryptoTapService
@@ -297,5 +291,24 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           this.errorsService.catch(err);
         }
       );
+  }
+
+  private notifyTradeInProgress() {
+    this.$tradeInProgressSubscription = this.notificationsService.show(
+      this.translate.instant('bridgePage.progressMessage'),
+      {
+        label: 'Trade in progress',
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+    if (window.location.pathname === '/crypto-tap') {
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's',
+          data: { idPrefix: 'crypto_tap_' }
+        })
+        .subscribe();
+    }
   }
 }

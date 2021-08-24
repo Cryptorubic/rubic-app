@@ -8,10 +8,10 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { forkJoin, of, Subject, Subscription, timer } from 'rxjs';
+import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { delay, first, map, startWith, switchMap } from 'rxjs/operators';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -116,6 +116,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   private bridgeTokensSubscription$: Subscription;
 
   private calculateTradeSubscription$: Subscription;
+
+  private tradeInProgressSubscription$: Subscription;
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -370,31 +372,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.cdr.detectChanges();
-        tradeInProgressSubscription$ = this.notificationsService.show(
-          this.translate.instant('bridgePage.progressMessage'),
-          {
-            label: this.translate.instant('notifications.tradeInProgress'),
-            status: TuiNotification.Info,
-            autoClose: false
-          }
-        );
-
-        if (window.location.pathname === '/') {
-          const isPolygonEthBridge =
-            this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-            this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-
-          const modalToDisplay = isPolygonEthBridge
-            ? new PolymorpheusComponent(TrackTransactionModalComponent)
-            : new PolymorpheusComponent(SuccessTxModalComponent);
-
-          this.dialogService
-            .open(modalToDisplay, {
-              size: 's',
-              data: { idPrefix: '' }
-            })
-            .subscribe();
-        }
+        this.notifyTradeInProgress();
       }
     };
 
@@ -473,6 +451,34 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       this.createTrade();
     } else {
       this.approveTrade();
+    }
+  }
+
+  private notifyTradeInProgress() {
+    this.tradeInProgressSubscription$ = this.notificationsService.show(
+      this.translate.instant('bridgePage.progressMessage'),
+      {
+        label: this.translate.instant('notifications.tradeInProgress'),
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+
+    if (window.location.pathname === '/') {
+      const isPolygonEthBridge =
+        this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+        this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
+
+      const modalToDisplay = isPolygonEthBridge
+        ? new PolymorpheusComponent(TrackTransactionModalComponent)
+        : new PolymorpheusComponent(SuccessTxModalComponent);
+
+      this.dialogService
+        .open(modalToDisplay, {
+          size: 's',
+          data: { idPrefix: '' }
+        })
+        .subscribe();
     }
   }
 }

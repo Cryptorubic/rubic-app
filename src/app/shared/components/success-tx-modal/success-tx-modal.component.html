@@ -5,7 +5,12 @@
       <h2 class="modal__title">{{ 'modals.successTxModal.title' | translate }}</h2>
     </main>
     <footer class="modal__footer">
-      <a class="modal__footer-link" routerLink="/my-trades" target="_blank">
+      <a
+        class="modal__footer-link"
+        routerLink="/my-trades"
+        target="_blank"
+        *ngIf="idPrefix !== 'crypto_tap_'"
+      >
         {{ 'modals.successTxModal.seeDetails' | translate }}
         <span inlineSVG="assets/images/icons/link-arrow.svg"></span>
       </a>
