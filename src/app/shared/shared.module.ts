@@ -78,6 +78,7 @@ import { SuccessTxModalComponent } from './components/success-tx-modal/success-t
     UserBalanceContainerComponent,
     UsdPriceContainerComponent,
     AnalyticsLinkComponent,
+    SuccessTxModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -86,8 +87,7 @@ import { SuccessTxModalComponent } from './components/success-tx-modal/success-t
     ShortenAmountPipe,
     // Directives.
     SafetyLinkDirective,
-    TokenAmountDirective,
-    SuccessTxModalComponent
+    TokenAmountDirective
   ],
   imports: [
     CommonModule,

@@ -154,7 +154,8 @@ export class InstantTradeService {
           if (window.location.pathname === '/') {
             this.dialogService
               .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-                size: 's'
+                size: 's',
+                data: { idPrefix: '' }
               })
               .subscribe();
           }

@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-success-tx-modal',
@@ -9,16 +10,23 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SuccessTxModalComponent {
+  private timer: Subscription;
+
+  public idPrefix: string;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean>
-  ) {}
-
-  ngOnInit() {
-    setTimeout(() => this.closeModal(), 3000);
+    private readonly context: TuiDialogContext<boolean, { idPrefix: string }>
+  ) {
+    this.idPrefix = context.data.idPrefix;
+    this.timer = timer(3000).subscribe(() => this.onConfirm());
   }
 
-  public closeModal() {
+  public ngOnDestroy(): void {
+    this.timer.unsubscribe();
+  }
+
+  public onConfirm(): void {
     this.context.completeWith(null);
   }
 }

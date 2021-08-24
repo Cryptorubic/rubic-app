@@ -8,10 +8,10 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { forkJoin, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, of, Subject, Subscription, timer } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { delay, first, map, startWith, switchMap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -379,24 +379,22 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           }
         );
 
-        const isPolygonEthBridge =
-          this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-          this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
+        if (window.location.pathname === '/') {
+          const isPolygonEthBridge =
+            this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+            this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
-        if (window.location.pathname === '/')
-          if (isPolygonEthBridge) {
-            this.dialogService
-              .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
-                size: 's'
-              })
-              .subscribe();
-          } else {
-            this.dialogService
-              .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-                size: 's'
-              })
-              .subscribe();
-          }
+          const modalToDisplay = isPolygonEthBridge
+            ? new PolymorpheusComponent(SuccessTxModalComponent)
+            : new PolymorpheusComponent(TrackTransactionModalComponent);
+
+          this.dialogService
+            .open(modalToDisplay, {
+              size: 's',
+              data: { idPrefix: '' }
+            })
+            .subscribe();
+        }
       }
     };
 
