@@ -30,7 +30,7 @@
     </label>
   </div>
 
-  <div class="vertical-iframe-input__wrapper">
+  <div class="vertical-iframe-input__row cards-container">
     <app-usd-price-container *ngIf="usdPrice?.gt(0)" [usdPrice]="usdPrice"></app-usd-price-container>
     <app-user-balance-container [token]="token" hide="maxButton"></app-user-balance-container>
   </div>

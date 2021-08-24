@@ -20,7 +20,7 @@ export class IframeService {
   }
 
   public get iframeAppearance$(): Observable<'vertical' | 'horizontal'> {
-    return this._iframeAppearance$.asObservable().pipe(filter(value => value !== undefined));
+    return this._iframeAppearance$.asObservable();
   }
 
   public get iframeAppearance(): 'vertical' | 'horizontal' | undefined {

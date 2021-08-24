@@ -78,7 +78,7 @@
     padding: 0;
   }
 
-  @include iframe-horizontal {
+  @include iframe {
     app-iframe-logout-button {
       margin-left: 10px;
     }
@@ -200,6 +200,16 @@
   }
 }
 
+.rubic-header {
+  @include iframe-vertical {
+    &__logo {
+      img {
+        width: 80px;
+      }
+    }
+  }
+}
+
 
 .harmony-banner {
   width: 100%;
@@ -212,12 +222,12 @@
 
   background-color: #0f809c;
 
+  @include b($mobile-sm) {
+    font-size: 13px;
+  }
+
   a {
     color: white;
     text-decoration: underline;
-  }
-
-  @include b($mobile-sm) {
-    font-size: 13px;
   }
 }

@@ -68,5 +68,9 @@ app-spinner {
     z-index: 2;
 
     padding: 15px 40px;
+
+    @include iframe-vertical {
+      padding: 15px 10px;
+    }
   }
 }

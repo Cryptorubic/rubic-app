@@ -1,11 +1,14 @@
-import { TemplateRef, ViewContainerRef, Directive, OnInit, OnDestroy, Input } from '@angular/core';
+import { TemplateRef, ViewContainerRef, Directive, OnInit, Input } from '@angular/core';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Subscription } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Directive({
-  selector: '[noFrame]'
+  selector: '[noFrame]',
+  providers: [TuiDestroyService]
 })
-export class NoFrameDirective<T> implements OnInit, OnDestroy {
+export class NoFrameDirective<T> implements OnInit {
   private $iframeSubscription: Subscription;
 
   @Input() noFrame: 'horizontal' | 'vertical' | 'any' = 'any';
@@ -13,20 +16,19 @@ export class NoFrameDirective<T> implements OnInit, OnDestroy {
   constructor(
     private readonly templateRef: TemplateRef<T>,
     private readonly viewContainer: ViewContainerRef,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
-    this.$iframeSubscription = this.iframeService.iframeAppearance$.subscribe(iframeAppearance => {
-      if (!iframeAppearance || (iframeAppearance !== this.noFrame && this.noFrame !== 'any')) {
-        this.viewContainer.createEmbeddedView(this.templateRef);
-      } else {
-        this.viewContainer.clear();
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.$iframeSubscription.unsubscribe();
+    this.$iframeSubscription = this.iframeService.iframeAppearance$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(iframeAppearance => {
+        if (!iframeAppearance || (iframeAppearance !== this.noFrame && this.noFrame !== 'any')) {
+          this.viewContainer.createEmbeddedView(this.templateRef);
+        } else {
+          this.viewContainer.clear();
+        }
+      });
   }
 }

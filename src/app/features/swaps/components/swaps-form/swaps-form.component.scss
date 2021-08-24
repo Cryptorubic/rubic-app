@@ -77,6 +77,14 @@
       background-color: unset;
     }
 
+    @include iframe-vertical {
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+
+      background: transparent;
+    }
+
     > * {
       position: absolute;
       left: 50%;
@@ -88,6 +96,13 @@
         left: unset;
 
         transform: unset;
+      }
+
+      @include iframe-vertical {
+        position: static;
+        left: unset;
+
+        transform: none;
       }
     }
 
@@ -103,6 +118,10 @@
       background-color: var(--rubic-secondary);
 
       content: '';
+
+      @include iframe-vertical {
+        display: none;
+      }
     }
 
     &::before {
