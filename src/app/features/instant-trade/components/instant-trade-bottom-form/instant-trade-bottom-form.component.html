@@ -55,5 +55,6 @@
     [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
+    (updateRatesClick)="onCalculateTrade.next('normal')"
   ></app-swap-button>
 </div>

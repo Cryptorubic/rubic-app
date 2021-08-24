@@ -9,6 +9,7 @@
       class="swaps-form__refresh"
       [loadingStatus]="loadingStatus"
       [autoUpdate]="autoRefresh"
+      (onRefresh)="onRefreshTrade.next()"
     ></app-rubic-refresh-button>
 
     <app-gas-indicator *ngIf="isMobile$ | async"></app-gas-indicator>

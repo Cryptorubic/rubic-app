@@ -96,6 +96,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Output() swapClick = new EventEmitter<void>();
 
+  @Output() updateRatesClick = new EventEmitter<void>();
+
   @Output() loginEvent = new EventEmitter<void>();
 
   public TRADE_STATUS = TRADE_STATUS;

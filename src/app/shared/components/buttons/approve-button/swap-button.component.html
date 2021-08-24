@@ -9,7 +9,17 @@
     {{ 'navigation.login' | translate }}
   </app-rubic-button>
 
-  <ng-template [ngIf]="!needLogin">
+  <ng-container *ngIf="!needLogin && status === TRADE_STATUS.OLD_TRADE_DATA">
+    <app-rubic-button
+      [fullWidth]="true"
+      (click)="updateRatesClick.emit()"
+      appearance="secondary"
+    >
+      Rate is updated, tap to get the latest rates
+    </app-rubic-button>
+  </ng-container>
+
+  <ng-template [ngIf]="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
     <ng-container *ngIf="needApprove && !dataLoading && !hasError">
       <div class="buttons">
         <app-rubic-button

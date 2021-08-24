@@ -126,18 +126,14 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.isLoading = false;
     });
 
-    this.autoRefresh = this.settingsService.settingsForm.controls.INSTANT_TRADE.value.autoRefresh;
     this.selectedFromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.get(
+
+    this.autoRefresh = this.settingsService.settingsForm.controls.INSTANT_TRADE.value.autoRefresh;
+    this.settingsSubscription$ = this.settingsService.settingsForm.controls.INSTANT_TRADE.get(
       'autoRefresh'
     ).valueChanges.subscribe(el => {
       this.autoRefresh = el;
     });
-
-    this.settingsSubscription$ =
-      this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
-        this.autoRefresh = settings.autoRefresh;
-      });
 
     this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
     this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
