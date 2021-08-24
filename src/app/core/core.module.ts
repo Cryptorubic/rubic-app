@@ -8,6 +8,7 @@ import { RubicFooterComponent } from 'src/app/core/rubic-footer/rubic-footer.com
 import { SwapsModule } from 'src/app/features/swaps/swaps.module';
 import { MyTradesModule } from 'src/app/features/my-trades/my-trades.module';
 import { WalletsModule } from 'src/app/core/wallets/wallets.module';
+import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
@@ -31,7 +32,8 @@ import { ErrorsModule } from './errors/errors.module';
       provide: HTTP_INTERCEPTORS,
       useClass: HTTPInterceptor,
       multi: true
-    }
+    },
+    NG_EVENT_PLUGINS
   ],
   imports: [
     CommonModule,

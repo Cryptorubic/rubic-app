@@ -8,6 +8,10 @@
   height: 100vh;
   margin: 0 auto;
 
+  @include iframe-vertical {
+    width: 100%;
+  }
+
   &__container {
     display: flex;
     align-items: center;
@@ -21,6 +25,7 @@
       align-items: flex-start;
       width: $iframe-vertical-width;
       height: 250px;
+      margin: 0 auto;
       padding-left: 70px;
 
       > div:first-child {

@@ -18,6 +18,15 @@
     margin: 0 auto;
   }
 
+  @include iframe-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: $iframe-vertical-width;
+    height: $iframe-vertical-height;
+    margin: 0 auto;
+  }
+
   &__content {
     @include iframe-horizontal {
       display: flex;
