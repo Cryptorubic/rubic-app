@@ -4,6 +4,7 @@
     <app-rubic-refresh-button
       (onRefresh)="refreshTable()"
       [loadingStatus]="loadingStatus"
+      *ngIf="walletAddress"
     ></app-rubic-refresh-button>
   </div>
 

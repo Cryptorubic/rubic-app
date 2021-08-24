@@ -159,7 +159,7 @@ export class InstantTradeService {
       }
 
       this.modalShowing.unsubscribe();
-      this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
+      this.updateTrade(transactionHash);
       this.notificationsService.show(
         this.translateService.instant('notifications.successfulTradeTitle'),
         {
@@ -179,7 +179,7 @@ export class InstantTradeService {
     } catch (err) {
       this.modalShowing?.unsubscribe();
       if (transactionHash) {
-        this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.REJECTED);
+        this.updateTrade(transactionHash);
       }
 
       throw err;
@@ -198,8 +198,8 @@ export class InstantTradeService {
       .subscribe();
   }
 
-  private updateTrade(hash: string, status: INSTANT_TRADES_TRADE_STATUS) {
-    return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+  private updateTrade(hash: string) {
+    return this.instantTradesApiService.patchTrade(hash).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
   }
