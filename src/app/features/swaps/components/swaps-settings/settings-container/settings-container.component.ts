@@ -22,6 +22,8 @@ export class SettingsContainerComponent implements OnInit {
 
   public open: boolean;
 
+  private prevMode: SWAP_PROVIDER_TYPE;
+
   constructor(
     private readonly settingsService: SettingsService,
     private readonly swapService: SwapsService,
@@ -33,7 +35,10 @@ export class SettingsContainerComponent implements OnInit {
   ngOnInit(): void {
     this.settingsComponent = this.getSettingsComponent();
     this.swapFormService.commonTrade.valueChanges.subscribe(() => {
-      this.settingsComponent = this.getSettingsComponent();
+      if (this.prevMode !== this.swapService.swapMode) {
+        this.settingsComponent = this.getSettingsComponent();
+      }
+      this.prevMode = this.swapService.swapMode;
     });
   }
 

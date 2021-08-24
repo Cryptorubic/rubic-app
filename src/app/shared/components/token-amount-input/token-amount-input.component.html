@@ -24,7 +24,7 @@
         appTokenAmount
         [ngModel]="amount"
         [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"
-        (amountChange)="emitAmountChange($event)"
+        (amountChange)="onAmountChange($event)"
       />
     </label>
 
