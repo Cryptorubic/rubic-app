@@ -591,8 +591,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       instantTradeProvider = INSTANT_TRADES_PROVIDER.WRAPPED;
       instantTrade = this.ethAndWethTrade;
     }
-    const gasPrice = new AsyncPipe(this.cdr).transform(this.gasService.gasPrice);
-    instantTrade.gasPrice = gasPrice ? (gasPrice * 10 ** 9).toString() : instantTrade.gasPrice;
 
     try {
       await this.instantTradeService.createTrade(instantTradeProvider, instantTrade, () => {
