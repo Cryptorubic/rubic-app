@@ -110,7 +110,8 @@ export class WalletsModalComponent implements OnInit {
         img: './assets/images/icons/wallets/metamask.svg',
         desktopOnly: false,
         display: true,
-        supportsInHorizontalIframe: true
+        supportsInHorizontalIframe: true,
+        supportsInVerticalIframe: true
       },
       {
         name: 'Coinbase wallet',
@@ -118,7 +119,8 @@ export class WalletsModalComponent implements OnInit {
         img: './assets/images/icons/wallets/coinbase.png',
         desktopOnly: false,
         display: true,
-        supportsInHorizontalIframe: false
+        supportsInHorizontalIframe: false,
+        supportsInVerticalIframe: false
       },
       {
         name: 'WalletConnect',
@@ -126,7 +128,8 @@ export class WalletsModalComponent implements OnInit {
         img: './assets/images/icons/wallets/walletconnect.svg',
         desktopOnly: false,
         display: true,
-        supportsInHorizontalIframe: false
+        supportsInHorizontalIframe: false,
+        supportsInVerticalIframe: true
       }
     ];
   }
@@ -143,9 +146,11 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
+    const providerInfo = this.allProviders.find(elem => elem.value === provider);
     if (
-      this.iframeService.iframeAppearance === 'horizontal' &&
-      !this.allProviders.find(elem => elem.value === provider)?.supportsInHorizontalIframe
+      (this.iframeService.iframeAppearance === 'horizontal' &&
+        !providerInfo.supportsInHorizontalIframe) ||
+      (this.iframeService.iframeAppearance === 'vertical' && !providerInfo.supportsInVerticalIframe)
     ) {
       this.openIframeWarning();
       return;

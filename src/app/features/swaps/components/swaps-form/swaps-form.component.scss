@@ -29,8 +29,10 @@
   }
 
   @include iframe-vertical {
+    width: $iframe-vertical-width;
+    height: $iframe-vertical-height;
     margin-bottom: 0;
-    padding: 100px 10px 15px;
+    padding: 80px 10px 15px;
   }
 
   @include light-iframe {
@@ -80,7 +82,7 @@
     @include iframe-vertical {
       display: flex;
       justify-content: center;
-      padding-top: 15px;
+      padding: 15px 0;
 
       background: transparent;
     }
@@ -138,6 +140,10 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
+    }
+
+    @include iframe-vertical {
+      height: 100%;
     }
   }
 

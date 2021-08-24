@@ -8,6 +8,10 @@
   height: 100vh;
   margin: 0 auto;
 
+  @include iframe-vertical {
+    width: $iframe-vertical-width;
+  }
+
   &__container {
     display: flex;
     flex-direction: column;
@@ -25,6 +29,14 @@
 
     app-rubic-button {
       width: 210px;
+
+      @include iframe-vertical {
+        ::ng-deep button {
+          width: 150px;
+
+          font-size: 13px;
+        }
+      }
     }
 
     > a {

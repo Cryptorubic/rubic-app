@@ -126,6 +126,7 @@ $green: rgb(74, 169, 86);
 
     @include iframe-vertical {
       flex-direction: column;
+      margin-bottom: 30px;
     }
   }
 
@@ -138,9 +139,9 @@ $green: rgb(74, 169, 86);
 
     @include iframe-vertical {
       position: relative;
-      width: 100%;
 
       display: flex;
+      width: 100%;
       margin-bottom: 34px;
 
       >:not(:last-child) {
