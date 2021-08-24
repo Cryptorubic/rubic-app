@@ -27,7 +27,7 @@
   <div class="user-profile__logout" (click)="logout()">{{ 'navigation.logout' | translate }}</div>
 </ng-template>
 
-<ng-container *onlyFrame="'any'">
+<ng-container *onlyFrame>
   <div class="user-profile">
     <div class="user-profile__chain-icon" *ngIf="currentBlockchain?.imagePath">
       <img

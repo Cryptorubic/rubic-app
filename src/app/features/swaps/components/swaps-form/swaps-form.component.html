@@ -54,7 +54,7 @@
       </div>
 
       <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator [blockchain]="toBlockchain" *onlyFrame="'any'"></app-iframe-blockchain-indicator>
+        <app-iframe-blockchain-indicator  *onlyFrame [blockchain]="toBlockchain"></app-iframe-blockchain-indicator>
 
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"

@@ -11,7 +11,7 @@
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
   </a>
 
-  <a *onlyFrame="'any'" class="rubic-header__logo" rel="noopener noreferrer" target="_blank" [href]="noFrameLink">
+  <a *onlyFrame class="rubic-header__logo" rel="noopener noreferrer" target="_blank" [href]="noFrameLink">
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
   </a>
 
@@ -42,14 +42,14 @@
       ></tui-badge>
     </a>
 
-    <app-iframe-settings-button *onlyFrame="'any'"></app-iframe-settings-button>
+    <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
 
     <ng-container *ngIf="!($currentUser | async)?.address; else loggedIn">
       <app-login-button class="rubic-header__login" *noFrame></app-login-button>
     </ng-container>
     <ng-template #loggedIn>
       <app-user-profile class="rubic-header__profile-user"></app-user-profile>
-      <app-iframe-logout-button *onlyFrame="'any'"></app-iframe-logout-button>
+      <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
     <app-rubic-language-select *noFrame></app-rubic-language-select>
