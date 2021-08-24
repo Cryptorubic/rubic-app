@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 
 .button-link {
@@ -76,9 +75,7 @@
 
   @include iframe {
     padding: 0;
-  }
 
-  @include iframe {
     app-iframe-logout-button {
       margin-left: 10px;
     }

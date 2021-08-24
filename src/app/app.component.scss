@@ -56,6 +56,10 @@ app-spinner {
 
   width: 100%;
 
+  @include iframe-vertical {
+    width: $iframe-vertical-width;
+  }
+
   main {
     padding: 0 !important;
   }
@@ -70,6 +74,7 @@ app-spinner {
     padding: 15px 40px;
 
     @include iframe-vertical {
+      width: $iframe-vertical-width;
       padding: 15px 10px;
     }
   }
