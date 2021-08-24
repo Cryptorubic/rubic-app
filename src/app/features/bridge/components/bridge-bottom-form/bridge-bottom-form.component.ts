@@ -32,11 +32,11 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
-import { SuccessTxModalComponent } from '../../../../shared/components/success-tx-modal/success-tx-modal.component';
 
 interface BlockchainInfo {
   name: string;

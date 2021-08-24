@@ -28,8 +28,8 @@ import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTxModalComponent } from '../../../../shared/components/success-tx-modal/success-tx-modal.component';
-import { ScannerLinkPipe } from '../../../../shared/pipes/scanner-link.pipe';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 
 @Injectable({
   providedIn: 'root'
