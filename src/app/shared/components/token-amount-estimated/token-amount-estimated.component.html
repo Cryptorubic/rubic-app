@@ -5,12 +5,13 @@
       [ngClass]="{
         'tui-skeleton': loading,
         'tui-skeleton_text': loading,
-        'bottom-amount__tokens-container_error': errorText
+        'bottom-amount__tokens-container_error': errorText,
+        'bottom-amount__tokens-container_placeholder': !errorText && !tokensAmount
       }"
     >
       {{
         (tokensAmount | bigNumberFormat | withRound: 'toClosestValue') ||
-          ('tradePage.tradingNotAvailable' | translate)
+          (errorText && 'tradePage.tradingNotAvailable' | translate)
       }}
       <div
         *ngIf="errorText"
