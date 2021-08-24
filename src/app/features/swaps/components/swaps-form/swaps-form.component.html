@@ -24,12 +24,8 @@
     ></app-swaps-header>
 
     <app-token-amount-input
-      [token]="selectedToken.from"
-      [amount]="selectedFromAmount"
-      (amountChange)="onTokenInputAmountChange($event)"
       [loading]="isLoading"
       [tokens]="availableTokens['from']"
-      [formService]="swapFormService"
     ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">

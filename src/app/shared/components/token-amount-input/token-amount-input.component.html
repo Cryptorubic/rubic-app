@@ -4,11 +4,11 @@
       [loading]="loading"
       formType="from"
       [tokens]="tokens"
-      [formService]="formService"
+      [formService]="swapFormService"
     ></app-rubic-tokens>
 
     <app-user-balance-container
-      [token]="token"
+      [token]="selectedToken"
       [type]="'from'"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
@@ -22,8 +22,8 @@
         name="token-amount"
         [placeholder]="placeholder"
         appTokenAmount
-        [formControl]="amountControl"
-        [decimals]="token?.decimals || DEFAULT_DECIMALS"
+        [ngModel]="amount"
+        [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"
         (amountChange)="emitAmountChange($event)"
       />
     </label>

@@ -1,16 +1,15 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
+  OnInit
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { FormControl } from '@angular/forms';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { startWith } from 'rxjs/operators';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -19,46 +18,62 @@ import { TokenAmount } from '../../models/tokens/TokenAmount';
   styleUrls: ['./token-amount-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent {
+export class TokenAmountInputComponent implements OnInit {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
-  @Input() formService: FormService;
-
   @Input() placeholder = '0.0';
 
-  @Input() token?: TokenAmount;
-
-  @Input() set amount(value: BigNumber) {
-    if (value && !value.isNaN() && !value.eq(this.amount)) {
-      this.amountControl.setValue(value.toFixed());
-    }
+  private get formattedAmount(): string {
+    return this.amount.split(',').join('');
   }
-
-  get amount() {
-    return new BigNumber(this.amountControl.value.split(',').join('') || 0);
-  }
-
-  @Output() amountChange = new EventEmitter<string>();
 
   public readonly DEFAULT_DECIMALS = 18;
 
-  public amountControl = new FormControl('');
+  public amount: string;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  public selectedToken: TokenAmount;
+
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly swapsService: SwapsService,
+    public readonly swapFormService: SwapFormService
+  ) {}
+
+  ngOnInit() {
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue))
+      .subscribe(form => {
+        const { fromAmount, fromToken } = form;
+
+        if (!fromAmount || fromAmount.isNaN()) {
+          this.amount = '';
+        } else if (!fromAmount.eq(this.formattedAmount)) {
+          this.amount = fromAmount.toFixed();
+        }
+
+        this.selectedToken = fromToken;
+
+        this.cdr.detectChanges();
+      });
+  }
 
   public onUserBalanceMaxButtonClick(): void {
-    const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);
-    this.amountControl.setValue(amount);
+    this.amount = this.selectedToken.amount.toFixed();
   }
 
   public getUsdPrice(): BigNumber {
-    return this.amount.multipliedBy(this.token?.price ?? 0);
+    return new BigNumber(this.formattedAmount || 0).multipliedBy(this.selectedToken?.price || 0);
   }
 
   public emitAmountChange(amount: string): void {
-    this.amountControl.setValue(amount, { emitViewToModelChange: false });
-    this.amountChange.emit(amount.split(',').join(''));
+    this.amount = amount;
+    const { fromAmount } = this.swapFormService.inputValue;
+    if ((fromAmount || this.amount) && !fromAmount?.eq(this.amount)) {
+      this.swapFormService.input.patchValue({
+        fromAmount: new BigNumber(this.formattedAmount)
+      });
+    }
   }
 }

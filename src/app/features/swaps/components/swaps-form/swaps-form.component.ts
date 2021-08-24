@@ -159,9 +159,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.formSubscription$ = this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue))
       .subscribe(formValue => {
-        this.isLoading = true;
         this.setFormValues(formValue);
-        this.isLoading = false;
       });
   }
 
