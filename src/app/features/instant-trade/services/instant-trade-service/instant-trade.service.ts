@@ -8,7 +8,6 @@ import { forkJoin, Observable, of, Subscription, timer } from 'rxjs';
 import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { INSTANT_TRADES_TRADE_STATUS } from 'src/app/features/swaps/models/INSTANT_TRADES_TRADE_STATUS';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-pol.service';
@@ -95,6 +94,8 @@ export class InstantTradeService {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     if (
+      !fromToken ||
+      !toToken ||
       !this.ethWethSwapProvider.isEthAndWethSwap(fromBlockchain, fromToken.address, toToken.address)
     ) {
       return null;
@@ -159,7 +160,7 @@ export class InstantTradeService {
       }
 
       this.modalShowing.unsubscribe();
-      this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.COMPLETED);
+      this.updateTrade(transactionHash);
       this.notificationsService.show(
         this.translateService.instant('notifications.successfulTradeTitle'),
         {
@@ -179,7 +180,7 @@ export class InstantTradeService {
     } catch (err) {
       this.modalShowing?.unsubscribe();
       if (transactionHash) {
-        this.updateTrade(transactionHash, INSTANT_TRADES_TRADE_STATUS.REJECTED);
+        this.updateTrade(transactionHash);
       }
 
       throw err;
@@ -198,8 +199,8 @@ export class InstantTradeService {
       .subscribe();
   }
 
-  private updateTrade(hash: string, status: INSTANT_TRADES_TRADE_STATUS) {
-    return this.instantTradesApiService.patchTrade(hash, status).subscribe({
+  private updateTrade(hash: string) {
+    return this.instantTradesApiService.patchTrade(hash).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
   }
