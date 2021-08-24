@@ -13,7 +13,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokenAmount } from '../../models/tokens/TokenAmount';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-token-amount-input',

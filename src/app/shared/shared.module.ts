@@ -24,7 +24,6 @@ import {
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
-import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
 import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
@@ -49,8 +48,6 @@ import { RubicButtonComponent } from './components/rubic-button/rubic-button.com
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
-import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 
 @NgModule({
@@ -59,7 +56,6 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     SpinnerComponent,
     ProviderPanelComponent,
     DropdownSelectorComponent,
-    TokenAmountInputComponent,
     AmountEstimatedComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
@@ -75,8 +71,6 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
     SwapsHeaderComponent,
-    UserBalanceContainerComponent,
-    UsdPriceContainerComponent,
     AnalyticsLinkComponent,
     TermsNConditionsContainerComponent,
     // Pipes.
@@ -135,7 +129,6 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
-    TokenAmountInputComponent,
     SwapButtonComponent,
     WithRoundPipe,
     SafetyLinkDirective,
@@ -144,7 +137,8 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
     SwapsHeaderComponent,
-    TermsNConditionsContainerComponent
+    TermsNConditionsContainerComponent,
+    TokenAmountDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe]
 })
