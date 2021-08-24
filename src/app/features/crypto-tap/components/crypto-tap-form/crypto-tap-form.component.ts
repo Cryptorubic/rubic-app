@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Inject,
+  Injector,
   OnDestroy,
   OnInit
 } from '@angular/core';
@@ -18,12 +20,14 @@ import { filter, first, mergeMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
-import { TuiNotification } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -83,7 +87,9 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private errorsService: ErrorsService,
     private translate: TranslateService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   ngOnInit(): void {
@@ -259,6 +265,14 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           autoClose: false
         }
       );
+      if (window.location.pathname === '/crypto-tap') {
+        this.dialogService
+          .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+            size: 's',
+            data: { idPrefix: 'crypto_tap_' }
+          })
+          .subscribe();
+      }
     };
 
     this.cryptoTapService

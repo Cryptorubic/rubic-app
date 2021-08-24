@@ -441,6 +441,10 @@
     "coinbaseSelectNetworkModal": {
       "title": "Choose origin network",
       "text": "Please select a swaps origin network. By connecting a Coinbase wallet, you will not be able to change the network in the current session. To change the network after connecting the Coinbase wallet, log out of your account and connect by choosing a different network, or use a different wallet."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in My Trades"
     }
   },
   "settings": {
