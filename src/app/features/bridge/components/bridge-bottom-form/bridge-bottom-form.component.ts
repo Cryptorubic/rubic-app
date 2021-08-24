@@ -385,8 +385,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
           const modalToDisplay = isPolygonEthBridge
-            ? new PolymorpheusComponent(SuccessTxModalComponent)
-            : new PolymorpheusComponent(TrackTransactionModalComponent);
+            ? new PolymorpheusComponent(TrackTransactionModalComponent)
+            : new PolymorpheusComponent(SuccessTxModalComponent);
 
           this.dialogService
             .open(modalToDisplay, {
