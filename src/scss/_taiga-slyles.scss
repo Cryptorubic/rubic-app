@@ -38,6 +38,15 @@ tui-dialog {
   }
 }
 
+::ng-deep tui-dialog {
+  @include iframe-vertical {
+    .close {
+      top: 5px !important;
+      right: 5px !important;
+    }
+  }
+}
+
 tui-dialog-host {
   > div {
     backdrop-filter: blur(12px);
@@ -90,7 +99,7 @@ tui-notifications-host {
 }*/
 
 ::ng-deep tui-dialog .content {
-  @include iframe-horizontal {
+  @include iframe {
     padding: 0 !important;
   }
 }

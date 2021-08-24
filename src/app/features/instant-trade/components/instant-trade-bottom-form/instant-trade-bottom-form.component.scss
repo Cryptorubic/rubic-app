@@ -138,6 +138,7 @@ $green: rgb(74, 169, 86);
 
     @include iframe-vertical {
       position: relative;
+      width: 100%;
 
       display: flex;
       margin-bottom: 34px;

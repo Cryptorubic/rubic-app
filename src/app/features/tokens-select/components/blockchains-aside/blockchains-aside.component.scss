@@ -12,7 +12,7 @@
   border-radius: 0 10px 0 15px;
   box-shadow: inset -2px 2px 3px 2px rgba(0, 0, 0, 0.1);
 
-  @include iframe-horizontal {
+  @include iframe {
     left: unset;
 
     width: 100%;
@@ -33,14 +33,28 @@
     flex-direction: column;
     align-items: center;
 
-    @include iframe-horizontal {
+    @include iframe {
       flex-direction: row;
+    }
+
+    @include iframe-vertical {
+      margin-bottom: 20px;
+
+      ::ng-deep app-icon-button {
+        button {
+          height: 36px;
+        }
+
+        img {
+          max-height: 20px;
+        }
+      }
     }
 
     li:not(:last-child) {
       margin-bottom: 14px;
 
-      @include iframe-horizontal {
+      @include iframe {
         margin-right: 15px;
         margin-bottom: unset;
       }

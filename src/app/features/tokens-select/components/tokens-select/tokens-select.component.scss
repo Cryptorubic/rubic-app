@@ -14,6 +14,14 @@
     margin: 0 auto;
   }
 
+  @include iframe-vertical {
+    flex-direction: column;
+    justify-content: center;
+    width: $iframe-vertical-width;
+    height: 100vh;
+    margin: 0 auto;
+  }
+
   &__header {
     position: relative;
 
@@ -45,6 +53,19 @@
       app-blockchains-aside {
         display: block;
         margin-bottom: 20px;
+      }
+    }
+
+    @include iframe-vertical {
+      flex-direction: column;
+      width: $iframe-vertical-width;
+      height: $iframe-vertical-height;
+      max-height: $iframe-vertical-height;
+      padding: 40px 20px 20px;
+
+      app-blockchains-aside {
+        display: block;
+        margin-bottom: 10px;
       }
     }
   }

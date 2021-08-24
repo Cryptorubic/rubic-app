@@ -53,6 +53,28 @@
     </ul>
     <!--horizontal iframe -->
 
+    <!--vertical iframe -->
+    <ul class="tokens-list" *onlyFrame="'vertical'">
+      <li
+        *ngFor="let token of tokens; let i = index"
+        class="tokens-list__item"
+        [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
+        [tuiManualHint]="disabledTokenHint"
+        [tuiManualHintShow]="hintsShown[i]"
+        tuiHintMode="error"
+        tuiHintDirection="bottom-right"
+        (click)="onTokenSelect(token)"
+        (mouseenter)="hintsShown[i] = !token.available && true"
+        (mouseleave)="hintsShown[i] = false"
+      >
+        <app-tokens-list-element [token]="token"></app-tokens-list-element>
+      </li>
+      <li class="tokens-list__item vertical-frame-link">
+        <a rel="noopener noreferrer" target="_blank" [href]="noFrameLink">More on rubic.exchange</a>
+      </li>
+    </ul>
+    <!--vertical iframe -->
+
   </tui-scrollbar>
   <ng-template #emptyListMessage>
     <span class="nothing-to-show-message">{{

@@ -18,6 +18,10 @@ $token-card-height: 55px;
 
     &:not(:last-child) {
       margin-bottom: 15px;
+
+      @include iframe-vertical {
+        margin-bottom: 6px;
+      }
     }
 
     &:hover {
@@ -126,12 +130,19 @@ $token-card-height: 55px;
   margin-right: 0;
   padding-top: 15px;
 
-  @include iframe-horizontal {
+  @include iframe {
+    padding-top: 0;
+  }
+
+  @include iframe {
     position: static;
     left: unset;
 
     width: 100%;
-    padding-top: 0;
+  }
+
+  @include iframe-vertical {
+    height: 375px;
   }
 }
 
@@ -151,5 +162,22 @@ $token-card-height: 55px;
   .tokens-scrollbar {
     width: 100%;
     height: 100vh;
+  }
+}
+
+.vertical-frame-link {
+  border: 2px solid $rubic-primary;
+
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    line-height: 30px;
+    text-align: center;
+  }
+
+  &:hover {
+    background-color: unset;
   }
 }
