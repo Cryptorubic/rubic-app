@@ -78,7 +78,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public fromToken: TokenAmount;
 
-  private toToken: TokenAmount;
+  public toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 

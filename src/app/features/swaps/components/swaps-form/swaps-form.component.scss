@@ -149,6 +149,13 @@
         margin-right: 10px;
       }
     }
+
+    @include iframe-vertical {
+      app-instant-trade-bottom-form,
+      app-bridge-bottom-form {
+        width: 100%;
+      }
+    }
   }
 }
 

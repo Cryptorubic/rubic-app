@@ -24,8 +24,19 @@ $green: rgb(74, 169, 86);
     border-radius: 10px;
   }
 
+  @include iframe-vertical {
+    width: 100%;
+    padding: 0;
+
+    background-color: transparent;
+  }
+
   @include light-iframe {
     background-color: var(--rubic-base-14);
+  }
+
+  @include iframe-vertical {
+    padding: 0 !important;
   }
 
   &__provider-item:first-child {
@@ -61,6 +72,10 @@ $green: rgb(74, 169, 86);
     @include iframe-horizontal {
       order: 2;
       margin-left: auto;
+    }
+
+    @include iframe-vertical {
+      margin-bottom: 10px;
     }
   }
 
@@ -108,6 +123,10 @@ $green: rgb(74, 169, 86);
       flex-direction: column;
       align-items: flex-start;
     }
+
+    @include iframe-vertical {
+      flex-direction: column;
+    }
   }
 
   &__amount {
@@ -115,6 +134,17 @@ $green: rgb(74, 169, 86);
 
     @include iframe-horizontal {
       order: 1;
+    }
+
+    @include iframe-vertical {
+      position: relative;
+
+      display: flex;
+      margin-bottom: 34px;
+
+      >:not(:last-child) {
+        margin-right: 15px;
+      }
     }
 
     &_skeleton {
@@ -141,7 +171,23 @@ $green: rgb(74, 169, 86);
       margin-bottom: 0;
 
       font-size: 20px;
+    }
 
+    @include iframe-vertical {
+      flex: 1;
+      width: 100%;
+      max-width: unset;
+      height: 50px;
+      margin-bottom: 0;
+      padding-left: 16px;
+
+      font-size: 20px;
+      line-height: 50px;
+      text-align: left;
+
+      background-color: var(--main-background);
+
+      border-radius: 10px;
     }
 
     &::-webkit-scrollbar {
@@ -175,6 +221,16 @@ $green: rgb(74, 169, 86);
   }
 
   &__swap {
+    @include iframe-vertical {
+      padding: 0 !important;
+
+      app-swap-button {
+        width: 100%;
+
+        margin-top: 16px !important;
+      }
+    }
+
     app-swap-button {
       display: block;
 

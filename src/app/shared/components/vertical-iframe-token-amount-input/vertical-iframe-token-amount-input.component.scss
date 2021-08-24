@@ -16,64 +16,6 @@
       margin-bottom: 10px;
     }
   }
-
-  ::ng-deep app-rubic-tokens {
-    button {
-      border: none !important;
-      box-shadow: unset !important;
-    }
-
-    tui-wrapper,
-    button {
-      background: transparent !important;
-    }
-
-    tui-wrapper {
-      padding: 0 !important;
-    }
-
-    .tokens {
-      &__image-container {
-        width: 28px;
-        height: 28px;
-
-        > img {
-          max-width: 28px;
-          max-height: 28px;
-        }
-      }
-
-      &__symbol {
-        padding-right: 15px;
-
-        font-size: 18px;
-
-        &::after {
-          position: relative;
-          top: -4px;
-          left: 3px;
-
-          display: inline-block;
-          padding: 4px;
-
-          border: solid white;
-          border-width: 0 2px 2px 0;
-
-          transform: rotate(45deg);
-
-          content: '';
-        }
-      }
-
-      &__clear {
-        display: none;
-      }
-
-      &__clear-mobile {
-        display: none;
-      }
-    }
-  }
 }
 
 .blockchain-and-amount-input {
