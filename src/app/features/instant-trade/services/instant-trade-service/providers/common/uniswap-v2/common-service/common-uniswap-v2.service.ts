@@ -371,12 +371,13 @@ export class CommonUniswapV2Service {
     const routes = (
       await this.getAllRoutes(
         fromTokenAddress,
-        fromAmountAbsolute,
         toToken.address,
+        fromAmountAbsolute,
         routingProviders,
         this.settings.disableMultihops ? 0 : maxTransitTokens,
         contractAddress,
-        web3Public
+        web3Public,
+        'getAmountsOut'
       )
     ).sort((a, b) => (b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1));
     if (routes.length === 0) {
@@ -447,12 +448,13 @@ export class CommonUniswapV2Service {
 
   private async getAllRoutes(
     fromTokenAddress: string,
-    fromAmountAbsolute: string,
     toTokenAddress: string,
+    amountAbsolute: string,
     routingProviders: string[],
     maxTransitTokens: number,
     contractAddress: string,
-    web3Public: Web3Public
+    web3Public: Web3Public,
+    uniswapMethodName: 'getAmountsOut' | 'getAmountsIn'
   ): Promise<UniswapRoute[]> {
     const vertexes: string[] = routingProviders
       .map(elem => elem.toLowerCase())
@@ -467,7 +469,7 @@ export class CommonUniswapV2Service {
       if (path.length === mxTransitTokens + 1) {
         const finalPath = path.concat(toTokenAddress);
         routesPaths.push(finalPath);
-        routesMethodArguments.push([fromAmountAbsolute, finalPath]);
+        routesMethodArguments.push([amountAbsolute, finalPath]);
         return;
       }
 
@@ -488,7 +490,7 @@ export class CommonUniswapV2Service {
       .multicallContractMethod<{ amounts: string[] }>(
         contractAddress,
         this.abi,
-        'getAmountsOut',
+        uniswapMethodName,
         routesMethodArguments
       )
       .then(responses => {
@@ -535,6 +537,32 @@ export class CommonUniswapV2Service {
     );
     const balance = await web3Public.getTokenBalance(this.walletAddress, fromTokenAddress);
     return balance.gte(fromAmountAbsolute) && allowance.gte(fromAmountAbsolute);
+  }
+
+  public async getFromAmount(
+    blockchain: BLOCKCHAIN_NAME,
+    fromTokenAddress: string,
+    toToken: InstantTradeToken,
+    toAmount: BigNumber,
+    routingProviders: string[],
+    maxTransitTokens: number,
+    contractAddress: string
+  ): Promise<BigNumber> {
+    const toAmountAbsolute = Web3Public.toWei(toAmount, toToken.decimals);
+    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const routes = (
+      await this.getAllRoutes(
+        fromTokenAddress,
+        toToken.address,
+        toAmountAbsolute,
+        routingProviders,
+        maxTransitTokens,
+        contractAddress,
+        web3Public,
+        'getAmountsOut'
+      )
+    ).sort((a, b) => (b.outputAbsoluteAmount.lt(a.outputAbsoluteAmount) ? 1 : -1));
+    return routes[0]?.outputAbsoluteAmount;
   }
 
   public async createTrade(trade: InstantTrade, contractAddress: string, options: ItOptions = {}) {

@@ -87,6 +87,23 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     );
   }
 
+  public getFromAmount(
+    blockchain: BLOCKCHAIN_NAME,
+    fromTokenAddress: string,
+    toToken: InstantTradeToken,
+    toAmount: BigNumber
+  ): Promise<BigNumber> {
+    return this.commonUniswapV2.getFromAmount(
+      blockchain,
+      fromTokenAddress,
+      toToken,
+      toAmount,
+      this.routingProviders,
+      this.maxTransitTokens,
+      this.contractAddress
+    );
+  }
+
   public async createTrade(
     trade: InstantTrade,
     options: ItOptions = {}

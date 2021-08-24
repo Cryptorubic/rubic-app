@@ -186,10 +186,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private async conditionalCalculate(): Promise<void> {
-    if (!this.fromToken?.address || !this.toToken?.address) {
-      this.maxError = false;
-      this.minError = false;
-    }
+    this.maxError = false;
+    this.minError = false;
+    this.errorText = '';
 
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
@@ -205,8 +204,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.errorText = '';
-
     this.onCalculateTrade.next();
   }
 
@@ -221,17 +218,27 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
 
-          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+          const { fromToken, toToken, fromAmount, toBlockchain } = this.swapFormService.inputValue;
 
           const needApprove$ = this.authService.user?.address
             ? this.crossChainRoutingService.needApprove(fromToken)
             : of(false);
 
+          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts(
+            fromToken,
+            toBlockchain
+          );
+
           return forkJoin([
             this.crossChainRoutingService.calculateTrade(fromToken, fromAmount, toToken),
-            needApprove$
+            needApprove$,
+            minMaxAmounts$
           ]).pipe(
-            map(([trade, needApprove]) => {
+            map(([trade, needApprove, minMaxAmounts]) => {
+              const { minAmount, maxAmount } = minMaxAmounts;
+              this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
+              this.maxError = fromAmount?.gt(maxAmount) ? maxAmount : false;
+
               this.needApprove = needApprove;
               this.crossChainRoutingTrade = trade;
 
@@ -240,7 +247,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 toAmount
               });
 
-              if (!toAmount || toAmount.isNaN() || toAmount.eq(0) || !this.toWalletAddress) {
+              if (
+                this.minError ||
+                this.maxError ||
+                !toAmount ||
+                toAmount.isNaN() ||
+                toAmount.eq(0) ||
+                !this.toWalletAddress
+              ) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
