@@ -3,7 +3,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import {
-  ItSettingsForm,
+  CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -48,7 +48,7 @@ export class CrossChainRoutingService {
 
   private toBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number>;
 
-  private settings: ItSettingsForm;
+  private settings: CcrSettingsForm;
 
   private static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
@@ -81,8 +81,8 @@ export class CrossChainRoutingService {
     this.setUniswapProviders();
     this.setToBlockchainsInContract();
 
-    this.settingsService.instantTradeValueChanges
-      .pipe(startWith(this.settingsService.instantTradeValue))
+    this.settingsService.crossChainRoutingValueChanges
+      .pipe(startWith(this.settingsService.crossChainRoutingValue))
       .subscribe(settings => {
         this.settings = settings;
       });

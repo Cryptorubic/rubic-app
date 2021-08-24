@@ -10,7 +10,7 @@ import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
 @Injectable()
 export class SwapsService {
-  private _swapProviderType: SWAP_PROVIDER_TYPE;
+  private _swapProviderType$ = new BehaviorSubject<SWAP_PROVIDER_TYPE>(undefined);
 
   private _availableTokens = new BehaviorSubject<SupportedTokensInfo>(undefined);
 
@@ -24,8 +24,12 @@ export class SwapsService {
     return this._bridgeTokensPairs.asObservable();
   }
 
+  get swapMode$(): Observable<SWAP_PROVIDER_TYPE | null> {
+    return this._swapProviderType$.asObservable();
+  }
+
   get swapMode(): SWAP_PROVIDER_TYPE | null {
-    return this._swapProviderType;
+    return this._swapProviderType$.getValue();
   }
 
   constructor(
@@ -55,9 +59,9 @@ export class SwapsService {
       .subscribe(form => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } = form;
         if (fromBlockchain === toBlockchain) {
-          this._swapProviderType = SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+          this._swapProviderType$.next(SWAP_PROVIDER_TYPE.INSTANT_TRADE);
         } else if (!fromToken || !toToken) {
-          this._swapProviderType = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+          this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
         } else {
           this.bridgeTokensPairs.pipe(first()).subscribe(bridgeTokensPairs => {
             const foundBridgeToken = bridgeTokensPairs
@@ -74,9 +78,9 @@ export class SwapsService {
                     toToken.address.toLowerCase()
               );
             if (foundBridgeToken) {
-              this._swapProviderType = SWAP_PROVIDER_TYPE.BRIDGE;
+              this._swapProviderType$.next(SWAP_PROVIDER_TYPE.BRIDGE);
             } else {
-              this._swapProviderType = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+              this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
             }
           });
         }

@@ -12,8 +12,8 @@ import {
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
-import { SettingsContainerComponent } from 'src/app/features/swaps/components/settings-container/settings-container.component';
+import { SettingsItComponent } from 'src/app/features/swaps/components/swaps-settings/settings-it/settings-it.component';
+import { SettingsContainerComponent } from 'src/app/features/swaps/components/swaps-settings/settings-container/settings-container.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiInputModule,
@@ -28,7 +28,8 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
 import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
-import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
+import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
+import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SettingsContainerComponent,
     SettingsItComponent,
     SettingsBridgeComponent,
-    SettingsBridgeComponent
+    SettingsBridgeComponent,
+    SettingsCcrComponent
   ],
   exports: [],
   imports: [
@@ -61,7 +63,7 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     TokensSelectModule,
     FormsModule
   ],
-  entryComponents: [SettingsItComponent, SettingsBridgeComponent],
+  entryComponents: [SettingsItComponent, SettingsBridgeComponent, SettingsCcrComponent],
   providers: [SwapsService, InstantTradesSwapProviderService, BridgesSwapProviderService]
 })
 export class SwapsModule {}

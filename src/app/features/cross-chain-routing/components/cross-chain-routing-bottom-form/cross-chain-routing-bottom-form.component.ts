@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -32,6 +34,7 @@ import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
+import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
 
@@ -58,9 +61,13 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
+  @Input() onRefreshTrade: Subject<void>;
+
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
+
+  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -92,6 +99,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public errorText: string;
 
+  public slippageTolerance: number;
+
   private formSubscription$: Subscription;
 
   private settingsSubscription$: Subscription;
@@ -99,6 +108,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   private userSubscription$: Subscription;
 
   private calculateTradeSubscription$: Subscription;
+
+  private refreshTradeSubscription$: Subscription;
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -148,19 +159,26 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(startWith(this.swapFormService.inputValue))
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsSubscription$ = this.settingsService.bridgeValueChanges
-      .pipe(startWith(this.settingsService.bridgeValue))
-      .subscribe(settings => {});
+    this.settingsSubscription$ = this.settingsService.crossChainRoutingValueChanges
+      .pipe(startWith(this.settingsService.crossChainRoutingValue))
+      .subscribe(settings => {
+        this.slippageTolerance = settings.slippageTolerance;
+      });
 
     this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       this.toWalletAddress = user?.address;
     });
+
+    this.refreshTradeSubscription$ = this.onRefreshTrade.subscribe(() =>
+      this.conditionalCalculate()
+    );
   }
 
   ngOnDestroy() {
     this.formSubscription$.unsubscribe();
     this.settingsSubscription$.unsubscribe();
     this.userSubscription$.unsubscribe();
+    this.refreshTradeSubscription$.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -217,6 +235,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromToken, toToken, fromAmount, toBlockchain } = this.swapFormService.inputValue;
 
@@ -262,6 +281,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                   : TRADE_STATUS.READY_TO_SWAP;
               }
               this.cdr.detectChanges();
+              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             catchError((err: RubicError<ERROR_TYPE>) => {
               this.errorText = err.translateKey || err.message;
@@ -270,6 +290,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               });
               this.tradeStatus = TRADE_STATUS.DISABLED;
               this.cdr.detectChanges();
+              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
               return of(null);
             })
@@ -282,6 +303,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   public async approveTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     let approveInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
@@ -317,12 +339,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         },
         err => {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
           this.errorsService.catch(err);
           this.cdr.detectChanges();
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }
       );
   }
@@ -330,6 +354,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
+    this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     let tradeInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
@@ -368,12 +393,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err);
           this.cdr.detectChanges();
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }
       );
   }

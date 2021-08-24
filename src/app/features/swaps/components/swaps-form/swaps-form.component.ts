@@ -15,6 +15,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { startWith } from 'rxjs/operators';
 
 type SelectedToken = {
   from: TokenAmount;
@@ -92,6 +93,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public settingsSubscription$: Subscription;
 
+  public swapModeSubscription$: Subscription;
+
   public fromBlockchain: BLOCKCHAIN_NAME;
 
   public toBlockchain: BLOCKCHAIN_NAME;
@@ -128,32 +131,42 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
       this.isLoading = false;
     });
 
-    this.autoRefresh = this.settingsService.settingsForm.controls.INSTANT_TRADE.value.autoRefresh;
-    this.selectedFromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
-    this.settingsService.settingsForm.controls.INSTANT_TRADE.get(
-      'autoRefresh'
-    ).valueChanges.subscribe(el => {
-      this.autoRefresh = el;
+    this.settingsSubscription$ = combineLatest([
+      this.settingsService.instantTradeValueChanges.pipe(
+        startWith(this.settingsService.instantTradeValue)
+      ),
+      this.settingsService.crossChainRoutingValueChanges.pipe(
+        startWith(this.settingsService.crossChainRoutingValue)
+      )
+    ]).subscribe(([instantTradeSettings, crossChainRoutingSettings]) => {
+      if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.autoRefresh = instantTradeSettings.autoRefresh;
+      } else {
+        this.autoRefresh = crossChainRoutingSettings.autoRefresh;
+      }
     });
 
-    this.settingsSubscription$ =
-      this.settingsService.settingsForm.controls.INSTANT_TRADE.valueChanges.subscribe(settings => {
-        this.autoRefresh = settings.autoRefresh;
-      });
+    this.swapModeSubscription$ = this.swapsService.swapMode$.subscribe(swapMode => {
+      if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
+      } else {
+        this.autoRefresh = this.settingsService.crossChainRoutingValue.autoRefresh;
+      }
+    });
 
-    this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
-    this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
-      formValue => {
+    this.formSubscription$ = this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue))
+      .subscribe(formValue => {
         this.isLoading = true;
         this.setFormValues(formValue);
         this.isLoading = false;
-      }
-    );
+      });
   }
 
   public ngOnDestroy(): void {
     this.formSubscription$.unsubscribe();
     this.settingsSubscription$.unsubscribe();
+    this.swapModeSubscription$.unsubscribe();
   }
 
   private setFormValues(formValue: SwapFormInput): void {

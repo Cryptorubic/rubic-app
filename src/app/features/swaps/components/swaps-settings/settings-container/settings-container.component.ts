@@ -1,10 +1,12 @@
-import { Component, ChangeDetectionStrategy, OnInit, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, OnInit } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
-import { SettingsBridgeComponent } from 'src/app/features/swaps/components/settings-bridge/settings-bridge.component';
+import { SettingsItComponent } from 'src/app/features/swaps/components/swaps-settings/settings-it/settings-it.component';
+import { SettingsBridgeComponent } from 'src/app/features/swaps/components/swaps-settings/settings-bridge/settings-bridge.component';
+import { SettingsCcrComponent } from 'src/app/features/swaps/components/swaps-settings/settings-ccr/settings-ccr.component';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 @Component({
   selector: 'app-settings-container',
@@ -14,7 +16,7 @@ import { SettingsBridgeComponent } from 'src/app/features/swaps/components/setti
 })
 export class SettingsContainerComponent implements OnInit {
   public settingsComponent: PolymorpheusComponent<
-    SettingsItComponent | SettingsBridgeComponent,
+    SettingsItComponent | SettingsBridgeComponent | SettingsCcrComponent,
     Injector
   >;
 
@@ -36,12 +38,20 @@ export class SettingsContainerComponent implements OnInit {
   }
 
   public getSettingsComponent(): PolymorpheusComponent<
-    SettingsItComponent | SettingsBridgeComponent,
+    SettingsItComponent | SettingsBridgeComponent | SettingsCcrComponent,
     Injector
   > {
-    const control = this.swapFormService.commonTrade.controls.input.value;
-    return control.fromBlockchain === control.toBlockchain
-      ? new PolymorpheusComponent(SettingsItComponent)
-      : new PolymorpheusComponent(SettingsBridgeComponent);
+    let component;
+    switch (this.swapService.swapMode) {
+      case SWAP_PROVIDER_TYPE.INSTANT_TRADE:
+        component = SettingsItComponent;
+        break;
+      case SWAP_PROVIDER_TYPE.BRIDGE:
+        component = SettingsBridgeComponent;
+        break;
+      default:
+        component = SettingsCcrComponent;
+    }
+    return new PolymorpheusComponent(component);
   }
 }

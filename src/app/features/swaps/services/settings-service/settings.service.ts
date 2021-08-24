@@ -18,16 +18,25 @@ export interface BridgeSettingsForm {
   tronAddress: string;
 }
 
+export interface CcrSettingsForm {
+  autoSlippageTolerance: boolean;
+  slippageTolerance: number;
+  autoRefresh: boolean;
+}
+
 export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: ItSettingsForm;
   [SWAP_PROVIDER_TYPE.BRIDGE]: BridgeSettingsForm;
+  [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: CcrSettingsForm;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private readonly defaultSettings: ItSettingsForm;
+  private readonly defaultItSettings: ItSettingsForm;
+
+  private readonly defaultCcrSettings: ItSettingsForm;
 
   public settingsForm: FormGroup<SettingsForm>;
 
@@ -55,14 +64,30 @@ export class SettingsService {
     return this.bridge.valueChanges;
   }
 
+  public get crossChainRouting(): AbstractControlOf<CcrSettingsForm> {
+    return this.settingsForm.controls.CROSS_CHAIN_ROUTING;
+  }
+
+  public get crossChainRoutingValue(): CcrSettingsForm {
+    return this.crossChainRouting.value;
+  }
+
+  public get crossChainRoutingValueChanges(): Observable<CcrSettingsForm> {
+    return this.crossChainRouting.valueChanges;
+  }
+
   constructor(private readonly storeService: StoreService) {
-    this.defaultSettings = {
+    this.defaultItSettings = {
       autoSlippageTolerance: true,
       slippageTolerance: 1,
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
       autoRefresh: true
+    };
+    this.defaultCcrSettings = {
+      ...this.defaultItSettings,
+      slippageTolerance: 0.5
     };
     this.createForm();
     this.setupData();
@@ -86,15 +111,24 @@ export class SettingsService {
   private createForm(): void {
     this.settingsForm = new FormGroup<SettingsForm>({
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup({
-        autoSlippageTolerance: new FormControl<boolean>(this.defaultSettings.autoSlippageTolerance),
-        slippageTolerance: new FormControl<number>(this.defaultSettings.slippageTolerance),
-        deadline: new FormControl<number>(this.defaultSettings.deadline),
-        disableMultihops: new FormControl<boolean>(this.defaultSettings.disableMultihops),
-        rubicOptimisation: new FormControl<boolean>(this.defaultSettings.rubicOptimisation),
-        autoRefresh: new FormControl<boolean>(this.defaultSettings.autoRefresh)
+        autoSlippageTolerance: new FormControl<boolean>(
+          this.defaultItSettings.autoSlippageTolerance
+        ),
+        slippageTolerance: new FormControl<number>(this.defaultItSettings.slippageTolerance),
+        deadline: new FormControl<number>(this.defaultItSettings.deadline),
+        disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
+        rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
+        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh)
       }),
       [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup({
         tronAddress: new FormControl<string>('')
+      }),
+      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup({
+        autoSlippageTolerance: new FormControl<boolean>(
+          this.defaultItSettings.autoSlippageTolerance
+        ),
+        slippageTolerance: new FormControl<number>(this.defaultItSettings.slippageTolerance),
+        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh)
       })
     });
   }

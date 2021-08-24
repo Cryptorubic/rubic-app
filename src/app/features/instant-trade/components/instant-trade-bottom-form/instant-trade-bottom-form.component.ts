@@ -55,13 +55,13 @@ interface CalculationResult {
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   @Input() onRefreshTrade: Subject<void>;
 
-  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
-
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() formService: FormService;
+
+  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 

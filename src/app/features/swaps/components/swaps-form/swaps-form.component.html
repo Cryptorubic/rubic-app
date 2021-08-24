@@ -5,7 +5,7 @@
     </h1>
     <app-rubic-refresh-button
       class="swaps-form__refresh"
-      *ngIf="isInstantTrade && allowTrade"
+      *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade"
       (onRefresh)="onRefreshTrade.next()"
       [loadingStatus]="loadingStatus"
       [autoUpdate]="autoRefresh"
@@ -53,6 +53,8 @@
 
     <app-cross-chain-routing-bottom-form
       *ngIf="isCrossChainRouting"
+      [onRefreshTrade]="onRefreshTrade"
+      (onRefreshStatusChange)="loadingStatus = $event"
       [loading]="isLoading"
       [tokens]="availableTokens['to']"
     ></app-cross-chain-routing-bottom-form>
