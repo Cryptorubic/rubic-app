@@ -19,7 +19,7 @@ export class SuccessTxModalComponent {
     private readonly context: TuiDialogContext<boolean, { idPrefix: string }>
   ) {
     this.idPrefix = context.data.idPrefix;
-    this.timer = timer(3000).subscribe(() => this.onConfirm());
+    this.timer = timer(5000).subscribe(() => this.onConfirm());
   }
 
   public ngOnDestroy(): void {
