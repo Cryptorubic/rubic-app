@@ -28,6 +28,7 @@ import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/s
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 
 @Injectable({
   providedIn: 'root'
