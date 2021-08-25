@@ -25,7 +25,6 @@ import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
-import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
@@ -146,23 +145,9 @@ export class InstantTradeService {
       const options = {
         onConfirm: async hash => {
           confirmCallback();
-          this.modalShowing = this.notificationsService.show(
-            this.translateService.instant('notifications.tradeInProgress'),
-            {
-              status: TuiNotification.Info,
-              autoClose: false
-            }
-          );
-          transactionHash = hash;
+          this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
-          if (window.location.pathname === '/') {
-            this.dialogService
-              .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-                size: 's',
-                data: { idPrefix: '' }
-              })
-              .subscribe();
-          }
+          transactionHash = hash;
         }
       };
 
@@ -269,6 +254,25 @@ export class InstantTradeService {
     } catch (err) {
       this.modalShowing?.unsubscribe();
       throw err;
+    }
+  }
+
+  private notifyTradeInProgress() {
+    this.modalShowing = this.notificationsService.show(
+      this.translateService.instant('notifications.tradeInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+
+    if (window.location.pathname === '/') {
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's',
+          data: { idPrefix: '' }
+        })
+        .subscribe();
     }
   }
 }

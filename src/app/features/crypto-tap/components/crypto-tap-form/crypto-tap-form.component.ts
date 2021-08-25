@@ -4,7 +4,6 @@ import {
   Component,
   Inject,
   Injector,
-  OnDestroy,
   OnInit
 } from '@angular/core';
 import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypto-tap-form-service/crypto-tap-form.service';
@@ -16,7 +15,7 @@ import { of, Subscription, throwError } from 'rxjs';
 import { CryptoTapService } from 'src/app/features/crypto-tap/services/crypto-tap-service/crypto-tap.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { filter, first, mergeMap, tap } from 'rxjs/operators';
+import { filter, first, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { CryptoTapTrade } from 'src/app/features/crypto-tap/models/CryptoTapTrade';
@@ -28,14 +27,16 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-crypto-tap-form',
   templateUrl: './crypto-tap-form.component.html',
   styleUrls: ['./crypto-tap-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class CryptoTapFormComponent implements OnInit, OnDestroy {
+export class CryptoTapFormComponent implements OnInit {
   public swapType = SWAP_PROVIDER_TYPE.CRYPTO_TAP;
 
   public fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
@@ -50,15 +51,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
 
   public needApprove = false;
 
-  public $tokensSubscription: Subscription;
-
-  public $formSubscription: Subscription;
-
-  public $blockchainSubscription: Subscription;
-
-  public $outputSubscription: Subscription;
-
-  public $userSubscription: Subscription;
+  private tradeInProgressSubscription$: Subscription;
 
   public blockchainsListFrom = blockchainsList
     .filter(blockchain => blockchain.symbol === BLOCKCHAIN_NAME.ETHEREUM)
@@ -89,11 +82,12 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private readonly notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
   ngOnInit(): void {
-    this.$tokensSubscription = this.cryptoTapTokenService.availableTokens$.subscribe(tokens => {
+    this.cryptoTapTokenService.availableTokens$.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
       if (!tokens.from?.length) {
         return;
       }
@@ -109,42 +103,36 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
     });
 
-    this.$blockchainSubscription =
-      this.cryptoTapFormService.commonTrade.controls.input.controls.toBlockchain.valueChanges.subscribe(
-        toBlockchain => {
-          const tokens = this.cryptoTapTokenService.availableTokens.to;
-          if (tokens.length) {
-            setTimeout(() =>
-              this.cryptoTapFormService.commonTrade.controls.input.patchValue({
-                toToken: tokens.find(token => token.blockchain === toBlockchain)
-              })
-            );
-          }
+    this.cryptoTapFormService.commonTrade.controls.input.controls.toBlockchain.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(toBlockchain => {
+        const tokens = this.cryptoTapTokenService.availableTokens.to;
+        if (tokens.length) {
+          setTimeout(() =>
+            this.cryptoTapFormService.commonTrade.controls.input.patchValue({
+              toToken: tokens.find(token => token.blockchain === toBlockchain)
+            })
+          );
         }
-      );
+      });
 
-    this.$formSubscription =
-      this.cryptoTapFormService.commonTrade.controls.input.valueChanges.subscribe(() =>
-        this.calculateTrade()
-      );
+    this.cryptoTapFormService.commonTrade.controls.input.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.calculateTrade());
 
-    this.$outputSubscription =
-      this.cryptoTapFormService.commonTrade.controls.output.valueChanges.subscribe(outputValue => {
+    this.cryptoTapFormService.commonTrade.controls.output.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(outputValue => {
         this.fromAmount = outputValue.fromAmount;
       });
 
-    this.$userSubscription = this.authService
+    this.authService
       .getCurrentUser()
-      .pipe(filter(user => !!user?.address))
+      .pipe(
+        filter(user => !!user?.address),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => this.calculateTrade());
-  }
-
-  ngOnDestroy() {
-    this.$tokensSubscription.unsubscribe();
-    this.$blockchainSubscription.unsubscribe();
-    this.$formSubscription.unsubscribe();
-    this.$outputSubscription.unsubscribe();
-    this.$userSubscription.unsubscribe();
   }
 
   private calculateTrade() {
@@ -252,27 +240,10 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade() {
-    let tradeInProgressSubscription$: Subscription;
-
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       this.cdr.detectChanges();
-      tradeInProgressSubscription$ = this.notificationsService.show(
-        this.translate.instant('bridgePage.progressMessage'),
-        {
-          label: 'Trade in progress',
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      );
-      if (window.location.pathname === '/crypto-tap') {
-        this.dialogService
-          .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-            size: 's',
-            data: { idPrefix: 'crypto_tap_' }
-          })
-          .subscribe();
-      }
+      this.notifyTradeInProgress();
     };
 
     this.cryptoTapService
@@ -280,7 +251,7 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(
         (_res: TransactionReceipt) => {
-          tradeInProgressSubscription$.unsubscribe();
+          this.tradeInProgressSubscription$.unsubscribe();
 
           this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
             label: 'Successful trade',
@@ -292,10 +263,29 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
           this.calculateTrade();
         },
         err => {
-          tradeInProgressSubscription$?.unsubscribe();
+          this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err);
         }
       );
+  }
+
+  private notifyTradeInProgress() {
+    this.tradeInProgressSubscription$ = this.notificationsService.show(
+      this.translate.instant('bridgePage.progressMessage'),
+      {
+        label: 'Trade in progress',
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+    if (window.location.pathname === '/crypto-tap') {
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's',
+          data: { idPrefix: 'crypto_tap_' }
+        })
+        .subscribe();
+    }
   }
 }

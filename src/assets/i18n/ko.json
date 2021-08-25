@@ -445,7 +445,8 @@
     },
     "successTxModal": {
       "title": "The transaction was successfully sent!",
-      "seeDetails": "See details in My Trades"
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {
