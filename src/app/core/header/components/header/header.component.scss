@@ -112,6 +112,10 @@
     display: block;
     margin-right: 54px;
 
+    @include iframe-vertical {
+      margin-right: auto;
+    }
+
     img {
       display: block;
     }

@@ -26,9 +26,7 @@ import { NotificationsService } from 'src/app/core/services/notifications/notifi
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
-import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +66,7 @@ export class InstantTradeService {
     private notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
-    private scannerLinkPipe: ScannerLinkPipe
+    private readonly successTxModalService: SuccessTxModalService
   ) {
     this.setBlockchainsProviders();
   }
@@ -153,12 +151,7 @@ export class InstantTradeService {
 
           await this.postTrade(hash, provider, trade);
           if (window.location.pathname === '/') {
-            this.dialogService
-              .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-                size: 's',
-                data: { idPrefix: '' }
-              })
-              .subscribe();
+            this.successTxModalService.open();
           }
         }
       };
