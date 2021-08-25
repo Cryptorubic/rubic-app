@@ -5,6 +5,7 @@ import {
   Inject,
   Injector,
   Input,
+  OnDestroy,
   OnInit
 } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
@@ -69,7 +70,7 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class BridgeBottomFormComponent implements OnInit {
+export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
@@ -179,6 +180,10 @@ export class BridgeBottomFormComponent implements OnInit {
       .subscribe(() => {
         this.setToWalletAddress();
       });
+  }
+
+  public ngOnDestroy(): void {
+    this.calculateTradeSubscription$.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
