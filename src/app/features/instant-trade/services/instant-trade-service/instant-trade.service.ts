@@ -27,6 +27,8 @@ import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -143,6 +145,7 @@ export class InstantTradeService {
     try {
       const options = {
         onConfirm: async hash => {
+          confirmCallback();
           this.modalShowing = this.notificationsService.show(
             this.translateService.instant('notifications.tradeInProgress'),
             {

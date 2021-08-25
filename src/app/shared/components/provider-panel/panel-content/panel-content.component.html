@@ -32,7 +32,7 @@
     >
       {{ 'instantTrades.gasFee' | translate }}
 
-      <ng-container *ngIf="tradeData?.gasFeeInEth">
+      <ng-container *ngIf="providerData.appearance !== 'small' && tradeData?.gasFeeInEth">
         {{ tradeData.gasFeeInEth?.toFixed(5) }} ETH
       </ng-container >
 
