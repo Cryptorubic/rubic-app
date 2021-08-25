@@ -172,6 +172,11 @@ export class CommonOneinchService {
       amountAbsolute
     );
 
+    let gasPrice;
+    if (shouldCalculateGas || minGasPrice) {
+      gasPrice = await this.getGasPrice(blockchain, minGasPrice);
+    }
+
     const instantTrade = {
       blockchain,
       from: {
@@ -181,18 +186,17 @@ export class CommonOneinchService {
       to: {
         token: toToken,
         amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
-      }
+      },
+      ...(gasPrice && { gasPrice })
     };
     if (!shouldCalculateGas) {
       return instantTrade;
     }
 
-    const { gasPrice, gasFeeInEth, gasFeeInUsd } = await this.getGasPriceAndFees(
-      blockchain,
-      estimatedGas,
-      shouldCalculateGas,
-      minGasPrice
-    );
+    const gasPriceInEth = Web3Public.fromWei(gasPrice);
+    const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
+    const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
+    const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
 
     return {
       ...instantTrade,
@@ -256,32 +260,16 @@ export class CommonOneinchService {
     return { estimatedGas, toTokenAmount };
   }
 
-  private async getGasPriceAndFees(
-    blockchain: BLOCKCHAIN_NAME,
-    estimatedGas: BigNumber,
-    shouldCalculateGas: boolean,
-    minGasPrice?: BigNumber
-  ): Promise<{ gasPrice: string; gasFeeInEth?: BigNumber; gasFeeInUsd?: BigNumber }> {
+  private async getGasPrice(blockchain: BLOCKCHAIN_NAME, minGasPrice?: BigNumber): Promise<string> {
     const web3Public: Web3Public = this.web3PublicService[blockchain];
-
     const web3GasPrice = await web3Public.getGasPrice();
     let gasPrice: string;
     if (minGasPrice) {
-      gasPrice = BigNumber.min(minGasPrice, web3GasPrice).toFixed(0);
+      gasPrice = BigNumber.max(minGasPrice, web3GasPrice).toFixed(0);
     } else {
       gasPrice = web3GasPrice;
     }
-
-    let gasFeeInEth;
-    let gasFeeInUsd;
-    if (shouldCalculateGas) {
-      const gasPriceInEth = Web3Public.fromWei(gasPrice);
-      gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
-      const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
-      gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
-    }
-
-    return { gasPrice, gasFeeInEth, gasFeeInUsd };
+    return gasPrice;
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {

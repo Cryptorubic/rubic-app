@@ -259,8 +259,8 @@ export class CommonUniswapV2Service {
     let gasPrice;
     let gasPriceInEth;
     let gasPriceInUsd;
-    if (shouldCalculateGas) {
-      gasPrice = this.getGasPrice(web3Public, minGasPrice);
+    if (shouldCalculateGas || minGasPrice) {
+      gasPrice = await this.getGasPrice(web3Public, minGasPrice);
       gasPriceInEth = Web3Public.fromWei(gasPrice);
       const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
@@ -292,7 +292,8 @@ export class CommonUniswapV2Service {
       },
       options: {
         path: route.path
-      }
+      },
+      ...(gasPrice && { gasPrice })
     };
     if (!shouldCalculateGas) {
       return instantTrade;
