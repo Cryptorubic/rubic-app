@@ -26,13 +26,13 @@
     </div>
 
     <div
-      *ngIf="!!this.tradeData?.gasFeeInEth && !!this.tradeData?.gasFeeInUsd"
+      *ngIf="this.tradeData?.gasFeeInEth && this.tradeData?.gasFeeInUsd"
       class="provider-panel__token-gas-fee"
       [ngClass]="{ 'tui-skeleton': providerData.loading, 'tui-skeleton-text': providerData.loading }"
     >
       {{ 'instantTrades.gasFee' | translate }}
 
-      <ng-container *ngIf="providerData.appearance === 'small' || !tradeData?.gasFeeInUsd">
+      <ng-container *ngIf="tradeData?.gasFeeInEth">
         {{ tradeData.gasFeeInEth?.toFixed(5) }} ETH
       </ng-container >
 

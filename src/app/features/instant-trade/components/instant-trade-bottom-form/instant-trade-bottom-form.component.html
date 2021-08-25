@@ -36,9 +36,9 @@
         *ngFor="let provider of orderedProviders; let i = index"
       >
         <app-provider-panel
+          [providerIndex]="i"
           [providerControllerData]="provider"
           (selectProvider)="selectProvider(provider)"
-          [providerIndex]="i"
         ></app-provider-panel>
       </div>
     </div>

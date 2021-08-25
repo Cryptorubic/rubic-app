@@ -21,4 +21,6 @@ export interface TradeData {
    * Output token usd price.
    */
   usdPrice: string;
+
+  toTokenDecimals: number;
 }
