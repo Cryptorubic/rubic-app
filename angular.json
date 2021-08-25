@@ -129,9 +129,6 @@
             "browserTarget": "rubic:build"
           },
           "configurations": {
-            "dev": {
-              "scripts": ["src/assets/analytics/google-analytics.js"]
-            },
             "production": {
               "browserTarget": "rubic:build:production"
             }
