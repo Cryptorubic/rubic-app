@@ -141,7 +141,8 @@ export class InstantTradeService {
     try {
       const options = {
         onConfirm: async hash => {
-          await this.notifyTradeInProgress(hash, provider, trade);
+          this.notifyTradeInProgress();
+          await this.postTrade(hash, provider, trade);
         }
       };
 
@@ -251,7 +252,7 @@ export class InstantTradeService {
     }
   }
 
-  private async notifyTradeInProgress(hash, provider, trade) {
+  private notifyTradeInProgress() {
     this.modalShowing = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {
@@ -260,7 +261,6 @@ export class InstantTradeService {
       }
     );
 
-    await this.postTrade(hash, provider, trade);
     if (window.location.pathname === '/') {
       this.dialogService
         .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {

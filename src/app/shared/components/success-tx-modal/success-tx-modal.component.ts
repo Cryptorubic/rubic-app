@@ -4,8 +4,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { Subscription, timer } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-
-const lifetimeModal = 5000;
+import { modalConfig } from 'src/app/shared/constants/modals/modal-config';
 
 @Component({
   selector: 'app-success-tx-modal',
@@ -22,13 +21,13 @@ export class SuccessTxModalComponent implements OnInit {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, { idPrefix: string }>,
-    @Inject(TuiDestroyService) private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService
   ) {
     this.idPrefix = context.data.idPrefix;
   }
 
   public ngOnInit(): void {
-    this.timer = timer(lifetimeModal)
+    this.timer = timer(modalConfig.modalLifetime)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onConfirm());
   }
