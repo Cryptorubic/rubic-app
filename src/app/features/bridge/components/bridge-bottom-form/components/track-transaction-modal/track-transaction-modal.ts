@@ -9,7 +9,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TrackTransactionModalComponent {
-  constructor(@Inject(POLYMORPHEUS_CONTEXT) private context: TuiDialogContext) {}
+  constructor(@Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext) {}
 
   public onConfirm(): void {
     this.context.completeWith();

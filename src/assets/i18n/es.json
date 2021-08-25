@@ -441,6 +441,11 @@
     "coinbaseSelectNetworkModal": {
       "title": "Elija la red de origen",
       "text": "Seleccione una red de origen de swaps. Al conectar una billetera Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar la billetera Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente o usa una billetera diferente."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {

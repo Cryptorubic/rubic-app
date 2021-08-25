@@ -11,7 +11,7 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -31,6 +31,8 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -64,7 +66,8 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
   selector: 'app-bridge-bottom-form',
   templateUrl: './bridge-bottom-form.component.html',
   styleUrls: ['./bridge-bottom-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
@@ -103,15 +106,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public tradeStatus: TRADE_STATUS;
 
-  private formSubscription$: Subscription;
+  private calculateTradeSubscription$: Subscription;
 
-  private settingsSubscription$: Subscription;
-
-  private userSubscription$: Subscription;
-
-  private bridgeTokensSubscription$: Subscription;
-
-  private calculateBridgeSubscription$: Subscription;
+  private tradeInProgressSubscription$: Subscription;
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -144,6 +141,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private web3PublicService: Web3PublicService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translate: TranslateService,
     private readonly tokensService: TokensService,
@@ -158,31 +156,31 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.setupTradeCalculation();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.bridgeTokensSubscription$ = this.bridgeService.tokens.subscribe(tokens => {
+    this.bridgeService.tokens.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
       this.bridgeTokensPairs = tokens;
     });
 
-    this.formSubscription$ = this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsSubscription$ = this.settingsService.bridgeValueChanges
-      .pipe(startWith(this.settingsService.bridgeValue))
+    this.settingsService.bridgeValueChanges
+      .pipe(startWith(this.settingsService.bridgeValue), takeUntil(this.destroy$))
       .subscribe(settings => {
         this.tronAddress = settings.tronAddress;
         this.setToWalletAddress();
       });
 
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(() => {
-      this.setToWalletAddress();
-    });
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setToWalletAddress();
+      });
   }
 
-  ngOnDestroy() {
-    this.bridgeTokensSubscription$.unsubscribe();
-    this.formSubscription$.unsubscribe();
-    this.settingsSubscription$.unsubscribe();
-    this.userSubscription$.unsubscribe();
+  public ngOnDestroy(): void {
+    this.calculateTradeSubscription$.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -254,11 +252,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setupTradeCalculation(): void {
-    if (this.calculateBridgeSubscription$) {
+    if (this.calculateTradeSubscription$) {
       return;
     }
 
-    this.calculateBridgeSubscription$ = this.onCalculateTrade
+    this.calculateTradeSubscription$ = this.onCalculateTrade
       .pipe(
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
@@ -358,25 +356,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
-
-    let tradeInProgressSubscription$: Subscription;
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.cdr.detectChanges();
-        tradeInProgressSubscription$ = this.notificationsService.show(
-          this.translate.instant('bridgePage.progressMessage'),
-          {
-            label: this.translate.instant('notifications.tradeInProgress'),
-            status: TuiNotification.Info,
-            autoClose: false
-          }
-        );
-        this.dialogService
-          .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
-            size: 's'
-          })
-          .subscribe();
+        this.notifyTradeInProgress();
       }
     };
 
@@ -385,7 +369,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(
         (_: TransactionReceipt) => {
-          tradeInProgressSubscription$.unsubscribe();
+          this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
             label: this.translate.instant('notifications.successfulTradeTitle'),
             status: TuiNotification.Success,
@@ -399,7 +383,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.conditionalCalculate();
         },
         err => {
-          tradeInProgressSubscription$?.unsubscribe();
+          this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err);
           this.cdr.detectChanges();
@@ -455,6 +439,34 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       this.createTrade();
     } else {
       this.approveTrade();
+    }
+  }
+
+  private notifyTradeInProgress() {
+    this.tradeInProgressSubscription$ = this.notificationsService.show(
+      this.translate.instant('bridgePage.progressMessage'),
+      {
+        label: this.translate.instant('notifications.tradeInProgress'),
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+
+    if (window.location.pathname === '/') {
+      const isPolygonEthBridge =
+        this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+        this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
+
+      const modalToDisplay = isPolygonEthBridge
+        ? new PolymorpheusComponent(TrackTransactionModalComponent)
+        : new PolymorpheusComponent(SuccessTxModalComponent);
+
+      this.dialogService
+        .open(modalToDisplay, {
+          size: 's',
+          data: { idPrefix: '' }
+        })
+        .subscribe();
     }
   }
 }

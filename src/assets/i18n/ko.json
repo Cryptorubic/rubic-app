@@ -441,6 +441,11 @@
     "coinbaseSelectNetworkModal": {
       "title": "원본 네트워크 선택",
       "text": "스왑 원본 네트워크를 선택하십시오. Coinbase 지갑을 연결하면 현재 세션에서 네트워크를 변경할 수 없습니다. 코인베이스 지갑 연결 후 네트워크 변경을 위해서는 계정에서 로그아웃한 후 다른 네트워크를 선택하여 연결하거나 다른 지갑을 사용하세요."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {

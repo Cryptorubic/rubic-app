@@ -8,6 +8,5 @@ export type GasCalculationMethod = (
   deadline: number,
   contractAddress: string,
   web3Public: Web3Public,
-  isEnoughBalanceAndAllowance: boolean,
-  tokensToEthEstimatedGas: BigNumber[]
+  estimatedGasArray: BigNumber[]
 ) => Promise<BigNumber>;

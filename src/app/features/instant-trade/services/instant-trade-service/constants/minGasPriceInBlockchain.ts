@@ -3,5 +3,5 @@ import BigNumber from 'bignumber.js';
 
 // in Wei
 export const minGasPriceInBlockchain = {
-  [BLOCKCHAIN_NAME.POLYGON]: new BigNumber(5000000000)
+  [BLOCKCHAIN_NAME.POLYGON]: new BigNumber(20_000_000_000)
 };

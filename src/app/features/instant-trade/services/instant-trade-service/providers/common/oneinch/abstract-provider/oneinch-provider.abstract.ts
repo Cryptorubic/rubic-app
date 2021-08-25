@@ -25,8 +25,12 @@ export abstract class OneinchProviderAbstract implements ItProvider {
     return this.commonOneinchService.getAllowance(this.blockchain, tokenAddress);
   }
 
-  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
-    return this.commonOneinchService.approve(this.blockchain, tokenAddress, options);
+  public async approve(
+    tokenAddress: string,
+    options: TransactionOptions,
+    minGasPrice?: BigNumber
+  ): Promise<void> {
+    return this.commonOneinchService.approve(this.blockchain, tokenAddress, options, minGasPrice);
   }
 
   public async calculateTrade(

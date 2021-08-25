@@ -49,6 +49,7 @@ import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switch
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
+import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
     SwapsHeaderComponent,
     AnalyticsLinkComponent,
     TermsNConditionsContainerComponent,
+    SuccessTxModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,

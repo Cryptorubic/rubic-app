@@ -5,7 +5,6 @@ import { TransactionReceipt } from 'web3-eth';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -237,20 +236,15 @@ export class Web3PrivateService {
     }
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
 
-    const gasLimit = await contract.methods
-      .approve(spenderAddress, rawValue.toFixed(0))
-      .estimateGas({
-        from: this.address,
-        ...(this.defaultMockGas && { gas: this.defaultMockGas })
-      });
-    const gasMargin = 1.1;
-
     return new Promise((resolve, reject) => {
       contract.methods
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
           from: this.address,
-          gas: Web3Public.calculateGasMargin(gasLimit, gasMargin)
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas || this.defaultMockGas
+          }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

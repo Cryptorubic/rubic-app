@@ -441,6 +441,11 @@
     "coinbaseSelectNetworkModal": {
       "title": "Выберите исходную сеть",
       "text": "Пожалуйста, выберите исходную сеть для обменов токенов. Подключив кошелек Coinbase, вы не сможете изменить сеть в текущей сессии. Чтобы изменить сеть после подключения кошелька Coinbase, выйдите из своей учетной записи и подключитесь, выбрав другую сеть или используйте другой кошелек."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {
