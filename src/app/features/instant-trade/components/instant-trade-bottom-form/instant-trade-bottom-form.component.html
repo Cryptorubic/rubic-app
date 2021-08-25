@@ -36,9 +36,9 @@
         *ngFor="let provider of orderedProviders; let i = index"
       >
         <app-provider-panel
+          [providerIndex]="i"
           [providerControllerData]="provider"
           (selectProvider)="selectProvider(provider)"
-          [providerIndex]="i"
         ></app-provider-panel>
       </div>
     </div>
@@ -46,7 +46,6 @@
   <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
-  <app-analytics-link [formService]="swapFormService"></app-analytics-link>
   <app-swap-button
     [needApprove]="needApprove"
     [status]="tradeStatus"
@@ -55,5 +54,6 @@
     [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
+    (updateRatesClick)="onCalculateTrade.next('normal')"
   ></app-swap-button>
 </div>

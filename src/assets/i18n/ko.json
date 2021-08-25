@@ -411,7 +411,8 @@
     "rbcLowFees": "저렴한 수수료로 RBC 사용",
     "discountRBC": "RBC 할인",
     "blockchainsHint": "더 많은 블록 체인",
-    "tradingNotAvailable": "거래 불가"
+    "tradingNotAvailable": "거래 불가",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "유지",
@@ -424,7 +425,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
       "title": "토큰 선택",
@@ -467,12 +468,14 @@
   },
   "volume": {
     "title": "누적 거래량",
-    "instantTrades": "즉시 거래",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "크로스-체인 스왑"
   },
   "notifications": {
     "tradeInProgress": "진행중인 거래",
     "successfulTradeTitle": "성공적인 거래",
+    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인"
   }
