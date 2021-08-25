@@ -1,0 +1,30 @@
+.modal {
+  &__content {
+    padding-top: 136px;
+
+    text-align: center;
+  }
+
+  &__title {
+    max-width: 60%;
+    margin: 30px auto 48px;
+
+    font-size: 25px;
+    line-height: 30px;
+  }
+
+  &__footer-link {
+    display: inline-block;
+    margin-bottom: 18px;
+
+    font-size: 17px;
+
+    span {
+      margin-left: 5px;
+
+      ::ng-deep svg path {
+        fill: var(--rubic-base-02);
+      }
+    }
+  }
+}

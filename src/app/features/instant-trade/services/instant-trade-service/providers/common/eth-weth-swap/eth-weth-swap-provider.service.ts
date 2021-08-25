@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import contractAbi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/constants/contractAbi';
+import wethContractAbi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAbi';
 import {
-  contractAddressesNetMode,
-  SupportedBlockchain
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/constants/contractAddressesNetMode';
+  wethContractAddressesNetMode,
+  SupportedEthWethSwapBlockchain
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAddressesNetMode';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -20,9 +20,9 @@ import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
   providedIn: 'root'
 })
 export class EthWethSwapProviderService {
-  private readonly wethContractAbi = contractAbi;
+  private readonly abi = wethContractAbi;
 
-  private wethAddresses: Record<SupportedBlockchain, string>;
+  private contractAddresses: Record<SupportedEthWethSwapBlockchain, string>;
 
   constructor(
     private readonly web3PublicService: Web3PublicService,
@@ -31,11 +31,11 @@ export class EthWethSwapProviderService {
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService
   ) {
-    this.wethAddresses = contractAddressesNetMode.mainnet;
+    this.contractAddresses = wethContractAddressesNetMode.mainnet;
 
     useTestingMode.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.wethAddresses = contractAddressesNetMode.testnet;
+        this.contractAddresses = wethContractAddressesNetMode.testnet;
       }
     });
   }
@@ -45,7 +45,7 @@ export class EthWethSwapProviderService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
-    const wethAddress = this.wethAddresses[blockchain].toLowerCase();
+    const wethAddress = this.contractAddresses[blockchain].toLowerCase();
     return (
       (fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress.toLowerCase() === wethAddress) ||
       (toTokenAddress === NATIVE_TOKEN_ADDRESS && fromTokenAddress.toLowerCase() === wethAddress)
@@ -74,8 +74,8 @@ export class EthWethSwapProviderService {
     options: ItOptions
   ): Promise<TransactionReceipt> {
     return this.web3PrivateService.executeContractMethod(
-      this.wethAddresses[blockchain],
-      this.wethContractAbi,
+      this.contractAddresses[blockchain],
+      this.abi,
       'deposit',
       [],
       {
@@ -91,8 +91,8 @@ export class EthWethSwapProviderService {
     options: ItOptions
   ): Promise<TransactionReceipt> {
     return this.web3PrivateService.executeContractMethod(
-      this.wethAddresses[blockchain],
-      this.wethContractAbi,
+      this.contractAddresses[blockchain],
+      this.abi,
       'withdraw',
       [fromAmountAbsolute],
       {

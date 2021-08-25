@@ -51,6 +51,7 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
+import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
@@ -81,6 +82,7 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     UserBalanceContainerComponent,
     UsdPriceContainerComponent,
     AnalyticsLinkComponent,
+    SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
     PanelErrorContentComponent,

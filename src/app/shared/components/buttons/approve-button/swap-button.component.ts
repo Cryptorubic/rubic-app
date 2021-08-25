@@ -54,6 +54,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  @Input() idPrefix: string = '';
+
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
     this.checkNoAmountError();

@@ -23,6 +23,7 @@ export interface ItProvider {
     tokenAddress: string,
     options: {
       onTransactionHash?: (hash: string) => void;
-    }
+    },
+    minGasPrice?: BigNumber
   ) => Promise<void>;
 }

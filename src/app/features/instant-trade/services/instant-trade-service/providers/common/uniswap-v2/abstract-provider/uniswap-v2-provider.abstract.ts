@@ -57,12 +57,17 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     return this.commonUniswapV2.getAllowance(this.blockchain, tokenAddress, this.contractAddress);
   }
 
-  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
+  public async approve(
+    tokenAddress: string,
+    options: TransactionOptions,
+    minGasPrice?: BigNumber
+  ): Promise<void> {
     return this.commonUniswapV2.approve(
       this.blockchain,
       tokenAddress,
       this.contractAddress,
-      options
+      options,
+      minGasPrice
     );
   }
 
