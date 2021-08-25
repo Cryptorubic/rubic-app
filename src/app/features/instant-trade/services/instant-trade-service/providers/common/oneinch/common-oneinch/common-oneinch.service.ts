@@ -172,14 +172,7 @@ export class CommonOneinchService {
       amountAbsolute
     );
 
-    const { gasPrice, gasFeeInEth, gasFeeInUsd } = await this.getGasPriceAndFees(
-      blockchain,
-      estimatedGas,
-      shouldCalculateGas,
-      minGasPrice
-    );
-
-    return {
+    const instantTrade = {
       blockchain,
       from: {
         token: fromToken,
@@ -188,7 +181,21 @@ export class CommonOneinchService {
       to: {
         token: toToken,
         amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
-      },
+      }
+    };
+    if (!shouldCalculateGas) {
+      return instantTrade;
+    }
+
+    const { gasPrice, gasFeeInEth, gasFeeInUsd } = await this.getGasPriceAndFees(
+      blockchain,
+      estimatedGas,
+      shouldCalculateGas,
+      minGasPrice
+    );
+
+    return {
+      ...instantTrade,
       gasLimit: estimatedGas.toFixed(0),
       gasPrice,
       gasFeeInUsd,
@@ -313,9 +320,9 @@ export class CommonOneinchService {
     const trxOptions = {
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
-      gas: oneInchTrade.tx.gas.toFixed(0),
-      gasPrice: trade.gasPrice,
-      inWei: fromTokenAddress === this.oneInchNativeAddress || undefined
+      gas: oneInchTrade.tx.gas.toString(),
+      inWei: fromTokenAddress === this.oneInchNativeAddress || undefined,
+      ...(trade.gasPrice && { gasPrice: trade.gasPrice })
     };
 
     return this.web3Private.trySendTransaction(
