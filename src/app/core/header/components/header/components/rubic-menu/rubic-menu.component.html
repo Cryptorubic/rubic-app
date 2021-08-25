@@ -20,78 +20,47 @@
   <div class="rubic-menu__container">
     <tui-data-list class="data-list">
       <tui-opt-group>
-        <a
-          routerLink="about"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.about' | translate }}
-          </button>
-        </a>
-
-        <a
-          routerLink="buy-crypto"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">Fiat on-ramp</button>
-        </a>
-
-        <a
-          routerLink="faq"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.faq' | translate }}
-          </button>
-        </a>
-
-        <a href="https://rubic.finance/" class="data-list__link">
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.project' | translate }}
-          </button>
-        </a>
-
-        <a
-          routerLink="team"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
-          class="data-list__link"
-        >
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.team' | translate }}
-          </button>
-        </a>
-
-        <a href="https://shop.rubic.exchange/" class="data-list__link">
-          <button tuiOption class="data-list__option">
-            {{ 'navigation.merch' | translate }}
-          </button>
-        </a>
+        <ng-container *ngFor="let item of navigationList">
+          <a
+            *ngIf="item.type === 'internal'"
+            [routerLink]="item.link"
+            (click)="closeMenu()"
+            routerLinkActive="data-list__link_active"
+            class="data-list__link"
+          >
+            <button tuiOption class="data-list__option">
+              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </button>
+          </a>
+          <a
+            *ngIf="item.type === 'external'"
+            [href]="item.link"
+            class="data-list__link"
+          >
+            <button tuiOption class="data-list__option">
+              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </button>
+          </a>
+        </ng-container>
       </tui-opt-group>
 
       <tui-opt-group class="rubic-menu__mobile">
         <a
-          routerLink="/"
-          (click)="closeMenu()"
-          [class.data-list__link_active]="isLinkActive('/')"
+          (click)="menuClickHandler('swaps')"
+          [class.data-list__link_active]="swapActive"
           class="data-list__link"
         >
           <button tuiOption class="data-list__option">Swaps</button>
         </a>
 
         <a
-          routerLink="crypto-tap"
-          (click)="closeMenu()"
-          routerLinkActive="data-list__link_active"
+          (click)="menuClickHandler('bridge')"
+          [class.data-list__link_active]="bridgeActive"
           class="data-list__link"
         >
-          <button tuiOption class="data-list__option">Crypto Tap</button>
+          <button tuiOption class="data-list__option">Bridge</button>
         </a>
 
         <button
@@ -99,7 +68,7 @@
           class="data-list__option data-list__option_disabled"
           tuiHint="{{ 'navigation.notAvailable' | translate }}"
         >
-          Order Book
+          Cross Chain
         </button>
       </tui-opt-group>
 

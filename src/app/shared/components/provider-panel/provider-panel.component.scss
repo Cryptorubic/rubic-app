@@ -5,13 +5,36 @@ $border-radius: 14px;
 $default-transition: 0.2s ease-in-out;
 $white: white;
 
+::ng-deep .provider-panel {
+  height: 100%;
 
-.provider-panel {
+  @include b($mobile-md) {
+    .provider-panel {
+      &__body {
+        flex-direction: column;
+        padding-top: 10px;
+      }
+
+      &__right {
+        align-items: flex-start;
+      }
+
+      &__left {
+        margin-right: 0;
+      }
+
+      &__left,
+      &__token-usd-price {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
   &__content {
     position: relative;
 
     box-sizing: border-box;
-    padding: 20px;
+    padding: 25px 20px 20px;
 
     background: var(--rubic-base-10);
     border: 1px solid transparent;
@@ -78,6 +101,11 @@ $white: white;
     }
 
     &_small {
+      display: flex;
+      align-items: center;
+
+      height: 100%;
+
       .provider-panel__token-usd-price {
         display: none;
       }
@@ -225,26 +253,18 @@ $white: white;
       }
     }
   }
-}
 
-@include b($mobile-md) {
-  .provider-panel {
-    &__body {
-      flex-direction: column;
-      padding-top: 10px;
+
+  .tui-skeleton {
+    &.provider-panel__amount {
+      width: 100%;
+      min-height: 24px;
     }
 
-    &__right {
-      align-items: flex-start;
-    }
-
-    &__left {
-      margin-right: 0;
-    }
-
-    &__left,
-    &__token-usd-price {
-      margin-bottom: 5px;
+    &.provider-panel__token-usd-price,
+    &.provider-panel__token-gas-fee {
+      min-height: 20px;
     }
   }
 }
+
