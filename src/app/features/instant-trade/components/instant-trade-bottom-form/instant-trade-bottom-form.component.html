@@ -29,7 +29,9 @@
           }}
         </div>
         <ng-template #iframeSkeleton>
-          <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
+          <div class="instant-trade-bottom-form__amount_skeleton-container">
+            <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
+          </div>
         </ng-template>
         <ng-container *ngIf="selectedProvider">
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>{{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}</div>
