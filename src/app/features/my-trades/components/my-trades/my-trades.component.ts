@@ -49,8 +49,6 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   private isDataUpdatingSubscription$: Subscription;
 
-  private tableTradesSubscription$: Subscription;
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly myTradesService: MyTradesService,
@@ -72,25 +70,25 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
     this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address || null;
-    });
-
-    this.isDataUpdatingSubscription$ = this.myTradesService.isDataUpdating$.subscribe(() => {
       this.loading = true;
       this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-      this.cdr.detectChanges();
-    });
 
-    this.tableTradesSubscription$ = this.myTradesService.tableTrades$.subscribe(tableTrades => {
-      if (tableTrades) {
-        this.updateTableData(tableTrades);
+      if (this.walletAddress) {
+        this.myTradesService.updateTableTrades().subscribe(trades => {
+          this.updateTableData(trades);
+        });
+      } else {
+        this.tableData$.next([]);
+        this.loading = false;
+        this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
       }
+
+      this.cdr.detectChanges();
     });
   }
 
   ngOnDestroy(): void {
     this.userSubscription$.unsubscribe();
-    this.isDataUpdatingSubscription$.unsubscribe();
-    this.tableTradesSubscription$.unsubscribe();
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
@@ -118,11 +116,9 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   public refreshTable(): void {
-    if (!this.loading) {
-      this.loading = true;
-      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-      this.myTradesService.updateTableTrades();
-    }
+    this.loading = true;
+    this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+    this.myTradesService.updateTableTrades().subscribe(trades => this.updateTableData(trades));
   }
 
   public showConnectWalletModal(): void {
