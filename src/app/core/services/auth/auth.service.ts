@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { finalize, first, mergeMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
@@ -208,6 +208,11 @@ export class AuthService {
    * @description Logout request to backend.
    */
   public signOut(): Observable<string> {
+    if (this.iframeService.isIframe) {
+      this.serverlessSignOut();
+      return of('');
+    }
+
     return this.httpService.post('auth/wallets/logout/', {}).pipe(
       finalize(() => {
         this.providerConnectorService.deActivate();
