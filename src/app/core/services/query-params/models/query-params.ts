@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
-export type TopTokens = `topTokens[${keyof Record<BLOCKCHAIN_NAME, string>}]`;
+export type AdditionalTokens = 'eth_tokens' | 'bsc_tokens' | 'polygon_tokens' | 'harmony_tokens';
 
 interface AllQueryParams {
   from: string;
@@ -15,5 +15,6 @@ interface AllQueryParams {
   theme: string;
 }
 export type QueryParams = {
-  [P in TopTokens | keyof AllQueryParams]?: string;
-};
+  [P in AdditionalTokens]: string[];
+} &
+  AllQueryParams;

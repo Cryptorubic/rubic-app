@@ -5,7 +5,6 @@ import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { filter, first, map, mergeMap } from 'rxjs/operators';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -16,7 +15,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
-import { QueryParams } from './models/query-params';
+import { AdditionalTokens, QueryParams } from './models/query-params';
 
 @Injectable({
   providedIn: 'root'
@@ -87,10 +86,10 @@ export class QueryParamsService {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.setIframeStatus(queryParams);
       this.setHiddenStatus(queryParams);
-      this.setTopTokens(queryParams);
       this.setBackgroundStatus(queryParams);
       this.setHideSelectionStatus(queryParams);
       this.setThemeStatus(queryParams);
+      this.setAdditionalIframeTokens(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -305,56 +304,15 @@ export class QueryParamsService {
     }
   }
 
-  private setTopTokens(queryParams: QueryParams) {
-    const hasTopTokens = Object.values(BLOCKCHAIN_NAME).some(
-      blockchain => `topTokens[${blockchain}]` in queryParams
-    );
-
-    if (hasTopTokens) {
-      const topTokens = Object.entries(queryParams).reduce(
-        (
-          acc: { [k in keyof Record<BLOCKCHAIN_NAME, string>]?: string[] },
-          curr: [string, string]
-        ) => {
-          const [key, value] = curr;
-          const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
-          return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
-        },
-        {}
-      );
-      this.tokensService.tokens
-        .pipe(
-          filter(tokens => tokens?.size !== 0),
-          first()
-        )
-        .subscribe(tokens => {
-          const rankedTokens = tokens.map((token: TokenAmount) => {
-            const currentBlockchainTop = topTokens[token.blockchain];
-            const isTop =
-              currentBlockchainTop?.length > 0 &&
-              currentBlockchainTop.some(topToken => {
-                return topToken === token.symbol;
-              });
-            return isTop
-              ? {
-                  ...token,
-                  rank: TOKEN_RANK.TOP
-                }
-              : token;
-          });
-
-          this.tokensService.setTokens(rankedTokens);
-        });
-    }
-  }
-
   private setBackgroundStatus(queryParams: QueryParams) {
-    const { background } = queryParams;
-    if (this.isBackgroundValid(background)) {
-      this.document.body.style.background = background;
-      return;
+    if (this.iframeService.isIframe) {
+      const { background } = queryParams;
+      if (this.isBackgroundValid(background)) {
+        this.document.body.style.background = background;
+        return;
+      }
+      this.document.body.classList.add('default-iframe-background');
     }
-    this.document.body.classList.add('default-iframe-background');
   }
 
   private setHideSelectionStatus(queryParams: QueryParams) {
@@ -367,6 +325,28 @@ export class QueryParamsService {
     const { theme } = queryParams;
     if (theme && (theme === 'dark' || theme === 'light')) {
       this.themeService.setTheme(theme);
+    }
+  }
+
+  private setAdditionalIframeTokens(queryParams: QueryParams) {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const tokensFilterKeys: Readonly<Array<keyof QueryParams>> = [
+      'eth_tokens',
+      'bsc_tokens',
+      'polygon_tokens',
+      'harmony_tokens'
+    ] as const;
+    const tokensQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([key]) =>
+        tokensFilterKeys.includes(key as AdditionalTokens)
+      )
+    );
+
+    if (Object.keys(tokensQueryParams).length !== 0) {
+      this.tokensService.tokensRequestParameters = tokensQueryParams;
     }
   }
 

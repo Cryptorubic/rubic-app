@@ -5,6 +5,7 @@ import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BA
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { HttpService } from '../../http/http.service';
 import { BackendToken } from './models/BackendToken';
 
@@ -34,12 +35,12 @@ export class TokensApiService {
     );
   }
 
-  public getTokensList(): Observable<List<Token>> {
+  public getTokensList(params: Object): Observable<List<Token>> {
     return this.iframeService.isIframe$.pipe(
       switchMap(isIframe => {
         const url = isIframe ? this.getIframeTokensUrl : this.getTokensUrl;
         return this.httpService
-          .get(url)
+          .get(url, params)
           .pipe(
             map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens))
           );

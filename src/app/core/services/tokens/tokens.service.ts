@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
@@ -21,8 +21,14 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 export class TokensService {
   private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
 
+  private readonly _tokensRequestParameters = new Subject<Object>();
+
   get tokens(): Observable<List<TokenAmount>> {
     return this._tokens.asObservable();
+  }
+
+  set tokensRequestParameters(parameters: Object) {
+    this._tokensRequestParameters.next(parameters);
   }
 
   private userAddress: string;
@@ -36,15 +42,17 @@ export class TokensService {
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService
   ) {
-    this.tokensApiService.getTokensList().subscribe(
-      tokens => {
-        if (!this.isTestingMode) {
-          this.setDefaultTokenAmounts(tokens);
-          this.calculateUserTokensBalances();
-        }
-      },
-      err => console.error('Error retrieving tokens', err)
-    );
+    this._tokensRequestParameters
+      .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
+      .subscribe(
+        tokens => {
+          if (!this.isTestingMode) {
+            this.setDefaultTokenAmounts(tokens);
+            this.calculateUserTokensBalances();
+          }
+        },
+        err => console.error('Error retrieving tokens', err)
+      );
 
     this.authService.getCurrentUser().subscribe(user => {
       this.userAddress = user?.address;
@@ -58,6 +66,8 @@ export class TokensService {
         this.calculateUserTokensBalances();
       }
     });
+
+    this._tokensRequestParameters.next();
   }
 
   public setTokens(tokens: List<TokenAmount>): void {
