@@ -140,38 +140,33 @@ export class CrossChainRoutingService {
     );
   }
 
-  public async getMinMaxAmounts(
-    fromToken: BlockchainToken,
-    toBlockchain: BLOCKCHAIN_NAME
-  ): Promise<{
+  public async getMinMaxAmounts(fromToken: BlockchainToken): Promise<{
     minAmount: number;
     maxAmount: number;
   }> {
     const fromBlockchain = fromToken.blockchain;
-    CrossChainRoutingService.checkBlockchains(fromBlockchain, toBlockchain);
+    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
+      throw Error('Not supported blockchain');
+    }
 
     const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
-    const toBlockchainInContract = this.toBlockchainsInContract[toBlockchain];
-    const feeAmountOfBlockchainAbsolute = (await web3Public.callContractMethod(
+    const minTransitTokenAmountAbsolute = (await web3Public.callContractMethod(
       this.contractAddresses[fromBlockchain],
       this.contractAbi,
-      'feeAmountOfBlockchain',
-      {
-        methodArguments: [toBlockchainInContract]
-      }
+      'minTokenAmount'
     )) as string;
     const transitToken = this.transitTokens[fromBlockchain];
-    const feeAmountOfBlockchain = Web3Public.fromWei(
-      feeAmountOfBlockchainAbsolute,
+    const minTransitTokenAmount = Web3Public.fromWei(
+      minTransitTokenAmountAbsolute,
       transitToken.decimals
     );
 
-    const minAmountAbsolute = feeAmountOfBlockchain.gt(0)
+    const minAmountAbsolute = minTransitTokenAmount.gt(0)
       ? await this.uniswapProviders[fromBlockchain].getFromAmount(
           fromBlockchain,
           fromToken.address,
           transitToken,
-          feeAmountOfBlockchain
+          minTransitTokenAmount
         )
       : 0;
     const minAmount = Web3Public.fromWei(minAmountAbsolute, fromToken.decimals).toNumber();
@@ -205,8 +200,7 @@ export class CrossChainRoutingService {
 
     const secondTransitTokenAmount = await this.getSecondTransitAmount(
       toBlockchain,
-      firstTransitTokenAmount,
-      secondTransitToken
+      firstTransitTokenAmount
     );
 
     const { path: secondPath, toAmount } = await this.getPathAndToAmount(
@@ -252,8 +246,7 @@ export class CrossChainRoutingService {
 
   private async getSecondTransitAmount(
     toBlockchain: BLOCKCHAIN_NAME,
-    firstTransitTokenAmount: BigNumber,
-    secondTransitToken: InstantTradeToken
+    firstTransitTokenAmount: BigNumber
   ): Promise<BigNumber> {
     const contractAddress = this.contractAddresses[toBlockchain];
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[toBlockchain];
@@ -266,11 +259,8 @@ export class CrossChainRoutingService {
         methodArguments: [toBlockchainInContract]
       }
     )) as string;
-    const feeOfToBlockchain = Web3Public.fromWei(
-      feeOfToBlockchainAbsolute,
-      secondTransitToken.decimals
-    );
-    return firstTransitTokenAmount.minus(feeOfToBlockchain);
+    const feeOfToBlockchain = parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+    return firstTransitTokenAmount.multipliedBy(100 - feeOfToBlockchain).dividedBy(100);
   }
 
   public createTrade(

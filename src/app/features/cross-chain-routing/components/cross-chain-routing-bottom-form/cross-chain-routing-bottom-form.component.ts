@@ -237,16 +237,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromToken, toToken, fromAmount, toBlockchain } = this.swapFormService.inputValue;
+          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
 
           const needApprove$ = this.authService.user?.address
             ? this.crossChainRoutingService.needApprove(fromToken)
             : of(false);
 
-          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts(
-            fromToken,
-            toBlockchain
-          );
+          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts(fromToken);
 
           return forkJoin([
             this.crossChainRoutingService.calculateTrade(fromToken, fromAmount, toToken),
