@@ -21,6 +21,10 @@
         background: transparent !important;
         border: none !important;
         box-shadow: unset !important;
+
+        span {
+          color: var(--rubic-base-02) !important;
+        }
       }
 
       tui-wrapper {
@@ -54,7 +58,7 @@
         display: inline-block;
         padding: 4px;
 
-        border: solid white;
+        border: solid var(--rubic-base-02);
         border-width: 0 2px 2px 0;
 
         transform: rotate(45deg);

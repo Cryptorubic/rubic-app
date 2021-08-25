@@ -1,3 +1,5 @@
+@import 'src/styles';
+
 :host {
   width: 100%;
 }
@@ -38,6 +40,10 @@
     background-color: var(--main-background);
 
     border-radius: 10px;
+
+    @include light-iframe {
+      background-color: var(--rubic-base-14);
+    }
   }
 
   &__input {

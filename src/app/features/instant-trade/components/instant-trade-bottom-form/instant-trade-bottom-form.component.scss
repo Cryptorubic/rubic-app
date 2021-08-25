@@ -26,18 +26,15 @@ $green: rgb(74, 169, 86);
 
   @include iframe-vertical {
     width: 100%;
-    padding: 0;
+    padding: 0 !important;
 
     background-color: transparent;
   }
 
-  @include light-iframe {
+  :host-context(html.iframe-horizontal:not(.dark)) & {
     background-color: var(--rubic-base-14);
   }
 
-  @include iframe-vertical {
-    padding: 0 !important;
-  }
 
   &__provider-item:first-child {
     width: 100%;
@@ -161,6 +158,10 @@ $green: rgb(74, 169, 86);
         background-color: var(--main-background);
         border-radius: 10px;
       }
+
+      :host-context(html.iframe-vertical:not(.dark)) & {
+        background-color: var(--rubic-base-14);
+      }
     }
 
     &_skeleton {
@@ -205,6 +206,11 @@ $green: rgb(74, 169, 86);
 
       border-radius: 10px;
     }
+
+    :host-context(html.iframe-vertical:not(.dark)) & {
+      background-color: var(--rubic-base-14);
+    }
+
 
     &::-webkit-scrollbar {
       display: none;
