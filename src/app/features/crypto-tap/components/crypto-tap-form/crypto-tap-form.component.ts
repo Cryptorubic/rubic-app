@@ -139,13 +139,6 @@ export class CryptoTapFormComponent implements OnInit, OnDestroy {
       .getCurrentUser()
       .pipe(filter(user => !!user?.address))
       .subscribe(() => this.calculateTrade());
-
-    this.dialogService
-      .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-        size: 's',
-        data: { idPrefix: 'crypto_tap_' }
-      })
-      .subscribe();
   }
 
   ngOnDestroy() {

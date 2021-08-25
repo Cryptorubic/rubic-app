@@ -72,6 +72,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "scripts": ["src/assets/analytics/google-analytics.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -128,6 +129,9 @@
             "browserTarget": "rubic:build"
           },
           "configurations": {
+            "dev": {
+              "scripts": ["src/assets/analytics/google-analytics.js"]
+            },
             "production": {
               "browserTarget": "rubic:build:production"
             }
