@@ -27,6 +27,10 @@ import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+
 
 @Injectable({
   providedIn: 'root'
@@ -135,24 +139,19 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
+  public async createTrade(
+    provider: INSTANT_TRADES_PROVIDER,
+    trade: InstantTrade,
+    confirmCallback?: () => void
+  ): Promise<void> {
     let transactionHash: string;
     try {
       const options = {
         onConfirm: async hash => {
-          this.modalShowing = this.notificationsService.show(
-            this.translateService.instant('notifications.tradeInProgress'),
-            {
-              status: TuiNotification.Info,
-              autoClose: false
-            }
-          );
-          transactionHash = hash;
-
+          confirmCallback();
+          this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
-          if (window.location.pathname === '/') {
-            this.successTxModalService.open();
-          }
+          transactionHash = hash;
         }
       };
 
@@ -168,12 +167,10 @@ export class InstantTradeService {
 
       this.modalShowing.unsubscribe();
       this.updateTrade(transactionHash);
-      this.notificationsService.show(
-        this.translateService.instant('notifications.successfulTradeTitle'),
-        {
-          status: TuiNotification.Success
-        }
-      );
+      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
@@ -235,6 +232,7 @@ export class InstantTradeService {
 
   public async approve(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
+      const minGasPrice = minGasPriceInBlockchain[trade.blockchain];
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
         {
@@ -247,7 +245,8 @@ export class InstantTradeService {
               }
             );
           }
-        }
+        },
+        minGasPrice
       );
       this.modalShowing.unsubscribe();
       this.notificationsService.show(
@@ -259,6 +258,25 @@ export class InstantTradeService {
     } catch (err) {
       this.modalShowing?.unsubscribe();
       throw err;
+    }
+  }
+
+  private notifyTradeInProgress() {
+    this.modalShowing = this.notificationsService.show(
+      this.translateService.instant('notifications.tradeInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+
+    if (window.location.pathname === '/') {
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's',
+          data: { idPrefix: '' }
+        })
+        .subscribe();
     }
   }
 }

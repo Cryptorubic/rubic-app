@@ -224,7 +224,7 @@ export class TokensSelectComponent implements OnInit {
         catchError((err: HttpErrorResponse) => {
           return err.status === 200
             ? of(image)
-            : of('assets/images/icons/coins/default-token-ico.webp');
+            : of('assets/images/icons/coins/default-token-ico.svg');
         })
       )
       .toPromise();

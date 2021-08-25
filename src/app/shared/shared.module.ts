@@ -58,6 +58,10 @@ import { AnalyticsLinkComponent } from './components/analytics-link/analytics-li
 import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
+import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
+import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
+import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
+import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +90,10 @@ import { SuccessTxModalComponent } from './components/success-tx-modal/success-t
     AnalyticsLinkComponent,
     VerticalIframeTokenAmountInputComponent,
     SuccessTxModalComponent,
+    SuccessTrxNotificationComponent,
+    GasIndicatorComponent,
+    PanelErrorContentComponent,
+    PanelContentComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -157,12 +165,16 @@ import { SuccessTxModalComponent } from './components/success-tx-modal/success-t
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
     SwapsHeaderComponent,
+    GasIndicatorComponent,
+    PanelErrorContentComponent,
+    PanelContentComponent,
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe]
+  providers: [ScannerLinkPipe, WithRoundPipe],
+  entryComponents: [SuccessTrxNotificationComponent]
 })
 export class SharedModule {}

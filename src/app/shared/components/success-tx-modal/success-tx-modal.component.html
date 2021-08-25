@@ -1,15 +1,22 @@
 <div class="modal" [id]="idPrefix + 'gtm-transaction-modal'">
   <div class="modal__content">
     <main class="modal__body">
-      <img class="modal__success-image" src="assets/images/icons/success.svg" alt="success" />
-      <h2 *noFrame="'horizontal'" class="modal__title">{{ 'modals.successTxModal.title' | translate }}</h2>
+      <img
+        class="modal__success-image"
+        src="assets/images/bridge/success-image.svg"
+        alt="Success"
+      />
+      <h3 *noFrame="'horizontal'" class="modal__title">{{ 'modals.tradeInProgress' | translate }}</h3>
     </main>
     <footer class="modal__footer">
-      <a *noFrame class="modal__footer-link" routerLink="/my-trades" target="_blank">
+      <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
         {{ 'modals.successTxModal.seeDetails' | translate }}
-        <span inlineSVG="assets/images/icons/link-arrow.svg"></span>
-      </a>
-      <h2 *onlyFrame="'horizontal'" class="modal__title">{{ 'modals.successTxModal.title' | translate }}</h2>
+        <a *noFrame class="modal__footer-link" routerLink="/my-trades" target="_blank">
+          {{ 'modals.successTxModal.link' | translate }}
+          <span inlineSVG="assets/images/icons/link-arrow.svg"></span>
+        </a>
+      </ng-container>
+      <h3 *onlyFrame="'horizontal'" class="modal__title">{{ 'modals.successTxModal.title' | translate }}</h3>
       <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
         {{ 'common.OK' | translate }}
       </app-rubic-button>

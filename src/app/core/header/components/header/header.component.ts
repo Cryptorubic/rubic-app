@@ -19,6 +19,10 @@ import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { map, startWith } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -40,8 +44,14 @@ export class HeaderComponent implements AfterViewInit {
 
   public countNotifications$: Observable<number>;
 
+  public readonly isInstantTrade$: Observable<boolean>;
+
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+  }
+
+  public get rootPath(): boolean {
+    return window.location.pathname === '/';
   }
 
   constructor(
@@ -54,7 +64,8 @@ export class HeaderComponent implements AfterViewInit {
     private router: Router,
     private readonly errorService: ErrorsService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly swapFormService: SwapFormService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -71,6 +82,10 @@ export class HeaderComponent implements AfterViewInit {
       };
     }
     this.countNotifications$ = this.counterNotificationsService.unread$;
+    this.isInstantTrade$ = this.swapFormService.input.valueChanges.pipe(
+      map(el => el.fromBlockchain === el.toBlockchain),
+      startWith(true)
+    );
   }
 
   public ngAfterViewInit(): void {
@@ -97,7 +112,47 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  isLinkActive(url) {
-    return window.location.pathname === url;
+  public async navigateToSwaps(): Promise<void> {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+        toChain: BLOCKCHAIN_NAME.ETHEREUM,
+        amount: undefined,
+        from: undefined,
+        to: undefined
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  public async navigateToBridge(): Promise<void> {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+        toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        amount: undefined,
+        from: undefined,
+        to: undefined
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 }

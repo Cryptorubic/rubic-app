@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
@@ -84,7 +84,16 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     this.visibleData$ = this.request$.pipe(
       filter(isPresent),
       map(visibleTableData => visibleTableData.filter(isPresent)),
-      startWith([])
+      startWith([]),
+      map(visibleTableData => {
+        const waitingForReceivingTrades = visibleTableData.filter(
+          el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+        );
+        const otherTrades = visibleTableData.filter(
+          el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+        );
+        return [...waitingForReceivingTrades, ...otherTrades];
+      })
     );
 
     this.total$ = this.request$.pipe(
@@ -113,6 +122,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   ): ReadonlyArray<TableRow | null> {
     const start = page * size;
     const end = start + size;
+
     return [...tableData]
       .sort(this.sortBy(key, direction))
       .map((user, index) => (index >= start && index < end ? user : null));
