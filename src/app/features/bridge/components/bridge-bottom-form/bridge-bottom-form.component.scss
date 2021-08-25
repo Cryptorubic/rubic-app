@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 .bridge-bottom-form {
   display: flex;
@@ -7,6 +6,11 @@
 
   @include iframe-horizontal {
     flex-direction: row;
+  }
+
+  @include iframe-vertical {
+    justify-content: space-between;
+    height: 212px;
   }
 
   &__container {
@@ -32,6 +36,19 @@
       border-radius: 10px;
     }
 
+    @include iframe-vertical {
+
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 0;
+
+      background-color: transparent;
+
+      app-rubic-tokens {
+        margin-bottom: 10px;
+      }
+    }
+
     @include light-iframe {
       background-color: var(--rubic-base-14);
     }
@@ -55,6 +72,11 @@
 
     @include b($mobile-md) {
       padding: 15px 20px 0;
+    }
+
+    @include iframe-vertical {
+      margin-top: 30px;
+      padding: 0;
     }
   }
 

@@ -1,14 +1,17 @@
-<div class="bottom-amount">
+<div class="bottom-amount" [ngClass]="{'bottom-amount_hidden-iframe-stub': hidden}">
   <ng-container *ngIf="!hidden">
-    <div
-      class="bottom-amount__tokens-container"
-      [ngClass]="{
-        'tui-skeleton': loading,
-        'tui-skeleton_text': loading,
-        'bottom-amount__tokens-container_placeholder': !tokensAmount
-      }"
-    >
-      {{ tokensAmount | bigNumberFormat | withRound: 'toClosestValue' }}
+    <div class="bottom-amount__blockchain-and-value">
+      <app-iframe-blockchain-indicator *onlyFrame="'vertical'" [blockchain]="blockchain"></app-iframe-blockchain-indicator>
+      <div
+        class="bottom-amount__tokens-container"
+        [ngClass]="{
+          'tui-skeleton': loading,
+          'tui-skeleton_text': loading,
+          'bottom-amount__tokens-container_placeholder': !tokensAmount
+        }"
+      >
+        {{ tokensAmount | bigNumberFormat | withRound: 'toClosestValue' }}
+      </div>
     </div>
 
     <div

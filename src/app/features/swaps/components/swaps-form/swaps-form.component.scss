@@ -143,6 +143,9 @@
     }
 
     @include iframe-vertical {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       height: 100%;
     }
   }
@@ -160,6 +163,10 @@
       app-instant-trade-bottom-form,
       app-bridge-bottom-form {
         width: 100%;
+      }
+
+      app-bridge-bottom-form {
+        
       }
     }
   }
