@@ -133,13 +133,17 @@ export class CommonOneinchService {
   public async approve(
     blockchain: BLOCKCHAIN_NAME,
     tokenAddress: string,
-    options: TransactionOptions
+    options: TransactionOptions,
+    minGasPrice?: BigNumber
   ): Promise<void> {
     this.providerConnectorService.checkSettings(blockchain);
 
     const approveAddress = await this.loadApproveAddress(
       BlockchainsInfo.getBlockchainByName(blockchain).id
     ).toPromise();
+    if (minGasPrice) {
+      options.gasPrice = await this.getGasPrice(blockchain, minGasPrice);
+    }
     await this.web3Private.approveTokens(tokenAddress, approveAddress, 'infinity', options);
   }
 

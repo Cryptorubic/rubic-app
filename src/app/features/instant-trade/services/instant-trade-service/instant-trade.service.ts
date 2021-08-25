@@ -27,7 +27,6 @@ import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
-import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 
 @Injectable({
@@ -67,8 +66,7 @@ export class InstantTradeService {
     private translateService: TranslateService,
     private notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector,
-    private scannerLinkPipe: ScannerLinkPipe
+    @Inject(Injector) private injector: Injector
   ) {
     this.setBlockchainsProviders();
   }
@@ -242,6 +240,7 @@ export class InstantTradeService {
 
   public async approve(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
+      const minGasPrice = minGasPriceInBlockchain[trade.blockchain];
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
         {
@@ -254,7 +253,8 @@ export class InstantTradeService {
               }
             );
           }
-        }
+        },
+        minGasPrice
       );
       this.modalShowing.unsubscribe();
       this.notificationsService.show(

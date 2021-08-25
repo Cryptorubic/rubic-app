@@ -240,7 +240,11 @@ export class Web3PrivateService {
       contract.methods
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
-          from: this.address
+          from: this.address,
+          ...((options.gas || this.defaultMockGas) && {
+            gas: options.gas || this.defaultMockGas
+          }),
+          ...(options.gasPrice && { gasPrice: options.gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
