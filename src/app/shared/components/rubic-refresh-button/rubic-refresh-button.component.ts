@@ -77,6 +77,8 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public imageUrl: string;
 
+  public stopAnimation: boolean;
+
   public get hint(): string {
     if (this.type === 'autoRefresh') {
       return this.autoUpdate ? 'Disable auto refresh' : 'Enable auto refresh';
@@ -114,6 +116,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public mouseEnter(): void {
     if (this.type === 'autoRefresh') {
+      this.stopAnimation = true;
       if (this._autoUpdate) {
         this.imageUrl = 'assets/images/icons/reload/pause.svg';
       } else {
@@ -124,6 +127,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public mouseLeave(): void {
     this.imageUrl = 'assets/images/icons/reload.svg';
+    this.stopAnimation = false;
   }
 
   public toggleClick(): void {

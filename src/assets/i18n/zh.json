@@ -411,7 +411,8 @@
     "rbcLowFees": "使用 RBC 收取低費用",
     "discountRBC": "RBC 折扣",
     "blockchainsHint": "更多區塊鏈",
-    "tradingNotAvailable": "交易不可用"
+    "tradingNotAvailable": "交易不可用",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "維護",

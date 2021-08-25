@@ -1,7 +1,7 @@
 <div class="refresh-button">
   <img
     class="refresh-icon"
-    [ngClass]="{ 'autoRefresh': autoUpdate }"
+    [ngClass]="{ 'autoRefresh': autoUpdate && !stopAnimation }"
     [src]="imageUrl"
     width="18"
     height="18"

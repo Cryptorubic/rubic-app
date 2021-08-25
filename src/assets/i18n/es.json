@@ -411,7 +411,8 @@
     "rbcLowFees": "Use RBC por tarifas bajas",
     "discountRBC": "descuento con RBC",
     "blockchainsHint": "Más blockchains",
-    "tradingNotAvailable": "El comercio no está disponible"
+    "tradingNotAvailable": "El comercio no está disponible",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "Maintenance",

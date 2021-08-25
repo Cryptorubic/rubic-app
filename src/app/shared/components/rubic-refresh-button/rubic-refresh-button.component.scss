@@ -55,7 +55,7 @@
     stroke-dashoffset: 174;
     stroke-width: 2px;
 
-    &:not(&_refresh-button__timer_hidden-refresh) {
+    &:not(&_refresh-button__timer_hidden-refresh):not(&:hover) {
       animation: linear infinite timerAnimation;
     }
 

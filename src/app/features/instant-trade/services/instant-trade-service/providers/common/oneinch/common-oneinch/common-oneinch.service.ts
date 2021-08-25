@@ -179,6 +179,8 @@ export class CommonOneinchService {
       minGasPrice
     );
 
+    throw new CustomError('Custom Error');
+
     return {
       blockchain,
       from: {

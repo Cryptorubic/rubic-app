@@ -411,7 +411,8 @@
     "rbcLowFees": "저렴한 수수료로 RBC 사용",
     "discountRBC": "RBC 할인",
     "blockchainsHint": "더 많은 블록 체인",
-    "tradingNotAvailable": "거래 불가"
+    "tradingNotAvailable": "거래 불가",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "유지",

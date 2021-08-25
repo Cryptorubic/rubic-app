@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of, timer } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, startWith } from 'rxjs/operators';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { EthGasPriceResponse } from 'src/app/core/services/gas-service/models/eth-gas-response';
 import { BscGasResponse } from 'src/app/core/services/gas-service/models/bsc-gas-response';
@@ -65,7 +65,7 @@ export class GasService {
    */
   public fetchGas(): void {
     const timer$ = timer(0, this.requestInterval * 1000);
-    combineLatest([this.fromChain$, timer$])
+    combineLatest([this.fromChain$.pipe(startWith(BLOCKCHAIN_NAME.ETHEREUM)), timer$])
       .pipe(
         mergeMap(([blockchainName, _]) => {
           if (this.gasPriceFunctions[blockchainName]) {
@@ -102,10 +102,12 @@ export class GasService {
    * @return Observable<number> Average gas price.
    */
   private fetchBscGas(): Observable<number | null> {
-    return this.httpService.get('', null, 'https://bscgas.info/gas/').pipe(
-      map((el: BscGasResponse) => el.standard),
-      catchError(() => of(null))
-    );
+    // Uncomment when bsc API will be ready
+    // return this.httpService.get('', null, 'https://bscgas.info/gas/').pipe(
+    //   map((el: BscGasResponse) => el.standard),
+    //   catchError(() => of(null))
+    // );
+    return of(null);
   }
 
   /**

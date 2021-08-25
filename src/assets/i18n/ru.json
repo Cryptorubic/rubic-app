@@ -411,7 +411,8 @@
     "rbcLowFees": "Использовать RBC для низкой комиссии",
     "discountRBC": "скидка с RBC",
     "blockchainsHint": "Больше блокчейнов",
-    "tradingNotAvailable": "Трэйдинг недоступен"
+    "tradingNotAvailable": "Трэйдинг недоступен",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "Поддержка",

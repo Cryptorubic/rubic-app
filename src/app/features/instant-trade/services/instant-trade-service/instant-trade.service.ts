@@ -30,6 +30,8 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { fromPromise } from 'rxjs/internal-compatibility';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 
 @Injectable({
   providedIn: 'root'
@@ -116,29 +118,21 @@ export class InstantTradeService {
     };
   }
 
-  public calculateTrades(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<InstantTrade[]> {
+  public calculateTrades(
+    providersNames: INSTANT_TRADES_PROVIDER[]
+  ): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     const shouldCalculateGas = shouldCalculateGasInBlockchain[fromBlockchain];
     const minGasPrice = minGasPriceInBlockchain[fromBlockchain];
 
-    const providers$ = providersNames.map(providerName => {
-      const provider = this.blockchainsProviders[fromBlockchain][providerName];
-      return fromPromise(
-        provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas, minGasPrice)
-      ).pipe(
-        catchError(error => {
-          return of({
-            blockchain: null,
-            from: null,
-            to: null,
-            error
-          } as InstantTrade);
-        })
-      );
-    });
-
-    return forkJoin(providers$);
+    const providers = providersNames.map(
+      providerName => this.blockchainsProviders[fromBlockchain][providerName]
+    );
+    const providersDataPromises = providers.map(async (provider: ItProvider) =>
+      provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas, minGasPrice)
+    );
+    return Promise.allSettled(providersDataPromises);
   }
 
   public async createTrade(

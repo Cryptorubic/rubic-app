@@ -5,6 +5,7 @@ import { ProviderControllerData } from 'src/app/shared/models/instant-trade/prov
 import { TradeData } from 'src/app/shared/components/provider-panel/models/trade-data';
 import { ProviderData } from 'src/app/shared/components/provider-panel/models/provider-data';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 
 @Component({
   selector: 'app-provider-panel',
@@ -72,7 +73,7 @@ export class ProviderPanelComponent {
     };
 
     if (hasError) {
-      this.setupError(data);
+      this.setupError(data.error);
     } else {
       this.setupProviderData(data);
     }
@@ -113,12 +114,10 @@ export class ProviderPanelComponent {
 
   /**
    * Setup errors in current instant trade.
-   * @param data Provider controller data.
+   * @param error Provider error.
    */
-  private setupError(data: ProviderControllerData): void {
+  private setupError(error: RubicError<ERROR_TYPE>): void {
     this.errorTranslateKey =
-      data.trade.error?.type === ERROR_TYPE.TEXT
-        ? data.trade.error.translateKey || data.trade.error.message
-        : 'errors.rubicError';
+      error?.type === ERROR_TYPE.TEXT ? error.translateKey || error.message : 'errors.rubicError';
   }
 }
