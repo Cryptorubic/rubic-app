@@ -5,10 +5,11 @@ export const crossChainSwapContractAbi = [
     inputs: [
       { internalType: 'uint128', name: '_numOfThisBlockchain', type: 'uint128' },
       { internalType: 'uint128[]', name: '_numsOfOtherBlockchains', type: 'uint128[]' },
-      { internalType: 'uint128', name: '_minConfirmationSignatures', type: 'uint128' },
-      { internalType: 'uint256', name: '_minTokenAmount', type: 'uint256' },
+      { internalType: 'uint256[]', name: 'tokenLimits', type: 'uint256[]' },
       { internalType: 'uint256', name: '_maxGasPrice', type: 'uint256' },
       { internalType: 'uint256', name: '_minConfirmationBlocks', type: 'uint256' },
+      { internalType: 'uint256', name: '_refundSlippage', type: 'uint256' },
+      { internalType: 'contract IUniswapV2Router02', name: '_blockchainRouter', type: 'address' },
       { internalType: 'address[]', name: '_RubicAddresses', type: 'address[]' }
     ],
     stateMutability: 'nonpayable',
@@ -56,6 +57,7 @@ export const crossChainSwapContractAbi = [
       { indexed: false, internalType: 'uint128', name: 'blockchain', type: 'uint128' },
       { indexed: false, internalType: 'address', name: 'sender', type: 'address' },
       { indexed: false, internalType: 'uint256', name: 'RBCAmountIn', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'amountSpent', type: 'uint256' },
       { indexed: false, internalType: 'string', name: 'newAddress', type: 'string' },
       { indexed: false, internalType: 'uint256', name: 'cryptoOutMin', type: 'uint256' },
       { indexed: false, internalType: 'address[]', name: 'path', type: 'address[]' }
@@ -80,6 +82,7 @@ export const crossChainSwapContractAbi = [
       { indexed: false, internalType: 'uint128', name: 'blockchain', type: 'uint128' },
       { indexed: false, internalType: 'address', name: 'sender', type: 'address' },
       { indexed: false, internalType: 'uint256', name: 'RBCAmountIn', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'amountSpent', type: 'uint256' },
       { indexed: false, internalType: 'string', name: 'newAddress', type: 'string' },
       { indexed: false, internalType: 'uint256', name: 'tokenOutMin', type: 'uint256' },
       { indexed: false, internalType: 'address[]', name: 'path', type: 'address[]' }
@@ -183,6 +186,17 @@ export const crossChainSwapContractAbi = [
       { internalType: 'uint128', name: 'newNumOfOtherBlockchain', type: 'uint128' }
     ],
     name: 'changeOtherBlockchain',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' },
+      { internalType: 'uint8', name: 'statusCode', type: 'uint8' },
+      { internalType: 'bytes32', name: 'hashedParams', type: 'bytes32' }
+    ],
+    name: 'changeTxStatus',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -296,7 +310,7 @@ export const crossChainSwapContractAbi = [
     inputs: [{ internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' }],
     name: 'isProcessedTransaction',
     outputs: [
-      { internalType: 'bool', name: 'processed', type: 'bool' },
+      { internalType: 'uint8', name: 'statusCode', type: 'uint8' },
       { internalType: 'bytes32', name: 'hashedParams', type: 'bytes32' }
     ],
     stateMutability: 'view',
@@ -319,6 +333,13 @@ export const crossChainSwapContractAbi = [
   {
     inputs: [],
     name: 'maxGasPrice',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'maxTokenAmount',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
@@ -368,8 +389,60 @@ export const crossChainSwapContractAbi = [
   {
     inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
     name: 'processedTransactions',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      { internalType: 'uint8', name: 'statusCode', type: 'uint8' },
+      { internalType: 'bytes32', name: 'hashedParams', type: 'bytes32' }
+    ],
     stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'user', type: 'address' },
+          { internalType: 'uint256', name: 'amountWithFee', type: 'uint256' },
+          { internalType: 'uint256', name: 'amountOutMin', type: 'uint256' },
+          { internalType: 'address[]', name: 'path', type: 'address[]' },
+          { internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' },
+          { internalType: 'bytes', name: 'concatSignatures', type: 'bytes' }
+        ],
+        internalType: 'struct swapContract.swapFromParams',
+        name: 'params',
+        type: 'tuple'
+      }
+    ],
+    name: 'refundCryptoToUser',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'refundSlippage',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'user', type: 'address' },
+          { internalType: 'uint256', name: 'amountWithFee', type: 'uint256' },
+          { internalType: 'uint256', name: 'amountOutMin', type: 'uint256' },
+          { internalType: 'address[]', name: 'path', type: 'address[]' },
+          { internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' },
+          { internalType: 'bytes', name: 'concatSignatures', type: 'bytes' }
+        ],
+        internalType: 'struct swapContract.swapFromParams',
+        name: 'params',
+        type: 'tuple'
+      }
+    ],
+    name: 'refundTokensToUser',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -441,6 +514,13 @@ export const crossChainSwapContractAbi = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'uint256', name: '_maxTokenAmount', type: 'uint256' }],
+    name: 'setMaxTokenAmount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'uint256', name: '_minConfirmationBlocks', type: 'uint256' }],
     name: 'setMinConfirmationBlocks',
     outputs: [],
@@ -464,6 +544,13 @@ export const crossChainSwapContractAbi = [
   {
     inputs: [{ internalType: 'address', name: '_poolAddress', type: 'address' }],
     name: 'setPoolAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_refundSlippage', type: 'uint256' }],
+    name: 'setRefundSlippage',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'

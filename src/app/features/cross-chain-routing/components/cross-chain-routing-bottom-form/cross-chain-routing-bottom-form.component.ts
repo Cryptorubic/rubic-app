@@ -85,9 +85,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public fromAmount: BigNumber;
 
-  public minError: false | number;
+  public minError: false | BigNumber;
 
-  public maxError: false | number;
+  public maxError: false | BigNumber;
 
   public toWalletAddress: string;
 

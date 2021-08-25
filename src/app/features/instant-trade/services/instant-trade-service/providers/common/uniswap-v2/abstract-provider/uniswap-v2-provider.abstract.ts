@@ -20,7 +20,7 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 export class UniswapV2ProviderAbstract implements ItProvider {
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  private WETHAddress: string;
+  private wethAddress: string;
 
   private contractAddress: string;
 
@@ -40,13 +40,13 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     this.blockchain = blockchain;
     this.maxTransitTokens = maxTransitTokens;
 
-    this.WETHAddress = wethAddressNetMode.mainnet;
+    this.wethAddress = wethAddressNetMode.mainnet;
     this.contractAddress = contractAddressNetMode.mainnet;
     this.routingProviders = routingProvidersNetMode.mainnet;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.WETHAddress = wethAddressNetMode.testnet;
+        this.wethAddress = wethAddressNetMode.testnet;
         this.contractAddress = contractAddressNetMode.testnet;
         this.routingProviders = routingProvidersNetMode.testnet;
       }
@@ -83,7 +83,7 @@ export class UniswapV2ProviderAbstract implements ItProvider {
       fromToken,
       fromAmount,
       toToken,
-      this.WETHAddress,
+      this.wethAddress,
       this.contractAddress,
       this.routingProviders,
       this.maxTransitTokens,
@@ -103,6 +103,7 @@ export class UniswapV2ProviderAbstract implements ItProvider {
       fromTokenAddress,
       toToken,
       toAmount,
+      this.wethAddress,
       this.routingProviders,
       this.maxTransitTokens,
       this.contractAddress

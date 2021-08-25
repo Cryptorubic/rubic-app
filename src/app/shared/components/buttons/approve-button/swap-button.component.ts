@@ -29,6 +29,8 @@ import { BridgeService } from 'src/app/features/bridge/services/bridge-service/b
 import { WALLET_NAME } from 'src/app/core/header/components/header/components/wallets-modal/models/providers';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -62,27 +64,41 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     this.checkInsufficientFundsError();
   }
 
-  @Input() set minAmount(value: false | number) {
+  @Input() set minAmount(value: false | number | BigNumber) {
     if (value) {
-      this.minAmountValue = value;
+      if (typeof value === 'number') {
+        this.minAmountValue = value.toString();
+      } else {
+        this.minAmountValue = this.withRoundPipe.transform(
+          value.toFormat(BIG_NUMBER_FORMAT),
+          'toClosestValue'
+        );
+      }
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.LESS_THAN_MINIMUM] = false;
     }
   }
 
-  private minAmountValue: number;
+  private minAmountValue: string;
 
-  @Input() set maxAmount(value: false | number) {
+  @Input() set maxAmount(value: false | number | BigNumber) {
     if (value) {
-      this.maxAmountValue = value;
+      if (typeof value === 'number') {
+        this.maxAmountValue = value.toString();
+      } else {
+        this.maxAmountValue = this.withRoundPipe.transform(
+          value.toFormat(BIG_NUMBER_FORMAT),
+          'toClosestValue'
+        );
+      }
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;
     } else {
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = false;
     }
   }
 
-  private maxAmountValue: number;
+  private maxAmountValue: string;
 
   @Input() set isBridgeNotSupported(value: boolean) {
     this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value || false;
@@ -212,7 +228,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     @Inject(INJECTOR) private readonly injector: Injector,
     private translateService: TranslateService,
     private readonly bridgeService: BridgeService,
-    private readonly web3PublicService: Web3PublicService
+    private readonly web3PublicService: Web3PublicService,
+    private readonly withRoundPipe: WithRoundPipe
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({

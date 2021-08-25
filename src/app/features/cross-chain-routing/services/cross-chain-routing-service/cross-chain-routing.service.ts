@@ -141,8 +141,8 @@ export class CrossChainRoutingService {
   }
 
   public async getMinMaxAmounts(fromToken: BlockchainToken): Promise<{
-    minAmount: number;
-    maxAmount: number;
+    minAmount: BigNumber;
+    maxAmount: BigNumber;
   }> {
     const fromBlockchain = fromToken.blockchain;
     if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
@@ -150,33 +150,40 @@ export class CrossChainRoutingService {
     }
 
     const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
-    const minTransitTokenAmountAbsolute = (await web3Public.callContractMethod(
-      this.contractAddresses[fromBlockchain],
-      this.contractAbi,
-      'minTokenAmount'
-    )) as string;
-    const transitToken = this.transitTokens[fromBlockchain];
-    const minTransitTokenAmount = Web3Public.fromWei(
-      minTransitTokenAmountAbsolute,
-      transitToken.decimals
-    );
 
-    const minAmountAbsolute = minTransitTokenAmount.gt(0)
-      ? await this.uniswapProviders[fromBlockchain].getFromAmount(
-          fromBlockchain,
-          fromToken.address,
-          transitToken,
-          minTransitTokenAmount
-        )
-      : 0;
-    const minAmount = Web3Public.fromWei(minAmountAbsolute, fromToken.decimals).toNumber();
+    const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
+      const transitTokenAmountAbsolute = (await web3Public.callContractMethod(
+        this.contractAddresses[fromBlockchain],
+        this.contractAbi,
+        type === 'minAmount' ? 'minTokenAmount' : 'maxTokenAmount'
+      )) as string;
 
-    const maxAmount = Infinity;
+      const transitToken = this.transitTokens[fromBlockchain];
+      const transitTokenAmount = Web3Public.fromWei(
+        transitTokenAmountAbsolute,
+        transitToken.decimals
+      );
+      if (fromToken.address.toLowerCase() === transitToken.address.toLowerCase()) {
+        return transitTokenAmount;
+      }
 
-    return {
-      minAmount,
-      maxAmount
+      const amountAbsolute = transitTokenAmount.gt(0)
+        ? await this.uniswapProviders[fromBlockchain].getFromAmount(
+            fromBlockchain,
+            fromToken.address,
+            transitToken,
+            transitTokenAmount
+          )
+        : 0;
+      return Web3Public.fromWei(amountAbsolute, fromToken.decimals);
     };
+
+    return Promise.all([getAmount('minAmount'), getAmount('maxAmount')]).then(
+      ([minAmount, maxAmount]) => ({
+        minAmount,
+        maxAmount
+      })
+    );
   }
 
   public async calculateTrade(
