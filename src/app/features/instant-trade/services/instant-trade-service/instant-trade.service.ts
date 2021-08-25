@@ -140,24 +140,9 @@ export class InstantTradeService {
     try {
       const options = {
         onConfirm: async hash => {
-          this.modalShowing = this.notificationsService.show(
-            this.translateService.instant('notifications.tradeInProgress'),
-            {
-              status: TuiNotification.Info,
-              autoClose: false
-            }
-          );
-          transactionHash = hash;
-
+          this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
-          if (window.location.pathname === '/') {
-            this.dialogService
-              .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-                size: 's',
-                data: { idPrefix: '' }
-              })
-              .subscribe();
-          }
+          transactionHash = hash;
         }
       };
 
@@ -266,6 +251,25 @@ export class InstantTradeService {
     } catch (err) {
       this.modalShowing?.unsubscribe();
       throw err;
+    }
+  }
+
+  private notifyTradeInProgress() {
+    this.modalShowing = this.notificationsService.show(
+      this.translateService.instant('notifications.tradeInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+
+    if (window.location.pathname === '/') {
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's',
+          data: { idPrefix: '' }
+        })
+        .subscribe();
     }
   }
 }
