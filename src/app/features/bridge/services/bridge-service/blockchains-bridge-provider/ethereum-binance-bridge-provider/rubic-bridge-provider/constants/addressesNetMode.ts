@@ -17,10 +17,10 @@ export const rubicBridgeContractAddressesNetMode: ContractAddressesNetMode<Suppo
 export const rubicTokenAddressesNetMode: ContractAddressesNetMode<SupportedBlockchain> = {
   mainnet: {
     [BLOCKCHAIN_NAME.ETHEREUM]: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
-    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0xE77b0E832A58aFc2fcDaed060E8D701d97533086'
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0x8e3bcc334657560253b83f08331d85267316e08a'
   },
   testnet: {
-    [BLOCKCHAIN_NAME.ETHEREUM]: '0x8e3bcc334657560253b83f08331d85267316e08a',
+    [BLOCKCHAIN_NAME.ETHEREUM]: '0xc5228008c89dfb03937ff5ff9124f0d7bd2028f9',
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8'
   }
 };
