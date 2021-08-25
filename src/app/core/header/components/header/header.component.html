@@ -45,7 +45,6 @@
       ></tui-badge>
     </a>
 
-    <app-login-button *ngIf="($currentUser | async) === false" class="rubic-header__login"></app-login-button>
     <app-login-button *ngIf="!($currentUser | async)?.address" class="rubic-header__login" ></app-login-button>
     <app-user-profile *ngIf="($currentUser | async)?.address" class="rubic-header__profile-user" ></app-user-profile>
     <app-gas-indicator *ngIf="($isMobile| async) === false"></app-gas-indicator>
