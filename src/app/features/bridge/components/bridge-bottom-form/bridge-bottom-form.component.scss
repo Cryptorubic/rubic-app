@@ -36,8 +36,11 @@
       border-radius: 10px;
     }
 
-    @include iframe-vertical {
+    @include iframe-horizontal-light {
+      background-color: var(--rubic-base-14);
+    }
 
+    @include iframe-vertical {
       flex-direction: column;
       justify-content: flex-start;
       padding: 0;
@@ -47,10 +50,6 @@
       app-rubic-tokens {
         margin-bottom: 10px;
       }
-    }
-
-    @include light-iframe {
-      background-color: var(--rubic-base-14);
     }
 
     @include b($mobile-md) {

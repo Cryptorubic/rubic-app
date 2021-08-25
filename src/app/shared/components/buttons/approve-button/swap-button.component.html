@@ -1,6 +1,7 @@
 <ng-container>
   <app-rubic-button
     *ngIf="needLogin"
+    [ngClass]="{'grey-background': !tokensFilled}"
     [loading]="needLoginLoading"
     [fullWidth]="true"
     (onClick)="onLogin()"

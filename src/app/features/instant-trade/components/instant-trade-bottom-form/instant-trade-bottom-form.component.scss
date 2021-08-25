@@ -24,17 +24,16 @@ $green: rgb(74, 169, 86);
     border-radius: 10px;
   }
 
+  @include iframe-horizontal-light {
+    background-color: var(--rubic-base-14);
+  }
+
   @include iframe-vertical {
     width: 100%;
     padding: 0 !important;
 
     background-color: transparent;
   }
-
-  :host-context(html.iframe-horizontal:not(.dark)) & {
-    background-color: var(--rubic-base-14);
-  }
-
 
   &__provider-item:first-child {
     width: 100%;
@@ -159,7 +158,7 @@ $green: rgb(74, 169, 86);
         border-radius: 10px;
       }
 
-      :host-context(html.iframe-vertical:not(.dark)) & {
+      @include iframe-vertical-light {
         background-color: var(--rubic-base-14);
       }
     }
@@ -207,7 +206,7 @@ $green: rgb(74, 169, 86);
       border-radius: 10px;
     }
 
-    :host-context(html.iframe-vertical:not(.dark)) & {
+    @include iframe-vertical-light {
       background-color: var(--rubic-base-14);
     }
 

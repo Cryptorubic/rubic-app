@@ -27,6 +27,12 @@
     }
   }
 
+  @include iframe-vertical-light {
+    &_hidden-iframe-stub {
+      background-color: var(--rubic-base-14);
+    }
+  }
+
   &__blockchain-and-value {
     display: flex;
     width: 100%;
@@ -34,6 +40,10 @@
 
     app-iframe-blockchain-indicator {
       margin-right: 15px;
+    }
+
+    @include iframe-horizontal {
+      margin-bottom: 0;
     }
   }
 
@@ -67,6 +77,10 @@
 
     span {
       margin-left: 10px;
+
+      @include iframe-vertical {
+        margin-left: 0;
+      }
     }
 
     &_placeholder {
@@ -116,6 +130,10 @@
 
       background-color: var(--main-background);
       border-radius: 10px;
+    }
+
+    @include iframe-vertical-light {
+      background-color: var(--rubic-base-14);
     }
 
     &::-webkit-scrollbar {

@@ -52,6 +52,18 @@
   }
 }
 
+@mixin iframe-horizontal-light {
+  :host-context(html.iframe-horizontal:not(.dark)) & {
+    @content;
+  }
+}
+
+@mixin iframe-vertical-light {
+  :host-context(html.iframe-vertical:not(.dark)) & {
+    @content;
+  }
+}
+
 @mixin iframe-card {
   :host-context(html.iframe) & {
     display: block;
