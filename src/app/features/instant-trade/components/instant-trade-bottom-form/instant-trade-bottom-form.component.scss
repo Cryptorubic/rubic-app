@@ -141,7 +141,7 @@ $green: rgb(74, 169, 86);
       width: 100%;
       margin-bottom: 34px;
 
-      >:not(:last-child) {
+      app-iframe-blockchain-indicator {
         margin-right: 15px;
       }
     }
