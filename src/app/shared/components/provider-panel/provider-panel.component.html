@@ -1,5 +1,6 @@
 <div class="provider-panel">
   <div
+    (click)="!providerData.hasError && activateProvider()"
     class="provider-panel__content"
     [ngClass]="{
       'provider-panel__content_best-rate': providerData.isBestRate,
@@ -15,7 +16,6 @@
     <!-- Provider content -->
     <app-panel-content
       *ngIf="!providerData.hasError"
-      (click)="activateProvider()"
       [providerData]="providerData"
       [tradeData]="tradeData"
     ></app-panel-content>
