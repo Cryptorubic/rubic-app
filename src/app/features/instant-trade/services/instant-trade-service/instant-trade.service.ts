@@ -143,6 +143,7 @@ export class InstantTradeService {
         onConfirm: async hash => {
           this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
+          transactionHash = hash;
         }
       };
 
