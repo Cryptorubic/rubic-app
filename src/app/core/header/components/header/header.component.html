@@ -51,7 +51,6 @@
     </a>
 
     <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
-    <app-login-button *ngIf="($currentUser | async) === false" class="rubic-header__login"></app-login-button>
     <ng-container *ngIf="!($currentUser | async)?.address; else loggedIn">
       <app-login-button class="rubic-header__login" *noFrame></app-login-button>
     </ng-container>
@@ -60,7 +59,7 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-gas-indicator *ngIf="($isMobile| async) === false"></app-gas-indicator>
+    <app-gas-indicator *noFrame="'any'; and: ($isMobile| async) === false"></app-gas-indicator>
     <app-rubic-language-select *noFrame></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>

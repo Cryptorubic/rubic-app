@@ -25,12 +25,10 @@ import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
-import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/ethWethSwap/eth-weth-swap-provider.service';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
-
+import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 
 @Injectable({
   providedIn: 'root'
@@ -271,12 +269,7 @@ export class InstantTradeService {
     );
 
     if (window.location.pathname === '/') {
-      this.dialogService
-        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-          size: 's',
-          data: { idPrefix: '' }
-        })
-        .subscribe();
+      this.successTxModalService.open();
     }
   }
 }

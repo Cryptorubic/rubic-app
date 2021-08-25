@@ -11,6 +11,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 export class OnlyFrameDirective<T> implements OnInit {
   @Input() onlyFrame: 'horizontal' | 'vertical' | 'any' = 'any';
 
+  @Input() onlyFrameAnd = true;
+
   private $iframeSubscription: Subscription;
 
   constructor(
@@ -25,6 +27,10 @@ export class OnlyFrameDirective<T> implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(appearance => {
         const appearanceValues = ['horizontal', 'vertical'];
+        if (!this.onlyFrameAnd) {
+          this.viewContainer.clear();
+          return;
+        }
         if (!appearanceValues.includes(appearance)) {
           this.viewContainer.clear();
           return;

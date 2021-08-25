@@ -13,6 +13,8 @@ export class NoFrameDirective<T> implements OnInit {
 
   @Input() noFrame: 'horizontal' | 'vertical' | 'any' = 'any';
 
+  @Input() noFrameAnd = true;
+
   constructor(
     private readonly templateRef: TemplateRef<T>,
     private readonly viewContainer: ViewContainerRef,
@@ -24,6 +26,10 @@ export class NoFrameDirective<T> implements OnInit {
     this.$iframeSubscription = this.iframeService.iframeAppearance$
       .pipe(takeUntil(this.destroy$))
       .subscribe(iframeAppearance => {
+        if (!this.noFrameAnd) {
+          this.viewContainer.clear();
+          return;
+        }
         if (!iframeAppearance || (iframeAppearance !== this.noFrame && this.noFrame !== 'any')) {
           this.viewContainer.createEmbeddedView(this.templateRef);
         } else {

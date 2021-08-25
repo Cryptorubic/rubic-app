@@ -34,12 +34,12 @@ import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 
 interface BlockchainInfo {
   name: string;
@@ -466,16 +466,19 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
         this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
-      const modalToDisplay = isPolygonEthBridge
-        ? new PolymorpheusComponent(TrackTransactionModalComponent)
-        : new PolymorpheusComponent(SuccessTxModalComponent);
+      if (!isPolygonEthBridge) {
+        this.successTxModalService.open();
+        return;
+      }
 
-      this.dialogService
-        .open(modalToDisplay, {
-          size: 's',
-          data: { idPrefix: '' }
-        })
-        .subscribe();
+      if (!this.iframeService.isIframe) {
+        this.dialogService
+          .open(new PolymorpheusComponent(TrackTransactionModalComponent), {
+            size: 's',
+            data: { idPrefix: '' }
+          })
+          .subscribe();
+      }
     }
   }
 }
