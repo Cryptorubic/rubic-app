@@ -6,7 +6,7 @@
       </h1>
       <app-rubic-refresh-button
         class="swaps-form__refresh"
-        *ngIf="isInstantTrade && allowTrade"
+        *ngIf="isInstantTrade && allowTrade && allowRefresh"
         (onRefresh)="onRefreshTrade.next()"
         [loadingStatus]="loadingStatus"
         [autoUpdate]="autoRefresh"
@@ -59,10 +59,11 @@
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"
           [onRefreshTrade]="onRefreshTrade"
-          (onRefreshStatusChange)="loadingStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           [formService]="swapFormService"
+          (onRefreshStatusChange)="loadingStatus = $event"
+          (allowRefreshChange)="allowRefresh = $event"
         ></app-instant-trade-bottom-form>
 
         <app-bridge-bottom-form

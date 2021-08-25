@@ -57,6 +57,7 @@ import { UsdPriceContainerComponent } from './components/token-amount-input/comp
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
+import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { ThemedIconPipe } from './pipes/themed-icon.pipe';
     UsdPriceContainerComponent,
     AnalyticsLinkComponent,
     VerticalIframeTokenAmountInputComponent,
+    SuccessTxModalComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,

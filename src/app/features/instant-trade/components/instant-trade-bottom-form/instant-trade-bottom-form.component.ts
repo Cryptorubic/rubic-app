@@ -64,6 +64,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  @Output() allowRefreshChange = new EventEmitter<boolean>();
+
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
   private readonly onCalculateTrade: Subject<void>;
@@ -202,8 +204,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
-    if (!this.fromToken || !this.toToken) {
+    if (this.instantTradeService.getEthAndWethTrade()) {
+      this.allowRefreshChange.emit(false);
+    } else {
       this.ethAndWethTrade = null;
+      this.allowRefreshChange.emit(true);
     }
 
     if (

@@ -441,6 +441,10 @@
     "coinbaseSelectNetworkModal": {
       "title": "选择源网络",
       "text": "请选择一个掉期源网络。 通过连接 Coinbase 钱包，您将无法在当前会话中更改网络。 要在连接 Coinbase 钱包后更改网络，请退出您的帐户并通过选择不同的网络或使用不同的钱包进行连接。"
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in My Trades"
     }
   },
   "settings": {

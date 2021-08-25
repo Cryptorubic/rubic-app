@@ -111,15 +111,14 @@ export class InstantTradesApiService {
   /**
    * @description update status of trade
    * @param hash hash of transaction what we want to update
-   * @param status status of trade what we want to set
    */
-  public patchTrade(hash: string, status: string): Observable<InstantTradesResponseApi | null> {
+  public patchTrade(hash: string): Observable<InstantTradesResponseApi | null> {
     if (this.iframeService.isIframe) {
       return of(null);
     }
 
-    const url = instantTradesApiRoutes.editData + hash;
-    return this.httpService.patch(url, { status });
+    const url = instantTradesApiRoutes.editData;
+    return this.httpService.patch(url, { hash });
   }
 
   /**

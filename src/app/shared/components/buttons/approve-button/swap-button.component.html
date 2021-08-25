@@ -1,5 +1,6 @@
 <ng-container>
   <app-rubic-button
+    [id]="idPrefix + 'connect-wallet'"
     *ngIf="needLogin"
     [ngClass]="{'grey-background': !tokensFilled}"
     [loading]="needLoginLoading"
@@ -16,6 +17,7 @@
       <ng-container *noFrame>
         <div class="buttons">
           <app-rubic-button
+            [id]="idPrefix + 'approve'"
             [fullWidth]="true"
             (onClick)="approveClick.emit()"
             [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
@@ -25,6 +27,7 @@
             Approve
           </app-rubic-button>
           <app-rubic-button
+            [class]="idPrefix + 'button-swap'"
             [fullWidth]="true"
             (onClick)="swapClick.emit()"
             [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
@@ -75,6 +78,7 @@
 
     <ng-container *ngIf="(!needApprove && !hasError) || dataLoading">
       <app-rubic-button
+        [class]="idPrefix + 'button-swap'"
         [fullWidth]="true"
         (onClick)="swapClick.emit()"
         [loading]="

@@ -1,5 +1,5 @@
-<section class="modal">
-  <img class="modal__image" src="assets/images/bridge/success-image.svg" alt="Success">
+<section class="modal" id="gtm-transaction-modal">
+  <img class="modal__image" src="assets/images/bridge/success-image.svg" alt="Success" />
   <h3 class="modal__text-title">{{ 'notifications.tradeInProgress' | translate }}</h3>
   <span class="modal__text" [innerHTML]="'modals.bridge.trackTrx' | translate"></span>
   <app-rubic-button
@@ -7,5 +7,6 @@
     fullWidth="true"
     appearance="secondary"
     (click)="onConfirm()"
-  >{{ 'common.OK' | translate }}</app-rubic-button>
+    >{{ 'common.OK' | translate }}</app-rubic-button
+  >
 </section>
