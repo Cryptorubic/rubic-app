@@ -137,7 +137,13 @@
   }
 }
 
-@include b($desktop) {
+@include b(1650) {
+  .rubic-header__nav {
+    width: 610px;
+  }
+}
+
+@include b(1360) {
   .rubic-header {
     padding: 21px 20px 19px;
 
@@ -190,12 +196,12 @@
 
   background-color: #0f809c;
 
+  @include b($mobile-sm) {
+    font-size: 13px;
+  }
+
   a {
     color: white;
     text-decoration: underline;
-  }
-
-  @include b($mobile-sm) {
-    font-size: 13px;
   }
 }
