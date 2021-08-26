@@ -10,6 +10,15 @@
 .tokens {
   font-size: $rubic-font-size-01;
 
+  @include iframe-horizontal {
+    ::ng-deep app-rubic-button {
+      button,
+      tui-wrapper {
+        box-shadow: none !important;
+      }
+    }
+  }
+
   @include iframe-vertical {
     display: flex;
     flex-direction: row;
