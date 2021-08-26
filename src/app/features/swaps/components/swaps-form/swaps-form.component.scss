@@ -1,9 +1,13 @@
 @import 'src/styles';
 
 :host {
-  width: 100%;
-
+  display: block;
+  width: 610px;
   max-width: 610px;
+
+  @include iframe {
+    width: 100%;
+  }
 
   @include iframe-horizontal {
     max-width: unset;
@@ -163,10 +167,6 @@
       app-instant-trade-bottom-form,
       app-bridge-bottom-form {
         width: 100%;
-      }
-
-      app-bridge-bottom-form {
-        
       }
     }
   }
