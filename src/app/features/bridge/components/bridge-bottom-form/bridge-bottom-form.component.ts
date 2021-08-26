@@ -35,7 +35,6 @@ import { TrackTransactionModalComponent } from 'src/app/features/bridge/componen
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -430,7 +429,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const isPolygonEthBridge =
       this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
       this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-    if (isPolygonEthBridge) {
+    if (isPolygonEthBridge && !this.iframeService.isIframe) {
       this.dialogService
         .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
         .subscribe(allowAction => {

@@ -94,6 +94,9 @@
     }
 
     &__clear-mobile {
+      position: relative;
+      top: 2px;
+
       display: block !important;
     }
   }
