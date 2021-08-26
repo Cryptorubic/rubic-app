@@ -1,11 +1,11 @@
-<div class="tokens">
+<div class="tokens" [ngClass]="{'tokens_disabled': disabled || iframeForceDisabled}">
   <div class="tokens__container">
     <app-rubic-button
       class="tokens__btn"
       [id]="formType === 'from' ? idPrefix + 'token1' : idPrefix + 'token2'"
       [size]="'s'"
       [loading]="loading"
-      [disabled]="disabled"
+      [disabled]="disabled || iframeForceDisabled"
       (onClick)="openTokensSelect(idPrefix)"
       [appearance]="selectedToken ? 'primary' : 'secondary'"
       [pseudoHovered]="buttonHovered"
@@ -26,6 +26,7 @@
           </div>
           <div
             class="tokens__clear"
+            *ngIf="!(disabled || iframeForceDisabled)"
             (mouseenter)="buttonHovered = false"
             (mouseleave)="buttonHovered = true"
             (click)="clearToken(); $event.stopPropagation()"
@@ -54,7 +55,7 @@
   </div>
   <button
     class="tokens__clear-mobile"
-    *ngIf="selectedToken"
+    *ngIf="selectedToken && !(disabled || iframeForceDisabled)"
     (click)="clearToken()"
   >
     {{ 'common.clearToken' | translate }}

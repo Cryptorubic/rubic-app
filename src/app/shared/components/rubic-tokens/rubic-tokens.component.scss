@@ -67,6 +67,19 @@
       }
     }
 
+    &_disabled {
+      .tokens__symbol,
+      .tokens__inner-text {
+        &::after {
+          display: none;
+        }
+      }
+
+      .tokens__inner {
+        opacity: 0.5;
+      }
+    }
+
     &__clear {
       display: none;
     }

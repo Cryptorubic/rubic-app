@@ -41,15 +41,12 @@ export class QueryParamsService {
 
   public currentQueryParams: QueryParams;
 
-  private readonly _hiddenNetworks$ = new BehaviorSubject<string[]>([]);
+  private readonly _tokensSelectionDisabled$ = new BehaviorSubject<[boolean, boolean]>([
+    false,
+    false
+  ]);
 
-  private readonly _tokensSelectionDisabled$ = new BehaviorSubject<boolean>(false);
-
-  public get hiddenNetworks$(): Observable<string[]> {
-    return this._hiddenNetworks$.asObservable();
-  }
-
-  public get tokensSelectionDisabled$(): Observable<boolean> {
+  public get tokensSelectionDisabled$(): Observable<[boolean, boolean]> {
     return this._tokensSelectionDisabled$.asObservable();
   }
 
@@ -85,7 +82,6 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.setIframeStatus(queryParams);
-      this.setHiddenStatus(queryParams);
       this.setBackgroundStatus(queryParams);
       this.setHideSelectionStatus(queryParams);
       this.setThemeStatus(queryParams);
@@ -266,7 +262,7 @@ export class QueryParamsService {
     chain: BLOCKCHAIN_NAME
   ): Observable<TokenAmount> {
     const searchingToken = tokens.find(
-      token => token.address === address && token.blockchain === chain
+      token => token.address.toLowerCase() === address.toLowerCase() && token.blockchain === chain
     );
 
     return searchingToken
@@ -298,12 +294,6 @@ export class QueryParamsService {
     this.iframeService.setIframeStatus(queryParams.iframe);
   }
 
-  private setHiddenStatus(queryParams: QueryParams) {
-    if (queryParams.hidden) {
-      this._hiddenNetworks$.next(queryParams.hidden.split(','));
-    }
-  }
-
   private setBackgroundStatus(queryParams: QueryParams) {
     if (this.iframeService.isIframe) {
       const { background } = queryParams;
@@ -316,8 +306,17 @@ export class QueryParamsService {
   }
 
   private setHideSelectionStatus(queryParams: QueryParams) {
-    if (queryParams.hideSelection) {
-      this._tokensSelectionDisabled$.next(queryParams.hideSelection === 'true');
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const tokensSelectionDisabled: [boolean, boolean] = [
+      queryParams.hideSelectionFrom === 'true',
+      queryParams.hideSelectionTo === 'true'
+    ];
+
+    if (tokensSelectionDisabled.includes(true)) {
+      this._tokensSelectionDisabled$.next(tokensSelectionDisabled);
     }
   }
 

@@ -10,7 +10,8 @@ interface AllQueryParams {
   amount: string;
   iframe: 'vertical' | 'horizontal';
   hidden: string;
-  hideSelection: string;
+  hideSelectionFrom: string;
+  hideSelectionTo: string;
   background: string;
   theme: string;
 }
