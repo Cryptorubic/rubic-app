@@ -13,6 +13,7 @@ interface AllQueryParams {
   hideSelectionTo: string;
   background: string;
   theme: string;
+  language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
 }
 export type QueryParams = {
   [P in AdditionalTokens]: string[];

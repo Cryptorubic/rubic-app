@@ -13,6 +13,7 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
@@ -64,7 +65,8 @@ export class QueryParamsService {
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     private readonly iframeService: IframeService,
-    private readonly themeService: ThemeService
+    private readonly themeService: ThemeService,
+    private readonly translateService: TranslateService
   ) {
     this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
       this.setQueryParams({
@@ -86,6 +88,7 @@ export class QueryParamsService {
       this.setHideSelectionStatus(queryParams);
       this.setThemeStatus(queryParams);
       this.setAdditionalIframeTokens(queryParams);
+      this.setLanguage(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -347,6 +350,18 @@ export class QueryParamsService {
     if (Object.keys(tokensQueryParams).length !== 0) {
       this.tokensService.tokensRequestParameters = tokensQueryParams;
     }
+  }
+
+  private setLanguage(queryParams: QueryParams) {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh'];
+    const language = supportedLanguages.includes(queryParams.language)
+      ? queryParams.language
+      : 'en';
+    this.translateService.use(language);
   }
 
   private isBackgroundValid(stringToTest) {
