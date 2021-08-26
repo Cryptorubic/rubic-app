@@ -154,7 +154,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   public get allowChangeNetwork(): boolean {
     const unsupportedItBlockchains = [BLOCKCHAIN_NAME.XDAI, BLOCKCHAIN_NAME.TRON];
-    const form = this.formService.commonTrade.controls.input.value;
+    const form = this.formService.inputValue;
     if (
       this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK ||
       !form.fromBlockchain
@@ -165,7 +165,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (form.toBlockchain === form.fromBlockchain) {
       return !unsupportedItBlockchains.some(el => el === form.fromBlockchain);
     }
-    return this.bridgeService.isBridgeSupported();
+    return true;
   }
 
   public get networkErrorText(): void {

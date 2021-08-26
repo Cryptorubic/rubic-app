@@ -228,7 +228,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.bridgeService.isBridgeSupported()) {
+    if (!(await this.bridgeService.isBridgeSupported())) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.isBridgeSupported = false;
       this.cdr.detectChanges();

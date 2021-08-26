@@ -1,7 +1,10 @@
 <div class="swaps-form">
   <header class="swaps-form__header">
     <h1 class="swaps-form__title">
-      {{ 'instantTrades.title' | translate }}
+      {{
+        (isInstantTrade ? 'instantTrades.title' : isBridge ? 'bridgePage.title' : 'Cross Chain')
+          | translate
+      }}
     </h1>
     <app-rubic-refresh-button
       class="swaps-form__refresh"

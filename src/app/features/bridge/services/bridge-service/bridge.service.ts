@@ -134,8 +134,8 @@ export class BridgeService {
       });
   }
 
-  public isBridgeSupported(): boolean {
-    return !!this.bridgeProvider;
+  public async isBridgeSupported(): Promise<boolean> {
+    return !!this.bridgeProvider && !!(await this.getCurrentBridgeToken().toPromise());
   }
 
   public getFee(): Observable<number | null> {
@@ -186,8 +186,7 @@ export class BridgeService {
   }
 
   private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
-    const { fromBlockchain, toBlockchain, fromAmount } =
-      this.swapFormService.commonTrade.controls.input.value;
+    const { fromBlockchain, toBlockchain, fromAmount } = this.swapFormService.inputValue;
 
     return this.getCurrentBridgeToken().pipe(
       map(bridgeToken => ({
