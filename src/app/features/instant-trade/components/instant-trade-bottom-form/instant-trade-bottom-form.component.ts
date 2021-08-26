@@ -32,13 +32,8 @@ import {
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
-import {
-  distinctUntilChanged,
-  map,
-  startWith,
-  switchMap
-} from 'rxjs/operators';
+import { filter, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
