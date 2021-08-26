@@ -9,7 +9,7 @@ import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from 
 export class UserBalanceContainerComponent {
   @Input() public token;
 
-  @Input() public type: 'from' | 'to';
+  @Input() public toTokenSelected: boolean = false;
 
   @Output() public maxButtonClickEvent: EventEmitter<void>;
 
@@ -17,7 +17,7 @@ export class UserBalanceContainerComponent {
     this.maxButtonClickEvent = new EventEmitter<void>();
   }
 
-  public maxButtonClick(): void {
-    this.maxButtonClickEvent.emit();
+  public maxButtonClick(toTokenSelected: boolean): void {
+    if (toTokenSelected) this.maxButtonClickEvent.emit();
   }
 }

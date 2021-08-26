@@ -1,14 +1,14 @@
-<div
-  class="user-balance-container"
-  *ngIf="token?.amount.gt(0)"
->
-  <span class="user-balance-container__balance">{{ 'common.have' | translate }}
+<div class="user-balance-container" *ngIf="token?.amount.gt(0)">
+  <span class="user-balance-container__balance"
+    >{{ 'common.have' | translate }}
     {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}
   </span>
+
   <button
-    *ngIf="type === 'from'"
     class="user-balance-container__max-button"
-    (click)="maxButtonClick()"
-  >MAX
+    [class.user-balance-container__max-button_disabled]="!toTokenSelected"
+    (click)="maxButtonClick(toTokenSelected)"
+  >
+    MAX
   </button>
 </div>

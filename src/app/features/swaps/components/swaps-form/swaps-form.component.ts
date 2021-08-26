@@ -36,6 +36,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public allowRefresh: boolean = true;
 
+  public toTokenSelected: boolean = false;
+
   public onRefreshTrade = new Subject<void>();
 
   public get isInstantTrade(): boolean {

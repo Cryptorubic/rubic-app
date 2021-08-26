@@ -32,6 +32,7 @@
       [loading]="isLoading"
       [tokens]="availableTokens['from']"
       [formService]="swapFormService"
+      [toTokenSelected]="toTokenSelected"
     ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">
@@ -46,6 +47,7 @@
       [tokens]="availableTokens['to']"
       [formService]="swapFormService"
       (allowRefreshChange)="allowRefresh = $event"
+      (toTokenSelected)="toTokenSelected = $event"
     ></app-instant-trade-bottom-form>
 
     <app-bridge-bottom-form

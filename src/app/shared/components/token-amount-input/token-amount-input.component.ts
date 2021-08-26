@@ -30,6 +30,8 @@ export class TokenAmountInputComponent {
 
   @Input() token?: TokenAmount;
 
+  @Input() toTokenSelected: boolean;
+
   @Input() set amount(value: BigNumber) {
     if (value && !value.isNaN() && !value.eq(this.amount)) {
       this.amountControl.setValue(value.toFixed());
