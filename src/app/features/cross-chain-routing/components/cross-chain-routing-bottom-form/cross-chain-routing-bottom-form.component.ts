@@ -33,8 +33,9 @@ import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
 
@@ -111,6 +112,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private refreshTradeSubscription$: Subscription;
 
+  private tradeInProgressSubscription$: Subscription;
+
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.inputValue;
@@ -142,7 +145,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private web3PublicService: Web3PublicService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly translate: TranslateService,
+    private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
@@ -306,9 +309,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     const onTransactionHash = () => {
       this.cdr.detectChanges();
       approveInProgressSubscription$ = this.notificationsService.show(
-        this.translate.instant('bridgePage.approveProgressMessage'),
+        this.translateService.instant('notifications.approveInProgress'),
         {
-          label: this.translate.instant('notifications.approveInProgress'),
           status: TuiNotification.Info,
           autoClose: false
         }
@@ -324,9 +326,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
-            this.translate.instant('bridgePage.approveSuccessMessage'),
+            this.translateService.instant('notifications.successApprove'),
             {
-              label: this.translate.instant('notifications.successApprove'),
               status: TuiNotification.Success,
               autoClose: 15000
             }
@@ -353,22 +354,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    let tradeInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
-      this.cdr.detectChanges();
-      tradeInProgressSubscription$ = this.notificationsService.show(
-        this.translate.instant('bridgePage.progressMessage'),
-        {
-          label: this.translate.instant('notifications.tradeInProgress'),
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      );
-      this.dialogService
-        .open(new PolymorpheusComponent(TrackTransactionModalComponent, this.injector), {
-          size: 's'
-        })
-        .subscribe();
+      this.notifyTradeInProgress();
     };
 
     this.crossChainRoutingService
@@ -378,12 +365,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe(
         (_: TransactionReceipt) => {
-          tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
-            label: this.translate.instant('notifications.successfulTradeTitle'),
-            status: TuiNotification.Success,
-            autoClose: 15000
-          });
+          this.tradeInProgressSubscription$.unsubscribe();
+          this.notificationsService.show(
+            new PolymorpheusComponent(SuccessTrxNotificationComponent),
+            {
+              status: TuiNotification.Success,
+              autoClose: 15000
+            }
+          );
 
           this.counterNotificationsService.updateUnread();
           this.tokensService.calculateUserTokensBalances();
@@ -393,13 +382,32 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         },
         err => {
-          tradeInProgressSubscription$?.unsubscribe();
+          this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err);
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }
       );
+  }
+
+  private notifyTradeInProgress() {
+    this.tradeInProgressSubscription$ = this.notificationsService.show(
+      this.translateService.instant('notifications.tradeInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
+
+    if (window.location.pathname === '/') {
+      this.dialogService
+        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
+          size: 's',
+          data: { idPrefix: '' }
+        })
+        .subscribe();
+    }
   }
 
   public doButtonAction(clickType: 'swap' | 'approve'): void {

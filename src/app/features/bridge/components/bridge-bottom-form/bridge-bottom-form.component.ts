@@ -33,6 +33,7 @@ import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -143,7 +144,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly translate: TranslateService,
+    private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService
@@ -314,9 +315,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       onTransactionHash: () => {
         this.cdr.detectChanges();
         approveInProgressSubscription$ = this.notificationsService.show(
-          this.translate.instant('bridgePage.approveProgressMessage'),
+          this.translateService.instant('notifications.approveInProgress'),
           {
-            label: this.translate.instant('notifications.approveInProgress'),
             status: TuiNotification.Info,
             autoClose: false
           }
@@ -331,9 +331,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
-            this.translate.instant('bridgePage.approveSuccessMessage'),
+            this.translateService.instant('notifications.successApprove'),
             {
-              label: this.translate.instant('notifications.successApprove'),
               status: TuiNotification.Success,
               autoClose: 15000
             }
@@ -359,7 +358,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
-        this.cdr.detectChanges();
         this.notifyTradeInProgress();
       }
     };
@@ -370,11 +368,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(
         (_: TransactionReceipt) => {
           this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
-            label: this.translate.instant('notifications.successfulTradeTitle'),
-            status: TuiNotification.Success,
-            autoClose: 15000
-          });
+          this.notificationsService.show(
+            new PolymorpheusComponent(SuccessTrxNotificationComponent),
+            {
+              status: TuiNotification.Success,
+              autoClose: 15000
+            }
+          );
 
           this.counterNotificationsService.updateUnread();
           this.tokensService.calculateUserTokensBalances();
@@ -444,9 +444,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private notifyTradeInProgress() {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
-      this.translate.instant('bridgePage.progressMessage'),
+      this.translateService.instant('bridgePage.progressMessage'),
       {
-        label: this.translate.instant('notifications.tradeInProgress'),
+        label: this.translateService.instant('notifications.tradeInProgress'),
         status: TuiNotification.Info,
         autoClose: false
       }
