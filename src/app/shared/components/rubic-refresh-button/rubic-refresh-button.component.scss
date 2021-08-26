@@ -13,7 +13,7 @@
 
   cursor: pointer;
 
-  @include b($mobile-md) {
+  @include b($mobile-md - 1) {
     position: absolute;
     top: 60px;
     right: 50px;
@@ -30,7 +30,7 @@
   }
 
   &__icon {
-    &_refreshing {
+    &_refreshing.autoRefresh {
       animation: 0.9s linear 0.1s infinite refreshAnimation;
     }
   }
@@ -48,14 +48,16 @@
 
     transform-origin: 50% 50%;
 
-    animation: linear infinite timerAnimation;
-
     fill: transparent;
     stroke: $rubic-primary;
     stroke-linecap: round;
     stroke-dasharray: 174;
     stroke-dashoffset: 174;
     stroke-width: 2px;
+
+    &:not(&_refresh-button__timer_hidden-refresh):not(&:hover) {
+      animation: linear infinite timerAnimation;
+    }
 
     &_stoped {
       stroke-dashoffset: 0;

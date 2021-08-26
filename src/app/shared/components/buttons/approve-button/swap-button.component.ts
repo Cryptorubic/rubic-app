@@ -54,6 +54,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  @Input() idPrefix: string = '';
+
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
     this.checkNoAmountError();
@@ -95,6 +97,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   @Output() approveClick = new EventEmitter<void>();
 
   @Output() swapClick = new EventEmitter<void>();
+
+  @Output() updateRatesClick = new EventEmitter<void>();
 
   @Output() loginEvent = new EventEmitter<void>();
 
@@ -183,12 +187,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
         translateParams = { key: 'errors.setTronAddress' };
         break;
-      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]:
+      case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         translateParams = {
           key: 'errors.chooseNetworkWallet',
-          interpolateParams: { blockchain: this.fromToken?.blockchain || '' }
+          interpolateParams: { blockchain: this.fromBlockchain || this.fromToken?.blockchain }
         };
         break;
+      }
       default:
         translateParams = {
           key: 'Unknown Error',
@@ -289,9 +294,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     let balance = this.fromToken.amount;
     if (!this.fromToken.amount.isFinite()) {
       balance = (
-        await (<Web3Public>(
-          this.web3PublicService[this.fromToken.blockchain]
-        )).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
+        await (
+          this.web3PublicService[this.fromToken.blockchain] as Web3Public
+        ).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
       ).div(10 ** this.fromToken.decimals);
     }
 

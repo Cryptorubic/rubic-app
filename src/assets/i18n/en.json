@@ -411,7 +411,8 @@
     "rbcLowFees": "Use RBC for low fees",
     "discountRBC": "discount with RBC",
     "blockchainsHint": "More blockchains",
-    "tradingNotAvailable": "Trading is not available"
+    "tradingNotAvailable": "Trading is not available",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "Maintenance",
@@ -424,7 +425,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
       "title": "Select a token",
@@ -441,6 +442,11 @@
     "coinbaseSelectNetworkModal": {
       "title": "Choose origin network",
       "text": "Please select a swaps origin network. By connecting a Coinbase wallet, you will not be able to change the network in the current session. To change the network after connecting the Coinbase wallet, log out of your account and connect by choosing a different network, or use a different wallet."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {
@@ -462,12 +468,14 @@
   },
   "volume": {
     "title": "Accumulated Transaction Volume",
-    "instantTrades": "Instant Trades",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "Cross-Chain Swaps"
   },
   "notifications": {
     "tradeInProgress": "Trade in progress",
     "successfulTradeTitle": "Successful trade",
+    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve"
   }

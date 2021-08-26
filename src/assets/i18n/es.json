@@ -411,7 +411,8 @@
     "rbcLowFees": "Use RBC por tarifas bajas",
     "discountRBC": "descuento con RBC",
     "blockchainsHint": "Más blockchains",
-    "tradingNotAvailable": "El comercio no está disponible"
+    "tradingNotAvailable": "El comercio no está disponible",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "Maintenance",
@@ -424,7 +425,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
       "title": "Elija token",
@@ -441,6 +442,11 @@
     "coinbaseSelectNetworkModal": {
       "title": "Elija la red de origen",
       "text": "Seleccione una red de origen de swaps. Al conectar una billetera Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar la billetera Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente o usa una billetera diferente."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {
@@ -462,12 +468,14 @@
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
-    "instantTrades": "Intercambios instantáneos",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "Ntercambios entre plataformas"
   },
   "notifications": {
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
+    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa"
   }

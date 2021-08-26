@@ -1,5 +1,6 @@
 <ng-container>
   <app-rubic-button
+    [id]="idPrefix + 'connect-wallet'"
     *ngIf="needLogin"
     [loading]="needLoginLoading"
     [fullWidth]="true"
@@ -9,10 +10,21 @@
     {{ 'navigation.login' | translate }}
   </app-rubic-button>
 
-  <ng-template [ngIf]="!needLogin">
+  <ng-container *ngIf="!needLogin && status === TRADE_STATUS.OLD_TRADE_DATA">
+    <app-rubic-button
+      [fullWidth]="true"
+      (click)="updateRatesClick.emit()"
+      appearance="secondary"
+    >
+      {{ 'tradePage.rateIsUpdated' | translate }}
+    </app-rubic-button>
+  </ng-container>
+
+  <ng-template [ngIf]="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
     <ng-container *ngIf="needApprove && !dataLoading && !hasError">
       <div class="buttons">
         <app-rubic-button
+          [id]="idPrefix + 'approve'"
           [fullWidth]="true"
           (onClick)="approveClick.emit()"
           [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
@@ -22,13 +34,14 @@
           Approve
         </app-rubic-button>
         <app-rubic-button
+          [class]="idPrefix + 'button-swap'"
           [fullWidth]="true"
           (onClick)="swapClick.emit()"
           [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
           [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
           appearance="secondary"
-          >{{ swapButtonText }}</app-rubic-button
-        >
+          >{{ swapButtonText }}
+        </app-rubic-button>
         <div class="buttons__timeline-container timeline">
           <span class="timeline__connector"></span>
           <div
@@ -57,6 +70,7 @@
 
     <ng-container *ngIf="(!needApprove && !hasError) || dataLoading">
       <app-rubic-button
+        [class]="idPrefix + 'button-swap'"
         [fullWidth]="true"
         (onClick)="swapClick.emit()"
         [loading]="

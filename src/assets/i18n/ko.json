@@ -411,7 +411,8 @@
     "rbcLowFees": "저렴한 수수료로 RBC 사용",
     "discountRBC": "RBC 할인",
     "blockchainsHint": "더 많은 블록 체인",
-    "tradingNotAvailable": "거래 불가"
+    "tradingNotAvailable": "거래 불가",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "유지",
@@ -424,7 +425,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
       "title": "토큰 선택",
@@ -441,6 +442,11 @@
     "coinbaseSelectNetworkModal": {
       "title": "원본 네트워크 선택",
       "text": "스왑 원본 네트워크를 선택하십시오. Coinbase 지갑을 연결하면 현재 세션에서 네트워크를 변경할 수 없습니다. 코인베이스 지갑 연결 후 네트워크 변경을 위해서는 계정에서 로그아웃한 후 다른 네트워크를 선택하여 연결하거나 다른 지갑을 사용하세요."
+    },
+    "successTxModal": {
+      "title": "The transaction was successfully sent!",
+      "seeDetails": "See details in ",
+      "link": "My Trades"
     }
   },
   "settings": {
@@ -462,12 +468,14 @@
   },
   "volume": {
     "title": "누적 거래량",
-    "instantTrades": "즉시 거래",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "크로스-체인 스왑"
   },
   "notifications": {
     "tradeInProgress": "진행중인 거래",
     "successfulTradeTitle": "성공적인 거래",
+    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인"
   }

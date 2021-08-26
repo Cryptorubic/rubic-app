@@ -11,22 +11,30 @@
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
   </a>
 
-  <app-rubic-menu class="rubic-header__menu"></app-rubic-menu>
+  <app-rubic-menu
+    class="rubic-header__menu"
+    (swapClick)="navigateToSwaps()"
+    (bridgeClick)="navigateToBridge()"
+    [swapActive]="rootPath && (isInstantTrade$ | async)"
+    [bridgeActive]="rootPath && (isInstantTrade$ | async) === false"
+  ></app-rubic-menu>
 
   <nav class="rubic-header__nav">
-    <a class="button-link" routerLink="/" [class.button-link_active]="isLinkActive('/')"> Swaps</a>
-    <a class="button-link" routerLink="/crypto-tap" routerLinkActive="button-link_active">
-      Crypto Tap
-    </a>
-    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Order Book</span>
+    <a class="button-link"
+       (click)="navigateToSwaps()"
+       [class.button-link_active]="rootPath && (isInstantTrade$ | async)"
+    >Swaps</a>
+    <a class="button-link"
+       (click)="navigateToBridge()"
+       [class.button-link_active]="rootPath && (isInstantTrade$ | async) === false"
+    >Bridge</a>
+    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Cross Chain</span>
   </nav>
 
   <div class="rubic-header__profile">
-    <a
-      class="rubic-header__profile-trades button-link"
-      routerLink="my-trades"
-      routerLinkActive="button-link_active"
-    >
+    <a class="rubic-header__profile-trades button-link"
+       routerLink="my-trades"
+       routerLinkActive="button-link_active">
       {{ 'navigation.myTrades' | translate }}
 
       <tui-badge
@@ -37,14 +45,9 @@
       ></tui-badge>
     </a>
 
-    <app-login-button
-      class="rubic-header__login"
-      *ngIf="!($currentUser | async)"
-    ></app-login-button>
-    <app-user-profile
-      class="rubic-header__profile-user"
-      *ngIf="($currentUser | async)?.address"
-    ></app-user-profile>
+    <app-login-button *ngIf="!($currentUser | async)?.address" class="rubic-header__login" ></app-login-button>
+    <app-user-profile *ngIf="($currentUser | async)?.address" class="rubic-header__profile-user" ></app-user-profile>
+    <app-gas-indicator *ngIf="($isMobile| async) === false"></app-gas-indicator>
     <app-rubic-language-select></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>

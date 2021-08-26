@@ -1,0 +1,50 @@
+<div class="provider-panel__body">
+  <div
+    *ngIf="providerData.isBestRate"
+    class="provider-panel__best-rate"
+    [ngClass]="{ 'provider-panel__best-rate_selected': providerData.isActive }"
+  >
+    <div [inlineSVG]="'assets/images/icons/Best-rate.svg'"></div>
+  </div>
+
+  <div class="provider-panel__left">
+    <div
+      class="provider-panel__amount"
+      [ngClass]="{ 'tui-skeleton': providerData.loading, 'tui-skeleton-text': providerData.loading }"
+    >
+      {{ tradeData?.amount | bigNumberFormat | withRound: 'toClosestValue' }}
+    </div>
+  </div>
+
+  <div class="provider-panel__right">
+    <div
+      *ngIf="tradeData?.usdPrice as price"
+      class="provider-panel__token-usd-price"
+      [ngClass]="{ 'tui-skeleton': providerData.loading, 'tui-skeleton-text': providerData.loading }"
+    >
+      ${{ price }}
+    </div>
+
+    <div
+      *ngIf="this.tradeData?.gasFeeInEth && this.tradeData?.gasFeeInUsd"
+      class="provider-panel__token-gas-fee"
+      [ngClass]="{ 'tui-skeleton': providerData.loading, 'tui-skeleton-text': providerData.loading }"
+    >
+      {{ 'instantTrades.gasFee' | translate }}
+
+      <ng-container *ngIf="providerData.appearance !== 'small' && tradeData?.gasFeeInEth">
+        {{ tradeData.gasFeeInEth?.toFixed(5) }} ETH
+      </ng-container >
+
+      <ng-container *ngIf="tradeData?.gasFeeInUsd.gt(0)">
+        ≈ ${{ tradeData.gasFeeInUsd.toFixed(2) }}
+      </ng-container>
+
+      <div
+        class="provider-panel__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'instantTrades.gasFeeMessage' | translate"
+      ></div>
+    </div>
+  </div>
+</div>

@@ -2,10 +2,10 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, EventEmitter,
   Inject,
-  Injector,
-  OnDestroy,
+  Injector, Input,
+  OnDestroy, Output,
   QueryList,
   TemplateRef,
   ViewChildren
@@ -18,7 +18,13 @@ import { UserInterface } from 'src/app/core/services/auth/models/user.interface'
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
+import { NAVIGATION_LIST } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-list';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({
@@ -29,6 +35,14 @@ import { HeaderStore } from '../../../../services/header.store';
 })
 export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
+
+  @Input() public swapActive: boolean;
+
+  @Input() public bridgeActive: boolean;
+
+  @Output() public readonly swapClick: EventEmitter<void>;
+
+  @Output() public readonly bridgeClick: EventEmitter<void>;
 
   public isOpened = false;
 
@@ -42,6 +56,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   private _onAddressChanges$: Subscription;
 
+  public readonly navigationList: NavigationItem[];
+
   constructor(
     private router: Router,
     private headerStore: HeaderStore,
@@ -50,11 +66,16 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly providerConnectorService: ProviderConnectorService,
     private translateService: TranslateService,
     private readonly counterNotificationsService: CounterNotificationsService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly swapFormService: SwapFormService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector
   ) {
     this.$currentUser = this.authService.getCurrentUser();
     this.$countUnread = this.counterNotificationsService.unread$;
+    this.navigationList = NAVIGATION_LIST;
+    this.bridgeClick = new EventEmitter<void>();
+    this.swapClick = new EventEmitter<void>();
   }
 
   public ngAfterViewInit(): void {
@@ -79,6 +100,15 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public closeMenu() {
     this.isOpened = false;
+  }
+
+  public menuClickHandler(linkType: 'swaps' | 'bridge'): void {
+    this.closeMenu();
+    if (linkType === 'swaps') {
+      this.swapClick.emit();
+    } else {
+      this.bridgeClick.emit();
+    }
   }
 
   public logout(): void {
