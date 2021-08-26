@@ -8,7 +8,6 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { ProviderControllerData } from 'src/app/shared/components/provider-panel/provider-panel.component';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -18,7 +17,7 @@ import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constant
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
-import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -33,14 +32,17 @@ import {
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
 
-interface CalculationResult {
+export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
   value?: InstantTrade | null;
   reason?: Error;
@@ -67,7 +69,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
-  private readonly onCalculateTrade: Subject<void>;
+  public readonly onCalculateTrade: Subject<'normal' | 'hidden'>;
 
   private providerControllers: ProviderControllerData[];
 
@@ -106,6 +108,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private calculateTradeSubscription$: Subscription;
 
+  private hiddenCalculateTradeSubscription$: Subscription;
+
   get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(
@@ -132,6 +136,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  private hiddenDataAmounts$: BehaviorSubject<
+    { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+  >;
+
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
@@ -144,11 +152,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
-    this.onCalculateTrade = new Subject<void>();
+    this.onCalculateTrade = new Subject<'normal' | 'hidden'>();
+    this.hiddenDataAmounts$ = new BehaviorSubject<
+      { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+    >([]);
   }
 
   public ngOnInit(): void {
     this.setupCalculatingTrades();
+    this.setupHiddenCalculatingTrades();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.formChangesSubscription$ = this.swapFormService.inputValueChanges
@@ -220,7 +232,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.conditionalCalculate();
+    this.conditionalCalculate('normal');
   }
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
@@ -273,7 +285,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private conditionalCalculate(): void {
+  private conditionalCalculate(type?: 'normal' | 'hidden'): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
 
     if (fromBlockchain !== toBlockchain) {
@@ -292,7 +304,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.onCalculateTrade.next();
+    const { autoRefresh } = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    const haveHiddenCalc = this.hiddenDataAmounts$.value.length > 0;
+    this.onCalculateTrade.next(type || (autoRefresh || !haveHiddenCalc ? 'normal' : 'hidden'));
   }
 
   private setupCalculatingTrades(): void {
@@ -302,6 +316,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     this.calculateTradeSubscription$ = this.onCalculateTrade
       .pipe(
+        filter(el => {
+          return el === 'normal';
+        }),
         switchMap(() => {
           this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
@@ -328,12 +345,73 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
             map(([approveData, tradeData]) => {
               this.setupControllers(tradeData, approveData);
+              this.hiddenDataAmounts$.next(
+                (tradeData as CalculationResult[]).map((trade, index) => {
+                  if (trade.status === 'fulfilled') {
+                    return {
+                      amount: trade.value.to.amount,
+                      name: providersNames[index]
+                    };
+                  }
+                  return {
+                    amount: null,
+                    name: providersNames[index],
+                    error: trade.reason
+                  };
+                })
+              );
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             })
           );
         })
       )
       .subscribe();
+  }
+
+  public setupHiddenCalculatingTrades(): void {
+    if (this.hiddenCalculateTradeSubscription$) {
+      return;
+    }
+
+    this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade
+      .pipe(
+        filter(el => el === 'hidden'),
+        switchMap(() => {
+          const providersNames = this.providerControllers.map(
+            provider => provider.tradeProviderInfo.value
+          );
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+
+          return from(this.instantTradeService.calculateTrades(providersNames)).pipe(
+            map((tradeData: CalculationResult[]) => {
+              return tradeData.map((trade: CalculationResult, index: number) => {
+                if (trade.status === 'fulfilled') {
+                  return {
+                    amount: trade.value.to.amount,
+                    name: providersNames[index]
+                  };
+                }
+                return {
+                  amount: null,
+                  name: providersNames[index],
+                  error: trade.reason
+                };
+              });
+            })
+          );
+        })
+      )
+      .subscribe(el => {
+        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+        this.hiddenDataAmounts$.next(el);
+        const hiddenProviderData = el.find(
+          it => it.name === this.selectedProvider.tradeProviderInfo.value
+        );
+        if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
+          this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+        }
+        this.cdr.detectChanges();
+      });
   }
 
   private prepareControllers(): void {
@@ -547,7 +625,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this.instantTradeService.createTrade(instantTradeProvider, instantTrade);
+      await this.instantTradeService.createTrade(instantTradeProvider, instantTrade, () => {
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        if (providerIndex !== -1) {
+          this.setProviderState(
+            TRADE_STATUS.READY_TO_SWAP,
+            providerIndex,
+            INSTANT_TRADES_STATUS.COMPLETED
+          );
+        } else {
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        }
+        this.cdr.detectChanges();
+      });
 
       this.counterNotificationsService.updateUnread();
       this.tokensService.calculateUserTokensBalances();

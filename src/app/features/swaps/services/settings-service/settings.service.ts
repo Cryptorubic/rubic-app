@@ -110,7 +110,7 @@ export class SettingsService {
 
   private createForm(): void {
     this.settingsForm = new FormGroup<SettingsForm>({
-      [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup({
+      [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: new FormGroup<ItSettingsForm>({
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance
         ),

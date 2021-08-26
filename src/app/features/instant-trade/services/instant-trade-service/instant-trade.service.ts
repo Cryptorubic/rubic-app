@@ -26,8 +26,9 @@ import { NotificationsService } from 'src/app/core/services/notifications/notifi
 import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 
 @Injectable({
   providedIn: 'root'
@@ -135,11 +136,16 @@ export class InstantTradeService {
     return Promise.allSettled(providersDataPromises);
   }
 
-  public async createTrade(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
+  public async createTrade(
+    provider: INSTANT_TRADES_PROVIDER,
+    trade: InstantTrade,
+    confirmCallback?: () => void
+  ): Promise<void> {
     let transactionHash: string;
     try {
       const options = {
         onConfirm: async hash => {
+          confirmCallback();
           this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
@@ -158,12 +164,10 @@ export class InstantTradeService {
 
       this.modalShowing.unsubscribe();
       this.updateTrade(transactionHash);
-      this.notificationsService.show(
-        this.translateService.instant('notifications.successfulTradeTitle'),
-        {
-          status: TuiNotification.Success
-        }
-      );
+      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+        status: TuiNotification.Success,
+        autoClose: 15000
+      });
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({

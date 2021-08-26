@@ -7,8 +7,7 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit,
-  OnInit
+  AfterViewInit
 } from '@angular/core';
 import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -18,8 +17,11 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { map, startWith } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -41,6 +43,12 @@ export class HeaderComponent implements AfterViewInit {
 
   public countNotifications$: Observable<number>;
 
+  public readonly isInstantTrade$: Observable<boolean>;
+
+  public get rootPath(): boolean {
+    return window.location.pathname === '/';
+  }
+
   constructor(
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
@@ -50,7 +58,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly storeService: StoreService,
     private router: Router,
     private readonly errorService: ErrorsService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    private readonly swapFormService: SwapFormService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -67,6 +76,10 @@ export class HeaderComponent implements AfterViewInit {
       };
     }
     this.countNotifications$ = this.counterNotificationsService.unread$;
+    this.isInstantTrade$ = this.swapFormService.input.valueChanges.pipe(
+      map(el => el.fromBlockchain === el.toBlockchain),
+      startWith(true)
+    );
   }
 
   public ngAfterViewInit(): void {
@@ -93,7 +106,47 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  isLinkActive(url) {
-    return window.location.pathname === url;
+  public async navigateToSwaps(): Promise<void> {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+        toChain: BLOCKCHAIN_NAME.ETHEREUM,
+        amount: undefined,
+        from: undefined,
+        to: undefined
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  public async navigateToBridge(): Promise<void> {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      fromToken: null,
+      toToken: null,
+      fromAmount: null
+    } as SwapFormInput;
+    form.patchValue(params);
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+        toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        amount: undefined,
+        from: undefined,
+        to: undefined
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 }

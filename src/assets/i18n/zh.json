@@ -411,7 +411,8 @@
     "rbcLowFees": "使用 RBC 收取低費用",
     "discountRBC": "RBC 折扣",
     "blockchainsHint": "更多區塊鏈",
-    "tradingNotAvailable": "交易不可用"
+    "tradingNotAvailable": "交易不可用",
+    "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
     "title": "維護",
@@ -424,7 +425,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in <a href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
       "title": "选择币种",
@@ -467,12 +468,14 @@
   },
   "volume": {
     "title": "累計交易量",
-    "instantTrades": "支持即时交易",
+    "instantTrades": "Swaps",
+    "bridges": "Bridges",
     "crossChain": "跨鏈掉期"
   },
   "notifications": {
     "tradeInProgress": "進行中的交易",
     "successfulTradeTitle": "成功的交易",
+    "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功"
   }

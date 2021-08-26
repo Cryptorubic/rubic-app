@@ -6,11 +6,13 @@
     <app-rubic-refresh-button
       class="swaps-form__refresh"
       *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade && allowRefresh"
+      type="autoRefresh"
       (onRefresh)="onRefreshTrade.next()"
       [loadingStatus]="loadingStatus"
       [autoUpdate]="autoRefresh"
     ></app-rubic-refresh-button>
 
+    <app-gas-indicator *ngIf="isMobile$ | async"></app-gas-indicator>
     <div class="swaps-form__settings">
       <app-settings-container></app-settings-container>
     </div>
@@ -57,5 +59,7 @@
     ></app-cross-chain-routing-bottom-form>
   </main>
 </div>
+
+<app-analytics-link [formService]="swapFormService"></app-analytics-link>
 
 <app-rubic-volume></app-rubic-volume>
