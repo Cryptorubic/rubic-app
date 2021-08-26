@@ -34,6 +34,11 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
   providedIn: 'root'
 })
 export class InstantTradeService {
+  private static readonly unsupportedItNetworks: BLOCKCHAIN_NAME[] = [
+    BLOCKCHAIN_NAME.TRON,
+    BLOCKCHAIN_NAME.XDAI
+  ];
+
   private blockchainsProviders: Partial<
     {
       [blockchain in BLOCKCHAIN_NAME]: Partial<
@@ -45,6 +50,10 @@ export class InstantTradeService {
   >;
 
   private modalShowing: Subscription;
+
+  public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
+    return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
+  }
 
   constructor(
     // Providers start

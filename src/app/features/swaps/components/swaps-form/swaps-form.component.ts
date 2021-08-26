@@ -15,6 +15,7 @@ import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 
 type TokenType = 'from' | 'to';
 
@@ -201,8 +202,15 @@ export class SwapsFormComponent implements OnInit {
       const blockchainKey = tokenType === 'from' ? 'fromBlockchain' : 'toBlockchain';
       const oppositeBlockchainKey = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
 
-      const isBridgeTokenPair = (supportedToken: TokenAmount): boolean => {
-        return !!this._bridgeTokenPairsByBlockchainsArray
+      const checkEqualAddressAndPush = (supportedToken: TokenAmount): void => {
+        tokens.push({
+          ...supportedToken,
+          available: supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
+        });
+      };
+
+      const checkIsBridgeTokenPairAndPush = (supportedToken: TokenAmount): void => {
+        const isAvailable = !!this._bridgeTokenPairsByBlockchainsArray
           .find(
             pairsByBlockchains =>
               pairsByBlockchains[oppositeBlockchainKey] === oppositeToken.blockchain &&
@@ -215,30 +223,32 @@ export class SwapsFormComponent implements OnInit {
               tokenPair.tokenByBlockchain[supportedToken.blockchain].address.toLowerCase() ===
                 supportedToken.address.toLowerCase()
           );
+        tokens.push({
+          ...supportedToken,
+          available: isAvailable
+        });
       };
 
       if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
         this._supportedTokens.forEach(supportedToken => {
           if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
-            tokens.push({
-              ...supportedToken,
-              available:
-                supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
-            });
+            checkEqualAddressAndPush(supportedToken);
           } else {
-            tokens.push({
-              ...supportedToken,
-              available: !!isBridgeTokenPair(supportedToken)
-            });
+            checkIsBridgeTokenPairAndPush(supportedToken);
+          }
+        });
+      } else if (InstantTradeService.isSupportedBlockchain(oppositeToken.blockchain)) {
+        this._supportedTokens.forEach(supportedToken => {
+          if (oppositeToken.blockchain === supportedToken.blockchain) {
+            checkEqualAddressAndPush(supportedToken);
+          } else {
+            checkIsBridgeTokenPairAndPush(supportedToken);
           }
         });
       } else {
-        this._supportedTokens.forEach(supportedToken => {
-          tokens.push({
-            ...supportedToken,
-            available: !!isBridgeTokenPair(supportedToken)
-          });
-        });
+        this._supportedTokens.forEach(supportedToken =>
+          checkIsBridgeTokenPairAndPush(supportedToken)
+        );
       }
 
       this.availableTokens[tokenType] = tokens;

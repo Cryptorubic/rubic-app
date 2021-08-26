@@ -68,8 +68,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
-  private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
-
   public readonly onCalculateTrade: Subject<'normal' | 'hidden'>;
 
   private providerControllers: ProviderControllerData[];
@@ -152,7 +150,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
-    this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
     this.onCalculateTrade = new Subject<'normal' | 'hidden'>();
     this.hiddenDataAmounts$ = new BehaviorSubject<
       { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
@@ -305,7 +302,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (fromBlockchain !== toBlockchain) {
       return;
     }
-    if (this.unsupportedItNetworks.includes(toBlockchain)) {
+    if (!InstantTradeService.isSupportedBlockchain(toBlockchain)) {
       this.errorService.catch(new NotSupportedItNetwork());
       this.cdr.detectChanges();
       return;
