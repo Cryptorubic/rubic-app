@@ -22,7 +22,7 @@
         name="token-amount"
         [placeholder]="placeholder"
         appTokenAmount
-        [ngModel]="amount"
+        [formControl]="amount"
         [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"
         (amountChange)="onAmountChange($event)"
       />

@@ -192,7 +192,7 @@ export class QueryParamsService {
           ...(queryParams.amount && { amount: queryParams.amount })
         };
 
-        if (newParams.from === newParams.to) {
+        if (newParams.from && newParams.from === newParams.to) {
           if (newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]) {
             newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain];
           } else {

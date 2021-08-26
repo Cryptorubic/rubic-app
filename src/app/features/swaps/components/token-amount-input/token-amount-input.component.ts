@@ -14,6 +14,7 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -30,12 +31,12 @@ export class TokenAmountInputComponent implements OnInit {
   @Input() placeholder = '0.0';
 
   private get formattedAmount(): string {
-    return this.amount?.split(',').join('');
+    return this.amount.value.split(',').join('');
   }
 
   public readonly DEFAULT_DECIMALS = 18;
 
-  public amount: string;
+  public amount = new FormControl('');
 
   public selectedToken: TokenAmount;
 
@@ -56,9 +57,9 @@ export class TokenAmountInputComponent implements OnInit {
         const { fromAmount, fromToken } = form;
 
         if (!fromAmount || fromAmount.isNaN()) {
-          this.amount = '';
+          this.amount.setValue('');
         } else if (!fromAmount.eq(this.formattedAmount)) {
-          this.amount = fromAmount.toFixed();
+          this.amount.setValue(fromAmount.toFixed());
         } else if (
           this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
           this.prevSwapMode !== this.swapsService.swapMode
@@ -68,8 +69,6 @@ export class TokenAmountInputComponent implements OnInit {
 
         this.prevSwapMode = this.swapsService.swapMode;
         this.selectedToken = fromToken;
-
-        this.cdr.detectChanges();
       });
 
     this.settingsService.crossChainRoutingValueChanges
@@ -83,10 +82,8 @@ export class TokenAmountInputComponent implements OnInit {
 
   private checkMaxAmountInCrossChainRouting() {
     const maxAmount = this.getMaxAmountInCrossChainRouting();
-    if (maxAmount && new BigNumber(maxAmount).lt(this.amount || 0)) {
-      this.amount = maxAmount;
-      this.cdr.detectChanges();
-      this.updateInputValue();
+    if (maxAmount && new BigNumber(maxAmount).lt(this.formattedAmount || 0)) {
+      this.amount.setValue(maxAmount);
     }
   }
 
@@ -102,13 +99,10 @@ export class TokenAmountInputComponent implements OnInit {
   public onUserBalanceMaxButtonClick(): void {
     const { swapMode } = this.swapsService;
     if (swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
-      this.amount = this.selectedToken.amount.toFixed();
+      this.amount.setValue(this.selectedToken.amount.toFixed());
     } else {
-      this.amount = this.getMaxAmountInCrossChainRouting();
+      this.amount.setValue(this.getMaxAmountInCrossChainRouting());
     }
-    this.cdr.detectChanges();
-
-    this.updateInputValue();
   }
 
   public getUsdPrice(): BigNumber {
@@ -116,15 +110,13 @@ export class TokenAmountInputComponent implements OnInit {
   }
 
   public onAmountChange(amount: string): void {
-    this.amount = amount;
-    this.cdr.detectChanges();
-
+    this.amount.setValue(amount, { emitViewToModelChange: false });
     this.updateInputValue();
   }
 
   private updateInputValue(): void {
     const { fromAmount } = this.swapFormService.inputValue;
-    if ((fromAmount || this.amount) && !fromAmount?.eq(this.amount)) {
+    if ((fromAmount || this.formattedAmount) && !fromAmount?.eq(this.formattedAmount)) {
       this.swapFormService.input.patchValue({
         fromAmount: new BigNumber(this.formattedAmount)
       });
