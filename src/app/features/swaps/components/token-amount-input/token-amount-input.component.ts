@@ -116,7 +116,10 @@ export class TokenAmountInputComponent implements OnInit {
 
   private updateInputValue(): void {
     const { fromAmount } = this.swapFormService.inputValue;
-    if ((fromAmount || this.formattedAmount) && !fromAmount?.eq(this.formattedAmount)) {
+    if (
+      ((fromAmount && !fromAmount.isNaN()) || this.formattedAmount) &&
+      !fromAmount?.eq(this.formattedAmount)
+    ) {
       this.swapFormService.input.patchValue({
         fromAmount: new BigNumber(this.formattedAmount)
       });

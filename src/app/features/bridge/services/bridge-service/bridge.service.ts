@@ -164,6 +164,10 @@ export class BridgeService {
       map(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
           this.swapFormService.inputValue;
+        if (!fromToken || !toToken) {
+          return null;
+        }
+
         const bridgeTokensList = tokens.find(
           item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
         );

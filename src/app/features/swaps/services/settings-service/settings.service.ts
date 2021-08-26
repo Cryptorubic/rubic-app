@@ -127,8 +127,8 @@ export class SettingsService {
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance
         ),
-        slippageTolerance: new FormControl<number>(this.defaultItSettings.slippageTolerance),
-        autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh)
+        slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
+        autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh)
       })
     });
   }
