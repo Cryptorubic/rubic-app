@@ -13,7 +13,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { TransactionReceipt } from 'web3-eth';
-import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -105,32 +105,33 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       .subscribe(
         async (response: PolygonGraphResponse) => {
           if (!response.data) {
-            this.tokens$.next(List([]));
+            this.tokenPairs$.next(List([]));
             return;
           }
 
           const posTokens = response.data.tokenMappings;
-          const promisesTokens = [];
+          const promisesTokens: Promise<BridgeTokenPair>[] = [];
 
           posTokens.forEach(token =>
             promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts))
           );
-          const tokens = await Promise.all(promisesTokens);
+          const bridgeTokenPairs = await Promise.all(promisesTokens);
 
-          this.tokens$.next(
+          this.tokenPairs$.next(
             List(
-              tokens.filter(
-                t =>
-                  t !== null &&
-                  t.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address.toLowerCase() !==
-                    this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
+              bridgeTokenPairs.filter(
+                bridgeTokenPair =>
+                  bridgeTokenPair !== null &&
+                  bridgeTokenPair.tokenByBlockchain[
+                    BLOCKCHAIN_NAME.ETHEREUM
+                  ].address.toLowerCase() !== this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
               )
             )
           );
         },
         err => {
           console.debug('Error retrieving polygon tokens: ', err);
-          this.tokens$.next(List([]));
+          this.tokenPairs$.next(List([]));
         }
       );
   }
@@ -138,7 +139,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   private async parsePolygonTokens(
     token: PolygonGraphToken,
     tokenAmounts: List<TokenAmount>
-  ): Promise<BridgeToken> {
+  ): Promise<BridgeTokenPair> {
     const ethAddress = token.rootToken;
     let polygonAddress = token.childToken;
 
@@ -169,8 +170,9 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         image: '',
         rank: 0,
 
-        blockchainToken: {
+        tokenByBlockchain: {
           [BLOCKCHAIN_NAME.ETHEREUM]: {
+            blockchain: BLOCKCHAIN_NAME.ETHEREUM,
             address: ethToken.address,
             name: ethToken.name,
             symbol: ethToken.symbol,
@@ -180,6 +182,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
             maxAmount: Infinity
           },
           [BLOCKCHAIN_NAME.POLYGON]: {
+            blockchain: BLOCKCHAIN_NAME.POLYGON,
             address: polygonToken.address,
             name: polygonToken.name,
             symbol: polygonToken.symbol,
@@ -188,7 +191,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
             minAmount: 0,
             maxAmount: Infinity
           }
-        } as BlockchainsTokens,
+        },
 
         fromEthFee: 0,
         toEthFee: 0
@@ -255,10 +258,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
     const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
     const userAddress = this.authService.user.address;
-    const tokenAddress = bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].address;
-    const { decimals } = bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM];
+    const tokenAddress = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].address;
+    const { decimals } = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
-    if (bridgeTrade.token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
+    if (bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
       return of(false);
     }
     return from(maticPOSClient.getERC20Allowance(userAddress, tokenAddress)).pipe(
@@ -269,7 +272,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
     const userAddress = this.authService.user.address;
-    const tokenAddress = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address;
+    const tokenAddress = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain].address;
 
     return this.needApprove(bridgeTrade).pipe(
       switchMap(needApprove => {
@@ -292,8 +295,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     const userAddress = this.providerConnectorService.address;
 
     const { token } = bridgeTrade;
-    const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenAddress = token.tokenByBlockchain[bridgeTrade.fromBlockchain].address;
+    const { decimals } = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
     const onTradeTransactionHashFactory = (status: TRANSACTION_STATUS) => {
@@ -314,7 +317,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       const onTradeTransactionHashFn = onTradeTransactionHashFactory(
         TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS
       );
-      if (token.blockchainToken[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
+      if (token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
         return this.depositEther(
           maticPOSClient,
           userAddress,

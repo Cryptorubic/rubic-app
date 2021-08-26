@@ -11,7 +11,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { QueryParams } from './models/query-params';
@@ -167,10 +167,10 @@ export class QueryParamsService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    return this.swapsService.bridgeTokensPairs.pipe(
-      filter(pairs => !!pairs?.length),
+    return this.swapsService.bridgeTokenPairsByBlockchainsArray.pipe(
+      filter(pairsArray => !!pairsArray?.size),
       first(),
-      map(pairs => {
+      map(pairsArray => {
         const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.fromChain as BLOCKCHAIN_NAME
         )
@@ -210,15 +210,15 @@ export class QueryParamsService {
           fromChain !== toChain &&
           newParams.from &&
           newParams.to &&
-          !pairs.some(
-            (pair: BlockchainsBridgeTokens) =>
-              pair.fromBlockchain === fromChain &&
-              pair.toBlockchain === toChain &&
-              pair.bridgeTokens.some(
-                bridgeToken =>
-                  bridgeToken.blockchainToken[fromChain]?.symbol.toLowerCase() ===
+          !pairsArray.some(
+            (pairsByBlockchains: BridgeTokenPairsByBlockchains) =>
+              pairsByBlockchains.fromBlockchain === fromChain &&
+              pairsByBlockchains.toBlockchain === toChain &&
+              pairsByBlockchains.tokenPairs.some(
+                tokenPair =>
+                  tokenPair.tokenByBlockchain[fromChain]?.symbol.toLowerCase() ===
                     newParams.from?.toLowerCase() &&
-                  bridgeToken.blockchainToken[toChain]?.symbol.toLowerCase() ===
+                  tokenPair.tokenByBlockchain[toChain]?.symbol.toLowerCase() ===
                     newParams.to?.toLowerCase()
               )
           )

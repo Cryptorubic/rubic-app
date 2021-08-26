@@ -8,7 +8,7 @@ import { EthereumTronBridgeProviderService } from 'src/app/features/bridge/servi
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
-import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
 import { catchError, filter, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
@@ -25,17 +25,17 @@ import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/ser
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
-import { BridgeToken } from '../../models/BridgeToken';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
 @Injectable()
 export class BridgeService {
   private blockchainsProviders;
 
-  private tokens$ = new BehaviorSubject<BlockchainsBridgeTokens[]>([]);
+  private tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
 
-  public get tokens(): Observable<BlockchainsBridgeTokens[]> {
+  public get tokens(): Observable<BridgeTokenPairsByBlockchains[]> {
     return this.tokens$.asObservable();
   }
 
@@ -100,7 +100,7 @@ export class BridgeService {
   }
 
   private setTokens(): void {
-    const tokensObservables: Observable<BlockchainsBridgeTokens>[] = [];
+    const tokensObservables: Observable<BridgeTokenPairsByBlockchains>[] = [];
 
     Object.values(BLOCKCHAIN_NAME).forEach(fromBlockchain => {
       Object.values(BLOCKCHAIN_NAME).forEach(toBlockchain => {
@@ -113,11 +113,11 @@ export class BridgeService {
 
         if (provider) {
           tokensObservables.push(
-            provider.tokens.pipe(
+            provider.tokenPairs.pipe(
               map(bridgeTokens => ({
                 fromBlockchain,
                 toBlockchain,
-                bridgeTokens
+                tokenPairs: bridgeTokens
               }))
             )
           );
@@ -157,7 +157,7 @@ export class BridgeService {
     );
   }
 
-  public getCurrentBridgeToken(): Observable<BridgeToken> {
+  public getCurrentBridgeToken(): Observable<BridgeTokenPair> {
     return this.tokens.pipe(
       filter(tokens => !!tokens.length),
       first(),
@@ -168,11 +168,11 @@ export class BridgeService {
           item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
         );
 
-        const bridgeToken = bridgeTokensList?.bridgeTokens?.find(
+        const bridgeToken = bridgeTokensList?.tokenPairs?.find(
           item =>
-            item.blockchainToken[fromBlockchain].address.toLowerCase() ===
+            item.tokenByBlockchain[fromBlockchain].address.toLowerCase() ===
               fromToken.address.toLowerCase() &&
-            item.blockchainToken[toBlockchain].address.toLowerCase() ===
+            item.tokenByBlockchain[toBlockchain].address.toLowerCase() ===
               toToken.address.toLowerCase()
         );
 
@@ -207,7 +207,7 @@ export class BridgeService {
         mergeMap(async (bridgeTrade: BridgeTrade) => {
           this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
 
-          const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+          const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
           await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
 
           return bridgeTrade;
@@ -245,7 +245,7 @@ export class BridgeService {
       mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
 
-        const token = bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain];
+        const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
         await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
 
         return bridgeTrade;

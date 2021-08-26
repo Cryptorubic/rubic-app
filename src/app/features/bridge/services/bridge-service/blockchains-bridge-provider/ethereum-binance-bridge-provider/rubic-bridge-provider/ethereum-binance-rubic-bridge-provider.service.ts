@@ -13,7 +13,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { WrongToken } from 'src/app/core/errors/models/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -118,13 +118,14 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   private async loadRubicTokenInfo(): Promise<void> {
     const fees = await this.fetchFees();
 
-    const bridgeToken = {
+    const bridgeTokenPair: BridgeTokenPair = {
       symbol: 'RBC',
       image: '',
       rank: 0,
 
-      blockchainToken: {
+      tokenByBlockchain: {
         [BLOCKCHAIN_NAME.ETHEREUM]: {
+          blockchain: BLOCKCHAIN_NAME.ETHEREUM,
           address: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].rubicTokenAddress,
           name: 'Rubic',
           symbol: 'RBC',
@@ -133,6 +134,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].maxAmount
         },
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
           address: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].rubicTokenAddress,
           name: 'Rubic',
           symbol: 'BRBC',
@@ -140,21 +142,21 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           minAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].minAmount,
           maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].maxAmount
         }
-      } as BlockchainsTokens,
+      },
       ...fees
     };
-    this.tokens$.next(List([bridgeToken]));
+    this.tokenPairs$.next(List([bridgeTokenPair]));
   }
 
   public getProviderType(): BRIDGE_PROVIDER {
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
-  public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
     if (toBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      return of(token.toEthFee);
+      return of(tokenPair.toEthFee);
     }
-    return of(token.fromEthFee);
+    return of(tokenPair.fromEthFee);
   }
 
   public checkIfEthereumGasPriceIsHigh(): Observable<boolean> {
@@ -186,7 +188,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
-    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
       return throwError(new WrongToken());
@@ -205,7 +207,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
     const spenderAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
 
     if (token.symbol !== 'RBC') {
@@ -238,7 +240,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const trade: RubicTrade = {
       token: {
         address: this.rubicConfig[bridgeTrade.fromBlockchain].rubicTokenAddress,
-        decimals: token.blockchainToken[bridgeTrade.fromBlockchain].decimals
+        decimals: token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals
       }
     } as RubicTrade;
 

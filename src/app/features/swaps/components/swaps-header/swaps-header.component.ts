@@ -11,10 +11,6 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsHeaderComponent {
-  public fromBlockchainItem: BlockchainItem;
-
-  public toBlockchainItem: BlockchainItem;
-
   @Input() public set fromBlockchain(blockchain: BLOCKCHAIN_NAME) {
     if (blockchain) {
       this.fromBlockchainItem = blockchainsList.find(el => el.symbol === blockchain);
@@ -31,6 +27,10 @@ export class SwapsHeaderComponent {
     this.getIconUrl(type);
   }
 
+  public fromBlockchainItem: BlockchainItem;
+
+  public toBlockchainItem: BlockchainItem;
+
   public iconUrl: string;
 
   constructor() {
@@ -41,11 +41,12 @@ export class SwapsHeaderComponent {
   }
 
   private getIconUrl(swapType: SWAP_PROVIDER_TYPE): void {
-    const typeIcons = {
-      [SWAP_PROVIDER_TYPE.BRIDGE]: 'bridge.svg',
+    const typeIcons: { [SWAP in SWAP_PROVIDER_TYPE]: string } = {
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'it.svg',
+      [SWAP_PROVIDER_TYPE.BRIDGE]: 'bridge.svg',
+      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'bridge.svg',
       [SWAP_PROVIDER_TYPE.CRYPTO_TAP]: 'ct.svg'
-    } as { [SWAP in SWAP_PROVIDER_TYPE]: string };
+    };
     const defaultPath = '/assets/images/icons/swap-types/';
     this.iconUrl = defaultPath + typeIcons[swapType];
   }

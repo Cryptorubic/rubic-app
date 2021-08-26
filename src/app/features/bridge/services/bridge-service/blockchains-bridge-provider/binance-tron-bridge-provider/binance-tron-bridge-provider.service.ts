@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { first } from 'rxjs/operators';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
@@ -18,7 +18,7 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
     this.commonPanamaBridgeProviderService.tokens
       .pipe(first())
       .subscribe(tokens =>
-        this.tokens$.next(
+        this.tokenPairs$.next(
           tokens
             .filter(token => token.symbol === 'USDT')
             .map(BinanceTronBridgeProviderService.parseUSDTPanamaToken)
@@ -26,14 +26,15 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
       );
   }
 
-  private static parseUSDTPanamaToken(token: PanamaToken): BridgeToken {
+  private static parseUSDTPanamaToken(token: PanamaToken): BridgeTokenPair {
     return {
       symbol: token.symbol,
       image: '',
       rank: 0,
 
-      blockchainToken: {
+      tokenByBlockchain: {
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
           address: token.bscContractAddress,
           name: token.name,
           symbol: token.bscSymbol,
@@ -43,6 +44,7 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
           maxAmount: token.maxAmount
         },
         [BLOCKCHAIN_NAME.TRON]: {
+          blockchain: BLOCKCHAIN_NAME.TRON,
           address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
           name: token.name,
           symbol: token.ethSymbol,
@@ -51,7 +53,7 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
           minAmount: token.minAmount,
           maxAmount: token.maxAmount
         }
-      } as BlockchainsTokens
+      }
     };
   }
 
@@ -59,8 +61,8 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
     return this.commonPanamaBridgeProviderService.getProviderType();
   }
 
-  public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
-    return this.commonPanamaBridgeProviderService.getFee(token, toBlockchain);
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+    return this.commonPanamaBridgeProviderService.getFee(tokenPair, toBlockchain);
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {

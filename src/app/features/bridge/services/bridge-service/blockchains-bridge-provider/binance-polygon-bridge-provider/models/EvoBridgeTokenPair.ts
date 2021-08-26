@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 
-export interface EvoBridgeToken extends BridgeToken {
+export interface EvoBridgeTokenPair extends BridgeTokenPair {
   evoInfo: {
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: EvoToken;
     [BLOCKCHAIN_NAME.POLYGON]: EvoToken;

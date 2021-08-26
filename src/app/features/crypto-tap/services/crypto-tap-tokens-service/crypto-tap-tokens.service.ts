@@ -77,7 +77,7 @@ export class CryptoTapTokensService {
   }
 
   private setUpTokens() {
-    const supprotedToBlockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
+    const supportedToBlockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
 
     combineLatest([this.tokensService.tokens, this._cryptoTapTokens$.asObservable()]).subscribe(
       ([tokens, cryptoTapTokens]) => {
@@ -99,7 +99,7 @@ export class CryptoTapTokensService {
           to: tokens
             .filter(
               token =>
-                supprotedToBlockchains.includes(token.blockchain) &&
+                supportedToBlockchains.includes(token.blockchain) &&
                 (this.web3PublicService[token.blockchain] as Web3Public)?.isNativeAddress(
                   token.address
                 )

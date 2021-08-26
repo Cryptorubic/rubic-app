@@ -24,7 +24,7 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
@@ -80,7 +80,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly onCalculateTrade: Subject<void>;
 
-  private bridgeTokensPairs: BlockchainsBridgeTokens[];
+  private bridgeTokenPairsByBlockchainsArray: BridgeTokenPairsByBlockchains[];
 
   private fromBlockchain: BLOCKCHAIN_NAME;
 
@@ -157,7 +157,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.bridgeService.tokens.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
-      this.bridgeTokensPairs = tokens;
+      this.bridgeTokenPairsByBlockchainsArray = tokens;
     });
 
     this.swapFormService.inputValueChanges
@@ -404,17 +404,17 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   private getMinMaxAmounts(amountType: 'minAmount' | 'maxAmount'): number {
     const { fromToken, fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
 
-    return this.bridgeTokensPairs
+    return this.bridgeTokenPairsByBlockchainsArray
       .find(
-        bridgeTokensPair =>
-          bridgeTokensPair.fromBlockchain === fromBlockchain &&
-          bridgeTokensPair.toBlockchain === toBlockchain
+        tokenPairsByBlockchains =>
+          tokenPairsByBlockchains.fromBlockchain === fromBlockchain &&
+          tokenPairsByBlockchains.toBlockchain === toBlockchain
       )
-      ?.bridgeTokens.find(
-        bridgeToken =>
-          bridgeToken.blockchainToken[fromBlockchain]?.address.toLowerCase() ===
+      ?.tokenPairs.find(
+        tokenPair =>
+          tokenPair.tokenByBlockchain[fromBlockchain]?.address.toLowerCase() ===
           fromToken?.address.toLowerCase()
-      )?.blockchainToken[fromBlockchain][amountType];
+      )?.tokenByBlockchain[fromBlockchain][amountType];
   }
 
   public handleClick(clickType: 'swap' | 'approve') {

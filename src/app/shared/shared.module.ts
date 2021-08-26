@@ -33,6 +33,7 @@ import { RubicSelectWalletComponent } from 'src/app/core/header/components/heade
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TermsNConditionsContainerComponent } from 'src/app/shared/components/terms-n-conditions-container/terms-n-conditions-container.component';
+import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -51,7 +52,6 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
-import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
 
