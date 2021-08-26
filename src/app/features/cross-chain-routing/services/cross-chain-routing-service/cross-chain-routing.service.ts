@@ -50,10 +50,12 @@ export class CrossChainRoutingService {
 
   private settings: CcrSettingsForm;
 
-  private static isSupportedBlockchain(
+  public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
   ): blockchain is SupportedCrossChainSwapBlockchain {
-    return (supportedCrossChainSwapBlockchains as readonly BLOCKCHAIN_NAME[]).includes(blockchain);
+    return !!supportedCrossChainSwapBlockchains.find(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
   }
 
   private static checkBlockchains(

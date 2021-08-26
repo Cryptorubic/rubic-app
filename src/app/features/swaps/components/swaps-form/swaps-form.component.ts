@@ -14,6 +14,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 
 type TokenType = 'from' | 'to';
 
@@ -33,12 +34,6 @@ export class SwapsFormComponent implements OnInit {
   public allowRefresh: boolean = true;
 
   public onRefreshTrade = new Subject<void>();
-
-  private readonly supportedCrossChainRoutingBlockchains = [
-    BLOCKCHAIN_NAME.ETHEREUM,
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    BLOCKCHAIN_NAME.POLYGON
-  ];
 
   private _supportedTokens: List<TokenAmount>;
 
@@ -222,9 +217,9 @@ export class SwapsFormComponent implements OnInit {
           );
       };
 
-      if (this.supportedCrossChainRoutingBlockchains.includes(oppositeToken.blockchain)) {
+      if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
         this._supportedTokens.forEach(supportedToken => {
-          if (this.supportedCrossChainRoutingBlockchains.includes(supportedToken.blockchain)) {
+          if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
             tokens.push({
               ...supportedToken,
               available:
@@ -262,7 +257,11 @@ export class SwapsFormComponent implements OnInit {
         supportedToken.address.toLowerCase() === token.address.toLowerCase()
     );
 
-    if (tokenWithBalance && !tokenWithBalance.amount.eq(this.selectedToken[tokenType].amount)) {
+    if (
+      tokenWithBalance &&
+      (!tokenWithBalance.amount.isNaN() || !token.amount.isNaN()) &&
+      !tokenWithBalance.amount.eq(token.amount)
+    ) {
       this.selectedToken[tokenType] = tokenWithBalance;
 
       const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';

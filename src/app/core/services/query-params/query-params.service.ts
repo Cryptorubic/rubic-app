@@ -12,6 +12,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { QueryParams } from './models/query-params';
@@ -72,7 +73,7 @@ export class QueryParamsService {
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService
   ) {
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
+    this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
         ...(value.fromToken?.symbol && { from: value.fromToken.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
@@ -113,9 +114,9 @@ export class QueryParamsService {
   }
 
   private initiateTradesParams(params: QueryParams): void {
-    this.tokensService.tokens
+    this.swapsService.availableTokens
       .pipe(
-        filter(tokens => tokens?.size !== 0),
+        filter(tokens => tokens?.size > 0),
         first(),
         mergeMap(tokens =>
           this.getProtectedSwapParams(params).pipe(
@@ -149,7 +150,7 @@ export class QueryParamsService {
         })
       )
       .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
-        this.swapFormService.commonTrade.controls.input.patchValue({
+        this.swapFormService.input.patchValue({
           fromBlockchain,
           toBlockchain,
           ...(fromToken && { fromToken }),
@@ -161,8 +162,7 @@ export class QueryParamsService {
       });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private initiateCryptoTapParams(params: QueryParams): void {
+  private initiateCryptoTapParams(_params: QueryParams): void {
     // TODO: add crypto tap params
   }
 
@@ -174,42 +174,40 @@ export class QueryParamsService {
         const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.fromChain as BLOCKCHAIN_NAME
         )
-          ? queryParams.fromChain
+          ? (queryParams.fromChain as BLOCKCHAIN_NAME)
           : QueryParamsService.DEFAULT_PARAMETERS.swap.fromChain;
 
         const toChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.toChain as BLOCKCHAIN_NAME
         )
-          ? queryParams.toChain
+          ? (queryParams.toChain as BLOCKCHAIN_NAME)
           : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
 
-        const newParams =
-          queryParams.from || queryParams.to
-            ? {
-                ...queryParams,
-                from:
-                  queryParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
-                to: queryParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toChain],
-                amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
-                fromChain,
-                toChain
-              }
-            : {
-                ...queryParams,
-                fromChain,
-                toChain
-              };
-        if (newParams.from === newParams.to && fromChain === toChain) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]
-            ? (newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain])
-            : (newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]);
+        const newParams = {
+          ...queryParams,
+          fromChain,
+          toChain,
+          ...(queryParams.from && { from: queryParams.from }),
+          ...(queryParams.to && { to: queryParams.to }),
+          ...(queryParams.amount && { amount: queryParams.amount })
+        };
+
+        if (newParams.from === newParams.to) {
+          if (newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]) {
+            newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain];
+          } else {
+            newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain];
+          }
         }
 
         if (
           fromChain !== toChain &&
           newParams.from &&
           newParams.to &&
+          !(
+            CrossChainRoutingService.isSupportedBlockchain(fromChain) &&
+            CrossChainRoutingService.isSupportedBlockchain(toChain)
+          ) &&
           !pairsArray.some(
             (pairsByBlockchains: BridgeTokenPairsByBlockchains) =>
               pairsByBlockchains.fromBlockchain === fromChain &&

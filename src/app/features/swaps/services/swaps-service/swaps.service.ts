@@ -85,8 +85,7 @@ export class SwapsService {
 
         return {
           ...foundTokenAmount,
-          ...bridgeTokenPair.tokenByBlockchain[blockchain],
-          blockchain
+          ...bridgeTokenPair.tokenByBlockchain[blockchain]
         };
       }
 
