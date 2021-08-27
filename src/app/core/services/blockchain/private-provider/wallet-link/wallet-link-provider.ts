@@ -15,7 +15,7 @@ import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { WalletlinkWrongNetwork } from 'src/app/core/errors/models/provider/WalletlinkWrongNetwork';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
-import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models/providers';
 
 export class WalletLinkProvider extends PrivateProvider {
   private isMobileMode = false;

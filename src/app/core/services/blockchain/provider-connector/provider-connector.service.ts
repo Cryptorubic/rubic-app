@@ -16,7 +16,7 @@ import { MetamaskProvider } from '../private-provider/metamask-provider/metamask
 import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
 import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from '../../store/store.service';
-import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '../../../wallets/components/wallets-modal/models/providers';
 import { PrivateProvider } from '../private-provider/private-provider';
 
 @Injectable({

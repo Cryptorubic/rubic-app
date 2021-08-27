@@ -1,9 +1,16 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 :host {
-  width: 100%;
+  display: block;
   max-width: 610px;
+
+  @include iframe {
+    width: 100%;
+  }
+
+  @include iframe-horizontal {
+    max-width: unset;
+  }
 }
 
 .swaps-form {
@@ -14,6 +21,26 @@
   background-color: var(--main-form-background);
   border-radius: 19px;
   backdrop-filter: blur(50px);
+
+  @include iframe-horizontal {
+    display: flex;
+    align-items: flex-end;
+
+    min-height: $iframe-horizontal-height;
+    margin-bottom: 0;
+    padding: 0 20px 55px;
+  }
+
+  @include iframe-vertical {
+    width: $iframe-vertical-width;
+    height: $iframe-vertical-height;
+    margin-bottom: 0;
+    padding: 80px 10px 15px;
+  }
+
+  @include light-iframe {
+    background-color: white;
+  }
 
   ~ *:not(:last-child) {
     display: block;
@@ -41,17 +68,47 @@
 
     cursor: pointer;
   }
-  
+
   &__delimiter {
     position: relative;
 
     background-color: var(--main-background);
+
+    @include iframe-horizontal {
+      display: flex;
+      align-items: center;
+      margin: 0 5px;
+
+      background-color: unset;
+    }
+
+    @include iframe-vertical {
+      display: flex;
+      justify-content: center;
+      padding: 15px 0;
+
+      background: transparent;
+    }
 
     > * {
       position: absolute;
       left: 50%;
 
       transform: translate(-50%, -50%);
+
+      @include iframe-horizontal {
+        position: static;
+        left: unset;
+
+        transform: unset;
+      }
+
+      @include iframe-vertical {
+        position: static;
+        left: unset;
+
+        transform: none;
+      }
     }
 
     &::before,
@@ -66,6 +123,10 @@
       background-color: var(--rubic-secondary);
 
       content: '';
+
+      @include iframe-vertical {
+        display: none;
+      }
     }
 
     &::before {
@@ -74,6 +135,38 @@
 
     &::after {
       right: 20px;
+    }
+  }
+
+  &__content {
+    @include iframe-horizontal {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    @include iframe-vertical {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+  }
+
+  &__block {
+    @include iframe {
+      display: flex;
+
+      app-iframe-blockchain-indicator {
+        margin-right: 10px;
+      }
+    }
+
+    @include iframe-vertical {
+      app-instant-trade-bottom-form,
+      app-bridge-bottom-form {
+        width: 100%;
+      }
     }
   }
 }

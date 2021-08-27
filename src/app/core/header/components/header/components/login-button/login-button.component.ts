@@ -1,10 +1,9 @@
-import { Component, Inject, Injector, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { TuiAppearance, TuiDialogService } from '@taiga-ui/core';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { WalletsModalComponent } from '../wallets-modal/wallets-modal.component';
+import { TuiAppearance } from '@taiga-ui/core';
+import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 
 @Component({
   selector: 'app-login-button',
@@ -18,15 +17,12 @@ export class LoginButtonComponent {
 
   constructor(
     private readonly authService: AuthService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector
+    private readonly walletsModalService: WalletsModalService
   ) {
     this.$currentUser = this.authService.getCurrentUser();
   }
 
   public showModal(): void {
-    this.dialogService
-      .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
-      .subscribe();
+    this.walletsModalService.open$();
   }
 }

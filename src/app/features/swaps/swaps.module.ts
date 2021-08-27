@@ -26,8 +26,10 @@ import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select
 import { BridgesSwapProviderService } from 'src/app/features/bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
+import { IframeSettingsComponent } from './components/iframe-settings/iframe-settings.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     SettingsContainerComponent,
     SettingsItComponent,
     SettingsBridgeComponent,
-    SettingsBridgeComponent
+    SettingsBridgeComponent,
+    IframeSettingsComponent
   ],
   exports: [],
   imports: [
@@ -60,6 +63,11 @@ import { SettingsBridgeComponent } from './components/settings-bridge/settings-b
     FormsModule
   ],
   entryComponents: [SettingsItComponent, SettingsBridgeComponent],
-  providers: [SwapsService, InstantTradesSwapProviderService, BridgesSwapProviderService]
+  providers: [
+    SwapsService,
+    InstantTradesSwapProviderService,
+    BridgesSwapProviderService,
+    SuccessTxModalService
+  ]
 })
 export class SwapsModule {}
