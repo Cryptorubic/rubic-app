@@ -34,6 +34,7 @@ import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cr
 import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-provider/uniswap-v2-provider.abstract';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import MaxGasPriceOverflowError from 'src/app/core/errors/models/common/MaxGasPriceOverflowError';
+import CrossChainIsUnavailableError from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableError';
 
 @Injectable({
   providedIn: CrossChainRoutingModule
@@ -232,6 +233,7 @@ export class CrossChainRoutingService {
         firstTransitTokenAmount,
         firstTransitToken.decimals
       ),
+      secondTransitTokenAmount,
       tokenOut: toToken,
       secondPath,
       tokenOutAmount: toAmount
@@ -272,7 +274,7 @@ export class CrossChainRoutingService {
     return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
   }
 
-  private async checkGasPrice(toBlockchain: BLOCKCHAIN_NAME) {
+  private async checkGasPrice(toBlockchain: BLOCKCHAIN_NAME): Promise<void | never> {
     const contractAddress = this.contractAddresses[toBlockchain];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
     const maxGasPrice = (await web3Public.callContractMethod(
@@ -286,6 +288,29 @@ export class CrossChainRoutingService {
     }
   }
 
+  private async checkPoolBalance(trade: CrossChainRoutingTrade): Promise<void | never> {
+    const { toBlockchain } = trade;
+    const contractAddress = this.contractAddresses[toBlockchain];
+    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+
+    const poolAddress = (await web3Public.callContractMethod(
+      contractAddress,
+      this.contractAbi,
+      'blockchainPool'
+    )) as string;
+
+    const secondTransitToken = this.transitTokens[toBlockchain];
+    const poolBalanceAbsolute = await web3Public.getTokenBalance(
+      poolAddress,
+      secondTransitToken.address
+    );
+    const poolBalance = Web3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
+
+    if (trade.secondTransitTokenAmount.gt(poolBalance)) {
+      throw new CrossChainIsUnavailableError();
+    }
+  }
+
   public createTrade(
     trade: CrossChainRoutingTrade,
     options: TransactionOptions = {}
@@ -294,6 +319,7 @@ export class CrossChainRoutingService {
       (async () => {
         this.providerConnectorService.checkSettings(trade.fromBlockchain);
         await this.checkGasPrice(trade.toBlockchain);
+        await this.checkPoolBalance(trade);
 
         const web3PublicFromBlockchain: Web3Public = this.web3PublicService[trade.fromBlockchain];
         const walletAddress = this.providerConnectorService.address;
