@@ -33,8 +33,8 @@ import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/
 import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
 import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-provider/uniswap-v2-provider.abstract';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import MaxGasPriceOverflowError from 'src/app/core/errors/models/common/MaxGasPriceOverflowError';
-import CrossChainIsUnavailableError from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableError';
+import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
+import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
 
 @Injectable({
   providedIn: CrossChainRoutingModule
@@ -284,7 +284,7 @@ export class CrossChainRoutingService {
     )) as string;
     const currentGasPrice = await web3Public.getGasPrice();
     if (new BigNumber(maxGasPrice).lt(currentGasPrice)) {
-      throw new MaxGasPriceOverflowError(toBlockchain);
+      throw new MaxGasPriceOverflowWarning(toBlockchain);
     }
   }
 
@@ -307,7 +307,7 @@ export class CrossChainRoutingService {
     const poolBalance = Web3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
 
     if (trade.secondTransitTokenAmount.gt(poolBalance)) {
-      throw new CrossChainIsUnavailableError();
+      throw new CrossChainIsUnavailableWarning();
     }
   }
 

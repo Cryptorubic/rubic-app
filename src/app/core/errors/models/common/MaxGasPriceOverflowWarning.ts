@@ -1,14 +1,14 @@
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { MaxGasPriceOverflowErrorComponent } from 'src/app/core/errors/components/max-gas-price-overflow-error/max-gas-price-overflow-error.component';
+import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
 
-class MaxGasPriceOverflowError extends RubicError<ERROR_TYPE.COMPONENT> {
+class MaxGasPriceOverflowWarning extends RubicWarning<ERROR_TYPE.COMPONENT> {
   constructor(toBlockchain: string) {
     super(MaxGasPriceOverflowErrorComponent, {
       toBlockchain
     });
-    Object.setPrototypeOf(this, MaxGasPriceOverflowError.prototype);
+    Object.setPrototypeOf(this, MaxGasPriceOverflowWarning.prototype);
   }
 }
 
-export default MaxGasPriceOverflowError;
+export default MaxGasPriceOverflowWarning;
