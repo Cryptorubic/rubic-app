@@ -65,6 +65,14 @@
                 }
               ]
             },
+            "prod-api": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod-api.ts"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -134,6 +142,9 @@
             },
             "dev2": {
               "browserTarget": "rubic:build:dev2"
+            },
+            "prod-api": {
+              "browserTarget": "rubic:build:prod-api"
             }
           }
         },
