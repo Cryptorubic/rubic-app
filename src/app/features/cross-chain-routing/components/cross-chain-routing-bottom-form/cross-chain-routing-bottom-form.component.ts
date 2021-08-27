@@ -10,12 +10,13 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { forkJoin, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
   distinctUntilChanged,
+  filter,
   first,
   map,
   startWith,
@@ -61,6 +62,8 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
   }
 };
 
+type CalculateTradeType = 'normal' | 'hidden';
+
 @Component({
   selector: 'app-cross-chain-routing-bottom-form',
   templateUrl: './cross-chain-routing-bottom-form.component.html',
@@ -79,9 +82,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
-  public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+  private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
-  private readonly onCalculateTrade$: Subject<void>;
+  private hiddenTradeData$: BehaviorSubject<{
+    crossChainRoutingTrade: CrossChainRoutingTrade;
+    errorText?: string;
+  }>;
 
   public toBlockchain: BLOCKCHAIN_NAME;
 
@@ -104,6 +110,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   public slippageTolerance: number;
 
   private calculateTradeSubscription$: Subscription;
+
+  private hiddenCalculateTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
 
@@ -143,11 +151,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService
   ) {
-    this.onCalculateTrade$ = new Subject<void>();
+    this.onCalculateTrade$ = new Subject<CalculateTradeType>();
+    this.hiddenTradeData$ = new BehaviorSubject<{
+      crossChainRoutingTrade: CrossChainRoutingTrade;
+      errorText?: string;
+    }>(undefined);
   }
 
   ngOnInit() {
     this.setupTradeCalculation();
+    this.setupHiddenCalculation();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.swapFormService.inputValueChanges
@@ -184,6 +197,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.calculateTradeSubscription$.unsubscribe();
+    this.hiddenCalculateTradeSubscription$.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
@@ -191,10 +205,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
 
-    this.conditionalCalculate();
+    this.conditionalCalculate('normal');
   }
 
-  private async conditionalCalculate(): Promise<void> {
+  private async conditionalCalculate(type?: CalculateTradeType): Promise<void> {
     this.maxError = false;
     this.minError = false;
     this.errorText = '';
@@ -213,7 +227,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.onCalculateTrade$.next();
+    const { autoRefresh } = this.settingsService.crossChainRoutingValue;
+    this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
   }
 
   private setupTradeCalculation(): void {
@@ -223,6 +238,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
+        filter(el => el === 'normal'),
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
@@ -286,6 +302,66 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  public setupHiddenCalculation(): void {
+    if (this.hiddenCalculateTradeSubscription$) {
+      return;
+    }
+
+    this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade$
+      .pipe(
+        filter(el => el === 'hidden'),
+        switchMap(() => {
+          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+
+          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts(fromToken);
+
+          return forkJoin([
+            this.crossChainRoutingService.calculateTrade(fromToken, fromAmount, toToken),
+            minMaxAmounts$
+          ]).pipe(
+            map(([trade, minMaxAmounts]) => {
+              const { minAmount, maxAmount } = minMaxAmounts;
+              this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
+              this.maxError = fromAmount?.gt(maxAmount) ? maxAmount : false;
+
+              this.hiddenTradeData$.next({ crossChainRoutingTrade: trade });
+              if (!trade.tokenOutAmount.eq(this.crossChainRoutingTrade.tokenOutAmount)) {
+                this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+              }
+
+              this.cdr.detectChanges();
+            }),
+            catchError((err: RubicError<ERROR_TYPE>) => {
+              const errorText = err.translateKey || err.message;
+              this.hiddenTradeData$.next({ crossChainRoutingTrade: null, errorText });
+              if (!this.errorText) {
+                this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+              }
+              this.cdr.detectChanges();
+
+              return of(null);
+            })
+          );
+        })
+      )
+      .subscribe();
+  }
+
+  public setHiddenData() {
+    const data = this.hiddenTradeData$.getValue();
+    this.crossChainRoutingTrade = data.crossChainRoutingTrade;
+    this.errorText = data.errorText;
+
+    if (this.crossChainRoutingTrade) {
+      this.tradeStatus = this.needApprove
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
+    } else {
+      this.tradeStatus = TRADE_STATUS.DISABLED;
+    }
+    this.cdr.detectChanges();
   }
 
   public async approveTrade(): Promise<void> {

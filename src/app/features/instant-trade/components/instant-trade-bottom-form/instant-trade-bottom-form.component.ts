@@ -69,6 +69,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
+  private hiddenDataAmounts$: BehaviorSubject<
+    { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+  >;
+
   private providerControllers: ProviderControllerData[];
 
   public selectedProvider: ProviderControllerData;
@@ -125,10 +129,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.providerControllers.find(provider => provider.tradeProviderInfo.value === providerName)
     );
   }
-
-  private hiddenDataAmounts$: BehaviorSubject<
-    { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
-  >;
 
   constructor(
     public readonly swapFormService: SwapFormService,
@@ -189,6 +189,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.calculateTradeSubscription$.unsubscribe();
+    this.hiddenCalculateTradeSubscription$.unsubscribe();
   }
 
   private setupSwapForm(form: SwapFormInput): void {
@@ -296,7 +297,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { autoRefresh } = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    const { autoRefresh } = this.settingsService.instantTradeValue;
     const haveHiddenCalc = this.hiddenDataAmounts$.value.length > 0;
     this.onCalculateTrade$.next(type || (autoRefresh || !haveHiddenCalc ? 'normal' : 'hidden'));
   }
