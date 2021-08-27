@@ -32,7 +32,9 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   @Input() set loadingStatus(status: REFRESH_BUTTON_STATUS) {
     this.status = status;
     if (status === REFRESH_BUTTON_STATUS.STOPPED) {
-      this.setupTimer();
+      if (this.type === 'autoRefresh') {
+        this.setupTimer();
+      }
     } else {
       clearTimeout(this.timer);
       if (status === REFRESH_BUTTON_STATUS.REFRESHING) {

@@ -10,19 +10,19 @@ export type TransitTokens = {
 export const transitTokensWithMode: { mainnet: TransitTokens; testnet: TransitTokens } = {
   mainnet: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
-      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      address: '0xA4EED63db85311E22dF4473f87CcfC3DaDCFA3E3',
       decimals: 18,
-      symbol: 'DAI'
+      symbol: 'RBC'
     },
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-      address: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
+      address: '0x8E3BCC334657560253B83f08331d85267316e08a',
       decimals: 18,
-      symbol: 'DAI'
+      symbol: 'BRBC'
     },
     [BLOCKCHAIN_NAME.POLYGON]: {
-      address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+      address: '0xc3cFFDAf8F3fdF07da6D5e3A89B8723D5E385ff8',
       decimals: 18,
-      symbol: 'DAI'
+      symbol: 'MRBC'
     }
   },
   testnet: {
