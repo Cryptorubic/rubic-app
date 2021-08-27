@@ -260,15 +260,10 @@ export class CommonUniswapV2Service {
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
 
-    let gasPrice;
-    let gasPriceInEth;
-    let gasPriceInUsd;
-    if (shouldCalculateGas || minGasPrice) {
-      gasPrice = await this.getGasPrice(blockchain, minGasPrice);
-      gasPriceInEth = Web3Public.fromWei(gasPrice);
-      const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
-      gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
-    }
+    const gasPrice = await this.getGasPrice(blockchain, minGasPrice);
+    const gasPriceInEth = Web3Public.fromWei(gasPrice);
+    const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
+    const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
 
     const { route, estimatedGas } = await this.getToAmountAndPath(
       fromTokenAddress,
@@ -297,11 +292,8 @@ export class CommonUniswapV2Service {
       options: {
         path: route.path
       },
-      ...(gasPrice && { gasPrice })
+      ...(shouldCalculateGas && { gasPrice })
     };
-    if (!shouldCalculateGas) {
-      return instantTrade;
-    }
 
     const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.GAS_MARGIN);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);

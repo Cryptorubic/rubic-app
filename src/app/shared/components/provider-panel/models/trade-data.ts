@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface TradeData {
   /**
@@ -23,4 +24,6 @@ export interface TradeData {
   usdPrice: string;
 
   toTokenDecimals: number;
+
+  blockchain: BLOCKCHAIN_NAME;
 }

@@ -33,6 +33,7 @@
       [tokens]="availableTokens['from']"
       [formService]="swapFormService"
       [toTokenSelected]="toTokenSelected"
+      [maxGasFee]="maxGasFee"
     ></app-token-amount-input>
 
     <div class="swaps-form__delimiter">
@@ -48,6 +49,7 @@
       [formService]="swapFormService"
       (allowRefreshChange)="allowRefresh = $event"
       (toTokenSelected)="toTokenSelected = $event"
+      (maxGasLimit)="maxGasFee = $event"
     ></app-instant-trade-bottom-form>
 
     <app-bridge-bottom-form

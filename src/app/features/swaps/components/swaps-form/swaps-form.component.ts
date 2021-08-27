@@ -38,6 +38,8 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public toTokenSelected: boolean = false;
 
+  public maxGasFee: BigNumber;
+
   public onRefreshTrade = new Subject<void>();
 
   public get isInstantTrade(): boolean {

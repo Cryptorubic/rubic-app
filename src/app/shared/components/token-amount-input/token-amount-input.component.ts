@@ -1,16 +1,17 @@
 import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -32,6 +33,8 @@ export class TokenAmountInputComponent {
 
   @Input() toTokenSelected: boolean;
 
+  @Input() maxGasFee: BigNumber;
+
   @Input() set amount(value: BigNumber) {
     if (value && !value.isNaN() && !value.eq(this.amount)) {
       this.amountControl.setValue(value.toFixed());
@@ -51,8 +54,14 @@ export class TokenAmountInputComponent {
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
   public onUserBalanceMaxButtonClick(): void {
-    const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);
-    this.amountControl.setValue(amount);
+    const { amount, address } = this.token;
+    if (address === NATIVE_TOKEN_ADDRESS) {
+      const maxAmount = amount.minus(this.maxGasFee);
+      console.log(this.maxGasFee.toString(10), maxAmount.toString(10));
+      this.amountControl.setValue(maxAmount.gt(0) ? maxAmount.toFormat(BIG_NUMBER_FORMAT) : 0);
+    } else {
+      this.amountControl.setValue(amount);
+    }
   }
 
   public getUsdPrice(): BigNumber {

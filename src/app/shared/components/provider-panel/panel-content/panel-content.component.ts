@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TradeData } from 'src/app/shared/components/provider-panel/models/trade-data';
 import { ProviderData } from 'src/app/shared/components/provider-panel/models/provider-data';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-panel-content',
@@ -12,6 +13,8 @@ export class PanelContentComponent {
   @Input() public tradeData: TradeData;
 
   @Input() public providerData: ProviderData;
+
+  public blockchains = BLOCKCHAIN_NAME;
 
   constructor() {}
 }
