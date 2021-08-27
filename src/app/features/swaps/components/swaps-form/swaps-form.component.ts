@@ -202,10 +202,12 @@ export class SwapsFormComponent implements OnInit {
       const blockchainKey = tokenType === 'from' ? 'fromBlockchain' : 'toBlockchain';
       const oppositeBlockchainKey = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
 
-      const checkEqualAddressAndPush = (supportedToken: TokenAmount): void => {
+      const checkIsEqualTokenAndPush = (supportedToken: TokenAmount): void => {
         tokens.push({
           ...supportedToken,
-          available: supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
+          available:
+            supportedToken.blockchain !== oppositeToken.blockchain ||
+            supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
         });
       };
 
@@ -232,7 +234,7 @@ export class SwapsFormComponent implements OnInit {
       if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
         this._supportedTokens.forEach(supportedToken => {
           if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
-            checkEqualAddressAndPush(supportedToken);
+            checkIsEqualTokenAndPush(supportedToken);
           } else {
             checkIsBridgeTokenPairAndPush(supportedToken);
           }
@@ -240,7 +242,7 @@ export class SwapsFormComponent implements OnInit {
       } else if (InstantTradeService.isSupportedBlockchain(oppositeToken.blockchain)) {
         this._supportedTokens.forEach(supportedToken => {
           if (oppositeToken.blockchain === supportedToken.blockchain) {
-            checkEqualAddressAndPush(supportedToken);
+            checkIsEqualTokenAndPush(supportedToken);
           } else {
             checkIsBridgeTokenPairAndPush(supportedToken);
           }
