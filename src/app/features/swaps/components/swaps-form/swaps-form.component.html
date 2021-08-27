@@ -13,6 +13,7 @@
       (onRefresh)="onRefreshTrade.next()"
       [loadingStatus]="loadingStatus"
       [autoUpdate]="autoRefresh"
+      [swapType]="swapType"
     ></app-rubic-refresh-button>
 
     <app-gas-indicator *ngIf="isMobile$ | async"></app-gas-indicator>

@@ -65,6 +65,10 @@
   }
 }
 
+.refresh-icon-tooltip {
+  font-size: 15px;
+}
+
 @keyframes refreshAnimation {
   100% {
     transform: rotate(-360deg);
