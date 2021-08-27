@@ -13,7 +13,15 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { catchError, first, map, startWith, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  first,
+  map,
+  startWith,
+  switchMap,
+  takeUntil
+} from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -21,11 +29,9 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
@@ -36,8 +42,8 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
-import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
 
 interface BlockchainInfo {
   name: string;
@@ -59,7 +65,8 @@ const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
   selector: 'app-cross-chain-routing-bottom-form',
   templateUrl: './cross-chain-routing-bottom-form.component.html',
   styleUrls: ['./cross-chain-routing-bottom-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   @Input() onRefreshTrade: Subject<void>;
@@ -74,15 +81,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
-  private readonly onCalculateTrade: Subject<void>;
-
-  private fromBlockchain: BLOCKCHAIN_NAME;
+  private readonly onCalculateTrade$: Subject<void>;
 
   public toBlockchain: BLOCKCHAIN_NAME;
-
-  private fromToken: TokenAmount;
-
-  private toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
@@ -102,15 +103,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public slippageTolerance: number;
 
-  private formSubscription$: Subscription;
-
-  private settingsSubscription$: Subscription;
-
-  private userSubscription$: Subscription;
-
   private calculateTradeSubscription$: Subscription;
-
-  private refreshTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
 
@@ -138,68 +131,63 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   constructor(
     private errorsService: ErrorsService,
     public swapFormService: SwapFormService,
-    private swapService: SwapsService,
     private settingsService: SettingsService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private web3PublicService: Web3PublicService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    private readonly destroy$: TuiDestroyService
   ) {
-    this.onCalculateTrade = new Subject<void>();
+    this.onCalculateTrade$ = new Subject<void>();
   }
 
   ngOnInit() {
     this.setupTradeCalculation();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.formSubscription$ = this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
+    this.swapFormService.inputValueChanges
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            prev.fromToken?.address === next.fromToken?.address &&
+            prev.toToken?.address === next.toToken?.address &&
+            prev.fromAmount === next.fromAmount
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsSubscription$ = this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue))
+    this.settingsService.crossChainRoutingValueChanges
+      .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
       .subscribe(settings => {
         this.slippageTolerance = settings.slippageTolerance;
       });
 
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-      this.toWalletAddress = user?.address;
-    });
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.toWalletAddress = user?.address;
+      });
 
-    this.refreshTradeSubscription$ = this.onRefreshTrade.subscribe(() =>
-      this.conditionalCalculate()
-    );
+    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
   }
 
   ngOnDestroy() {
-    this.formSubscription$.unsubscribe();
-    this.settingsSubscription$.unsubscribe();
-    this.userSubscription$.unsubscribe();
-    this.refreshTradeSubscription$.unsubscribe();
+    this.calculateTradeSubscription$.unsubscribe();
   }
 
   private setFormValues(form: SwapFormInput): void {
-    if (
-      this.fromBlockchain === form.fromBlockchain &&
-      this.toBlockchain === form.toBlockchain &&
-      this.fromAmount &&
-      this.fromAmount.eq(form.fromAmount) &&
-      this.tokensService.isOnlyBalanceUpdated(this.fromToken, form.fromToken) &&
-      this.tokensService.isOnlyBalanceUpdated(this.toToken, form.toToken)
-    ) {
-      return;
-    }
-
-    this.fromBlockchain = form.fromBlockchain;
     this.toBlockchain = form.toBlockchain;
-    this.fromToken = form.fromToken;
-    this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
 
@@ -225,7 +213,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.onCalculateTrade.next();
+    this.onCalculateTrade$.next();
   }
 
   private setupTradeCalculation(): void {
@@ -233,7 +221,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.calculateTradeSubscription$ = this.onCalculateTrade
+    this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;

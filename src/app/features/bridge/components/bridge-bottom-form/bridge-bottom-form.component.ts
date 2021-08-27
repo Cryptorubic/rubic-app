@@ -11,7 +11,7 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -79,7 +79,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
-  private readonly onCalculateTrade: Subject<void>;
+  private readonly onCalculateTrade$: Subject<void>;
 
   private bridgeTokenPairsByBlockchainsArray: BridgeTokenPairsByBlockchains[];
 
@@ -150,7 +150,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService
   ) {
     this.isBridgeSupported = true;
-    this.onCalculateTrade = new Subject<void>();
+    this.onCalculateTrade$ = new Subject<void>();
   }
 
   ngOnInit() {
@@ -162,7 +162,19 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     });
 
     this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            prev.fromToken?.address === next.fromToken?.address &&
+            prev.toToken?.address === next.toToken?.address &&
+            prev.fromAmount === next.fromAmount
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
       .subscribe(form => this.setFormValues(form));
 
     this.settingsService.bridgeValueChanges
@@ -185,17 +197,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setFormValues(form: SwapFormInput): void {
-    if (
-      this.fromBlockchain === form.fromBlockchain &&
-      this.toBlockchain === form.toBlockchain &&
-      this.fromAmount &&
-      this.fromAmount.eq(form.fromAmount) &&
-      this.tokensService.isOnlyBalanceUpdated(this.fromToken, form.fromToken) &&
-      this.tokensService.isOnlyBalanceUpdated(this.toToken, form.toToken)
-    ) {
-      return;
-    }
-
     this.fromBlockchain = form.fromBlockchain;
     this.toBlockchain = form.toBlockchain;
     this.fromToken = form.fromToken;
@@ -249,7 +250,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     this.checkMinMaxAmounts();
-    this.onCalculateTrade.next();
+    this.onCalculateTrade$.next();
   }
 
   private setupTradeCalculation(): void {
@@ -257,7 +258,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.calculateTradeSubscription$ = this.onCalculateTrade
+    this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
