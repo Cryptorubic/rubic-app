@@ -13,6 +13,7 @@
 
   <ng-container *ngIf="!needLogin && status === TRADE_STATUS.OLD_TRADE_DATA">
     <app-rubic-button
+      [attr.rate-is-updated]="true"
       [fullWidth]="true"
       (click)="updateRatesClick.emit()"
       appearance="secondary"

@@ -19,6 +19,18 @@
       </div>
     </header>
 
+    <!-- TODO: refactor update button, move subscription into service -->
+    <ng-container *onlyFrame>
+      <app-rubic-refresh-button
+        *ngIf="isInstantTrade && allowTrade && allowRefresh"
+        style="display: none;"
+        type="autoRefresh"
+        (onRefresh)="onRefreshTrade.next()"
+        [loadingStatus]="loadingStatus"
+        [autoUpdate]="autoRefresh"
+      ></app-rubic-refresh-button>
+    </ng-container>
+
     <main class="swaps-form__content">
       <app-swaps-header
         *noFrame

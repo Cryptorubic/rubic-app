@@ -73,6 +73,15 @@ app-rubic-button[error=true] {
   }
 }
 
+app-rubic-button[rate-is-updated=true] {
+  @include iframe {
+    ::ng-deep button span {
+      font-size: 13px;
+      line-height: 16px;
+    }
+  }
+}
+
 .grey-background {
   @include light-iframe {
     ::ng-deep tui-wrapper {
