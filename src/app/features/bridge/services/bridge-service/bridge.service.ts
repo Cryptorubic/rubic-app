@@ -135,6 +135,10 @@ export class BridgeService {
   }
 
   public async isBridgeSupported(): Promise<boolean> {
+    const { fromToken, toToken } = this.swapFormService.inputValue;
+    if (!fromToken || !toToken) {
+      return !!this.bridgeProvider;
+    }
     return !!this.bridgeProvider && !!(await this.getCurrentBridgeToken().toPromise());
   }
 

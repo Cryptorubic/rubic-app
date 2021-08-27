@@ -209,9 +209,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private async conditionalCalculate(type?: CalculateTradeType): Promise<void> {
-    this.maxError = false;
-    this.minError = false;
-    this.errorText = '';
+    const { fromToken, toToken } = this.swapFormService.inputValue;
+    if (!fromToken?.address || !toToken?.address) {
+      this.maxError = false;
+      this.minError = false;
+      this.errorText = '';
+    }
 
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     if (fromBlockchain === toBlockchain) {
@@ -250,12 +253,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             ? this.crossChainRoutingService.needApprove()
             : of(false);
 
-          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts();
-
           return forkJoin([
             this.crossChainRoutingService.calculateTrade(),
             needApprove$,
-            minMaxAmounts$
+            this.crossChainRoutingService.getMinMaxAmounts()
           ]).pipe(
             map(([trade, needApprove, minMaxAmounts]) => {
               const { minAmount, maxAmount } = minMaxAmounts;
@@ -313,11 +314,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
+
           const { fromAmount } = this.swapFormService.inputValue;
 
-          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts();
-
-          return forkJoin([this.crossChainRoutingService.calculateTrade(), minMaxAmounts$]).pipe(
+          return forkJoin([
+            this.crossChainRoutingService.calculateTrade(),
+            this.crossChainRoutingService.getMinMaxAmounts()
+          ]).pipe(
             map(([trade, minMaxAmounts]) => {
               const { minAmount, maxAmount } = minMaxAmounts;
               this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
@@ -329,6 +333,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               }
 
               this.cdr.detectChanges();
+              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             catchError((err: RubicError<ERROR_TYPE>) => {
               const errorText = err.translateKey || err.message;
@@ -337,6 +342,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
               this.cdr.detectChanges();
+              this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
               return of(null);
             })
