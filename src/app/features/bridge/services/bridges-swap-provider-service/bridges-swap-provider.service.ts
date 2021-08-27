@@ -28,12 +28,14 @@ export class BridgesSwapProviderService extends SwapProvider {
           tokenAmount.address.toLowerCase() ===
             bridgeToken.blockchainToken[blockchain].address.toLowerCase()
       );
-      tokens.push({
-        ...foundTokenAmount,
-        ...bridgeToken.blockchainToken[blockchain],
-        blockchain,
-        amount: foundTokenAmount?.amount || new BigNumber(0)
-      });
+      if (foundTokenAmount) {
+        tokens.push({
+          ...foundTokenAmount,
+          ...bridgeToken.blockchainToken[blockchain],
+          blockchain,
+          amount: foundTokenAmount?.amount || new BigNumber(0)
+        });
+      }
     }
 
     return combineLatest([

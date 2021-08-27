@@ -1,5 +1,10 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
+
+:host {
+  @include iframe-horizontal {
+    display: flex;
+  }
+}
 
 $green: rgb(74, 169, 86);
 
@@ -8,6 +13,27 @@ $green: rgb(74, 169, 86);
 
   background-color: var(--main-background);
   border-radius: 0 0 14px 14px;
+
+  @include iframe-horizontal {
+    position: relative;
+
+    width: $iframe-horizontal-input-width;
+    height: 50px;
+    padding: 0 7px 0 16px;
+
+    border-radius: 10px;
+  }
+
+  @include iframe-horizontal-light {
+    background-color: var(--rubic-base-14);
+  }
+
+  @include iframe-vertical {
+    width: 100%;
+    padding: 0 !important;
+
+    background-color: transparent;
+  }
 
   &__provider-item:first-child {
     width: 100%;
@@ -38,6 +64,16 @@ $green: rgb(74, 169, 86);
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
+
+    @include iframe-horizontal {
+      order: 2;
+      margin-left: auto;
+    }
+
+    @include iframe-vertical {
+      width: 100%;
+      margin-bottom: 10px;
+    }
   }
 
   &__provider-badge {
@@ -59,20 +95,78 @@ $green: rgb(74, 169, 86);
     margin-top: 30px;
   }
 
+  &__body {
+    @include iframe-horizontal {
+      height: 100%;
+    }
+  }
+
   &__body-top {
     display: flex;
     justify-content: space-between;
 
     min-height: 60px;
 
+    @include iframe-horizontal {
+      align-items: center;
+      width: 100%;
+
+      height: 100%;
+
+      min-height: unset;
+    }
+
     @include b($mobile-sm) {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    @include iframe-vertical {
+      flex-direction: column;
+      margin-bottom: 30px;
     }
   }
 
   &__amount {
     text-align: right;
+
+    @include iframe-horizontal {
+      order: 1;
+    }
+
+    @include iframe-vertical {
+      position: relative;
+
+      display: flex;
+      width: 100%;
+      margin-bottom: 34px;
+
+      app-iframe-blockchain-indicator {
+        margin-right: 15px;
+      }
+    }
+
+    &_skeleton-container {
+      @include iframe-vertical {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 50px;
+        padding-left: 16px;
+
+        background-color: var(--main-background);
+        border-radius: 10px;
+      }
+
+      @include iframe-vertical-light {
+        background-color: var(--rubic-base-14);
+      }
+    }
+
+    &_skeleton {
+      width: 200px;
+      height: 40px;
+    }
   }
 
   &__token-amount {
@@ -89,6 +183,34 @@ $green: rgb(74, 169, 86);
 
     scrollbar-width: none;
 
+    @include iframe-horizontal {
+      margin-bottom: 0;
+
+      font-size: 20px;
+    }
+
+    @include iframe-vertical {
+      flex: 1;
+      width: 100%;
+      max-width: unset;
+      height: 50px;
+      margin-bottom: 0;
+      padding-left: 16px;
+
+      font-size: 20px;
+      line-height: 50px;
+      text-align: left;
+
+      background-color: var(--main-background);
+
+      border-radius: 10px;
+    }
+
+    @include iframe-vertical-light {
+      background-color: var(--rubic-base-14);
+    }
+
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -102,11 +224,43 @@ $green: rgb(74, 169, 86);
     text-align: right;
   }
 
+  &__iframe-info {
+    position: absolute;
+    bottom: -33px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+
+    > :first-child {
+      margin-right: 5px;
+    }
+
+    > div {
+      @include iframe-card;
+    }
+  }
+
   &__swap {
+    @include iframe-vertical {
+      padding: 0 !important;
+
+      app-swap-button {
+        width: 100%;
+
+        margin-top: 16px !important;
+      }
+    }
+
     app-swap-button {
       display: block;
 
       margin-top: 16px;
+
+      @include iframe-horizontal {
+        margin-top: 0;
+        margin-left: 12px;
+      }
     }
   }
 }
@@ -120,7 +274,7 @@ $green: rgb(74, 169, 86);
     &__token-amount {
       margin-bottom: 0;
     }
-    
+
     &__usd-amount {
       text-align: left;
     }

@@ -1,10 +1,15 @@
-@import 'src/scss/mixins';
-@import 'src/scss/vars';
+@import 'src/styles';
 
 .user-balance-container {
   margin-top: 10px;
-  
+
+  @include iframe {
+    margin-top: 0;
+  }
+
   &__balance {
+
+    @include iframe-card;
     margin-right: 10px;
 
     color: var(--form-dim-text-color);

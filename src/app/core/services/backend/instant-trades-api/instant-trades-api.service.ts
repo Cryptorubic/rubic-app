@@ -13,11 +13,11 @@ import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
-import { QueryParamsService } from '../../query-params/query-params.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -31,16 +31,13 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
-  private isIframe: boolean;
-
   constructor(
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
-    private queryParamsService: QueryParamsService
+    private readonly iframeService: IframeService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
-    this.queryParamsService.isIframe$.subscribe(res => (this.isIframe = res));
   }
 
   public notifyInstantTradesBot(body: {
@@ -73,7 +70,7 @@ export class InstantTradesApiService {
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi | null> {
-    if (this.isIframe) {
+    if (this.iframeService.isIframe) {
       return of(null);
     }
 
@@ -114,10 +111,9 @@ export class InstantTradesApiService {
   /**
    * @description update status of trade
    * @param hash hash of transaction what we want to update
-   * @param status status of trade what we want to set
    */
   public patchTrade(hash: string): Observable<InstantTradesResponseApi | null> {
-    if (this.isIframe) {
+    if (this.iframeService.isIframe) {
       return of(null);
     }
 

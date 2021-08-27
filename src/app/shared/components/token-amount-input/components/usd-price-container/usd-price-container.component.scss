@@ -1,7 +1,8 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 .usd-price-container {
+
+  @include iframe-card;
   display: flex;
   justify-content: flex-end;
 
@@ -30,5 +31,9 @@
     text-overflow: ellipsis;
 
     cursor: default;
+
+    @include iframe-horizontal {
+      font-size: 12px;
+    }
   }
 }

@@ -1,0 +1,37 @@
+<section class="vertical-iframe-input">
+  <app-rubic-tokens
+    class="vertical-iframe-input__row"
+    [loading]="loading"
+    formType="from"
+    [tokens]="tokens"
+    [formService]="formService"
+  ></app-rubic-tokens>
+
+  <div class="vertical-iframe-input__row blockchain-and-amount-input">
+    <app-iframe-blockchain-indicator *ngIf="token?.blockchain as blockchain" [blockchain]="blockchain">
+    </app-iframe-blockchain-indicator>
+    <label class="blockchain-and-amount-input__label">
+      <input
+        autocomplete="off"
+        class="blockchain-and-amount-input__input"
+        name="token-amount"
+        [placeholder]="placeholder"
+        appTokenAmount
+        [formControl]="amountControl"
+        [decimals]="token?.decimals || DEFAULT_DECIMALS"
+        (amountChange)="emitAmountChange($event)"
+      />
+      <app-user-balance-container
+        [token]="token"
+        type="from"
+        hide="balance"
+        (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
+      ></app-user-balance-container>
+    </label>
+  </div>
+
+  <div class="vertical-iframe-input__row cards-container">
+    <app-usd-price-container *ngIf="usdPrice?.gt(0)" [usdPrice]="usdPrice"></app-usd-price-container>
+    <app-user-balance-container [token]="token" hide="maxButton"></app-user-balance-container>
+  </div>
+</section>

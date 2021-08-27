@@ -12,7 +12,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from '../../blockchain-info';
 import { PrivateProvider } from '../private-provider';
-import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models/providers';
 
 export class WalletConnectProvider extends PrivateProvider {
   private isEnabled: boolean;

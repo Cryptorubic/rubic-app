@@ -3,16 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
-  Inject,
-  Injector,
   OnDestroy,
   OnInit
 } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -25,6 +21,7 @@ import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-b
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { Router } from '@angular/router';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -55,8 +52,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     private readonly authService: AuthService,
     private readonly translate: TranslateService,
     private readonly errorsService: ErrorsService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
+    private readonly walletsModalService: WalletsModalService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
@@ -122,9 +118,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   public showConnectWalletModal(): void {
-    this.dialogService
-      .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
-      .subscribe();
+    this.walletsModalService.open$();
   }
 
   public receivePolygonBridgeTrade(trade: TableTrade): void {
