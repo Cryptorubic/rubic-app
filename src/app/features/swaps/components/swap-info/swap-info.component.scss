@@ -1,0 +1,19 @@
+.swaps-info {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 14px;
+
+  padding: 20px 43px;
+
+  background-color: var(--main-form-background);
+  border-radius: 19px;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 16px;
+    line-height: 18px;
+  }
+}

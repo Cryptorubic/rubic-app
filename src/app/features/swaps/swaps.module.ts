@@ -9,6 +9,7 @@ import {
   TuiDropdownControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
+  TuiLoaderModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -31,6 +32,7 @@ import { UserBalanceContainerComponent } from 'src/app/features/swaps/components
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
+import { SwapInfoComponent } from './components/swap-info/swap-info.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/s
     SettingsCcrComponent,
     TokenAmountInputComponent,
     UsdPriceContainerComponent,
-    UserBalanceContainerComponent
+    UserBalanceContainerComponent,
+    SwapInfoComponent
   ],
   exports: [],
   imports: [
@@ -65,7 +68,8 @@ import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/s
     InlineSVGModule,
     TuiHintModule,
     TokensSelectModule,
-    FormsModule
+    FormsModule,
+    TuiLoaderModule
   ],
   entryComponents: [SettingsItComponent, SettingsBridgeComponent, SettingsCcrComponent],
   providers: [SwapsService]

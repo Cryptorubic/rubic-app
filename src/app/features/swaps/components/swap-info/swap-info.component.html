@@ -1,0 +1,34 @@
+<tui-loader
+  *ngIf="isCrossChainRouting && allowTrade && (crossChainSwapInfo || isSwapInfoLoading)"
+  [overlay]="true"
+  [showLoader]="isSwapInfoLoading"
+>
+  <div class="swaps-info" *ngIf="crossChainSwapInfo">
+    <div class="swaps-info__item swaps-info-item">
+      <div class="swaps-info-item__title">Maximum spent</div>
+      <div class="swaps-info-item__value">
+        {{
+          crossChainSwapInfo.maximumSpent
+            | bigNumberFormat
+            | withRound: 'toClosestValue':fromToken.decimals
+        }}
+        {{ fromToken.symbol }}
+      </div>
+    </div>
+    <div class="swaps-info__item swaps-info-item">
+      <div class="swaps-info-item__title">Minimum received</div>
+      <div class="swaps-info-item__value">
+        {{
+          crossChainSwapInfo.minimumReceived
+            | bigNumberFormat
+            | withRound: 'toClosestValue':toToken.decimals
+        }}
+        {{ toToken.symbol }}
+      </div>
+    </div>
+    <div class="swaps-info__item swaps-info-item">
+      <div class="swaps-info-item__title">Platform fee</div>
+      <div class="swaps-info-item__value">{{ crossChainSwapInfo.platformFee }}%</div>
+    </div>
+  </div>
+</tui-loader>

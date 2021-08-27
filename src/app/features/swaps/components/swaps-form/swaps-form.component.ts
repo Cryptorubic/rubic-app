@@ -23,6 +23,10 @@ type SelectedToken = {
   [tokenType in TokenType]: TokenAmount;
 };
 
+type AvailableTokens = {
+  [tokenType in TokenType]: AvailableTokenAmount[];
+};
+
 @Component({
   selector: 'app-swaps-form',
   templateUrl: './swaps-form.component.html',
@@ -30,6 +34,8 @@ type SelectedToken = {
   providers: [TuiDestroyService]
 })
 export class SwapsFormComponent implements OnInit {
+  public isLoading = true;
+
   public autoRefresh: boolean;
 
   public allowRefresh: boolean = true;
@@ -40,17 +46,9 @@ export class SwapsFormComponent implements OnInit {
 
   private _bridgeTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
 
-  public availableTokens: {
-    from: AvailableTokenAmount[];
-    to: AvailableTokenAmount[];
-  } = {
-    from: [],
-    to: []
-  };
+  public availableTokens: AvailableTokens;
 
-  public selectedToken: SelectedToken = {} as SelectedToken;
-
-  public isLoading = true;
+  public selectedToken: SelectedToken;
 
   private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
 
@@ -103,6 +101,14 @@ export class SwapsFormComponent implements OnInit {
     private readonly headerStore: HeaderStore,
     private readonly destroy$: TuiDestroyService
   ) {
+    this.availableTokens = {
+      from: [],
+      to: []
+    };
+    this.selectedToken = {
+      from: undefined,
+      to: undefined
+    };
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
   }
 

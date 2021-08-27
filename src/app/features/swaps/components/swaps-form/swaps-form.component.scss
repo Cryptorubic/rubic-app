@@ -8,17 +8,12 @@
 
 .swaps-form {
   min-height: 200px;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
   padding: 30px 40px;
 
   background-color: var(--main-form-background);
   border-radius: 19px;
   backdrop-filter: blur(50px);
-
-  ~ *:not(:last-child) {
-    display: block;
-    margin-bottom: 35px;
-  }
 
   &__header {
     display: flex;
@@ -100,6 +95,13 @@
       z-index: 100;
     }
   }
+}
+
+app-swap-info,
+app-analytics-link {
+  display: block;
+
+  margin-bottom: 20px;
 }
 
 @include b($mobile-sm) {

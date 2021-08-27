@@ -244,16 +244,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+          const { fromAmount } = this.swapFormService.inputValue;
 
           const needApprove$ = this.authService.user?.address
-            ? this.crossChainRoutingService.needApprove(fromToken)
+            ? this.crossChainRoutingService.needApprove()
             : of(false);
 
-          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts(fromToken);
+          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts();
 
           return forkJoin([
-            this.crossChainRoutingService.calculateTrade(fromToken, fromAmount, toToken),
+            this.crossChainRoutingService.calculateTrade(),
             needApprove$,
             minMaxAmounts$
           ]).pipe(
@@ -313,14 +313,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
-          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+          const { fromAmount } = this.swapFormService.inputValue;
 
-          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts(fromToken);
+          const minMaxAmounts$ = this.crossChainRoutingService.getMinMaxAmounts();
 
-          return forkJoin([
-            this.crossChainRoutingService.calculateTrade(fromToken, fromAmount, toToken),
-            minMaxAmounts$
-          ]).pipe(
+          return forkJoin([this.crossChainRoutingService.calculateTrade(), minMaxAmounts$]).pipe(
             map(([trade, minMaxAmounts]) => {
               const { minAmount, maxAmount } = minMaxAmounts;
               this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
@@ -382,7 +379,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     };
 
     this.crossChainRoutingService
-      .approve(this.crossChainRoutingTrade.tokenIn, {
+      .approve({
         onTransactionHash
       })
       .pipe(first())
