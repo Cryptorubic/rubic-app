@@ -65,7 +65,8 @@
     "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later."
   },
   "navigation": {
     "about": "소개",

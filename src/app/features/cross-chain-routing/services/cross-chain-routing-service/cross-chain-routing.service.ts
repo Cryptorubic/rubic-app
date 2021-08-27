@@ -33,6 +33,7 @@ import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/
 import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
 import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-provider/uniswap-v2-provider.abstract';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import MaxGasPriceOverflowError from 'src/app/core/errors/models/common/MaxGasPriceOverflowError';
 
 @Injectable({
   providedIn: CrossChainRoutingModule
@@ -271,6 +272,20 @@ export class CrossChainRoutingService {
     return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
   }
 
+  private async checkGasPrice(toBlockchain: BLOCKCHAIN_NAME) {
+    const contractAddress = this.contractAddresses[toBlockchain];
+    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+    const maxGasPrice = (await web3Public.callContractMethod(
+      contractAddress,
+      this.contractAbi,
+      'maxGasPrice'
+    )) as string;
+    const currentGasPrice = await web3Public.getGasPrice();
+    if (new BigNumber(maxGasPrice).lt(currentGasPrice)) {
+      throw new MaxGasPriceOverflowError(toBlockchain);
+    }
+  }
+
   public createTrade(
     trade: CrossChainRoutingTrade,
     options: TransactionOptions = {}
@@ -278,6 +293,7 @@ export class CrossChainRoutingService {
     return from(
       (async () => {
         this.providerConnectorService.checkSettings(trade.fromBlockchain);
+        await this.checkGasPrice(trade.toBlockchain);
 
         const web3PublicFromBlockchain: Web3Public = this.web3PublicService[trade.fromBlockchain];
         const walletAddress = this.providerConnectorService.address;
