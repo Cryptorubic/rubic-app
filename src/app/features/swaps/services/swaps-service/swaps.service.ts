@@ -38,6 +38,10 @@ export class SwapsService {
     return this._swapProviderType$.getValue();
   }
 
+  set swapMode(swapType: SWAP_PROVIDER_TYPE) {
+    this._swapProviderType$.next(swapType);
+  }
+
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly bridgeService: BridgeService,
@@ -121,7 +125,9 @@ export class SwapsService {
         if (fromBlockchain === toBlockchain) {
           this._swapProviderType$.next(SWAP_PROVIDER_TYPE.INSTANT_TRADE);
         } else if (!fromToken || !toToken) {
-          this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+          if (!this.swapMode || this.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+            this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+          }
         } else {
           this.bridgeTokenPairsByBlockchainsArray
             .pipe(first())
