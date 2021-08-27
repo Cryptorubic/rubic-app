@@ -82,13 +82,18 @@ export class TokenAmountInputComponent implements OnInit {
 
   private checkMaxAmountInCrossChainRouting() {
     const maxAmount = this.getMaxAmountInCrossChainRouting();
-    if (maxAmount && new BigNumber(maxAmount).lt(this.formattedAmount || 0)) {
+    if (
+      maxAmount &&
+      this.formattedAmount &&
+      new BigNumber(maxAmount).gt(0) &&
+      new BigNumber(maxAmount).lt(this.formattedAmount)
+    ) {
       this.amount.setValue(maxAmount);
     }
   }
 
   private getMaxAmountInCrossChainRouting(): string {
-    if (!this.selectedToken?.amount) {
+    if (!this.selectedToken?.amount || this.selectedToken.amount.isNaN()) {
       return null;
     }
 
