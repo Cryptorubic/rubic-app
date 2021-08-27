@@ -19,6 +19,10 @@
       margin-bottom: 6px;
     }
   }
+
+  > ::ng-deep app-rubic-tokens button tui-wrapper {
+    box-shadow: none !important;
+  }
 }
 
 .blockchain-and-amount-input {
