@@ -11,7 +11,7 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -179,9 +179,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.authService
       .getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(user => !!user?.address),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.setToWalletAddress();
+        this.setFormValues(this.swapFormService.inputValue, true);
       });
   }
 
@@ -189,8 +193,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTradeSubscription$.unsubscribe();
   }
 
-  private setFormValues(form: SwapFormInput): void {
+  private setFormValues(form: SwapFormInput, forceUpdate = false): void {
     if (
+      !forceUpdate &&
       this.fromBlockchain === form.fromBlockchain &&
       this.toBlockchain === form.toBlockchain &&
       this.fromAmount &&
