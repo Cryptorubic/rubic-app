@@ -35,6 +35,7 @@ import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/servic
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
 import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
+import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 
 @Injectable({
   providedIn: CrossChainRoutingModule
@@ -148,7 +149,7 @@ export class CrossChainRoutingService {
     );
   }
 
-  public async getMinMaxAmounts(): Promise<{
+  private async getMinMaxTransitTokenAmounts(): Promise<{
     minAmount: BigNumber;
     maxAmount: BigNumber;
   }> {
@@ -168,23 +169,7 @@ export class CrossChainRoutingService {
       )) as string;
 
       const transitToken = this.transitTokens[fromBlockchain];
-      const transitTokenAmount = Web3Public.fromWei(
-        transitTokenAmountAbsolute,
-        transitToken.decimals
-      );
-      if (fromToken.address.toLowerCase() === transitToken.address.toLowerCase()) {
-        return transitTokenAmount;
-      }
-
-      const amountAbsolute = transitTokenAmount.gt(0)
-        ? await this.uniswapProviders[fromBlockchain].getFromAmount(
-            fromBlockchain,
-            fromToken.address,
-            transitToken,
-            transitTokenAmount
-          )
-        : 0;
-      return Web3Public.fromWei(amountAbsolute, fromToken.decimals);
+      return Web3Public.fromWei(transitTokenAmountAbsolute, transitToken.decimals);
     };
 
     return Promise.all([getAmount('minAmount'), getAmount('maxAmount')]).then(
@@ -195,7 +180,30 @@ export class CrossChainRoutingService {
     );
   }
 
-  public async calculateTrade(): Promise<CrossChainRoutingTrade> {
+  private async getFromTokenAmount(
+    fromToken: BlockchainToken,
+    transitToken: BlockchainToken,
+    transitTokenAmount: BigNumber
+  ): Promise<BigNumber> {
+    if (fromToken.address.toLowerCase() === transitToken.address.toLowerCase()) {
+      return transitTokenAmount;
+    }
+
+    const amountAbsolute = transitTokenAmount.gt(0)
+      ? await this.uniswapProviders[fromToken.blockchain].getFromAmount(
+          fromToken.address,
+          transitToken,
+          transitTokenAmount
+        )
+      : 0;
+    return Web3Public.fromWei(amountAbsolute, fromToken.decimals);
+  }
+
+  public async calculateTrade(): Promise<{
+    trade: CrossChainRoutingTrade;
+    minAmountError?: BigNumber;
+    maxAmountError?: BigNumber;
+  }> {
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
@@ -223,7 +231,7 @@ export class CrossChainRoutingService {
       toToken
     );
 
-    return {
+    const trade = {
       fromBlockchain,
       toBlockchain,
       tokenIn: fromToken,
@@ -237,6 +245,35 @@ export class CrossChainRoutingService {
       tokenOut: toToken,
       secondPath,
       tokenOutAmount: toAmount
+    };
+
+    const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
+      await this.getMinMaxTransitTokenAmounts();
+    if (!firstTransitTokenAmount.gte(minTransitTokenAmount)) {
+      const minAmount = await this.getFromTokenAmount(
+        fromToken,
+        firstTransitToken,
+        minTransitTokenAmount
+      );
+      return {
+        trade,
+        minAmountError: minAmount
+      };
+    }
+    if (!firstTransitTokenAmount.lte(maxTransitTokenAmount)) {
+      const maxAmount = await this.getFromTokenAmount(
+        fromToken,
+        firstTransitToken,
+        maxTransitTokenAmount
+      );
+      return {
+        trade,
+        maxAmountError: maxAmount
+      };
+    }
+
+    return {
+      trade
     };
   }
 

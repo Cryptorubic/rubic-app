@@ -93,13 +93,12 @@ export class UniswapV2ProviderAbstract implements ItProvider {
   }
 
   public getFromAmount(
-    blockchain: BLOCKCHAIN_NAME,
     fromTokenAddress: string,
     toToken: InstantTradeToken,
     toAmount: BigNumber
   ): Promise<BigNumber> {
     return this.commonUniswapV2.getFromAmount(
-      blockchain,
+      this.blockchain,
       fromTokenAddress,
       toToken,
       toAmount,

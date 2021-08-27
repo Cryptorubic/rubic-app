@@ -253,15 +253,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             ? this.crossChainRoutingService.needApprove()
             : of(false);
 
-          return forkJoin([
-            this.crossChainRoutingService.calculateTrade(),
-            needApprove$,
-            this.crossChainRoutingService.getMinMaxAmounts()
-          ]).pipe(
-            map(([trade, needApprove, minMaxAmounts]) => {
-              const { minAmount, maxAmount } = minMaxAmounts;
-              this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
-              this.maxError = fromAmount?.gt(maxAmount) ? maxAmount : false;
+          return forkJoin([this.crossChainRoutingService.calculateTrade(), needApprove$]).pipe(
+            map(([{ trade, minAmountError, maxAmountError }, needApprove]) => {
+              if (
+                (minAmountError && fromAmount.gte(minAmountError)) ||
+                (maxAmountError && fromAmount.lte(maxAmountError))
+              ) {
+                this.onCalculateTrade$.next('normal');
+                return;
+              }
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
 
               this.needApprove = needApprove;
               this.crossChainRoutingTrade = trade;
@@ -318,14 +320,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           const { fromAmount } = this.swapFormService.inputValue;
 
-          return forkJoin([
-            this.crossChainRoutingService.calculateTrade(),
-            this.crossChainRoutingService.getMinMaxAmounts()
-          ]).pipe(
-            map(([trade, minMaxAmounts]) => {
-              const { minAmount, maxAmount } = minMaxAmounts;
-              this.minError = fromAmount?.lt(minAmount) ? minAmount : false;
-              this.maxError = fromAmount?.gt(maxAmount) ? maxAmount : false;
+          return forkJoin([this.crossChainRoutingService.calculateTrade()]).pipe(
+            map(([{ trade, minAmountError, maxAmountError }]) => {
+              if (
+                (minAmountError && fromAmount.gte(minAmountError)) ||
+                (maxAmountError && fromAmount.lte(maxAmountError))
+              ) {
+                this.onCalculateTrade$.next('hidden');
+                return;
+              }
+              this.minError = minAmountError || false;
+              this.maxError = maxAmountError || false;
 
               this.hiddenTradeData$.next({ crossChainRoutingTrade: trade });
               if (!trade.tokenOutAmount.eq(this.crossChainRoutingTrade.tokenOutAmount)) {
