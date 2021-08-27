@@ -60,7 +60,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
-    this.checkNoAmountError();
     this.checkInsufficientFundsError();
   }
 
@@ -182,9 +181,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
         break;
-      case err[ERROR_TYPE.NO_AMOUNT]:
-        translateParams = { key: 'errors.noEnteredAmount' };
-        break;
       case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
         translateParams = {
           key: 'errors.minimumAmount',
@@ -298,7 +294,6 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private async checkErrors(): Promise<void> {
     await this.checkInsufficientFundsError();
     this.checkWrongBlockchainError();
-    this.checkNoAmountError();
   }
 
   private async checkInsufficientFundsError(): Promise<void> {
@@ -346,9 +341,5 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     } finally {
       this.status = currentStatus;
     }
-  }
-
-  private checkNoAmountError(): void {
-    this.errorType[ERROR_TYPE.NO_AMOUNT] = !this._fromAmount || this._fromAmount.eq(0);
   }
 }
