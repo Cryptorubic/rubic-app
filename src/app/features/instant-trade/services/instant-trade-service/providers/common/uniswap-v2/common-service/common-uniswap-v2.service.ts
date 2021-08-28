@@ -84,13 +84,9 @@ export class CommonUniswapV2Service {
     blockchain: BLOCKCHAIN_NAME,
     tokenAddress: string,
     contractAddress: string,
-    options: TransactionOptions,
-    minGasPrice?: BigNumber
+    options: TransactionOptions
   ): Promise<void> {
     this.providerConnectorService.checkSettings(blockchain);
-    if (minGasPrice) {
-      options.gasPrice = await this.getGasPrice(blockchain, minGasPrice);
-    }
     await this.web3Private.approveTokens(tokenAddress, contractAddress, 'infinity', options);
   }
 
@@ -237,8 +233,7 @@ export class CommonUniswapV2Service {
     contractAddress: string,
     routingProviders: string[],
     maxTransitTokens: number,
-    shouldCalculateGas: boolean,
-    minGasPrice?: BigNumber
+    shouldCalculateGas: boolean
   ): Promise<InstantTrade> {
     let fromTokenAddress = fromToken.address;
     const toTokenClone = { ...toToken };
@@ -263,8 +258,8 @@ export class CommonUniswapV2Service {
     let gasPrice;
     let gasPriceInEth;
     let gasPriceInUsd;
-    if (shouldCalculateGas || minGasPrice) {
-      gasPrice = await this.getGasPrice(blockchain, minGasPrice);
+    if (shouldCalculateGas) {
+      gasPrice = await web3Public.getGasPrice();
       gasPriceInEth = Web3Public.fromWei(gasPrice);
       const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
@@ -296,8 +291,7 @@ export class CommonUniswapV2Service {
       },
       options: {
         path: route.path
-      },
-      ...(gasPrice && { gasPrice })
+      }
     };
     if (!shouldCalculateGas) {
       return instantTrade;
@@ -314,18 +308,6 @@ export class CommonUniswapV2Service {
       gasFeeInUsd,
       gasFeeInEth
     };
-  }
-
-  private async getGasPrice(blockchain: BLOCKCHAIN_NAME, minGasPrice?: BigNumber): Promise<string> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    const web3GasPrice = await web3Public.getGasPrice();
-    let gasPrice: string;
-    if (minGasPrice) {
-      gasPrice = BigNumber.max(minGasPrice, web3GasPrice).toFixed(0);
-    } else {
-      gasPrice = web3GasPrice;
-    }
-    return gasPrice;
   }
 
   private async getToAmountAndPath(
@@ -384,7 +366,6 @@ export class CommonUniswapV2Service {
     if (withGasOptimisation && toToken.price && this.walletAddress) {
       const promises: Promise<UniswapV2CalculatedInfoWithProfit>[] = routes.map(async route => {
         const estimatedGas = await getEstimatedGas(route);
-
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
         const profit = Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
           .multipliedBy(toToken.price)

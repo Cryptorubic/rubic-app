@@ -57,17 +57,12 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     return this.commonUniswapV2.getAllowance(this.blockchain, tokenAddress, this.contractAddress);
   }
 
-  public async approve(
-    tokenAddress: string,
-    options: TransactionOptions,
-    minGasPrice?: BigNumber
-  ): Promise<void> {
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     return this.commonUniswapV2.approve(
       this.blockchain,
       tokenAddress,
       this.contractAddress,
-      options,
-      minGasPrice
+      options
     );
   }
 
@@ -75,8 +70,7 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
-    shouldCalculateGas: boolean,
-    minGasPrice?: BigNumber
+    shouldCalculateGas: boolean
   ): Promise<InstantTrade> {
     return this.commonUniswapV2.calculateTrade(
       this.blockchain,
@@ -87,8 +81,7 @@ export class UniswapV2ProviderAbstract implements ItProvider {
       this.contractAddress,
       this.routingProviders,
       this.maxTransitTokens,
-      shouldCalculateGas,
-      minGasPrice
+      shouldCalculateGas
     );
   }
 
