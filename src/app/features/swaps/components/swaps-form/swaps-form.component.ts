@@ -16,6 +16,7 @@ import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 
 type TokenType = 'from' | 'to';
 
@@ -35,6 +36,8 @@ type AvailableTokens = {
 })
 export class SwapsFormComponent implements OnInit {
   public isLoading = true;
+
+  public tradeStatus: TRADE_STATUS;
 
   public autoRefresh: boolean;
 

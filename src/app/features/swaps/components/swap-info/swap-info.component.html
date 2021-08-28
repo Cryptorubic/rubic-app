@@ -3,9 +3,9 @@
   [overlay]="true"
   [showLoader]="isSwapInfoLoading"
 >
-  <div class="swaps-info" *ngIf="crossChainSwapInfo">
+  <div class="swaps-info" *ngIf="isCrossChainRouting && allowTrade && crossChainSwapInfo">
     <div class="swaps-info__item swaps-info-item">
-      <div class="swaps-info-item__title">Maximum spent</div>
+      <div class="swaps-info-item__title">Maximum sent</div>
       <div class="swaps-info-item__value">
         {{
           crossChainSwapInfo.maximumSpent
@@ -30,7 +30,13 @@
 
     <div class="swaps-info__item swaps-info-item">
       <div class="swaps-info-item__title">Platform fee</div>
-      <div class="swaps-info-item__value">{{ crossChainSwapInfo.platformFee }}%</div>
+      <div class="swaps-info-item__value">
+        {{ crossChainSwapInfo.platformFee.percent }}% ≈ ${{
+          crossChainSwapInfo.platformFee.amountInUsd
+            | bigNumberFormat
+            | withRound: 'toClosestValue':18:2:3
+        }}
+      </div>
     </div>
   </div>
 </tui-loader>

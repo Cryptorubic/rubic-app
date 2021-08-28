@@ -57,13 +57,14 @@
       *ngIf="isCrossChainRouting"
       [onRefreshTrade]="onRefreshTrade"
       (onRefreshStatusChange)="loadingStatus = $event"
+      (tradeStatusChange)="tradeStatus = $event"
       [loading]="isLoading"
       [tokens]="availableTokens['to']"
     ></app-cross-chain-routing-bottom-form>
   </main>
 </div>
 
-<app-swap-info></app-swap-info>
+<app-swap-info [tradeStatus]="tradeStatus"></app-swap-info>
 
 <app-analytics-link [formService]="swapFormService"></app-analytics-link>
 

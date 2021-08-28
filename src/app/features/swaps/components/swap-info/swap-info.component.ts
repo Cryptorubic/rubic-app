@@ -1,19 +1,29 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit
+} from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 
 type CrossChainSwapInfo = {
   maximumSpent: BigNumber;
   minimumReceived: BigNumber;
-  platformFee: number;
+  platformFee: {
+    percent: number;
+    amountInUsd: BigNumber;
+  };
 };
 
 @Component({
@@ -24,6 +34,12 @@ type CrossChainSwapInfo = {
   providers: [TuiDestroyService]
 })
 export class SwapInfoComponent implements OnInit {
+  @Input() set tradeStatus(value: TRADE_STATUS) {
+    if (value === TRADE_STATUS.LOADING) {
+      this.isSwapInfoLoading = true;
+    }
+  }
+
   public fromToken: TokenAmount;
 
   public toToken: TokenAmount;
@@ -58,15 +74,6 @@ export class SwapInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
-      .subscribe(form => {
-        this.isSwapInfoLoading = true;
-        this.fromToken = form.fromToken;
-        this.toToken = form.toToken;
-        this.cdr.detectChanges();
-      });
-
     this.swapFormService.outputValueChanges
       .pipe(
         switchMap(form => {
@@ -84,15 +91,19 @@ export class SwapInfoComponent implements OnInit {
               1 - this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
             const minimumReceived = form.toAmount.multipliedBy(secondSlippage);
 
-            return this.crossChainRoutingService.getFeeAmountInPercents().then(platformFee => {
-              this.crossChainSwapInfo = {
-                maximumSpent,
-                minimumReceived,
-                platformFee
-              };
-              this.isSwapInfoLoading = false;
-              this.cdr.detectChanges();
-            });
+            return this.crossChainRoutingService.getFeeAmountData().pipe(
+              map(platformFee => {
+                this.crossChainSwapInfo = {
+                  maximumSpent,
+                  minimumReceived,
+                  platformFee
+                };
+                this.fromToken = this.swapFormService.inputValue.fromToken;
+                this.toToken = this.swapFormService.inputValue.toToken;
+                this.isSwapInfoLoading = false;
+                this.cdr.detectChanges();
+              })
+            );
           }
           return of(null);
         }),

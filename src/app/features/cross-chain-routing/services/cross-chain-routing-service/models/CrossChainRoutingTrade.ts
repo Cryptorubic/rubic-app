@@ -8,6 +8,7 @@ export interface CrossChainRoutingTrade {
   tokenIn: BlockchainToken;
   firstPath: string[];
   tokenInAmount: BigNumber;
+  firstTransitTokenAmount: BigNumber;
   rbcTokenOutAmountAbsolute: string;
   secondTransitTokenAmount: BigNumber;
   tokenOut: BlockchainToken;

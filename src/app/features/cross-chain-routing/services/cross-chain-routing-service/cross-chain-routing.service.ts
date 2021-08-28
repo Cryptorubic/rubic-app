@@ -11,7 +11,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { from, Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import {
   crossChainSwapContractAddresses,
   SupportedCrossChainSwapBlockchain,
@@ -36,6 +36,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
 import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 @Injectable({
   providedIn: CrossChainRoutingModule
@@ -52,6 +53,8 @@ export class CrossChainRoutingService {
   private toBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number>;
 
   private settings: CcrSettingsForm;
+
+  private currentCrossChainTrade: CrossChainRoutingTrade;
 
   public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
@@ -82,6 +85,7 @@ export class CrossChainRoutingService {
     private readonly web3PublicService: Web3PublicService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly swapFormService: SwapFormService,
+    private readonly tokensService: TokensService,
     private readonly useTestingModeService: UseTestingModeService
   ) {
     this.setUniswapProviders();
@@ -200,7 +204,7 @@ export class CrossChainRoutingService {
   }
 
   public async calculateTrade(): Promise<{
-    trade: CrossChainRoutingTrade;
+    toAmount: BigNumber;
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
@@ -235,8 +239,9 @@ export class CrossChainRoutingService {
       fromBlockchain,
       toBlockchain,
       tokenIn: fromToken,
-      tokenInAmount: fromAmount,
       firstPath,
+      tokenInAmount: fromAmount,
+      firstTransitTokenAmount,
       rbcTokenOutAmountAbsolute: Web3Public.toWei(
         firstTransitTokenAmount,
         firstTransitToken.decimals
@@ -246,6 +251,7 @@ export class CrossChainRoutingService {
       secondPath,
       tokenOutAmount: toAmount
     };
+    this.currentCrossChainTrade = trade;
 
     const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
       await this.getMinMaxTransitTokenAmounts();
@@ -256,7 +262,7 @@ export class CrossChainRoutingService {
         minTransitTokenAmount
       );
       return {
-        trade,
+        toAmount: trade.tokenOutAmount,
         minAmountError: minAmount
       };
     }
@@ -267,13 +273,13 @@ export class CrossChainRoutingService {
         maxTransitTokenAmount
       );
       return {
-        trade,
+        toAmount: trade.tokenOutAmount,
         maxAmountError: maxAmount
       };
     }
 
     return {
-      trade
+      toAmount: trade.tokenOutAmount
     };
   }
 
@@ -295,7 +301,7 @@ export class CrossChainRoutingService {
     return { path: [fromToken.address], toAmount: fromAmount };
   }
 
-  public async getFeeAmountInPercents(): Promise<number> {
+  private async getFeeAmountInPercents(): Promise<number> {
     const { fromBlockchain } = this.swapFormService.inputValue;
     const contractAddress = this.contractAddresses[fromBlockchain];
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
@@ -309,6 +315,40 @@ export class CrossChainRoutingService {
       }
     )) as string;
     return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+  }
+
+  public getFeeAmountData(): Observable<{
+    percent: number;
+    amountInUsd: BigNumber;
+  }> {
+    if (!this.currentCrossChainTrade) {
+      return of(null);
+    }
+
+    return this.tokensService.tokens.pipe(
+      filter(tokens => !!tokens.size),
+      first(),
+      switchMap(async tokens => {
+        const percent = await this.getFeeAmountInPercents();
+        const amount = this.currentCrossChainTrade.firstTransitTokenAmount.multipliedBy(
+          percent / 100
+        );
+
+        const { fromBlockchain } = this.currentCrossChainTrade;
+        const transitToken = this.transitTokens[fromBlockchain];
+        const foundTransitToken = tokens.find(
+          token =>
+            token.blockchain === fromBlockchain &&
+            token.address.toLowerCase() === transitToken.address.toLowerCase()
+        );
+        const amountInUsd = amount.multipliedBy(foundTransitToken.price);
+
+        return {
+          percent,
+          amountInUsd
+        };
+      })
+    );
   }
 
   private async checkGasPrice(toBlockchain: BLOCKCHAIN_NAME): Promise<void | never> {
@@ -348,12 +388,11 @@ export class CrossChainRoutingService {
     }
   }
 
-  public createTrade(
-    trade: CrossChainRoutingTrade,
-    options: TransactionOptions = {}
-  ): Observable<TransactionReceipt> {
+  public createTrade(options: TransactionOptions = {}): Observable<TransactionReceipt> {
     return from(
       (async () => {
+        const trade = this.currentCrossChainTrade;
+
         this.providerConnectorService.checkSettings(trade.fromBlockchain);
         await this.checkGasPrice(trade.toBlockchain);
         await this.checkPoolBalance(trade);

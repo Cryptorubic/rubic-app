@@ -38,7 +38,6 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
-import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
@@ -80,12 +79,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
+
   public readonly TRADE_STATUS = TRADE_STATUS;
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
   private hiddenTradeData$: BehaviorSubject<{
-    crossChainRoutingTrade: CrossChainRoutingTrade;
+    toAmount: BigNumber;
     errorText?: string;
   }>;
 
@@ -101,9 +102,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
-  public tradeStatus: TRADE_STATUS;
+  private _tradeStatus: TRADE_STATUS;
 
-  private crossChainRoutingTrade: CrossChainRoutingTrade;
+  private toAmount: BigNumber;
 
   public errorText: string;
 
@@ -114,6 +115,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   private hiddenCalculateTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
+
+  get tradeStatus(): TRADE_STATUS {
+    return this._tradeStatus;
+  }
+
+  set tradeStatus(value: TRADE_STATUS) {
+    this._tradeStatus = value;
+    this.tradeStatusChange.emit(value);
+  }
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -151,11 +161,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService
   ) {
-    this.onCalculateTrade$ = new Subject<CalculateTradeType>();
-    this.hiddenTradeData$ = new BehaviorSubject<{
-      crossChainRoutingTrade: CrossChainRoutingTrade;
-      errorText?: string;
-    }>(undefined);
+    this.onCalculateTrade$ = new Subject();
+    this.hiddenTradeData$ = new BehaviorSubject(undefined);
   }
 
   ngOnInit() {
@@ -254,7 +261,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             : of(false);
 
           return forkJoin([this.crossChainRoutingService.calculateTrade(), needApprove$]).pipe(
-            map(([{ trade, minAmountError, maxAmountError }, needApprove]) => {
+            map(([{ toAmount, minAmountError, maxAmountError }, needApprove]) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
@@ -266,9 +273,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.maxError = maxAmountError || false;
 
               this.needApprove = needApprove;
-              this.crossChainRoutingTrade = trade;
 
-              const toAmount = trade.tokenOutAmount;
+              this.toAmount = toAmount;
               this.swapFormService.output.patchValue({
                 toAmount
               });
@@ -321,7 +327,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           const { fromAmount } = this.swapFormService.inputValue;
 
           return forkJoin([this.crossChainRoutingService.calculateTrade()]).pipe(
-            map(([{ trade, minAmountError, maxAmountError }]) => {
+            map(([{ toAmount, minAmountError, maxAmountError }]) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
@@ -332,8 +338,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.minError = minAmountError || false;
               this.maxError = maxAmountError || false;
 
-              this.hiddenTradeData$.next({ crossChainRoutingTrade: trade });
-              if (!trade.tokenOutAmount.eq(this.crossChainRoutingTrade.tokenOutAmount)) {
+              this.hiddenTradeData$.next({ toAmount });
+              if (!toAmount.eq(this.toAmount)) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
 
@@ -342,7 +348,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             }),
             catchError((err: RubicError<ERROR_TYPE>) => {
               const errorText = err.translateKey || err.message;
-              this.hiddenTradeData$.next({ crossChainRoutingTrade: null, errorText });
+              this.hiddenTradeData$.next({ toAmount: null, errorText });
               if (!this.errorText) {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
@@ -359,10 +365,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public setHiddenData() {
     const data = this.hiddenTradeData$.getValue();
-    this.crossChainRoutingTrade = data.crossChainRoutingTrade;
+    this.toAmount = data.toAmount;
     this.errorText = data.errorText;
 
-    if (this.crossChainRoutingTrade) {
+    if (this.toAmount && !this.toAmount.isNaN()) {
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
@@ -431,7 +437,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     };
 
     this.crossChainRoutingService
-      .createTrade(this.crossChainRoutingTrade, {
+      .createTrade({
         onTransactionHash
       })
       .pipe(first())
