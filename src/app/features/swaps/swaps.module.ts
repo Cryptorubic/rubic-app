@@ -29,10 +29,13 @@ import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cr
 import { TokenAmountInputComponent } from 'src/app/features/swaps/components/token-amount-input/token-amount-input.component';
 import { UsdPriceContainerComponent } from 'src/app/features/swaps/components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { UserBalanceContainerComponent } from 'src/app/features/swaps/components/token-amount-input/components/user-balance-container/user-balance-container.component';
+import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
 import { SwapInfoComponent } from './components/swap-info/swap-info.component';
+import { IframeSettingsComponent } from './components/iframe-settings/iframe-settings.component';
 
 @NgModule({
   declarations: [
@@ -40,12 +43,12 @@ import { SwapInfoComponent } from './components/swap-info/swap-info.component';
     SettingsContainerComponent,
     SettingsItComponent,
     SettingsBridgeComponent,
-    SettingsBridgeComponent,
     SettingsCcrComponent,
     TokenAmountInputComponent,
     UsdPriceContainerComponent,
     UserBalanceContainerComponent,
-    SwapInfoComponent
+    SwapInfoComponent,
+    IframeSettingsComponent
   ],
   exports: [],
   imports: [
@@ -72,6 +75,6 @@ import { SwapInfoComponent } from './components/swap-info/swap-info.component';
     TuiLoaderModule
   ],
   entryComponents: [SettingsItComponent, SettingsBridgeComponent, SettingsCcrComponent],
-  providers: [SwapsService]
+  providers: [SwapsService, SuccessTxModalService]
 })
 export class SwapsModule {}

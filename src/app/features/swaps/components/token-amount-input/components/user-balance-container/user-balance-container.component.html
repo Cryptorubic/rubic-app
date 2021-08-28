@@ -2,11 +2,11 @@
   class="user-balance-container"
   *ngIf="token?.amount.gt(0)"
 >
-  <span class="user-balance-container__balance">{{ 'common.have' | translate }}
+  <span class="user-balance-container__balance" *ngIf="hide !== 'balance'">{{ 'common.have' | translate }}
     {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}
   </span>
   <button
-    *ngIf="type === 'from'"
+    *ngIf="type === 'from' && hide !== 'maxButton'"
     class="user-balance-container__max-button"
     (click)="maxButtonClick()"
   >MAX

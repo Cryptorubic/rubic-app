@@ -3,7 +3,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { WALLET_NAME } from '../../../header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '../../../wallets/components/wallets-modal/models/providers';
 
 export abstract class PrivateProvider {
   /**

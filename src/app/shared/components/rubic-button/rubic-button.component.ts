@@ -55,7 +55,7 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
   constructor(private readonly themeService: ThemeService) {}
 
   public ngOnInit(): void {
-    this.themeSubscription$ = this.themeService.getTheme().subscribe(el => {
+    this.themeSubscription$ = this.themeService.theme$.subscribe(el => {
       if (!this.classList) {
         this.classList = '';
       }

@@ -35,6 +35,8 @@
   --rubic-base-14: #f4f4f4;
   --rubic-base-15: #868686;
 
+  --tui-text-02: #3b3a3a;
+
   --selection-color: rgb(243 249 243);
 
   --rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
@@ -76,14 +78,22 @@ $mobile-sm: 420;
 $shadow-block: inset 0 0 5px 1px rgba(0, 0, 0, 0.1);
 $main-shadow: 0 3px 6px rgba(black, 0.16);
 
-// text colors
+// ***** text colors *****
 $rubic-text-color-main: #283125;
 $rubic-text-disable: #909090;
 $rubic-text-error: #d9573f;
 
 $text-gray: #a8a8a8;
 
-// font-sizes
+// ***** font-sizes *****
 $rubic-font-size-main: 14px;
 $rubic-font-size-01: 16px;
 $rubic-font-size-02: 18px;
+
+
+// ***** iframe sizes *****
+$iframe-horizontal-width: 1180px;
+$iframe-horizontal-height: 180px;
+$iframe-horizontal-input-width: 363px;
+$iframe-vertical-width: 375px;
+$iframe-vertical-height: 500px;

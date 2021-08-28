@@ -11,7 +11,7 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { distinctUntilChanged, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -31,7 +31,8 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
@@ -147,7 +148,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly iframeService: IframeService
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade$ = new Subject<void>();
@@ -186,9 +189,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.authService
       .getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(user => !!user?.address),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.setToWalletAddress();
+        this.conditionalCalculate();
       });
   }
 
@@ -422,7 +429,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const isPolygonEthBridge =
       this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
       this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-    if (isPolygonEthBridge) {
+    if (isPolygonEthBridge && !this.iframeService.isIframe) {
       this.dialogService
         .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
         .subscribe(allowAction => {
@@ -458,16 +465,19 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
         this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
-      const modalToDisplay = isPolygonEthBridge
-        ? new PolymorpheusComponent(TrackTransactionModalComponent)
-        : new PolymorpheusComponent(SuccessTxModalComponent);
+      if (!isPolygonEthBridge) {
+        this.successTxModalService.open();
+        return;
+      }
 
-      this.dialogService
-        .open(modalToDisplay, {
-          size: 's',
-          data: { idPrefix: '' }
-        })
-        .subscribe();
+      if (!this.iframeService.isIframe) {
+        this.dialogService
+          .open(new PolymorpheusComponent(TrackTransactionModalComponent), {
+            size: 's',
+            data: { idPrefix: '' }
+          })
+          .subscribe();
+      }
     }
   }
 }

@@ -9,7 +9,8 @@
 
     <app-user-balance-container
       [token]="selectedToken"
-      [type]="'from'"
+      type="from"
+      hide="balance"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
   </div>
@@ -28,6 +29,10 @@
       />
     </label>
 
-    <app-usd-price-container [usdPrice]="getUsdPrice()"></app-usd-price-container>
+    <app-usd-price-container *noFrame [usdPrice]="usdPrice"></app-usd-price-container>
+    <div class="token-amount-input-container__iframe-info-cards" *onlyFrame="'horizontal'">
+      <app-usd-price-container *ngIf="usdPrice?.gt(0)" [usdPrice]="usdPrice"></app-usd-price-container>
+      <app-user-balance-container [token]="token" hide="maxButton"></app-user-balance-container>
+    </div>
   </div>
 </div>

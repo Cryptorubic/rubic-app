@@ -9,15 +9,16 @@ import {
   ChangeDetectorRef,
   AfterViewInit
 } from '@angular/core';
-import { AsyncPipe, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
@@ -48,6 +49,10 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
+  public get noFrameLink(): string {
+    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+  }
+
   public get rootPath(): boolean {
     return window.location.pathname === '/';
   }
@@ -56,14 +61,15 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(PLATFORM_ID) platformId,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
-    private readonly queryParamsService: QueryParamsService,
+    private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
     private router: Router,
     private readonly errorService: ErrorsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService
+    private readonly swapsService: SwapsService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -87,7 +93,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   private async loadUser(): Promise<void> {
-    const isIframe = new AsyncPipe(this.cdr).transform(this.queryParamsService.isIframe$);
+    const { isIframe } = this.iframeService;
     this.storeService.fetchData(isIframe);
     if (!isIframe) {
       try {

@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@import 'src/styles';
 
 .switcher {
   display: flex;
@@ -12,7 +12,19 @@
 
   cursor: pointer;
 
+  @include iframe {
+    height: 30px;
+
+    background-color: unset;
+  }
+
   img {
     margin: auto;
+  }
+
+  &__iframe-arrow {
+    @include iframe-vertical {
+      transform: rotate(90deg);
+    }
   }
 }

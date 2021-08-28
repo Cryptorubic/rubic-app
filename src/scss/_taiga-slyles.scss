@@ -38,6 +38,15 @@ tui-dialog {
   }
 }
 
+::ng-deep tui-dialog {
+  @include iframe-vertical {
+    .close {
+      top: 5px !important;
+      right: 5px !important;
+    }
+  }
+}
+
 tui-dialog-host {
   > div {
     backdrop-filter: blur(12px);
@@ -79,5 +88,28 @@ tui-notifications-host {
 
   .tooltip .text {
     font-size: $rubic-font-size-main;
+  }
+}
+
+/*:host-context(html:not(.dark).iframe-horizontal) ::ng-deep tui-dialog {
+  &,
+  > .content {
+    background: #f4f4f4 !important;
+  }
+}*/
+
+::ng-deep tui-dialog .content {
+  @include iframe {
+    padding: 0 !important;
+  }
+}
+
+::ng-deep tui-notifications-host {
+  @include iframe {
+    margin-top: 0 !important;
+
+    > div.wrapper {
+      padding-top: 15px;
+    }
   }
 }

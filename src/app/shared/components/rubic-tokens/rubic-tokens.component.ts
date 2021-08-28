@@ -3,26 +3,29 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnDestroy,
   OnInit
 } from '@angular/core';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
-import { of, Subscription } from 'rxjs';
+import { of } from 'rxjs';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { startWith } from 'rxjs/operators';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rubic-tokens',
   templateUrl: './rubic-tokens.component.html',
   styleUrls: ['./rubic-tokens.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class RubicTokensComponent implements OnInit, OnDestroy {
+export class RubicTokensComponent implements OnInit {
   @Input() loading: boolean;
 
   @Input() formType: 'from' | 'to';
@@ -43,23 +46,32 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   public buttonHovered: boolean = null;
 
-  private $formSubscription: Subscription;
+  public iframeForceDisabled = false;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly tokensSelectService: TokensSelectService
+    private readonly tokensSelectService: TokensSelectService,
+    private readonly queryParamsService: QueryParamsService,
+    private readonly destroy$: TuiDestroyService
   ) {}
 
   public ngOnInit(): void {
-    this.$formSubscription = this.formService.inputValueChanges
-      .pipe(startWith(this.formService.inputValue))
+    this.setFormValues(this.formService.inputValue);
+    this.formService.inputValueChanges
+      .pipe(takeUntil(this.destroy$))
       .subscribe(formValue => {
         this.setFormValues(formValue);
       });
-  }
-
-  public ngOnDestroy(): void {
-    this.$formSubscription.unsubscribe();
+    this.queryParamsService.tokensSelectionDisabled$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
+        if (this.formType === 'from') {
+          this.iframeForceDisabled = hideSelectionFrom;
+        } else {
+          this.iframeForceDisabled = hideSelectionTo;
+        }
+        this.cdr.markForCheck();
+      });
   }
 
   private setFormValues(formValue: ISwapFormInput): void {

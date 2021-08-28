@@ -24,10 +24,10 @@ import { SushiSwapBscService } from 'src/app/features/instant-trade/services/ins
 import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 
 @Injectable({
   providedIn: 'root'
@@ -75,7 +75,8 @@ export class InstantTradeService {
     private translateService: TranslateService,
     private notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector
+    @Inject(Injector) private injector: Injector,
+    private readonly successTxModalService: SuccessTxModalService
   ) {
     this.setBlockchainsProviders();
   }
@@ -273,12 +274,7 @@ export class InstantTradeService {
     );
 
     if (window.location.pathname === '/') {
-      this.dialogService
-        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-          size: 's',
-          data: { idPrefix: '' }
-        })
-        .subscribe();
+      this.successTxModalService.open();
     }
   }
 }

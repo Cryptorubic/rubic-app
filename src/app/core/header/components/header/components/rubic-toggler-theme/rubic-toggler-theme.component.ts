@@ -2,18 +2,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   Inject,
   OnDestroy,
   OnInit,
-  Renderer2,
-  ViewChild,
   ViewEncapsulation
 } from '@angular/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { AbstractTuiThemeSwitcher } from '@taiga-ui/cdk';
 import { DOCUMENT } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-rubic-toggler-theme',
@@ -28,20 +26,24 @@ export class RubicTogglerThemeComponent
 {
   public isDark: boolean;
 
+  public isIframe$: Observable<boolean>;
+
   private themeSubscription$: Subscription;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly themeService: ThemeService,
-    @Inject(DOCUMENT) document: Document
+    @Inject(DOCUMENT) document: Document,
+    iframeService: IframeService
   ) {
     super(document);
+    this.isIframe$ = iframeService.isIframe$;
   }
 
   public ngOnInit(): void {
-    this.themeSubscription$ = this.themeService
-      .getTheme()
-      .subscribe(theme => (this.isDark = theme === 'dark'));
+    this.themeSubscription$ = this.themeService.theme$.subscribe(
+      theme => (this.isDark = theme === 'dark')
+    );
   }
 
   public ngOnDestroy(): void {

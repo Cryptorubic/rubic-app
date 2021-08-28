@@ -10,6 +10,8 @@ export interface WalletProvider {
   img: string;
   desktopOnly: boolean;
   display: boolean;
+  supportsInHorizontalIframe: boolean;
+  supportsInVerticalIframe: boolean;
 }
 
 export interface UnreadTrades {

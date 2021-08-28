@@ -5,7 +5,6 @@ import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { filter, first, map, mergeMap } from 'rxjs/operators';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -13,9 +12,13 @@ import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
-import { QueryParams } from './models/query-params';
+import { AdditionalTokens, QueryParams } from './models/query-params';
 
 @Injectable({
   providedIn: 'root'
@@ -39,30 +42,21 @@ export class QueryParamsService {
     }
   };
 
-  private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
-
   public currentQueryParams: QueryParams;
 
-  private readonly _hiddenNetworks$ = new BehaviorSubject<string[]>([]);
+  private readonly _tokensSelectionDisabled$ = new BehaviorSubject<[boolean, boolean]>([
+    false,
+    false
+  ]);
 
-  private readonly _tokensSelectionDisabled$ = new BehaviorSubject<boolean>(false);
-
-  private readonly _theme$ = new BehaviorSubject<string>('default');
-
-  public get isIframe$(): Observable<boolean> {
-    return this._isIframe$.asObservable();
-  }
-
-  public get theme$(): Observable<string> {
-    return this._theme$.asObservable();
-  }
-
-  public get hiddenNetworks$(): Observable<string[]> {
-    return this._hiddenNetworks$.asObservable();
-  }
-
-  public get tokensSelectionDisabled$(): Observable<boolean> {
+  public get tokensSelectionDisabled$(): Observable<[boolean, boolean]> {
     return this._tokensSelectionDisabled$.asObservable();
+  }
+
+  public get noFrameLink(): string {
+    const urlTree = this.router.parseUrl(this.router.url);
+    delete urlTree.queryParams.iframe;
+    return urlTree.toString();
   }
 
   constructor(
@@ -71,7 +65,10 @@ export class QueryParamsService {
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
-    private readonly swapsService: SwapsService
+    private readonly swapsService: SwapsService,
+    private readonly iframeService: IframeService,
+    private readonly themeService: ThemeService,
+    private readonly translateService: TranslateService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -89,11 +86,11 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.setIframeStatus(queryParams);
-      this.setHiddenStatus(queryParams);
-      this.setTopTokens(queryParams);
       this.setBackgroundStatus(queryParams);
       this.setHideSelectionStatus(queryParams);
       this.setThemeStatus(queryParams);
+      this.setAdditionalIframeTokens(queryParams);
+      this.setLanguage(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -267,7 +264,7 @@ export class QueryParamsService {
     chain: BLOCKCHAIN_NAME
   ): Observable<TokenAmount> {
     const searchingToken = tokens.find(
-      token => token.address === address && token.blockchain === chain
+      token => token.address.toLowerCase() === address.toLowerCase() && token.blockchain === chain
     );
 
     return searchingToken
@@ -292,80 +289,99 @@ export class QueryParamsService {
   }
 
   private setIframeStatus(queryParams: QueryParams) {
-    if (queryParams.iframe === 'true') {
-      this._isIframe$.next(true);
-      this.document.body.classList.add('iframe');
+    if (!queryParams.hasOwnProperty('iframe')) {
       return;
     }
-    this._isIframe$.next(false);
-  }
 
-  private setHiddenStatus(queryParams: QueryParams) {
-    if (queryParams.hidden) {
-      this._hiddenNetworks$.next(queryParams.hidden.split(','));
-    }
-  }
-
-  private setTopTokens(queryParams: QueryParams) {
-    const hasTopTokens = Object.values(BLOCKCHAIN_NAME).some(
-      blockchain => `topTokens[${blockchain}]` in queryParams
-    );
-
-    if (hasTopTokens) {
-      const topTokens = Object.entries(queryParams).reduce(
-        (
-          acc: { [k in keyof Record<BLOCKCHAIN_NAME, string>]?: string[] },
-          curr: [string, string]
-        ) => {
-          const [key, value] = curr;
-          const newKey = key.substring('keyTokens'.length + 1, key.length - 1);
-          return key.includes('topTokens') ? { ...acc, [newKey]: value.split(',') } : acc;
-        },
-        {}
-      );
-      this.tokensService.tokens
-        .pipe(
-          filter(tokens => tokens?.size !== 0),
-          first()
-        )
-        .subscribe(tokens => {
-          const rankedTokens = tokens.map((token: TokenAmount) => {
-            const currentBlockchainTop = topTokens[token.blockchain];
-            const isTop =
-              currentBlockchainTop?.length > 0 &&
-              currentBlockchainTop.some(topToken => {
-                return topToken === token.symbol;
-              });
-            return isTop
-              ? {
-                  ...token,
-                  rank: TOKEN_RANK.TOP
-                }
-              : token;
-          });
-
-          this.tokensService.setTokens(rankedTokens);
-        });
-    }
+    this.iframeService.setIframeStatus(queryParams.iframe);
   }
 
   private setBackgroundStatus(queryParams: QueryParams) {
-    if (queryParams.background) {
-      const color = queryParams.background;
-      this.document.body.style.background = this.isHEXColor(color) ? `#${color}` : color;
+    if (this.iframeService.isIframe) {
+      const { background } = queryParams;
+      if (this.isBackgroundValid(background)) {
+        this.document.body.style.background = background;
+        return;
+      }
+      this.document.body.classList.add('default-iframe-background');
     }
   }
 
   private setHideSelectionStatus(queryParams: QueryParams) {
-    if (queryParams.hideSelection) {
-      this._tokensSelectionDisabled$.next(queryParams.hideSelection === 'true');
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const tokensSelectionDisabled: [boolean, boolean] = [
+      queryParams.hideSelectionFrom === 'true',
+      queryParams.hideSelectionTo === 'true'
+    ];
+
+    if (tokensSelectionDisabled.includes(true)) {
+      this._tokensSelectionDisabled$.next(tokensSelectionDisabled);
     }
   }
 
   private setThemeStatus(queryParams: QueryParams) {
-    if (queryParams.theme && queryParams.theme === 'dark') {
-      this._theme$.next('dark');
-      this.document.body.classList.add('dark');
+    const { theme } = queryParams;
+    if (theme && (theme === 'dark' || theme === 'light')) {
+      this.themeService.setTheme(theme);
     }
+  }
+
+  private setAdditionalIframeTokens(queryParams: QueryParams) {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const tokensFilterKeys: Readonly<Array<keyof QueryParams>> = [
+      'eth_tokens',
+      'bsc_tokens',
+      'polygon_tokens',
+      'harmony_tokens'
+    ] as const;
+    const tokensQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([key]) =>
+        tokensFilterKeys.includes(key as AdditionalTokens)
+      )
+    );
+
+    if (Object.keys(tokensQueryParams).length !== 0) {
+      this.tokensService.tokensRequestParameters = tokensQueryParams;
+    }
+  }
+
+  private setLanguage(queryParams: QueryParams) {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh'];
+    const language = supportedLanguages.includes(queryParams.language)
+      ? queryParams.language
+      : 'en';
+    this.translateService.use(language);
+  }
+
+  private isBackgroundValid(stringToTest) {
+    if (stringToTest === '') {
+      return false;
+    }
+    if (stringToTest === 'inherit') {
+      return false;
+    }
+    if (stringToTest === 'transparent') {
+      return false;
+    }
+
+    const image = document.createElement('img');
+    image.style.background = 'rgb(0, 0, 0)';
+    image.style.background = stringToTest;
+    if (image.style.background !== 'rgb(0, 0, 0)') {
+      return true;
+    }
+    image.style.background = 'rgb(255, 255, 255)';
+    image.style.background = stringToTest;
+    return image.style.background !== 'rgb(255, 255, 255)';
   }
 }

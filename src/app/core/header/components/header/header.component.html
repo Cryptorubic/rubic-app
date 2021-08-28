@@ -1,5 +1,5 @@
 <!-- HARMONY BANNER -->
-<div class="harmony-banner">
+<div class="harmony-banner" *noFrame>
   <a href="https://cryptorubic.medium.com/harmony-trading-competition-5ec7ff70da30" target="_blank">
     Trade Harmony Tokens and earn up to 10% from trading volume
   </a>
@@ -7,11 +7,16 @@
 <!-- HARMONY BANNER -->
 
 <header class="rubic-header">
-  <a class="rubic-header__logo" routerLink="/">
+  <a *noFrame class="rubic-header__logo" routerLink="/">
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
   </a>
 
+  <a *onlyFrame class="rubic-header__logo" rel="noopener noreferrer" target="_blank" [href]="noFrameLink">
+    <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
+  </a>
+
   <app-rubic-menu
+    *noFrame
     class="rubic-header__menu"
     [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
     [bridgeActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
@@ -21,7 +26,7 @@
     (crossChainClick)="navigateToBridgeOrCrossChain('cross-chain')"
   ></app-rubic-menu>
 
-  <nav class="rubic-header__nav">
+  <nav *noFrame class="rubic-header__nav">
     <a
       class="button-link"
       (click)="navigateToSwaps()"
@@ -47,11 +52,9 @@
   </nav>
 
   <div class="rubic-header__profile">
-    <a
-      class="rubic-header__profile-trades button-link"
-      routerLink="my-trades"
-      routerLinkActive="button-link_active"
-    >
+    <a *noFrame class="rubic-header__profile-trades button-link"
+       routerLink="my-trades"
+       routerLinkActive="button-link_active">
       {{ 'navigation.myTrades' | translate }}
 
       <tui-badge
@@ -62,16 +65,17 @@
       ></tui-badge>
     </a>
 
-    <app-login-button
-      *ngIf="!($currentUser | async)?.address"
-      class="rubic-header__login"
-    ></app-login-button>
-    <app-user-profile
-      *ngIf="($currentUser | async)?.address"
-      class="rubic-header__profile-user"
-    ></app-user-profile>
-    <app-gas-indicator *ngIf="($isMobile | async) === false"></app-gas-indicator>
-    <app-rubic-language-select></app-rubic-language-select>
+    <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
+    <ng-container *ngIf="!($currentUser | async)?.address; else loggedIn">
+      <app-login-button class="rubic-header__login" *noFrame></app-login-button>
+    </ng-container>
+    <ng-template #loggedIn>
+      <app-user-profile class="rubic-header__profile-user"></app-user-profile>
+      <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
+    </ng-template>
+
+    <app-gas-indicator *noFrame="'any'; and: ($isMobile| async) === false"></app-gas-indicator>
+    <app-rubic-language-select *noFrame></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>
 </header>
