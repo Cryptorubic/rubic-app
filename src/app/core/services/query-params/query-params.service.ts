@@ -12,7 +12,6 @@ import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -275,10 +274,6 @@ export class QueryParamsService {
   private isAddress(token: string, chain: BLOCKCHAIN_NAME): boolean {
     const web3Public: Web3Public = this.web3Public[chain];
     return web3Public.isAddressCorrect(token);
-  }
-
-  private isHEXColor(color: string): boolean {
-    return /^[A-F0-9]+$/i.test(color);
   }
 
   private navigate(): void {

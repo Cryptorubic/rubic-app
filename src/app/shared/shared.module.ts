@@ -37,7 +37,6 @@ import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/g
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
-import { VerticalIframeTokenAmountInputComponent } from 'src/app/shared/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -84,7 +83,6 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     SwapsHeaderComponent,
     AnalyticsLinkComponent,
     TermsNConditionsContainerComponent,
-    VerticalIframeTokenAmountInputComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -146,7 +144,6 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
     IconButtonComponent,
-    VerticalIframeTokenAmountInputComponent,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,

@@ -30,7 +30,6 @@ import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from 'src/app/features/cross-chain-ro
 import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
-import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
 import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-provider/uniswap-v2-provider.abstract';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
@@ -39,7 +38,7 @@ import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 @Injectable({
-  providedIn: CrossChainRoutingModule
+  providedIn: 'root'
 })
 export class CrossChainRoutingService {
   private contractAbi = crossChainSwapContractAbi;

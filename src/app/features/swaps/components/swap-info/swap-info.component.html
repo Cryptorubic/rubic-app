@@ -3,7 +3,7 @@
   [overlay]="true"
   [showLoader]="isSwapInfoLoading"
 >
-  <div class="swaps-info" *ngIf="isCrossChainRouting && allowTrade && crossChainSwapInfo">
+  <div class="swaps-info" *ngIf="crossChainSwapInfo">
     <div class="swaps-info__item swaps-info-item">
       <div class="swaps-info-item__title">Maximum sent</div>
       <div class="swaps-info-item__value">

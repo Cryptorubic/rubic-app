@@ -44,7 +44,10 @@
       ></app-swaps-header>
 
       <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator [blockchain]="fromBlockchain" *onlyFrame="'horizontal'"></app-iframe-blockchain-indicator>
+        <app-iframe-blockchain-indicator
+          [blockchain]="fromBlockchain"
+          *onlyFrame="'horizontal'"
+        ></app-iframe-blockchain-indicator>
 
         <app-token-amount-input
           *noFrame="'vertical'"
@@ -54,12 +57,8 @@
 
         <app-vertical-iframe-token-amount-input
           *onlyFrame="'vertical'"
-          [token]="selectedToken.from"
-          [amount]="selectedFromAmount"
-          (amountChange)="onTokenInputAmountChange($event)"
           [loading]="isLoading"
           [tokens]="availableTokens['from']"
-          [formService]="swapFormService"
         ></app-vertical-iframe-token-amount-input>
       </div>
 
@@ -68,7 +67,10 @@
       </div>
 
       <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator  *onlyFrame="'horizontal'" [blockchain]="toBlockchain"></app-iframe-blockchain-indicator>
+        <app-iframe-blockchain-indicator
+          *onlyFrame="'horizontal'"
+          [blockchain]="toBlockchain"
+        ></app-iframe-blockchain-indicator>
 
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"

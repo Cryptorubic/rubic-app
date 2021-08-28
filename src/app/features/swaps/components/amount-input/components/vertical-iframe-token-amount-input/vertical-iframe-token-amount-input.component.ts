@@ -14,16 +14,15 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { FormControl } from '@angular/forms';
+import { FormControl } from '@ngneat/reactive-forms';
 
 @Component({
-  selector: 'app-token-amount-input',
-  templateUrl: './token-amount-input.component.html',
-  styleUrls: ['./token-amount-input.component.scss'],
-  providers: [TuiDestroyService],
+  selector: 'app-vertical-iframe-token-amount-input',
+  templateUrl: './vertical-iframe-token-amount-input.component.html',
+  styleUrls: ['./vertical-iframe-token-amount-input.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TokenAmountInputComponent implements OnInit {
+export class VerticalIframeTokenAmountInputComponent implements OnInit {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
@@ -34,9 +33,13 @@ export class TokenAmountInputComponent implements OnInit {
     return this.amount.value.split(',').join('');
   }
 
+  get usdPrice(): BigNumber {
+    return new BigNumber(this.formattedAmount || 0).multipliedBy(this.selectedToken?.price ?? 0);
+  }
+
   public readonly DEFAULT_DECIMALS = 18;
 
-  public amount = new FormControl('');
+  public amount = new FormControl<string>('');
 
   public selectedToken: TokenAmount;
 
@@ -108,10 +111,6 @@ export class TokenAmountInputComponent implements OnInit {
     } else {
       this.amount.setValue(this.getMaxAmountInCrossChainRouting());
     }
-  }
-
-  public getUsdPrice(): BigNumber {
-    return new BigNumber(this.formattedAmount || 0).multipliedBy(this.selectedToken?.price || 0);
   }
 
   public onAmountChange(amount: string): void {
