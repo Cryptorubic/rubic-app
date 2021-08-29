@@ -48,8 +48,8 @@ export class SettingsItComponent implements OnInit {
     });
   }
 
-  public setAutoSlippageTolerance(value: boolean): void {
-    if (value) {
+  public toggleAutoSlippageTolerance(): void {
+    if (!this.instantTradeForm.value.autoSlippageTolerance) {
       this.slippageTolerance = this.defaultSlippageTolerance;
       this.instantTradeForm.patchValue({
         autoSlippageTolerance: true,

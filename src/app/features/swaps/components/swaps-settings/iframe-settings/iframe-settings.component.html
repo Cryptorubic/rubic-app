@@ -1,12 +1,11 @@
 <section class="iframe-settings">
   <form [formGroup]="iframeSettingsForm" class="iframe-settings__container">
     <div class="iframe-settings__column">
-
       <div class="iframe-settings__row slippage">
         <div class="slippage__head">
           <label for="slippageTolerance">{{
             'settings.instantTrades.slippageTitle' | translate
-            }}</label>
+          }}</label>
           <div
             class="iframe-settings__hint"
             [inlineSVG]="'/assets/images/icons/hint.svg'"
@@ -15,9 +14,11 @@
         </div>
         <div class="slippage__body">
           <button
-            (click)="setAutoSlippageTolerance(!iframeSettingsForm.value.autoSlippageTolerance)"
+            (click)="toggleAutoSlippageTolerance()"
             class="slippage__button-auto"
-            [ngClass]="{ 'slippage__button-auto_active': iframeSettingsForm.value.autoSlippageTolerance }"
+            [ngClass]="{
+              'slippage__button-auto_active': iframeSettingsForm.value.autoSlippageTolerance
+            }"
           >
             Auto
           </button>
@@ -31,7 +32,7 @@
             [max]="50"
             [min]="0.001"
             [postfix]="'%'"
-          >0.15%
+            >0.15%
           </tui-input-number>
         </div>
       </div>
@@ -42,9 +43,7 @@
           <div
             class="iframe-settings__hint"
             [inlineSVG]="'/assets/images/icons/hint.svg'"
-            [tuiHint]="
-          'settings.bridge.walletAddress' | translate
-        "
+            [tuiHint]="'settings.bridge.walletAddress' | translate"
           ></div>
         </div>
         <div class="bridge-address__body">
@@ -54,7 +53,8 @@
             formControlName="tronAddress"
             pattern="T[1-9A-HJ-NP-Za-km-z]{33}$"
             tuiTextfieldSize="s"
-          >TKEZDGPjLJDhieooBqEeBkVbXiz8XCsZLz</tui-input>
+            >TKEZDGPjLJDhieooBqEeBkVbXiz8XCsZLz</tui-input
+          >
         </div>
       </div>
     </div>
@@ -63,7 +63,7 @@
       <div class="iframe-settings__row">
         <label for="disableMultihops">{{
           'settings.instantTrades.multihopsTitle' | translate
-          }}</label>
+        }}</label>
         <div
           class="iframe-settings__hint"
           [inlineSVG]="'/assets/images/icons/hint.svg'"
@@ -79,7 +79,7 @@
       <div class="iframe-settings__row">
         <label for="rubicOptimisation">{{
           'settings.instantTrades.rubicOptimisationTitle' | translate
-          }}</label>
+        }}</label>
         <div
           class="iframe-settings__hint"
           [inlineSVG]="'/assets/images/icons/hint.svg'"

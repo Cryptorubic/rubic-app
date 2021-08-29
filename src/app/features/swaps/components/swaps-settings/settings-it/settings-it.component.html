@@ -12,7 +12,7 @@
     </div>
     <div class="settings__form-row settings__form-row_united">
       <div
-        (click)="setAutoSlippageTolerance(!instantTradeForm.value.autoSlippageTolerance)"
+        (click)="toggleAutoSlippageTolerance()"
         class="settings__button-auto"
         [ngClass]="{ 'settings__button-auto_active': instantTradeForm.value.autoSlippageTolerance }"
       >

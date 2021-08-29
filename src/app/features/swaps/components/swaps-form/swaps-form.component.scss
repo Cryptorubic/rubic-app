@@ -164,7 +164,8 @@
 
     @include iframe-vertical {
       app-instant-trade-bottom-form,
-      app-bridge-bottom-form {
+      app-bridge-bottom-form,
+      app-cross-chain-routing-bottom-form {
         width: 100%;
       }
     }

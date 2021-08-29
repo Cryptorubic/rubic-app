@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
 import {
   BridgeSettingsForm,
+  CcrSettingsForm,
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
@@ -42,8 +43,9 @@ export class IframeSettingsComponent implements OnInit {
   }
 
   private setForm(): void {
-    const itSettingsForm = this.settingsService.settingsForm.controls.INSTANT_TRADE;
-    const bridgeSettingsForm = this.settingsService.settingsForm.controls.BRIDGE;
+    const itSettingsForm = this.settingsService.instantTrade;
+    const bridgeSettingsForm = this.settingsService.bridge;
+    const ccrSettingsForm = this.settingsService.crossChainRouting;
 
     this.iframeSettingsForm = new FormGroup<IframeSettingsForm>({
       autoSlippageTolerance: new FormControl<boolean>(itSettingsForm.value.autoSlippageTolerance),
@@ -54,31 +56,38 @@ export class IframeSettingsComponent implements OnInit {
       tronAddress: new FormControl<string>(bridgeSettingsForm.value.tronAddress)
     });
     this.slippageTolerance = itSettingsForm.value.slippageTolerance;
-    this.setFormChanges(itSettingsForm, bridgeSettingsForm);
+    this.setFormChanges(itSettingsForm, bridgeSettingsForm, ccrSettingsForm);
   }
 
   private setFormChanges(
     itSettingsForm: AbstractControl<ItSettingsForm>,
-    bridgeSettingsForm: AbstractControl<BridgeSettingsForm>
+    bridgeSettingsForm: AbstractControl<BridgeSettingsForm>,
+    ccrSettingsForm: AbstractControl<CcrSettingsForm>
   ): void {
     this.iframeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       const { tronAddress, ...itSettings } = settings;
       itSettingsForm.patchValue({ ...itSettings });
       bridgeSettingsForm.patchValue({ tronAddress });
+      ccrSettingsForm.patchValue({ ...itSettings });
     });
 
     itSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
       this.slippageTolerance = settings.slippageTolerance;
+      ccrSettingsForm.patchValue({ slippageTolerance: settings.slippageTolerance });
     });
 
     bridgeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
     });
+
+    ccrSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
+      this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
+    });
   }
 
-  public setAutoSlippageTolerance(value: boolean): void {
-    if (value) {
+  public toggleAutoSlippageTolerance(): void {
+    if (!this.iframeSettingsForm.value.autoSlippageTolerance) {
       this.slippageTolerance = this.defaultSlippageTolerance;
       this.iframeSettingsForm.patchValue({
         autoSlippageTolerance: true,

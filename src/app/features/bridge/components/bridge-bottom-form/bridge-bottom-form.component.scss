@@ -15,7 +15,6 @@
 
   &__container {
     display: flex;
-    grid-gap: 20px;
     justify-content: space-between;
 
     min-height: 105px;
@@ -59,7 +58,6 @@
 
     @include b($mobile-sm) {
       flex-direction: column;
-      grid-gap: initial;
     }
   }
 
@@ -71,13 +69,13 @@
       margin-left: 12px;
     }
 
-    @include b($mobile-md) {
-      padding: 15px 20px 0;
-    }
-
     @include iframe-vertical {
       margin-top: 30px;
       padding: 0;
+    }
+
+    @include b($mobile-md) {
+      padding: 15px 20px 0;
     }
   }
 
