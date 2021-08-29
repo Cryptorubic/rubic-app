@@ -27,13 +27,13 @@ type CrossChainSwapInfo = {
 };
 
 @Component({
-  selector: 'app-swap-info',
-  templateUrl: './swap-info.component.html',
-  styleUrls: ['./swap-info.component.scss'],
+  selector: 'app-cross-chain-swap-info',
+  templateUrl: './cross-chain-swap-info.component.html',
+  styleUrls: ['./cross-chain-swap-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class SwapInfoComponent implements OnInit {
+export class CrossChainSwapInfoComponent implements OnInit {
   @Input() set tradeStatus(value: TRADE_STATUS) {
     if (value === TRADE_STATUS.LOADING) {
       this.isSwapInfoLoading = true;
@@ -47,10 +47,6 @@ export class SwapInfoComponent implements OnInit {
   public crossChainSwapInfo: CrossChainSwapInfo;
 
   public isSwapInfoLoading: boolean;
-
-  public get isCrossChainRouting(): boolean {
-    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-  }
 
   public get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;

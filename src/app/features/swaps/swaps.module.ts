@@ -31,10 +31,10 @@ import { UsdPriceContainerComponent } from 'src/app/features/swaps/components/am
 import { UserBalanceContainerComponent } from 'src/app/features/swaps/components/amount-input/components/user-balance-container/user-balance-container.component';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
+import { CrossChainSwapInfoComponent } from 'src/app/features/swaps/components/swap-info/cross-chain-swap-info/cross-chain-swap-info.component';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
-import { SwapInfoComponent } from './components/swap-info/swap-info.component';
 import { IframeSettingsComponent } from './components/swaps-settings/iframe-settings/iframe-settings.component';
 
 @NgModule({
@@ -47,7 +47,7 @@ import { IframeSettingsComponent } from './components/swaps-settings/iframe-sett
     TokenAmountInputComponent,
     UsdPriceContainerComponent,
     UserBalanceContainerComponent,
-    SwapInfoComponent,
+    CrossChainSwapInfoComponent,
     IframeSettingsComponent,
     VerticalIframeTokenAmountInputComponent
   ],

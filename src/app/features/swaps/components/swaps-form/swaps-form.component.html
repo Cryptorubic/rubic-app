@@ -99,7 +99,12 @@
     </main>
   </div>
 
-  <app-swap-info *noFrame [tradeStatus]="tradeStatus"></app-swap-info>
+  <ng-container *noFrame>
+    <app-cross-chain-swap-info
+      *ngIf="isCrossChainRouting"
+      [tradeStatus]="tradeStatus"
+    ></app-cross-chain-swap-info>
+  </ng-container>
 
   <app-analytics-link *noFrame [formService]="swapFormService"></app-analytics-link>
 
