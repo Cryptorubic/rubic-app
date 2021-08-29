@@ -172,13 +172,6 @@ export const crossChainSwapContractAbi = [
   },
   {
     inputs: [],
-    name: 'blockchainFeeAddress',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
     name: 'blockchainPool',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
@@ -215,6 +208,13 @@ export const crossChainSwapContractAbi = [
   {
     inputs: [],
     name: 'collectCryptoFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'collectTokenFee',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -472,13 +472,6 @@ export const crossChainSwapContractAbi = [
       { internalType: 'uint256', name: 'feeAmount', type: 'uint256' }
     ],
     name: 'setCryptoFeeOfBlockchain',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'address', name: 'newFeeAddress', type: 'address' }],
-    name: 'setFeeAddress',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
