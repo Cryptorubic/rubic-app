@@ -80,7 +80,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
-  @Output() toTokenSelected = new EventEmitter<boolean>();
+  @Output() displayMaxButton = new EventEmitter<boolean>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -217,7 +217,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
 
-    this.toTokenSelected.emit(!!this.toToken);
+    this.displayMaxButton.emit(!!this.toToken);
 
     this.setToWalletAddress();
 

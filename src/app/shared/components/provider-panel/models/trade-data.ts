@@ -24,6 +24,4 @@ export interface TradeData {
   usdPrice: string;
 
   toTokenDecimals: number;
-
-  blockchain: BLOCKCHAIN_NAME;
 }

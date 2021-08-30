@@ -35,7 +35,7 @@ export class TokenAmountInputComponent {
 
   @Input() token?: TokenAmount;
 
-  @Input() toTokenSelected: boolean;
+  @Input() displayMaxButton: boolean;
 
   @Input() maxGasFee: BigNumber = new BigNumber(0);
 
@@ -73,16 +73,16 @@ export class TokenAmountInputComponent {
       if (maxAmount.gt(0)) {
         this.amountControl.setValue(maxAmount.toFormat(BIG_NUMBER_FORMAT));
       } else {
-        const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+        const nativeTokenSymbol = networks.find(el => el.name === blockchain).nativeCoin.symbol;
         this.notificationsService.show(
           this.translateService.instant('notifications.minerFee', {
-            nativeToken
+            nativeTokenSymbol
           }),
           { autoClose: 7000 }
         );
       }
     } else {
-      this.amountControl.setValue(amount);
+      this.amountControl.setValue(amount.toFormat(BIG_NUMBER_FORMAT));
     }
   }
 

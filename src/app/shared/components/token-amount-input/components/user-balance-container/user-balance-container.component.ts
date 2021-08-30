@@ -10,7 +10,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 export class UserBalanceContainerComponent {
   @Input() public token: TokenAmount;
 
-  @Input() public toTokenSelected: boolean = false;
+  @Input() public displayMaxButton: boolean = false;
 
   @Input() public hide: 'maxButton' | 'balance';
 
@@ -20,7 +20,7 @@ export class UserBalanceContainerComponent {
     this.maxButtonClickEvent = new EventEmitter<void>();
   }
 
-  public maxButtonClick(toTokenSelected: boolean): void {
-    if (toTokenSelected) this.maxButtonClickEvent.emit();
+  public maxButtonClick(): void {
+    if (this.displayMaxButton) this.maxButtonClickEvent.emit();
   }
 }

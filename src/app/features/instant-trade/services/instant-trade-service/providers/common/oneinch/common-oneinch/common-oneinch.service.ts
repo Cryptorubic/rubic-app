@@ -176,7 +176,10 @@ export class CommonOneinchService {
       amountAbsolute
     );
 
-    const gasPrice = await this.getGasPrice(blockchain, minGasPrice);
+    let gasPrice;
+    if (shouldCalculateGas || minGasPrice) {
+      gasPrice = await this.getGasPrice(blockchain, minGasPrice);
+    }
 
     const instantTrade = {
       blockchain,
@@ -188,8 +191,11 @@ export class CommonOneinchService {
         token: toToken,
         amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
       },
-      ...(shouldCalculateGas && { gasPrice })
+      ...(gasPrice && { gasPrice })
     };
+    if (!shouldCalculateGas) {
+      return instantTrade;
+    }
 
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);

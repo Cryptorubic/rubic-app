@@ -36,7 +36,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public allowRefresh: boolean = true;
 
-  public toTokenSelected: boolean = false;
+  public displayMaxButton: boolean = false;
 
   public maxGasFee: BigNumber;
 

@@ -32,7 +32,7 @@ import {
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { filter, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators';
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
@@ -43,7 +43,6 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -70,7 +69,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
-  @Output() toTokenSelected = new EventEmitter<boolean>();
+  @Output() displayMaxButton = new EventEmitter<boolean>();
 
   @Output() maxGasLimit = new EventEmitter<BigNumber>();
 
@@ -230,7 +229,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
 
-    this.toTokenSelected.emit(!!this.toToken);
+    this.displayMaxButton.emit(!!this.toToken);
 
     this.isEth = {
       from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
@@ -372,17 +371,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
           return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
             map(([approveData, tradeData]) => {
-              const maxGasLimit = tradeData.reduce((maxGas, trade) => {
-                if (trade.status === 'fulfilled') {
-                  const providerGas = new BigNumber(trade.value.gasFeeInEth);
-                  return providerGas.gt(maxGas) ? providerGas : maxGas;
-                }
-                return maxGas;
-              }, new BigNumber(0));
-
-              const maxGasLimitEth = maxGasLimit;
-
-              this.maxGasLimit.emit(maxGasLimitEth);
+              this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
 
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
@@ -576,6 +565,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return '';
     }
     return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
+  }
+
+  public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {
+    return tradeData.reduce((maxGas, trade) => {
+      if (trade.status === 'fulfilled') {
+        const providerGas = new BigNumber(trade.value.gasFeeInEth);
+        return providerGas.gt(maxGas) ? providerGas : maxGas;
+      }
+      return maxGas;
+    }, new BigNumber(0));
   }
 
   private setProviderState(
