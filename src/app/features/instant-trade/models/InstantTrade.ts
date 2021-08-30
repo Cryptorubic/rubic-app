@@ -45,7 +45,7 @@ interface InstantTrade {
   /**
    * Additional options
    */
-  options?: any;
+  options?: unknown;
 
   /**
    * Error.

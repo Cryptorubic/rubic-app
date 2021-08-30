@@ -18,6 +18,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { WINDOW } from 'src/app/core/models/window';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({
@@ -35,7 +36,8 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     private readonly providerConnectorService: ProviderConnectorService,
     private translateService: TranslateService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector
+    @Inject(Injector) private injector: Injector,
+    @Inject(WINDOW) private window: Window
   ) {
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.$isConfirmModalOpened = this.headerStore.getConfirmModalOpeningStatus();
@@ -48,7 +50,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     this.$currentUser = this.authService.getCurrentUser();
   }
 
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
   private clicks = 0;
 
@@ -89,7 +91,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     const neededClicksAmount = 5;
     if (this.clicks >= neededClicksAmount) {
       this.clicks = 0;
-      (window as any).useTestingMode();
+      this.window.testingMode.use();
     }
   }
 

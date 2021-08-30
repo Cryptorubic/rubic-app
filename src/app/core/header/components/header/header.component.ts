@@ -36,7 +36,7 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly $isMobile: Observable<boolean>;
 
-  @ViewChild('headerPage') public headerPage: TemplateRef<any>;
+  @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
 
   public pageScrolled: boolean;
 

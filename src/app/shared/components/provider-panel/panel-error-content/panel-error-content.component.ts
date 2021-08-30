@@ -18,7 +18,9 @@ export class PanelErrorContentComponent implements OnInit {
   constructor() {}
 
   public ngOnInit(): void {
+    // eslint-disable-next-line no-console
     console.log(this.providerData);
+    // eslint-disable-next-line no-console
     console.log(this.errorTranslateKey);
   }
 }

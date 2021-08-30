@@ -8,9 +8,8 @@ describe('SwapsHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SwapsHeaderComponent ]
-    })
-    .compileComponents();
+      declarations: [SwapsHeaderComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

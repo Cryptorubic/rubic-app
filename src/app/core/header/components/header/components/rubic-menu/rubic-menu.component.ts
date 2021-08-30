@@ -2,10 +2,13 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component, EventEmitter,
+  Component,
+  EventEmitter,
   Inject,
-  Injector, Input,
-  OnDestroy, Output,
+  Injector,
+  Input,
+  OnDestroy,
+  Output,
   QueryList,
   TemplateRef,
   ViewChildren
@@ -22,9 +25,7 @@ import { NavigationItem } from 'src/app/core/header/components/header/components
 import { NAVIGATION_LIST } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-list';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({

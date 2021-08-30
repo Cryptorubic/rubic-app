@@ -19,6 +19,7 @@
   &-roadmap-quarter {
     position: absolute;
     left: -110px;
+
     color: rgba(#838383, 0.5);
   }
 
@@ -82,9 +83,9 @@
       &::before {
         display: inline-block;
         flex-shrink: 0;
-        margin-right: 10px;
         width: 24px;
         height: 24px;
+        margin-right: 10px;
 
         color: #4aa956;
         font-weight: bold;

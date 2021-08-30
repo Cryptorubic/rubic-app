@@ -11,6 +11,7 @@ export abstract class SwapProvider {
   public getSupportedTokensInfoTemplate(): SupportedTokensInfo {
     const supportedBlockchains = Object.values(BLOCKCHAIN_NAME);
 
+    /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
     const arrayToObject = (array: any[], value: any) =>
       array.reduce((acc, elem) => {
         if (Array.isArray(value)) {

@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Content,
-  VolumeContent,
-  TeamCardContent
-} from 'src/app/shared/models/content';
+import { Content, VolumeContent, TeamCardContent } from 'src/app/shared/models/content';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({

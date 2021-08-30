@@ -211,6 +211,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     }
 
     if (tokensInBlockchains[0].length !== tokensInBlockchains[1].length) {
+      // eslint-disable-next-line no-console
       console.warn('[EVO TOKENS WARNING]: BSC tokens number is not equal to POLYGON tokens number');
     }
 

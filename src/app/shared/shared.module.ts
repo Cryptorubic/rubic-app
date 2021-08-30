@@ -37,6 +37,7 @@ import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { VerticalIframeTokenAmountInputComponent } from 'src/app/shared/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
+import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -59,7 +60,6 @@ import { IframeBlockchainIndicatorComponent } from './components/iframe-blockcha
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
-import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
 

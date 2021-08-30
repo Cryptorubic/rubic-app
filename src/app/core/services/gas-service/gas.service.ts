@@ -3,7 +3,6 @@ import { BehaviorSubject, combineLatest, Observable, of, timer } from 'rxjs';
 import { catchError, map, mergeMap, startWith } from 'rxjs/operators';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { EthGasPriceResponse } from 'src/app/core/services/gas-service/models/eth-gas-response';
-import { BscGasResponse } from 'src/app/core/services/gas-service/models/bsc-gas-response';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';

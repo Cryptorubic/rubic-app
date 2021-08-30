@@ -8,9 +8,7 @@ import {
   map,
   mergeMap,
   switchMap,
-  takeWhile,
-  tap,
-  mapTo
+  takeWhile
 } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
