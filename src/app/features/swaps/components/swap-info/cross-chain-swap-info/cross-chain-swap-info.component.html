@@ -31,11 +31,13 @@
     <div class="swaps-info__item swaps-info-item">
       <div class="swaps-info-item__title">Platform fee</div>
       <div class="swaps-info-item__value">
-        {{ crossChainSwapInfo.platformFee.percent }}% ≈ ${{
-          crossChainSwapInfo.platformFee.amountInUsd
+        {{ crossChainSwapInfo.platformFee.percent }}% ≈
+        {{
+          crossChainSwapInfo.platformFee.amount
             | bigNumberFormat
             | withRound: 'toClosestValue':18:2:3
         }}
+        RBC
       </div>
     </div>
   </div>

@@ -318,6 +318,7 @@ export class CrossChainRoutingService {
 
   public getFeeAmountData(): Observable<{
     percent: number;
+    amount: BigNumber;
     amountInUsd: BigNumber;
   }> {
     if (!this.currentCrossChainTrade) {
@@ -340,10 +341,13 @@ export class CrossChainRoutingService {
             token.blockchain === fromBlockchain &&
             token.address.toLowerCase() === transitToken.address.toLowerCase()
         );
-        const amountInUsd = amount.multipliedBy(foundTransitToken.price);
+        const amountInUsd = foundTransitToken?.price
+          ? amount.multipliedBy(foundTransitToken.price)
+          : null;
 
         return {
           percent,
+          amount,
           amountInUsd
         };
       })

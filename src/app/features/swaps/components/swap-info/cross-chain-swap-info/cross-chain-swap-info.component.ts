@@ -22,6 +22,7 @@ type CrossChainSwapInfo = {
   minimumReceived: BigNumber;
   platformFee: {
     percent: number;
+    amount: BigNumber;
     amountInUsd: BigNumber;
   };
 };
