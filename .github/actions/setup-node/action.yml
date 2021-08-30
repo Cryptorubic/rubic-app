@@ -2,14 +2,15 @@ name: Set up node envirnoment
 branding:
   icon: eye
   color: blue
-setup-node:
-  name: Set up node envirnoment
-  runs-on: ubuntu-latest
-
+runs:
   steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
     - name: Read .nvmrc
       run: echo ::set-output name=NVMRC::$(cat .nvmrc)
       id: nvm
+      shell: bash
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -18,3 +19,4 @@ setup-node:
 
     - name: Set up npm
       run : npm install
+      shell: bash
