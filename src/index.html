@@ -40,6 +40,46 @@
 
     <!-- /Yandex.Metrika counter -->
 
+    <!-- Carrot quest BEGIN -->
+    <script type="text/javascript">
+      !(function () {
+        function t(t, e) {
+          return function () {
+            window.carrotquestasync.push(t, arguments);
+          };
+        }
+        if ('undefined' == typeof carrotquest) {
+          var e = document.createElement('script');
+          (e.type = 'text/javascript'),
+            (e.async = !0),
+            (e.src = '//cdn.carrotquest.app/api.min.js'),
+            document.getElementsByTagName('head')[0].appendChild(e),
+            (window.carrotquest = {}),
+            (window.carrotquestasync = []),
+            (carrotquest.settings = {});
+          for (
+            var n = [
+                'connect',
+                'track',
+                'identify',
+                'auth',
+                'oth',
+                'onReady',
+                'addCallback',
+                'removeCallback',
+                'trackMessageInteraction'
+              ],
+              a = 0;
+            a < n.length;
+            a++
+          )
+            carrotquest[n[a]] = t(n[a]);
+        }
+      })(),
+        carrotquest.connect('45192-451b5ee7560c4681d7c61219ea');
+    </script>
+    <!-- Carrot quest END -->
+
     <meta charset="utf-8" />
     <title>Rubic &ndash; Trading ReDeFined</title>
 
@@ -109,23 +149,6 @@
 
     <script src="//connect.facebook.net/en_US/sdk.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
-
-    <!-- Start of LiveChat (www.livechatinc.com) code -->
-    <script type="text/javascript">
-      window.__lc = window.__lc || {};
-      window.__lc.license = 9683030;
-      (function () {
-        var lc = document.createElement('script');
-        lc.type = 'text/javascript';
-        lc.async = true;
-        lc.src =
-          ('https:' == document.location.protocol ? 'https://' : 'http://') +
-          'cdn.livechatinc.com/tracking.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(lc, s);
-      })();
-    </script>
-    <!-- End of LiveChat code -->
 
     <!-- Google Tag Manager (noscript) -->
     <noscript
