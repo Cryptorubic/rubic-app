@@ -12,7 +12,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsCcrComponent implements OnInit {
-  private defaultSlippageTolerance = 0.5;
+  private defaultSlippageTolerance = 1;
 
   public crossChainRoutingForm: FormGroup<CcrSettingsForm>;
 
