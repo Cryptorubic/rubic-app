@@ -46,8 +46,6 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   private readonly ERC20_TOKEN_TYPE =
     '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c7ac37c0a345b';
 
-  private readonly RBC_ADDRESS_IN_ETHEREUM = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
-
   private readonly web3PublicEth: Web3Public;
 
   private readonly web3PublicPolygon: Web3Public;
@@ -118,15 +116,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           const bridgeTokenPairs = await Promise.all(promisesTokens);
 
           this.tokenPairs$.next(
-            List(
-              bridgeTokenPairs.filter(
-                bridgeTokenPair =>
-                  bridgeTokenPair !== null &&
-                  bridgeTokenPair.tokenByBlockchain[
-                    BLOCKCHAIN_NAME.ETHEREUM
-                  ].address.toLowerCase() !== this.RBC_ADDRESS_IN_ETHEREUM.toLowerCase()
-              )
-            )
+            List(bridgeTokenPairs.filter(bridgeTokenPair => bridgeTokenPair !== null))
           );
         },
         err => {
