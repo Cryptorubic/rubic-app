@@ -1,8 +1,8 @@
 <section class="tokens-select">
-  <header class="tokens-select__header">
+  <header class="tokens-select__header" *noFrame>
     <h2>{{ 'modals.tokensListModal.title' | translate }}</h2>
   </header>
-  <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
+  <app-tokens-search-bar *noFrame [(query)]="query"></app-tokens-search-bar>
   <div class="tokens-select__content">
     <app-blockchains-aside
       [idPrefix]="idPrefix"
@@ -12,6 +12,7 @@
     <app-tokens-list
       *ngIf="!customToken && !loading"
       [tokens]="tokensToShow$ | async"
+      [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
       (tokenSelect)="onTokenSelect($event)"
     ></app-tokens-list>
     <app-custom-token

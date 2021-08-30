@@ -19,6 +19,7 @@ import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, mapTo } from 'rxjs/operators';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-tokens-select',
@@ -38,6 +39,8 @@ export class TokensSelectComponent implements OnInit {
   public loading = false;
 
   public idPrefix: string;
+
+  public prevSelectedToken: TokenAmount;
 
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
@@ -99,6 +102,7 @@ export class TokensSelectComponent implements OnInit {
     this.form = context.data.form;
     this.allowedBlockchains = context.data.allowedBlockchains;
     this.idPrefix = context.data.idPrefix;
+    this.prevSelectedToken = this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
 
     this.blockchain = context.data.currentBlockchain;
   }

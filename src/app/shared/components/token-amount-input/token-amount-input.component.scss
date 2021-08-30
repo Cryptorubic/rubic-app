@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 .token-amount-input-container {
   display: flex;
@@ -13,11 +12,50 @@
 
   background-color: var(--main-background);
 
+  @include iframe-horizontal {
+    position: relative;
+
+    width: $iframe-horizontal-input-width;
+    height: 50px;
+    padding: 0 7px 0 16px;
+
+    border-radius: 10px;
+  }
+
+  @include light-iframe {
+    background-color: var(--rubic-base-14);
+  }
+
   &__wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+
+    @include iframe-horizontal {
+      justify-content: center;
+
+      &:first-child {
+        flex-direction: row-reverse;
+        order: 2;
+
+        app-rubic-tokens {
+          display: flex;
+          align-items: center;
+        }
+
+        app-user-balance-container {
+          display: flex;
+          align-items: center;
+          margin-right: 10px;
+          margin-left: 5px;
+        }
+      }
+
+      &:nth-child(2) {
+        order: 1;
+      }
+    }
   }
 
   &__input-label {
@@ -39,6 +77,24 @@
     background-color: transparent;
 
     border: none;
+
+    @include iframe-horizontal {
+      font-size: 20px;
+      text-align: left;
+    }
+  }
+
+  &__iframe-info-cards {
+    position: absolute;
+    bottom: -33px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+
+    app-usd-price-container {
+      margin-right: 5px;
+    }
   }
 }
 

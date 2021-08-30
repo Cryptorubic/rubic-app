@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@import 'src/styles';
 
 :host {
   --tui-primary-text: #{$rubic-primary};
@@ -18,6 +18,20 @@
     img {
       max-width: 27px;
       max-height: 27px;
+    }
+
+    /* stylelint-disable */
+    @include light-iframe {
+      background-color: var(--rubic-base-14);
+
+      &[data-state='hovered'] {
+        background-color: var(--rubic-base-14);
+      }
+
+      &[data-state='pressed'] {
+        background: var(--rubic-base-14);
+        box-shadow: unset;
+      }
     }
   }
 }

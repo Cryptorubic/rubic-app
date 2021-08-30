@@ -17,7 +17,7 @@ import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constant
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
-import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -32,11 +32,13 @@ import {
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { filter, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
@@ -86,7 +88,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public fromToken: TokenAmount;
 
-  private toToken: TokenAmount;
+  public toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
@@ -114,6 +116,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private calculateTradeSubscription$: Subscription;
 
   private hiddenCalculateTradeSubscription$: Subscription;
+
+  public isIframe$: Observable<boolean>;
+
+  public TRADE_STATUS = TRADE_STATUS;
 
   get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
@@ -154,8 +160,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly web3PublicService: Web3PublicService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    iframeService: IframeService
   ) {
+    this.isIframe$ = iframeService.isIframe$;
     this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
     this.onCalculateTrade = new Subject<'normal' | 'hidden'>();
     this.hiddenDataAmounts$ = new BehaviorSubject<
@@ -169,8 +177,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.formChangesSubscription$ = this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => this.setupSwapForm(form));
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            prev.fromToken?.address === next.fromToken?.address &&
+            prev.toToken?.address === next.toToken?.address &&
+            prev.fromAmount === next.fromAmount
+          );
+        })
+      )
+      .subscribe(form => {
+        this.setupSwapForm(form);
+      });
 
     this.settingsFormSubscription$ = this.settingsService.instantTradeValueChanges
       .pipe(startWith(this.settingsService.instantTradeValue))
@@ -658,7 +679,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       });
 
       this.counterNotificationsService.updateUnread();
-      this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateUserTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();

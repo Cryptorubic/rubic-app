@@ -33,6 +33,10 @@ import { RubicLanguageSelectComponent } from 'src/app/core/header/components/hea
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { LetDirective } from 'src/app/shared/directives/let/let.directive';
+import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
+import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
+import { VerticalIframeTokenAmountInputComponent } from 'src/app/shared/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -51,6 +55,8 @@ import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.com
 import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
 import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
+import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
+import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
@@ -82,6 +88,7 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     UserBalanceContainerComponent,
     UsdPriceContainerComponent,
     AnalyticsLinkComponent,
+    VerticalIframeTokenAmountInputComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -95,7 +102,12 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     ShortenAmountPipe,
     // Directives.
     SafetyLinkDirective,
-    TokenAmountDirective
+    TokenAmountDirective,
+    LetDirective,
+    NoFrameDirective,
+    OnlyFrameDirective,
+    IframeBlockchainIndicatorComponent,
+    ThemedIconPipe
   ],
   imports: [
     CommonModule,
@@ -138,6 +150,7 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
     IconButtonComponent,
+    VerticalIframeTokenAmountInputComponent,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
@@ -154,7 +167,12 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     SwapsHeaderComponent,
     GasIndicatorComponent,
     PanelErrorContentComponent,
-    PanelContentComponent
+    PanelContentComponent,
+    LetDirective,
+    NoFrameDirective,
+    OnlyFrameDirective,
+    IframeBlockchainIndicatorComponent,
+    ThemedIconPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]

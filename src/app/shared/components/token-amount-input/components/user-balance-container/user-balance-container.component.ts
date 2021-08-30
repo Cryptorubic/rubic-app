@@ -11,6 +11,8 @@ export class UserBalanceContainerComponent {
 
   @Input() public toTokenSelected: boolean = false;
 
+  @Input() public hide: 'maxButton' | 'balance';
+
   @Output() public maxButtonClickEvent: EventEmitter<void>;
 
   constructor() {

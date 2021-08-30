@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@import 'src/styles';
 
 
 :host {
@@ -66,6 +66,10 @@
 
         background-color: var(--main-background);
         opacity: 1 !important;
+
+        @include light-iframe {
+          background-color: var(--rubic-base-14);
+        }
       }
     }
 

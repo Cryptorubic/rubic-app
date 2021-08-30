@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { Subscription } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -12,23 +15,27 @@ import { QueryParamsService } from './core/services/query-params/query-params.se
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit, OnDestroy {
   public isBackendAvailable: boolean;
 
+  private $iframeSubscription: Subscription;
+
   constructor(
-    private readonly healthcheckService: HealthcheckService,
+    @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly errorService: ErrorsService
+    private readonly iframeService: IframeService,
+    healthcheckService: HealthcheckService,
+    queryParamsService: QueryParamsService,
+    activatedRoute: ActivatedRoute,
+    errorService: ErrorsService
   ) {
-    const queryParamsSubscription$ = this.activatedRoute.queryParams.subscribe(
+    const queryParamsSubscription$ = activatedRoute.queryParams.subscribe(
       (queryParams: QueryParams) => {
         try {
-          this.queryParamsService.setupQueryParams(queryParams);
+          queryParamsService.setupQueryParams(queryParams);
         } catch (err) {
-          this.errorService.catch(err);
+          errorService.catch(err);
         }
       }
     );
@@ -38,9 +45,37 @@ export class AppComponent {
 
     this.setupLanguage();
 
-    this.healthcheckService
-      .healthCheck()
-      .then(isAvailable => (this.isBackendAvailable = isAvailable));
+    healthcheckService.healthCheck().then(isAvailable => (this.isBackendAvailable = isAvailable));
+  }
+
+  ngAfterViewInit() {
+    this.$iframeSubscription = this.iframeService.isIframe$.subscribe(isIframe => {
+      if (isIframe) {
+        this.removeLiveChatInIframe();
+        this.document.getElementById('gradient')?.remove();
+        this.document.getElementById('wave').hidden = true;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.$iframeSubscription.unsubscribe();
+  }
+
+  private removeLiveChatInIframe(): void {
+    const observer = new MutationObserver(() => {
+      const liveChat = this.document.getElementById('chat-widget-container');
+      if (liveChat) {
+        liveChat.remove();
+        observer.disconnect();
+      }
+    });
+    observer.observe(this.document.body, {
+      attributes: false,
+      childList: true,
+      characterData: false,
+      subtree: false
+    });
   }
 
   private setupLanguage(): void {
