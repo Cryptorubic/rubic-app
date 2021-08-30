@@ -11,7 +11,15 @@ import {
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  startWith,
+  switchMap,
+  takeUntil
+} from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -336,7 +344,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .approve(bridgeTradeRequest)
       .pipe(first())
       .subscribe(
-        (_: TransactionReceipt) => {
+        async (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('notifications.successApprove'),
@@ -346,7 +354,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             }
           );
 
-          this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -374,7 +382,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTradeRequest)
       .pipe(first())
       .subscribe(
-        (_: TransactionReceipt) => {
+        async (_: TransactionReceipt) => {
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),
@@ -385,7 +393,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           );
 
           this.counterNotificationsService.updateUnread();
-          this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();

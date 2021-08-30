@@ -401,7 +401,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe(
-        (_: TransactionReceipt) => {
+        async (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('notifications.successApprove'),
@@ -411,7 +411,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             }
           );
 
-          this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -442,7 +442,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe(
-        (_: TransactionReceipt) => {
+        async (_: TransactionReceipt) => {
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),
@@ -453,11 +453,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           );
 
           this.counterNotificationsService.updateUnread();
-          this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();
-          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         },
         err => {
           this.tradeInProgressSubscription$?.unsubscribe();
