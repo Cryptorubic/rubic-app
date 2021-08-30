@@ -247,9 +247,10 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   private updateSelectedToken(tokenType: 'from' | 'to'): void {
     const formValue = this.swapFormService.commonTrade.controls.input.value;
-    const token =
-      (tokenType === 'from' ? formValue.fromToken : formValue.toToken) ||
-      this.selectedToken[tokenType];
+    const hasTokenInForm = Boolean(formValue.fromToken || formValue.toToken);
+    const formToken = tokenType === 'from' ? formValue.fromToken : formValue.toToken;
+    const token = hasTokenInForm ? formToken : this.selectedToken[tokenType];
+
     if (!token) {
       this.selectedToken[tokenType] = token;
       return;
