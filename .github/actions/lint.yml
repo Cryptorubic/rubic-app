@@ -1,0 +1,17 @@
+name: Check code quality
+branding:
+  icon: eye
+  color: green
+lint:
+  name: Check code base
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Setup node
+      uses: ./.github/actions/setup-node
+
+    - name: Run lint
+      run : npm run lint
+
+    - name: Run lint css
+      run : npm run lint-css
