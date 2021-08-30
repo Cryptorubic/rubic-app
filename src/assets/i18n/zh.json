@@ -477,6 +477,7 @@
     "successfulTradeTitle": "成功的交易",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
-    "successApprove": "批准成功"
+    "successApprove": "批准成功",
+    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
   }
 }

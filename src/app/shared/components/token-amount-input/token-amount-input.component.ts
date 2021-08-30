@@ -15,6 +15,7 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import networks from 'src/app/shared/constants/blockchain/networks';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -60,7 +61,8 @@ export class TokenAmountInputComponent {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   public onUserBalanceMaxButtonClick(): void {
@@ -72,8 +74,12 @@ export class TokenAmountInputComponent {
         this.amountControl.setValue(maxAmount.toFormat(BIG_NUMBER_FORMAT));
       } else {
         const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
-        const message = `Can't estimate. Don't forget about miner fee. Try to leave the buffer of ${nativeToken} for gas.`;
-        this.notificationsService.show(message, { autoClose: 7000 });
+        this.notificationsService.show(
+          this.translateService.instant('notifications.minerFee', {
+            nativeToken
+          }),
+          { autoClose: 7000 }
+        );
       }
     } else {
       this.amountControl.setValue(amount);
