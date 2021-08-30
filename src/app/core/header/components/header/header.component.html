@@ -1,8 +1,6 @@
 <!-- HARMONY BANNER -->
 <div class="harmony-banner" *noFrame>
-  <a href="https://cryptorubic.medium.com/harmony-trading-competition-5ec7ff70da30" target="_blank">
-    Trade Harmony Tokens and earn up to 10% from trading volume
-  </a>
+  Harmony Trading competition is over! Soon we will report the results.
 </div>
 <!-- HARMONY BANNER -->
 
@@ -11,7 +9,13 @@
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="122" height="39" />
   </a>
 
-  <a *onlyFrame class="rubic-header__logo" rel="noopener noreferrer" target="_blank" [href]="noFrameLink">
+  <a
+    *onlyFrame
+    class="rubic-header__logo"
+    rel="noopener noreferrer"
+    target="_blank"
+    [href]="noFrameLink"
+  >
     <img src="assets/images/icons/rubic-logo.svg" alt="Rubic logotype" width="90" height="30" />
   </a>
 
@@ -25,21 +29,28 @@
   ></app-rubic-menu>
 
   <nav *noFrame class="rubic-header__nav">
-    <a class="button-link"
-       (click)="navigateToSwaps()"
-       [class.button-link_active]="rootPath && (isInstantTrade$ | async)"
-    >Swaps</a>
-    <a class="button-link"
-       (click)="navigateToBridge()"
-       [class.button-link_active]="rootPath && (isInstantTrade$ | async) === false"
-    >Bridge</a>
+    <a
+      class="button-link"
+      (click)="navigateToSwaps()"
+      [class.button-link_active]="rootPath && (isInstantTrade$ | async)"
+      >Swaps</a
+    >
+    <a
+      class="button-link"
+      (click)="navigateToBridge()"
+      [class.button-link_active]="rootPath && (isInstantTrade$ | async) === false"
+      >Bridge</a
+    >
     <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Cross Chain</span>
   </nav>
 
   <div class="rubic-header__profile">
-    <a *noFrame class="rubic-header__profile-trades button-link"
-       routerLink="my-trades"
-       routerLinkActive="button-link_active">
+    <a
+      *noFrame
+      class="rubic-header__profile-trades button-link"
+      routerLink="my-trades"
+      routerLinkActive="button-link_active"
+    >
       {{ 'navigation.myTrades' | translate }}
 
       <tui-badge
@@ -59,7 +70,7 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-gas-indicator *noFrame="'any'; and: ($isMobile| async) === false"></app-gas-indicator>
+    <app-gas-indicator *noFrame="'any'; and: ($isMobile | async) === false"></app-gas-indicator>
     <app-rubic-language-select *noFrame></app-rubic-language-select>
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>
