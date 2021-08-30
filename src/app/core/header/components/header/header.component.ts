@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef,
   AfterViewInit
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -23,6 +23,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { map, startWith } from 'rxjs/operators';
+import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -51,7 +52,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public get rootPath(): boolean {
-    return window.location.pathname === '/';
+    return this.window.location.pathname === '/';
   }
 
   constructor(
@@ -65,7 +66,9 @@ export class HeaderComponent implements AfterViewInit {
     private readonly errorService: ErrorsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    @Inject(WINDOW) private readonly window: Window,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -73,11 +76,11 @@ export class HeaderComponent implements AfterViewInit {
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
-    this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
       const scrolledHeight = 50;
-      window.onscroll = () => {
-        const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+      this.window.onscroll = () => {
+        const scrolled = this.window.pageYOffset || this.document.documentElement.scrollTop;
         this.pageScrolled = scrolled > scrolledHeight;
       };
     }
@@ -109,7 +112,7 @@ export class HeaderComponent implements AfterViewInit {
    */
   @HostListener('window:resize', ['$event'])
   public onResize() {
-    this.headerStore.setMobileDisplayStatus(window.innerWidth <= this.headerStore.mobileWidth);
+    this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 
   public async navigateToSwaps(): Promise<void> {
