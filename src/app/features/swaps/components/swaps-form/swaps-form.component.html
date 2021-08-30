@@ -57,6 +57,7 @@
       [loading]="isLoading"
       [tokens]="availableTokens['to']"
       [formService]="swapFormService"
+      (toTokenSelected)="toTokenSelected = $event"
     ></app-bridge-bottom-form>
   </main>
 </div>

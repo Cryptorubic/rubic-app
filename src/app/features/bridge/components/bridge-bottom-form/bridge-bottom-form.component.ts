@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -76,6 +78,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() formService: FormService;
+
+  @Output() toTokenSelected = new EventEmitter<boolean>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -204,6 +208,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
+
+    this.toTokenSelected.emit(!!this.toToken);
 
     this.setToWalletAddress();
 

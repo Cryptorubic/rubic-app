@@ -12,6 +12,9 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import networks from 'src/app/shared/constants/blockchain/networks';
+import CustomError from 'src/app/core/errors/models/custom-error';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -33,7 +36,7 @@ export class TokenAmountInputComponent {
 
   @Input() toTokenSelected: boolean;
 
-  @Input() maxGasFee: BigNumber;
+  @Input() maxGasFee: BigNumber = new BigNumber(0);
 
   @Input() set amount(value: BigNumber) {
     if (value && !value.isNaN() && !value.eq(this.amount)) {
@@ -51,14 +54,23 @@ export class TokenAmountInputComponent {
 
   public amountControl = new FormControl('');
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly notificationsService: NotificationsService
+  ) {}
 
   public onUserBalanceMaxButtonClick(): void {
-    const { amount, address } = this.token;
+    const { amount, address, blockchain } = this.token;
     if (address === NATIVE_TOKEN_ADDRESS) {
       const maxAmount = amount.minus(this.maxGasFee);
-      console.log(this.maxGasFee.toString(10), maxAmount.toString(10));
-      this.amountControl.setValue(maxAmount.gt(0) ? maxAmount.toFormat(BIG_NUMBER_FORMAT) : 0);
+
+      if (maxAmount.gt(0)) {
+        this.amountControl.setValue(maxAmount.toFormat(BIG_NUMBER_FORMAT));
+      } else {
+        const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+        const message = `Can't estimate. Don't forget about miner fee. Try to leave the buffer of ${nativeToken} for gas.`;
+        this.notificationsService.show(message, { autoClose: 7000 });
+      }
     } else {
       this.amountControl.setValue(amount);
     }

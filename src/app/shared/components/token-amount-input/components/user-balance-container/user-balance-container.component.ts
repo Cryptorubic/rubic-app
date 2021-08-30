@@ -15,6 +15,7 @@ export class UserBalanceContainerComponent {
 
   constructor() {
     this.maxButtonClickEvent = new EventEmitter<void>();
+    console.log(this.toTokenSelected);
   }
 
   public maxButtonClick(toTokenSelected: boolean): void {

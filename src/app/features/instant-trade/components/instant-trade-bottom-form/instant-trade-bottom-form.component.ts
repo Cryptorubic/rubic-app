@@ -353,7 +353,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             map(([approveData, tradeData]) => {
               const maxGasLimit = tradeData.reduce((maxGas, trade) => {
                 if (trade.status === 'fulfilled') {
-                  console.log(trade);
                   const providerGas = new BigNumber(trade.value.gasFeeInEth);
                   return providerGas.gt(maxGas) ? providerGas : maxGas;
                 }
