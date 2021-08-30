@@ -14,5 +14,7 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
-  [BLOCKCHAIN_NAME.HARMONY]: 'harmony'
+  [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
 };
+
+export type BackendBlockchain = 'ethereum' | 'binance-smart-chain' | 'polygon' | 'harmony' | 'tron-mainnet' | 'xdai-mainnet';

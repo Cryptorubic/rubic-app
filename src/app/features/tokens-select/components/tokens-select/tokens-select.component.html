@@ -13,6 +13,8 @@
       *ngIf="!customToken && !loading"
       [tokens]="tokensToShow$ | async"
       (tokenSelect)="onTokenSelect($event)"
+      (pageUpdate)="updateTokens($event)"
+      [tokensNetworkState]="tokensNetworkState"
     ></app-tokens-list>
     <app-custom-token
       *ngIf="customToken && !loading"

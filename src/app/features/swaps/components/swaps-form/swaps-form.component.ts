@@ -243,6 +243,7 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     }
 
     this.availableTokens[tokenType] = tokens;
+    this.cdr.detectChanges();
   }
 
   private updateSelectedToken(tokenType: 'from' | 'to'): void {

@@ -1,11 +1,30 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { List } from 'immutable';
-import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import {
+  BackendBlockchain,
+  FROM_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_BLOCKCHAINS
+} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { map } from 'rxjs/operators';
 import { HttpService } from '../../http/http.service';
 import { BackendToken } from './models/BackendToken';
+
+interface TokensResponse {
+  readonly count: number;
+  readonly next: string;
+  readonly previous: string;
+  readonly results: BackendToken[];
+}
+
+interface TokensRequestOptions {
+  readonly address?: string;
+  readonly network?: BackendBlockchain;
+  readonly page: number;
+  readonly pageSize?: number;
+  readonly symbol?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +48,47 @@ export class TokensApiService {
   }
 
   public getTokensList(): Observable<List<Token>> {
-    return this.httpService
-      .get(this.getTokensUrl)
-      .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
+    return this.fetchBasicTokens();
+    // return this.httpService
+    //   .get(this.getTokensUrl)
+    //   .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
+  }
+
+  /**
+   * @description Fetch another networks basic tokens from backend.
+   * @returns Observable<List<Token>> Tokens.
+   */
+  private fetchBasicTokens(): Observable<List<Token>> {
+    const params = { page: 1, page_size: 150 };
+    const requests$ = Object.values(TO_BACKEND_BLOCKCHAINS).map(network =>
+      this.httpService.get(this.getTokensUrl, { ...params, network })
+    ) as Observable<TokensResponse>[];
+    return forkJoin(requests$).pipe(
+      map(results => {
+        return TokensApiService.prepareTokens(results.flatMap(el => el.results));
+      })
+    );
+  }
+
+  /**
+   * Fetch specific network tokens from backend.
+   * @param requestOptions Network which tokens is searched.
+   */
+  public fetchSpecificBackendTokens(
+    requestOptions: TokensRequestOptions
+  ): Observable<{ total: number; result: List<Token> }> {
+    const options = {
+      network: requestOptions.network,
+      page: requestOptions.page,
+      page_size: requestOptions.pageSize
+    };
+    return this.httpService.get(this.getTokensUrl, options).pipe(
+      map((tokensResponse: TokensResponse) => {
+        return {
+          total: tokensResponse.count,
+          result: TokensApiService.prepareTokens(tokensResponse.results)
+        };
+      })
+    );
   }
 }

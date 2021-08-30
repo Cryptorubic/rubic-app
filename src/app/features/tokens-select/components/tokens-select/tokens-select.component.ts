@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -19,6 +19,8 @@ import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, mapTo } from 'rxjs/operators';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Component({
   selector: 'app-tokens-select',
@@ -27,7 +29,11 @@ import { catchError, mapTo } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensSelectComponent implements OnInit {
-  public tokens: Observable<AvailableTokenAmount[]>;
+  private page: number;
+
+  private readonly pageSize: number;
+
+  public tokens: BehaviorSubject<AvailableTokenAmount[]>;
 
   public customToken: AvailableTokenAmount;
 
@@ -46,6 +52,8 @@ export class TokensSelectComponent implements OnInit {
   private readonly formType: 'from' | 'to';
 
   private readonly form: FormGroup<ISwapFormInput>;
+
+  public tokensNetworkState: { count: number; page: number };
 
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
@@ -81,7 +89,7 @@ export class TokensSelectComponent implements OnInit {
     private readonly context: TuiDialogContext<
       AvailableTokenAmount,
       {
-        tokens: Observable<AvailableTokenAmount[]>;
+        tokens: BehaviorSubject<AvailableTokenAmount[]>;
         formType: 'from' | 'to';
         currentBlockchain: BLOCKCHAIN_NAME;
         form: FormGroup<ISwapFormInput>;
@@ -92,8 +100,11 @@ export class TokensSelectComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly web3PublicService: Web3PublicService,
     private readonly authService: AuthService,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private readonly tokensService: TokensService
   ) {
+    this.page = 1;
+    this.pageSize = 150;
     this.tokens = context.data.tokens;
     this.formType = context.data.formType;
     this.form = context.data.form;
@@ -104,7 +115,11 @@ export class TokensSelectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.updateTokensList();
+    this.tokensService.tokensNetworkState.subscribe(el => {
+      this.tokensNetworkState = el[TO_BACKEND_BLOCKCHAINS[this.blockchain]];
+      this.updateTokensList();
+      this.cdr.detectChanges();
+    });
   }
 
   close() {
@@ -224,5 +239,17 @@ export class TokensSelectComponent implements OnInit {
         })
       )
       .toPromise();
+  }
+
+  public updateTokens(page: number): void {
+    this.tokensService.fetchNetworkTokens(
+      TO_BACKEND_BLOCKCHAINS[this.blockchain],
+      page,
+      150,
+      () => {
+        this.tokensNetworkState =
+          this.tokensService.tokensNetworkState[TO_BACKEND_BLOCKCHAINS[this.blockchain]];
+      }
+    );
   }
 }

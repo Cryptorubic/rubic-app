@@ -14,12 +14,29 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { map, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import {
+  BackendBlockchain,
+  TO_BACKEND_BLOCKCHAINS
+} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+
+interface NetworkCountPage {
+  // @ts-ignore
+  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM]]: { count: number; page: number };
+  // @ts-ignore
+  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]]: { count: number; page: number };
+  // @ts-ignore
+  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON]]: { count: number; page: number };
+  // @ts-ignore
+  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.HARMONY]]: { count: number; page: number };
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensService {
   private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
+
+  public tokensNetworkState: BehaviorSubject<NetworkCountPage>;
 
   get tokens(): Observable<List<TokenAmount>> {
     return this._tokens.asObservable();
@@ -36,6 +53,24 @@ export class TokensService {
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService
   ) {
+    this.tokensNetworkState = new BehaviorSubject<NetworkCountPage>({
+      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM]]: {
+        count: 9999,
+        page: 1
+      },
+      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]]: {
+        count: 9999,
+        page: 1
+      },
+      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON]]: {
+        count: 9999,
+        page: 1
+      },
+      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.HARMONY]]: {
+        count: 9999,
+        page: 1
+      }
+    });
     this.tokensApiService.getTokensList().subscribe(
       tokens => {
         if (!this.isTestingMode) {
@@ -91,35 +126,28 @@ export class TokensService {
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY
     ];
-    const promises = [];
-
-    blockchains.forEach(blockchain => {
-      promises.push(
-        this.web3PublicService[blockchain].getTokensBalances(
-          this.userAddress,
-          tokens
-            .filter(token => token.blockchain === blockchain)
-            .map(token => token.address)
-            .toArray()
-        )
+    const balances$ = blockchains.map(blockchain => {
+      return this.web3PublicService[blockchain].getTokensBalances(
+        this.userAddress,
+        tokens
+          .filter(token => token.blockchain === blockchain)
+          .map(token => token.address)
+          .toArray()
       );
     });
 
-    const balancesSettled = await Promise.allSettled(promises);
-    const tokensWithBalance: TokenAmount[][] = [];
-    blockchains.forEach((blockchain, blockchainIndex) => {
+    const balancesSettled = await Promise.allSettled(balances$);
+    const tokensWithBalance: TokenAmount[][] = blockchains.map((blockchain, blockchainIndex) => {
       if (balancesSettled[blockchainIndex].status === 'fulfilled') {
         const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
           .value;
-        tokensWithBalance.push(
-          tokens
-            .filter(token => token.blockchain === blockchain)
-            .map((token, tokenIndex) => ({
-              ...token,
-              amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
-            }))
-            .toArray()
-        );
+        return tokens
+          .filter(token => token.blockchain === blockchain)
+          .map((token, tokenIndex) => ({
+            ...token,
+            amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
+          }))
+          .toArray();
       }
     });
 
@@ -173,5 +201,30 @@ export class TokensService {
       blockchain,
       nativeCoin?.price
     );
+  }
+
+  public fetchNetworkTokens(
+    network: BackendBlockchain,
+    page: number,
+    pageSize: number = 150,
+    callback: () => void
+  ): void {
+    this.tokensApiService
+      .fetchSpecificBackendTokens({ network, page, pageSize })
+      .pipe(
+        map((tokens: { total: number; result: List<Token> }) => ({
+          ...tokens,
+          result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
+        }))
+      )
+      .subscribe((tokens: { total: number; result: List<TokenAmount> }) => {
+        const value = {
+          ...this.tokensNetworkState.value,
+          [network]: { count: tokens.total, page }
+        };
+        this.tokensNetworkState.next(value);
+        this._tokens.next(this._tokens.value.concat(tokens.result));
+        callback();
+      });
   }
 }

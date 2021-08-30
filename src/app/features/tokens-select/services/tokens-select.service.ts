@@ -1,7 +1,7 @@
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -17,7 +17,7 @@ export class TokensSelectService {
   ) {}
 
   showDialog(
-    tokens: Observable<AvailableTokenAmount[]>,
+    tokens: BehaviorSubject<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
     form: FormGroup<ISwapFormInput>,

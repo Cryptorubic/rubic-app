@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
-import { of, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
@@ -26,9 +26,20 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   @Input() formType: 'from' | 'to';
 
-  @Input() tokens: AvailableTokenAmount[];
+  private _tokens: AvailableTokenAmount[];
 
   @Input() formService: FormService;
+
+  @Input() set tokens(value: AvailableTokenAmount[]) {
+    if (value) {
+      this._tokens = value;
+      if (this.tokens$) {
+        this.tokens$.next(value);
+      }
+    }
+  }
+
+  @Input() formServiceTokens: FormService;
 
   @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
 
@@ -44,10 +55,14 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
 
   private $formSubscription: Subscription;
 
+  private readonly tokens$: BehaviorSubject<AvailableTokenAmount[]>;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensSelectService: TokensSelectService
-  ) {}
+  ) {
+    this.tokens$ = new BehaviorSubject<AvailableTokenAmount[]>(null);
+  }
 
   public ngOnInit(): void {
     this.setFormValues(this.formService.commonTrade.controls.input.value);
@@ -69,12 +84,13 @@ export class RubicTokensComponent implements OnInit, OnDestroy {
   }
 
   public openTokensSelect(idPrefix: string): void {
+    this.tokens$.next(this._tokens);
     const { fromBlockchain, toBlockchain } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
     this.tokensSelectService
       .showDialog(
-        of(this.tokens),
+        this.tokens$,
         this.formType,
         currentBlockchain,
         this.formService.input,
