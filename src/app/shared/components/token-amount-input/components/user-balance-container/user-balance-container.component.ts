@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from '@angular/core';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -7,7 +8,7 @@ import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from 
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserBalanceContainerComponent {
-  @Input() public token;
+  @Input() public token: TokenAmount;
 
   @Input() public toTokenSelected: boolean = false;
 
