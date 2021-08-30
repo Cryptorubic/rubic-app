@@ -1,4 +1,4 @@
-name: Develop branch
+name: Update production branch
 
 # This action works on push
 on:
@@ -15,7 +15,7 @@ jobs:
         # Copy repo from develop branch
       - uses: actions/checkout@v2
         with:
-          ref: develop
+          ref: feature/actions
 
       - name: Read .nvmrc
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
@@ -36,7 +36,7 @@ jobs:
         run : npm run lint-css
 
   deploy:
-    name: Deploy on develop server
+    name: Deploy on production server
     runs-on: ubuntu-latest
     needs: [lint]
 
