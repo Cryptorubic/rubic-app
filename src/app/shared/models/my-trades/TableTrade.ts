@@ -18,6 +18,7 @@ export type TableProvider =
 
 export interface TableTrade {
   transactionHash: string;
+  transactionHashScanUrl?: string;
   status: TRANSACTION_STATUS;
   provider: TableProvider;
   fromToken: TableToken;

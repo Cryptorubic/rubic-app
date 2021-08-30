@@ -46,9 +46,11 @@ export class CrossChainRoutingApiService {
     }
 
     const transactionHash = tradeApi.toTransactionHash || tradeApi.fromTransactionHash;
+    const transactionHashScanUrl = tradeApi.toTransactionScanURL || tradeApi.fromTransactionScanURL;
 
     return {
       transactionHash,
+      transactionHashScanUrl,
       status: tradeApi.status,
       provider: 'CROSS_CHAIN_ROUTING_PROVIDER',
       fromToken: getTableToken('from'),

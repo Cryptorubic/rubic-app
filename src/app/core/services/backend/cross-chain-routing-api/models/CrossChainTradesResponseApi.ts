@@ -15,5 +15,7 @@ export interface CrossChainTradesResponseApi {
   status: TRANSACTION_STATUS;
   fromTransactionHash: string;
   toTransactionHash: string;
+  fromTransactionScanURL: string;
+  toTransactionScanURL: string;
   statusUpdatedAt: string;
 }

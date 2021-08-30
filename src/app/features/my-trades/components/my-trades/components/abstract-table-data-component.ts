@@ -40,10 +40,13 @@ export abstract class AbstractTableDataComponent {
     if (!trade) {
       return '';
     }
-    return this.scannerLinkPipe.transform(
-      trade.transactionHash,
-      trade.fromToken.blockchain,
-      ADDRESS_TYPE.TRANSACTION
+    return (
+      trade.transactionHashScanUrl ||
+      this.scannerLinkPipe.transform(
+        trade.transactionHash,
+        trade.fromToken.blockchain,
+        ADDRESS_TYPE.TRANSACTION
+      )
     );
   }
 }
