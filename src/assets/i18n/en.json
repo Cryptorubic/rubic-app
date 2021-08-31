@@ -67,7 +67,7 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
   },
   "navigation": {
     "about": "About",
@@ -364,6 +364,17 @@
     "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade.",
     "whatIs": "What is ",
     "getTokens": "You will get {{ toBlockchainName }} tokens to this address"
+  },
+  "crossChainPage": {
+    "swapInfo": {
+      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "maximumSent": "Maximum sent",
+      "maximumSentHint": "Maximum amount of tokens to be sent\n",
+      "minimumReceived": "Minimum received",
+      "minimumReceivedHint": "Minimum amount of tokens to be received\n",
+      "platformFee": "Platform fee",
+      "platformFeeHint": "Platform commission charges in RBC token\n"
+    }
   },
   "instantTrades": {
     "title": "Swap assets with low gas fees",

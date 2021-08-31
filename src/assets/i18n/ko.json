@@ -67,7 +67,7 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
   },
   "navigation": {
     "about": "소개",
@@ -364,6 +364,17 @@
     "approveSuccessMessage": "토큰을 승인했습니다. 거래를 계속하려면 스왑 버튼을 누르십시오.",
     "whatIs": "뭐가 ",
     "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다"
+  },
+  "crossChainPage": {
+    "swapInfo": {
+      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "maximumSent": "Maximum sent",
+      "maximumSentHint": "Maximum amount of tokens to be sent\n",
+      "minimumReceived": "Minimum received",
+      "minimumReceivedHint": "Minimum amount of tokens to be received\n",
+      "platformFee": "Platform fee",
+      "platformFeeHint": "Platform commission charges in RBC token\n"
+    }
   },
   "instantTrades": {
     "title": "Swap assets with low gas fees",
