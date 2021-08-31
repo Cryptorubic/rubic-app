@@ -4,8 +4,24 @@
   [showLoader]="isSwapInfoLoading"
 >
   <div class="swaps-info" *ngIf="crossChainSwapInfo">
+    <div class="swaps-info__title">
+      <div
+        class="swaps-info__title-hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+      ></div>
+      <span class="swaps-info__content">
+        {{ 'crossChainPage.swapInfo.title' | translate }}
+      </span>
+    </div>
     <div class="swaps-info__item swaps-info-item">
-      <div class="swaps-info-item__title">Maximum sent</div>
+      <div class="swaps-info-item__title">
+        {{ 'crossChainPage.swapInfo.maximumSent' | translate }}
+        <div
+          class="swaps-info-item__title-hint"
+          [inlineSVG]="'/assets/images/icons/hint-question.svg'"
+          [tuiHint]="'crossChainPage.swapInfo.maximumSentHint' | translate"
+        ></div>
+      </div>
       <div class="swaps-info-item__value">
         {{
           crossChainSwapInfo.maximumSpent
@@ -17,7 +33,14 @@
     </div>
 
     <div class="swaps-info__item swaps-info-item">
-      <div class="swaps-info-item__title">Minimum received</div>
+      <div class="swaps-info-item__title">
+        {{ 'crossChainPage.swapInfo.minimumReceived' | translate }}
+        <div
+          class="swaps-info-item__title-hint"
+          [inlineSVG]="'/assets/images/icons/hint-question.svg'"
+          [tuiHint]="'crossChainPage.swapInfo.minimumReceivedHint' | translate"
+        ></div>
+      </div>
       <div class="swaps-info-item__value">
         {{
           crossChainSwapInfo.minimumReceived
@@ -29,7 +52,14 @@
     </div>
 
     <div class="swaps-info__item swaps-info-item">
-      <div class="swaps-info-item__title">Platform fee</div>
+      <div class="swaps-info-item__title">
+        {{ 'crossChainPage.swapInfo.platformFee' | translate }}
+        <div
+          class="swaps-info-item__title-hint"
+          [inlineSVG]="'/assets/images/icons/hint-question.svg'"
+          [tuiHint]="'crossChainPage.swapInfo.platformFeeHint' | translate"
+        ></div>
+      </div>
       <div class="swaps-info-item__value">
         {{ crossChainSwapInfo.platformFee.percent }}% ≈
         {{

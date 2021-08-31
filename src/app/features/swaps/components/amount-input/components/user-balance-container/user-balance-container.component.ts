@@ -23,6 +23,6 @@ export class UserBalanceContainerComponent {
   }
 
   public maxButtonClick(): void {
-    if (this.displayMaxButton) this.maxButtonClickEvent.emit();
+    this.maxButtonClickEvent.emit();
   }
 }

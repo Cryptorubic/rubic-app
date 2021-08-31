@@ -59,7 +59,7 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
 };
 
 const CROSS_CHAIN_ROUTING_PROVIDER: Provider = {
-  name: 'Cross Chain',
+  name: 'Cross-Chain',
   image: `${imageBasePath}ccr.svg`
 };
 
