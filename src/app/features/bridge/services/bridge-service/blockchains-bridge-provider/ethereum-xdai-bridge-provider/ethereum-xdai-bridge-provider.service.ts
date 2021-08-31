@@ -9,21 +9,22 @@ import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-privat
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 @Injectable()
 export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider {
-  private xDaiProviderTokens = [
+  private xDaiProviderTokenPair: BridgeTokenPair[] = [
     {
       symbol: 'DAI',
       image: '',
       rank: 0,
 
-      blockchainToken: {
+      tokenByBlockchain: {
         [BLOCKCHAIN_NAME.ETHEREUM]: {
+          blockchain: BLOCKCHAIN_NAME.ETHEREUM,
           address: '0x6b175474e89094c44da98b954eedeac495271d0f',
           name: 'Dai',
           symbol: 'DAI',
@@ -33,6 +34,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
           maxAmount: 9999999
         },
         [BLOCKCHAIN_NAME.XDAI]: {
+          blockchain: BLOCKCHAIN_NAME.XDAI,
           address: NATIVE_TOKEN_ADDRESS,
           name: 'xDai',
           symbol: 'XDAI',
@@ -42,7 +44,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
           maxAmount: 9999999
         }
       }
-    } as BridgeToken
+    }
   ];
 
   constructor(
@@ -52,7 +54,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   ) {
     super();
 
-    setTimeout(() => this.tokens$.next(List(this.xDaiProviderTokens)));
+    setTimeout(() => this.tokenPairs$.next(List(this.xDaiProviderTokenPair)));
   }
 
   public getProviderType(): BRIDGE_PROVIDER {
@@ -65,8 +67,8 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenAddress = token.tokenByBlockchain[bridgeTrade.fromBlockchain].address;
+    const { decimals } = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
     const onTradeTransactionHash = async hash => {

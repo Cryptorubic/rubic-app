@@ -20,7 +20,7 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 export class UniswapV2ProviderAbstract implements ItProvider {
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  private WETHAddress: string;
+  private wethAddress: string;
 
   private contractAddress: string;
 
@@ -40,13 +40,13 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     this.blockchain = blockchain;
     this.maxTransitTokens = maxTransitTokens;
 
-    this.WETHAddress = wethAddressNetMode.mainnet;
+    this.wethAddress = wethAddressNetMode.mainnet;
     this.contractAddress = contractAddressNetMode.mainnet;
     this.routingProviders = routingProvidersNetMode.mainnet;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.WETHAddress = wethAddressNetMode.testnet;
+        this.wethAddress = wethAddressNetMode.testnet;
         this.contractAddress = contractAddressNetMode.testnet;
         this.routingProviders = routingProvidersNetMode.testnet;
       }
@@ -57,17 +57,12 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     return this.commonUniswapV2.getAllowance(this.blockchain, tokenAddress, this.contractAddress);
   }
 
-  public async approve(
-    tokenAddress: string,
-    options: TransactionOptions,
-    minGasPrice?: BigNumber
-  ): Promise<void> {
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     return this.commonUniswapV2.approve(
       this.blockchain,
       tokenAddress,
       this.contractAddress,
-      options,
-      minGasPrice
+      options
     );
   }
 
@@ -75,20 +70,35 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
-    shouldCalculateGas: boolean,
-    minGasPrice?: BigNumber
+    shouldCalculateGas: boolean
   ): Promise<InstantTrade> {
     return this.commonUniswapV2.calculateTrade(
       this.blockchain,
       fromToken,
       fromAmount,
       toToken,
-      this.WETHAddress,
+      this.wethAddress,
       this.contractAddress,
       this.routingProviders,
       this.maxTransitTokens,
-      shouldCalculateGas,
-      minGasPrice
+      shouldCalculateGas
+    );
+  }
+
+  public getFromAmount(
+    fromTokenAddress: string,
+    toToken: InstantTradeToken,
+    toAmount: BigNumber
+  ): Promise<BigNumber> {
+    return this.commonUniswapV2.getFromAmount(
+      this.blockchain,
+      fromTokenAddress,
+      toToken,
+      toAmount,
+      this.wethAddress,
+      this.routingProviders,
+      this.maxTransitTokens,
+      this.contractAddress
     );
   }
 

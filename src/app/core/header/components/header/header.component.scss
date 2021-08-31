@@ -220,7 +220,7 @@
 }
 
 
-.harmony-banner {
+.banner {
   width: 100%;
   min-height: 30px;
 
@@ -229,9 +229,14 @@
   line-height: 30px;
   text-align: center;
 
-  background-color: #0f809c;
+  background-color: rgba(51, 86, 51, 0.8);
+  backdrop-filter: blur(10px);
 
   @include b($mobile-md) {
     font-size: 13px;
+  }
+
+  a {
+    cursor: pointer;
   }
 }

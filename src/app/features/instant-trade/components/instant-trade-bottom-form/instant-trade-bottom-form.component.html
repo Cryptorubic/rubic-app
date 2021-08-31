@@ -6,7 +6,7 @@
           [loading]="loading"
           formType="to"
           [tokens]="tokens"
-          [formService]="formService"
+          [formService]="swapFormService"
         ></app-rubic-tokens>
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
@@ -83,6 +83,6 @@
     [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
-    (updateRatesClick)="onCalculateTrade.next('normal')"
+    (updateRatesClick)="onCalculateTrade$.next('normal')"
   ></app-swap-button>
 </div>

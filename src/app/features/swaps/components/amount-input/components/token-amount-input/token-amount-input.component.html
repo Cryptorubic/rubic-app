@@ -1,0 +1,44 @@
+<div class="token-amount-input-container">
+  <div class="token-amount-input-container__wrapper">
+    <app-rubic-tokens
+      [loading]="loading"
+      formType="from"
+      [tokens]="tokens"
+      [formService]="swapFormService"
+    ></app-rubic-tokens>
+
+    <app-user-balance-container
+      [displayMaxButton]="displayMaxButton"
+      [token]="selectedToken"
+      type="from"
+      (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
+    ></app-user-balance-container>
+  </div>
+
+  <div class="token-amount-input-container__wrapper">
+    <label class="token-amount-input-container__input-label">
+      <input
+        autocomplete="off"
+        class="token-amount-input-container__input"
+        name="token-amount"
+        [placeholder]="placeholder"
+        appTokenAmount
+        [formControl]="amount"
+        [decimals]="selectedToken?.decimals || DEFAULT_DECIMALS"
+        (amountChange)="onAmountChange($event)"
+      />
+    </label>
+
+    <app-usd-price-container *noFrame [usdPrice]="usdPrice"></app-usd-price-container>
+    <div class="token-amount-input-container__iframe-info-cards" *onlyFrame="'horizontal'">
+      <app-usd-price-container
+        *ngIf="usdPrice?.gt(0)"
+        [usdPrice]="usdPrice"
+      ></app-usd-price-container>
+      <app-user-balance-container
+        [token]="selectedToken"
+        hide="maxButton"
+      ></app-user-balance-container>
+    </div>
+  </div>
+</div>

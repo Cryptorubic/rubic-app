@@ -62,7 +62,7 @@ module.exports = {
         'no-console': [
           'warn',
           {
-            allow: ['debug', 'error', 'info']
+            allow: ['debug', 'error', 'info', 'warn']
           }
         ],
         'no-empty': ["error", { "allowEmptyCatch": true }],

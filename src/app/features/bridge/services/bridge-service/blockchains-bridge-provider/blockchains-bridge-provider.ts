@@ -2,35 +2,35 @@ import { List } from 'immutable';
 import { Observable, Subject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import BigNumber from 'bignumber.js';
 
 export abstract class BlockchainsBridgeProvider {
-  protected tokens$ = new Subject<List<BridgeToken>>();
+  protected tokenPairs$ = new Subject<List<BridgeTokenPair>>();
 
   /**
    * @description list of tokens that can be used in a bridge
    */
-  public get tokens(): Observable<List<BridgeToken>> {
-    return this.tokens$.asObservable();
+  public get tokenPairs(): Observable<List<BridgeTokenPair>> {
+    return this.tokenPairs$.asObservable();
   }
 
   /**
    * @description get type of provider
    */
-  public abstract getProviderType?(token?: BridgeToken): BRIDGE_PROVIDER;
+  public abstract getProviderType?(token?: BridgeTokenPair): BRIDGE_PROVIDER;
 
   /**
    * @description get price blockchain provider's fee
-   * @param token bridge token
+   * @param tokenPair bridge token pair
    * @param toBlockchain destination blockchain
    * @param amount swap input amount
    * @return observable number fee price
    */
   public abstract getFee(
-    token: BridgeToken,
+    tokenPair: BridgeTokenPair,
     toBlockchain: BLOCKCHAIN_NAME,
     amount?: BigNumber
   ): Observable<number>;
