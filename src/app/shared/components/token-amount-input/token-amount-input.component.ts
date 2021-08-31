@@ -11,9 +11,6 @@ import { FormControl } from '@angular/forms';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import networks from 'src/app/shared/constants/blockchain/networks';
-import CustomError from 'src/app/core/errors/models/custom-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
@@ -66,6 +63,7 @@ export class TokenAmountInputComponent {
   ) {}
 
   public onUserBalanceMaxButtonClick(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { amount, address, blockchain } = this.token;
     // if (address === NATIVE_TOKEN_ADDRESS) {
     //   const maxAmount = amount.minus(this.maxGasFee);
