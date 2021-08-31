@@ -140,8 +140,40 @@
       display: none;
     }
 
+    &_error {
+      display: flex;
+
+      height: initial;
+
+      font-weight: 300;
+      font-size: 24px;
+      letter-spacing: 2px;
+
+      @include b($mobile-sm) {
+        font-size: 16px;
+      }
+    }
+
     &_placeholder {
       color: rgb(117, 117, 117);
+    }
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+
+    cursor: pointer;
+
+    &_error {
+      float: right;
+
+      ::ng-deep {
+        svg path {
+          fill: $rubic-warning;
+        }
+      }
     }
   }
 

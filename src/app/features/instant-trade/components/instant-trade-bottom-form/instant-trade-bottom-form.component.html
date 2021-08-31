@@ -1,4 +1,4 @@
-<div class="instant-trade-bottom-form" *ngLet="((isIframe$ | async) !== true) as standardMode">
+<div class="instant-trade-bottom-form" *ngLet="(isIframe$ | async) !== true as standardMode">
   <main class="instant-trade-bottom-form__body">
     <div class="instant-trade-bottom-form__body-top">
       <div class="instant-trade-bottom-form__left-part">
@@ -6,7 +6,7 @@
           [loading]="loading"
           formType="to"
           [tokens]="tokens"
-          [formService]="formService"
+          [formService]="swapFormService"
         ></app-rubic-tokens>
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
@@ -15,17 +15,26 @@
         </ng-container>
       </div>
 
-      <div class="instant-trade-bottom-form__amount" *ngLet="allowTrade && ethAndWethTrade as wrapProvider">
+      <div
+        class="instant-trade-bottom-form__amount"
+        *ngLet="allowTrade && ethAndWethTrade as wrapProvider"
+      >
         <ng-container *onlyFrame="'vertical'">
-          <app-iframe-blockchain-indicator *ngIf="toToken?.blockchain as blockchain" [blockchain]="blockchain"></app-iframe-blockchain-indicator>
+          <app-iframe-blockchain-indicator
+            *ngIf="toToken?.blockchain as blockchain"
+            [blockchain]="blockchain"
+          ></app-iframe-blockchain-indicator>
         </ng-container>
-        <div class="instant-trade-bottom-form__token-amount" *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton">
+        <div
+          class="instant-trade-bottom-form__token-amount"
+          *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
+        >
           {{
-          wrapProvider?
-            (fromAmount | bigNumberFormat) :
-            (selectedProvider?.trade.to.amount
-              | bigNumberFormat
-              | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
+            wrapProvider
+              ? (fromAmount | bigNumberFormat)
+              : (selectedProvider?.trade.to.amount
+                | bigNumberFormat
+                | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
           }}
         </div>
         <ng-template #iframeSkeleton>
@@ -34,10 +43,14 @@
           </div>
         </ng-template>
         <ng-container *ngIf="selectedProvider">
-          <div class="instant-trade-bottom-form__usd-amount" *noFrame>{{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}</div>
+          <div class="instant-trade-bottom-form__usd-amount" *noFrame>
+            {{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}
+          </div>
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
-            <div class="instant-trade-bottom-form__usd-amount">{{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}</div>
-            <div *ngIf=" !wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
+            <div class="instant-trade-bottom-form__usd-amount">
+              {{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}
+            </div>
+            <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
               Est. fee ${{ selectedProvider?.trade.gasFeeInUsd.toFixed(2) }}
             </div>
           </div>
@@ -62,7 +75,6 @@
   <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
-  <app-analytics-link *noFrame [formService]="swapFormService"></app-analytics-link>
   <app-swap-button
     [needApprove]="needApprove"
     [status]="tradeStatus"
@@ -71,6 +83,6 @@
     [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
-    (updateRatesClick)="onCalculateTrade.next('normal')"
+    (updateRatesClick)="onCalculateTrade$.next('normal')"
   ></app-swap-button>
 </div>

@@ -20,9 +20,10 @@ import {
   rubicBridgeContractAddressesNetMode,
   rubicTokenAddressesNetMode
 } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/constants/addressesNetMode';
-import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import rubicBridgeContractAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/constants/rubicBridgeContractAbi';
+
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 
 interface RubicConfig {
@@ -117,13 +118,14 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       const ethContractData = response.find(data => data.network === 'Ethereum');
       const bscContractData = response.find(data => data.network === 'Binance-Smart-Chain');
 
-      const bridgeToken = {
+      const bridgeTokenPair: BridgeTokenPair = {
         symbol: 'RBC',
         image: '',
         rank: 0,
 
-        blockchainToken: {
+        tokenByBlockchain: {
           [BLOCKCHAIN_NAME.ETHEREUM]: {
+            blockchain: BLOCKCHAIN_NAME.ETHEREUM,
             address: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].rubicTokenAddress,
             name: 'Rubic',
             symbol: 'RBC',
@@ -132,6 +134,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
             maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].maxAmount
           },
           [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+            blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
             address: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].rubicTokenAddress,
             name: 'Rubic',
             symbol: 'BRBC',
@@ -139,12 +142,12 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
             minAmount: parseFloat(bscContractData.min_amount),
             maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].maxAmount
           }
-        } as BlockchainsTokens,
+        },
 
         fromEthFee: parseFloat(bscContractData.fee),
         toEthFee: parseFloat(ethContractData.fee)
       };
-      this.tokens$.next(List([bridgeToken]));
+      this.tokenPairs$.next(List([bridgeTokenPair]));
     });
   }
 
@@ -152,11 +155,11 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
-  public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
     if (toBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      return of(token.toEthFee);
+      return of(tokenPair.toEthFee);
     }
-    return of(token.fromEthFee);
+    return of(tokenPair.fromEthFee);
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
@@ -182,7 +185,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
-    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
       return throwError(new WrongToken());
@@ -201,7 +204,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const tokenFrom = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
     const spenderAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
 
     if (token.symbol !== 'RBC') {
@@ -234,7 +237,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const trade: RubicTrade = {
       token: {
         address: this.rubicConfig[bridgeTrade.fromBlockchain].rubicTokenAddress,
-        decimals: token.blockchainToken[bridgeTrade.fromBlockchain].decimals
+        decimals: token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals
       }
     } as RubicTrade;
 

@@ -9,11 +9,12 @@ import {
   TuiDropdownControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
+  TuiLoaderModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { SettingsItComponent } from 'src/app/features/swaps/components/settings-it/settings-it.component';
-import { SettingsContainerComponent } from 'src/app/features/swaps/components/settings-container/settings-container.component';
+import { SettingsItComponent } from 'src/app/features/swaps/components/swaps-settings/settings-it/settings-it.component';
+import { SettingsContainerComponent } from 'src/app/features/swaps/components/swaps-settings/settings-container/settings-container.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiInputModule,
@@ -23,13 +24,18 @@ import {
 } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select.module';
-import { BridgesSwapProviderService } from 'src/app/features/bridge/services/bridges-swap-provider-service/bridges-swap-provider.service';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { InstantTradesSwapProviderService } from 'src/app/features/instant-trade/services/instant-trades-swap-provider-service/instant-trades-swap-provider.service';
+import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
+import { TokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/token-amount-input/token-amount-input.component';
+import { UsdPriceContainerComponent } from 'src/app/features/swaps/components/amount-input/components/usd-price-container/usd-price-container.component';
+import { UserBalanceContainerComponent } from 'src/app/features/swaps/components/amount-input/components/user-balance-container/user-balance-container.component';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
+import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
+import { CrossChainSwapInfoComponent } from 'src/app/features/swaps/components/swap-info/cross-chain-swap-info/cross-chain-swap-info.component';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
-import { SettingsBridgeComponent } from './components/settings-bridge/settings-bridge.component';
-import { IframeSettingsComponent } from './components/iframe-settings/iframe-settings.component';
+import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
+import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
+import { IframeSettingsComponent } from './components/swaps-settings/iframe-settings/iframe-settings.component';
 
 @NgModule({
   declarations: [
@@ -37,16 +43,22 @@ import { IframeSettingsComponent } from './components/iframe-settings/iframe-set
     SettingsContainerComponent,
     SettingsItComponent,
     SettingsBridgeComponent,
-    SettingsBridgeComponent,
-    IframeSettingsComponent
+    SettingsCcrComponent,
+    TokenAmountInputComponent,
+    UsdPriceContainerComponent,
+    UserBalanceContainerComponent,
+    CrossChainSwapInfoComponent,
+    IframeSettingsComponent,
+    VerticalIframeTokenAmountInputComponent
   ],
   exports: [],
   imports: [
     CommonModule,
+    SharedModule,
     SwapsRoutingModule,
     InstantTradeModule,
     BridgeModule,
-    SharedModule,
+    CrossChainRoutingModule,
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiSvgModule,
@@ -60,14 +72,15 @@ import { IframeSettingsComponent } from './components/iframe-settings/iframe-set
     InlineSVGModule,
     TuiHintModule,
     TokensSelectModule,
-    FormsModule
+    FormsModule,
+    TuiLoaderModule
   ],
-  entryComponents: [SettingsItComponent, SettingsBridgeComponent],
-  providers: [
-    SwapsService,
-    InstantTradesSwapProviderService,
-    BridgesSwapProviderService,
-    SuccessTxModalService
-  ]
+  entryComponents: [
+    SettingsItComponent,
+    SettingsBridgeComponent,
+    SettingsCcrComponent,
+    IframeSettingsComponent
+  ],
+  providers: [SwapsService, SuccessTxModalService]
 })
 export class SwapsModule {}

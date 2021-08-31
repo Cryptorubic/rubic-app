@@ -2,9 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { AbiItem } from 'web3-utils';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ETH, WEENUS, WETH, WSATT, XEENUS, YEENUS, ZEENUS } from 'src/test/tokens/eth-tokens';
-import { WEENUS_ABI } from 'src/test/tokens/tokens-abi';
-import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
+import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
+import {
+  ETH,
+  WEENUS,
+  WETH,
+  WSATT,
+  XEENUS,
+  YEENUS
+} from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { Web3PublicService } from './web3-public.service';
 import { PublicProviderService } from '../public-provider/public-provider.service';
 
@@ -78,7 +84,7 @@ describe('Web3PublicService', () => {
       case BLOCKCHAIN_NAME.ETHEREUM:
         {
           const gasFee = await getWeb3Public().getEstimatedGas(
-            WEENUS_ABI as AbiItem[],
+            ERC20_TOKEN_ABI,
             WEENUS.address,
             'transfer',
             [bobAddress, '30'],
@@ -147,9 +153,7 @@ describe('Web3PublicService', () => {
   });
 
   it('multicall get balance', async done => {
-    const tokensAddresses = [WEENUS, YEENUS, XEENUS, ZEENUS, ETH, WETH, WSATT].map(
-      token => token.address
-    );
+    const tokensAddresses = [WEENUS, YEENUS, XEENUS, ETH, WETH, WSATT].map(token => token.address);
     const balances = await getWeb3Public().getTokensBalances(aliceAddress, tokensAddresses);
 
     expect(Array.isArray(balances)).toBeTruthy();
@@ -158,7 +162,7 @@ describe('Web3PublicService', () => {
     const realETHBalance = await getWeb3Public().getBalance(aliceAddress, { inWei: true });
 
     expect(balances[1].eq(realYEENUSBalance)).toBeTruthy();
-    expect(balances[4].eq(realETHBalance)).toBeTruthy();
+    expect(balances[3].eq(realETHBalance)).toBeTruthy();
     done();
   });
 });

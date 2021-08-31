@@ -35,6 +35,8 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
 
   @Input() formService: FormService;
 
+  @Input() errorText = '';
+
   private _loading: boolean;
 
   public usd: string;
@@ -58,6 +60,8 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
     this.formSubscription$ = this.formService.outputValueChanges.subscribe(form => {
       if (!form.toAmount || form.toAmount.isNaN()) {
         this.hidden = true;
+        this.tokensAmount = null;
+        this.usd = null;
         this.cdr.detectChanges();
         return;
       }

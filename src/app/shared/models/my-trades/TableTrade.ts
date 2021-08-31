@@ -8,12 +8,17 @@ export interface TableToken {
   symbol: string;
   amount: string;
   image: string;
+  address?: string;
 }
 
-export type TableProvider = INSTANT_TRADES_PROVIDER | BRIDGE_PROVIDER;
+export type TableProvider =
+  | INSTANT_TRADES_PROVIDER
+  | BRIDGE_PROVIDER
+  | 'CROSS_CHAIN_ROUTING_PROVIDER';
 
 export interface TableTrade {
   transactionHash: string;
+  transactionHashScanUrl?: string;
   status: TRANSACTION_STATUS;
   provider: TableProvider;
   fromToken: TableToken;

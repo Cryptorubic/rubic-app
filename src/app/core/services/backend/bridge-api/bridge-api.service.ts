@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
@@ -136,8 +136,8 @@ export class BridgeApiService {
       toNetwork: bridgeTrade.toBlockchain === BLOCKCHAIN_NAME.POLYGON ? 'POL' : 'ETH',
       actualFromAmount: bridgeTrade.amount,
       actualToAmount: bridgeTrade.amount,
-      ethSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.fromBlockchain].address,
-      bscSymbol: bridgeTrade.token.blockchainToken[bridgeTrade.toBlockchain].address,
+      ethSymbol: bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain].address,
+      bscSymbol: bridgeTrade.token.tokenByBlockchain[bridgeTrade.toBlockchain].address,
       updateTime: new Date(),
       status: status.toLowerCase(),
       transaction_id: transactionHash,
@@ -251,7 +251,7 @@ export class BridgeApiService {
       .toPromise();
   }
 
-  private getTokenPrice(bridgeToken: BridgeToken): Observable<number> {
+  private getTokenPrice(bridgeTokenPair: BridgeTokenPair): Observable<number> {
     return this.tokensService.tokens.pipe(
       map(backendTokens => {
         const prices = Object.values(BLOCKCHAIN_NAME)
@@ -259,7 +259,7 @@ export class BridgeApiService {
             blockchain =>
               backendTokens.find(
                 token =>
-                  bridgeToken.blockchainToken[blockchain]?.address.toLowerCase() ===
+                  bridgeTokenPair.tokenByBlockchain[blockchain]?.address.toLowerCase() ===
                   token.address.toLowerCase()
               )?.price
           )
