@@ -23,6 +23,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import { HttpClient } from '@angular/common/http';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 
 interface PanamaStatusResponse {
   data: {
@@ -47,11 +48,11 @@ export class MyTradesService {
     private readonly tokensService: TokensService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly bridgeApiService: BridgeApiService,
+    private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService
   ) {}
 
   public updateTableTrades(): Observable<TableTrade[]> {
-    // updateLoadingStatus(true);
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
       this.tokensService.tokens.pipe(takeWhile(tokens => tokens.size === 0, true))
@@ -66,7 +67,8 @@ export class MyTradesService {
 
         return forkJoin([
           this.getBridgeTransactions(),
-          this.instantTradesApiService.getUserTrades(this.walletAddress)
+          this.instantTradesApiService.getUserTrades(this.walletAddress),
+          this.getCrossChainTrades()
         ]).pipe(
           map(data => {
             this._tableTrades$.next(data.flat());
@@ -132,6 +134,39 @@ export class MyTradesService {
         symbol: toSymbol
       }
     };
+  }
+
+  private getCrossChainTrades(): Observable<TableTrade[]> {
+    return this.crossChainRoutingApiService.getUserTrades(this.walletAddress).pipe(
+      map(tableTrades => {
+        return tableTrades.map(tableTrade => {
+          const { fromToken } = tableTrade;
+          const foundFromToken = this.tokens.find(
+            token =>
+              token.blockchain === fromToken.blockchain &&
+              token.address.toLowerCase() === fromToken.address.toLowerCase()
+          );
+          const { toToken } = tableTrade;
+          const foundToToken = this.tokens.find(
+            token =>
+              token.blockchain === toToken.blockchain &&
+              token.address.toLowerCase() === toToken.address.toLowerCase()
+          );
+
+          return {
+            ...tableTrade,
+            fromToken: {
+              ...fromToken,
+              image: foundFromToken.image
+            },
+            toToken: {
+              ...toToken,
+              image: foundToToken.image
+            }
+          };
+        });
+      })
+    );
   }
 
   public getTableTradeByDate(date: Date): TableTrade {

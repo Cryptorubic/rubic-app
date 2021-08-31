@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TransactionReceipt } from 'web3-eth';
-import { BlockchainsTokens, BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { first } from 'rxjs/operators';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
@@ -19,18 +19,21 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
     this.panamaBridgeProvider.tokens
       .pipe(first())
       .subscribe(tokens =>
-        this.tokens$.next(tokens.map(EthereumBinancePanamaBridgeProviderService.parsePanamaToken))
+        this.tokenPairs$.next(
+          tokens.map(EthereumBinancePanamaBridgeProviderService.parsePanamaToken)
+        )
       );
   }
 
-  private static parsePanamaToken(token: PanamaToken): BridgeToken {
+  private static parsePanamaToken(token: PanamaToken): BridgeTokenPair {
     return {
       symbol: token.symbol,
       image: '',
       rank: 0,
 
-      blockchainToken: {
+      tokenByBlockchain: {
         [BLOCKCHAIN_NAME.ETHEREUM]: {
+          blockchain: BLOCKCHAIN_NAME.ETHEREUM,
           address: token.ethContractAddress || (token.ethSymbol === 'ETH' && NATIVE_TOKEN_ADDRESS),
           name: token.name,
           symbol: token.ethSymbol,
@@ -40,6 +43,7 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
           maxAmount: token.maxAmount
         },
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+          blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
           address: token.bscContractAddress,
           name: token.name,
           symbol: token.bscSymbol,
@@ -48,7 +52,7 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
           minAmount: token.minAmount,
           maxAmount: token.maxAmount
         }
-      } as BlockchainsTokens,
+      },
 
       fromEthFee: token.ethToBscFee,
       toEthFee: token.bscToEthFee
@@ -59,8 +63,8 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
     return BRIDGE_PROVIDER.PANAMA;
   }
 
-  public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
-    return this.panamaBridgeProvider.getFee(token, toBlockchain);
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+    return this.panamaBridgeProvider.getFee(tokenPair, toBlockchain);
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {

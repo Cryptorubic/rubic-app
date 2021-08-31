@@ -1,36 +1,44 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { SupportedTokensInfo } from 'src/app/features/swaps/models/SupportedTokensInfo';
-import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
-import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
+import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import BigNumber from 'bignumber.js';
-import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
-import { BridgeBottomFormComponent } from 'src/app/features/bridge/components/bridge-bottom-form/bridge-bottom-form.component';
-import { InstantTradeBottomFormComponent } from 'src/app/features/instant-trade/components/instant-trade-bottom-form/instant-trade-bottom-form.component';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
+import { List } from 'immutable';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
+import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import BigNumber from 'bignumber.js';
+
+type TokenType = 'from' | 'to';
 
 type SelectedToken = {
-  from: TokenAmount;
-  to: TokenAmount;
+  [tokenType in TokenType]: TokenAmount;
+};
+
+type AvailableTokens = {
+  [tokenType in TokenType]: AvailableTokenAmount[];
 };
 
 @Component({
   selector: 'app-swaps-form',
   templateUrl: './swaps-form.component.html',
-  styleUrls: ['./swaps-form.component.scss']
+  styleUrls: ['./swaps-form.component.scss'],
+  providers: [TuiDestroyService]
 })
-export class SwapsFormComponent implements OnInit, OnDestroy {
-  @ViewChild(BridgeBottomFormComponent) bridgeForm: BridgeBottomFormComponent;
+export class SwapsFormComponent implements OnInit {
+  public isLoading = true;
 
-  @ViewChild(InstantTradeBottomFormComponent) itForm: InstantTradeBottomFormComponent;
+  public tradeStatus: TRADE_STATUS;
 
   public autoRefresh: boolean;
 
@@ -42,8 +50,34 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
 
   public onRefreshTrade = new Subject<void>();
 
+  private _supportedTokens: List<TokenAmount>;
+
+  private _bridgeTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
+
+  public availableTokens: AvailableTokens;
+
+  public selectedToken: SelectedToken;
+
+  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
+
+  public fromBlockchain: BLOCKCHAIN_NAME;
+
+  public toBlockchain: BLOCKCHAIN_NAME;
+
+  public swapType: SWAP_PROVIDER_TYPE;
+
+  public isMobile$: Observable<boolean>;
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+  }
+
+  public get isBridge(): boolean {
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE;
+  }
+
+  public get isCrossChainRouting(): boolean {
+    return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
   }
 
   public get allowTrade(): boolean {
@@ -67,230 +101,198 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  private _supportedTokens: SupportedTokensInfo;
-
-  private _bridgeTokensPairs: BlockchainsBridgeTokens[];
-
-  public availableTokens: {
-    from: AvailableTokenAmount[];
-    to: AvailableTokenAmount[];
-  } = {
-    from: [],
-    to: []
-  };
-
-  public selectedToken: SelectedToken = {} as SelectedToken;
-
-  public selectedFromAmount = new BigNumber(0);
-
-  public isLoading = true;
-
-  private _loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
-
-  private formSubscription$: Subscription;
-
-  public settingsSubscription$: Subscription;
-
-  public fromBlockchain: BLOCKCHAIN_NAME;
-
-  public toBlockchain: BLOCKCHAIN_NAME;
-
-  public swapType: SWAP_PROVIDER_TYPE;
-
-  public isMobile$: Observable<boolean>;
-
   constructor(
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly destroy$: TuiDestroyService
   ) {
+    this.availableTokens = {
+      from: [],
+      to: []
+    };
+    this.selectedToken = {
+      from: undefined,
+      to: undefined
+    };
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
   }
 
   ngOnInit(): void {
+    this.subscribeOnTokens();
+
+    this.subscribeOnSettings();
+
+    this.swapsService.swapMode$.pipe(takeUntil(this.destroy$)).subscribe(swapMode => {
+      this.swapType = swapMode;
+      if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
+      } else {
+        this.autoRefresh = this.settingsService.crossChainRoutingValue.autoRefresh;
+      }
+    });
+
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
+      .subscribe(form => {
+        this.setFormValues(form);
+      });
+  }
+
+  private subscribeOnTokens(): void {
     combineLatest([
       this.swapsService.availableTokens,
-      this.swapsService.bridgeTokensPairs
-    ]).subscribe(([supportedTokens, bridgeTokensPairs]) => {
-      this.isLoading = true;
-
-      if (!supportedTokens) {
-        return;
-      }
-
-      this._supportedTokens = supportedTokens;
-      this._bridgeTokensPairs = bridgeTokensPairs;
-
-      this.setAvailableTokens('from');
-      this.setAvailableTokens('to');
-
-      this.updateSelectedToken('from');
-      this.updateSelectedToken('to');
-
-      this.isLoading = false;
-    });
-
-    this.selectedFromAmount = this.swapFormService.commonTrade.controls.input.value.fromAmount;
-
-    this.autoRefresh = this.settingsService.settingsForm.controls.INSTANT_TRADE.value.autoRefresh;
-    this.settingsSubscription$ = this.settingsService.settingsForm.controls.INSTANT_TRADE.get(
-      'autoRefresh'
-    ).valueChanges.subscribe(el => {
-      this.autoRefresh = el;
-    });
-
-    this.setFormValues(this.swapFormService.commonTrade.controls.input.value);
-    this.formSubscription$ = this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(
-      formValue => {
+      this.swapsService.bridgeTokenPairsByBlockchainsArray
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([supportedTokens, bridgeTokenPairsByBlockchainsArray]) => {
         this.isLoading = true;
-        this.setFormValues(formValue);
-        this.isLoading = false;
-      }
-    );
-  }
-
-  public ngOnDestroy(): void {
-    this.formSubscription$.unsubscribe();
-    this.settingsSubscription$.unsubscribe();
-  }
-
-  private setFormValues(formValue: SwapFormInput): void {
-    this.selectedFromAmount = formValue.fromAmount;
-    this.fromBlockchain = formValue.fromBlockchain;
-    this.toBlockchain = formValue.toBlockchain;
-    this.swapType =
-      formValue.fromBlockchain === formValue.toBlockchain
-        ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
-        : SWAP_PROVIDER_TYPE.BRIDGE;
-
-    if (this._supportedTokens) {
-      this.setAvailableTokens('from');
-      this.setAvailableTokens('to');
-
-      this.setNewSelectedToken('from', formValue.fromToken);
-      this.setNewSelectedToken('to', formValue.toToken);
-    }
-  }
-
-  private setAvailableTokens(tokenType: 'from' | 'to'): void {
-    const oppositeTokenName = tokenType === 'from' ? 'toToken' : 'fromToken';
-    const oppositeToken = this.swapFormService.commonTrade.controls.input.value[oppositeTokenName];
-
-    const tokens: AvailableTokenAmount[] = [];
-    if (!oppositeToken) {
-      Object.values(blockchainsList).forEach(fromBlockchain => {
-        Object.values(blockchainsList).forEach(toBlockchain => {
-          this._supportedTokens[fromBlockchain.symbol][toBlockchain.symbol].forEach(
-            supportedToken => {
-              const foundToken = tokens.find(
-                token =>
-                  token.blockchain === supportedToken.blockchain &&
-                  token.address.toLowerCase() === supportedToken.address.toLowerCase()
-              );
-              if (!foundToken) {
-                tokens.push({
-                  ...supportedToken,
-                  available: true
-                });
-              }
-            }
-          );
-        });
-      });
-    } else {
-      const oppositeBlockchain = oppositeToken.blockchain;
-
-      this._supportedTokens[oppositeBlockchain][oppositeBlockchain].forEach(token => {
-        tokens.push({
-          ...token,
-          available:
-            token.blockchain !== oppositeToken.blockchain ||
-            token.address.toLowerCase() !== oppositeToken.address.toLowerCase()
-        });
-      });
-
-      const tokensPairs = this._bridgeTokensPairs
-        .filter(
-          bridgeTokensPair =>
-            bridgeTokensPair.fromBlockchain === oppositeBlockchain ||
-            bridgeTokensPair.toBlockchain === oppositeBlockchain
-        )
-        .map(bridgeTokensPair =>
-          bridgeTokensPair.bridgeTokens.find(
-            bridgeToken =>
-              bridgeToken.blockchainToken[oppositeBlockchain].address?.toLowerCase() ===
-              oppositeToken.address?.toLowerCase()
-          )
-        )
-        .filter(tokenPair => tokenPair);
-      Object.values(blockchainsList).forEach(blockchainItem => {
-        const blockchain = blockchainItem.symbol;
-        if (oppositeBlockchain === blockchain) {
+        if (!supportedTokens) {
           return;
         }
 
-        this._supportedTokens[blockchain][blockchain].forEach(token => {
-          const foundTokenPair = tokensPairs.find(
-            bridgeToken =>
-              bridgeToken.blockchainToken[blockchain]?.address?.toLowerCase() ===
-              token.address?.toLowerCase()
-          );
+        this._supportedTokens = supportedTokens;
+        this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
 
-          tokens.push({
-            ...token,
-            available: !!foundTokenPair
-          });
-        });
+        this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
+        this.callFunctionWithTokenTypes(this.setTokenWithBalance.bind(this));
+
+        this.isLoading = false;
       });
-    }
-
-    this.availableTokens[tokenType] = tokens;
   }
 
-  private updateSelectedToken(tokenType: 'from' | 'to'): void {
-    const formValue = this.swapFormService.commonTrade.controls.input.value;
-    const hasTokenInForm = Boolean(formValue.fromToken || formValue.toToken);
-    const formToken = tokenType === 'from' ? formValue.fromToken : formValue.toToken;
-    const token = hasTokenInForm ? formToken : this.selectedToken[tokenType];
+  private subscribeOnSettings(): void {
+    combineLatest([
+      this.settingsService.instantTradeValueChanges.pipe(
+        startWith(this.settingsService.instantTradeValue)
+      ),
+      this.settingsService.crossChainRoutingValueChanges.pipe(
+        startWith(this.settingsService.crossChainRoutingValue)
+      )
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([instantTradeSettings, crossChainRoutingSettings]) => {
+        if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+          this.autoRefresh = instantTradeSettings.autoRefresh;
+        } else {
+          this.autoRefresh = crossChainRoutingSettings.autoRefresh;
+        }
+      });
+  }
 
+  private setFormValues(form: SwapFormInput): void {
+    this.fromBlockchain = form.fromBlockchain;
+    this.toBlockchain = form.toBlockchain;
+
+    if (this._supportedTokens) {
+      this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
+
+      this.selectedToken['from'] = form.fromToken;
+      this.selectedToken['to'] = form.toToken;
+      this.callFunctionWithTokenTypes(this.setTokenWithBalance.bind(this));
+    }
+  }
+
+  private callFunctionWithTokenTypes(functionToCall: (tokenType: TokenType) => void): void {
+    functionToCall('from');
+    functionToCall('to');
+  }
+
+  private setAvailableTokens(tokenType: TokenType): void {
+    const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromToken';
+    const oppositeToken = this.swapFormService.inputValue[oppositeTokenKey];
+
+    if (!oppositeToken) {
+      this.availableTokens[tokenType] = this._supportedTokens
+        .map(supportedToken => ({
+          ...supportedToken,
+          available: true
+        }))
+        .toArray();
+    } else {
+      const tokens: AvailableTokenAmount[] = [];
+      const blockchainKey = tokenType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+      const oppositeBlockchainKey = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
+
+      const checkIsEqualTokenAndPush = (supportedToken: TokenAmount): void => {
+        tokens.push({
+          ...supportedToken,
+          available:
+            supportedToken.blockchain !== oppositeToken.blockchain ||
+            supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
+        });
+      };
+
+      const checkIsBridgeTokenPairAndPush = (supportedToken: TokenAmount): void => {
+        const isAvailable = !!this._bridgeTokenPairsByBlockchainsArray
+          .find(
+            pairsByBlockchains =>
+              pairsByBlockchains[oppositeBlockchainKey] === oppositeToken.blockchain &&
+              pairsByBlockchains[blockchainKey] === supportedToken.blockchain
+          )
+          ?.tokenPairs.find(
+            tokenPair =>
+              tokenPair.tokenByBlockchain[oppositeToken.blockchain].address.toLowerCase() ===
+                oppositeToken.address.toLowerCase() &&
+              tokenPair.tokenByBlockchain[supportedToken.blockchain].address.toLowerCase() ===
+                supportedToken.address.toLowerCase()
+          );
+        tokens.push({
+          ...supportedToken,
+          available: isAvailable
+        });
+      };
+
+      if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
+        this._supportedTokens.forEach(supportedToken => {
+          if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
+            checkIsEqualTokenAndPush(supportedToken);
+          } else {
+            checkIsBridgeTokenPairAndPush(supportedToken);
+          }
+        });
+      } else if (InstantTradeService.isSupportedBlockchain(oppositeToken.blockchain)) {
+        this._supportedTokens.forEach(supportedToken => {
+          if (oppositeToken.blockchain === supportedToken.blockchain) {
+            checkIsEqualTokenAndPush(supportedToken);
+          } else {
+            checkIsBridgeTokenPairAndPush(supportedToken);
+          }
+        });
+      } else {
+        this._supportedTokens.forEach(supportedToken =>
+          checkIsBridgeTokenPairAndPush(supportedToken)
+        );
+      }
+
+      this.availableTokens[tokenType] = tokens;
+    }
+  }
+
+  private setTokenWithBalance(tokenType: TokenType): void {
+    const token = this.selectedToken[tokenType];
     if (!token) {
-      this.selectedToken[tokenType] = token;
       return;
     }
 
-    this.setTokenWithBalance(tokenType, token);
-  }
+    const tokenWithBalance = this._supportedTokens.find(
+      supportedToken =>
+        supportedToken.blockchain === token.blockchain &&
+        supportedToken.address.toLowerCase() === token.address.toLowerCase()
+    );
 
-  private setNewSelectedToken(tokenType: 'from' | 'to', token: TokenAmount): void {
-    if (!token) {
-      this.selectedToken[tokenType] = token;
-      return;
-    }
-
-    this.setTokenWithBalance(tokenType, token);
-  }
-
-  private setTokenWithBalance(tokenType: 'from' | 'to', token: TokenAmount): void {
-    const supportedTokenWithBalance = this._supportedTokens[token.blockchain][
-      token.blockchain
-    ].find(supportedToken => supportedToken.address.toLowerCase() === token.address.toLowerCase());
-
-    if (supportedTokenWithBalance && supportedTokenWithBalance !== this.selectedToken[tokenType]) {
-      this.selectedToken[tokenType] = supportedTokenWithBalance;
+    if (
+      tokenWithBalance &&
+      (!tokenWithBalance.amount.isNaN() || !token.amount.isNaN()) &&
+      !tokenWithBalance.amount.eq(token.amount)
+    ) {
+      this.selectedToken[tokenType] = tokenWithBalance;
 
       const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
-      this.swapFormService.commonTrade.controls.input.patchValue({
+      this.swapFormService.input.patchValue({
         [formKey]: this.selectedToken[tokenType]
-      });
-    }
-  }
-
-  public onTokenInputAmountChange(amount: string): void {
-    if ((this.selectedFromAmount || amount) && !this.selectedFromAmount?.eq(amount)) {
-      this.swapFormService.commonTrade.controls.input.patchValue({
-        fromAmount: new BigNumber(amount)
       });
     }
   }

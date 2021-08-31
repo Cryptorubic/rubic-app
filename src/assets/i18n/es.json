@@ -65,7 +65,9 @@
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
+    "crossChainIsUnavailable": "Cross Chain is currently unavailable. Please wait and try later."
   },
   "navigation": {
     "about": "Información",
@@ -416,7 +418,7 @@
   },
   "maintenance": {
     "title": "Maintenance",
-    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+    "text": "Together, let’s change the world of crypto."
   },
   "modals": {
     "confirmImportModal": {

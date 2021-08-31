@@ -65,7 +65,9 @@
     "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
+    "crossChainIsUnavailable": "Cross Chain is currently unavailable. Please wait and try later."
   },
   "navigation": {
     "about": "소개",
@@ -416,7 +418,7 @@
   },
   "maintenance": {
     "title": "유지",
-    "text": "서버 문제가 발생했습니다. 추후 공지가있을 때까지 지금 플랫폼을 사용하지 마십시오. 감사합니다."
+    "text": "Together, let’s change the world of crypto."
   },
   "modals": {
     "confirmImportModal": {

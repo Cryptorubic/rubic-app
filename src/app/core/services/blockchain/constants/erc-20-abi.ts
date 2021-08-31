@@ -1,3 +1,5 @@
+import { AbiItem } from 'web3-utils';
+
 export default [
   {
     constant: true,
@@ -269,4 +271,4 @@ export default [
     name: 'Approval',
     type: 'event'
   }
-];
+] as AbiItem[];

@@ -22,7 +22,8 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { map, startWith } from 'rxjs/operators';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -32,11 +33,13 @@ import { HeaderStore } from '../../services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent implements AfterViewInit {
+  @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
+
+  public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
+
   public readonly $isMobileMenuOpened: Observable<boolean>;
 
   public readonly $isMobile: Observable<boolean>;
-
-  @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
 
   public pageScrolled: boolean;
 
@@ -44,7 +47,7 @@ export class HeaderComponent implements AfterViewInit {
 
   public countNotifications$: Observable<number>;
 
-  public readonly isInstantTrade$: Observable<boolean>;
+  public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
@@ -64,12 +67,12 @@ export class HeaderComponent implements AfterViewInit {
     private router: Router,
     private readonly errorService: ErrorsService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly swapsService: SwapsService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
-    this.loadUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
@@ -82,10 +85,7 @@ export class HeaderComponent implements AfterViewInit {
       };
     }
     this.countNotifications$ = this.counterNotificationsService.unread$;
-    this.isInstantTrade$ = this.swapFormService.input.valueChanges.pipe(
-      map(el => el.fromBlockchain === el.toBlockchain),
-      startWith(true)
-    );
+    this.swapType$ = this.swapsService.swapMode$;
   }
 
   public ngAfterViewInit(): void {
@@ -134,8 +134,7 @@ export class HeaderComponent implements AfterViewInit {
     });
   }
 
-  public async navigateToBridge(): Promise<void> {
-    const form = this.swapFormService.commonTrade.controls.input;
+  public async navigateToBridgeOrCrossChain(type: 'bridge' | 'cross-chain'): Promise<void> {
     const params = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -143,7 +142,14 @@ export class HeaderComponent implements AfterViewInit {
       toToken: null,
       fromAmount: null
     } as SwapFormInput;
-    form.patchValue(params);
+    this.swapFormService.input.patchValue(params);
+
+    if (type === 'bridge') {
+      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
+    } else {
+      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+    }
+
     await this.router.navigate(['/'], {
       queryParams: {
         fromChain: BLOCKCHAIN_NAME.ETHEREUM,

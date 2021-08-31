@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { WEENUS } from 'src/test/tokens/eth-tokens';
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
 import providerServiceStub from 'src/app/core/services/blockchain/private-provider/metamask-provider/metamask-provider.stub';
+import { WEENUS } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { Web3PrivateService } from './web3-private.service';
 import * as config from '../../../../../test/enviroment.test.json';
 import { PublicProviderService } from '../public-provider/public-provider.service';
@@ -59,7 +59,7 @@ describe('Web3PrivateService', () => {
     const amount = new BigNumber(0.001);
     const bobStartBalance = await web3PublicEth.getBalance(bobAddress);
     const callbackObject = {
-      onTransactionHash: (hash: string) => {}
+      onTransactionHash: (_hash: string) => {}
     };
     spyOn(callbackObject, 'onTransactionHash');
 
@@ -83,7 +83,7 @@ describe('Web3PrivateService', () => {
     const amount = new BigNumber(3).multipliedBy(10 ** WEENUS.decimals);
     const bobStartBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
     const callbackObject = {
-      onTransactionHash: (hash: string) => {}
+      onTransactionHash: (_hash: string) => {}
     };
     spyOn(callbackObject, 'onTransactionHash');
 
@@ -106,7 +106,7 @@ describe('Web3PrivateService', () => {
   it('approve', async done => {
     const amount = new BigNumber(2.39).multipliedBy(10 ** WEENUS.decimals);
     const callbackObject = {
-      onTransactionHash: (hash: string) => {}
+      onTransactionHash: (_hash: string) => {}
     };
     spyOn(callbackObject, 'onTransactionHash');
 

@@ -35,15 +35,19 @@ import { HeaderStore } from '../../../../services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicMenuComponent implements AfterViewInit, OnDestroy {
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
-
   @Input() public swapActive: boolean;
 
   @Input() public bridgeActive: boolean;
 
+  @Input() public crossChainActive: boolean;
+
   @Output() public readonly swapClick: EventEmitter<void>;
 
   @Output() public readonly bridgeClick: EventEmitter<void>;
+
+  @Output() public readonly crossChainClick: EventEmitter<void>;
+
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<never>>;
 
   public isOpened = false;
 
@@ -77,6 +81,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.navigationList = NAVIGATION_LIST;
     this.bridgeClick = new EventEmitter<void>();
     this.swapClick = new EventEmitter<void>();
+    this.crossChainClick = new EventEmitter<void>();
   }
 
   public ngAfterViewInit(): void {
@@ -103,12 +108,14 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.isOpened = false;
   }
 
-  public menuClickHandler(linkType: 'swaps' | 'bridge'): void {
+  public menuClickHandler(linkType: 'swaps' | 'bridge' | 'cross-chain'): void {
     this.closeMenu();
     if (linkType === 'swaps') {
       this.swapClick.emit();
-    } else {
+    } else if (linkType === 'bridge') {
       this.bridgeClick.emit();
+    } else {
+      this.crossChainClick.emit();
     }
   }
 

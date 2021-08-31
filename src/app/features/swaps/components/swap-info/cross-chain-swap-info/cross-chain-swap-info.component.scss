@@ -1,0 +1,35 @@
+@import '../../../../../../styles';
+
+.swaps-info {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 14px;
+
+  padding: 20px 43px;
+
+  background-color: var(--main-form-background);
+  border-radius: 19px;
+}
+
+.swaps-info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: 16px;
+  line-height: 18px;
+
+  &__title {
+    width: 150px;
+  }
+
+  &__value {
+    text-align: right;
+  }
+}
+
+@include b(651) {
+  .swaps-info {
+    padding: 20px;
+  }
+}

@@ -1,6 +1,6 @@
 <!-- HARMONY BANNER -->
-<div class="harmony-banner" *noFrame>
-  Harmony Trading competition is over! Soon we will report the results.
+<div class="banner" *noFrame>
+  Rubic Cross-Chain has launched! Swap between 7,500 tokens across Ethereum, BSC, & Polygon. <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -22,26 +22,37 @@
   <app-rubic-menu
     *noFrame
     class="rubic-header__menu"
+    [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
+    [bridgeActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
+    [crossChainActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING"
     (swapClick)="navigateToSwaps()"
-    (bridgeClick)="navigateToBridge()"
-    [swapActive]="rootPath && (isInstantTrade$ | async)"
-    [bridgeActive]="rootPath && (isInstantTrade$ | async) === false"
+    (bridgeClick)="navigateToBridgeOrCrossChain('bridge')"
+    (crossChainClick)="navigateToBridgeOrCrossChain('cross-chain')"
   ></app-rubic-menu>
 
   <nav *noFrame class="rubic-header__nav">
     <a
       class="button-link"
       (click)="navigateToSwaps()"
-      [class.button-link_active]="rootPath && (isInstantTrade$ | async)"
+      [class.button-link_active]="
+        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+      "
       >Swaps</a
     >
     <a
       class="button-link"
-      (click)="navigateToBridge()"
-      [class.button-link_active]="rootPath && (isInstantTrade$ | async) === false"
+      (click)="navigateToBridgeOrCrossChain('bridge')"
+      [class.button-link_active]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.BRIDGE"
       >Bridge</a
     >
-    <span class="rubic-header__disabled-link" [tuiHint]="orderBookTooltip">Cross Chain</span>
+    <a
+      class="button-link"
+      (click)="navigateToBridgeOrCrossChain('cross-chain')"
+      [class.button-link_active]="
+        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+      "
+      >Cross Chain</a
+    >
   </nav>
 
   <div class="rubic-header__profile">
@@ -75,7 +86,3 @@
     <app-rubic-toggler-theme></app-rubic-toggler-theme>
   </div>
 </header>
-
-<ng-template #orderBookTooltip>
-  <span>{{ 'navigation.notAvailable' | translate }}</span>
-</ng-template>

@@ -1,12 +1,13 @@
 @import '../../../../../scss/mixins';
+@import '../../../../../scss/vars';
 
 .maintenance {
-  box-sizing: border-box;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
-  padding-top: 48px;
-
-  background-color: white;
 
   @include b(900px) {
     padding-top: 24px;
@@ -24,41 +25,80 @@
     }
   }
 
+  &::before,
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    content: '';
+  }
+
+  &::before {
+    z-index: -2;
+
+    height: 100%;
+
+    background-color: #16182c;
+  }
+  
+  &::after {
+    z-index: -1;
+
+    height: 80%;
+
+    background: url('/assets/images/maintenance/maintenance-background.jpeg') center no-repeat;
+    background-size: contain;
+
+    @include b($desktop - 1) {
+      background-size: cover;
+    }
+  }
+
   &__logo {
     display: block;
-    margin: 0 auto 36px;
+    margin: 20px auto;
   }
 
   &__content {
-    max-width: 850px;
-    margin: 0 auto;
-    padding: 67px 0;
+    max-width: 600px;
+    margin: auto auto 120px;
+    padding: 0 30px;
 
-    background-color: #fafafa;
+    color: white;
+
+    @include b($mobile-md-minus) {
+      margin-bottom: 50px;
+    }
+
+    @include b($mobile-sm) {
+      margin-bottom: 25px;
+      padding: 0 10px;
+    }
   }
 
   &__title {
-    margin-bottom: 34px;
+    margin-bottom: 30px;
 
-    color: #4aa956;
+    color: white;
     font-weight: bold;
     font-size: 40px;
-
-    font-style: normal;
-    line-height: 32px;
+    line-height: 114%;
     text-align: center;
+
+    @include bh($mobile-md - 1) {
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    }
   }
 
   &__description {
-    max-width: 400px;
+    max-width: 350px;
     margin: 0 auto;
 
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-
-    font-style: normal;
-    line-height: 32px;
+    font-weight: 400;
+    font-size: 24px;
     text-align: center;
   }
 

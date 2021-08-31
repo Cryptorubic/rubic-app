@@ -14,12 +14,10 @@ import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/ser
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { BridgeBottomFormComponent } from './components/bridge-bottom-form/bridge-bottom-form.component';
-import { TermsNConditionsContainerComponent } from './components/bridge-bottom-form/components/terms-n-conditions-container/terms-n-conditions-container.component';
 
 @NgModule({
   declarations: [
     BridgeBottomFormComponent,
-    TermsNConditionsContainerComponent,
     ReceiveWarningModalComponent,
     TrackTransactionModalComponent
   ],

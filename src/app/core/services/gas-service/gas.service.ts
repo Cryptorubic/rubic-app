@@ -70,7 +70,7 @@ export class GasService {
           if (this.gasPriceFunctions[blockchainName]) {
             return this.gasPriceFunctions[blockchainName]();
           }
-          return null;
+          return of(null);
         })
       )
       .subscribe(gasPrice => {
