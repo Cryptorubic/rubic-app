@@ -67,24 +67,23 @@ export class TokenAmountInputComponent {
 
   public onUserBalanceMaxButtonClick(): void {
     const { amount, address, blockchain } = this.token;
-    // if (address === NATIVE_TOKEN_ADDRESS) {
-    //   const maxAmount = amount.minus(this.maxGasFee);
-    //
-    // if (maxAmount.gt(0)) {
-    //   this.amountControl.setValue(maxAmount.toFormat(BIG_NUMBER_FORMAT));
-    // } else {
-    // const nativeTokenSymbol = networks.find(el => el.name === blockchain).nativeCoin.symbol;
-    // this.notificationsService.show(
-    //   this.translateService.instant('notifications.minerFee', {
-    //     nativeTokenSymbol
-    //   }),
-    //   { autoClose: 7000 }
-    // );
-    //   }
-    // } else {
-    //   this.amountControl.setValue(amount.toFormat(BIG_NUMBER_FORMAT));
-    // }
-    this.amountControl.setValue(amount.toFormat(BIG_NUMBER_FORMAT));
+    if (address === NATIVE_TOKEN_ADDRESS) {
+      const maxAmount = amount.minus(this.maxGasFee);
+
+      if (maxAmount.gt(0)) {
+        this.amountControl.setValue(maxAmount.toFormat(BIG_NUMBER_FORMAT));
+      } else {
+        const nativeTokenSymbol = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+        this.notificationsService.show(
+          this.translateService.instant('notifications.minerFee', {
+            nativeTokenSymbol
+          }),
+          { autoClose: 7000 }
+        );
+      }
+    } else {
+      this.amountControl.setValue(amount.toFormat(BIG_NUMBER_FORMAT));
+    }
   }
 
   public emitAmountChange(amount: string): void {

@@ -109,7 +109,8 @@ export class ProviderPanelComponent {
       usdPrice: data?.trade?.to?.amount
         .multipliedBy(data?.trade?.to?.token?.price)
         .toFormat(2, BIG_NUMBER_FORMAT),
-      toTokenDecimals: data?.trade?.to?.token?.decimals
+      toTokenDecimals: data?.trade?.to?.token?.decimals,
+      blockchain: data?.trade?.blockchain
     };
   }
 

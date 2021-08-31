@@ -32,7 +32,7 @@
     </div>
 
     <div
-      *ngIf="this.tradeData?.gasFeeInEth && this.tradeData?.gasFeeInUsd"
+      *ngIf="this.tradeData?.gasFeeInEth && this.tradeData?.gasFeeInUsd && isGasFeeShow"
       class="provider-panel__token-gas-fee"
       [ngClass]="{
         'tui-skeleton': providerData.loading,
