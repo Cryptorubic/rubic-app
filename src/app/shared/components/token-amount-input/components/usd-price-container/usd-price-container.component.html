@@ -1,11 +1,10 @@
-<div
-  class="usd-price-container">
-      <span
-        class="usd-price-container__price"
-        [tuiHint]="usdPriceTooltip"
-        tuiHintDirection="top"
-        tuiHintMode="onDark"
-      >${{ usdPrice | bigNumberFormat: 2 }}
-      </span>
+<div class="usd-price-container" [ngClass]="{ 'usd-price-container_hidden': usdPrice.eq(0) }">
+  <span
+    class="usd-price-container__price"
+    [tuiHint]="usdPriceTooltip"
+    tuiHintDirection="top"
+    tuiHintMode="onDark"
+    >${{ usdPrice | bigNumberFormat: 2 }}
+  </span>
   <ng-template #usdPriceTooltip>${{ usdPrice | bigNumberFormat }}</ng-template>
 </div>
