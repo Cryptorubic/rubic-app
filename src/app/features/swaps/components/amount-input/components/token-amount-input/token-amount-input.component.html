@@ -8,7 +8,6 @@
     ></app-rubic-tokens>
 
     <app-user-balance-container
-      [displayMaxButton]="displayMaxButton"
       [token]="selectedToken"
       type="from"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
@@ -36,6 +35,7 @@
         [usdPrice]="usdPrice"
       ></app-usd-price-container>
       <app-user-balance-container
+        *noFrame
         [token]="selectedToken"
         hide="maxButton"
       ></app-user-balance-container>
