@@ -477,6 +477,7 @@
     "successfulTradeTitle": "성공적인 거래",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
-    "successApprove": "성공적인 승인"
+    "successApprove": "성공적인 승인",
+    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
   }
 }

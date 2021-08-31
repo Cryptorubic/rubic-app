@@ -32,7 +32,7 @@ import {
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { filter, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap } from 'rxjs/operators';
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
@@ -68,6 +68,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   @Input() formService: FormService;
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
+
+  @Output() displayMaxButton = new EventEmitter<boolean>();
+
+  @Output() maxGasLimit = new EventEmitter<BigNumber>();
 
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
@@ -225,6 +229,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
 
+    this.displayMaxButton.emit(!!this.toToken);
+
     this.isEth = {
       from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
       to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
@@ -365,6 +371,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
           return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
             map(([approveData, tradeData]) => {
+              this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
+
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
                 (tradeData as CalculationResult[]).map((trade, index) => {
@@ -393,7 +401,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (this.hiddenCalculateTradeSubscription$) {
       return;
     }
-
     this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade
       .pipe(
         filter(el => el === 'hidden'),
@@ -558,6 +565,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return '';
     }
     return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
+  }
+
+  public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {
+    return tradeData.reduce((maxGas, trade) => {
+      if (trade.status === 'fulfilled') {
+        const providerGas = new BigNumber(trade.value.gasFeeInEth);
+        return providerGas.gt(maxGas) ? providerGas : maxGas;
+      }
+      return maxGas;
+    }, new BigNumber(0));
   }
 
   private setProviderState(

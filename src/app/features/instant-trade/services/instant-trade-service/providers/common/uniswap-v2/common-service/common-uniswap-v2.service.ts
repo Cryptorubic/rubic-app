@@ -299,6 +299,7 @@ export class CommonUniswapV2Service {
       },
       ...(gasPrice && { gasPrice })
     };
+
     if (!shouldCalculateGas) {
       return instantTrade;
     }

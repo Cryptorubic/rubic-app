@@ -1,16 +1,21 @@
 import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import networks from 'src/app/shared/constants/blockchain/networks';
+import CustomError from 'src/app/core/errors/models/custom-error';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 import { TokenAmount } from '../../models/tokens/TokenAmount';
 
 @Component({
@@ -29,6 +34,10 @@ export class TokenAmountInputComponent {
   @Input() placeholder = '0.0';
 
   @Input() token?: TokenAmount;
+
+  @Input() displayMaxButton: boolean;
+
+  @Input() maxGasFee: BigNumber = new BigNumber(0);
 
   @Input() set amount(value: BigNumber) {
     if (value && !value.isNaN() && !value.eq(this.amount)) {
@@ -50,11 +59,32 @@ export class TokenAmountInputComponent {
 
   public amountControl = new FormControl('');
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
+  ) {}
 
   public onUserBalanceMaxButtonClick(): void {
-    const amount = this.token.amount.toFormat(BIG_NUMBER_FORMAT);
-    this.amountControl.setValue(amount);
+    const { amount, address, blockchain } = this.token;
+    // if (address === NATIVE_TOKEN_ADDRESS) {
+    //   const maxAmount = amount.minus(this.maxGasFee);
+    //
+    // if (maxAmount.gt(0)) {
+    //   this.amountControl.setValue(maxAmount.toFormat(BIG_NUMBER_FORMAT));
+    // } else {
+    // const nativeTokenSymbol = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+    // this.notificationsService.show(
+    //   this.translateService.instant('notifications.minerFee', {
+    //     nativeTokenSymbol
+    //   }),
+    //   { autoClose: 7000 }
+    // );
+    //   }
+    // } else {
+    //   this.amountControl.setValue(amount.toFormat(BIG_NUMBER_FORMAT));
+    // }
+    this.amountControl.setValue(amount.toFormat(BIG_NUMBER_FORMAT));
   }
 
   public emitAmountChange(amount: string): void {
