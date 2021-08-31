@@ -6,26 +6,50 @@ on:
       - feature/actions
 
 jobs:
-  lint-code:
+  lint:
     name: Check code base
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: lint
-        uses: ./.github/actions/lint
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+
+      - name: Set up npm
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run lint css
+        run: npm run lint-css
 
   deploy:
     name: Deploy on production server
     runs-on: ubuntu-latest
-    needs: [lint-code]
+    needs: [lint]
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up node
-        uses: ./.github/actions/setup-node
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+
+      - name: Set up npm
+        run: npm install
 
       - name: Set up sshpass and npm
         run : |
