@@ -12,6 +12,7 @@ export interface WalletProvider {
   display: boolean;
   supportsInHorizontalIframe: boolean;
   supportsInVerticalIframe: boolean;
+  supportsInVerticalMobileIframe: boolean;
 }
 
 export interface UnreadTrades {

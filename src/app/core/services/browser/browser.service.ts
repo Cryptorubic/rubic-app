@@ -11,7 +11,8 @@ export class BrowserService {
 
   public get currentBrowser(): BROWSER {
     switch (true) {
-      case this.window.innerWidth >= this.mobileBreakpoint || this.iframeService.isIframe:
+      case this.window.innerWidth >= this.mobileBreakpoint ||
+        (this.iframeService.isIframe && this.iframeService.device === 'desktop'):
         return BROWSER.DESKTOP;
       case !this.window.ethereum:
         return BROWSER.MOBILE;

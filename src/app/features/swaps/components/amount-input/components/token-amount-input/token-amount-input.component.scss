@@ -78,6 +78,9 @@
     border: none;
 
     @include iframe-horizontal {
+
+      padding-left: 0;
+
       font-size: 20px;
       text-align: left;
     }

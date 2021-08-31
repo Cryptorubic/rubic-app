@@ -41,9 +41,13 @@ export class WalletsModalComponent implements OnInit {
   private readonly $mobileDisplayStatus: Observable<boolean>;
 
   public get providers(): WalletProvider[] {
-    return this.isMobile
+    const deviceFiltered = this.isMobile
       ? this.allProviders.filter(provider => !provider.desktopOnly)
       : this.allProviders;
+
+    return this.iframeService.isIframe && this.iframeService.device === 'mobile'
+      ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
+      : deviceFiltered;
   }
 
   public get isMobile(): boolean {
@@ -69,23 +73,20 @@ export class WalletsModalComponent implements OnInit {
   }
 
   private redirectToCoinbaseBrowser(): void {
-    let walletLinkAppLink: string;
-    switch (this.window.location.hostname.split('.')[0]) {
-      case 'stage':
-        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
-        break;
-      case 'dev':
-        walletLinkAppLink = 'https://go.cb-w.com/D0GNLvaHBib';
-        break;
-      case 'dev2':
-        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
-        break;
-      case 'rubic':
-      default:
-        walletLinkAppLink = 'https://go.cb-w.com/IJZCq1fHBib';
-        break;
-    }
+    const walletLinkAppLink = 'https://go.cb-w.com/9gaKnqLDajb';
     this.window.location.assign(walletLinkAppLink);
+  }
+
+  public shouldRenderAsLink(provider: WALLET_NAME): string | null {
+    if (
+      this.iframeService.isIframe &&
+      this.iframeService.device === 'mobile' &&
+      provider === WALLET_NAME.WALLET_LINK
+    ) {
+      return 'https://go.cb-w.com/9gaKnqLDajb';
+    }
+
+    return null;
   }
 
   constructor(
@@ -111,7 +112,8 @@ export class WalletsModalComponent implements OnInit {
         desktopOnly: false,
         display: true,
         supportsInHorizontalIframe: true,
-        supportsInVerticalIframe: true
+        supportsInVerticalIframe: true,
+        supportsInVerticalMobileIframe: false
       },
       {
         name: 'Coinbase wallet',
@@ -120,7 +122,8 @@ export class WalletsModalComponent implements OnInit {
         desktopOnly: false,
         display: true,
         supportsInHorizontalIframe: false,
-        supportsInVerticalIframe: false
+        supportsInVerticalIframe: false,
+        supportsInVerticalMobileIframe: true
       },
       {
         name: 'WalletConnect',
@@ -129,7 +132,8 @@ export class WalletsModalComponent implements OnInit {
         desktopOnly: false,
         display: true,
         supportsInHorizontalIframe: false,
-        supportsInVerticalIframe: true
+        supportsInVerticalIframe: true,
+        supportsInVerticalMobileIframe: true
       }
     ];
   }
@@ -152,8 +156,10 @@ export class WalletsModalComponent implements OnInit {
         !providerInfo.supportsInHorizontalIframe) ||
       (this.iframeService.iframeAppearance === 'vertical' && !providerInfo.supportsInVerticalIframe)
     ) {
-      this.openIframeWarning();
-      return;
+      if (this.iframeService.device === 'desktop') {
+        this.openIframeWarning();
+        return;
+      }
     }
 
     if (this.browserService.currentBrowser === BROWSER.MOBILE) {

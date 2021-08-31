@@ -2,7 +2,7 @@
 
 app-spinner {
   position: fixed;
-  top: 50%;
+  top: calc(50% - 30px);
   left: 50%;
 
   display: block;

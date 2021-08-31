@@ -51,3 +51,4 @@ Thumbs.db
 /src/test/enviroment.test.json
 /src/.env
 /documentation/
+/src/test/enviroment.true.test.json
