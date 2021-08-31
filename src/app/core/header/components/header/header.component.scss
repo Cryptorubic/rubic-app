@@ -162,7 +162,7 @@
   }
 }
 
-@include b(1360) {
+@include b($desktop) {
   .rubic-header {
     padding: 21px 20px 19px;
 

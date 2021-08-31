@@ -7,7 +7,7 @@ import { ProviderData } from 'src/app/shared/components/provider-panel/models/pr
   styleUrls: ['./panel-error-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PanelErrorContentComponent implements OnInit {
+export class PanelErrorContentComponent {
   /**
    * Does current provider loading.
    */
@@ -16,11 +16,4 @@ export class PanelErrorContentComponent implements OnInit {
   @Input() public errorTranslateKey: string;
 
   constructor() {}
-
-  public ngOnInit(): void {
-    // eslint-disable-next-line no-console
-    console.log(this.providerData);
-    // eslint-disable-next-line no-console
-    console.log(this.errorTranslateKey);
-  }
 }

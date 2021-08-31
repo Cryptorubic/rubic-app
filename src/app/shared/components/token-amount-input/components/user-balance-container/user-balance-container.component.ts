@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from '@angular/core';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -7,9 +8,9 @@ import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from 
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserBalanceContainerComponent {
-  @Input() public token;
+  @Input() public token: TokenAmount;
 
-  @Input() public type: 'from' | 'to';
+  @Input() public displayMaxButton: boolean = false;
 
   @Input() public hide: 'maxButton' | 'balance';
 
@@ -20,6 +21,6 @@ export class UserBalanceContainerComponent {
   }
 
   public maxButtonClick(): void {
-    this.maxButtonClickEvent.emit();
+    if (this.displayMaxButton) this.maxButtonClickEvent.emit();
   }
 }

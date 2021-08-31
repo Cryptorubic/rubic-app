@@ -23,7 +23,7 @@
     <ng-container *onlyFrame>
       <app-rubic-refresh-button
         *ngIf="isInstantTrade && allowTrade && allowRefresh"
-        style="display: none;"
+        style="display: none"
         type="autoRefresh"
         (onRefresh)="onRefreshTrade.next()"
         [loadingStatus]="loadingStatus"
@@ -40,7 +40,10 @@
       ></app-swaps-header>
 
       <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator [blockchain]="fromBlockchain" *onlyFrame="'horizontal'"></app-iframe-blockchain-indicator>
+        <app-iframe-blockchain-indicator
+          [blockchain]="fromBlockchain"
+          *onlyFrame="'horizontal'"
+        ></app-iframe-blockchain-indicator>
 
         <app-token-amount-input
           *noFrame="'vertical'"
@@ -50,6 +53,8 @@
           [loading]="isLoading"
           [tokens]="availableTokens['from']"
           [formService]="swapFormService"
+          [displayMaxButton]="displayMaxButton"
+          [maxGasFee]="maxGasFee"
         ></app-token-amount-input>
 
         <app-vertical-iframe-token-amount-input
@@ -68,7 +73,10 @@
       </div>
 
       <div class="swaps-form__block">
-        <app-iframe-blockchain-indicator  *onlyFrame="'horizontal'" [blockchain]="toBlockchain"></app-iframe-blockchain-indicator>
+        <app-iframe-blockchain-indicator
+          *onlyFrame="'horizontal'"
+          [blockchain]="toBlockchain"
+        ></app-iframe-blockchain-indicator>
 
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"
@@ -78,6 +86,8 @@
           [formService]="swapFormService"
           (onRefreshStatusChange)="loadingStatus = $event"
           (allowRefreshChange)="allowRefresh = $event"
+          (displayMaxButton)="displayMaxButton = $event"
+          (maxGasLimit)="maxGasFee = $event"
         ></app-instant-trade-bottom-form>
 
         <app-bridge-bottom-form
@@ -85,8 +95,8 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           [formService]="swapFormService"
+          (displayMaxButton)="displayMaxButton = $event"
         ></app-bridge-bottom-form>
-
       </div>
     </main>
   </div>

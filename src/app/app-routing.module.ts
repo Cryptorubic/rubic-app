@@ -37,6 +37,10 @@ const routes: Routes = [
   {
     path: 'my-trades',
     loadChildren: () => import('./features/my-trades/my-trades.module').then(m => m.MyTradesModule)
+  },
+  {
+    path: '**',
+    redirectTo: '/'
   }
 ];
 
