@@ -84,7 +84,15 @@
   }
 }
 
+
+
 // breakpoints
+@mixin bh($point) {
+  @media (max-height: $point + 'px') {
+    @content;
+  }
+}
+
 @mixin b($point) {
   @if $point==desktop {
     @media (max-width: 1366px) and (min-width: 1024px) {
