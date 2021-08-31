@@ -22,7 +22,6 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { map, startWith } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';

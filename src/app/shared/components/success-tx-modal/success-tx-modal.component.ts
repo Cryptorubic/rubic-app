@@ -12,7 +12,7 @@ import { modalConfig } from 'src/app/shared/constants/modals/modal-config';
   styleUrls: ['./success-tx-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SuccessTxModalComponent implements OnInit {
+export class SuccessTxModalComponent {
   public idPrefix: string;
 
   constructor(
@@ -20,12 +20,6 @@ export class SuccessTxModalComponent implements OnInit {
     private readonly context: TuiDialogContext<boolean, { idPrefix: string }>
   ) {
     this.idPrefix = context.data.idPrefix;
-  }
-
-  public ngOnInit(): void {
-    /* timer(modalConfig.modalLifetime)
-      .pipe(first())
-      .subscribe(() => this.onConfirm()); */
   }
 
   public onConfirm(): void {
