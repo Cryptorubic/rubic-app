@@ -10,11 +10,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 export class UserBalanceContainerComponent {
   @Input() public token: TokenAmount;
 
-  @Input() public displayMaxButton: boolean = false;
-
-
   @Input() public hide: 'maxButton' | 'balance';
-
 
   @Output() public maxButtonClickEvent: EventEmitter<void>;
 

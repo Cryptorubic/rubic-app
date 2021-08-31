@@ -86,8 +86,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
-  @Output() displayMaxButton = new EventEmitter<boolean>();
-
   public readonly TRADE_STATUS = TRADE_STATUS;
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
@@ -222,8 +220,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
-
-    this.displayMaxButton.emit(!!this.toToken);
 
     this.setToWalletAddress();
 

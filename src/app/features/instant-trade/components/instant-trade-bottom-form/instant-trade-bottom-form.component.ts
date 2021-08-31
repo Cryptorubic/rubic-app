@@ -70,8 +70,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
-  @Output() displayMaxButton = new EventEmitter<boolean>();
-
   @Output() maxGasLimit = new EventEmitter<BigNumber>();
 
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
@@ -209,8 +207,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = form.fromAmount;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
-
-    this.displayMaxButton.emit(!!this.toToken);
 
     this.isEth = {
       from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
