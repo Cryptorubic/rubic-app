@@ -26,6 +26,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
+import { HeaderStore } from '../../../../core/header/services/header.store';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -126,6 +127,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   private providerConnectorServiceSubscription$: Subscription;
 
+  public isMobile$: Observable<boolean>;
+
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
   }
@@ -211,7 +214,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private readonly bridgeService: BridgeService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly headerStore: HeaderStore
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -220,6 +224,8 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       }),
       {}
     ) as Record<ERROR_TYPE, boolean>;
+
+    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
   }
 
   ngOnInit(): void {

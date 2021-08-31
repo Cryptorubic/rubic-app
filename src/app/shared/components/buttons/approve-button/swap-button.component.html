@@ -2,7 +2,7 @@
   <app-rubic-button
     [id]="idPrefix + 'connect-wallet'"
     *ngIf="needLogin"
-    [ngClass]="{'grey-background': !tokensFilled}"
+    [ngClass]="{ 'grey-background': !tokensFilled }"
     [loading]="needLoginLoading"
     [fullWidth]="true"
     (onClick)="onLogin()"
@@ -31,7 +31,9 @@
             [id]="idPrefix + 'approve'"
             [fullWidth]="true"
             (onClick)="approveClick.emit()"
-            [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING"
+            [loading]="
+              status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.LOADING
+            "
             [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
             appearance="secondary"
           >
@@ -44,7 +46,7 @@
             [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING"
             [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
             appearance="secondary"
-            >
+          >
             {{ swapButtonText }}
           </app-rubic-button>
           <div class="buttons__timeline-container timeline">
@@ -77,11 +79,22 @@
         <app-rubic-button
           [fullWidth]="true"
           (onClick)="approveClick.emit()"
-          [loading]="status === TRADE_STATUS.APPROVE_IN_PROGRESS || status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || !!dataLoading"
-          [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE && status !== TRADE_STATUS.READY_TO_SWAP"
+          [loading]="
+            status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+            status === TRADE_STATUS.SWAP_IN_PROGRESS ||
+            status === TRADE_STATUS.LOADING ||
+            !!dataLoading
+          "
+          [disabled]="
+            status !== TRADE_STATUS.READY_TO_APPROVE && status !== TRADE_STATUS.READY_TO_SWAP
+          "
           appearance="secondary"
         >
-          {{ (status === TRADE_STATUS.READY_TO_APPROVE || status === TRADE_STATUS.APPROVE_IN_PROGRESS) ? 'Approve' : swapButtonText }}
+          {{
+            status === TRADE_STATUS.READY_TO_APPROVE || status === TRADE_STATUS.APPROVE_IN_PROGRESS
+              ? 'Approve'
+              : swapButtonText
+          }}
         </app-rubic-button>
       </ng-container>
     </ng-container>
@@ -103,7 +116,11 @@
 
     <ng-container
       *ngIf="
-        hasError && errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading && allowChangeNetwork
+        hasError &&
+        errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] &&
+        !dataLoading &&
+        allowChangeNetwork &&
+        !(isMobile$ | async)
       "
     >
       <app-rubic-button
@@ -119,7 +136,9 @@
 
     <ng-container
       *ngIf="
-        (hasError && !errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading) ||
+        (hasError &&
+          (!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || (isMobile$ | async)) &&
+          !dataLoading) ||
         (hasError && errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading && !allowChangeNetwork)
       "
     >
