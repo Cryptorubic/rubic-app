@@ -8,7 +8,15 @@
     ></app-rubic-tokens>
 
     <app-user-balance-container
-      [displayMaxButton]="displayMaxButton"
+      *noFrame
+      [token]="selectedToken"
+      type="from"
+      (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
+    ></app-user-balance-container>
+
+    <app-user-balance-container
+      *onlyFrame="'horizontal'"
+      [hide]="'balance'"
       [token]="selectedToken"
       type="from"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
