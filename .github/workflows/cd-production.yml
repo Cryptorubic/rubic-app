@@ -3,7 +3,7 @@ name: Update production server
 on:
   push:
     branches:
-      - feature/actions
+      - master
 
 jobs:
   lint:
