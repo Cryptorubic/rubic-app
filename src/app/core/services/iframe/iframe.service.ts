@@ -11,6 +11,8 @@ export class IframeService {
 
   private readonly _iframeAppearance$ = new BehaviorSubject<'vertical' | 'horizontal'>(undefined);
 
+  private readonly _device$ = new BehaviorSubject<'mobile' | 'desktop'>(undefined);
+
   public get isIframe$(): Observable<boolean> {
     return this._isIframe$.asObservable().pipe(filter(value => value !== undefined));
   }
@@ -27,6 +29,14 @@ export class IframeService {
     return this._iframeAppearance$.getValue();
   }
 
+  public get device$(): Observable<'mobile' | 'desktop'> {
+    return this._device$.asObservable().pipe(filter(value => value !== undefined));
+  }
+
+  public get device(): 'mobile' | 'desktop' {
+    return this._device$.getValue();
+  }
+
   public get originDomain(): string {
     const url =
       window.location !== window.parent.location ? document.referrer : document.location.href;
@@ -41,5 +51,14 @@ export class IframeService {
       this._iframeAppearance$.next(iframe);
       this.document.getElementsByTagName('html')[0].classList.add('iframe', `iframe-${iframe}`);
     }
+  }
+
+  public setIframeDevice(device: string): void {
+    if (device !== 'desktop' && device !== 'mobile') {
+      console.error(`Wrong device value: ${device}`);
+      return;
+    }
+
+    this._device$.next(device);
   }
 }

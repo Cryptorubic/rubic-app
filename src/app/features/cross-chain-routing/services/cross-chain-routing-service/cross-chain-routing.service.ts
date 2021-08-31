@@ -447,7 +447,7 @@ export class CrossChainRoutingService {
           .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
           .toFixed(0);
 
-        return this.web3PrivateService.executeContractMethod(
+        return this.web3PrivateService.tryExecuteContractMethod(
           contractAddress,
           this.contractAbi,
           methodName,

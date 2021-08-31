@@ -81,7 +81,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/carrot-quest.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

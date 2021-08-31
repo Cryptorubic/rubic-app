@@ -3,12 +3,33 @@
 .swaps-info {
   display: flex;
   flex-direction: column;
-  grid-gap: 14px;
+  grid-gap: 11px;
 
   padding: 20px 43px;
 
+  color: var(--rubic-base-16);
+
   background-color: var(--main-form-background);
   border-radius: 19px;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 9px;
+  }
+
+  &__content {
+    font-size: 16px;
+  }
+
+  &__title-hint {
+    margin-right: 20px;
+
+    &::ng-deep svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
 .swaps-info-item {
@@ -20,7 +41,15 @@
   line-height: 18px;
 
   &__title {
-    width: 150px;
+    display: flex;
+    align-items: center;
+    max-width: 200px;
+  }
+
+  &__title-hint {
+    margin-left: 10px;
+
+    cursor: pointer;
   }
 
   &__value {

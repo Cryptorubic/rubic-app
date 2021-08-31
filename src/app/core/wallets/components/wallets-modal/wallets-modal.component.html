@@ -5,14 +5,24 @@
     </header>
     <main class="modal__body">
       <ng-container *ngFor="let provider of providers">
-        <button
-          *ngIf="provider.display"
-          [disabled]="($walletsLoading | async) ? 'disabled' : false"
-          class="modal__provider-button"
-          (click)="connectProvider(provider.value)"
-        >{{ provider.name }}
-          <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
-        </button>
+        <ng-container *ngIf="provider.display">
+          <button
+            *ngIf="!shouldRenderAsLink(provider.value); else deepLink"
+            [disabled]="($walletsLoading | async) ? 'disabled' : false"
+            class="modal__provider-button"
+            (click)="connectProvider(provider.value)"
+          >{{ provider.name }}
+            <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
+          </button>
+          <ng-template #deepLink>
+            <a
+              class="modal__provider-button"
+              [href]="shouldRenderAsLink(provider.value)"
+            >{{ provider.name }}
+              <span class="modal__provider-icon"><img src="{{ provider.img }}" alt="{{provider.name}} provider"></span>
+            </a>
+          </ng-template>
+        </ng-container>
       </ng-container>
     </main>
     <footer class="modal__footer">

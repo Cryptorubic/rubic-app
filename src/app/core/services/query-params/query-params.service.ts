@@ -84,7 +84,7 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
-      this.setIframeStatus(queryParams);
+      this.setIframeInfo(queryParams);
       this.setBackgroundStatus(queryParams);
       this.setHideSelectionStatus(queryParams);
       this.setThemeStatus(queryParams);
@@ -283,12 +283,13 @@ export class QueryParamsService {
     });
   }
 
-  private setIframeStatus(queryParams: QueryParams) {
+  private setIframeInfo(queryParams: QueryParams) {
     if (!queryParams.hasOwnProperty('iframe')) {
       return;
     }
 
     this.iframeService.setIframeStatus(queryParams.iframe);
+    this.iframeService.setIframeDevice(queryParams.device);
   }
 
   private setBackgroundStatus(queryParams: QueryParams) {

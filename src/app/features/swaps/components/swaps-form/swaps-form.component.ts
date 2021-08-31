@@ -44,8 +44,6 @@ export class SwapsFormComponent implements OnInit {
 
   public allowRefresh: boolean = true;
 
-  public displayMaxButton: boolean = false;
-
   public maxGasFee: BigNumber;
 
   public onRefreshTrade = new Subject<void>();
