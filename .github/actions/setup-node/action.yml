@@ -4,9 +4,6 @@ branding:
   color: blue
 runs:
   steps:
-    - name: Checkout repo
-      uses: actions/checkout@v2
-
     - name: Read .nvmrc
       run: echo ::set-output name=NVMRC::$(cat .nvmrc)
       id: nvm

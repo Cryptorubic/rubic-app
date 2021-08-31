@@ -1,0 +1,9 @@
+name: Check code quality
+branding:
+  icon: eye
+  color: green
+runs:
+  steps:
+    - name: Run lint css
+      run : echo "hello world"
+      shell: bash
