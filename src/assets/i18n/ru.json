@@ -365,6 +365,17 @@
     "whatIs": "Что такое ",
     "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес"
   },
+  "crossChainPage": {
+    "swapInfo": {
+      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "maximumSent": "Maximum sent",
+      "maximumSentHint": "Maximum amount of tokens to be sent\n",
+      "minimumReceived": "Minimum received",
+      "minimumReceivedHint": "Minimum amount of tokens to be received\n",
+      "platformFee": "Platform fee",
+      "platformFeeHint": "Platform commission charges in RBC token\n"
+    }
+  },
   "instantTrades": {
     "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Приблизительный размер платы за газ. Для завершения сделки потребуется предоставить больше газа в Метамаске, дополнительный газ будет возвращен вам после завершения сделки.",
