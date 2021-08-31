@@ -73,23 +73,20 @@ export class WalletsModalComponent implements OnInit {
   }
 
   private redirectToCoinbaseBrowser(): void {
-    let walletLinkAppLink: string;
-    switch (this.window.location.hostname.split('.')[0]) {
-      case 'stage':
-        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
-        break;
-      case 'dev':
-        walletLinkAppLink = 'https://go.cb-w.com/D0GNLvaHBib';
-        break;
-      case 'dev2':
-        walletLinkAppLink = 'https://go.cb-w.com/gCtmOgQGBib';
-        break;
-      case 'rubic':
-      default:
-        walletLinkAppLink = 'https://go.cb-w.com/IJZCq1fHBib';
-        break;
-    }
+    const walletLinkAppLink = 'https://go.cb-w.com/9gaKnqLDajb';
     this.window.location.assign(walletLinkAppLink);
+  }
+
+  public shouldRenderAsLink(provider: WALLET_NAME): string | null {
+    if (
+      this.iframeService.isIframe &&
+      this.iframeService.device === 'mobile' &&
+      provider === WALLET_NAME.WALLET_LINK
+    ) {
+      return 'https://go.cb-w.com/9gaKnqLDajb';
+    }
+
+    return null;
   }
 
   constructor(
