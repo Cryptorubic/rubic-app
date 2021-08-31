@@ -1,0 +1,36 @@
+name: Check code quality
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  lint:
+    name: Check code base
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+
+      - name: Set up npm
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run lint css
+        run: npm run lint-css
+
+      - name: Run compile
+        run: npm run compile

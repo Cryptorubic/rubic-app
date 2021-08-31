@@ -16,6 +16,7 @@ import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;
 
+  /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
   private readonly core: any;
 
   private selectedAddress: string;

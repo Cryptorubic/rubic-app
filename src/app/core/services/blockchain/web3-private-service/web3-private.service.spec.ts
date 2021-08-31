@@ -45,7 +45,8 @@ describe('Web3PrivateService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-    expect((service as any).address).toBeTruthy();
+    // @ts-ignore
+    expect(service.address).toBeTruthy();
   });
 
   it('should use Kovan network id', () => {
@@ -121,7 +122,8 @@ describe('Web3PrivateService', () => {
     expect(receipt.blockNumber).toBeGreaterThan(0);
     const bobNewAllowance = await web3PublicEth.getAllowance(
       WEENUS.address,
-      (service as any).address,
+      // @ts-ignore
+      service.address,
       bobAddress
     );
 
@@ -134,7 +136,8 @@ describe('Web3PrivateService', () => {
 
     const allowance = await web3PublicEth.getAllowance(
       WEENUS.address,
-      (service as any).address,
+      // @ts-ignore
+      service.address,
       bobAddress
     );
 

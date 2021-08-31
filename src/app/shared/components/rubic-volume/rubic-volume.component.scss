@@ -25,7 +25,7 @@
 
     font-weight: 300;
 
-    & > div:first-child {
+    > div:first-child {
       margin-right: 45px;
     }
   }
@@ -52,7 +52,7 @@
     &__values {
       display: block;
 
-      & > div:first-child {
+      > div:first-child {
         margin-right: 0;
       }
     }

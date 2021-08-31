@@ -57,7 +57,7 @@ export class InstantTradesApiService {
       price: trade.from.token.price
     };
 
-    return this.httpService.post(BOT_URL.INSTANT_TRADES, req).toPromise();
+    return this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req).toPromise();
   }
 
   /**
@@ -105,7 +105,9 @@ export class InstantTradesApiService {
       tradeInfo.network = 'ethereum-test';
     }
 
-    return this.httpService.post(instantTradesApiRoutes.createData, tradeInfo).pipe(delay(1000));
+    return this.httpService
+      .post<InstantTradesResponseApi>(instantTradesApiRoutes.createData, tradeInfo)
+      .pipe(delay(1000));
   }
 
   /**

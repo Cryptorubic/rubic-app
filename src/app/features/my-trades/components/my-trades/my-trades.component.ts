@@ -3,9 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
-  Inject,
-  Injector,
-  OnDestroy,
   OnInit
 } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';

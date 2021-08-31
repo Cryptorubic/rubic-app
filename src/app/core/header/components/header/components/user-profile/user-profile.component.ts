@@ -50,7 +50,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     this.$currentUser = this.authService.getCurrentUser();
   }
 
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
   private clicks = 0;
 

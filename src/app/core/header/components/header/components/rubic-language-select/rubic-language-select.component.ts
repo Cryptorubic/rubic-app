@@ -18,7 +18,7 @@ import { LanguageListElement } from 'src/app/core/header/models/language-list-el
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicLanguageSelectComponent {
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<any>>;
+  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
   public readonly languagesList: LanguageListElement[];
 
