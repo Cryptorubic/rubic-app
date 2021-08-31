@@ -14,6 +14,7 @@ interface AllQueryParams {
   background: string;
   theme: string;
   language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
+  device?: 'mobile' | 'desktop';
 }
 export type QueryParams = {
   [P in AdditionalTokens]: string[];

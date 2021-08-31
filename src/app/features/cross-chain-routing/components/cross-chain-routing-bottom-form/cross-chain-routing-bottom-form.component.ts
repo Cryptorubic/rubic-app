@@ -41,8 +41,9 @@ import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { WINDOW } from '@ng-web-apis/common';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 interface BlockchainInfo {
@@ -159,7 +160,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly successTxModalService: SuccessTxModalService
   ) {
     this.onCalculateTrade$ = new Subject();
     this.hiddenTradeData$ = new BehaviorSubject(undefined);
@@ -477,13 +480,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       }
     );
 
-    if (window.location.pathname === '/') {
-      this.dialogService
-        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-          size: 's',
-          data: { idPrefix: '' }
-        })
-        .subscribe();
+    if (this.window.location.pathname === '/') {
+      this.successTxModalService.open();
     }
   }
 

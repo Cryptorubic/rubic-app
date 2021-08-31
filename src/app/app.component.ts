@@ -64,7 +64,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   private removeLiveChatInIframe(): void {
     const observer = new MutationObserver(() => {
-      const liveChat = this.document.getElementById('chat-widget-container');
+      const liveChat = this.document.getElementsByClassName('carrotquest-css-reset')[0];
       if (liveChat) {
         liveChat.remove();
         observer.disconnect();
