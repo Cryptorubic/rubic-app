@@ -28,6 +28,6 @@ export class CryptoTapApiService {
       price: parameters.fromToken.price
     };
 
-    return this.httpService.post(BOT_URL.CRYPTO_TAP, data).toPromise();
+    return this.httpService.post<void>(BOT_URL.CRYPTO_TAP, data).toPromise();
   }
 }

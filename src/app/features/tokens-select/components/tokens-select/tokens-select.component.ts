@@ -212,7 +212,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   private allowInCrossChain(fromBlockchain, toBlockchain): boolean {
-    const availableNetworks = Object.keys(transitTokensWithMode.mainnet)
+    const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
     return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
   }
 

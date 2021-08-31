@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { Observable } from 'rxjs';
-import { first, map, mergeMap } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import {
   BridgeBlockchainApi,
@@ -245,7 +245,7 @@ export class BridgeApiService {
             symbol: bridgeTrade.token.symbol,
             price
           };
-          return this.httpService.post(BOT_URL.BRIDGES, body);
+          return this.httpService.post(BOT_URL.BRIDGES, body).pipe(switchMap(() => EMPTY));
         })
       )
       .toPromise();
