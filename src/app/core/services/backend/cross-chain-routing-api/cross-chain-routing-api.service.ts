@@ -6,6 +6,9 @@ import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BA
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { CrossChainTradesResponseApi } from 'src/app/core/services/backend/cross-chain-routing-api/models/CrossChainTradesResponseApi';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { environment } from 'src/environments/environment';
+
+export const BASE_URL = `${environment.crossChainApiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +23,7 @@ export class CrossChainRoutingApiService {
    */
   public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
     return this.httpService
-      .get(
-        'trades/',
-        { user: walletAddress.toLowerCase() },
-        'https://dev-crosschain.rubic.exchange/api/'
-      )
+      .get('trades/', { user: walletAddress.toLowerCase() }, BASE_URL)
       .pipe(
         map((trades: CrossChainTradesResponseApi[]) =>
           trades.map(trade => this.parseTradeApiToTableTrade(trade))
