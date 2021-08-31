@@ -255,7 +255,8 @@ export class InstantTradeService {
       this.notificationsService.show(
         this.translateService.instant('notifications.successApprove'),
         {
-          status: TuiNotification.Success
+          status: TuiNotification.Success,
+          autoClose: 15000
         }
       );
     } catch (err) {

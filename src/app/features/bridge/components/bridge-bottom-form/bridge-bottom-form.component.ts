@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -83,6 +85,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
+
+  @Output() displayMaxButton = new EventEmitter<boolean>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -219,6 +223,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
 
+    this.displayMaxButton.emit(!!this.toToken);
+
     this.setToWalletAddress();
 
     this.conditionalCalculate();
@@ -331,8 +337,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       onTransactionHash: () => {
         this.cdr.detectChanges();
         approveInProgressSubscription$ = this.notificationsService.show(
-          this.translateService.instant('notifications.approveInProgress'),
+          this.translateService.instant('bridgePage.approveProgressMessage'),
           {
+            label: this.translateService.instant('notifications.approveInProgress'),
             status: TuiNotification.Info,
             autoClose: false
           }
@@ -347,8 +354,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         async (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
-            this.translateService.instant('notifications.successApprove'),
+            this.translateService.instant('bridgePage.approveSuccessMessage'),
             {
+              label: this.translateService.instant('notifications.successApprove'),
               status: TuiNotification.Success,
               autoClose: 15000
             }

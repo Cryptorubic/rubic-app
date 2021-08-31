@@ -479,6 +479,7 @@
     "successfulTradeTitle": "Comercio exitoso",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
-    "successApprove": "Aprobación exitosa"
+    "successApprove": "Aprobación exitosa",
+    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
   }
 }

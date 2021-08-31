@@ -79,7 +79,7 @@
     border-radius: 10px;
   }
 
-  :host-context(html:not(.dark)) & {
+  :host-context(html.iframe:not(.dark)) & {
     background-color: var(--rubic-base-14);
   }
 }

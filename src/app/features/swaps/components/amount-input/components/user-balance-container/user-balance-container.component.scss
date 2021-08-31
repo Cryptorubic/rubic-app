@@ -31,5 +31,11 @@
     @include b($mobile-sm) {
       font-size: 18px;
     }
+
+    &_disabled {
+      color: var(--form-dim-text-color);
+
+      cursor: default;
+    }
   }
 }

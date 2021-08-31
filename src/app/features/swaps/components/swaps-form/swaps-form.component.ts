@@ -17,6 +17,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import BigNumber from 'bignumber.js';
 
 type TokenType = 'from' | 'to';
 
@@ -42,6 +43,10 @@ export class SwapsFormComponent implements OnInit {
   public autoRefresh: boolean;
 
   public allowRefresh: boolean = true;
+
+  public displayMaxButton: boolean = false;
+
+  public maxGasFee: BigNumber;
 
   public onRefreshTrade = new Subject<void>();
 

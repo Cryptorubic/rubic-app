@@ -3,6 +3,7 @@
 :host {
   display: block;
   max-width: 610px;
+  margin: 0 auto;
 
   @include iframe {
     width: 100%;

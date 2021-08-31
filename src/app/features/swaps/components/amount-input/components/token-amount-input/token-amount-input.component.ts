@@ -28,6 +28,10 @@ export class TokenAmountInputComponent implements OnInit {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() displayMaxButton: boolean;
+
+  @Input() maxGasFee: BigNumber = new BigNumber(0);
+
   @Input() placeholder = '0.0';
 
   private get formattedAmount(): string {

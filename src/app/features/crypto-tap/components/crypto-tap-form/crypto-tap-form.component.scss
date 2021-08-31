@@ -2,8 +2,10 @@
 @import 'src/scss/mixins';
 
 :host {
+  display: block;
   width: 100%;
   max-width: 610px;
+  margin: 0 auto;
 }
 
 .swaps-form {

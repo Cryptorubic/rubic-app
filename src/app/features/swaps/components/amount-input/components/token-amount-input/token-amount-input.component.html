@@ -8,9 +8,9 @@
     ></app-rubic-tokens>
 
     <app-user-balance-container
+      [displayMaxButton]="displayMaxButton"
       [token]="selectedToken"
       type="from"
-      hide="balance"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
   </div>

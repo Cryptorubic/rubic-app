@@ -293,6 +293,7 @@ export class CommonUniswapV2Service {
         path: route.path
       }
     };
+
     if (!shouldCalculateGas) {
       return instantTrade;
     }
