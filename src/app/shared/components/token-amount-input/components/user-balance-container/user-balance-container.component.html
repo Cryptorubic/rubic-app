@@ -4,10 +4,9 @@
     {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}
   </span>
 
- <button
+  <button
     *ngIf="hide !== 'maxButton'"
     class="user-balance-container__max-button"
-    [class.user-balance-container__max-button_disabled]="!displayMaxButton"
     (click)="maxButtonClick()"
   >
     MAX
