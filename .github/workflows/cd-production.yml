@@ -6,38 +6,9 @@ on:
       - master
 
 jobs:
-  lint:
-    name: Check code base
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Read .nvmrc
-        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
-        id: nvm
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
-
-      - name: Set up npm
-        run: npm install
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run lint css
-        run: npm run lint-css
-
-      - name: Run compile
-        run: npm run compile
-
   deploy:
     name: Deploy on production server
     runs-on: ubuntu-latest
-    needs: [lint]
 
     steps:
       - uses: actions/checkout@v2
@@ -59,13 +30,13 @@ jobs:
           sudo apt-get install sshpass
           npm install
 
-      - name: Run build
+      - name: Run build prod
         run : npm run build
 
       - name: Deploy on prod server
         run : sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
 
-      - name: Run build
+      - name: Run build stage
         run: npm run build:stage
 
       - name: Deploy on stage server
