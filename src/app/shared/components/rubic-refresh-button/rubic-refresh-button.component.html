@@ -1,14 +1,14 @@
 <div class="refresh-button">
   <img
     class="refresh-icon"
-    [ngClass]="{ 'autoRefresh': autoUpdate && !stopAnimation }"
+    [ngClass]="{ autoRefresh: autoUpdate && !stopAnimation }"
     [src]="imageUrl"
     width="18"
     height="18"
     (mouseenter)="mouseEnter()"
     (mouseleave)="mouseLeave()"
     alt="Toggle auto refresh"
-    [tuiHint]="hint"
+    [tuiHint]="refreshIconTooltip"
     (click)="toggleClick()"
     #refreshIcon
   />
@@ -27,3 +27,7 @@
     />
   </svg>
 </div>
+
+<ng-template #refreshIconTooltip
+  ><span class="refresh-icon-tooltip">{{ hint }}</span></ng-template
+>

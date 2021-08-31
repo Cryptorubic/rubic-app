@@ -9,7 +9,7 @@ import { OverQueryLimitError } from 'src/app/core/errors/models/bridge/OverQuery
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { RetrievingTokensError } from 'src/app/core/errors/models/provider/RetrievingTokensError';
-import { BridgeToken } from 'src/app/features/bridge/models/BridgeToken';
+import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { List } from 'immutable';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
@@ -74,7 +74,7 @@ export class PanamaBridgeProviderService {
     return BRIDGE_PROVIDER.PANAMA;
   }
 
-  public getFee(token: BridgeToken, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(token: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
     if (token.toEthFee && token.fromEthFee) {
       if (toBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
         return of(token.toEthFee);
@@ -136,8 +136,8 @@ export class PanamaBridgeProviderService {
     depositAddress: string
   ): Promise<TransactionReceipt> {
     const { token } = bridgeTrade;
-    const tokenAddress = token.blockchainToken[bridgeTrade.fromBlockchain].address;
-    const { decimals } = token.blockchainToken[bridgeTrade.fromBlockchain];
+    const tokenAddress = token.tokenByBlockchain[bridgeTrade.fromBlockchain].address;
+    const { decimals } = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
     let txHash;
@@ -149,8 +149,8 @@ export class PanamaBridgeProviderService {
       }
       await this.bridgeApiService.postPanamaTransaction(
         binanceId,
-        token.blockchainToken[bridgeTrade.fromBlockchain].symbol,
-        token.blockchainToken[bridgeTrade.toBlockchain].symbol
+        token.tokenByBlockchain[bridgeTrade.fromBlockchain].symbol,
+        token.tokenByBlockchain[bridgeTrade.toBlockchain].symbol
       );
     };
 

@@ -15,15 +15,13 @@ export interface ItProvider {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
-    shouldCalculateGas: boolean,
-    minGasPrice?: BigNumber
+    shouldCalculateGas: boolean
   ) => Promise<InstantTrade>;
   getAllowance: (tokenAddress: string) => Observable<BigNumber>;
   approve: (
     tokenAddress: string,
     options: {
       onTransactionHash?: (hash: string) => void;
-    },
-    minGasPrice?: BigNumber
+    }
   ) => Promise<void>;
 }

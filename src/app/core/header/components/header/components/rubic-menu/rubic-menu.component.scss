@@ -106,9 +106,11 @@
   }
 
   &__option-image {
-    width: 20px;
+    width: 24px;
     height: 20px;
     margin-right: 15px;
+
+    text-align: center;
 
     ::ng-deep svg {
       width: auto;

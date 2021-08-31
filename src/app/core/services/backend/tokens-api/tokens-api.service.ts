@@ -5,7 +5,6 @@ import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BA
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { HttpService } from '../../http/http.service';
 import { BackendToken } from './models/BackendToken';
 

@@ -65,7 +65,9 @@
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
   },
   "navigation": {
     "about": "Información",
@@ -363,6 +365,17 @@
     "whatIs": "¿Qué es ",
     "getTokens": "Recibirás {{ toBlockchainName }} tokens en la dirección seleccionada"
   },
+  "crossChainPage": {
+    "swapInfo": {
+      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "maximumSent": "Maximum sent",
+      "maximumSentHint": "Maximum amount of tokens to be sent\n",
+      "minimumReceived": "Minimum received",
+      "minimumReceivedHint": "Minimum amount of tokens to be received\n",
+      "platformFee": "Platform fee",
+      "platformFeeHint": "Platform commission charges in RBC token\n"
+    }
+  },
   "instantTrades": {
     "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
@@ -416,7 +429,7 @@
   },
   "maintenance": {
     "title": "Maintenance",
-    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+    "text": "Together, let’s change the world of crypto."
   },
   "modals": {
     "confirmImportModal": {
@@ -477,6 +490,7 @@
     "successfulTradeTitle": "Comercio exitoso",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
-    "successApprove": "Aprobación exitosa"
+    "successApprove": "Aprobación exitosa",
+    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
   }
 }

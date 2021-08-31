@@ -29,7 +29,7 @@ app-spinner {
 
   > :nth-child(2) {
     flex: 1;
-    align-self: center;
+    align-self: stretch;
   }
 
   > :last-child {
@@ -43,7 +43,14 @@ app-spinner {
 }
 
 .main-content {
+  width: 100%;
   padding: 0 20px 60px;
+
+  ::ng-deep {
+    > * {
+      margin: 0 auto;
+    }
+  }
 }
 
 .iframe-wrapper {

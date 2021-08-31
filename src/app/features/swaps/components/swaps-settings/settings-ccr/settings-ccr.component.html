@@ -1,0 +1,51 @@
+<div class="settings">
+  <form [formGroup]="crossChainRoutingForm" class="settings__form">
+    <div class="settings__form-row settings__form-row_large-input">
+      <label for="slippageTolerance">{{
+        'settings.instantTrades.slippageTitle' | translate
+      }}</label>
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.slippage' | translate"
+      ></div>
+    </div>
+    <div class="settings__form-row settings__form-row_united">
+      <div
+        (click)="toggleAutoSlippageTolerance()"
+        class="settings__button-auto"
+        [ngClass]="{
+          'settings__button-auto_active': crossChainRoutingForm.value.autoSlippageTolerance
+        }"
+      >
+        Auto
+      </div>
+      <tui-input-number
+        id="slippageTolerance"
+        [ngModel]="slippageTolerance"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [tuiTextfieldLabelOutside]="true"
+        [tuiTextfieldSize]="'s'"
+        [max]="50"
+        [min]="1"
+        [postfix]="'%'"
+        >1%
+      </tui-input-number>
+    </div>
+
+    <div class="settings__form-row">
+      <label for="autoRefresh">{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
+      ></div>
+      <tui-toggle
+        class="settings__toggle"
+        id="autoRefresh"
+        formControlName="autoRefresh"
+      ></tui-toggle>
+    </div>
+  </form>
+</div>

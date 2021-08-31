@@ -13,6 +13,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { startWith } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
@@ -55,8 +56,8 @@ export class RubicTokensComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.setFormValues(this.formService.commonTrade.controls.input.value);
-    this.formService.commonTrade.controls.input.valueChanges
+    this.setFormValues(this.formService.inputValue);
+    this.formService.inputValueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(formValue => {
         this.setFormValues(formValue);

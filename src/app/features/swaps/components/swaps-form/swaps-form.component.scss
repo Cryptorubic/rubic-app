@@ -3,6 +3,7 @@
 :host {
   display: block;
   max-width: 610px;
+  margin: 0 auto;
 
   @include iframe {
     width: 100%;
@@ -15,7 +16,7 @@
 
 .swaps-form {
   min-height: 200px;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
   padding: 30px 40px;
 
   background-color: var(--main-form-background);
@@ -164,7 +165,8 @@
 
     @include iframe-vertical {
       app-instant-trade-bottom-form,
-      app-bridge-bottom-form {
+      app-bridge-bottom-form,
+      app-cross-chain-routing-bottom-form {
         width: 100%;
       }
     }
@@ -193,6 +195,13 @@
       z-index: 100;
     }
   }
+}
+
+app-cross-chain-swap-info,
+app-analytics-link {
+  display: block;
+
+  margin-bottom: 20px;
 }
 
 @include b($mobile-sm) {

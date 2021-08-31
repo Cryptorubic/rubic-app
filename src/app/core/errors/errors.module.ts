@@ -8,6 +8,7 @@ import { MetamaskErrorComponent } from './components/metamask-error/metamask-err
 import { NetworkErrorComponent } from './components/network-error/network-error.component';
 import { TotalSupplyOverflowErrorComponent } from './components/total-supply-overflow-error/total-supply-overflow-error.component';
 import { OverQueryLimitErrorComponent } from './components/over-query-limit-error/over-query-limit-error.component';
+import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-overflow-error/max-gas-price-overflow-error.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { OverQueryLimitErrorComponent } from './components/over-query-limit-erro
     MetamaskErrorComponent,
     NetworkErrorComponent,
     TotalSupplyOverflowErrorComponent,
-    OverQueryLimitErrorComponent
+    OverQueryLimitErrorComponent,
+    MaxGasPriceOverflowErrorComponent
   ],
   imports: [CommonModule, TranslateModule],
   entryComponents: [
