@@ -488,6 +488,7 @@ export class CommonUniswapV2Service {
         trade.to.amount.multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance)),
         trade.to.token.decimals
       ),
+      // @ts-ignore
       path: trade.options.path,
       to: this.walletAddress,
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline

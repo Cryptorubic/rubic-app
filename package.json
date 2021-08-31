@@ -21,7 +21,8 @@
     "prepare": "husky install",
     "unused-css": "ngx-unused-css",
     "compress-images": "node scripts/compress-images.mjs",
-    "compodoc": "compodoc -p tsconfig.doc.json -s"
+    "compodoc": "compodoc -p tsconfig.doc.json -s",
+    "compile": "tsc"
   },
   "private": true,
   "dependencies": {

@@ -31,3 +31,6 @@ jobs:
 
       - name: Run lint css
         run: npm run lint-css
+
+      - name: Run compile
+        run: npm run compile

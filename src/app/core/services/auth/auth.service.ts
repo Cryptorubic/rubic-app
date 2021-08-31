@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { finalize, first, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+import { finalize, first, mergeMap, switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
@@ -103,6 +103,7 @@ export class AuthService {
         signedMessage: signature,
         walletProvider
       })
+      .pipe(switchMap(() => EMPTY))
       .toPromise();
   }
 
@@ -213,7 +214,7 @@ export class AuthService {
       return of('');
     }
 
-    return this.httpService.post('auth/wallets/logout/', {}).pipe(
+    return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
       finalize(() => {
         this.providerConnectorService.deActivate();
         this.$currentUser.next(null);
