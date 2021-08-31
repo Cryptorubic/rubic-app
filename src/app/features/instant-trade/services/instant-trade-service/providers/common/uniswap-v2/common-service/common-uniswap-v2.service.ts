@@ -357,12 +357,6 @@ export class CommonUniswapV2Service {
       throw new InsufficientLiquidityError();
     }
 
-    if (!shouldCalculateGas) {
-      return {
-        route: routes[0]
-      };
-    }
-
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
     const slippage = new BigNumber(1).minus(this.settings.slippageTolerance);
 
