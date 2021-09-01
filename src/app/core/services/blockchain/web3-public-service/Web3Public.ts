@@ -10,6 +10,9 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { from, Observable, of } from 'rxjs';
+import { HEALTCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
+import { catchError, mapTo, timeout } from 'rxjs/operators';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -26,7 +29,7 @@ export class Web3Public {
 
   constructor(
     private web3: Web3,
-    private blockchain: IBlockchain,
+    public blockchain: IBlockchain,
     useTestingModeService: UseTestingModeService
   ) {
     this.multicallAddresses = MULTICALL_ADDRESSES;
@@ -78,6 +81,32 @@ export class Web3Public {
 
   public static toChecksumAddress(address: string): string {
     return toChecksumAddress(address);
+  }
+
+  /**
+   * @description HealthCheck current rpc node
+   * @param timeoutMs acceptable node response timeout
+   * @return null if healthcheck is not defined for current blockchain, else is node works status
+   */
+  public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
+    const heathcheckData = HEALTCHECK[this.blockchain.name];
+    if (!heathcheckData) {
+      return of(null);
+    }
+
+    const contract = new this.web3.eth.Contract(
+      heathcheckData.contractAbi,
+      heathcheckData.contractAddress
+    );
+
+    return from(contract.methods[heathcheckData.method]().call()).pipe(
+      timeout(timeoutMs),
+      mapTo(true),
+      catchError(err => {
+        console.debug(`${this.blockchain.label} node healthcheck fail: ${err}`);
+        return of(false);
+      })
+    );
   }
 
   /**
@@ -229,7 +258,7 @@ export class Web3Public {
   ): Promise<Transaction> {
     attempt = attempt || 0;
     const limit = attemptsLimit || 10;
-    const timeout = delay || 500;
+    const timeoutMs = delay || 500;
 
     if (attempt >= limit) {
       return null;
@@ -238,7 +267,7 @@ export class Web3Public {
     const transaction = await this.web3.eth.getTransaction(hash);
     if (transaction === null) {
       return new Promise(resolve =>
-        setTimeout(() => resolve(this.getTransactionByHash(hash, attempt + 1)), timeout)
+        setTimeout(() => resolve(this.getTransactionByHash(hash, attempt + 1)), timeoutMs)
       );
     }
     return transaction;
