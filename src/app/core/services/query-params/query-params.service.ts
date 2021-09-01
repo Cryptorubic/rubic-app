@@ -10,7 +10,8 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { BlockchainsBridgeTokens } from 'src/app/features/bridge/models/BlockchainsBridgeTokens';
+import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -68,7 +69,7 @@ export class QueryParamsService {
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService
   ) {
-    this.swapFormService.commonTrade.controls.input.valueChanges.subscribe(value => {
+    this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
         ...(value.fromToken?.symbol && { from: value.fromToken.symbol }),
         ...(value.toToken?.symbol && { to: value.toToken.symbol }),
@@ -83,7 +84,7 @@ export class QueryParamsService {
 
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
-      this.setIframeStatus(queryParams);
+      this.setIframeInfo(queryParams);
       this.setBackgroundStatus(queryParams);
       this.setHideSelectionStatus(queryParams);
       this.setThemeStatus(queryParams);
@@ -109,9 +110,9 @@ export class QueryParamsService {
   }
 
   private initiateTradesParams(params: QueryParams): void {
-    this.tokensService.tokens
+    this.swapsService.availableTokens
       .pipe(
-        filter(tokens => tokens?.size !== 0),
+        filter(tokens => tokens?.size > 0),
         first(),
         mergeMap(tokens =>
           this.getProtectedSwapParams(params).pipe(
@@ -145,7 +146,7 @@ export class QueryParamsService {
         })
       )
       .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
-        this.swapFormService.commonTrade.controls.input.patchValue({
+        this.swapFormService.input.patchValue({
           fromBlockchain,
           toBlockchain,
           ...(fromToken && { fromToken }),
@@ -157,64 +158,61 @@ export class QueryParamsService {
       });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private initiateCryptoTapParams(params: QueryParams): void {
+  private initiateCryptoTapParams(_params: QueryParams): void {
     // TODO: add crypto tap params
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    return this.swapsService.bridgeTokensPairs.pipe(
-      filter(pairs => !!pairs?.length),
+    return this.swapsService.bridgeTokenPairsByBlockchainsArray.pipe(
+      filter(pairsArray => !!pairsArray?.size),
       first(),
-      map(pairs => {
+      map(pairsArray => {
         const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.fromChain as BLOCKCHAIN_NAME
         )
-          ? queryParams.fromChain
+          ? (queryParams.fromChain as BLOCKCHAIN_NAME)
           : QueryParamsService.DEFAULT_PARAMETERS.swap.fromChain;
 
         const toChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.toChain as BLOCKCHAIN_NAME
         )
-          ? queryParams.toChain
+          ? (queryParams.toChain as BLOCKCHAIN_NAME)
           : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
 
-        const newParams =
-          queryParams.from || queryParams.to
-            ? {
-                ...queryParams,
-                from:
-                  queryParams.from || QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain],
-                to: queryParams.to || QueryParamsService.DEFAULT_PARAMETERS.swap.to[toChain],
-                amount: queryParams.amount || QueryParamsService.DEFAULT_PARAMETERS.swap.amount,
-                fromChain,
-                toChain
-              }
-            : {
-                ...queryParams,
-                fromChain,
-                toChain
-              };
-        if (newParams.from === newParams.to && fromChain === toChain) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]
-            ? (newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain])
-            : (newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]);
+        const newParams = {
+          ...queryParams,
+          fromChain,
+          toChain,
+          ...(queryParams.from && { from: queryParams.from }),
+          ...(queryParams.to && { to: queryParams.to }),
+          ...(queryParams.amount && { amount: queryParams.amount })
+        };
+
+        if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
+          if (newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]) {
+            newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain];
+          } else {
+            newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain];
+          }
         }
 
         if (
           fromChain !== toChain &&
           newParams.from &&
           newParams.to &&
-          !pairs.some(
-            (pair: BlockchainsBridgeTokens) =>
-              pair.fromBlockchain === fromChain &&
-              pair.toBlockchain === toChain &&
-              pair.bridgeTokens.some(
-                bridgeToken =>
-                  bridgeToken.blockchainToken[fromChain]?.symbol.toLowerCase() ===
+          !(
+            CrossChainRoutingService.isSupportedBlockchain(fromChain) &&
+            CrossChainRoutingService.isSupportedBlockchain(toChain)
+          ) &&
+          !pairsArray.some(
+            (pairsByBlockchains: BridgeTokenPairsByBlockchains) =>
+              pairsByBlockchains.fromBlockchain === fromChain &&
+              pairsByBlockchains.toBlockchain === toChain &&
+              pairsByBlockchains.tokenPairs.some(
+                tokenPair =>
+                  tokenPair.tokenByBlockchain[fromChain]?.symbol.toLowerCase() ===
                     newParams.from?.toLowerCase() &&
-                  bridgeToken.blockchainToken[toChain]?.symbol.toLowerCase() ===
+                  tokenPair.tokenByBlockchain[toChain]?.symbol.toLowerCase() ===
                     newParams.to?.toLowerCase()
               )
           )
@@ -278,10 +276,6 @@ export class QueryParamsService {
     return web3Public.isAddressCorrect(token);
   }
 
-  private isHEXColor(color: string): boolean {
-    return /^[A-F0-9]+$/i.test(color);
-  }
-
   private navigate(): void {
     this.router.navigate([], {
       queryParams: this.currentQueryParams,
@@ -289,12 +283,13 @@ export class QueryParamsService {
     });
   }
 
-  private setIframeStatus(queryParams: QueryParams) {
+  private setIframeInfo(queryParams: QueryParams) {
     if (!queryParams.hasOwnProperty('iframe')) {
       return;
     }
 
     this.iframeService.setIframeStatus(queryParams.iframe);
+    this.iframeService.setIframeDevice(queryParams.device);
   }
 
   private setBackgroundStatus(queryParams: QueryParams) {

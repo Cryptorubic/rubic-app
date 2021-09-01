@@ -21,7 +21,8 @@
     "prepare": "husky install",
     "unused-css": "ngx-unused-css",
     "compress-images": "node scripts/compress-images.mjs",
-    "compodoc": "compodoc -p tsconfig.doc.json -s"
+    "compodoc": "compodoc -p tsconfig.doc.json -s",
+    "compile": "tsc"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +41,7 @@
     "@ethersproject/providers": "^5.2.0",
     "@ethersproject/solidity": "^5.2.0",
     "@maticnetwork/maticjs": "^2.0.45",
+    "@ng-web-apis/common": "^1.11.0",
     "@ngneat/reactive-forms": "^1.7.3",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
@@ -97,8 +99,9 @@
     "eslint-plugin-jsdoc": "30.7.6",
     "eslint-plugin-prefer-arrow": "1.2.2",
     "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-unused-imports": "^1.1.4",
     "https-browserify": "^1.0.0",
-    "husky": "^6.0.0",
+    "husky": "^7.0.2",
     "imagemin": "^8.0.0",
     "imagemin-jpegtran": "^7.0.0",
     "imagemin-pngquant": "^9.0.2",

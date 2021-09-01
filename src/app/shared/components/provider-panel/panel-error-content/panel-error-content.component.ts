@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { ProviderData } from 'src/app/shared/components/provider-panel/models/provider-data';
 
 @Component({

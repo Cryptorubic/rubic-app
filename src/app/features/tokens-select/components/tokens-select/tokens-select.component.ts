@@ -20,6 +20,7 @@ import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, mapTo } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 
 @Component({
   selector: 'app-tokens-select',
@@ -199,12 +200,20 @@ export class TokensSelectComponent implements OnInit {
           amount,
           price: 0,
           usedInIframe: true,
-          available: !oppositeToken || this.blockchain === oppositeToken.blockchain
+          available:
+            !oppositeToken ||
+            this.blockchain === oppositeToken.blockchain ||
+            this.allowInCrossChain(blockchainToken.blockchain, oppositeToken.blockchain)
         };
 
         this.cdr.markForCheck();
       }
     }
+  }
+
+  private allowInCrossChain(fromBlockchain, toBlockchain): boolean {
+    const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
+    return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
   }
 
   private fetchTokenImage(token: BlockchainToken): Promise<string> {

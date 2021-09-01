@@ -11,35 +11,35 @@ export const SERVER_REST_URL = `${environment.apiBaseUrl}/`;
 export class HttpService {
   constructor(private http: HttpClient) {}
 
-  public get(url: string, data?: {}, path?: string): Observable<any> {
+  public get<T>(url: string, data?: {}, path?: string): Observable<T> {
     const headers = new HttpHeaders({
       'Cache-Control': 'max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
       Pragma: 'no-cache',
       Expires: '0'
     });
     data = data || {};
-    return this.http.get<any>((path || SERVER_REST_URL) + (url || ''), {
+    return this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
       params: data,
       headers
     });
   }
 
-  public patch(url: string, data?: {}, params?: {}, path?: string): Observable<any> {
-    return this.http.request<any>('patch', (path || SERVER_REST_URL) + (url || ''), {
+  public patch<T>(url: string, data?: {}, params?: {}, path?: string): Observable<T> {
+    return this.http.request<T>('patch', (path || SERVER_REST_URL) + (url || ''), {
       body: data,
       params
     });
   }
 
-  public post(url: string, body?: {}, path?: string, params?: {}): Observable<any> {
-    return this.http.post<any>((path || SERVER_REST_URL) + (url || ''), body, params);
+  public post<T>(url: string, body?: {}, path?: string, params?: {}): Observable<T> {
+    return this.http.post<T>((path || SERVER_REST_URL) + (url || ''), body, params);
   }
 
-  public customDelete(url: string, options?: {}): Observable<any> {
-    return this.http.request<any>('delete', SERVER_REST_URL + (url || ''), options);
+  public customDelete<T>(url: string, options?: {}): Observable<T> {
+    return this.http.request<T>('delete', SERVER_REST_URL + (url || ''), options);
   }
 
-  public delete(url: string, params?: {}): Observable<any> {
-    return this.http.delete<any>(SERVER_REST_URL + (url || ''), params);
+  public delete<T>(url: string, params?: {}): Observable<T> {
+    return this.http.delete<T>(SERVER_REST_URL + (url || ''), params);
   }
 }

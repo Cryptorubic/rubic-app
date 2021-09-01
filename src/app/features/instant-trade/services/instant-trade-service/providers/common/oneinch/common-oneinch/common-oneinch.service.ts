@@ -133,17 +133,13 @@ export class CommonOneinchService {
   public async approve(
     blockchain: BLOCKCHAIN_NAME,
     tokenAddress: string,
-    options: TransactionOptions,
-    minGasPrice?: BigNumber
+    options: TransactionOptions
   ): Promise<void> {
     this.providerConnectorService.checkSettings(blockchain);
 
     const approveAddress = await this.loadApproveAddress(
       BlockchainsInfo.getBlockchainByName(blockchain).id
     ).toPromise();
-    if (minGasPrice) {
-      options.gasPrice = await this.getGasPrice(blockchain, minGasPrice);
-    }
     await this.web3Private.approveTokens(tokenAddress, approveAddress, 'infinity', options);
   }
 
@@ -151,9 +147,7 @@ export class CommonOneinchService {
     blockchain: BLOCKCHAIN_NAME,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken,
-    shouldCalculateGas: boolean,
-    minGasPrice?: BigNumber
+    toToken: InstantTradeToken
   ): Promise<InstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       fromToken.address,
@@ -176,8 +170,6 @@ export class CommonOneinchService {
       amountAbsolute
     );
 
-    const gasPrice = await this.getGasPrice(blockchain, minGasPrice);
-
     const instantTrade = {
       blockchain,
       from: {
@@ -187,10 +179,11 @@ export class CommonOneinchService {
       to: {
         token: toToken,
         amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
-      },
-      ...(shouldCalculateGas && { gasPrice })
+      }
     };
 
+    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const gasPrice = await web3Public.getGasPrice();
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
@@ -256,18 +249,6 @@ export class CommonOneinchService {
     }
 
     return { estimatedGas, toTokenAmount };
-  }
-
-  private async getGasPrice(blockchain: BLOCKCHAIN_NAME, minGasPrice?: BigNumber): Promise<string> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    const web3GasPrice = await web3Public.getGasPrice();
-    let gasPrice: string;
-    if (minGasPrice) {
-      gasPrice = BigNumber.max(minGasPrice, web3GasPrice).toFixed(0);
-    } else {
-      gasPrice = web3GasPrice;
-    }
-    return gasPrice;
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {

@@ -65,7 +65,9 @@
     "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}"
+    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
   },
   "navigation": {
     "about": "About",
@@ -363,6 +365,17 @@
     "whatIs": "What is ",
     "getTokens": "You will get {{ toBlockchainName }} tokens to this address"
   },
+  "crossChainPage": {
+    "swapInfo": {
+      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "maximumSent": "Maximum sent",
+      "maximumSentHint": "Maximum amount of tokens to be sent\n",
+      "minimumReceived": "Minimum received",
+      "minimumReceivedHint": "Minimum amount of tokens to be received\n",
+      "platformFee": "Platform fee",
+      "platformFeeHint": "Platform commission charges in RBC token\n"
+    }
+  },
   "instantTrades": {
     "title": "Swap assets with low gas fees",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
@@ -416,7 +429,7 @@
   },
   "maintenance": {
     "title": "Maintenance",
-    "text": "We are experiencing server issues, please do not use the platform right now until further notice. Thank you."
+    "text": "Together, let’s change the world of crypto."
   },
   "modals": {
     "confirmImportModal": {

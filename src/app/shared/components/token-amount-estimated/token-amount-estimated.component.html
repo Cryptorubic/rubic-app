@@ -1,5 +1,5 @@
 <div class="bottom-amount" [ngClass]="{'bottom-amount_hidden-iframe-stub': hidden}">
-  <ng-container *ngIf="!hidden">
+  <ng-container *ngIf="!hidden || errorText">
     <div class="bottom-amount__blockchain-and-value">
       <app-iframe-blockchain-indicator *onlyFrame="'vertical'" [blockchain]="blockchain"></app-iframe-blockchain-indicator>
       <div
@@ -7,10 +7,21 @@
         [ngClass]="{
           'tui-skeleton': loading,
           'tui-skeleton_text': loading,
-          'bottom-amount__tokens-container_placeholder': !tokensAmount
+          'bottom-amount__tokens-container_error': errorText,
+          'bottom-amount__tokens-container_placeholder': !errorText && !tokensAmount
         }"
       >
-        {{ tokensAmount | bigNumberFormat | withRound: 'toClosestValue' }}
+        {{
+          (tokensAmount | bigNumberFormat | withRound: 'toClosestValue') ||
+            (errorText && 'tradePage.tradingNotAvailable' | translate)
+        }}
+        <div
+          *ngIf="errorText"
+          tuiHintMode="error"
+          class="bottom-amount__hint bottom-amount__hint_error"
+          [inlineSVG]="'/assets/images/icons/hint.svg'"
+          [tuiHint]="errorText | translate"
+        ></div>
       </div>
     </div>
 

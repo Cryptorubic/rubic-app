@@ -24,7 +24,6 @@ import {
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
-import { TokenAmountInputComponent } from 'src/app/shared/components/token-amount-input/token-amount-input.component';
 import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
@@ -33,10 +32,11 @@ import { RubicLanguageSelectComponent } from 'src/app/core/header/components/hea
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
+import { TermsNConditionsContainerComponent } from 'src/app/shared/components/terms-n-conditions-container/terms-n-conditions-container.component';
+import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
-import { VerticalIframeTokenAmountInputComponent } from 'src/app/shared/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -52,14 +52,11 @@ import { RubicButtonComponent } from './components/rubic-button/rubic-button.com
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { UserBalanceContainerComponent } from './components/token-amount-input/components/user-balance-container/user-balance-container.component';
-import { UsdPriceContainerComponent } from './components/token-amount-input/components/usd-price-container/usd-price-container.component';
 import { AnalyticsLinkComponent } from './components/analytics-link/analytics-link.component';
 import { IframeBlockchainIndicatorComponent } from './components/iframe-blockchain-indicator/iframe-blockchain-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
-import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
 
@@ -69,7 +66,6 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     SpinnerComponent,
     ProviderPanelComponent,
     DropdownSelectorComponent,
-    TokenAmountInputComponent,
     AmountEstimatedComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
@@ -85,10 +81,8 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
     SwapsHeaderComponent,
-    UserBalanceContainerComponent,
-    UsdPriceContainerComponent,
     AnalyticsLinkComponent,
-    VerticalIframeTokenAmountInputComponent,
+    TermsNConditionsContainerComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
@@ -150,13 +144,11 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicSwitcherComponent,
     RubicTogglerThemeComponent,
     IconButtonComponent,
-    VerticalIframeTokenAmountInputComponent,
     ShortenAmountPipe,
     RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
-    TokenAmountInputComponent,
     SwapButtonComponent,
     WithRoundPipe,
     SafetyLinkDirective,
@@ -165,6 +157,8 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicRefreshButtonComponent,
     AnalyticsLinkComponent,
     SwapsHeaderComponent,
+    TermsNConditionsContainerComponent,
+    TokenAmountDirective,
     GasIndicatorComponent,
     PanelErrorContentComponent,
     PanelContentComponent,

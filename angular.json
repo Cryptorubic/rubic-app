@@ -42,6 +42,7 @@
               "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
             ],
+            "scripts": ["src/assets/analytics/carrot-quest.js"],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
@@ -80,7 +81,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/carrot-quest.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -192,13 +193,6 @@
             "production": {
               "devServerTarget": "rubic:serve:production"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**"]
           }
         }
       }
