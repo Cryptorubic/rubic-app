@@ -12,7 +12,7 @@ import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/Ins
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { from, Observable, of } from 'rxjs';
 import { HEALTCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
-import { catchError, mapTo, timeout } from 'rxjs/operators';
+import { catchError, map, timeout } from 'rxjs/operators';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -101,7 +101,7 @@ export class Web3Public {
 
     return from(contract.methods[heathcheckData.method]().call()).pipe(
       timeout(timeoutMs),
-      mapTo(true),
+      map(result => result === heathcheckData.expected),
       catchError(err => {
         console.debug(`${this.blockchain.label} node healthcheck fail: ${err}`);
         return of(false);

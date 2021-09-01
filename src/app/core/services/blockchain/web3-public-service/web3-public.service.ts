@@ -83,6 +83,10 @@ export class Web3PublicService {
               web3Public.blockchain,
               this.useTestingModeService
             );
+
+            console.debug(
+              `Broken ${web3Public.blockchain.label} node has been replaced with a spare.`
+            );
           }
         })
       );
