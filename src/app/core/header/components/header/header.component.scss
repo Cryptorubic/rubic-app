@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 
 .button-link {
@@ -76,6 +75,14 @@
   justify-content: space-between;
   padding: 30px 30px 24px;
 
+  @include iframe {
+    padding: 0;
+
+    app-iframe-logout-button {
+      margin-left: 10px;
+    }
+  }
+
   &__disabled-link {
     color: #909090;
     font-size: 16px;
@@ -89,6 +96,14 @@
 
   &__profile {
     grid-gap: 10px;
+
+    @include iframe {
+      grid-gap: 0;
+
+      &-user {
+        margin-left: 10px;
+      }
+    }
   }
 
   &__nav {
@@ -98,6 +113,10 @@
   &__logo {
     display: block;
     margin-right: 54px;
+
+    @include iframe-vertical {
+      margin-right: auto;
+    }
 
     img {
       display: block;
@@ -137,6 +156,12 @@
   }
 }
 
+@include b(1650) {
+  .rubic-header__nav {
+    width: 610px;
+  }
+}
+
 @include b($desktop) {
   .rubic-header {
     padding: 21px 20px 19px;
@@ -146,6 +171,12 @@
     &__login,
     &__nav {
       display: none;
+    }
+
+    &__profile-user {
+      @include iframe {
+        display: block;
+      }
     }
 
     &__logo {
@@ -178,24 +209,34 @@
   }
 }
 
+.rubic-header {
+  @include iframe-vertical {
+    &__logo {
+      img {
+        width: 80px;
+      }
+    }
+  }
+}
 
-.harmony-banner {
+
+.banner {
   width: 100%;
-  height: 30px;
+  min-height: 30px;
 
   color: white;
   font-size: 16px;
   line-height: 30px;
   text-align: center;
 
-  background-color: #0f809c;
+  background-color: rgba(51, 86, 51, 0.8);
+  backdrop-filter: blur(10px);
 
-  a {
-    color: white;
-    text-decoration: underline;
+  @include b($mobile-md) {
+    font-size: 13px;
   }
 
-  @include b($mobile-sm) {
-    font-size: 13px;
+  a {
+    cursor: pointer;
   }
 }

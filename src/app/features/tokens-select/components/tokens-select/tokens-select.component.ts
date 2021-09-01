@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -19,6 +19,8 @@ import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, mapTo } from 'rxjs/operators';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
@@ -33,7 +35,7 @@ export class TokensSelectComponent implements OnInit {
 
   private readonly pageSize: number;
 
-  public tokens: BehaviorSubject<AvailableTokenAmount[]>;
+  public tokens: Observable<AvailableTokenAmount[]>;
 
   public customToken: AvailableTokenAmount;
 
@@ -44,6 +46,8 @@ export class TokensSelectComponent implements OnInit {
   public loading = false;
 
   public idPrefix: string;
+
+  public prevSelectedToken: TokenAmount;
 
   private _blockchain = BLOCKCHAIN_NAME.ETHEREUM;
 
@@ -89,7 +93,7 @@ export class TokensSelectComponent implements OnInit {
     private readonly context: TuiDialogContext<
       AvailableTokenAmount,
       {
-        tokens: BehaviorSubject<AvailableTokenAmount[]>;
+        tokens: Observable<AvailableTokenAmount[]>;
         formType: 'from' | 'to';
         currentBlockchain: BLOCKCHAIN_NAME;
         form: FormGroup<ISwapFormInput>;
@@ -110,16 +114,13 @@ export class TokensSelectComponent implements OnInit {
     this.form = context.data.form;
     this.allowedBlockchains = context.data.allowedBlockchains;
     this.idPrefix = context.data.idPrefix;
+    this.prevSelectedToken = this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
 
     this.blockchain = context.data.currentBlockchain;
   }
 
   ngOnInit() {
-    this.tokensService.tokensNetworkState.subscribe(el => {
-      this.tokensNetworkState = el[TO_BACKEND_BLOCKCHAINS[this.blockchain]];
-      this.updateTokensList();
-      this.cdr.detectChanges();
-    });
+    this.updateTokensList();
   }
 
   close() {
@@ -210,12 +211,20 @@ export class TokensSelectComponent implements OnInit {
           amount,
           price: 0,
           usedInIframe: true,
-          available: !oppositeToken || this.blockchain === oppositeToken.blockchain
+          available:
+            !oppositeToken ||
+            this.blockchain === oppositeToken.blockchain ||
+            this.allowInCrossChain(blockchainToken.blockchain, oppositeToken.blockchain)
         };
 
         this.cdr.markForCheck();
       }
     }
+  }
+
+  private allowInCrossChain(fromBlockchain, toBlockchain): boolean {
+    const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
+    return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
   }
 
   private fetchTokenImage(token: BlockchainToken): Promise<string> {
@@ -247,8 +256,8 @@ export class TokensSelectComponent implements OnInit {
       page,
       150,
       () => {
-        this.tokensNetworkState =
-          this.tokensService.tokensNetworkState[TO_BACKEND_BLOCKCHAINS[this.blockchain]];
+        // this.tokensNetworkState =
+        //   this.tokensService.tokensNetworkState[TO_BACKEND_BLOCKCHAINS[this.blockchain]];
       }
     );
   }

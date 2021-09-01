@@ -4,7 +4,7 @@
       [loading]="loading"
       formType="to"
       [tokens]="tokens"
-      [formService]="formService"
+      [formService]="swapFormService"
     ></app-rubic-tokens>
     <app-amount-estimated
       [formService]="swapFormService"
@@ -28,6 +28,7 @@
       ></app-swap-button>
     </div>
     <app-terms-n-conditions-container
+      *noFrame
       [whatIsBlockchain]="whatIsBlockchain"
       [toWalletAddress]="toWalletAddress"
       [isBridgeSupported]="isBridgeSupported"

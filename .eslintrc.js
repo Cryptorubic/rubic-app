@@ -3,6 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts'],
+      plugins: ['unused-imports'],
       parserOptions: {
         project: ['tsconfig.*?.json', 'e2e/tsconfig.e2e.json'],
         tsconfigRootDir: __dirname,
@@ -21,7 +22,9 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'no-inferrable-types': 'off',
         '@typescript-eslint/no-explicit-any': 2,
-        '@typescript-eslint/no-unused-vars': [
+        '@typescript-eslint/no-unused-vars': 'off',
+        'unused-imports/no-unused-imports': 'error',
+        'unused-imports/no-unused-vars': [
           'error',
           {
             vars: 'all',
@@ -35,7 +38,7 @@ module.exports = {
         '@angular-eslint/no-input-rename': 'off',
         'class-methods-use-this': 'off',
         complexity: ['error', 20],
-        eqeqeq: ['error', 'always', {"null": "ignore"}],
+        eqeqeq: ['error', 'always', { null: 'ignore' }],
         'no-magic-numbers': 'off',
         '@typescript-eslint/naming-convention': [
           'error',
@@ -62,10 +65,10 @@ module.exports = {
         'no-console': [
           'warn',
           {
-            allow: ['debug', 'error', 'info']
+            allow: ['debug', 'error', 'info', 'warn']
           }
         ],
-        'no-empty': ["error", { "allowEmptyCatch": true }],
+        'no-empty': ['error', { allowEmptyCatch: true }],
         '@typescript-eslint/return-await': 'off',
         'no-continue': 'off'
       }

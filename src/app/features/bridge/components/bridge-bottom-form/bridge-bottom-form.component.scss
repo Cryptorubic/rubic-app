@@ -1,9 +1,17 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@import 'src/styles';
 
 .bridge-bottom-form {
   display: flex;
   flex-direction: column;
+
+  @include iframe-horizontal {
+    flex-direction: row;
+  }
+
+  @include iframe-vertical {
+    justify-content: space-between;
+    height: 212px;
+  }
 
   &__container {
     display: flex;
@@ -14,6 +22,35 @@
 
     background-color: var(--main-background);
     border-radius: 0 0 14px 14px;
+
+    @include iframe-horizontal {
+      position: relative;
+
+      flex-direction: row-reverse;
+      align-items: center;
+      width: $iframe-horizontal-input-width;
+      height: 50px;
+      min-height: unset;
+      padding: 0 7px 0 16px;
+
+      border-radius: 10px;
+    }
+
+    @include iframe-horizontal-light {
+      background-color: var(--rubic-base-14);
+    }
+
+    @include iframe-vertical {
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 0;
+
+      background-color: transparent;
+
+      app-rubic-tokens {
+        margin-bottom: 10px;
+      }
+    }
 
     @include b($mobile-md) {
       height: auto;
@@ -27,8 +64,24 @@
   &__footer {
     margin-top: 16px;
 
+    @include iframe-horizontal {
+      margin-top: 0;
+      margin-left: 12px;
+    }
+
+    @include iframe-vertical {
+      margin-top: 30px;
+      padding: 0;
+    }
+
     @include b($mobile-md) {
       padding: 15px 20px 0;
+    }
+  }
+
+  &__button {
+    @include iframe-horizontal {
+      width: 180px;
     }
   }
 }

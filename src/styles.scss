@@ -11,7 +11,7 @@
 @import 'scss/elements/dropdown-labels';
 
 /* Global */
-@import 'scss/livechat';
+@import 'scss/carrot-quest';
 @import 'scss/new-ui';
 
 /* TaigaUI custom styles */
@@ -70,7 +70,7 @@ button {
   border: none;
 }
 
-main.main-content {
+mainiframeSettingsFormcontent {
   width: 100%;
   max-width: 1440px;
   padding: 0 20px 60px;
@@ -169,6 +169,10 @@ tui-dropdown-box {
   &_no-transition {
     transition: none;
   }
+}
+
+body.default-iframe-background {
+  background: linear-gradient(45deg, #4aa956 20%, white);
 }
 
 @include b($mobile-md) {

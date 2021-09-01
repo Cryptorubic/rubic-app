@@ -47,6 +47,7 @@ html.dark {
   --rubic-base-13: rgba(0, 0, 0, 0.35);
   --rubic-base-14: #2c2c2c;
   --rubic-base-15: white;
+  --rubic-base-16: white;
 
   --tui-base-01: rgba(0, 0, 0, 0.8);
   --tui-base-02: init;
@@ -73,6 +74,10 @@ html.dark {
 
   body {
     background: transparent;
+
+    &.default-iframe-background {
+      background: linear-gradient(45deg, black, #4aa956) !important;
+    }
 
     .sort-by-dropdown {
       --tui-base-02: var(--main-form-background);

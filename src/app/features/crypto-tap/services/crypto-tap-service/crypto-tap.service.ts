@@ -74,8 +74,16 @@ export class CryptoTapService {
   public setBestRateInfo() {
     const nativeDecimals = 18;
     forkJoin([
-      this.httpService.get(`estimate_amount/`, { fsym: 'ETH', tsym: 'BNB' }, this.baseApiUrl),
-      this.httpService.get(`estimate_amount/`, { fsym: 'ETH', tsym: 'MATIC' }, this.baseApiUrl)
+      this.httpService.get<EstimatedAmountResponse>(
+        `estimate_amount/`,
+        { fsym: 'ETH', tsym: 'BNB' },
+        this.baseApiUrl
+      ),
+      this.httpService.get<EstimatedAmountResponse>(
+        `estimate_amount/`,
+        { fsym: 'ETH', tsym: 'MATIC' },
+        this.baseApiUrl
+      )
     ]).subscribe(([bscResponse, polygonResponse]) => {
       this._fullPriceFeeInfo$.next({
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BigNumber(bscResponse.fee_amount).div(

@@ -14,7 +14,42 @@
     align-items: flex-start;
   }
 
+  @include iframe-vertical {
+
+    align-items: flex-start;
+    max-width: unset;
+
+    &_hidden-iframe-stub {
+      height: 50px;
+
+      background-color: var(--main-background);
+      border-radius: 10px;
+    }
+  }
+
+  @include iframe-vertical-light {
+    &_hidden-iframe-stub {
+      background-color: var(--rubic-base-14);
+    }
+  }
+
+  &__blockchain-and-value {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+
+    app-iframe-blockchain-indicator {
+      margin-right: 15px;
+    }
+
+    /* stylelint-disable */
+    @include iframe-horizontal {
+      margin-bottom: 0;
+    }
+  }
+
   &__usd-container {
+    @include iframe-card;
     display: inline-flex;
     float: right;
 
@@ -27,8 +62,26 @@
     text-align: right;
     text-overflow: ellipsis;
 
+    @include iframe-horizontal {
+      position: absolute;
+      bottom: -33px;
+      left: 0;
+
+      span {
+        margin-left: 0;
+      };
+    }
+
+    @include iframe-vertical {
+      width: fit-content;
+    }
+
     span {
       margin-left: 10px;
+
+      @include iframe-vertical {
+        margin-left: 0;
+      }
     }
 
     &_placeholder {
@@ -59,12 +112,69 @@
 
     text-align: right;
 
+    @include iframe-horizontal {
+      margin-bottom: 0;
+
+      font-size: 20px;
+      text-align: left;
+    }
+
+    @include iframe-vertical {
+      width: 100%;
+      height: 50px;
+      padding-left: 16px;
+
+      color: var(--form-bright-text-color);
+      font-size: 20px;
+      line-height: 50px;
+      text-align: start;
+
+      background-color: var(--main-background);
+      border-radius: 10px;
+    }
+
+    @include iframe-vertical-light {
+      background-color: var(--rubic-base-14);
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
 
+    &_error {
+      display: flex;
+
+      height: initial;
+
+      font-weight: 300;
+      font-size: 24px;
+      letter-spacing: 2px;
+
+      @include b($mobile-sm) {
+        font-size: 16px;
+      }
+    }
+
     &_placeholder {
       color: rgb(117, 117, 117);
+    }
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+
+    cursor: pointer;
+
+    &_error {
+      float: right;
+
+      ::ng-deep {
+        svg path {
+          fill: $rubic-warning;
+        }
+      }
     }
   }
 

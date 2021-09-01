@@ -7,11 +7,13 @@ import {
   SimpleChanges,
   OnChanges,
   ViewChild,
-  AfterViewInit
+  AfterViewInit,
+  ChangeDetectorRef
 } from '@angular/core';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { debounceTime, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tokens-list',
@@ -22,9 +24,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 export class TokensListComponent implements OnChanges, AfterViewInit {
   @Input() tokens: AvailableTokenAmount[] = [];
 
-  @Input() tokensNetworkState: { count: number; page: number };
-
-  @Input() lastPage: number;
+  @Input() prevSelectedToken: TokenAmount;
 
   @Output() tokenSelect = new EventEmitter<AvailableTokenAmount>();
 
@@ -34,22 +34,29 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   public hintsShown: boolean[];
 
-  constructor() {}
+  public get noFrameLink(): string {
+    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+  }
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private readonly queryParamsService: QueryParamsService
+  ) {}
 
   public ngAfterViewInit(): void {
     this.virtualScroll.renderedRangeStream
-      .pipe(
-        debounceTime(500),
-        filter(el => {
-          const endOfList = el.end > this.tokens.length - 50;
-          const shouldFetch = this.tokensNetworkState
-            ? this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150)
-            : true;
-          return endOfList && shouldFetch;
-        })
-      )
+      // .pipe(
+      //   debounceTime(500),
+      //   filter(el => {
+      //     const endOfList = el.end > this.tokens.length - 50;
+      //     const shouldFetch = this.tokensNetworkState
+      //       ? this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150)
+      //       : true;
+      //     return endOfList && shouldFetch;
+      //   })
+      // )
       .subscribe(() => {
-        this.pageUpdate.emit(this.tokensNetworkState.page + 1);
+        // this.pageUpdate.emit(this.tokensNetworkState.page + 1);
       });
   }
 
@@ -62,7 +69,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  public onTokenSelect(token: AvailableTokenAmount): void {
+  onTokenSelect(token: AvailableTokenAmount) {
     if (token.available) {
       this.tokenSelect.emit(token);
     }

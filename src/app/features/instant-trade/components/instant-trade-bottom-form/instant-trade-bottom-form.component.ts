@@ -17,7 +17,7 @@ import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constant
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
-import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -31,16 +31,18 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { filter, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -52,24 +54,29 @@ export interface CalculationResult {
   selector: 'app-instant-trade-bottom-form',
   templateUrl: './instant-trade-bottom-form.component.html',
   styleUrls: ['./instant-trade-bottom-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   @Input() onRefreshTrade: Subject<void>;
-
-  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
 
-  @Input() formService: FormService;
+  @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
+  public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
+
+  @Output() maxGasLimit = new EventEmitter<BigNumber>();
+
   private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
 
-  public readonly onCalculateTrade: Subject<'normal' | 'hidden'>;
+  private hiddenDataAmounts$: BehaviorSubject<
+    { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+  >;
 
   private providerControllers: ProviderControllerData[];
 
@@ -81,7 +88,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public fromToken: TokenAmount;
 
-  private toToken: TokenAmount;
+  public toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
@@ -98,17 +105,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private settingsForm: ItSettingsForm;
 
-  private formChangesSubscription$: Subscription;
-
-  private settingsFormSubscription$: Subscription;
-
-  private refreshTradeSubscription$: Subscription;
-
-  private userSubscription$: Subscription;
-
   private calculateTradeSubscription$: Subscription;
 
   private hiddenCalculateTradeSubscription$: Subscription;
+
+  public isIframe$: Observable<boolean>;
+
+  public TRADE_STATUS = TRADE_STATUS;
 
   get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
@@ -136,10 +139,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  private hiddenDataAmounts$: BehaviorSubject<
-    { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
-  >;
-
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
@@ -149,10 +148,12 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly web3PublicService: Web3PublicService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
-    private readonly counterNotificationsService: CounterNotificationsService
+    private readonly counterNotificationsService: CounterNotificationsService,
+    iframeService: IframeService,
+    private readonly destroy$: TuiDestroyService
   ) {
-    this.unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
-    this.onCalculateTrade = new Subject<'normal' | 'hidden'>();
+    this.isIframe$ = iframeService.isIframe$;
+    this.onCalculateTrade$ = new Subject<'normal' | 'hidden'>();
     this.hiddenDataAmounts$ = new BehaviorSubject<
       { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
     >([]);
@@ -163,43 +164,46 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.setupHiddenCalculatingTrades();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.formChangesSubscription$ = this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => this.setupSwapForm(form));
+    this.swapFormService.inputValueChanges
+      .pipe(
+        startWith(this.swapFormService.inputValue),
+        distinctUntilChanged((prev, next) => {
+          return (
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            prev.fromToken?.address === next.fromToken?.address &&
+            prev.toToken?.address === next.toToken?.address &&
+            prev.fromAmount === next.fromAmount
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(form => {
+        this.setupSwapForm(form);
+      });
 
-    this.settingsFormSubscription$ = this.settingsService.instantTradeValueChanges
-      .pipe(startWith(this.settingsService.instantTradeValue))
+    this.settingsService.instantTradeValueChanges
+      .pipe(startWith(this.settingsService.instantTradeValue), takeUntil(this.destroy$))
       .subscribe(form => this.setupSettingsForm(form));
 
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-      if (user?.address) {
-        this.conditionalCalculate();
-      }
-    });
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (user?.address) {
+          this.conditionalCalculate();
+        }
+      });
 
-    this.refreshTradeSubscription$ = this.onRefreshTrade.subscribe(() =>
-      this.conditionalCalculate()
-    );
+    this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
   }
 
   ngOnDestroy() {
-    this.formChangesSubscription$.unsubscribe();
-    this.settingsFormSubscription$.unsubscribe();
-    this.userSubscription$.unsubscribe();
-    this.refreshTradeSubscription$.unsubscribe();
+    this.calculateTradeSubscription$.unsubscribe();
+    this.hiddenCalculateTradeSubscription$.unsubscribe();
   }
 
   private setupSwapForm(form: SwapFormInput): void {
-    if (
-      this.currentBlockchain === form.fromBlockchain &&
-      this.fromAmount &&
-      this.fromAmount.eq(form.fromAmount) &&
-      this.tokensService.isOnlyBalanceUpdated(this.fromToken, form.fromToken) &&
-      this.tokensService.isOnlyBalanceUpdated(this.toToken, form.toToken)
-    ) {
-      return;
-    }
-
     this.fromAmount = form.fromAmount;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
@@ -291,7 +295,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (fromBlockchain !== toBlockchain) {
       return;
     }
-    if (this.unsupportedItNetworks.includes(toBlockchain)) {
+    if (!InstantTradeService.isSupportedBlockchain(toBlockchain)) {
       this.errorService.catch(new NotSupportedItNetwork());
       this.cdr.detectChanges();
       return;
@@ -304,9 +308,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { autoRefresh } = this.settingsService.settingsForm.controls.INSTANT_TRADE.value;
+    const { autoRefresh } = this.settingsService.instantTradeValue;
     const haveHiddenCalc = this.hiddenDataAmounts$.value.length > 0;
-    this.onCalculateTrade.next(type || (autoRefresh || !haveHiddenCalc ? 'normal' : 'hidden'));
+    this.onCalculateTrade$.next(type || (autoRefresh || !haveHiddenCalc ? 'normal' : 'hidden'));
   }
 
   private setupCalculatingTrades(): void {
@@ -314,7 +318,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.calculateTradeSubscription$ = this.onCalculateTrade
+    this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         filter(el => {
           return el === 'normal';
@@ -344,6 +348,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
           return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
             map(([approveData, tradeData]) => {
+              this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
+
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
                 (tradeData as CalculationResult[]).map((trade, index) => {
@@ -372,8 +378,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (this.hiddenCalculateTradeSubscription$) {
       return;
     }
-
-    this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade
+    this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
@@ -539,6 +544,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
   }
 
+  public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {
+    return tradeData.reduce((maxGas, trade) => {
+      if (trade.status === 'fulfilled') {
+        const providerGas = new BigNumber(trade.value.gasFeeInEth);
+        return providerGas.gt(maxGas) ? providerGas : maxGas;
+      }
+      return maxGas;
+    }, new BigNumber(0));
+  }
+
   private setProviderState(
     tradeStatus: TRADE_STATUS,
     providerIndex: number,
@@ -640,7 +655,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       });
 
       this.counterNotificationsService.updateUnread();
-      this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateUserTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();

@@ -134,7 +134,10 @@
               }}</span>
               <div class="token-info">
                 <div class="img-container">
-                  <img [src]="trade.fromToken.image" alt="from token" />
+                  <img
+                    [src]="trade.fromToken.image || 'assets/images/icons/coins/empty.svg'"
+                    alt="from token"
+                  />
                 </div>
                 {{ trade.fromToken.symbol }}
               </div>
@@ -148,7 +151,10 @@
               }}</span>
               <div class="token-info">
                 <div class="img-container">
-                  <img [src]="trade.toToken.image" alt="to token" />
+                  <img
+                    [src]="trade.toToken.image || 'assets/images/icons/coins/empty.svg'"
+                    alt="to token"
+                  />
                 </div>
                 {{ trade.toToken.symbol }}
               </div>

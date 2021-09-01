@@ -3,16 +3,11 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
-  Inject,
-  Injector,
-  OnDestroy,
   OnInit
 } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { WalletsModalComponent } from 'src/app/core/header/components/header/components/wallets-modal/wallets-modal.component';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -23,8 +18,10 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
-import { Router } from '@angular/router';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
+import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -32,9 +29,10 @@ const DESKTOP_WIDTH = 1240;
   selector: 'app-my-trades',
   templateUrl: './my-trades.component.html',
   styleUrls: ['./my-trades.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class MyTradesComponent implements OnInit, OnDestroy {
+export class MyTradesComponent implements OnInit {
   public readonly tableData$ = new BehaviorSubject<TableRow[]>(undefined);
 
   public loading = true;
@@ -45,22 +43,17 @@ export class MyTradesComponent implements OnInit, OnDestroy {
 
   public walletAddress: string;
 
-  private userSubscription$: Subscription;
-
-  private isDataUpdatingSubscription$: Subscription;
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly myTradesService: MyTradesService,
     private readonly authService: AuthService,
     private readonly translate: TranslateService,
     private readonly errorsService: ErrorsService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
+    private readonly walletsModalService: WalletsModalService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private router: Router
+    private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
@@ -68,27 +61,26 @@ export class MyTradesComponent implements OnInit, OnDestroy {
     this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
     this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
-    this.userSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-      this.walletAddress = user?.address || null;
-      this.loading = true;
-      this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.walletAddress = user?.address || null;
+        this.loading = true;
+        this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
-      if (this.walletAddress) {
-        this.myTradesService.updateTableTrades().subscribe(trades => {
-          this.updateTableData(trades);
-        });
-      } else {
-        this.tableData$.next([]);
-        this.loading = false;
-        this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
-      }
+        if (this.walletAddress) {
+          this.myTradesService.updateTableTrades().subscribe(trades => {
+            this.updateTableData(trades);
+          });
+        } else {
+          this.tableData$.next([]);
+          this.loading = false;
+          this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
+        }
 
-      this.cdr.detectChanges();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription$.unsubscribe();
+        this.cdr.detectChanges();
+      });
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
@@ -122,9 +114,7 @@ export class MyTradesComponent implements OnInit, OnDestroy {
   }
 
   public showConnectWalletModal(): void {
-    this.dialogService
-      .open(new PolymorpheusComponent(WalletsModalComponent, this.injector), { size: 's' })
-      .subscribe();
+    this.walletsModalService.open$();
   }
 
   public receivePolygonBridgeTrade(trade: TableTrade): void {

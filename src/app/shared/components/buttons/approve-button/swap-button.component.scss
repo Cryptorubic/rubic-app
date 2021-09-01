@@ -1,4 +1,12 @@
+@import 'src/styles';
+
 $point-radius: 26px;
+
+:host {
+  @include iframe {
+    width: 180px;
+  }
+}
 
 .buttons {
   display: grid;
@@ -53,6 +61,33 @@ $point-radius: 26px;
   ::ng-deep {
     .content {
       color: rgb(216, 120, 121);
+    }
+  }
+}
+
+app-rubic-button[error=true] {
+  @include iframe {
+    ::ng-deep button span {
+      font-size: 14px;
+    }
+  }
+}
+
+app-rubic-button[rate-is-updated=true] {
+  @include iframe {
+    ::ng-deep button span {
+      font-size: 13px;
+      line-height: 16px;
+    }
+  }
+}
+
+.grey-background {
+  @include light-iframe {
+    ::ng-deep tui-wrapper {
+      color: var(--rubic-base-02);
+
+      background-color: var(--rubic-base-14);
     }
   }
 }

@@ -11,11 +11,12 @@ import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectE
 import { PrivateProvider } from '../private-provider';
 
 import { BlockchainsInfo } from '../../blockchain-info';
-import { WALLET_NAME } from '../../../../header/components/header/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models/providers';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;
 
+  /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
   private readonly core: any;
 
   private selectedAddress: string;

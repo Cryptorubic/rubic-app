@@ -42,6 +42,7 @@
               "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
             ],
+            "scripts": ["src/assets/analytics/carrot-quest.js"],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
@@ -65,6 +66,14 @@
                 }
               ]
             },
+            "prod-api": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod-api.ts"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -72,7 +81,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/carrot-quest.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -84,8 +93,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "6mb"
+                  "maximumWarning": "6mb",
+                  "maximumError": "8mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -111,8 +120,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "6mb"
+                  "maximumWarning": "6mb",
+                  "maximumError": "8mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -131,6 +140,12 @@
           "configurations": {
             "production": {
               "browserTarget": "rubic:build:production"
+            },
+            "dev2": {
+              "browserTarget": "rubic:build:dev2"
+            },
+            "prod-api": {
+              "browserTarget": "rubic:build:prod-api"
             }
           }
         },
@@ -178,13 +193,6 @@
             "production": {
               "devServerTarget": "rubic:serve:production"
             }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": ["**/node_modules/**"]
           }
         }
       }

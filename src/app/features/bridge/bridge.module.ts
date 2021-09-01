@@ -12,14 +12,12 @@ import { EthereumPolygonBridgeProviderService } from 'src/app/features/bridge/se
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
-import { BridgeBottomFormComponent } from './components/bridge-bottom-form/bridge-bottom-form.component';
-import { TermsNConditionsContainerComponent } from './components/bridge-bottom-form/components/terms-n-conditions-container/terms-n-conditions-container.component';
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
+import { BridgeBottomFormComponent } from './components/bridge-bottom-form/bridge-bottom-form.component';
 
 @NgModule({
   declarations: [
     BridgeBottomFormComponent,
-    TermsNConditionsContainerComponent,
     ReceiveWarningModalComponent,
     TrackTransactionModalComponent
   ],

@@ -6,6 +6,7 @@ import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefine
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
 
 @Injectable({
   providedIn: 'root'
@@ -34,9 +35,11 @@ export class ErrorsService {
       return;
     }
 
+    const isWarning = error instanceof RubicWarning;
+
     const options = {
-      label: this.translateService.instant('common.error'),
-      status: TuiNotification.Error,
+      label: this.translateService.instant(!isWarning ? 'common.error' : 'common.warning'),
+      status: !isWarning ? TuiNotification.Error : TuiNotification.Warning,
       data: {},
       autoClose: 7000
     };

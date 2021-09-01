@@ -1,8 +1,11 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokenPart } from './tokens';
+// @ts-ignore
+// eslint-disable-next-line import/extensions
 import { TradeData } from '../../components/tokens-table/models/tokens-table-data';
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export abstract class TokensTableService {
   protected readonly $dataSource: BehaviorSubject<TradeData[]>;
 
@@ -52,6 +55,7 @@ export abstract class TokensTableService {
     this.$filterToValue.next(value);
   }
 
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   public filterByToken(token: any, tokenType: TokenPart): void {
     const filterValue = token.option.value.toLowerCase();
     if (filterValue.length < 2) {

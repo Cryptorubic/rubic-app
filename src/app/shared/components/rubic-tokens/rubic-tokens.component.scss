@@ -1,8 +1,105 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
+:host {
+  @include iframe-vertical {
+    width: 100%;
+  }
+}
+
 .tokens {
   font-size: $rubic-font-size-01;
+
+  @include iframe-horizontal {
+    ::ng-deep app-rubic-button {
+      button,
+      tui-wrapper {
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  @include iframe-vertical {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+
+    ::ng-deep app-rubic-button {
+      button {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: unset !important;
+
+        span {
+          color: var(--rubic-base-02) !important;
+        }
+      }
+
+      tui-wrapper {
+        padding: 0 !important;
+
+        background: transparent !important;
+      }
+    }
+
+    &__image-container {
+      width: 28px;
+      height: 28px;
+
+      > img {
+        max-width: 28px;
+        max-height: 28px;
+      }
+    }
+
+    &__symbol,
+    &__inner-text {
+      padding-right: 15px;
+
+      font-size: 18px;
+
+      &::after {
+        position: relative;
+        top: -4px;
+        left: 10px;
+
+        display: inline-block;
+        padding: 4px;
+
+        border: solid var(--rubic-base-02);
+        border-width: 0 2px 2px 0;
+
+        transform: rotate(45deg);
+
+        content: '';
+      }
+    }
+
+    &_disabled {
+      .tokens__symbol,
+      .tokens__inner-text {
+        &::after {
+          display: none;
+        }
+      }
+
+      .tokens__inner {
+        opacity: 0.5;
+      }
+    }
+
+    &__clear {
+      display: none;
+    }
+
+    &__clear-mobile {
+      position: relative;
+      top: 2px;
+
+      display: block !important;
+    }
+  }
 
   &__inner {
     display: flex;
@@ -119,6 +216,10 @@
 
   &__clear-mobile {
     display: none;
+
+    color: $rubic-primary;
+
+    background-color: transparent;
   }
 }
 
@@ -129,11 +230,11 @@
     justify-content: flex-start;
 
     border-radius: 0;
-    
+
     &__clear {
       display: none;
     }
-    
+
     &__clear-mobile {
       display: block;
       margin-top: 5px;

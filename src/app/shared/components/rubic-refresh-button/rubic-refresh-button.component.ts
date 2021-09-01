@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -11,6 +12,7 @@ import {
 } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 export enum REFRESH_BUTTON_STATUS {
   REFRESHING = 'refreshing',
@@ -30,7 +32,9 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   @Input() set loadingStatus(status: REFRESH_BUTTON_STATUS) {
     this.status = status;
     if (status === REFRESH_BUTTON_STATUS.STOPPED) {
-      this.setupTimer();
+      if (this.type === 'autoRefresh') {
+        this.setupTimer();
+      }
     } else {
       clearTimeout(this.timer);
       if (status === REFRESH_BUTTON_STATUS.REFRESHING) {
@@ -55,6 +59,8 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   get autoUpdate(): boolean {
     return this._autoUpdate;
   }
+
+  @Input() swapType: SWAP_PROVIDER_TYPE;
 
   @Output() onRefresh = new EventEmitter<void>();
 
@@ -86,7 +92,10 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
     return 'Refresh';
   }
 
-  constructor(private readonly settingsService: SettingsService) {
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly settingsService: SettingsService
+  ) {
     this.autoUpdate = false;
     this.imageUrl = 'assets/images/icons/reload.svg';
   }
@@ -117,12 +126,17 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   public mouseEnter(): void {
     if (this.type === 'autoRefresh') {
       this.stopAnimation = true;
-      if (this._autoUpdate) {
-        this.imageUrl = 'assets/images/icons/reload/pause.svg';
-      } else {
-        this.imageUrl = 'assets/images/icons/reload/play.svg';
-      }
+      this.updateImageOnEnter();
     }
+  }
+
+  private updateImageOnEnter(): void {
+    if (this._autoUpdate) {
+      this.imageUrl = 'assets/images/icons/reload/pause.svg';
+    } else {
+      this.imageUrl = 'assets/images/icons/reload/play.svg';
+    }
+    this.cdr.detectChanges();
   }
 
   public mouseLeave(): void {
@@ -132,8 +146,15 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public toggleClick(): void {
     if (this.type === 'autoRefresh') {
-      this.settingsService.settingsForm.controls.INSTANT_TRADE.patchValue({
-        autoRefresh: !this._autoUpdate
+      this._autoUpdate = !this._autoUpdate;
+      this.updateImageOnEnter();
+
+      const form =
+        this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+          ? this.settingsService.instantTrade
+          : this.settingsService.crossChainRouting;
+      form.patchValue({
+        autoRefresh: this._autoUpdate
       });
     }
     this.onRefresh.emit();

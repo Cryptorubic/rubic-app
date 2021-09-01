@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { coingeckoTestTokens } from 'src/test/tokens/coingecko-tokens';
+import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
@@ -11,24 +11,10 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import {
-  BackendBlockchain,
-  TO_BACKEND_BLOCKCHAINS
-} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-
-interface NetworkCountPage {
-  // @ts-ignore
-  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM]]: { count: number; page: number };
-  // @ts-ignore
-  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]]: { count: number; page: number };
-  // @ts-ignore
-  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON]]: { count: number; page: number };
-  // @ts-ignore
-  [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.HARMONY]]: { count: number; page: number };
-}
+import { BackendBlockchain } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Injectable({
   providedIn: 'root'
@@ -36,10 +22,14 @@ interface NetworkCountPage {
 export class TokensService {
   private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
 
-  public tokensNetworkState: BehaviorSubject<NetworkCountPage>;
+  private readonly _tokensRequestParameters = new Subject<Object>();
 
   get tokens(): Observable<List<TokenAmount>> {
     return this._tokens.asObservable();
+  }
+
+  set tokensRequestParameters(parameters: Object) {
+    this._tokensRequestParameters.next(parameters);
   }
 
   private userAddress: string;
@@ -53,33 +43,17 @@ export class TokensService {
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService
   ) {
-    this.tokensNetworkState = new BehaviorSubject<NetworkCountPage>({
-      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.ETHEREUM]]: {
-        count: 9999,
-        page: 1
-      },
-      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]]: {
-        count: 9999,
-        page: 1
-      },
-      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.POLYGON]]: {
-        count: 9999,
-        page: 1
-      },
-      [TO_BACKEND_BLOCKCHAINS[BLOCKCHAIN_NAME.HARMONY]]: {
-        count: 9999,
-        page: 1
-      }
-    });
-    this.tokensApiService.getTokensList().subscribe(
-      tokens => {
-        if (!this.isTestingMode) {
-          this.setDefaultTokenAmounts(tokens);
-          this.calculateUserTokensBalances();
-        }
-      },
-      err => console.error('Error retrieving tokens', err)
-    );
+    this._tokensRequestParameters
+      .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
+      .subscribe(
+        tokens => {
+          if (!this.isTestingMode) {
+            this.setDefaultTokenAmounts(tokens);
+            this.calculateUserTokensBalances();
+          }
+        },
+        err => console.error('Error retrieving tokens', err)
+      );
 
     this.authService.getCurrentUser().subscribe(user => {
       this.userAddress = user?.address;
@@ -93,6 +67,8 @@ export class TokensService {
         this.calculateUserTokensBalances();
       }
     });
+
+    this._tokensRequestParameters.next();
   }
 
   public setTokens(tokens: List<TokenAmount>): void {
@@ -149,6 +125,7 @@ export class TokensService {
           }))
           .toArray();
       }
+      return null;
     });
 
     tokensWithBalance.push(
@@ -206,8 +183,7 @@ export class TokensService {
   public fetchNetworkTokens(
     network: BackendBlockchain,
     page: number,
-    pageSize: number = 150,
-    callback: () => void
+    pageSize: number = 150
   ): void {
     this.tokensApiService
       .fetchSpecificBackendTokens({ network, page, pageSize })
@@ -218,13 +194,14 @@ export class TokensService {
         }))
       )
       .subscribe((tokens: { total: number; result: List<TokenAmount> }) => {
-        const value = {
-          ...this.tokensNetworkState.value,
-          [network]: { count: tokens.total, page }
-        };
-        this.tokensNetworkState.next(value);
-        this._tokens.next(this._tokens.value.concat(tokens.result));
-        callback();
+        this._tokens.next(tokens.result);
+        // const value = {
+        //   ...this.tokensNetworkState.value,
+        //   [network]: { count: tokens.total, page }
+        // };
+        // this.tokensNetworkState.next(value);
+        // this._tokens.next(this._tokens.value.concat(tokens.result));
+        // callback();
       });
   }
 }

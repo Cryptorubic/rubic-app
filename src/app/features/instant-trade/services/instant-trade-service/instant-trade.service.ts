@@ -23,17 +23,21 @@ import { SushiSwapEthService } from 'src/app/features/instant-trade/services/ins
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
-import { minGasPriceInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/minGasPriceInBlockchain';
 import { shouldCalculateGasInBlockchain } from 'src/app/features/instant-trade/services/instant-trade-service/constants/shouldCalculateGasInBlockchain';
+import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstantTradeService {
+  private static readonly unsupportedItNetworks: BLOCKCHAIN_NAME[] = [
+    BLOCKCHAIN_NAME.TRON,
+    BLOCKCHAIN_NAME.XDAI
+  ];
+
   private blockchainsProviders: Partial<
     {
       [blockchain in BLOCKCHAIN_NAME]: Partial<
@@ -45,6 +49,10 @@ export class InstantTradeService {
   >;
 
   private modalShowing: Subscription;
+
+  public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
+    return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
+  }
 
   constructor(
     // Providers start
@@ -67,7 +75,8 @@ export class InstantTradeService {
     private translateService: TranslateService,
     private notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector
+    @Inject(Injector) private injector: Injector,
+    private readonly successTxModalService: SuccessTxModalService
   ) {
     this.setBlockchainsProviders();
   }
@@ -125,13 +134,12 @@ export class InstantTradeService {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     const shouldCalculateGas = shouldCalculateGasInBlockchain[fromBlockchain];
-    const minGasPrice = minGasPriceInBlockchain[fromBlockchain];
 
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
     const providersDataPromises = providers.map(async (provider: ItProvider) =>
-      provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas, minGasPrice)
+      provider.calculateTrade(fromToken, fromAmount, toToken, shouldCalculateGas)
     );
     return Promise.allSettled(providersDataPromises);
   }
@@ -229,7 +237,6 @@ export class InstantTradeService {
 
   public async approve(provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade): Promise<void> {
     try {
-      const minGasPrice = minGasPriceInBlockchain[trade.blockchain];
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
         {
@@ -242,14 +249,14 @@ export class InstantTradeService {
               }
             );
           }
-        },
-        minGasPrice
+        }
       );
       this.modalShowing.unsubscribe();
       this.notificationsService.show(
         this.translateService.instant('notifications.successApprove'),
         {
-          status: TuiNotification.Success
+          status: TuiNotification.Success,
+          autoClose: 15000
         }
       );
     } catch (err) {
@@ -268,12 +275,7 @@ export class InstantTradeService {
     );
 
     if (window.location.pathname === '/') {
-      this.dialogService
-        .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
-          size: 's',
-          data: { idPrefix: '' }
-        })
-        .subscribe();
+      this.successTxModalService.open();
     }
   }
 }

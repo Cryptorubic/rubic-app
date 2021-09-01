@@ -1,62 +1,115 @@
-<div class="swaps-form">
-  <header class="swaps-form__header">
-    <h1 class="swaps-form__title">
-      {{ (isInstantTrade ? 'instantTrades.title' : 'bridgePage.title') | translate }}
-    </h1>
-    <app-rubic-refresh-button
-      *ngIf="isInstantTrade && allowTrade && allowRefresh"
-      class="swaps-form__refresh"
-      type="autoRefresh"
-      (onRefresh)="onRefreshTrade.next()"
-      [loadingStatus]="loadingStatus"
-      [autoUpdate]="autoRefresh"
-    ></app-rubic-refresh-button>
+<ng-container>
+  <div class="swaps-form">
+    <header *noFrame class="swaps-form__header">
+      <h1 class="swaps-form__title">
+        {{
+          (isInstantTrade ? 'instantTrades.title' : isBridge ? 'bridgePage.title' : 'Cross-Chain')
+            | translate
+        }}
+      </h1>
+      <app-rubic-refresh-button
+        class="swaps-form__refresh"
+        *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade && allowRefresh"
+        type="autoRefresh"
+        (onRefresh)="onRefreshTrade.next()"
+        [loadingStatus]="loadingStatus"
+        [autoUpdate]="autoRefresh"
+        [swapType]="swapType"
+      ></app-rubic-refresh-button>
 
-    <app-gas-indicator *ngIf="isMobile$ | async"></app-gas-indicator>
-    <div class="swaps-form__settings">
-      <app-settings-container></app-settings-container>
-    </div>
-  </header>
+      <app-gas-indicator *ngIf="isMobile$ | async"></app-gas-indicator>
+      <div class="swaps-form__settings">
+        <app-settings-container></app-settings-container>
+      </div>
+    </header>
 
-  <main class="swaps-form__content">
-    <app-swaps-header
-      [fromBlockchain]="fromBlockchain"
-      [toBlockchain]="toBlockchain"
-      [swapType]="swapType"
-    ></app-swaps-header>
+    <!-- TODO: refactor update button, move subscription into service -->
+    <ng-container *onlyFrame>
+      <app-rubic-refresh-button
+        *ngIf="isInstantTrade && allowTrade && allowRefresh"
+        style="display: none"
+        type="autoRefresh"
+        (onRefresh)="onRefreshTrade.next()"
+        [loadingStatus]="loadingStatus"
+        [autoUpdate]="autoRefresh"
+      ></app-rubic-refresh-button>
+    </ng-container>
 
-    <app-token-amount-input
-      [token]="selectedToken.from"
-      [amount]="selectedFromAmount"
-      (amountChange)="onTokenInputAmountChange($event)"
-      [loading]="isLoading"
-      [tokens]="availableTokens['from']"
-      [formService]="swapFormService"
-    ></app-token-amount-input>
+    <main class="swaps-form__content">
+      <app-swaps-header
+        *noFrame
+        [fromBlockchain]="fromBlockchain"
+        [toBlockchain]="toBlockchain"
+        [swapType]="swapType"
+      ></app-swaps-header>
 
-    <div class="swaps-form__delimiter">
-      <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
-    </div>
+      <div class="swaps-form__block">
+        <app-iframe-blockchain-indicator
+          [blockchain]="fromBlockchain"
+          *onlyFrame="'horizontal'"
+        ></app-iframe-blockchain-indicator>
 
-    <app-instant-trade-bottom-form
-      *ngIf="isInstantTrade"
-      [onRefreshTrade]="onRefreshTrade"
-      (onRefreshStatusChange)="loadingStatus = $event"
-      [loading]="isLoading"
-      [tokens]="availableTokens['to']"
-      [formService]="swapFormService"
-      (allowRefreshChange)="allowRefresh = $event"
-    ></app-instant-trade-bottom-form>
+        <app-token-amount-input
+          *noFrame="'vertical'"
+          [loading]="isLoading"
+          [tokens]="availableTokens['from']"
+          [formService]="swapFormService"
+          [maxGasFee]="maxGasFee"
+        ></app-token-amount-input>
 
-    <app-bridge-bottom-form
-      *ngIf="!isInstantTrade"
-      [loading]="isLoading"
-      [tokens]="availableTokens['to']"
-      [formService]="swapFormService"
-    ></app-bridge-bottom-form>
-  </main>
-</div>
+        <app-vertical-iframe-token-amount-input
+          *onlyFrame="'vertical'"
+          [loading]="isLoading"
+          [tokens]="availableTokens['from']"
+        ></app-vertical-iframe-token-amount-input>
+      </div>
 
-<app-analytics-link [formService]="swapFormService"></app-analytics-link>
+      <div class="swaps-form__delimiter">
+        <app-rubic-switcher (onClick)="revert()"></app-rubic-switcher>
+      </div>
 
-<app-rubic-volume></app-rubic-volume>
+      <div class="swaps-form__block">
+        <app-iframe-blockchain-indicator
+          *onlyFrame="'horizontal'"
+          [blockchain]="toBlockchain"
+        ></app-iframe-blockchain-indicator>
+
+        <app-instant-trade-bottom-form
+          *ngIf="isInstantTrade"
+          [onRefreshTrade]="onRefreshTrade"
+          (onRefreshStatusChange)="loadingStatus = $event"
+          [loading]="isLoading"
+          [tokens]="availableTokens['to']"
+          (allowRefreshChange)="allowRefresh = $event"
+          (maxGasLimit)="maxGasFee = $event"
+        ></app-instant-trade-bottom-form>
+
+        <app-bridge-bottom-form
+          *ngIf="isBridge"
+          [loading]="isLoading"
+          [tokens]="availableTokens['to']"
+        ></app-bridge-bottom-form>
+
+        <app-cross-chain-routing-bottom-form
+          *ngIf="isCrossChainRouting"
+          [onRefreshTrade]="onRefreshTrade"
+          (onRefreshStatusChange)="loadingStatus = $event"
+          (tradeStatusChange)="tradeStatus = $event"
+          [loading]="isLoading"
+          [tokens]="availableTokens['to']"
+        ></app-cross-chain-routing-bottom-form>
+      </div>
+    </main>
+  </div>
+
+  <ng-container *noFrame>
+    <app-cross-chain-swap-info
+      *ngIf="isCrossChainRouting"
+      [tradeStatus]="tradeStatus"
+    ></app-cross-chain-swap-info>
+  </ng-container>
+
+  <app-analytics-link *noFrame [formService]="swapFormService"></app-analytics-link>
+
+  <app-rubic-volume *noFrame></app-rubic-volume>
+</ng-container>

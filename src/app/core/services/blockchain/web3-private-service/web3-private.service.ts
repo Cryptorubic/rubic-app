@@ -5,6 +5,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
+import { minGasPriceInBlockchain } from 'src/app/core/services/blockchain/constants/minGasPriceInBlockchain';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -46,6 +47,17 @@ export class Web3PrivateService {
     return err;
   }
 
+  private calculateGasPrice(gasPrice?: string): string | undefined {
+    const minGasPrice = minGasPriceInBlockchain[this.providerConnector.networkName];
+    if (!minGasPrice) {
+      return gasPrice;
+    }
+    if (!gasPrice) {
+      return minGasPrice;
+    }
+    return BigNumber.max(gasPrice, minGasPrice).toFixed();
+  }
+
   /**
    * @description sends ERC-20 tokens and resolve the promise when the transaction is included in the block
    * @param contractAddress address of the smart-contract corresponding to the token
@@ -62,6 +74,7 @@ export class Web3PrivateService {
     options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], contractAddress);
+    const gasPrice = this.calculateGasPrice(options.gasPrice || this.defaultMockGas);
 
     return new Promise((resolve, reject) => {
       contract.methods
@@ -70,7 +83,8 @@ export class Web3PrivateService {
           from: this.address,
           ...((options.gas || this.defaultMockGas) && {
             gas: options.gas || this.defaultMockGas
-          })
+          }),
+          ...(gasPrice && { gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
@@ -163,6 +177,8 @@ export class Web3PrivateService {
     value: BigNumber | string,
     options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
+    const gasPrice = this.calculateGasPrice(options.gasPrice || this.defaultMockGas);
+
     return new Promise((resolve, reject) => {
       this.web3.eth
         .sendTransaction({
@@ -173,7 +189,7 @@ export class Web3PrivateService {
             gas: options.gas || this.defaultMockGas
           }),
           ...(options.data && { data: options.data }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice })
+          ...(gasPrice && { gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
@@ -197,13 +213,15 @@ export class Web3PrivateService {
     value: string | BigNumber,
     options: TransactionOptions = {}
   ): Promise<string> {
+    const gasPrice = this.calculateGasPrice(options.gasPrice || this.defaultMockGas);
+
     return new Promise((resolve, reject) => {
       this.web3.eth
         .sendTransaction({
           from: this.address,
           to: toAddress,
           value: options.inWei ? value.toString() : this.ethToWei(value),
-          ...(this.defaultMockGas && { gas: this.defaultMockGas })
+          ...(gasPrice && { gasPrice })
         })
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
@@ -235,6 +253,7 @@ export class Web3PrivateService {
       rawValue = value;
     }
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
+    const gasPrice = this.calculateGasPrice(options.gasPrice || this.defaultMockGas);
 
     return new Promise((resolve, reject) => {
       contract.methods
@@ -244,7 +263,7 @@ export class Web3PrivateService {
           ...((options.gas || this.defaultMockGas) && {
             gas: options.gas || this.defaultMockGas
           }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice })
+          ...(gasPrice && { gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
@@ -273,6 +292,7 @@ export class Web3PrivateService {
     options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
     try {
       await contract.methods[methodName](...methodArguments).call({
         from: this.address,
@@ -314,6 +334,7 @@ export class Web3PrivateService {
     options: TransactionOptions = {}
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+    const gasPrice = this.calculateGasPrice(options.gasPrice || this.defaultMockGas);
 
     return new Promise((resolve, reject) => {
       contract.methods[methodName](...methodArguments)
@@ -323,7 +344,7 @@ export class Web3PrivateService {
           ...((options.gas || this.defaultMockGas) && {
             gas: options.gas || this.defaultMockGas
           }),
-          ...(options.gasPrice && { gasPrice: options.gasPrice })
+          ...(gasPrice && { gasPrice })
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)

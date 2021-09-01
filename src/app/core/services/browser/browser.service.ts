@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
 import { WINDOW } from 'src/app/core/models/window';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ export class BrowserService {
 
   public get currentBrowser(): BROWSER {
     switch (true) {
-      case this.window.innerWidth >= this.mobileBreakpoint:
+      case this.window.innerWidth >= this.mobileBreakpoint ||
+        (this.iframeService.isIframe && this.iframeService.device === 'desktop'):
         return BROWSER.DESKTOP;
       case !this.window.ethereum:
         return BROWSER.MOBILE;
@@ -24,5 +26,8 @@ export class BrowserService {
     }
   }
 
-  constructor(@Inject(WINDOW) private window: Window) {}
+  constructor(
+    @Inject(WINDOW) private window: Window,
+    private readonly iframeService: IframeService
+  ) {}
 }

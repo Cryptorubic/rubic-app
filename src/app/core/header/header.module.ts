@@ -13,14 +13,14 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
+import { IframeLogoutButtonComponent } from 'src/app/core/header/components/header/components/iframe-logout-button/iframe-logout-button.component';
 import { TuiBadgeModule } from '@taiga-ui/kit';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
-import { WalletsModalComponent } from './components/header/components/wallets-modal/wallets-modal.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
-import { CoinbaseConfirmModalComponent } from './components/header/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
+import { IframeSettingsButtonComponent } from './components/header/components/iframe-settings-button/iframe-settings-button.component';
 
 @NgModule({
   declarations: [
@@ -28,9 +28,9 @@ import { CoinbaseConfirmModalComponent } from './components/header/components/co
     LoginButtonComponent,
     UserProfileComponent,
     MobileMenuTogglerComponent,
-    WalletsModalComponent,
     RubicMenuComponent,
-    CoinbaseConfirmModalComponent
+    IframeLogoutButtonComponent,
+    IframeSettingsButtonComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +47,6 @@ import { CoinbaseConfirmModalComponent } from './components/header/components/co
     TuiGroupModule,
     TuiBadgeModule
   ],
-  exports: [HeaderComponent, LoginButtonComponent],
-  entryComponents: [WalletsModalComponent]
+  exports: [HeaderComponent, LoginButtonComponent]
 })
 export class HeaderModule {}
