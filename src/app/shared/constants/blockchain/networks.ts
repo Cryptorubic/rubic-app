@@ -44,7 +44,7 @@ export default [
     scannerUrl: 'https://polygonscan.com',
     rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     additionalRpcLink:
-      'https://polygon.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+      'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.POLYGON,
