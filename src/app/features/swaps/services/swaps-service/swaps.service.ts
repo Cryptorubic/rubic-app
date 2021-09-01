@@ -10,6 +10,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { BridgeToken, BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
 @Injectable()
@@ -45,7 +46,8 @@ export class SwapsService {
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly bridgeService: BridgeService,
-    private tokensService: TokensService
+    private tokensService: TokensService,
+    private readonly iframeService: IframeService
   ) {
     this.subscribeOnTokens();
     this.subscribeOnForm();
@@ -58,10 +60,10 @@ export class SwapsService {
     ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts]) => {
       const updatedTokenAmounts = tokenAmounts.toArray();
 
-      function getUpdatedBridgeToken(
+      const getUpdatedBridgeToken = (
         blockchain: BLOCKCHAIN_NAME,
         bridgeTokenPair: BridgeTokenPair
-      ): BridgeToken {
+      ): BridgeToken => {
         const bridgeToken = bridgeTokenPair.tokenByBlockchain[blockchain];
         const foundTokenAmount = tokenAmounts.find(
           tokenAmount =>
@@ -77,6 +79,10 @@ export class SwapsService {
               tokenAmount.address.toLowerCase() === bridgeToken.address.toLowerCase()
           )
         ) {
+          if (this.iframeService.isIframe) {
+            return null;
+          }
+
           updatedTokenAmounts.push({
             ...bridgeTokenPair.tokenByBlockchain[blockchain],
             image: bridgeTokenPair.image,
@@ -91,10 +97,10 @@ export class SwapsService {
           ...foundTokenAmount,
           ...bridgeTokenPair.tokenByBlockchain[blockchain]
         };
-      }
+      };
 
-      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray.map(
-        tokenPairsByBlockchains => {
+      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray
+        .map(tokenPairsByBlockchains => {
           const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
           return {
             ...tokenPairsByBlockchains,
@@ -106,8 +112,12 @@ export class SwapsService {
               }
             }))
           };
-        }
-      );
+        })
+        .filter(item =>
+          item.tokenPairs.every(pair =>
+            Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
+          )
+        );
 
       this._bridgeTokenPairsByBlockchainsArray.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)
