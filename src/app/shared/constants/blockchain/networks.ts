@@ -7,7 +7,7 @@ export default [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://damp-misty-hill.quiknode.pro/c5c252ef9e1c07505eaf8109044b87b8e792f54c/',
+    rpcLink: 'https://damp-misty-hill.quiknode.pro/',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -22,8 +22,7 @@ export default [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink:
-      'https://damp-old-resonance.bsc.quiknode.pro/6b8be73cc041a07be145ddec1954fe3d6f21248d/',
+    rpcLink: 'https://damp-old-resonance.bsc.quiknode.pro/',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
