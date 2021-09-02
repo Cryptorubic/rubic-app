@@ -100,9 +100,7 @@ export class CryptoTapTokensService {
             .filter(
               token =>
                 supportedToBlockchains.includes(token.blockchain) &&
-                (this.web3PublicService[token.blockchain] as Web3Public)?.isNativeAddress(
-                  token.address
-                )
+                Web3Public.isNativeAddress(token.address)
             )
             .map(token => ({ ...token, available: true }))
             .toArray()

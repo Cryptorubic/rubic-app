@@ -115,7 +115,6 @@ export class CryptoTapService {
   }
 
   public createTrade(onTransactionHash: (hash: string) => void): Observable<TransactionReceipt> {
-    const web3Public: Web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
 
     const { fromToken, toToken } = this.cryptoTapFormService.commonTrade.controls.input.value;
@@ -129,7 +128,7 @@ export class CryptoTapService {
           return throwError(new UndefinedError());
         }
 
-        if (web3Public.isNativeAddress(fromToken.address)) {
+        if (Web3Public.isNativeAddress(fromToken.address)) {
           const estimatedGas = '120000';
           return this.web3PrivateService.executeContractMethod(
             this.contractAddress,
@@ -173,7 +172,7 @@ export class CryptoTapService {
     const { fromToken: token } = this.cryptoTapFormService.commonTrade.controls.input.value;
 
     const amountInWei = fromAmount.multipliedBy(10 ** token.decimals);
-    if (web3Public.isNativeAddress(token.address)) {
+    if (Web3Public.isNativeAddress(token.address)) {
       return of(false);
     }
     return from(web3Public.getAllowance(token.address, userAddress, this.contractAddress)).pipe(

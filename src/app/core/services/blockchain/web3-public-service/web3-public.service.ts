@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { tap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 import ConnectionLink from '../types/ConnectionLink';
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
@@ -13,6 +13,8 @@ import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.s
   providedIn: 'root'
 })
 export class Web3PublicService {
+  private readonly _nodesChecked$ = new BehaviorSubject<boolean>(false);
+
   private readonly connectionLinks: ConnectionLink[];
 
   constructor(
@@ -92,5 +94,25 @@ export class Web3PublicService {
       );
 
     forkJoin(web3List.map(checkNode$)).subscribe();
+  }
+
+  private addWeb3(rpcLink: string, blockchainName: BLOCKCHAIN_NAME) {
+    const web3Public = new Web3Public(
+      new Web3(rpcLink),
+      BlockchainsInfo.getBlockchainByName(blockchainName),
+      this.useTestingModeService
+    );
+
+    this[blockchainName] = new Proxy(web3Public, {
+      // eslint-disable-next-line consistent-return
+      get(target: Web3Public, prop) {
+        if (prop === 'healthCheck') {
+          return target[prop];
+        }
+
+        /*   if (typeof target === 'function') {
+        } */
+      }
+    });
   }
 }
