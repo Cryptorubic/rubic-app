@@ -312,7 +312,7 @@ export class Web3PrivateService {
         options
       );
     } catch (err) {
-      if (allowError(err)) {
+      if (allowError && allowError(err)) {
         return this.executeContractMethod(
           contractAddress,
           contractAbi,
