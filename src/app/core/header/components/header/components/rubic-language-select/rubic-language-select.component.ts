@@ -42,7 +42,7 @@ export class RubicLanguageSelectComponent {
     });
   }
 
-  private setActiveLanguage(event) {
+  private setActiveLanguage(event: Partial<LangChangeEvent>) {
     this.cdr.markForCheck();
     if (this.currentLanguage) {
       this.languagesList.filter(lang => {

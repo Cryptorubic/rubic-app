@@ -62,7 +62,7 @@ export class EthWethSwapProviderService {
     await web3Public.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount);
-    const swapMethod = web3Public.isNativeAddress(fromToken.address)
+    const swapMethod = Web3Public.isNativeAddress(fromToken.address)
       ? this.swapEthToWeth
       : this.swapWethToEth;
     return swapMethod.bind(this)(blockchain, fromAmountAbsolute, options);

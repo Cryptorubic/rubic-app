@@ -173,7 +173,7 @@ export class TokensSelectComponent implements OnInit {
     if (this.query) {
       const web3Public: Web3Public = this.web3PublicService[this.blockchain];
 
-      if (!web3Public.isAddressCorrect(this.query)) {
+      if (Web3Public.isAddressCorrect(this.query)) {
         return;
       }
 

@@ -8,6 +8,8 @@ export default [
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
     rpcLink: 'https://damp-misty-hill.quiknode.pro/',
+    additionalRpcLink:
+      'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -23,6 +25,8 @@ export default [
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
     rpcLink: 'https://damp-old-resonance.bsc.quiknode.pro/',
+    additionalRpcLink:
+      'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -38,6 +42,8 @@ export default [
     label: 'Polygon',
     scannerUrl: 'https://polygonscan.com',
     rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    additionalRpcLink:
+      'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.POLYGON,
@@ -53,6 +59,7 @@ export default [
     label: 'XDai',
     scannerUrl: 'https://blockscout.com/xdai/mainnet',
     rpcLink: 'https://rpc.xdaichain.com/',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/xdai.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.XDAI,
@@ -68,6 +75,7 @@ export default [
     label: 'Tron',
     scannerUrl: '',
     rpcLink: '',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/tron.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.TRON,
@@ -82,6 +90,7 @@ export default [
     name: BLOCKCHAIN_NAME.HARMONY,
     scannerUrl: 'https://explorer.harmony.one/#/',
     rpcLink: 'https://api.harmony.one',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/harmony.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.HARMONY,
@@ -98,6 +107,7 @@ export default [
     label: 'Ethereum',
     scannerUrl: 'https://kovan.etherscan.io/',
     rpcLink: 'https://kovan.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/kovan.png',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
@@ -113,6 +123,7 @@ export default [
     label: 'Binance Smart Chain',
     scannerUrl: 'https://testnet.bscscan.com/',
     rpcLink: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
@@ -128,6 +139,7 @@ export default [
     label: 'Polygon',
     scannerUrl: 'https://explorer-mumbai.maticvigil.com/',
     rpcLink: 'https://rpc-mumbai.maticvigil.com',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.POLYGON_TESTNET,
@@ -143,6 +155,7 @@ export default [
     label: 'Harmony',
     scannerUrl: 'https://explorer.pops.one/',
     rpcLink: 'https://api.s0.b.hmny.io',
+    additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/harmony.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.HARMONY_TESTNET,
