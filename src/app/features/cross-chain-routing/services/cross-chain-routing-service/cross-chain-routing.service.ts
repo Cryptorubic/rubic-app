@@ -455,6 +455,11 @@ export class CrossChainRoutingService {
           {
             ...options,
             value
+          },
+          err => {
+            const includesErrCode = err.message.includes('-32000');
+            const includesPhrase = err.message.includes('insufficient funds for transfer');
+            return includesErrCode && includesPhrase;
           }
         );
       })()
