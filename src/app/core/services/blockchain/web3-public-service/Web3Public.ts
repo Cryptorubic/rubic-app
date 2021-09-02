@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import { Transaction } from 'web3-core';
+import { Transaction, provider as Provider } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
@@ -45,7 +45,7 @@ export class Web3Public {
     return new this.web3.BatchRequest();
   }
 
-  public get nativeTokenAddress(): string {
+  static get nativeTokenAddress(): string {
     return NATIVE_TOKEN_ADDRESS;
   }
 
@@ -114,6 +114,10 @@ export class Web3Public {
   static isNativeAddress = (address: string): boolean => {
     return address === NATIVE_TOKEN_ADDRESS;
   };
+
+  public setProvider(provider: Provider): void {
+    this.web3.setProvider(provider);
+  }
 
   /**
    * @description HealthCheck current rpc node

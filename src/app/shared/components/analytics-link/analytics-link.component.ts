@@ -13,6 +13,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 
 const WETH_ADDRESSES = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -39,10 +40,7 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
 
   get tokenInfoUrl(): string {
     let tokenAddress: string;
-    if (
-      this.toToken &&
-      this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].isAddressCorrect(this.toToken.address)
-    ) {
+    if (this.toToken && Web3Public.isAddressCorrect(this.toToken.address)) {
       if (this.toToken.address === NATIVE_TOKEN_ADDRESS) {
         tokenAddress = WETH_ADDRESSES[this.toToken.blockchain];
       } else {

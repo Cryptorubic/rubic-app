@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { tap } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { first, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import ConnectionLink from '../types/ConnectionLink';
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
@@ -22,18 +22,9 @@ export class Web3PublicService {
     private useTestingModeService: UseTestingModeService
   ) {
     this.connectionLinks = publicProvider.connectionLinks;
-    const web3Connections = this.connectionLinks.reduce(
-      (acc, connection) => ({
-        ...acc,
-        [connection.blockchainName as BLOCKCHAIN_NAME]: new Web3Public(
-          new Web3(connection.rpcLink),
-          BlockchainsInfo.getBlockchainByName(connection.blockchainName),
-          this.useTestingModeService
-        )
-      }),
-      {}
+    this.connectionLinks.forEach(connection =>
+      this.addWeb3(connection.rpcLink, connection.blockchainName)
     );
-    Object.assign(this, web3Connections);
 
     this.checkAllRpcProviders();
 
@@ -80,11 +71,7 @@ export class Web3PublicService {
             item => item.blockchainName === blockchainName
           );
           if (!isNodeWorks && connector?.additionalRpcLink) {
-            this[web3Public.blockchain.name] = new Web3Public(
-              new Web3(connector.additionalRpcLink),
-              web3Public.blockchain,
-              this.useTestingModeService
-            );
+            this[web3Public.blockchain.name].setProvider(connector.additionalRpcLink);
 
             console.debug(
               `Broken ${web3Public.blockchain.label} node has been replaced with a spare.`
@@ -93,7 +80,7 @@ export class Web3PublicService {
         })
       );
 
-    forkJoin(web3List.map(checkNode$)).subscribe();
+    forkJoin(web3List.map(checkNode$)).subscribe(() => this._nodesChecked$.next(true));
   }
 
   private addWeb3(rpcLink: string, blockchainName: BLOCKCHAIN_NAME) {
@@ -103,15 +90,25 @@ export class Web3PublicService {
       this.useTestingModeService
     );
 
+    const nodesChecked$ = this._nodesChecked$.asObservable();
+
     this[blockchainName] = new Proxy(web3Public, {
-      // eslint-disable-next-line consistent-return
       get(target: Web3Public, prop) {
-        if (prop === 'healthCheck') {
-          return target[prop];
+        if (prop === 'healthCheck' || prop === 'setProvider') {
+          return target[prop].bind(target);
         }
 
-        /*   if (typeof target === 'function') {
-        } */
+        if (typeof target[prop] === 'function') {
+          return (...params: unknown[]) =>
+            nodesChecked$
+              .pipe(
+                first(value => value),
+                switchMap(() => from(target[prop].call(target, ...params)))
+              )
+              .toPromise();
+        }
+
+        return target[prop];
       }
     });
   }

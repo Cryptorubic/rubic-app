@@ -63,9 +63,7 @@ export class CryptoTapTokensService {
         Object.entries(response).forEach(([key, value]) =>
           tokens.push(
             ...value.map(token => ({
-              address:
-                token.address ||
-                this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].nativeTokenAddress,
+              address: token.address || Web3Public.nativeTokenAddress,
               // eslint-disable-next-line eqeqeq
               direction: key == '1' ? BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN : BLOCKCHAIN_NAME.POLYGON
             }))
