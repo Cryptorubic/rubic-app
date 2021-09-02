@@ -10,7 +10,6 @@ import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { startWith } from 'rxjs/operators';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -56,10 +55,7 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
-  constructor(
-    private readonly cdr: ChangeDetectorRef,
-    private readonly web3PublicService: Web3PublicService
-  ) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.formServiceSub$ = this.formService.inputValueChanges
