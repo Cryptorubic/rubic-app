@@ -152,16 +152,15 @@ export class MyTradesService {
               token.blockchain === toToken.blockchain &&
               token.address.toLowerCase() === toToken.address.toLowerCase()
           );
-
           return {
             ...tableTrade,
             fromToken: {
               ...fromToken,
-              image: foundFromToken.image
+              image: foundFromToken?.image || fromToken.image
             },
             toToken: {
               ...toToken,
-              image: foundToToken.image
+              image: foundToToken?.image || fromToken.image
             }
           };
         });

@@ -1,9 +1,12 @@
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 
-interface CrossChainTokenApi {
+export interface CrossChainTokenApi {
   symbol: string;
   network: string;
   address: string;
+  decimals: string;
+  name: string;
+  image: string;
 }
 
 export interface CrossChainTradesResponseApi {

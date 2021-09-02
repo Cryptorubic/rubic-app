@@ -283,13 +283,15 @@ export class Web3PrivateService {
    * @param [options] additional options
    * @param [options.value] amount in Wei amount to be attached to the transaction
    * @param [options.gas] gas limit to be attached to the transaction
+   * @param allowError Check error and decides to execute contact if it needed.
    */
   public async tryExecuteContractMethod(
     contractAddress: string,
     contractAbi: AbiItem[],
     methodName: string,
     methodArguments: unknown[],
-    options: TransactionOptions = {}
+    options: TransactionOptions = {},
+    allowError?: (err) => boolean
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
@@ -310,6 +312,15 @@ export class Web3PrivateService {
         options
       );
     } catch (err) {
+      if (allowError(err)) {
+        return this.executeContractMethod(
+          contractAddress,
+          contractAbi,
+          methodName,
+          methodArguments,
+          options
+        );
+      }
       console.error('Method execution error: ', err);
       throw Web3PrivateService.parseError(err);
     }
