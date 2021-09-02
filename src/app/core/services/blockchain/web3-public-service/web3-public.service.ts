@@ -17,6 +17,14 @@ export class Web3PublicService {
 
   private readonly connectionLinks: ConnectionLink[];
 
+  public [BLOCKCHAIN_NAME.ETHEREUM]: Web3Public;
+
+  public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Web3Public;
+
+  public [BLOCKCHAIN_NAME.POLYGON]: Web3Public;
+
+  public [BLOCKCHAIN_NAME.HARMONY]: Web3Public;
+
   constructor(
     publicProvider: PublicProviderService,
     private useTestingModeService: UseTestingModeService
@@ -93,7 +101,7 @@ export class Web3PublicService {
     const nodesChecked$ = this._nodesChecked$.asObservable();
 
     this[blockchainName] = new Proxy(web3Public, {
-      get(target: Web3Public, prop) {
+      get(target: Web3Public, prop: string) {
         if (prop === 'healthCheck' || prop === 'setProvider') {
           return target[prop].bind(target);
         }
