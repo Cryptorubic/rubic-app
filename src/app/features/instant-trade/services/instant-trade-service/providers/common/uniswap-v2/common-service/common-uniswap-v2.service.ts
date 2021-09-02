@@ -516,10 +516,10 @@ export class CommonUniswapV2Service {
     };
 
     let createTradeMethod = this.createTokensToTokensTrade;
-    if (web3Public.isNativeAddress(trade.from.token.address)) {
+    if (Web3Public.isNativeAddress(trade.from.token.address)) {
       createTradeMethod = this.createEthToTokensTrade;
     }
-    if (web3Public.isNativeAddress(trade.to.token.address)) {
+    if (Web3Public.isNativeAddress(trade.to.token.address)) {
       createTradeMethod = this.createTokensToEthTrade;
     }
 
