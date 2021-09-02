@@ -1,6 +1,12 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
+:host {
+  @include iframe-horizontal {
+    width: 100%;
+  }
+}
+
 .bottom-amount {
   display: flex;
   flex-direction: column;
