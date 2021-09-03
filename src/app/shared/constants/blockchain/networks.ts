@@ -22,8 +22,7 @@ export default [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink:
-      'https://damp-old-resonance.bsc.quiknode.pro/6b8be73cc041a07be145ddec1954fe3d6f21248d/',
+    rpcLink: 'https://bsc-dataseed.binance.org/',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

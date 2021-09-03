@@ -3,11 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -18,24 +19,32 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, mapTo } from 'rxjs/operators';
+import { catchError, mapTo, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+
+type ComponentInput = {
+  tokens: BehaviorSubject<AvailableTokenAmount[]>;
+  formType: 'from' | 'to';
+  currentBlockchain: BLOCKCHAIN_NAME;
+  form: FormGroup<ISwapFormInput>;
+  allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
+  idPrefix: string;
+};
+
+type ComponentContext = TuiDialogContext<AvailableTokenAmount, ComponentInput>;
 
 @Component({
   selector: 'app-tokens-select',
   templateUrl: './tokens-select.component.html',
   styleUrls: ['./tokens-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class TokensSelectComponent implements OnInit {
-  private page: number;
-
-  private readonly pageSize: number;
-
-  public tokens: Observable<AvailableTokenAmount[]>;
+  public tokens: BehaviorSubject<AvailableTokenAmount[]>;
 
   public customToken: AvailableTokenAmount;
 
@@ -53,11 +62,11 @@ export class TokensSelectComponent implements OnInit {
 
   private _query = '';
 
-  private readonly formType: 'from' | 'to';
+  private formType: 'from' | 'to';
 
-  private readonly form: FormGroup<ISwapFormInput>;
+  private form: FormGroup<ISwapFormInput>;
 
-  public tokensNetworkState: { count: number; page: number };
+  public tokensNetworkState: { page: number; count: number };
 
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
@@ -65,17 +74,7 @@ export class TokensSelectComponent implements OnInit {
 
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value) {
-      this._blockchain = value;
-
-      const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
-      if (!this.form.value[tokenType]) {
-        const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-        this.form.patchValue({
-          [blockchainType]: this._blockchain
-        });
-      }
-
-      this.updateTokensList();
+      this.setNewBlockchain(value);
     }
   }
 
@@ -90,50 +89,91 @@ export class TokensSelectComponent implements OnInit {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      AvailableTokenAmount,
-      {
-        tokens: Observable<AvailableTokenAmount[]>;
-        formType: 'from' | 'to';
-        currentBlockchain: BLOCKCHAIN_NAME;
-        form: FormGroup<ISwapFormInput>;
-        allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
-        idPrefix: string;
-      }
-    >,
+    private readonly context: ComponentContext,
     private readonly cdr: ChangeDetectorRef,
     private readonly web3PublicService: Web3PublicService,
     private readonly authService: AuthService,
     private readonly httpClient: HttpClient,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService
   ) {
-    this.page = 1;
-    this.pageSize = 150;
-    this.tokens = context.data.tokens;
-    this.formType = context.data.formType;
-    this.form = context.data.form;
-    this.allowedBlockchains = context.data.allowedBlockchains;
-    this.idPrefix = context.data.idPrefix;
+    this.initiateContextParams(context.data);
     this.prevSelectedToken = this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
-
-    this.blockchain = context.data.currentBlockchain;
   }
 
-  ngOnInit() {
+  /**
+   * Defines if token pair is able to trade through cross-chain.
+   * @param fromBlockchain From token blockchain.
+   * @param toBlockchain To token blockchain.
+   * @return boolean If token allowed in cross-chain returns true, otherwise false.
+   */
+  static allowInCrossChain(fromBlockchain, toBlockchain): boolean {
+    const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
+    return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
+  }
+
+  /**
+   * @description Set component input parameters.
+   * @param context Component context.
+   */
+  private initiateContextParams(context: ComponentInput): void {
+    this.tokens = context.tokens;
+    this.formType = context.formType;
+    this.form = context.form;
+    this.allowedBlockchains = context.allowedBlockchains;
+    this.idPrefix = context.idPrefix;
+    this.blockchain = context.currentBlockchain;
+  }
+
+  /**
+   * @description Lifecycle hook.
+   */
+  public ngOnInit(): void {
+    this.updateTokensList();
+    this.tokensService.tokensNetworkState.pipe(takeUntil(this.destroy$)).subscribe(el => {
+      this.tokensNetworkState = el[this.blockchain];
+    });
+  }
+
+  /**
+   * @description Set new blockchain.
+   * @param chain Blockchain.
+   */
+  private setNewBlockchain(chain: BLOCKCHAIN_NAME): void {
+    this._blockchain = chain;
+
+    const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
+    if (!this.form.value[tokenType]) {
+      const blockchainType = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
+      this.form.patchValue({
+        [blockchainType]: this._blockchain
+      });
+    }
+
     this.updateTokensList();
   }
 
-  close() {
+  /**
+   * Handle modal close event.
+   */
+  public close(): void {
     this.context.completeWith(null);
   }
 
-  onTokenSelect(token: AvailableTokenAmount) {
+  /**
+   * @description Handle token selection event.
+   * @param token Selected token.
+   */
+  public tokenSelect(token: AvailableTokenAmount): void {
     this.context.completeWith(token);
   }
 
+  /**
+   * @description Update token list.
+   */
   private updateTokensList(): void {
     this.customToken = null;
-    this.tokens.subscribe(async tokens => {
+    this.tokens.pipe(takeUntil(this.destroy$)).subscribe(async tokens => {
       const currentBlockchainTokens = tokens.filter(token => token.blockchain === this.blockchain);
       const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
       this.tokensToShow$.next(sortedAndFilteredTokens);
@@ -148,6 +188,11 @@ export class TokensSelectComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Filter and sort tokens by comparator.
+   * @param tokens Tokens to perform with.
+   * @return AvailableTokenAmount[] Filtered and sorted tokens.
+   */
   private filterAndSortTokens(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const amountsDelta = b.amount
@@ -180,6 +225,9 @@ export class TokensSelectComponent implements OnInit {
     return sybmolMatchingTokens.concat(nameMatchingTokens);
   }
 
+  /**
+   * @description If query exists, parse custom token from Web3.
+   */
   private async tryParseQueryAsCustomToken(): Promise<void> {
     if (this.query) {
       const web3Public: Web3Public = this.web3PublicService[this.blockchain];
@@ -214,7 +262,10 @@ export class TokensSelectComponent implements OnInit {
           available:
             !oppositeToken ||
             this.blockchain === oppositeToken.blockchain ||
-            this.allowInCrossChain(blockchainToken.blockchain, oppositeToken.blockchain)
+            TokensSelectComponent.allowInCrossChain(
+              blockchainToken.blockchain,
+              oppositeToken.blockchain
+            )
         };
 
         this.cdr.markForCheck();
@@ -222,11 +273,11 @@ export class TokensSelectComponent implements OnInit {
     }
   }
 
-  private allowInCrossChain(fromBlockchain, toBlockchain): boolean {
-    const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
-    return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
-  }
-
+  /**
+   * @description Fetch token images from Web3.
+   * @param token Token to display.
+   * @return Promise<string> Token image url.
+   */
   private fetchTokenImage(token: BlockchainToken): Promise<string> {
     const blockchains = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
@@ -250,15 +301,10 @@ export class TokensSelectComponent implements OnInit {
       .toPromise();
   }
 
-  public updateTokens(page: number): void {
-    this.tokensService.fetchNetworkTokens(
-      TO_BACKEND_BLOCKCHAINS[this.blockchain],
-      page,
-      150,
-      () => {
-        // this.tokensNetworkState =
-        //   this.tokensService.tokensNetworkState[TO_BACKEND_BLOCKCHAINS[this.blockchain]];
-      }
-    );
+  /**
+   * @description Update tokens.
+   */
+  public updateTokens(): void {
+    this.tokensService.fetchNetworkTokens(this.blockchain);
   }
 }

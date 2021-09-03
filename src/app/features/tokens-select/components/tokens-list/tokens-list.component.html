@@ -3,30 +3,33 @@
     *ngIf="tokens.length; else emptyListMessage"
     class="tokens-scrollbar tokens-container"
   >
-    <!--standard mode -->
-    <ul class="tokens-list" *noFrame>
-      <cdk-virtual-scroll-viewport
-        tuiScrollable
-        itemSize="63"
-        class="tokens-scrollbar tui-zero-scrollbar"
-      >
-        <li
-          *cdkVirtualFor="let token of tokens; let i = index"
-          class="tokens-list__item"
-          [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
-          [tuiManualHint]="disabledTokenHint"
-          [tuiManualHintShow]="hintsShown[i]"
-          tuiHintMode="error"
-          tuiHintDirection="bottom-right"
-          (click)="onTokenSelect(token)"
-          (mouseenter)="hintsShown[i] = !token.available && true"
-          (mouseleave)="hintsShown[i] = false"
+
+    <tui-loader [showLoader]="loading">
+      <!--standard mode -->
+      <ul class="tokens-list" *noFrame>
+        <cdk-virtual-scroll-viewport
+          tuiScrollable
+          itemSize="63"
+          class="tokens-scrollbar tui-zero-scrollbar"
         >
-          <app-tokens-list-element [token]="token"></app-tokens-list-element>
-        </li>
-      </cdk-virtual-scroll-viewport>
-    </ul>
-    <!--standard mode -->
+          <li
+            *cdkVirtualFor="let token of tokens; let i = index"
+            class="tokens-list__item"
+            [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
+            [tuiManualHint]="disabledTokenHint"
+            [tuiManualHintShow]="hintsShown[i]"
+            tuiHintMode="error"
+            tuiHintDirection="bottom-right"
+            (click)="onTokenSelect(token)"
+            (mouseenter)="hintsShown[i] = !token.available && true"
+            (mouseleave)="hintsShown[i] = false"
+          >
+            <app-tokens-list-element [token]="token"></app-tokens-list-element>
+          </li>
+        </cdk-virtual-scroll-viewport>
+      </ul>
+      <!--standard mode -->
+    </tui-loader>
 
     <!--horizontal iframe -->
     <ul class="tokens-list-horizontal-iframe" *onlyFrame="'horizontal'">

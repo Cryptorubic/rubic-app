@@ -2,44 +2,39 @@ import { Injectable } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
 import { List } from 'immutable';
 import {
-  BackendBlockchain,
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import {
+  BackendToken,
+  TokensBackendResponse,
+  TokensRequestOptions,
+  TokensResponse
+} from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { HttpService } from '../../http/http.service';
-import { BackendToken } from './models/BackendToken';
 
-interface TokensResponse {
-  readonly count: number;
-  readonly next: string;
-  readonly previous: string;
-  readonly results: BackendToken[];
-}
-
-interface TokensRequestOptions {
-  readonly address?: string;
-  readonly network?: BackendBlockchain;
-  readonly page: number;
-  readonly pageSize?: number;
-  readonly symbol?: string;
-}
-
+/**
+ * Perform backend requests and transforms to get valid tokens.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class TokensApiService {
-  private readonly getTokensUrl = 'tokens/';
-
-  private readonly getIframeTokensUrl = 'tokens/iframe/';
+  private readonly getTokensUrl: string = 'tokens/';
 
   constructor(
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService
   ) {}
 
+  /**
+   * @description Convert backend tokens to Token.
+   * @param tokens Tokens from backend response.
+   * @return List<Token> Useful tokens list.
+   */
   private static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
@@ -53,27 +48,40 @@ export class TokensApiService {
     );
   }
 
-  public getTokensList(params: Object): Observable<List<Token>> {
+  /**
+   * @description Fetch specific tokens from backend.
+   * @param params Request params.
+   * @return Observable<List<Token>> Tokens list.
+   */
+  public getTokensList(params: { [p: string]: unknown }): Observable<List<Token>> {
     return this.iframeService.isIframe$.pipe(
       switchMap(isIframe => {
-        const url = isIframe ? this.getIframeTokensUrl : this.getTokensUrl;
-        return this.httpService
-          .get(url, params)
-          .pipe(
-            map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens))
-          );
+        return isIframe ? this.fetchIframeTokens(params) : this.fetchBasicTokens(null);
       })
     );
   }
 
   /**
-   * @description Fetch another networks basic tokens from backend.
-   * @returns Observable<List<Token>> Tokens.
+   * @description Fetch iframe tokens from backend.
+   * @param params Request params.
+   * @return Observable<List<Token>> Tokens list.
    */
-  private fetchBasicTokens(): Observable<List<Token>> {
-    const params = { page: 1, page_size: 150 };
+  private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
+    const tokensPath = 'tokens/iframe/';
+    return this.httpService
+      .get(tokensPath, params)
+      .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
+  }
+
+  /**
+   * @description Fetch another networks basic tokens from backend.
+   * @param params Request params.
+   * @return Observable<List<Token>> Tokens.
+   */
+  private fetchBasicTokens(params: TokensRequestOptions): Observable<List<Token>> {
+    const options = { page: 1, page_size: 150, ...params };
     const requests$ = Object.values(TO_BACKEND_BLOCKCHAINS).map(network =>
-      this.httpService.get(this.getTokensUrl, { ...params, network })
+      this.httpService.get(this.getTokensUrl, { ...options, network })
     ) as Observable<TokensResponse>[];
     return forkJoin(requests$).pipe(
       map(results => {
@@ -83,14 +91,15 @@ export class TokensApiService {
   }
 
   /**
-   * Fetch specific network tokens from backend.
+   * @description Fetch specific network tokens from backend.
    * @param requestOptions Network which tokens is searched.
+   * @return Observable<TokensBackendResponse> Tokens response from backend with count.
    */
   public fetchSpecificBackendTokens(
     requestOptions: TokensRequestOptions
-  ): Observable<{ total: number; result: List<Token> }> {
+  ): Observable<TokensBackendResponse> {
     const options = {
-      network: requestOptions.network,
+      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
       page: requestOptions.page,
       page_size: requestOptions.pageSize
     };

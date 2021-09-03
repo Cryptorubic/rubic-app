@@ -13,13 +13,14 @@
       *ngIf="!customToken && !loading"
       [tokens]="tokensToShow$ | async"
       [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
-      (tokenSelect)="onTokenSelect($event)"
-      (pageUpdate)="updateTokens($event)"
+      (tokenSelect)="tokenSelect($event)"
+      (pageUpdate)="updateTokens()"
       [tokensNetworkState]="tokensNetworkState"
+      [blockchain]="blockchain"
     ></app-tokens-list>
     <app-custom-token
       *ngIf="customToken && !loading"
-      (tokenSelected)="onTokenSelect($event)"
+      (tokenSelected)="tokenSelect($event)"
       [token]="customToken"
     ></app-custom-token>
     <tui-loader *ngIf="loading" [showLoader]="loading" size="xl"></tui-loader>

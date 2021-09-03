@@ -17,10 +17,8 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.HARMONY]: 'harmony'
 };
 
-export type BackendBlockchain =
-  | 'ethereum'
-  | 'binance-smart-chain'
-  | 'polygon'
-  | 'harmony'
-  | 'tron-mainnet'
-  | 'xdai-mainnet';
+export type BackendBlockchain = 'ethereum' | 'binance-smart-chain' | 'polygon' | 'harmony';
+
+export type BackendBlockchainObject<T> = {
+  [P in BackendBlockchain]: T;
+};

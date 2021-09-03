@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
-import { of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
@@ -29,7 +29,11 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formType: 'from' | 'to';
 
-  @Input() tokens: AvailableTokenAmount[];
+  @Input() set tokens(value: AvailableTokenAmount[]) {
+    if (value) {
+      this.tokensSubject.next(value);
+    }
+  }
 
   @Input() formService: FormService;
 
@@ -47,12 +51,16 @@ export class RubicTokensComponent implements OnInit {
 
   public iframeForceDisabled = false;
 
+  public tokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensSelectService: TokensSelectService,
     private readonly queryParamsService: QueryParamsService,
     private readonly destroy$: TuiDestroyService
-  ) {}
+  ) {
+    this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>(null);
+  }
 
   public ngOnInit(): void {
     this.setFormValues(this.formService.inputValue);
@@ -83,7 +91,7 @@ export class RubicTokensComponent implements OnInit {
 
     this.tokensSelectService
       .showDialog(
-        of(this.tokens),
+        this.tokensSubject,
         this.formType,
         currentBlockchain,
         this.formService.input,
