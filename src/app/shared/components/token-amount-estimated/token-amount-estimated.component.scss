@@ -2,6 +2,8 @@
 @import 'src/scss/mixins';
 
 :host {
+  overflow: hidden;
+
   @include iframe-horizontal {
     width: 100%;
   }
