@@ -211,7 +211,10 @@ export class TokensSelectComponent implements OnInit {
     }
   }
 
-  private allowInCrossChain(fromBlockchain, toBlockchain): boolean {
+  private allowInCrossChain(
+    fromBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BLOCKCHAIN_NAME
+  ): boolean {
     const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
     return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
   }
@@ -223,7 +226,7 @@ export class TokensSelectComponent implements OnInit {
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
-      blockchains[token.blockchain]
+      blockchains[token.blockchain as keyof typeof blockchains]
     }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient

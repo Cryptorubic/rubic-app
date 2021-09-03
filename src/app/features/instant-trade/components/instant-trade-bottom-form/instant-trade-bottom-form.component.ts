@@ -433,18 +433,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>
   ): void {
-    const newProviders = this.providerControllers.map((controller, index) => ({
-      ...controller,
-      isSelected: false,
-      trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
-      isBestRate: false,
-      needApprove: approveData[index],
-      tradeState:
-        tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
-          ? INSTANT_TRADES_STATUS.APPROVAL
-          : INSTANT_TRADES_STATUS.ERROR,
-      error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
-    }));
+    const newProviders = this.providerControllers.map(
+      (controller, index) =>
+        ({
+          ...controller,
+          isSelected: false,
+          trade: tradeData[index]?.status === 'fulfilled' ? tradeData[index]?.value : null,
+          isBestRate: false,
+          needApprove: approveData[index],
+          tradeState:
+            tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
+              ? INSTANT_TRADES_STATUS.APPROVAL
+              : INSTANT_TRADES_STATUS.ERROR,
+          error: tradeData[index]?.status === 'rejected' ? tradeData[index]?.reason : null
+        } as ProviderControllerData)
+    );
     this.providerControllers = newProviders;
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
@@ -528,8 +531,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setSlippageTolerance(provider: ProviderControllerData) {
     const providerName = provider.tradeProviderInfo.value;
     if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
+      const currentBlockchainDefaultSlippage =
+        defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
       this.settingsService.instantTrade.patchValue({
-        slippageTolerance: defaultSlippageTolerance[this.currentBlockchain][providerName]
+        slippageTolerance:
+          currentBlockchainDefaultSlippage[
+            providerName as keyof typeof currentBlockchainDefaultSlippage
+          ]
       });
     }
   }

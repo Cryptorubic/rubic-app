@@ -20,6 +20,8 @@ const WETH_ADDRESSES = {
   [BLOCKCHAIN_NAME.POLYGON]: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
 };
 
+type WethBlockchains = keyof typeof WETH_ADDRESSES;
+
 @Component({
   selector: 'app-analytics-link',
   templateUrl: './analytics-link.component.html',
@@ -41,13 +43,13 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
     let tokenAddress: string;
     if (this.toToken && Web3Public.isAddressCorrect(this.toToken.address)) {
       if (this.toToken.address === NATIVE_TOKEN_ADDRESS) {
-        tokenAddress = WETH_ADDRESSES[this.toToken.blockchain];
+        tokenAddress = WETH_ADDRESSES[this.toToken.blockchain as WethBlockchains];
       } else {
         tokenAddress = this.toToken.address;
       }
     } else if (this.fromToken) {
       if (this.fromToken.address === NATIVE_TOKEN_ADDRESS) {
-        tokenAddress = WETH_ADDRESSES[this.fromToken.blockchain];
+        tokenAddress = WETH_ADDRESSES[this.fromToken.blockchain as WethBlockchains];
       } else {
         tokenAddress = this.fromToken.address;
       }

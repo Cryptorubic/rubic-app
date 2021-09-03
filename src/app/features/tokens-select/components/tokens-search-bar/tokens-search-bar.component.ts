@@ -22,7 +22,7 @@ export class TokensSearchBarComponent implements AfterViewInit {
 
   @Output() queryChange = new EventEmitter<string>();
 
-  constructor(@Inject(DOCUMENT) private document) {}
+  constructor(@Inject(DOCUMENT) private document: Document) {}
 
   ngAfterViewInit() {
     setTimeout(() => {

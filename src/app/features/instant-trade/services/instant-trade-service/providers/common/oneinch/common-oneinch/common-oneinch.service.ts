@@ -96,6 +96,7 @@ export class CommonOneinchService {
   }
 
   private async getSupportedTokensByBlockchain(blockchain: BLOCKCHAIN_NAME): Promise<string[]> {
+    blockchain = blockchain as keyof SupportedTokens;
     if (this.supportedTokens[blockchain].length) {
       return this.supportedTokens[blockchain];
     }

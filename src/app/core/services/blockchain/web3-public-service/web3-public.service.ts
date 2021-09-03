@@ -34,6 +34,18 @@ export class Web3PublicService {
 
   public [BLOCKCHAIN_NAME.HARMONY]: Web3Public;
 
+  public readonly [BLOCKCHAIN_NAME.TRON]: Web3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.XDAI]: Web3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Web3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: Web3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: Web3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.HARMONY_TESTNET]: Web3Public = null;
+
   constructor(
     publicProvider: PublicProviderService,
     private useTestingModeService: UseTestingModeService
@@ -58,7 +70,7 @@ export class Web3PublicService {
               return;
             }
 
-            this[connection.blockchainName] = new Web3Public(
+            this[connection.blockchainName as Web3SupportedBlockchains] = new Web3Public(
               new Web3(testingConnection.rpcLink),
               BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName),
               this.useTestingModeService
