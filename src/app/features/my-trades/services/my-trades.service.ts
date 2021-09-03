@@ -160,7 +160,7 @@ export class MyTradesService {
             },
             toToken: {
               ...toToken,
-              image: foundToToken?.image || fromToken.image
+              image: foundToToken?.image || toToken.image
             }
           };
         });
