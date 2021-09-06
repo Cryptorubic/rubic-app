@@ -234,7 +234,7 @@ export class QueryParamsService {
       return of(null);
     }
 
-    return this.isAddress(token, chain)
+    return Web3Public.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : of(this.searchTokenBySymbol(tokens, token, chain));
   }
@@ -269,11 +269,6 @@ export class QueryParamsService {
     return searchingToken
       ? of(searchingToken)
       : this.tokensService.addToken(address, chain).pipe(first());
-  }
-
-  private isAddress(token: string, chain: BLOCKCHAIN_NAME): boolean {
-    const web3Public: Web3Public = this.web3Public[chain];
-    return web3Public.isAddressCorrect(token);
   }
 
   private navigate(): void {

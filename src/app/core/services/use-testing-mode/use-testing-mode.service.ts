@@ -1,5 +1,5 @@
 import { ApplicationRef, Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { WINDOW } from 'src/app/core/models/window';
 
@@ -11,6 +11,9 @@ declare global {
       clear: () => void;
       uniswapSettings: {
         setSecondsDeadline: () => void;
+      };
+      web3PublicSettings: {
+        setRpcTimeout: (timeout: number) => void;
       };
     };
     tu: void;
@@ -27,6 +30,10 @@ export class UseTestingModeService {
 
   public uniswapSettings = {
     secondsDeadline: new BehaviorSubject(false)
+  };
+
+  public web3PublicSettings = {
+    rpcTimeout: new Subject<number>()
   };
 
   constructor(
@@ -49,6 +56,9 @@ export class UseTestingModeService {
       },
       uniswapSettings: {
         setSecondsDeadline: () => this.uniswapSettings.secondsDeadline.next(true)
+      },
+      web3PublicSettings: {
+        setRpcTimeout: (timeout: number) => this.web3PublicSettings.rpcTimeout.next(timeout)
       }
     };
 

@@ -557,7 +557,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setProviderState(
     tradeStatus: TRADE_STATUS,
     providerIndex: number,
-    providerState: INSTANT_TRADES_STATUS,
+    providerState?: INSTANT_TRADES_STATUS,
     needApprove?: boolean
   ): void {
     if (needApprove === undefined) {
@@ -567,7 +567,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = tradeStatus;
     this.providerControllers[providerIndex] = {
       ...this.providerControllers[providerIndex],
-      tradeState: providerState,
+      ...(providerState && { tradeState: providerState }),
       needApprove
     };
     this.cdr.detectChanges();
@@ -580,11 +580,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     const provider = this.providerControllers[providerIndex];
-    this.setProviderState(
-      TRADE_STATUS.APPROVE_IN_PROGRESS,
-      providerIndex,
-      INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-    );
+    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS, providerIndex);
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {

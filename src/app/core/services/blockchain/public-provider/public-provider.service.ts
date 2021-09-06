@@ -12,7 +12,8 @@ export class PublicProviderService {
   constructor() {
     this.connectionLinks = networks.map(network => ({
       blockchainName: network.name,
-      rpcLink: network.rpcLink
+      rpcLink: network.rpcLink,
+      additionalRpcLink: network.additionalRpcLink
     }));
   }
 

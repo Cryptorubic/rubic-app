@@ -130,7 +130,7 @@ export class CrossChainRoutingService {
   public needApprove(): Observable<boolean> {
     const { fromToken } = this.swapFormService.inputValue;
     const web3Public: Web3Public = this.web3PublicService[fromToken.blockchain];
-    if (web3Public.isNativeAddress(fromToken.address)) {
+    if (Web3Public.isNativeAddress(fromToken.address)) {
       return of(false);
     }
 
@@ -408,7 +408,6 @@ export class CrossChainRoutingService {
         await web3PublicFromBlockchain.checkBalance(trade.tokenIn, tokenInAmountMax, walletAddress);
 
         const contractAddress = this.contractAddresses[trade.fromBlockchain];
-        const web3PublicToBlockchain: Web3Public = this.web3PublicService[trade.toBlockchain];
         const toBlockchainInContract = this.toBlockchainsInContract[trade.toBlockchain];
 
         const blockchainCryptoFee = (await web3PublicFromBlockchain.callContractMethod(
@@ -420,7 +419,7 @@ export class CrossChainRoutingService {
           }
         )) as string;
 
-        const isFromTokenNative = web3PublicFromBlockchain.isNativeAddress(trade.tokenIn.address);
+        const isFromTokenNative = Web3Public.isNativeAddress(trade.tokenIn.address);
         const methodName = isFromTokenNative
           ? CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_CRYPTO
           : CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_TOKENS;
@@ -439,7 +438,7 @@ export class CrossChainRoutingService {
             trade.rbcTokenOutAmountAbsolute,
             tokenOutMinAbsolute,
             walletAddress,
-            web3PublicToBlockchain.isNativeAddress(trade.tokenOut.address)
+            Web3Public.isNativeAddress(trade.tokenOut.address)
           ]
         ];
 
@@ -455,6 +454,11 @@ export class CrossChainRoutingService {
           {
             ...options,
             value
+          },
+          err => {
+            const includesErrCode = err.message.includes('-32000');
+            const includesPhrase = err.message.includes('insufficient funds for transfer');
+            return includesErrCode && includesPhrase;
           }
         );
       })()
