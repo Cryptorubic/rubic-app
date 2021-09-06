@@ -32,8 +32,12 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
 };
 
 const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
-  [INSTANT_TRADES_PROVIDER.UNISWAP]: {
-    name: 'Uniswap',
+  [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: {
+    name: 'Uniswap V3',
+    image: `${imageBasePath}uniswap.svg`
+  },
+  [INSTANT_TRADES_PROVIDER.UNISWAP_V2]: {
+    name: 'Uniswap V2',
     image: `${imageBasePath}uniswap.svg`
   },
   [INSTANT_TRADES_PROVIDER.ONEINCH]: {

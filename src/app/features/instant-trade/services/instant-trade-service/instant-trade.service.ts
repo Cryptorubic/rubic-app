@@ -87,7 +87,8 @@ export class InstantTradeService {
     this.blockchainsProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
-        [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapV2Service,
+        [INSTANT_TRADES_PROVIDER.UNISWAP_V2]: this.uniswapV2Service,
+        [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: this.uniswapV2Service,
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
         [INSTANT_TRADES_PROVIDER.ZRX]: this.zrxService
       },

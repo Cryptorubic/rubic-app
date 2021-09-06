@@ -8,6 +8,18 @@ export const INSTANT_TRADE_PROVIDERS = {
       trade: null,
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
+        label: 'Uniswap V3',
+        value: INSTANT_TRADES_PROVIDER.UNISWAP_V3
+      },
+      isBestRate: false,
+      isSelected: false,
+      isCollapsed: false,
+      needApprove: null
+    },
+    {
+      trade: null,
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      tradeProviderInfo: {
         label: '1inch',
         value: INSTANT_TRADES_PROVIDER.ONEINCH
       },
@@ -21,7 +33,7 @@ export const INSTANT_TRADE_PROVIDERS = {
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
         label: 'Uniswap',
-        value: INSTANT_TRADES_PROVIDER.UNISWAP
+        value: INSTANT_TRADES_PROVIDER.UNISWAP_V2
       },
       isBestRate: false,
       isSelected: false,

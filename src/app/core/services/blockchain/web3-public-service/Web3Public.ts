@@ -184,6 +184,10 @@ export class Web3Public {
     return new BigNumber(balance);
   }
 
+  public getContract(address: string, abi: AbiItem[]) {
+    return new this.web3.eth.Contract(abi, address);
+  }
+
   /**
    * @description predicts the volume of gas required to execute the contract method
    * @param contractAbi abi of smart-contract
@@ -333,6 +337,15 @@ export class Web3Public {
     return contract.methods[methodName](...options.methodArguments).call({
       ...(options.from && { from: options.from })
     });
+  }
+
+  public encodeFunctionCall(
+    contractAbi: AbiItem[],
+    methodName: string,
+    methodArguments: unknown[]
+  ): string {
+    const methodSignature = contractAbi.find(abiItem => abiItem.name === methodName);
+    return this.web3.eth.abi.encodeFunctionCall(methodSignature, methodArguments as string[]);
   }
 
   private getTokenInfoCachingDecorator(): (
