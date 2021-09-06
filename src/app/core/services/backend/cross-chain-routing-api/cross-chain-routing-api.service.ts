@@ -41,7 +41,7 @@ export class CrossChainRoutingApiService {
       status: tradeApi.status,
       provider: 'CROSS_CHAIN_ROUTING_PROVIDER',
       fromToken: CrossChainRoutingApiService.getTableToken(tradeApi.fromToken, tradeApi.fromAmount),
-      toToken: CrossChainRoutingApiService.getTableToken(tradeApi.toToken, tradeApi.fromAmount),
+      toToken: CrossChainRoutingApiService.getTableToken(tradeApi.toToken, tradeApi.toAmount),
       date: new Date(tradeApi.statusUpdatedAt)
     };
   }
