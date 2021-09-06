@@ -21,7 +21,9 @@ export class CrossChainRoutingApiService {
 
   static getTableToken(token: CrossChainTokenApi, amount: string): TableToken {
     return {
-      blockchain: FROM_BACKEND_BLOCKCHAINS[token.network] || BLOCKCHAIN_NAME.ETHEREUM,
+      blockchain:
+        FROM_BACKEND_BLOCKCHAINS[token.network as keyof typeof FROM_BACKEND_BLOCKCHAINS] ||
+        BLOCKCHAIN_NAME.ETHEREUM,
       symbol: token.symbol,
       amount,
       image: token.image,

@@ -11,6 +11,11 @@ import { UserRejectError } from '../../../errors/models/provider/UserRejectError
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
 import { LowGasError } from '../../../errors/models/provider/LowGasError';
 
+type Web3Error = {
+  message: string;
+  code: number;
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +33,7 @@ export class Web3PrivateService {
     // this.defaultMockGas = '400000';
   }
 
-  private static parseError(err): Error {
+  private static parseError(err: Web3Error): Error {
     if (err.message.includes('Transaction has been reverted by the EVM')) {
       return new TransactionRevertedError();
     }
@@ -44,15 +49,20 @@ export class Web3PrivateService {
         return Error(errorMessage);
       }
     } catch (_ignored) {}
-    return err;
+    return err as unknown as Error;
   }
 
   private calculateGasPrice(gasPrice?: string): string | undefined {
-    const minGasPrice = minGasPriceInBlockchain[this.providerConnector.networkName];
+    const minGasPrice =
+      minGasPriceInBlockchain[
+        this.providerConnector.networkName as keyof typeof minGasPriceInBlockchain
+      ];
     if (!minGasPrice) {
       return gasPrice;
     }
     if (!gasPrice) {
+      // TODO: gas во всем Web3Private требует рефакторинга
+      // @ts-ignore
       return minGasPrice;
     }
     return BigNumber.max(gasPrice, minGasPrice).toFixed();
@@ -88,7 +98,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
-        .on('error', err => {
+        .on('error', (err: Web3Error) => {
           console.error(`Tokens transfer error. ${err}`);
           reject(Web3PrivateService.parseError(err));
         });
@@ -113,8 +123,8 @@ export class Web3PrivateService {
       contract.methods
         .transfer(toAddress, amount.toString())
         .send({ from: this.address, ...(this.defaultMockGas && { gas: this.defaultMockGas }) })
-        .on('transactionHash', hash => resolve(hash))
-        .on('error', err => {
+        .on('transactionHash', (hash: string) => resolve(hash))
+        .on('error', (err: Web3Error) => {
           console.error(`Tokens transfer error. ${err}`);
           reject(Web3PrivateService.parseError(err));
         });
@@ -195,7 +205,7 @@ export class Web3PrivateService {
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3PrivateService.parseError(err as unknown as Web3Error));
         });
     });
   }
@@ -226,7 +236,7 @@ export class Web3PrivateService {
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3PrivateService.parseError(err as unknown as Web3Error));
         });
     });
   }
@@ -267,7 +277,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
-        .on('error', err => {
+        .on('error', (err: Web3Error) => {
           console.error(`Tokens approve error. ${err}`);
           reject(Web3PrivateService.parseError(err));
         });
@@ -291,7 +301,7 @@ export class Web3PrivateService {
     methodName: string,
     methodArguments: unknown[],
     options: TransactionOptions = {},
-    allowError?: (err) => boolean
+    allowError?: (err: Web3Error) => boolean
   ): Promise<TransactionReceipt> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
@@ -359,7 +369,7 @@ export class Web3PrivateService {
         })
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
-        .on('error', err => {
+        .on('error', (err: Web3Error) => {
           console.error(`Method execution error. ${err}`);
           reject(Web3PrivateService.parseError(err));
         });
@@ -389,7 +399,7 @@ export class Web3PrivateService {
           ...(this.defaultMockGas && { gas: this.defaultMockGas })
         })
         .on('transactionHash', resolve)
-        .on('error', err => {
+        .on('error', (err: Web3Error) => {
           console.error(`Tokens approve error. ${err}`);
           reject(Web3PrivateService.parseError(err));
         });
@@ -401,7 +411,10 @@ export class Web3PrivateService {
    * @param tokenAddress tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address to approve
    */
-  public async unApprove(tokenAddress, spenderAddress): Promise<TransactionReceipt> {
+  public async unApprove(
+    tokenAddress: string,
+    spenderAddress: string
+  ): Promise<TransactionReceipt> {
     return this.approveTokens(tokenAddress, spenderAddress, new BigNumber(0));
   }
 

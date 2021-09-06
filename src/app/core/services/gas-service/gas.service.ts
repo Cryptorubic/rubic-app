@@ -67,6 +67,7 @@ export class GasService {
     combineLatest([this.fromChain$.pipe(startWith(BLOCKCHAIN_NAME.ETHEREUM)), timer$])
       .pipe(
         mergeMap(([blockchainName, _]) => {
+          blockchainName = blockchainName as keyof NetworksGasPrice<unknown>;
           if (this.gasPriceFunctions[blockchainName]) {
             return this.gasPriceFunctions[blockchainName]();
           }
