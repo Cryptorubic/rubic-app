@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { CryptoTapTokensService } from 'src/app/features/crypto-tap/services/crypto-tap-tokens-service/crypto-tap-tokens.service';
 import { CryptoTapService } from 'src/app/features/crypto-tap/services/crypto-tap-service/crypto-tap.service';
 import BigNumber from 'bignumber.js';
+import { CryptoTapFullPriceFeeInfo } from 'src/app/features/crypto-tap/models/CryptoTapFullPriceFeeInfo';
 
 @Component({
   selector: 'app-crypto-tap-discount',
@@ -46,7 +47,9 @@ export class CryptoTapDiscountComponent implements OnInit, OnDestroy {
 
       this.cryptoTapService.fullPriceFeeInfo$.subscribe(fullPriceFeeInfo => {
         if (fullPriceFeeInfo) {
-          const fullPriceUsdFee = fullPriceFeeInfo[toBlockchain].multipliedBy(ETH.price);
+          const fullPriceUsdFee = fullPriceFeeInfo[
+            toBlockchain as keyof CryptoTapFullPriceFeeInfo
+          ].multipliedBy(ETH.price);
           const currentUsdFee = feeAmount.multipliedBy(feeToken.price);
           const discount = new BigNumber(1).minus(currentUsdFee.div(fullPriceUsdFee));
           this.discount = discount.multipliedBy(100).toFixed(0);

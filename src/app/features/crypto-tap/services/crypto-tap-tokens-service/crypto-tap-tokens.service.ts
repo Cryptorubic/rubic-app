@@ -62,7 +62,7 @@ export class CryptoTapTokensService {
         const tokens: CryptoTapToken[] = [];
         Object.entries(response).forEach(([key, value]) =>
           tokens.push(
-            ...value.map(token => ({
+            ...value.map((token: { address: string }) => ({
               address: token.address || Web3Public.nativeTokenAddress,
               // eslint-disable-next-line eqeqeq
               direction: key == '1' ? BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN : BLOCKCHAIN_NAME.POLYGON

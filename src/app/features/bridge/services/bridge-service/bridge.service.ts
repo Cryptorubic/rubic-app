@@ -31,7 +31,9 @@ import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
 @Injectable()
 export class BridgeService {
-  private blockchainsProviders;
+  private blockchainsProviders: Partial<
+    Record<BLOCKCHAIN_NAME, Partial<Record<BLOCKCHAIN_NAME, BlockchainsBridgeProvider>>>
+  >;
 
   private tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
 

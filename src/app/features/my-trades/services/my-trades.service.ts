@@ -194,7 +194,7 @@ export class MyTradesService {
       );
   }
 
-  public loadPanamaTxHash(panamaId): Observable<string> {
+  public loadPanamaTxHash(panamaId: string): Observable<string> {
     return this.httpClient
       .get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`)
       .pipe(map((response: PanamaStatusResponse) => response.data.depositTxId));

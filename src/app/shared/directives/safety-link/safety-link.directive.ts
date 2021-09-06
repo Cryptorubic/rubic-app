@@ -13,11 +13,11 @@ import { Router } from '@angular/router';
   selector: '[safetyLink]'
 })
 export class SafetyLinkDirective implements OnInit {
-  @HostBinding('attr.rel') relAttr = null;
+  @HostBinding('attr.rel') relAttr: string = null;
 
-  @HostBinding('attr.target') targetAttr = null;
+  @HostBinding('attr.target') targetAttr: string = null;
 
-  @HostBinding('attr.href') hrefAttr = null;
+  @HostBinding('attr.href') hrefAttr: string = null;
 
   @Input() link: string;
 

@@ -13,6 +13,7 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 import { from, Observable, of } from 'rxjs';
 import { HEALTCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
+import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -125,7 +126,7 @@ export class Web3Public {
    * @return null if healthcheck is not defined for current blockchain, else is node works status
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
-    const heathcheckData = HEALTCHECK[this.blockchain.name];
+    const heathcheckData = HEALTCHECK[this.blockchain.name as Web3SupportedBlockchains];
     if (!heathcheckData) {
       return of(null);
     }
@@ -157,7 +158,10 @@ export class Web3Public {
     return new BigNumber(options.inWei ? balance : Web3Public.weiToEth(balance));
   }
 
-  public async getTokenOrNativeBalance(userAddress: string, tokenAddress): Promise<BigNumber> {
+  public async getTokenOrNativeBalance(
+    userAddress: string,
+    tokenAddress: string
+  ): Promise<BigNumber> {
     let balance;
     if (Web3Public.isNativeAddress(tokenAddress)) {
       balance = await this.web3.eth.getBalance(userAddress);
@@ -357,7 +361,7 @@ export class Web3Public {
       };
     }
 
-    const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'];
+    const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI as AbiItem[], method)
     );
@@ -367,6 +371,7 @@ export class Web3Public {
     } as BlockchainTokenExtended;
 
     (await Promise.all(tokenFieldsPromises)).forEach(
+      // @ts-ignore
       (elem, index) => (token[tokenMethods[index]] = elem)
     );
 
@@ -378,7 +383,7 @@ export class Web3Public {
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokensAddresses[0]);
     const indexOfNativeCoin = tokensAddresses.findIndex(Web3Public.isNativeAddress);
-    const promises = [];
+    const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 
     if (indexOfNativeCoin !== -1) {
       tokensAddresses.splice(indexOfNativeCoin, 1);
@@ -391,7 +396,7 @@ export class Web3Public {
     promises[0] = this.multicall(calls);
 
     const results = await Promise.all(promises);
-    const tokensBalances = results[0].map(([success, hexBalance]) =>
+    const tokensBalances = results[0].map(({ success, returnData: hexBalance }) =>
       success ? new BigNumber(hexBalance) : new BigNumber(0)
     );
 

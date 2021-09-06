@@ -45,7 +45,8 @@ export class EthWethSwapProviderService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
-    const wethAddress = this.contractAddresses[blockchain].toLowerCase();
+    const wethAddress =
+      this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain].toLowerCase();
     return (
       (fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress.toLowerCase() === wethAddress) ||
       (toTokenAddress === NATIVE_TOKEN_ADDRESS && fromTokenAddress.toLowerCase() === wethAddress)
@@ -74,7 +75,7 @@ export class EthWethSwapProviderService {
     options: ItOptions
   ): Promise<TransactionReceipt> {
     return this.web3PrivateService.executeContractMethod(
-      this.contractAddresses[blockchain],
+      this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain],
       this.abi,
       'deposit',
       [],
@@ -91,7 +92,7 @@ export class EthWethSwapProviderService {
     options: ItOptions
   ): Promise<TransactionReceipt> {
     return this.web3PrivateService.executeContractMethod(
-      this.contractAddresses[blockchain],
+      this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain],
       this.abi,
       'withdraw',
       [fromAmountAbsolute],

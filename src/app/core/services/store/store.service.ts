@@ -90,7 +90,7 @@ export class StoreService {
   }
 
   public deleteItem(key: keyof Store): void {
-    const newData = {
+    const newData: Store = {
       ...this.$dataSubject.value,
       [key]: undefined
     };

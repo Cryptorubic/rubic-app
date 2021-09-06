@@ -21,7 +21,7 @@ export class CoingeckoApiService {
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   ];
 
-  private readonly tokenCoingeckoId;
+  private readonly tokenCoingeckoId: Partial<Record<BLOCKCHAIN_NAME, string>>;
 
   private readonly debounce = 13_000; // 13 seconds
 
@@ -82,9 +82,7 @@ export class CoingeckoApiService {
       })
       .pipe(
         timeout(this.timeout),
-        map(response => {
-          return +response[tokenCoingeckoId].usd;
-        }),
+        map((response: { [key: string]: { usd: string } }) => +response[tokenCoingeckoId].usd),
         catchError(_err => {
           console.debug('Coingecko is not alive');
           return of(defaultPrice);

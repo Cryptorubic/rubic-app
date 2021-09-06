@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Injector, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, OnInit, Type } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
@@ -57,6 +57,8 @@ export class SettingsContainerComponent implements OnInit {
       default:
         component = SettingsCcrComponent;
     }
-    return new PolymorpheusComponent(component);
+    return new PolymorpheusComponent(
+      component as Type<SettingsItComponent | SettingsBridgeComponent | SettingsCcrComponent>
+    );
   }
 }

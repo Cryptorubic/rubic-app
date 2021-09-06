@@ -5,6 +5,8 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { WalletLoginInterface, UserInterface } from './models/user.interface';
@@ -229,12 +231,12 @@ export class AuthService {
     this.store.clearStorage();
   }
 
-  private catchSignIn(err) {
+  private catchSignIn(err: Error & { code: number }) {
     this.$currentUser.next(null);
     this.isAuthProcess = false;
     this.providerConnectorService.deActivate();
 
-    let error = err;
+    let error: Error = err;
     if (
       err.code === 4001 ||
       // metamask browser
@@ -245,7 +247,7 @@ export class AuthService {
       error = new SignRejectError();
     }
     this.headerStore.setWalletsLoadingStatus(false);
-    this.errorService.catch(error);
+    this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
     this.$currentUser.next(null);
     this.isAuthProcess = false;
   }
