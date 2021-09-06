@@ -28,6 +28,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,7 @@ export class InstantTradeService {
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
+    private readonly zrxService: ZrxService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -86,17 +88,20 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
+        [INSTANT_TRADES_PROVIDER.ZRX]: this.zrxService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,
         [INSTANT_TRADES_PROVIDER.PANCAKESWAP]: this.pancakeSwapService,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapBscService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapBscService,
+        [INSTANT_TRADES_PROVIDER.ZRX]: this.zrxService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchPolygonService,
         [INSTANT_TRADES_PROVIDER.QUICKSWAP]: this.quickSwapService,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapPolygonService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapPolygonService,
+        [INSTANT_TRADES_PROVIDER.ZRX]: this.zrxService
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService

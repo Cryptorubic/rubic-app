@@ -75,7 +75,7 @@ export class InstantTradesApiService {
     }
 
     let tradeInfo: InstantTradesPostApi;
-    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
+    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH || provider === INSTANT_TRADES_PROVIDER.ZRX) {
       tradeInfo = {
         hash,
         network: TO_BACKEND_BLOCKCHAINS[blockchain],

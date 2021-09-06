@@ -4,5 +4,6 @@ export enum INSTANT_TRADES_PROVIDER {
   PANCAKESWAP = 'pancakeswap',
   QUICKSWAP = 'quickswap',
   SUSHISWAP = 'sushiswap',
+  ZRX = 'zerox',
   WRAPPED = 'wrapped'
 }
