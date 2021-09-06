@@ -11,10 +11,12 @@
           'bottom-amount__tokens-container_placeholder': !errorText && !tokensAmount
         }"
       >
-        {{
-          (tokensAmount | bigNumberFormat | withRound: 'toClosestValue') ||
-            (errorText && 'tradePage.tradingNotAvailable' | translate)
-        }}
+        <div class="bottom-amount__output">
+          {{
+            (tokensAmount | bigNumberFormat | withRound: 'toClosestValue') ||
+              (errorText && 'tradePage.tradingNotAvailable' | translate)
+          }}
+        </div>
         <div
           *ngIf="errorText"
           tuiHintMode="error"
