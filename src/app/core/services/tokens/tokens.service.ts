@@ -14,9 +14,12 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
+import { TokensRequestOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
+import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 export interface CountPage {
-  count: number;
+  count: number | undefined;
   page: number;
 }
 
@@ -50,7 +53,9 @@ export class TokensService {
    * Get current tokens list.
    */
   get tokens(): Observable<List<TokenAmount>> {
-    return this.tokensSubject.asObservable();
+    return this.tokensSubject
+      .asObservable()
+      .pipe(map(list => list.filter(token => token !== null)));
   }
 
   /**
@@ -83,12 +88,7 @@ export class TokensService {
   ) {
     this.tokensSubject = new BehaviorSubject(List([]));
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
-    this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>({
-      [BLOCKCHAIN_NAME.ETHEREUM]: { count: 9999, page: 1 },
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: { count: 9999, page: 1 },
-      [BLOCKCHAIN_NAME.POLYGON]: { count: 9999, page: 1 },
-      [BLOCKCHAIN_NAME.HARMONY]: { count: 9999, page: 1 }
-    });
+    this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
     this.setupSubscriptions();
   }
 
@@ -259,7 +259,7 @@ export class TokensService {
   }
 
   /**
-   * @description Update page of current network tokens pagination.
+   * @description Update pagination state for current network.
    * @param network Blockchain name.
    */
   private updateNetworkPage(network: BLOCKCHAIN_NAME): void {
@@ -278,9 +278,13 @@ export class TokensService {
    * @description Fetch tokens for specific network.
    * @param network Requested network.
    * @param pageSize Requested page size.
+   * @param callback Callback after success fetch.
    */
-  public fetchNetworkTokens(network: BLOCKCHAIN_NAME, pageSize: number = 150): void {
-    this.updateNetworkPage(network);
+  public fetchNetworkTokens(
+    network: BLOCKCHAIN_NAME,
+    pageSize: number = 150,
+    callback?: () => void
+  ): void {
     this.tokensApiService
       .fetchSpecificBackendTokens({
         network,
@@ -294,16 +298,24 @@ export class TokensService {
         }))
       )
       .subscribe((tokens: { total: number; result: List<TokenAmount> }) => {
-        this.tokensSubject.next(tokens.result);
-        const value = {
-          ...this.tokensNetworkStateSubject.value,
-          [network]: {
-            count: tokens.total,
-            page: this.tokensNetworkStateSubject.value[network].page + 1
-          }
-        };
-        this.tokensNetworkStateSubject.next(value);
+        this.updateNetworkPage(network);
         this.tokensSubject.next(this.tokensSubject.value.concat(tokens.result));
+        callback();
       });
+  }
+
+  /**
+   *
+   * @param query
+   * @param network
+   */
+  public fetchQueryTokens(query: string, network: BLOCKCHAIN_NAME): Observable<List<Token>> {
+    const isAddress = query.includes('0x');
+    const params = {
+      network: TO_BACKEND_BLOCKCHAINS[network],
+      ...(!isAddress && { symbol: query }),
+      ...(isAddress && { address: query })
+    } as TokensRequestOptions;
+    return this.tokensApiService.fetchQueryToken(params);
   }
 }

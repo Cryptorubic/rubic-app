@@ -91,6 +91,25 @@ export class TokensApiService {
   }
 
   /**
+   * @description Fetch specific tokens by symbol or address.
+   * @param requestOptions Network which tokens is searched.
+   * @return Observable<TokensBackendResponse> Tokens response from backend with count.
+   */
+  public fetchQueryToken(requestOptions: TokensRequestOptions): Observable<List<Token>> {
+    const options = {
+      page: 1,
+      network: requestOptions.network,
+      ...(requestOptions.symbol && { symbol: requestOptions.symbol }),
+      ...(requestOptions.address && { address: requestOptions.address })
+    };
+    return this.httpService.get(this.getTokensUrl, options).pipe(
+      map((tokensResponse: BackendToken[]) => {
+        return tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List();
+      })
+    );
+  }
+
+  /**
    * @description Fetch specific network tokens from backend.
    * @param requestOptions Network which tokens is searched.
    * @return Observable<TokensBackendResponse> Tokens response from backend with count.

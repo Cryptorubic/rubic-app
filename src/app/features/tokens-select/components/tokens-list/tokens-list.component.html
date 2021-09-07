@@ -11,6 +11,7 @@
           tuiScrollable
           itemSize="63"
           class="tokens-scrollbar tui-zero-scrollbar"
+          [style.overflow]="loading ? 'hidden' : 'auto'"
         >
           <li
             *cdkVirtualFor="let token of tokens; let i = index"

@@ -16,6 +16,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { Utils } from 'src/app/shared/models/utils/utils';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -30,7 +31,9 @@ export class RubicTokensComponent implements OnInit {
   @Input() formType: 'from' | 'to';
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
-    if (value) {
+    const lengthEquality = value.length === this.tokensSubject.value.length;
+    const deepEquality = new Utils().compareObjects(value, this.tokensSubject.value);
+    if (!lengthEquality && !deepEquality) {
       this.tokensSubject.next(value);
     }
   }
@@ -59,7 +62,7 @@ export class RubicTokensComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly destroy$: TuiDestroyService
   ) {
-    this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>(null);
+    this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
   }
 
   public ngOnInit(): void {

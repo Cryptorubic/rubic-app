@@ -7,7 +7,7 @@ export default [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://damp-misty-hill.quiknode.pro/c5c252ef9e1c07505eaf8109044b87b8e792f54c/',
+    rpcLink: 'https://damp-old-resonance.bsc.quiknode.pro/',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,

@@ -14,9 +14,10 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { Utils } from 'src/app/shared/models/utils/utils';
 
 @Component({
   selector: 'app-tokens-list',
@@ -31,7 +32,6 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   @Input() public set tokens(value: AvailableTokenAmount[]) {
     if (value) {
       this._tokens = value;
-      this.loading = false;
     }
   }
 
@@ -45,7 +45,14 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   @Output() pageUpdate = new EventEmitter<number>();
 
-  @ViewChild(CdkVirtualScrollViewport) virtualScroll: CdkVirtualScrollViewport;
+  public listScroll: CdkVirtualScrollViewport;
+
+  @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
+    this.listScroll = scroll;
+    if (scroll && !this.listScroll) {
+      this.observeScroll();
+    }
+  }
 
   @Input() tokensNetworkState: { count: number; page: number };
 
@@ -53,7 +60,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   public hintsShown: boolean[];
 
-  public loading: boolean;
+  @Input() public loading: boolean;
 
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
@@ -78,29 +85,32 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * Lifecycle hook.
    */
   public ngOnChanges(changes: SimpleChanges): void {
-    this.setupHints(changes);
+    if (changes.tokens) {
+      this.setupHints(changes);
+    }
   }
 
   /**
    * @description Observe tokens scroll and fetch new if needed.
    */
   private observeScroll(): void {
-    this.virtualScroll.renderedRangeStream
+    this.listScroll.renderedRangeStream
       .pipe(
         takeUntil(this.destroy$),
         debounceTime(500),
         filter(el => {
+          if (this.loading) {
+            return false;
+          }
           const endOfList = el.end > this.tokens.length - 50;
-          const shouldFetch = this.tokensNetworkState
-            ? this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150)
-            : true;
+          const shouldFetch =
+            !this.tokensNetworkState.count ||
+            (!this.tokensNetworkState &&
+              this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150));
 
           return endOfList && shouldFetch;
         }),
-        map(el => {
-          this.loading = true;
-          return el;
-        })
+        debounceTime(500)
       )
       .subscribe(() => {
         this.pageUpdate.emit();
@@ -112,9 +122,11 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * @param changes Detected changes.
    */
   private setupHints(changes: SimpleChanges): void {
-    if (
-      JSON.stringify(changes.tokens.currentValue) !== JSON.stringify(changes.tokens.previousValue)
-    ) {
+    const hasChanges = !new Utils().compareObjects(
+      changes.tokens?.currentValue,
+      changes.tokens?.previousValue
+    );
+    if (hasChanges) {
       const tokensNumber = changes.tokens.currentValue.length;
       this.hintsShown = Array(tokensNumber).fill(false);
     }

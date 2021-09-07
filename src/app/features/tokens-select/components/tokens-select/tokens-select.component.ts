@@ -4,7 +4,8 @@ import {
   Component,
   Inject,
   OnInit,
-  Self
+  Self,
+  ViewChild
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
@@ -19,11 +20,12 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, mapTo, takeUntil } from 'rxjs/operators';
+import { catchError, debounceTime, mapTo, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -68,13 +70,22 @@ export class TokensSelectComponent implements OnInit {
 
   public tokensNetworkState: { page: number; count: number };
 
+  @ViewChild(TokensListComponent) tokensList: TokensListComponent;
+
+  private readonly querySubject: BehaviorSubject<string>;
+
+  public tokensListLoading: boolean;
+
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
 
   set blockchain(value: BLOCKCHAIN_NAME) {
-    if (value) {
+    if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
+      if (this.tokensList) {
+        this.tokensList.listScroll.scrollToIndex(0);
+      }
     }
   }
 
@@ -84,7 +95,7 @@ export class TokensSelectComponent implements OnInit {
 
   set query(value: string) {
     this._query = value;
-    this.updateTokensList();
+    this.querySubject.next(value);
   }
 
   constructor(
@@ -98,7 +109,8 @@ export class TokensSelectComponent implements OnInit {
     @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.initiateContextParams(context.data);
-    this.prevSelectedToken = this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
+    this.querySubject = new BehaviorSubject<string>('');
+    this.tokensListLoading = false;
   }
 
   /**
@@ -123,6 +135,7 @@ export class TokensSelectComponent implements OnInit {
     this.allowedBlockchains = context.allowedBlockchains;
     this.idPrefix = context.idPrefix;
     this.blockchain = context.currentBlockchain;
+    this.prevSelectedToken = this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
   }
 
   /**
@@ -130,9 +143,9 @@ export class TokensSelectComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.updateTokensList();
-    this.tokensService.tokensNetworkState.pipe(takeUntil(this.destroy$)).subscribe(el => {
-      this.tokensNetworkState = el[this.blockchain];
-    });
+    this.querySubject
+      .pipe(takeUntil(this.destroy$), debounceTime(500))
+      .subscribe(() => this.updateTokensList());
   }
 
   /**
@@ -181,10 +194,13 @@ export class TokensSelectComponent implements OnInit {
       if (!sortedAndFilteredTokens.length) {
         this.loading = true;
         this.cdr.detectChanges();
-        await this.tryParseQueryAsCustomToken();
+        await this.tryParseQuery();
         this.loading = false;
         this.cdr.detectChanges();
       }
+    });
+    this.tokensService.tokensNetworkState.pipe(takeUntil(this.destroy$)).subscribe(el => {
+      this.tokensNetworkState = el[this.blockchain];
     });
   }
 
@@ -304,7 +320,33 @@ export class TokensSelectComponent implements OnInit {
   /**
    * @description Update tokens.
    */
-  public updateTokens(): void {
-    this.tokensService.fetchNetworkTokens(this.blockchain);
+  public fetchNewPageTokens(): void {
+    this.tokensListLoading = true;
+    this.tokensService.fetchNetworkTokens(this.blockchain, 150, () => {
+      this.tokensListLoading = false;
+      this.cdr.detectChanges();
+    });
+  }
+
+  private async tryParseQuery(): Promise<void> {
+    if (this.query.length) {
+      const backendTokens = await this.tokensService
+        .fetchQueryTokens(this.query, this.blockchain)
+        .toPromise();
+      if (backendTokens.size) {
+        const availableTokens = backendTokens
+          .map(el => {
+            return {
+              ...el,
+              available: true,
+              amount: new BigNumber(0)
+            };
+          })
+          .toArray();
+        this.tokensToShow$.next(availableTokens);
+      } else {
+        await this.tryParseQueryAsCustomToken();
+      }
+    }
   }
 }

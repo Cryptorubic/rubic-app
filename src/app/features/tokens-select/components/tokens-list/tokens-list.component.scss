@@ -131,12 +131,9 @@ $token-card-height: 55px;
   padding-top: 15px;
 
   @include iframe {
-    padding-top: 0;
-  }
-
-  @include iframe {
     position: static;
     left: unset;
+    padding-top: 0;
 
     width: 100%;
   }
@@ -147,7 +144,7 @@ $token-card-height: 55px;
 }
 
 .tokens-scrollbar {
-  height: 400px;
+  height: 428px;
 
   @include iframe-horizontal {
     height: $token-card-height + 20px;
