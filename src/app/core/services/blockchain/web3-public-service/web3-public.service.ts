@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import ConnectionLink from '../types/ConnectionLink';
 import { Web3Public } from './Web3Public';
 import { PublicProviderService } from '../public-provider/public-provider.service';
@@ -48,7 +49,8 @@ export class Web3PublicService {
 
   constructor(
     publicProvider: PublicProviderService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly httpClient: HttpClient
   ) {
     this.connectionLinks = publicProvider.connectionLinks.filter(connection =>
       WEB3_SUPPORTED_BLOCKCHAINS.includes(connection.blockchainName as Web3SupportedBlockchains)
@@ -73,7 +75,8 @@ export class Web3PublicService {
             this[connection.blockchainName as Web3SupportedBlockchains] = new Web3Public(
               new Web3(testingConnection.rpcLink),
               BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName),
-              this.useTestingModeService
+              this.useTestingModeService,
+              this.httpClient
             );
           }
         });
@@ -116,7 +119,8 @@ export class Web3PublicService {
     const web3Public = new Web3Public(
       new Web3(rpcLink),
       BlockchainsInfo.getBlockchainByName(blockchainName),
-      this.useTestingModeService
+      this.useTestingModeService,
+      this.httpClient
     );
 
     const nodesChecked$ = this._nodesChecked$.asObservable();

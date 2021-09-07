@@ -47,8 +47,8 @@ export const footerLinks: FooterLink[] = [
     link: 'https://www.coingecko.com/en/coins/rubic'
   },
   {
-    imageUrl: 'assets/images/contacts/pulse.svg',
-    altText: 'Defi Pulse',
-    link: 'https://defipulse.com/'
+    imageUrl: 'assets/images/contacts/youtube.svg',
+    altText: 'Youtube',
+    link: 'https://www.youtube.com/c/RubicExchange'
   }
 ];
