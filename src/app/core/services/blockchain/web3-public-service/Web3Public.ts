@@ -16,6 +16,7 @@ import { HEALTCHECK } from 'src/app/core/services/blockchain/constants/healthche
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { HttpClient } from '@angular/common/http';
+import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -476,7 +477,7 @@ export class Web3Public {
     abi: AbiItem[],
     contractAddress: string,
     fromAddress: string,
-    callsData: { contractMethod: string; params: unknown[]; value?: number }[]
+    callsData: BatchCall[]
   ): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(abi, contractAddress);
 
