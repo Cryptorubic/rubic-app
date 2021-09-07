@@ -346,7 +346,7 @@ export class CommonUniswapV2Service {
     }
 
     if (this.settings.rubicOptimisation && toToken.price && this.walletAddress) {
-      const routesWithprofit: UniswapV2CalculatedInfoWithProfit[] = routes.map((route, index) => {
+      const routesWithProfit: UniswapV2CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
         const profit = Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
@@ -360,8 +360,28 @@ export class CommonUniswapV2Service {
         };
       });
 
-      return routesWithprofit.sort((a, b) => (b.profit.minus(a.profit).gt(0) ? 1 : -1))[0];
+      const sortedByProfitRoutes = routesWithProfit.sort((a, b) =>
+        b.profit.minus(a.profit).gt(0) ? 1 : -1
+      );
+
+      console.debug(
+        `[DEBUG] calldata ${JSON.stringify({
+          fromTokenAddress,
+          fromAmountAbsolute,
+          toToken
+        })}\nreturn ${JSON.stringify({ routeWithProfit: sortedByProfitRoutes[0] })}`
+      );
+
+      return sortedByProfitRoutes[0];
     }
+
+    console.debug(
+      `[DEBUG] calldata ${JSON.stringify({
+        fromTokenAddress,
+        fromAmountAbsolute,
+        toToken
+      })}\nreturn ${JSON.stringify({ route: routes[0], estimatedGas: gasLimits[0] })}`
+    );
 
     return {
       route: routes[0],
