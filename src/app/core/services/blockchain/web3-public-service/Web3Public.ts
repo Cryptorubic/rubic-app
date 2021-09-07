@@ -136,7 +136,13 @@ export class Web3Public {
       timeout(timeoutMs),
       map(result => result === heathcheckData.expected),
       catchError(err => {
-        console.debug(`${this.blockchain.label} node healthcheck fail: ${err}`);
+        if (err?.name === 'TimeoutError') {
+          console.debug(
+            `${this.blockchain.label} node healthcheck timeout (${timeoutMs}ms) has occurred.`
+          );
+        } else {
+          console.debug(`${this.blockchain.label} node healthcheck fail: ${err}`);
+        }
         return of(false);
       })
     );
@@ -534,25 +540,29 @@ export class Web3Public {
     fromAddress: string,
     callsData: BatchCall[]
   ): Promise<BigNumber[]> {
-    const contract = new this.web3.eth.Contract(abi, contractAddress);
+    try {
+      const contract = new this.web3.eth.Contract(abi, contractAddress);
 
-    const dataList = callsData.map(callData =>
-      contract.methods[callData.contractMethod](...callData.params).encodeABI()
-    );
+      const dataList = callsData.map(callData =>
+        contract.methods[callData.contractMethod](...callData.params).encodeABI()
+      );
 
-    const rpcCallsData = dataList.map((data, index) => ({
-      rpcMethod: 'eth_estimateGas',
-      params: {
-        from: fromAddress,
-        to: contractAddress,
-        data,
-        ...(callsData[index].value && { value: `0x${callsData[index].value.toString(16)}` })
-      }
-    }));
+      const rpcCallsData = dataList.map((data, index) => ({
+        rpcMethod: 'eth_estimateGas',
+        params: {
+          from: fromAddress,
+          to: contractAddress,
+          data,
+          ...(callsData[index].value && { value: `0x${callsData[index].value.toString(16)}` })
+        }
+      }));
 
-    const result = await this.rpcBatchRequest<string>(rpcCallsData);
-
-    return result.map(value => value && new BigNumber(value));
+      const result = await this.rpcBatchRequest<string>(rpcCallsData);
+      return result.map(value => value && new BigNumber(value));
+    } catch (e) {
+      console.error(e);
+      return callsData.map(() => null);
+    }
   }
 
   /**

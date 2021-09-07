@@ -117,7 +117,7 @@ export class CommonUniswapV2Service {
     return {
       callData: {
         contractMethod: SWAP_METHOD.ETH_TO_TOKENS,
-        params: [amountIn, amountOutMin, path, this.walletAddress, deadline],
+        params: [amountIn, path, this.walletAddress, deadline],
         value: amountOutMin
       },
       defaultGasLimit: this.defaultEstimateGas.ethToTokens[path.length - 2]
@@ -364,6 +364,7 @@ export class CommonUniswapV2Service {
         b.profit.minus(a.profit).gt(0) ? 1 : -1
       );
 
+      // TODO: remove console.debug after qa tests
       console.debug(
         `[DEBUG] calldata ${JSON.stringify({
           fromTokenAddress,
@@ -375,6 +376,7 @@ export class CommonUniswapV2Service {
       return sortedByProfitRoutes[0];
     }
 
+    // TODO: remove console.debug after qa tests
     console.debug(
       `[DEBUG] calldata ${JSON.stringify({
         fromTokenAddress,
