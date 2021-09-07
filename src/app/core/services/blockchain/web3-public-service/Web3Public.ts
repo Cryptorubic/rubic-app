@@ -17,6 +17,7 @@ import { catchError, map, timeout } from 'rxjs/operators';
 import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { HttpClient } from '@angular/common/http';
 import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
+import { RpcResponse } from 'src/app/core/services/blockchain/types/RpcResponse';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -49,15 +50,6 @@ export class Web3Public {
   static get nativeTokenAddress(): string {
     return NATIVE_TOKEN_ADDRESS;
   }
-
-  /**
-   * @description gets information about token through ERC-20 token contract
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param blockchain platform of the token
-   * @return object, with written token fields, or a error, if there's no such token
-   */
-  public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
-    this.getTokenInfoCachingDecorator();
 
   static calculateGasMargin(amount: BigNumber | string | number, percent: number): string {
     return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
@@ -116,6 +108,10 @@ export class Web3Public {
     return address === NATIVE_TOKEN_ADDRESS;
   };
 
+  /**
+   * @description set new web3 provider
+   * @param provider
+   */
   public setProvider(provider: Provider): void {
     this.web3.setProvider(provider);
   }
@@ -158,6 +154,11 @@ export class Web3Public {
     return new BigNumber(options.inWei ? balance : Web3Public.weiToEth(balance));
   }
 
+  /**
+   *
+   * @param userAddress wallet address whose balance you want to find out
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   */
   public async getTokenOrNativeBalance(
     userAddress: string,
     tokenAddress: string
@@ -171,10 +172,6 @@ export class Web3Public {
     return new BigNumber(balance);
   }
 
-  public getBlock(): Promise<BlockTransactionString> {
-    return this.web3.eth.getBlock('latest');
-  }
-
   /**
    * @description gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
    * @param tokenAddress address of the smart-contract corresponding to the token
@@ -186,6 +183,13 @@ export class Web3Public {
 
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
+  }
+
+  /**
+   * @description get latest block
+   */
+  public getBlock(): Promise<BlockTransactionString> {
+    return this.web3.eth.getBlock('latest');
   }
 
   /**
@@ -290,6 +294,13 @@ export class Web3Public {
       : gasPrice.multipliedBy(gasLimit).div(10 ** 18);
   }
 
+  /**
+   * @description get a transaction by hash in several attempts
+   * @param hash hash of the target transaction
+   * @param attempt current attempt number
+   * @param attemptsLimit maximum allowed number of attempts
+   * @param delay ms delay before next attempt
+   */
   public async getTransactionByHash(
     hash: string,
     attempt?: number,
@@ -339,6 +350,16 @@ export class Web3Public {
     });
   }
 
+  /**
+   * @description gets information about token through ERC-20 token contract
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @param blockchain platform of the token
+   * @return object, with written token fields, or a error, if there's no such token
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
+    this.getTokenInfoCachingDecorator();
+
   private getTokenInfoCachingDecorator(): (
     tokenAddress: string
   ) => Promise<BlockchainTokenExtended> {
@@ -353,6 +374,10 @@ export class Web3Public {
     };
   }
 
+  /**
+   * @description get ERC-20 token info by address
+   * @param tokenAddress address of token
+   */
   private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
     if (Web3Public.isNativeAddress(tokenAddress)) {
       return {
@@ -380,6 +405,11 @@ export class Web3Public {
     return token;
   }
 
+  /**
+   * @description get balance of multiple tokens via multicall
+   * @param address wallet address
+   * @param tokensAddresses tokens addresses
+   */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokensAddresses[0]);
     const indexOfNativeCoin = tokensAddresses.findIndex(Web3Public.isNativeAddress);
@@ -407,6 +437,13 @@ export class Web3Public {
     return tokensBalances;
   }
 
+  /**
+   * @description use multicall to make many calls in the single rpc request
+   * @param contractAddress target contract address
+   * @param contractAbi target contract abi
+   * @param methodName target method name
+   * @param methodCallsArguments list method calls parameters arrays
+   */
   public async multicallContractMethod<Output>(
     contractAddress: string,
     contractAbi: AbiItem[],
@@ -446,6 +483,13 @@ export class Web3Public {
     return contract.methods.tryAggregate(false, calls).call();
   }
 
+  /**
+   * @description Checks if the specified address contains the required amount of these tokens.
+   * Throws an InsufficientFundsError if the balance is insufficient
+   * @param token token balance for which you need to check
+   * @param amount required balance
+   * @param userAddress the address where the required balance should be
+   */
   public async checkBalance(
     token: { address: string; symbol: string; decimals: number },
     amount: BigNumber,
@@ -473,6 +517,17 @@ export class Web3Public {
     }
   }
 
+  /**
+   * @description get estimated gas of several contract method execution via rpc batch request
+   * @param abi contract ABI
+   * @param contractAddress contract address
+   * @param fromAddress sender address
+   * @param callsData transactions parameters
+   * @returns list of contract execution estimated gases.
+   * if the execution of the method in the real blockchain would not be reverted,
+   * then the list item would be equal to the predicted gas limit.
+   * Else (if you have not enough balance, allowance ...) then the list item would be equal to null
+   */
   public async batchEstimatedGas(
     abi: AbiItem[],
     contractAddress: string,
@@ -500,6 +555,13 @@ export class Web3Public {
     return result.map(value => value && new BigNumber(value));
   }
 
+  /**
+   * @description send batch request via web3
+   * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
+   * @param calls Web3 method calls
+   * @param callsParams ethereum method transaction parameters
+   * @returns batch request call result sorted in order of input parameters
+   */
   private web3BatchRequest<T extends string | string[]>(
     calls: { request: (...params: unknown[]) => Method }[],
     callsParams: Object[]
@@ -521,17 +583,16 @@ export class Web3Public {
     return Promise.all(promises);
   }
 
+  /**
+   * @description send batch request to rpc provider directly
+   * @see {@link https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false|EthereumJSON-RPC}
+   * @param rpcCallsData rpc methods and parameters list
+   * @returns rpc batch request call result sorted in order of input parameters
+   */
   private async rpcBatchRequest<T extends string | string[]>(
     rpcCallsData: {
       rpcMethod: string;
-      params: {
-        from: string;
-        to: string;
-        data: string;
-        gas?: string;
-        gasPrice?: string;
-        value?: string;
-      };
+      params: Object;
     }[]
   ): Promise<T[]> {
     const seed = Date.now();
@@ -542,11 +603,8 @@ export class Web3Public {
       params: [{ ...callData.params }]
     }));
 
-    const response: { id: number; result: T; error: unknown }[] = await this.httpClient
-      .post<{ id: number; result: T; error: unknown }[]>(
-        (<HttpProvider>this.web3.currentProvider).host,
-        batch
-      )
+    const response = await this.httpClient
+      .post<RpcResponse<T>[]>((<HttpProvider>this.web3.currentProvider).host, batch)
       .toPromise();
 
     return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
