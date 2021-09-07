@@ -150,6 +150,10 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     );
   }
 
+  public getEstimatedGas(): Observable<BigNumber> {
+    return of(new BigNumber(0));
+  }
+
   getFee(
     tokenPair: BridgeTokenPair,
     toBlockchain: BLOCKCHAIN_NAME,

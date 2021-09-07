@@ -12,6 +12,7 @@ import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import BigNumber from 'bignumber.js';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 @Injectable()
@@ -59,6 +60,10 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
 
   public getProviderType(): BRIDGE_PROVIDER {
     return BRIDGE_PROVIDER.XDAI;
+  }
+
+  public getEstimatedGas(): Observable<BigNumber> {
+    return of(new BigNumber(0));
   }
 
   public getFee(): Observable<number> {

@@ -155,6 +155,10 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
+  public getEstimatedGas(): Observable<BigNumber> {
+    return of(new BigNumber(0));
+  }
+
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
     if (toBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
       return of(tokenPair.toEthFee);

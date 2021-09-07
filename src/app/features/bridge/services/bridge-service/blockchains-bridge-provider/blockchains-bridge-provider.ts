@@ -55,4 +55,6 @@ export abstract class BlockchainsBridgeProvider {
    * @return observable transaction receipt object
    */
   public abstract approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt>;
+
+  public abstract getEstimatedGas(bridgeTrade?: BridgeTrade): Observable<BigNumber>;
 }

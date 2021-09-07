@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { first } from 'rxjs/operators';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import BigNumber from 'bignumber.js';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import { PanamaBridgeProviderService } from '../common/panama-bridge-provider/panama-bridge-provider.service';
 import { PanamaToken } from '../common/panama-bridge-provider/models/PanamaToken';
@@ -57,6 +58,10 @@ export class EthereumTronBridgeProviderService extends BlockchainsBridgeProvider
 
   public getProviderType(): BRIDGE_PROVIDER {
     return BRIDGE_PROVIDER.PANAMA;
+  }
+
+  public getEstimatedGas(): Observable<BigNumber> {
+    return of(new BigNumber(0));
   }
 
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

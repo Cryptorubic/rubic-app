@@ -23,8 +23,10 @@ import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import networks from '../../../../../../shared/constants/blockchain/networks';
+import { POLYGON_BRIDGE_ABI } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/contract';
+import { fromPromise } from 'rxjs/internal-compatibility';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
+import networks from '../../../../../../shared/constants/blockchain/networks';
 
 interface PolygonGraphToken {
   rootToken: string;
@@ -195,6 +197,23 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
   public getProviderType(): BRIDGE_PROVIDER {
     return BRIDGE_PROVIDER.POLYGON;
+  }
+
+  public getEstimatedGas(bridgeTrade?: BridgeTrade): Observable<BigNumber> {
+    if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      return fromPromise(
+        this.web3PublicEth.getEstimatedGas(
+          POLYGON_BRIDGE_ABI,
+          '0xA0c68C638235ee32657e8f720a23ceC1bFc77C77',
+          'depositEtherFor',
+          [bridgeTrade.toAddress],
+          this.authService.userAddress,
+          Web3Public.toWei(bridgeTrade.amount)
+        )
+      );
+    }
+
+    return of(new BigNumber(0));
   }
 
   public getFee(): Observable<number> {

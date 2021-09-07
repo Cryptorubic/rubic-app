@@ -99,6 +99,14 @@ export class BridgeService {
     });
   }
 
+  public getEstimatedGas(): Observable<BigNumber> {
+    return this.getBridgeTrade().pipe(
+      switchMap(bridgeTrade => {
+        return this.bridgeProvider.getEstimatedGas(bridgeTrade);
+      })
+    );
+  }
+
   private setTokens(): void {
     const tokensObservables: Observable<BridgeTokenPairsByBlockchains>[] = [];
 
