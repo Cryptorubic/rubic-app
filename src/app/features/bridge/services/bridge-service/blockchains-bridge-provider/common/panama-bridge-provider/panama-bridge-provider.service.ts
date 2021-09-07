@@ -14,6 +14,7 @@ import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { List } from 'immutable';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
+import BigNumber from 'bignumber.js';
 import { PanamaToken } from './models/PanamaToken';
 
 interface PanamaResponse {
@@ -32,6 +33,8 @@ interface PanamaResponse {
 @Injectable()
 export class PanamaBridgeProviderService {
   private readonly apiUrl = 'https://api.binance.org/bridge/api/v2/';
+
+  private readonly defaultTransactionGas = new BigNumber(21_000);
 
   private readonly PANAMA_SUCCESS_CODE = 20000;
 
@@ -72,6 +75,10 @@ export class PanamaBridgeProviderService {
 
   public getProviderType(): BRIDGE_PROVIDER {
     return BRIDGE_PROVIDER.PANAMA;
+  }
+
+  public getEstimatedGas(): Observable<BigNumber> {
+    return of(this.defaultTransactionGas);
   }
 
   public getFee(token: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

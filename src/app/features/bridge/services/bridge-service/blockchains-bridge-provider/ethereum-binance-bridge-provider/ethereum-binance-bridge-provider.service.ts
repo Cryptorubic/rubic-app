@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, zip } from 'rxjs';
+import { Observable, zip } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
@@ -31,7 +31,7 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
   }
 
   public getEstimatedGas(): Observable<BigNumber> {
-    return of(new BigNumber(0));
+    return this.panamaBridgeProvider.getEstimatedGas();
   }
 
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

@@ -380,10 +380,6 @@ export class Web3Public {
     return token;
   }
 
-  public async encodeParameter(type: string, param): Promise<string> {
-    return this.web3.eth.abi.encodeParameter(type, param);
-  }
-
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokensAddresses[0]);
     const indexOfNativeCoin = tokensAddresses.findIndex(Web3Public.isNativeAddress);
