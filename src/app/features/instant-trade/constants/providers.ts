@@ -1,8 +1,11 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { InstantTradeProviderController } from 'src/app/features/instant-trade/models/instant-trades-provider-controller';
 
-export const INSTANT_TRADE_PROVIDERS = {
+export const INSTANT_TRADE_PROVIDERS: Partial<
+  Record<BLOCKCHAIN_NAME, InstantTradeProviderController[]>
+> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     {
       trade: null,

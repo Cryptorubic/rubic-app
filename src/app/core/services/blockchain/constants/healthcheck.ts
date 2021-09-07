@@ -19,5 +19,11 @@ export const HEALTCHECK = {
     contractAbi: ERC20_ABI,
     method: 'symbol',
     expected: 'USDT'
+  },
+  [BLOCKCHAIN_NAME.HARMONY]: {
+    contractAddress: '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f',
+    contractAbi: ERC20_ABI,
+    method: 'symbol',
+    expected: '1USDT'
   }
 };

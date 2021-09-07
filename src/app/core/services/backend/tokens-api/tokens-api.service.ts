@@ -26,7 +26,10 @@ export class TokensApiService {
       tokens
         .map((token: BackendToken) => ({
           ...token,
-          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+          blockchain:
+            FROM_BACKEND_BLOCKCHAINS[
+              token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+            ],
           price: token.usd_price,
           usedInIframe: token.used_in_iframe
         }))

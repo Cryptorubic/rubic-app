@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypto-tap-form-service/crypto-tap-form.service';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 
 @Component({
   selector: 'app-crypto-tap-top-form',
@@ -21,9 +22,9 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 export class CryptoTapTopFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
-  @Input() tokens;
+  @Input() tokens: AvailableTokenAmount[];
 
-  @Input() tokensLoading;
+  @Input() tokensLoading: boolean;
 
   @Input() blockchainsListFrom: BLOCKCHAIN_NAME[];
 

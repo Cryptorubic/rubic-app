@@ -28,7 +28,7 @@ export abstract class AbstractTableDataComponent {
       } else {
         sort = defaultSort;
       }
-      return direction * sort(a[key], b[key]);
+      return direction * sort(a[key] as BigNumber, b[key] as BigNumber);
     };
   }
 

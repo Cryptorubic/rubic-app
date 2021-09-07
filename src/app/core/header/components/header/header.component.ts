@@ -59,7 +59,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   constructor(
-    @Inject(PLATFORM_ID) platformId,
+    @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,

@@ -15,7 +15,7 @@ import { Web3Public } from '../web3-public-service/Web3Public';
 import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
 
 describe('Web3PrivateService', () => {
-  let originalTimeout;
+  let originalTimeout: number;
 
   const bobAddress = config.testReceiverAddress;
   let service: Web3PrivateService;

@@ -50,6 +50,8 @@ interface RubicTrade {
   swapContractAddress: string;
 }
 
+type RubicBridgeBlockchains = BLOCKCHAIN_NAME.ETHEREUM | BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+
 @Injectable()
 export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridgeProvider {
   private readonly apiUrl = 'https://bridge-api.rubic.exchange/api/v1/';
@@ -197,9 +199,9 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
     return from(
       web3Public.getAllowance(
-        this.rubicConfig[bridgeTrade.fromBlockchain].rubicTokenAddress,
+        this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
         this.providerConnectorService.address,
-        this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress
+        this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress
       )
     ).pipe(
       map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
@@ -209,7 +211,8 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const { token } = bridgeTrade;
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
-    const spenderAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
+    const spenderAddress =
+      this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress;
 
     if (token.symbol !== 'RBC') {
       this.errorService.throw(new WrongToken());
@@ -240,13 +243,15 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
     const trade: RubicTrade = {
       token: {
-        address: this.rubicConfig[bridgeTrade.fromBlockchain].rubicTokenAddress,
+        address:
+          this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
         decimals: token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals
       }
     } as RubicTrade;
 
     trade.token.symbol = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 'RBC' : 'BRBC';
-    trade.swapContractAddress = this.rubicConfig[bridgeTrade.fromBlockchain].swapContractAddress;
+    trade.swapContractAddress =
+      this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress;
 
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
 
@@ -278,7 +283,11 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     );
   }
 
-  private async provideAllowance(trade: RubicTrade, web3Public: Web3Public, onApprove) {
+  private async provideAllowance(
+    trade: RubicTrade,
+    web3Public: Web3Public,
+    onApprove: (hash: string) => void
+  ) {
     const allowance = await web3Public.getAllowance(
       trade.token.address,
       this.providerConnectorService.address,
