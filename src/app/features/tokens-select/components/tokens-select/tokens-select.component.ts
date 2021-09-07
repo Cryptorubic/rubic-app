@@ -26,6 +26,10 @@ import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/serv
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
+import {
+  PAGINATED_BLOCKCHAIN_NAME,
+  TokensNetworkState
+} from 'src/app/shared/models/tokens/paginated-tokens';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -119,7 +123,10 @@ export class TokensSelectComponent implements OnInit {
    * @param toBlockchain To token blockchain.
    * @return boolean If token allowed in cross-chain returns true, otherwise false.
    */
-  static allowInCrossChain(fromBlockchain, toBlockchain): boolean {
+  static allowInCrossChain(
+    fromBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BLOCKCHAIN_NAME
+  ): boolean {
     const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
     return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
   }
@@ -199,9 +206,11 @@ export class TokensSelectComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-    this.tokensService.tokensNetworkState.pipe(takeUntil(this.destroy$)).subscribe(el => {
-      this.tokensNetworkState = el[this.blockchain];
-    });
+    this.tokensService.tokensNetworkState
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((el: TokensNetworkState) => {
+        this.tokensNetworkState = el[this.blockchain as PAGINATED_BLOCKCHAIN_NAME];
+      });
   }
 
   /**
@@ -248,7 +257,7 @@ export class TokensSelectComponent implements OnInit {
     if (this.query) {
       const web3Public: Web3Public = this.web3PublicService[this.blockchain];
 
-      if (!web3Public.isAddressCorrect(this.query)) {
+      if (!Web3Public.isAddressCorrect(this.query)) {
         return;
       }
 
@@ -301,7 +310,7 @@ export class TokensSelectComponent implements OnInit {
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
-      blockchains[token.blockchain]
+      blockchains[token.blockchain as keyof typeof blockchains]
     }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient
@@ -322,7 +331,7 @@ export class TokensSelectComponent implements OnInit {
    */
   public fetchNewPageTokens(): void {
     this.tokensListLoading = true;
-    this.tokensService.fetchNetworkTokens(this.blockchain, 150, () => {
+    this.tokensService.fetchNetworkTokens(this.blockchain as PAGINATED_BLOCKCHAIN_NAME, 150, () => {
       this.tokensListLoading = false;
       this.cdr.detectChanges();
     });
@@ -331,7 +340,7 @@ export class TokensSelectComponent implements OnInit {
   private async tryParseQuery(): Promise<void> {
     if (this.query.length) {
       const backendTokens = await this.tokensService
-        .fetchQueryTokens(this.query, this.blockchain)
+        .fetchQueryTokens(this.query, this.blockchain as PAGINATED_BLOCKCHAIN_NAME)
         .toPromise();
       if (backendTokens.size) {
         const availableTokens = backendTokens

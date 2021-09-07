@@ -152,16 +152,15 @@ export class MyTradesService {
               token.blockchain === toToken.blockchain &&
               token.address.toLowerCase() === toToken.address.toLowerCase()
           );
-
           return {
             ...tableTrade,
             fromToken: {
               ...fromToken,
-              image: foundFromToken.image
+              image: foundFromToken?.image || fromToken.image
             },
             toToken: {
               ...toToken,
-              image: foundToToken.image
+              image: foundToToken?.image || toToken.image
             }
           };
         });
@@ -195,7 +194,7 @@ export class MyTradesService {
       );
   }
 
-  public loadPanamaTxHash(panamaId): Observable<string> {
+  public loadPanamaTxHash(panamaId: string): Observable<string> {
     return this.httpClient
       .get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`)
       .pipe(map((response: PanamaStatusResponse) => response.data.depositTxId));

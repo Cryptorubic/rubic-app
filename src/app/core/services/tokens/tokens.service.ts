@@ -17,18 +17,10 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
 import { TokensRequestOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-
-export interface CountPage {
-  count: number | undefined;
-  page: number;
-}
-
-interface TokensNetworkState {
-  [BLOCKCHAIN_NAME.ETHEREUM]: CountPage;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: CountPage;
-  [BLOCKCHAIN_NAME.POLYGON]: CountPage;
-  [BLOCKCHAIN_NAME.HARMONY]: CountPage;
-}
+import {
+  PAGINATED_BLOCKCHAIN_NAME,
+  TokensNetworkState
+} from 'src/app/shared/models/tokens/paginated-tokens';
 
 @Injectable({
   providedIn: 'root'
@@ -167,7 +159,7 @@ export class TokensService {
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY
     ];
-    const balances$ = blockchains.map(blockchain => {
+    const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
       return this.web3PublicService[blockchain].getTokensBalances(
         this.userAddress,
         tokens
@@ -262,7 +254,7 @@ export class TokensService {
    * @description Update pagination state for current network.
    * @param network Blockchain name.
    */
-  private updateNetworkPage(network: BLOCKCHAIN_NAME): void {
+  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME): void {
     const oldState = this.tokensNetworkStateSubject.value;
     const newState = {
       ...oldState,
@@ -270,7 +262,7 @@ export class TokensService {
         ...oldState[network],
         page: oldState[network].page + 1
       }
-    };
+    } as TokensNetworkState;
     this.tokensNetworkStateSubject.next(newState);
   }
 
@@ -281,7 +273,7 @@ export class TokensService {
    * @param callback Callback after success fetch.
    */
   public fetchNetworkTokens(
-    network: BLOCKCHAIN_NAME,
+    network: PAGINATED_BLOCKCHAIN_NAME,
     pageSize: number = 150,
     callback?: () => void
   ): void {
@@ -309,7 +301,10 @@ export class TokensService {
    * @param query
    * @param network
    */
-  public fetchQueryTokens(query: string, network: BLOCKCHAIN_NAME): Observable<List<Token>> {
+  public fetchQueryTokens(
+    query: string,
+    network: PAGINATED_BLOCKCHAIN_NAME
+  ): Observable<List<Token>> {
     const isAddress = query.includes('0x');
     const params = {
       network: TO_BACKEND_BLOCKCHAINS[network],

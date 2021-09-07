@@ -137,7 +137,7 @@ describe('Web3PublicService', () => {
   });
 
   it('is native address check works', () => {
-    const isNativeAddress = getWeb3Public().isNativeAddress(ETH.address);
+    const isNativeAddress = Web3Public.isNativeAddress(ETH.address);
 
     expect(isNativeAddress).toBeTruthy();
   });

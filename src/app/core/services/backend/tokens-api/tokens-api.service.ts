@@ -14,6 +14,7 @@ import {
   TokensRequestOptions,
   TokensResponse
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
+import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -40,7 +41,10 @@ export class TokensApiService {
       tokens
         .map((token: BackendToken) => ({
           ...token,
-          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+          blockchain:
+            FROM_BACKEND_BLOCKCHAINS[
+              token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+            ],
           price: token.usd_price,
           usedInIframe: token.used_in_iframe
         }))
@@ -118,7 +122,7 @@ export class TokensApiService {
     requestOptions: TokensRequestOptions
   ): Observable<TokensBackendResponse> {
     const options = {
-      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
+      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network as PAGINATED_BLOCKCHAIN_NAME],
       page: requestOptions.page,
       page_size: requestOptions.pageSize
     };

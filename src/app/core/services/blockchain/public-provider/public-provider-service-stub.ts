@@ -22,8 +22,10 @@ export default () => {
       }
     ],
     getBlockchainRpcLink(blockchainName: BLOCKCHAIN_NAME) {
-      return this.connectionLinks.find(connection => connection.blockchainName === blockchainName)
-        ?.rpcLink;
+      return this.connectionLinks.find(
+        (connection: { blockchainName: BLOCKCHAIN_NAME }) =>
+          connection.blockchainName === blockchainName
+      )?.rpcLink;
     }
   };
 };

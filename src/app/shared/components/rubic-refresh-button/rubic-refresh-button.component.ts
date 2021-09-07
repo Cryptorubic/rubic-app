@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
@@ -72,14 +72,14 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   private _autoUpdate: boolean;
 
-  private timer;
+  private timer: NodeJS.Timeout;
 
   /**
    * Timeout before next refreshing in seconds
    */
   public readonly refreshTimeout = 15;
 
-  private refreshIconListener;
+  private $refreshIconListener: Subscription;
 
   public imageUrl: string;
 
@@ -101,7 +101,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.refreshIconListener = fromEvent(
+    this.$refreshIconListener = fromEvent(
       this.refreshIconElement.nativeElement,
       'animationiteration'
     ).subscribe(() => {
@@ -113,7 +113,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     clearTimeout(this.timer);
-    this.refreshIconListener.unsubscribe();
+    this.$refreshIconListener.unsubscribe();
   }
 
   private setupTimer(): void {

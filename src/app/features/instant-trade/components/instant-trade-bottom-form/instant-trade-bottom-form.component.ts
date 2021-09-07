@@ -433,18 +433,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>
   ): void {
-    const newProviders = this.providerControllers.map((controller, index) => ({
-      ...controller,
-      isSelected: false,
-      trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
-      isBestRate: false,
-      needApprove: approveData[index],
-      tradeState:
-        tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
-          ? INSTANT_TRADES_STATUS.APPROVAL
-          : INSTANT_TRADES_STATUS.ERROR,
-      error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
-    }));
+    const newProviders = this.providerControllers.map(
+      (controller, index) =>
+        ({
+          ...controller,
+          isSelected: false,
+          trade: tradeData[index]?.status === 'fulfilled' ? tradeData[index]?.value : null,
+          isBestRate: false,
+          needApprove: approveData[index],
+          tradeState:
+            tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
+              ? INSTANT_TRADES_STATUS.APPROVAL
+              : INSTANT_TRADES_STATUS.ERROR,
+          error: tradeData[index]?.status === 'rejected' ? tradeData[index]?.reason : null
+        } as ProviderControllerData)
+    );
     this.providerControllers = newProviders;
 
     const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
@@ -528,8 +531,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setSlippageTolerance(provider: ProviderControllerData) {
     const providerName = provider.tradeProviderInfo.value;
     if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
+      const currentBlockchainDefaultSlippage =
+        defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
       this.settingsService.instantTrade.patchValue({
-        slippageTolerance: defaultSlippageTolerance[this.currentBlockchain][providerName]
+        slippageTolerance:
+          currentBlockchainDefaultSlippage[
+            providerName as keyof typeof currentBlockchainDefaultSlippage
+          ]
       });
     }
   }
@@ -557,7 +565,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setProviderState(
     tradeStatus: TRADE_STATUS,
     providerIndex: number,
-    providerState: INSTANT_TRADES_STATUS,
+    providerState?: INSTANT_TRADES_STATUS,
     needApprove?: boolean
   ): void {
     if (needApprove === undefined) {
@@ -567,7 +575,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = tradeStatus;
     this.providerControllers[providerIndex] = {
       ...this.providerControllers[providerIndex],
-      tradeState: providerState,
+      ...(providerState && { tradeState: providerState }),
       needApprove
     };
     this.cdr.detectChanges();
@@ -580,11 +588,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     const provider = this.providerControllers[providerIndex];
-    this.setProviderState(
-      TRADE_STATUS.APPROVE_IN_PROGRESS,
-      providerIndex,
-      INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-    );
+    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS, providerIndex);
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {

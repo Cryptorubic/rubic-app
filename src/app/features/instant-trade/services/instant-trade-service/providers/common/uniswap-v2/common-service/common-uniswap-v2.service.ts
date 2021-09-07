@@ -14,7 +14,10 @@ import {
 import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import {
+  Web3PublicService,
+  Web3SupportedBlockchains
+} from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/commonUniswapV2Abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
@@ -71,8 +74,8 @@ export class CommonUniswapV2Service {
     tokenAddress: string,
     contractAddress: string
   ): Observable<BigNumber> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    if (web3Public.isNativeAddress(tokenAddress)) {
+    const web3Public: Web3Public = this.web3PublicService[blockchain as Web3SupportedBlockchains];
+    if (Web3Public.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
@@ -241,13 +244,13 @@ export class CommonUniswapV2Service {
     let estimatedGasPredictionMethod = this.calculateTokensToTokensGasLimit;
     let estimatedGasArray = this.defaultEstimateGas.tokensToTokens;
 
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    if (web3Public.isNativeAddress(fromTokenAddress)) {
+    const web3Public: Web3Public = this.web3PublicService[blockchain as Web3SupportedBlockchains];
+    if (Web3Public.isNativeAddress(fromTokenAddress)) {
       fromTokenAddress = wethAddress;
       estimatedGasPredictionMethod = this.calculateEthToTokensGasLimit;
       estimatedGasArray = this.defaultEstimateGas.ethToTokens;
     }
-    if (web3Public.isNativeAddress(toTokenClone.address)) {
+    if (Web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = wethAddress;
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
       estimatedGasArray = this.defaultEstimateGas.tokensToEth;
@@ -410,7 +413,7 @@ export class CommonUniswapV2Service {
     const routesPaths: string[][] = [];
     const routesMethodArguments: [string, string[]][] = [];
 
-    const recGraphVisitor = (path: string[], mxTransitTokens): void => {
+    const recGraphVisitor = (path: string[], mxTransitTokens: number): void => {
       if (path.length === mxTransitTokens + 1) {
         const finalPath = path.concat(toTokenAddress);
         routesPaths.push(finalPath);
@@ -472,12 +475,12 @@ export class CommonUniswapV2Service {
     contractAddress: string
   ): Promise<BigNumber> {
     const toTokenClone = { ...toToken };
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const web3Public: Web3Public = this.web3PublicService[blockchain as Web3SupportedBlockchains];
 
-    if (web3Public.isNativeAddress(fromTokenAddress)) {
+    if (Web3Public.isNativeAddress(fromTokenAddress)) {
       fromTokenAddress = wethAddress;
     }
-    if (web3Public.isNativeAddress(toTokenClone.address)) {
+    if (Web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = wethAddress;
     }
 
@@ -500,7 +503,7 @@ export class CommonUniswapV2Service {
   public async createTrade(trade: InstantTrade, contractAddress: string, options: ItOptions = {}) {
     this.providerConnectorService.checkSettings(trade.blockchain);
 
-    const web3Public = this.web3PublicService[trade.blockchain];
+    const web3Public = this.web3PublicService[trade.blockchain as Web3SupportedBlockchains];
     await web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
 
     const uniswapV2Trade: UniswapV2Trade = {
@@ -516,10 +519,10 @@ export class CommonUniswapV2Service {
     };
 
     let createTradeMethod = this.createTokensToTokensTrade;
-    if (web3Public.isNativeAddress(trade.from.token.address)) {
+    if (Web3Public.isNativeAddress(trade.from.token.address)) {
       createTradeMethod = this.createEthToTokensTrade;
     }
-    if (web3Public.isNativeAddress(trade.to.token.address)) {
+    if (Web3Public.isNativeAddress(trade.to.token.address)) {
       createTradeMethod = this.createTokensToEthTrade;
     }
 

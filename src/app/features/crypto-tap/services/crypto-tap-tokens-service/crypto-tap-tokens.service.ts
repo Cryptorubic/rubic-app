@@ -62,10 +62,8 @@ export class CryptoTapTokensService {
         const tokens: CryptoTapToken[] = [];
         Object.entries(response).forEach(([key, value]) =>
           tokens.push(
-            ...value.map(token => ({
-              address:
-                token.address ||
-                this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM].nativeTokenAddress,
+            ...value.map((token: { address: string }) => ({
+              address: token.address || Web3Public.nativeTokenAddress,
               // eslint-disable-next-line eqeqeq
               direction: key == '1' ? BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN : BLOCKCHAIN_NAME.POLYGON
             }))
@@ -100,9 +98,7 @@ export class CryptoTapTokensService {
             .filter(
               token =>
                 supportedToBlockchains.includes(token.blockchain) &&
-                (this.web3PublicService[token.blockchain] as Web3Public)?.isNativeAddress(
-                  token.address
-                )
+                Web3Public.isNativeAddress(token.address)
             )
             .map(token => ({ ...token, available: true }))
             .toArray()

@@ -26,7 +26,7 @@ export class RubicSelectWalletComponent {
 
   constructor() {}
 
-  public getDropdownStatus(status) {
+  public getDropdownStatus(status: boolean) {
     this.dropdownIsOpened = status;
   }
 }

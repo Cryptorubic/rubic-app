@@ -21,7 +21,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
@@ -311,9 +310,10 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     let balance = this.fromToken.amount;
     if (!this.fromToken.amount.isFinite()) {
       balance = (
-        await (
-          this.web3PublicService[this.fromToken.blockchain] as Web3Public
-        ).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
+        await this.web3PublicService[this.fromToken.blockchain].getTokenOrNativeBalance(
+          this.authService.user.address,
+          this.fromToken.address
+        )
       ).div(10 ** this.fromToken.decimals);
     }
 
