@@ -1,6 +1,7 @@
 import Web3 from 'web3';
+import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
-import { Transaction, provider as Provider } from 'web3-core';
+import { Transaction, provider as Provider, HttpProvider } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
@@ -14,6 +15,7 @@ import { from, Observable, of } from 'rxjs';
 import { HEALTCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { HttpClient } from '@angular/common/http';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -31,7 +33,8 @@ export class Web3Public {
   constructor(
     private web3: Web3,
     public blockchain: IBlockchain,
-    useTestingModeService: UseTestingModeService
+    useTestingModeService: UseTestingModeService,
+    private readonly httpClient: HttpClient
   ) {
     this.multicallAddresses = MULTICALL_ADDRESSES;
 
@@ -40,10 +43,6 @@ export class Web3Public {
         this.multicallAddresses = MULTICALL_ADDRESSES_TESTNET;
       }
     });
-  }
-
-  public get batchRequest() {
-    return new this.web3.BatchRequest();
   }
 
   static get nativeTokenAddress(): string {
@@ -471,5 +470,84 @@ export class Web3Public {
         amount.toFormat(BIG_NUMBER_FORMAT)
       );
     }
+  }
+
+  public async batchEstimatedGas(
+    abi: AbiItem[],
+    contractAddress: string,
+    fromAddress: string,
+    callsData: { contractMethod: string; params: unknown[]; value?: number }[]
+  ): Promise<BigNumber[]> {
+    const contract = new this.web3.eth.Contract(abi, contractAddress);
+
+    const dataList = callsData.map(callData =>
+      contract.methods[callData.contractMethod](...callData.params).encodeABI()
+    );
+
+    const rpcCallsData = dataList.map((data, index) => ({
+      rpcMethod: 'eth_estimateGas',
+      params: {
+        from: fromAddress,
+        to: contractAddress,
+        data,
+        ...(callsData[index].value && { value: `0x${callsData[index].value.toString(16)}` })
+      }
+    }));
+
+    const result = await this.rpcBatchRequest<string>(rpcCallsData);
+
+    return result.map(value => value && new BigNumber(value));
+  }
+
+  private web3BatchRequest<T extends string | string[]>(
+    calls: { request: (...params: unknown[]) => Method }[],
+    callsParams: Object[]
+  ): Promise<T[]> {
+    const batch = new this.web3.BatchRequest();
+    const promises: Promise<T>[] = calls.map(
+      (call, index) =>
+        new Promise((resolve, reject) =>
+          batch.add(
+            call.request({ ...callsParams[index] }, (error: Error, result: T) =>
+              error ? reject(error) : resolve(result)
+            )
+          )
+        )
+    );
+
+    batch.execute();
+
+    return Promise.all(promises);
+  }
+
+  private async rpcBatchRequest<T extends string | string[]>(
+    rpcCallsData: {
+      rpcMethod: string;
+      params: {
+        from: string;
+        to: string;
+        data: string;
+        gas?: string;
+        gasPrice?: string;
+        value?: string;
+      };
+    }[]
+  ): Promise<T[]> {
+    const seed = Date.now();
+    const batch = rpcCallsData.map((callData, index) => ({
+      id: seed + index,
+      jsonrpc: '2.0',
+      method: callData.rpcMethod,
+      params: [{ ...callData.params }]
+    }));
+
+    const response: { id: number; result: T; error: unknown }[] = await this.httpClient
+      .post<{ id: number; result: T; error: unknown }[]>(
+        (<HttpProvider>this.web3.currentProvider).host,
+        batch
+      )
+      .toPromise();
+
+    return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
   }
 }
