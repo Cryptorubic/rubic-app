@@ -204,6 +204,11 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     return BRIDGE_PROVIDER.POLYGON;
   }
 
+  /**
+   * @description get estimate gas for trade
+   * @param bridgeTrade object with data for trade
+   * @return observable estimated gas of trade
+   */
   public getEstimatedGas(bridgeTrade?: BridgeTrade): Observable<BigNumber> {
     if (
       bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&

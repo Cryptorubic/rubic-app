@@ -141,7 +141,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   private providerConnectorServiceSubscription$: Subscription;
 
-  public isMobile$: Observable<boolean>;
+  public readonly isMobile$: Observable<boolean>;
 
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);

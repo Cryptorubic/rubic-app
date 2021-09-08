@@ -152,6 +152,10 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     );
   }
 
+  /**
+   * @description get estimate gas for trade
+   * @return observable estimated gas of trade
+   */
   public getEstimatedGas(): Observable<BigNumber> {
     return of(new BigNumber(0));
   }

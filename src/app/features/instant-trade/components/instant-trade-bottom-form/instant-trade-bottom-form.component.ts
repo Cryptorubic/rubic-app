@@ -210,7 +210,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
 
-    this.displayMaxButton.emit(!!this.toToken);
+    this.displayMaxButton.emit(Boolean(this.toToken));
 
     this.isEth = {
       from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,

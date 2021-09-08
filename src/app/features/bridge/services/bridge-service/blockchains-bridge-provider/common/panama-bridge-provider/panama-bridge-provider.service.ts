@@ -77,6 +77,10 @@ export class PanamaBridgeProviderService {
     return BRIDGE_PROVIDER.PANAMA;
   }
 
+  /**
+   * @description get estimate gas for trade
+   * @return observable estimated gas of trade
+   */
   public getEstimatedGas(): Observable<BigNumber> {
     return of(this.defaultTransactionGas);
   }

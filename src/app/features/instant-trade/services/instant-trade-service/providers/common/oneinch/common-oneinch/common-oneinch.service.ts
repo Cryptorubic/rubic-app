@@ -186,7 +186,8 @@ export class CommonOneinchService {
 
     const web3Public: Web3Public = this.web3PublicService[blockchain];
     const gasPriceWeb3 = await web3Public.getGasPrice();
-    const minGasPrice = minGasPriceInBlockchain[blockchain as keyof typeof minGasPriceInBlockchain];
+    const minGasPrice =
+      minGasPriceInBlockchain[blockchain as keyof typeof minGasPriceInBlockchain] || 0;
     const gasPrice = BigNumber.max(gasPriceWeb3, minGasPrice).toFixed();
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);

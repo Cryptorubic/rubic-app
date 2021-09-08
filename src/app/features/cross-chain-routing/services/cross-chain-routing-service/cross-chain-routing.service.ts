@@ -291,7 +291,7 @@ export class CrossChainRoutingService {
     if (fromToken.address.toLowerCase() !== toToken.address.toLowerCase()) {
       const instantTrade = await this.uniswapProviders[
         blockchain as SupportedCrossChainSwapBlockchain
-      ].calculateTrade(fromToken, fromAmount, toToken, false);
+      ].calculateTrade(fromToken, fromAmount, toToken);
       return {
         path: (<{ path: string[] }>instantTrade.options).path,
         toAmount: instantTrade.to.amount

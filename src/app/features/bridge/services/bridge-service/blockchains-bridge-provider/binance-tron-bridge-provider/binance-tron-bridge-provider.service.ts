@@ -62,6 +62,10 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
     return this.commonPanamaBridgeProviderService.getProviderType();
   }
 
+  /**
+   * @description get estimate gas for trade
+   * @return observable estimated gas of trade
+   */
   public getEstimatedGas(): Observable<BigNumber> {
     return of(new BigNumber(0));
   }

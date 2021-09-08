@@ -36,6 +36,8 @@
       color: var(--form-dim-text-color);
 
       cursor: default;
+
+      pointer-events: none;
     }
   }
 }

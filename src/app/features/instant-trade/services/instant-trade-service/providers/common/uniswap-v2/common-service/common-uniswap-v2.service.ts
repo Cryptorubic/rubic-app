@@ -209,8 +209,7 @@ export class CommonUniswapV2Service {
     wethAddress: string,
     contractAddress: string,
     routingProviders: string[],
-    maxTransitTokens: number,
-    shouldCalculateGas: boolean
+    maxTransitTokens: number
   ): Promise<InstantTrade> {
     let fromTokenAddress = fromToken.address;
     const toTokenClone = { ...toToken };
@@ -230,9 +229,9 @@ export class CommonUniswapV2Service {
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
 
     const gasPriceWeb3 = await web3Public.getGasPrice();
-    const minGasPrice = minGasPriceInBlockchain[blockchain as keyof typeof minGasPriceInBlockchain];
+    const minGasPrice =
+      minGasPriceInBlockchain[blockchain as keyof typeof minGasPriceInBlockchain] || 0;
     const gasPrice = BigNumber.max(gasPriceWeb3, minGasPrice).toFixed();
-
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
@@ -245,7 +244,6 @@ export class CommonUniswapV2Service {
       maxTransitTokens,
       contractAddress,
       web3Public,
-      shouldCalculateGas,
       estimatedGasPredictionMethod,
       gasPriceInUsd
     );
@@ -286,7 +284,6 @@ export class CommonUniswapV2Service {
     maxTransitTokens: number,
     contractAddress: string,
     web3Public: Web3Public,
-    shouldCalculateGas: boolean,
     gasCalculationMethodName: GasCalculationMethod,
     gasPriceInUsd?: BigNumber
   ): Promise<UniswapV2CalculatedInfo> {

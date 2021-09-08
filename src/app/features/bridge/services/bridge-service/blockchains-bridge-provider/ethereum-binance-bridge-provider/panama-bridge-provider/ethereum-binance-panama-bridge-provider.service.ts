@@ -64,6 +64,10 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
     return BRIDGE_PROVIDER.PANAMA;
   }
 
+  /**
+   * @description get estimate gas for trade
+   * @return observable estimated gas of trade
+   */
   public getEstimatedGas(): Observable<BigNumber> {
     return this.panamaBridgeProvider.getEstimatedGas();
   }

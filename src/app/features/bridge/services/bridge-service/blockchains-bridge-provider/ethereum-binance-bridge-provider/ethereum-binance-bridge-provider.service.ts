@@ -30,6 +30,10 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
     return token?.symbol === 'RBC' ? BRIDGE_PROVIDER.SWAP_RBC : BRIDGE_PROVIDER.PANAMA;
   }
 
+  /**
+   * @description get estimate gas for trade
+   * @return observable estimated gas of trade
+   */
   public getEstimatedGas(): Observable<BigNumber> {
     return this.panamaBridgeProvider.getEstimatedGas();
   }
