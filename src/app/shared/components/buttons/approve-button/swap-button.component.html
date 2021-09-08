@@ -22,7 +22,10 @@
     </app-rubic-button>
   </ng-container>
 
-  <ng-template [ngIf]="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
+  <ng-template
+    [ngIf]="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA"
+    *ngLet="(isMobile$ | async) === true as isDesktop"
+  >
     <!-- approve button -->
     <ng-container *ngIf="needApprove && !dataLoading && !hasError">
       <ng-container *noFrame>
@@ -120,7 +123,7 @@
         errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] &&
         !dataLoading &&
         allowChangeNetwork &&
-        !(isMobile$ | async)
+        !isDesktop
       "
     >
       <app-rubic-button
@@ -136,9 +139,7 @@
 
     <ng-container
       *ngIf="
-        (hasError &&
-          (!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || (isMobile$ | async)) &&
-          !dataLoading) ||
+        (hasError && (!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || isDesktop) && !dataLoading) ||
         (hasError && errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && !dataLoading && !allowChangeNetwork)
       "
     >

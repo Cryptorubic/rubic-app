@@ -10,6 +10,7 @@
     <app-user-balance-container
       *noFrame
       [token]="selectedToken"
+      [displayMaxButton]="displayMaxButton"
       type="from"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
@@ -18,6 +19,7 @@
       *onlyFrame="'horizontal'"
       [hide]="'balance'"
       [token]="selectedToken"
+      [displayMaxButton]="displayMaxButton"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
   </div>

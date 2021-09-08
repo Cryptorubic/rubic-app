@@ -15,6 +15,10 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { FormControl } from '@ngneat/reactive-forms';
+import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import networks from 'src/app/shared/constants/blockchain/networks';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -29,6 +33,8 @@ export class TokenAmountInputComponent implements OnInit {
   @Input() tokens: AvailableTokenAmount[];
 
   @Input() maxGasFee: BigNumber = new BigNumber(0);
+
+  @Input() displayMaxButton: boolean;
 
   @Input() placeholder = '0.0';
 
@@ -53,7 +59,9 @@ export class TokenAmountInputComponent implements OnInit {
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   ngOnInit() {
@@ -98,6 +106,23 @@ export class TokenAmountInputComponent implements OnInit {
     }
   }
 
+  private getMaxAmount(): BigNumber {
+    if (!this.selectedToken?.amount || this.selectedToken.amount.isNaN()) {
+      return null;
+    }
+
+    if (this.selectedToken.amount.lt(this.maxGasFee)) {
+      const nativeTokenSymbol = networks.find(el => el.name === this.selectedToken.blockchain)
+        .nativeCoin.symbol;
+      this.notificationsService.show(
+        this.translateService.instant('notifications.minerFee', { nativeTokenSymbol }),
+        { autoClose: 7000 }
+      );
+    }
+
+    return this.selectedToken.amount.minus(this.maxGasFee);
+  }
+
   private getMaxAmountInCrossChainRouting(): string {
     if (!this.selectedToken?.amount || this.selectedToken.amount.isNaN()) {
       return null;
@@ -110,7 +135,11 @@ export class TokenAmountInputComponent implements OnInit {
   public onUserBalanceMaxButtonClick(): void {
     const { swapMode } = this.swapsService;
     if (swapMode !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
-      this.amount.setValue(this.selectedToken.amount.toFixed());
+      if (NATIVE_TOKEN_ADDRESS === this.selectedToken.address) {
+        this.amount.setValue(this.getMaxAmount().toFixed());
+      } else {
+        this.amount.setValue(this.selectedToken.amount.toFixed());
+      }
     } else {
       this.amount.setValue(this.getMaxAmountInCrossChainRouting());
     }

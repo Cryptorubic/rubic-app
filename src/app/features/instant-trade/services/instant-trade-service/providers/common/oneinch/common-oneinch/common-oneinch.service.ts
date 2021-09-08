@@ -31,6 +31,7 @@ import { OneinchApproveResponse } from 'src/app/features/instant-trade/services/
 import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchQuoteRequest';
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { minGasPriceInBlockchain } from 'src/app/core/services/blockchain/constants/minGasPriceInBlockchain';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -184,7 +185,9 @@ export class CommonOneinchService {
     };
 
     const web3Public: Web3Public = this.web3PublicService[blockchain];
-    const gasPrice = await web3Public.getGasPrice();
+    const gasPriceWeb3 = await web3Public.getGasPrice();
+    const minGasPrice = minGasPriceInBlockchain[blockchain as keyof typeof minGasPriceInBlockchain];
+    const gasPrice = BigNumber.max(gasPriceWeb3, minGasPrice).toFixed();
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);

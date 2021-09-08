@@ -23,7 +23,10 @@ import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import { POLYGON_BRIDGE_ABI } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/contract';
+import {
+  POLYGON_ADDRESSES,
+  POLYGON_BRIDGE_ABI
+} from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/contract';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 import networks from '../../../../../../shared/constants/blockchain/networks';
@@ -42,6 +45,8 @@ interface PolygonGraphResponse {
 
 @Injectable()
 export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
+  private readonly defaultTransactionGas: BigNumber = new BigNumber(432_859);
+
   private readonly polygonGraphApiUrl =
     'https://api.thegraph.com/subgraphs/name/maticnetwork/mainnet-root-subgraphs';
 
@@ -200,17 +205,20 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   }
 
   public getEstimatedGas(bridgeTrade?: BridgeTrade): Observable<BigNumber> {
-    if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+    if (
+      bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+      bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH'
+    ) {
       return fromPromise(
         this.web3PublicEth.getEstimatedGas(
           POLYGON_BRIDGE_ABI,
-          '0xA0c68C638235ee32657e8f720a23ceC1bFc77C77',
+          POLYGON_ADDRESSES[BLOCKCHAIN_NAME.ETHEREUM],
           'depositEtherFor',
           [bridgeTrade.toAddress],
           this.authService.userAddress,
           Web3Public.toWei(bridgeTrade.amount)
         )
-      );
+      ).pipe(catchError(() => of(this.defaultTransactionGas)));
     }
 
     return of(new BigNumber(0));

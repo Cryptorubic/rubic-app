@@ -32,6 +32,7 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { minGasPriceInBlockchain } from 'src/app/core/services/blockchain/constants/minGasPriceInBlockchain';
 
 @Injectable({
   providedIn: 'root'
@@ -258,7 +259,10 @@ export class CommonUniswapV2Service {
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
 
-    const gasPrice = await web3Public.getGasPrice();
+    const gasPriceWeb3 = await web3Public.getGasPrice();
+    const minGasPrice = minGasPriceInBlockchain[blockchain as keyof typeof minGasPriceInBlockchain];
+    const gasPrice = BigNumber.max(gasPriceWeb3, minGasPrice).toFixed();
+
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);

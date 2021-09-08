@@ -82,6 +82,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
+  @Output() displayMaxButton = new EventEmitter<boolean>();
+
   public readonly TRADE_STATUS = TRADE_STATUS;
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
@@ -203,6 +205,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
+    this.displayMaxButton.emit(true);
   }
 
   ngOnDestroy() {

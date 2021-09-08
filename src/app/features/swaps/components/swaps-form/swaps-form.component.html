@@ -55,6 +55,7 @@
           [tokens]="availableTokens['from']"
           [formService]="swapFormService"
           [maxGasFee]="maxGasFee"
+          [displayMaxButton]="displayMaxButton"
         ></app-token-amount-input>
 
         <app-vertical-iframe-token-amount-input
@@ -82,12 +83,15 @@
           [tokens]="availableTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
           (maxGasLimit)="maxGasFee = $event"
+          (displayMaxButton)="displayMaxButton = $event"
         ></app-instant-trade-bottom-form>
 
         <app-bridge-bottom-form
           *ngIf="isBridge"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          (maxGasFee)="maxGasFee = $event"
+          (displayMaxButton)="displayMaxButton = $event"
         ></app-bridge-bottom-form>
 
         <app-cross-chain-routing-bottom-form
@@ -97,6 +101,7 @@
           (tradeStatusChange)="tradeStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          (displayMaxButton)="displayMaxButton = $event"
         ></app-cross-chain-routing-bottom-form>
       </div>
     </main>

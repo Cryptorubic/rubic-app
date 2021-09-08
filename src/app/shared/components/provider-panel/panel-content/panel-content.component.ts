@@ -25,7 +25,7 @@ export class PanelContentComponent implements OnInit {
 
   @Input() public providerData: ProviderData;
 
-  public isGasFeeShow: boolean = false;
+  public isGasFeeShow = false;
 
   constructor() {}
 

@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -43,6 +45,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
+import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -83,6 +86,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
+
+  @Output() maxGasFee = new EventEmitter<BigNumber>();
+
+  @Output() displayMaxButton = new EventEmitter<boolean>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -158,7 +165,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly gasService: GasService
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade$ = new Subject<void>();
@@ -217,6 +225,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
+
+    this.displayMaxButton.emit(!!this.toToken);
+
     this.cdr.detectChanges();
 
     this.setToWalletAddress();
@@ -283,18 +294,25 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             ? this.bridgeService.needApprove()
             : of(false);
 
-          this.bridgeService.getEstimatedGas().subscribe(res => console.log(res.toFixed()));
-
-          return forkJoin([this.bridgeService.getFee(), needApprove$]).pipe(
-            map(([fee, needApprove]) => {
+          return forkJoin([
+            this.bridgeService.getFee(),
+            this.bridgeService.getEstimatedGas(),
+            this.gasService.gasPrice.pipe(first()),
+            needApprove$
+          ]).pipe(
+            map(([fee, estimatedGas, gasPrice, needApprove]) => {
               this.needApprove = needApprove;
-
               if (fee === null) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
                 this.errorsService.catch(new UndefinedError());
                 this.cdr.detectChanges();
                 return;
               }
+
+              const gasPriceInEth = new BigNumber(gasPrice).div(10 ** 9);
+              const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
+
+              this.maxGasFee.emit(gasFeeInEth);
 
               const { fromAmount } = this.swapFormService.inputValue;
               const toAmount = fromAmount.minus(fee);

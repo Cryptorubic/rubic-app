@@ -68,6 +68,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
+  @Output() displayMaxButton = new EventEmitter<boolean>();
+
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   @Output() maxGasLimit = new EventEmitter<BigNumber>();
@@ -207,6 +209,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = form.fromAmount;
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
+
+    this.displayMaxButton.emit(!!this.toToken);
 
     this.isEth = {
       from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
@@ -348,7 +352,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
           return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
             map(([approveData, tradeData]) => {
-              this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
+              this.maxGasLimit.emit(this.getMaxGasFee(tradeData));
 
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
@@ -552,11 +556,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
   }
 
-  public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {
+  public getMaxGasFee(tradeData: CalculationResult[]): BigNumber {
     return tradeData.reduce((maxGas, trade) => {
       if (trade.status === 'fulfilled') {
-        const providerGas = new BigNumber(trade.value.gasFeeInEth);
-        return providerGas.gt(maxGas) ? providerGas : maxGas;
+        return trade.value.gasFeeInEth.gt(maxGas) ? trade.value.gasFeeInEth : maxGas;
       }
       return maxGas;
     }, new BigNumber(0));
