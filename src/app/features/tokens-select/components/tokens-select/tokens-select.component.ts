@@ -327,7 +327,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Update tokens.
+   * @description Fetch new page tokens.
    */
   public fetchNewPageTokens(): void {
     this.tokensListLoading = true;
@@ -337,6 +337,9 @@ export class TokensSelectComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Try to parse search query and fetch tokens form backend or web3.
+   */
   private async tryParseQuery(): Promise<void> {
     if (this.query.length) {
       const backendTokens = await this.tokensService
@@ -345,6 +348,7 @@ export class TokensSelectComponent implements OnInit {
       if (backendTokens.size) {
         const availableTokens = backendTokens
           .map(el => {
+            // @TODO fix
             return {
               ...el,
               available: true,

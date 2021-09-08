@@ -30,6 +30,9 @@ export class AuthService {
    */
   private readonly $currentUser: BehaviorSubject<UserInterface>;
 
+  /**
+   * Error code when user session has still active.
+   */
   private readonly USER_IS_IN_SESSION_CODE = '1000';
 
   get user(): UserInterface {
@@ -50,28 +53,12 @@ export class AuthService {
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
-    this.providerConnectorService.$addressChange.subscribe(address => {
-      if (this.isAuthProcess) {
-        return;
-      }
-      const user = this.$currentUser.getValue();
-      if (
-        user !== undefined &&
-        user !== null &&
-        user?.address !== null &&
-        address &&
-        user?.address !== address
-      ) {
-        this.signOut()
-          .pipe(mergeMap(() => this.signIn()))
-          .subscribe();
-      }
-    });
+    this.initSubscription();
   }
 
   /**
    * @description Ger current user as observable.
-   * @returns User.
+   * @returns Observable<UserInterface> User.
    */
   public getCurrentUser(): Observable<UserInterface> {
     return this.$currentUser.asObservable();
@@ -109,6 +96,9 @@ export class AuthService {
       .toPromise();
   }
 
+  /**
+   * @description Load user from backend.
+   */
   public async loadUser() {
     this.isAuthProcess = true;
     if (!this.providerConnectorService.provider) {
@@ -187,6 +177,9 @@ export class AuthService {
     }
   }
 
+  /**
+   * @description Login user without backend request.
+   */
   public async serverlessSignIn(): Promise<void> {
     try {
       this.isAuthProcess = true;
@@ -225,13 +218,20 @@ export class AuthService {
     );
   }
 
+  /**
+   * @description Logout user from provider and application.
+   */
   public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
     this.store.clearStorage();
   }
 
-  private catchSignIn(err: Error & { code: number }) {
+  /**
+   * Catch and handle user login errors.
+   * @param err Login error.
+   */
+  private catchSignIn(err: Error & { code: number }): void {
     this.$currentUser.next(null);
     this.isAuthProcess = false;
     this.providerConnectorService.deActivate();
@@ -250,5 +250,28 @@ export class AuthService {
     this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
     this.$currentUser.next(null);
     this.isAuthProcess = false;
+  }
+
+  /**
+   * @description Init service subscription.
+   */
+  private initSubscription(): void {
+    this.providerConnectorService.$addressChange.subscribe(address => {
+      if (this.isAuthProcess) {
+        return;
+      }
+      const user = this.$currentUser.getValue();
+      if (
+        user !== undefined &&
+        user !== null &&
+        user?.address !== null &&
+        address &&
+        user?.address !== address
+      ) {
+        this.signOut()
+          .pipe(mergeMap(() => this.signIn()))
+          .subscribe();
+      }
+    });
   }
 }
