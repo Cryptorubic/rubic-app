@@ -154,10 +154,10 @@ export class AuthService {
    */
   public async signIn(): Promise<void> {
     try {
-      /* if (this.iframeService.isIframe) {
-        await this.serverlessSignIn();
+      if (this.iframeService.isIframe) {
+        await this.iframeSignIn();
         return;
-      } */
+      }
 
       this.isAuthProcess = true;
       await this.providerConnectorService.activate();
@@ -179,6 +179,46 @@ export class AuthService {
       );
 
       this.$currentUser.next({ address: this.providerConnectorService.address });
+      this.isAuthProcess = false;
+    } catch (err) {
+      this.catchSignIn(err);
+    }
+  }
+
+  /**
+   * @description Initiate iframe authentication via wallet message signing
+   */
+  public async iframeSignIn(): Promise<void> {
+    try {
+      this.isAuthProcess = true;
+      const permissions = await this.providerConnectorService.requestPermissions();
+      const accountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      );
+
+      if (accountsPermission) {
+        await this.providerConnectorService.activate();
+
+        const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
+        if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
+          const { address } = walletLoginBody.payload.user;
+          this.$currentUser.next({ address });
+          this.isAuthProcess = false;
+          return;
+        }
+        const nonce = walletLoginBody.payload.message;
+        const signature = await this.providerConnectorService.signPersonal(nonce);
+        await this.sendSignedNonce(
+          this.providerConnectorService.address,
+          nonce,
+          signature,
+          this.providerConnectorService.provider.name
+        );
+
+        this.$currentUser.next({ address: this.providerConnectorService.address });
+      } else {
+        this.$currentUser.next(null);
+      }
       this.isAuthProcess = false;
     } catch (err) {
       this.catchSignIn(err);
@@ -209,11 +249,6 @@ export class AuthService {
    * @description Logout request to backend.
    */
   public signOut(): Observable<string> {
-    /* if (this.iframeService.isIframe) {
-      this.serverlessSignOut();
-      return of('');
-    } */
-
     return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
       finalize(() => {
         this.providerConnectorService.deActivate();
