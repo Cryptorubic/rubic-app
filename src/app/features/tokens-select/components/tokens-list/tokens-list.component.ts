@@ -27,7 +27,17 @@ import { Utils } from 'src/app/shared/models/utils/utils';
   providers: [TuiDestroyService]
 })
 export class TokensListComponent implements OnChanges, AfterViewInit {
-  private _tokens: AvailableTokenAmount[] = [];
+  @Output() public tokenSelect = new EventEmitter<AvailableTokenAmount>();
+
+  @Output() public pageUpdate = new EventEmitter<number>();
+
+  @Input() public tokensNetworkState: { count: number; page: number };
+
+  @Input() public blockchain: BLOCKCHAIN_NAME;
+
+  @Input() public loading: boolean;
+
+  @Input() public prevSelectedToken: TokenAmount;
 
   @Input() public set tokens(value: AvailableTokenAmount[]) {
     if (value) {
@@ -35,36 +45,26 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  public get tokens(): AvailableTokenAmount[] {
-    return this._tokens;
-  }
-
-  @Input() prevSelectedToken: TokenAmount;
-
-  @Output() tokenSelect = new EventEmitter<AvailableTokenAmount>();
-
-  @Output() pageUpdate = new EventEmitter<number>();
-
-  public listScroll: CdkVirtualScrollViewport;
-
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     this.listScroll = scroll;
-    if (scroll && !this.listScroll) {
+    if (scroll && this.listScroll) {
       this.observeScroll();
     }
   }
 
-  @Input() tokensNetworkState: { count: number; page: number };
+  private _tokens: AvailableTokenAmount[] = [];
 
-  @Input() blockchain: BLOCKCHAIN_NAME;
-
-  public hintsShown: boolean[];
-
-  @Input() public loading: boolean;
+  public get tokens(): AvailableTokenAmount[] {
+    return this._tokens;
+  }
 
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
   }
+
+  public listScroll: CdkVirtualScrollViewport;
+
+  public hintsShown: boolean[];
 
   constructor(
     private cdr: ChangeDetectorRef,

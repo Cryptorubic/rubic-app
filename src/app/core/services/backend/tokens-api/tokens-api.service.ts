@@ -15,6 +15,7 @@ import {
   TokensResponse
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -39,15 +40,17 @@ export class TokensApiService {
   private static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map((token: BackendToken) => ({
-          ...token,
-          blockchain:
-            FROM_BACKEND_BLOCKCHAINS[
-              token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
-            ],
-          price: token.usd_price,
-          usedInIframe: token.used_in_iframe
-        }))
+        .map((token: BackendToken) => {
+          return {
+            ...token,
+            blockchain:
+              FROM_BACKEND_BLOCKCHAINS[
+                token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+              ],
+            price: token.usd_price,
+            usedInIframe: token.used_in_iframe
+          };
+        })
         .filter(token => token.address && token.blockchain)
     );
   }
@@ -84,7 +87,13 @@ export class TokensApiService {
    */
   private fetchBasicTokens(params: TokensRequestOptions): Observable<List<Token>> {
     const options = { page: 1, page_size: 150, ...params };
-    const requests$ = Object.values(TO_BACKEND_BLOCKCHAINS).map(network =>
+    const blockchainsToFetch = [
+      BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      BLOCKCHAIN_NAME.POLYGON,
+      BLOCKCHAIN_NAME.HARMONY
+    ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
+    const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get(this.getTokensUrl, { ...options, network })
     ) as Observable<TokensResponse>[];
     return forkJoin(requests$).pipe(

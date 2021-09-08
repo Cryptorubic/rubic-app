@@ -21,6 +21,7 @@ import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
+import { StoreService } from 'src/app/core/services/store/store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +77,8 @@ export class TokensService {
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
     private readonly useTestingMode: UseTestingModeService,
-    private readonly coingeckoApiService: CoingeckoApiService
+    private readonly coingeckoApiService: CoingeckoApiService,
+    private readonly store: StoreService
   ) {
     this.tokensSubject = new BehaviorSubject(List([]));
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
@@ -93,8 +95,22 @@ export class TokensService {
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
         async tokens => {
+          const userTokens = this.store.getItem('favoriteTokens') || [];
+          const userUniqueTokens = (userTokens as TokenAmount[]).reduce((acc, userToken) => {
+            if (
+              !tokens.find(
+                backendToken =>
+                  backendToken.blockchain === userToken.blockchain &&
+                  backendToken.address === userToken.address
+              )
+            ) {
+              return [...acc, userToken];
+            }
+            return acc;
+          }, []);
+          const backendAndLocalTokens = tokens.concat(List(userUniqueTokens));
           if (!this.isTestingMode) {
-            this.setDefaultTokenAmounts(tokens);
+            this.setDefaultTokenAmounts(backendAndLocalTokens);
             await this.calculateUserTokensBalances();
           }
         },
@@ -153,6 +169,14 @@ export class TokensService {
       return;
     }
 
+    const tokensWithBalance = await this.getTokensWithBalance(tokens);
+
+    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+      this.tokensSubject.next(List(tokensWithBalance));
+    }
+  }
+
+  private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
     const blockchains: BLOCKCHAIN_NAME[] = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -170,28 +194,23 @@ export class TokensService {
     });
 
     const balancesSettled = await Promise.allSettled(balances$);
-    const tokensWithBalance: TokenAmount[][] = blockchains.map((blockchain, blockchainIndex) => {
-      if (balancesSettled[blockchainIndex].status === 'fulfilled') {
-        const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
-          .value;
-        return tokens
-          .filter(token => token.blockchain === blockchain)
-          .map((token, tokenIndex) => ({
-            ...token,
-            amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
-          }))
-          .toArray();
-      }
-      return null;
-    });
 
-    tokensWithBalance.push(
-      tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
-    );
-
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      this.tokensSubject.next(List(tokensWithBalance.flat()));
-    }
+    return blockchains
+      .map((blockchain, blockchainIndex) => {
+        if (balancesSettled[blockchainIndex].status === 'fulfilled') {
+          const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
+            .value;
+          return tokens
+            .filter(token => token.blockchain === blockchain)
+            .map((token, tokenIndex) => ({
+              ...token,
+              amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
+            }))
+            .toArray();
+        }
+        return null;
+      })
+      .flat();
   }
 
   /**
@@ -287,11 +306,14 @@ export class TokensService {
         map((tokens: { total: number; result: List<Token> }) => ({
           ...tokens,
           result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
-        }))
+        })),
+        tap(() => this.updateNetworkPage(network)),
+        switchMap((tokens: { total: number; result: List<TokenAmount> }) => {
+          return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
+        })
       )
-      .subscribe((tokens: { total: number; result: List<TokenAmount> }) => {
-        this.updateNetworkPage(network);
-        this.tokensSubject.next(this.tokensSubject.value.concat(tokens.result));
+      .subscribe((tokens: TokenAmount[]) => {
+        this.tokensSubject.next(this.tokensSubject.value.concat(tokens));
         callback();
       });
   }
