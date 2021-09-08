@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -69,11 +69,7 @@ export class InstantTradesApiService {
     provider: INSTANT_TRADES_PROVIDER,
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
-  ): Observable<InstantTradesResponseApi | null> {
-    if (this.iframeService.isIframe) {
-      return of(null);
-    }
-
+  ): Observable<InstantTradesResponseApi> {
     let tradeInfo: InstantTradesPostApi;
     if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
       tradeInfo = {
@@ -114,11 +110,7 @@ export class InstantTradesApiService {
    * @description update status of trade
    * @param hash hash of transaction what we want to update
    */
-  public patchTrade(hash: string): Observable<InstantTradesResponseApi | null> {
-    if (this.iframeService.isIframe) {
-      return of(null);
-    }
-
+  public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
     const url = instantTradesApiRoutes.editData;
     return this.httpService.patch(url, { hash });
   }
