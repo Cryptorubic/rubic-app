@@ -28,7 +28,7 @@ export class WalletLinkProvider extends PrivateProvider {
 
   private selectedAddress: string;
 
-  private selectedChain: string;
+  private selectedChain: BLOCKCHAIN_NAME;
 
   public readonly onAddressChanges: BehaviorSubject<string>;
 
@@ -81,7 +81,7 @@ export class WalletLinkProvider extends PrivateProvider {
       const chain = BlockchainsInfo.getBlockchainById(chainId);
       const walletLink = new WalletLink(this.defaultWalletParams);
       this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
-      this.selectedChain = chainId.toString();
+      this.selectedChain = chain.name;
     }
 
     this.onAddressChanges = accountChange;
@@ -97,7 +97,7 @@ export class WalletLinkProvider extends PrivateProvider {
     return (
       this.isEnabled &&
       this.selectedChain &&
-      BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME)
+      BlockchainsInfo.getBlockchainByName(this.selectedChain)
     );
   }
 
@@ -107,21 +107,18 @@ export class WalletLinkProvider extends PrivateProvider {
 
       const activeChain = (await this.core.request({ method: 'eth_chainId' })) as string;
       const chainInfo = BlockchainsInfo.getBlockchainById(parseInt(activeChain).toString());
-
+      const currentChain = BlockchainsInfo.getBlockchainByName(this.selectedChain);
       // in desktop version selected into modal chain should match mobile app selected chain
       if (!this.isMobileMode) {
-        if (!new BigNumber(activeChain).eq(this.selectedChain)) {
-          throw new WalletlinkWrongNetwork(
-            BlockchainsInfo.getBlockchainById(this.selectedChain).label
-          );
+        if (!new BigNumber(activeChain).eq(currentChain.id.toString())) {
+          throw new WalletlinkWrongNetwork(currentChain.label);
         }
       }
-
-      this.onNetworkChanges.next(chainInfo);
-      this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chainInfo.name;
       this.isEnabled = true;
+      this.onNetworkChanges.next(chainInfo);
+      this.onAddressChanges.next(address);
     } catch (error) {
       if (!(error instanceof RubicError)) {
         throw new WalletlinkError();
