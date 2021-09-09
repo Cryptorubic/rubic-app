@@ -17,6 +17,11 @@ export abstract class PrivateProvider {
   abstract get isActive(): boolean;
 
   /**
+   * @description Is connected app provider supports multi chain wallet.
+   */
+  abstract get isMultiChainWallet(): boolean;
+
+  /**
    * @description Current provider name.
    */
   abstract get name(): WALLET_NAME;

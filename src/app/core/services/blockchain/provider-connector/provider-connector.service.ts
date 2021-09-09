@@ -195,7 +195,7 @@ export class ProviderConnectorService {
     ) {
       if (this.providerName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
-      } else {
+      } else if (!this.provider.isMultiChainWallet) {
         throw new NotSupportedNetworkError(selectedBlockchain);
       }
     }
