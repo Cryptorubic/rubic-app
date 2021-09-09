@@ -22,6 +22,11 @@
     margin: 0 auto;
   }
 
+  &__row {
+    display: flex;
+    grid-gap: 20px;
+  }
+
   &__header {
     position: relative;
 

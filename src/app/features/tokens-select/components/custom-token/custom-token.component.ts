@@ -56,8 +56,9 @@ export class CustomTokenComponent {
       })
       .subscribe((confirm: boolean) => {
         if (confirm) {
-          this.store.addCollectionItem('favoriteTokens', this.token);
-          this.tokenSelected.emit(this.token);
+          const favoriteToken = { ...this.token, favorite: true } as AvailableTokenAmount;
+          this.store.addCollectionItem('favoriteTokens', favoriteToken);
+          this.tokenSelected.emit(favoriteToken);
         }
       });
   }

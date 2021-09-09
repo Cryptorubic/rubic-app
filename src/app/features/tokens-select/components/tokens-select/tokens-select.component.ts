@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -30,6 +30,7 @@ import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
+import { StoreService } from 'src/app/core/services/store/store.service';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -50,11 +51,15 @@ type ComponentContext = TuiDialogContext<AvailableTokenAmount, ComponentInput>;
   providers: [TuiDestroyService]
 })
 export class TokensSelectComponent implements OnInit {
+  public listType: 'default' | 'favorite' = 'default';
+
   public tokens: BehaviorSubject<AvailableTokenAmount[]>;
+
+  private favoriteTokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
 
   public customToken: AvailableTokenAmount;
 
-  public tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
+  public tokensToShow$ = new BehaviorSubject([]);
 
   public allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
 
@@ -84,6 +89,14 @@ export class TokensSelectComponent implements OnInit {
     return this._blockchain;
   }
 
+  public switchMode(): void {
+    if (this.listType === 'default') {
+      this.listType = 'favorite';
+    } else {
+      this.listType = 'default';
+    }
+  }
+
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
@@ -102,6 +115,10 @@ export class TokensSelectComponent implements OnInit {
     this.querySubject.next(value);
   }
 
+  public get favoriteTokens$(): Observable<AvailableTokenAmount[]> {
+    return this.favoriteTokensSubject.asObservable();
+  }
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: ComponentContext,
@@ -110,10 +127,12 @@ export class TokensSelectComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
+    private readonly store: StoreService,
     @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.initiateContextParams(context.data);
     this.querySubject = new BehaviorSubject<string>('');
+    this.favoriteTokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
     this.tokensListLoading = false;
   }
 
@@ -123,6 +142,7 @@ export class TokensSelectComponent implements OnInit {
    * @param toBlockchain To token blockchain.
    * @return boolean If token allowed in cross-chain returns true, otherwise false.
    */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   static allowInCrossChain(
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME
@@ -150,6 +170,7 @@ export class TokensSelectComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.updateTokensList();
+    this.fetchFavoriteTokens();
     this.querySubject
       .pipe(takeUntil(this.destroy$), debounceTime(500))
       .subscribe(() => this.updateTokensList());
@@ -182,10 +203,13 @@ export class TokensSelectComponent implements OnInit {
 
   /**
    * @description Handle token selection event.
-   * @param token Selected token.
+   * @param selectedToken Selected token.
    */
-  public tokenSelect(token: AvailableTokenAmount): void {
-    this.context.completeWith(token);
+  public tokenSelect(selectedToken: AvailableTokenAmount): void {
+    if (selectedToken.favorite) {
+      this.favoriteTokensSubject.next([...this.favoriteTokensSubject.value, selectedToken]);
+    }
+    this.context.completeWith(selectedToken);
   }
 
   /**
@@ -361,5 +385,10 @@ export class TokensSelectComponent implements OnInit {
         await this.tryParseQueryAsCustomToken();
       }
     }
+  }
+
+  private fetchFavoriteTokens(): void {
+    const favoriteTokens = this.store.getItem('favoriteTokens') as AvailableTokenAmount[];
+    this.favoriteTokensSubject.next(favoriteTokens);
   }
 }

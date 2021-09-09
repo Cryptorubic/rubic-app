@@ -32,7 +32,7 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
     const lengthEquality = value.length === this.tokensSubject.value.length;
-    const deepEquality = new Utils().compareObjects(value, this.tokensSubject.value);
+    const deepEquality = Utils.compareObjects(value, this.tokensSubject.value);
     if (!lengthEquality && !deepEquality) {
       this.tokensSubject.next(value);
     }

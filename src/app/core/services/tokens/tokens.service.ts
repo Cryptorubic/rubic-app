@@ -95,22 +95,22 @@ export class TokensService {
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
         async tokens => {
-          const userTokens = this.store.getItem('favoriteTokens') || [];
-          const userUniqueTokens = (userTokens as TokenAmount[]).reduce((acc, userToken) => {
-            if (
-              !tokens.find(
-                backendToken =>
-                  backendToken.blockchain === userToken.blockchain &&
-                  backendToken.address === userToken.address
-              )
-            ) {
-              return [...acc, userToken];
-            }
-            return acc;
-          }, []);
-          const backendAndLocalTokens = tokens.concat(List(userUniqueTokens));
+          // const userTokens = this.store.getItem('favoriteTokens') || [];
+          // const userUniqueTokens = (userTokens as TokenAmount[]).reduce((acc, userToken) => {
+          //   if (
+          //     !tokens.find(
+          //       backendToken =>
+          //         backendToken.blockchain === userToken.blockchain &&
+          //         backendToken.address === userToken.address
+          //     )
+          //   ) {
+          //     return [...acc, userToken];
+          //   }
+          //   return acc;
+          // }, []);
+          // const backendAndLocalTokens = tokens.concat(List(userUniqueTokens));
           if (!this.isTestingMode) {
-            this.setDefaultTokenAmounts(backendAndLocalTokens);
+            this.setDefaultTokenAmounts(tokens);
             await this.calculateUserTokensBalances();
           }
         },

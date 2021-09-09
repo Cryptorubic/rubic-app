@@ -122,7 +122,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * @param changes Detected changes.
    */
   private setupHints(changes: SimpleChanges): void {
-    const hasChanges = !new Utils().compareObjects(
+    const hasChanges = !Utils.compareObjects(
       changes.tokens?.currentValue,
       changes.tokens?.previousValue
     );

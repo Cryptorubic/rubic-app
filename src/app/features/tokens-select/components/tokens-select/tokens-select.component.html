@@ -2,7 +2,15 @@
   <header class="tokens-select__header" *noFrame>
     <h2>{{ 'modals.tokensListModal.title' | translate }}</h2>
   </header>
-  <app-tokens-search-bar *noFrame [(query)]="query"></app-tokens-search-bar>
+  <div class="tokens-select__row">
+    <app-tokens-search-bar *noFrame [(query)]="query"></app-tokens-search-bar>
+    <app-icon-button
+      [icon]="'assets/images/icons/heart.svg'"
+      [border]="true"
+      (iconButtonClick)="switchMode()"
+    >
+    </app-icon-button>
+  </div>
   <div class="tokens-select__content">
     <app-blockchains-aside
       [idPrefix]="idPrefix"
@@ -11,7 +19,7 @@
     ></app-blockchains-aside>
     <app-tokens-list
       *ngIf="!customToken && !loading"
-      [tokens]="tokensToShow$ | async"
+      [tokens]="listType === 'default' ? (tokensToShow$ | async) : (favoriteTokens$ | async)"
       [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
       (tokenSelect)="tokenSelect($event)"
       (pageUpdate)="fetchNewPageTokens()"
