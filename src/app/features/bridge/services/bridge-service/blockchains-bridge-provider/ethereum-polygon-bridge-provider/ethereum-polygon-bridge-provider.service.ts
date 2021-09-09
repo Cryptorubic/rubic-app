@@ -45,7 +45,7 @@ interface PolygonGraphResponse {
 
 @Injectable()
 export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
-  private readonly defaultTransactionGas: BigNumber = new BigNumber(432_859);
+  private readonly defaultTransactionGas: BigNumber = new BigNumber(150_000);
 
   private readonly polygonGraphApiUrl =
     'https://api.thegraph.com/subgraphs/name/maticnetwork/mainnet-root-subgraphs';
