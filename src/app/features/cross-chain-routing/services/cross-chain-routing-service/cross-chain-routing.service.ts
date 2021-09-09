@@ -397,7 +397,7 @@ export class CrossChainRoutingService {
         const trade = this.currentCrossChainTrade;
 
         this.providerConnectorService.checkSettings(trade.fromBlockchain);
-        await this.checkWorking(trade.fromBlockchain, trade.toBlockchain);
+        await this.checkWorking(trade);
         await this.checkGasPrice(trade.toBlockchain);
         await this.checkPoolBalance(trade);
 
@@ -471,12 +471,11 @@ export class CrossChainRoutingService {
    * @param fromBlockchain Source blockchain name.
    * @param toBlockchain Target blockchain name.
    */
-  private async checkWorking(
-    fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME
-  ): Promise<void> {
-    const fromContractAddress = this.contractAddresses[fromBlockchain];
-    const toContractAddress = this.contractAddresses[toBlockchain];
+  private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {
+    const { fromBlockchain, toBlockchain } = trade;
+
+    const fromContractAddress = this.contractAddresses[fromBlockchain] as string;
+    const toContractAddress = this.contractAddresses[toBlockchain] as string;
     const fromWeb3Public: Web3Public = this.web3PublicService[fromBlockchain];
     const toWeb3Public: Web3Public = this.web3PublicService[toBlockchain];
 
