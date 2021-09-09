@@ -294,9 +294,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             ? this.bridgeService.needApprove()
             : of(false);
 
+          const getEstimatedGas = this.authService.user?.address
+            ? this.bridgeService.getEstimatedGas()
+            : of(new BigNumber(0));
+
           return forkJoin([
             this.bridgeService.getFee(),
-            this.bridgeService.getEstimatedGas(),
+            getEstimatedGas,
             this.gasService.gasPrice.pipe(first()),
             needApprove$
           ]).pipe(
