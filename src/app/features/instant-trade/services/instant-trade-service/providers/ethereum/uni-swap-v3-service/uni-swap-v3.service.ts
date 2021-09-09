@@ -52,6 +52,32 @@ export class UniSwapV3Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
+  constructor(
+    private readonly web3PublicService: Web3PublicService,
+    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly web3PrivateService: Web3PrivateService,
+    private readonly settingsService: SettingsService,
+    private readonly coingeckoApiService: CoingeckoApiService,
+    private readonly useTestingModeService: UseTestingModeService
+  ) {
+    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
+      this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, isTestingMode);
+      this.ethAndWethSwapController = new EthAndWethSwapController(
+        this.web3Public,
+        this.web3PrivateService,
+        isTestingMode
+      );
+      this.wethAddress = !isTestingMode ? wethAddressWithMode.mainnet : wethAddressWithMode.testnet;
+    });
+
+    const settingsForm = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    this.setSettings(settingsForm.value);
+    settingsForm.valueChanges.subscribe(formValue => {
+      this.setSettings(formValue);
+    });
+  }
+
   private static getSwapRouterExactInputMethodParams(
     route: UniswapV3Route,
     fromAmountAbsolute: string,
@@ -90,32 +116,6 @@ export class UniSwapV3Service implements ItProvider {
     }
 
     return { methodName, methodArguments };
-  }
-
-  constructor(
-    private readonly web3PublicService: Web3PublicService,
-    private readonly providerConnectorService: ProviderConnectorService,
-    private readonly web3PrivateService: Web3PrivateService,
-    private readonly settingsService: SettingsService,
-    private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly useTestingModeService: UseTestingModeService
-  ) {
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-      this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, isTestingMode);
-      this.ethAndWethSwapController = new EthAndWethSwapController(
-        this.web3Public,
-        this.web3PrivateService,
-        isTestingMode
-      );
-      this.wethAddress = !isTestingMode ? wethAddressWithMode.mainnet : wethAddressWithMode.testnet;
-    });
-
-    const settingsForm = this.settingsService.settingsForm.controls.INSTANT_TRADE;
-    this.setSettings(settingsForm.value);
-    settingsForm.valueChanges.subscribe(formValue => {
-      this.setSettings(formValue);
-    });
   }
 
   private setSettings(settingsFormValue: ItSettingsForm): void {

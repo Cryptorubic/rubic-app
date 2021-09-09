@@ -32,6 +32,22 @@ export class LiquidityPoolsController {
 
   private readonly feeAmounts: FeeAmount[];
 
+  constructor(private readonly web3Public: Web3Public, isTestingMode: boolean) {
+    if (!isTestingMode) {
+      this.routerTokens = routerTokensWithMode.mainnet;
+      this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
+    } else {
+      this.routerTokens = routerTokensWithMode.testnet;
+      this.routerLiquidityPools = routerLiquidityPoolsWithMode.testnet;
+    }
+
+    this.factoryContract = this.web3Public.getContract(
+      factoryContractData.address,
+      factoryContractData.abi
+    );
+    this.feeAmounts = [500, 3000, 10000];
+  }
+
   public static isPoolWithTokens(pool: LiquidityPool, tokenA: string, tokenB: string): boolean {
     return (
       (pool.token0.toLowerCase() === tokenA.toLowerCase() &&
@@ -52,22 +68,6 @@ export class LiquidityPoolsController {
       lastTokenAddress = newTokenAddress;
     });
     return `0x${contractPath}`;
-  }
-
-  constructor(private readonly web3Public: Web3Public, isTestingMode: boolean) {
-    if (!isTestingMode) {
-      this.routerTokens = routerTokensWithMode.mainnet;
-      this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
-    } else {
-      this.routerTokens = routerTokensWithMode.testnet;
-      this.routerLiquidityPools = routerLiquidityPoolsWithMode.testnet;
-    }
-
-    this.factoryContract = this.web3Public.getContract(
-      factoryContractData.address,
-      factoryContractData.abi
-    );
-    this.feeAmounts = [500, 3000, 10000];
   }
 
   private async getPoolImmutables(poolContract): Promise<Immutables> {
@@ -133,7 +133,7 @@ export class LiquidityPoolsController {
     const poolsPromises = [...new Set(poolsAddresses)]
       .filter(poolAddress => poolAddress !== EMPTY_ADDRESS)
       .map(poolAddress => this.getPoolByAddress(poolAddress));
-    return (await Promise.all(poolsPromises)).filter(pool => !!pool);
+    return (await Promise.all(poolsPromises)).filter(pool => Boolean(pool));
   }
 
   public async getAllRoutes(
@@ -148,48 +148,65 @@ export class LiquidityPoolsController {
     );
     const routesPromises: Promise<UniswapV3Route>[] = [];
 
-    const recGraphVisitor = (
-      path: LiquidityPool[],
-      lastTokenAddress: string,
-      mxTransitPools
-    ): void => {
-      if (path.length === mxTransitPools) {
-        const pools = routesLiquidityPools.filter(pool =>
-          LiquidityPoolsController.isPoolWithTokens(pool, lastTokenAddress, toTokenAddress)
-        );
-        pools.forEach(pool => {
-          routesPromises.push(
-            this.getRoutePromise(
-              path.concat(pool),
-              fromAmountAbsolute,
-              fromTokenAddress,
-              toTokenAddress
-            )
-          );
-        });
-        return;
-      }
-      routesLiquidityPools
-        .filter(pool => !path.includes(pool))
-        .forEach(pool => {
-          if (pool.token0.toLowerCase() === lastTokenAddress.toLowerCase()) {
-            const extendedPath = path.concat(pool);
-            recGraphVisitor(extendedPath, pool.token1, mxTransitPools);
-          }
-          if (pool.token1.toLowerCase() === lastTokenAddress.toLowerCase()) {
-            const extendedPath = path.concat(pool);
-            recGraphVisitor(extendedPath, pool.token0, mxTransitPools);
-          }
-        });
+    const optionsRecGraphVisitor = {
+      routesLiquidityPools,
+      fromTokenAddress,
+      fromAmountAbsolute,
+      toTokenAddress,
+      routesPromises
     };
 
     for (let i = 0; i <= routeMaxTransitPools; i++) {
-      recGraphVisitor([], fromTokenAddress, i);
+      this.recGraphVisitor(optionsRecGraphVisitor, [], fromTokenAddress, i);
     }
 
     return (await Promise.allSettled(routesPromises))
       .filter(res => res.status === 'fulfilled')
       .map((res: PromiseFulfilledResult<UniswapV3Route>) => res.value);
+  }
+
+  private recGraphVisitor(
+    options,
+    path: LiquidityPool[],
+    lastTokenAddress: string,
+    mxTransitPools
+  ) {
+    const {
+      routesLiquidityPools,
+      fromAmountAbsolute,
+      fromTokenAddress,
+      toTokenAddress,
+      routesPromises
+    } = options;
+
+    if (path.length === mxTransitPools) {
+      const pools = routesLiquidityPools.filter(pool =>
+        LiquidityPoolsController.isPoolWithTokens(pool, lastTokenAddress, toTokenAddress)
+      );
+      pools.forEach(pool => {
+        routesPromises.push(
+          this.getRoutePromise(
+            path.concat(pool),
+            fromAmountAbsolute,
+            fromTokenAddress,
+            toTokenAddress
+          )
+        );
+      });
+      return;
+    }
+    routesLiquidityPools
+      .filter(pool => !path.includes(pool))
+      .forEach(pool => {
+        if (pool.token0.toLowerCase() === lastTokenAddress.toLowerCase()) {
+          const extendedPath = path.concat(pool);
+          this.recGraphVisitor(options, extendedPath, pool.token1, mxTransitPools);
+        }
+        if (pool.token1.toLowerCase() === lastTokenAddress.toLowerCase()) {
+          const extendedPath = path.concat(pool);
+          this.recGraphVisitor(options, extendedPath, pool.token0, mxTransitPools);
+        }
+      });
   }
 
   private getRoutePromise(

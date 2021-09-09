@@ -184,6 +184,12 @@ export class Web3Public {
     return new BigNumber(balance);
   }
 
+  /**
+   * @description creates a new contract instance with all its methods and events defined in its json interface object.
+   * @param address the address of the smart contract to call
+   * @param abi the json interface for the contract to instantiate
+   * @return contract the contract instance with all its methods and events.
+   */
   public getContract(address: string, abi: AbiItem[]) {
     return new this.web3.eth.Contract(abi, address);
   }
@@ -339,6 +345,13 @@ export class Web3Public {
     });
   }
 
+  /**
+   * @description encodes a function call using its JSON interface object and given parameters
+   * @param contractAbi the JSON interface object of a function.
+   * @param methodName method name for encode
+   * @param methodArguments the parameters to encode
+   * @return the ABI encoded function call. Means function signature + parameters
+   */
   public encodeFunctionCall(
     contractAbi: AbiItem[],
     methodName: string,
