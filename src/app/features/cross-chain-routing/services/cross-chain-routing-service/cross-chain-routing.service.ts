@@ -468,14 +468,17 @@ export class CrossChainRoutingService {
 
   /**
    * @description Check if contract is alive for now.
-   * @param fromBlockchain Source blockchain name.
-   * @param toBlockchain Target blockchain name.
+   * @param trade Cross chain trade.
    */
   private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {
     const { fromBlockchain, toBlockchain } = trade;
 
-    const fromContractAddress = this.contractAddresses[fromBlockchain] as string;
-    const toContractAddress = this.contractAddresses[toBlockchain] as string;
+    const fromContractAddress = this.contractAddresses[
+      fromBlockchain as SupportedCrossChainSwapBlockchain
+    ] as string;
+    const toContractAddress = this.contractAddresses[
+      toBlockchain as SupportedCrossChainSwapBlockchain
+    ] as string;
     const fromWeb3Public: Web3Public = this.web3PublicService[fromBlockchain];
     const toWeb3Public: Web3Public = this.web3PublicService[toBlockchain];
 
