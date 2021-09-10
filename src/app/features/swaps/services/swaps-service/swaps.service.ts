@@ -79,6 +79,7 @@ export class SwapsService {
               tokenAmount.address.toLowerCase() === bridgeToken.address.toLowerCase()
           )
         ) {
+          // don't add bridge specific tokens to widget tokens list
           if (this.iframeService.isIframe) {
             return null;
           }
@@ -99,8 +100,8 @@ export class SwapsService {
         };
       };
 
-      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray
-        .map(tokenPairsByBlockchains => {
+      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray.map(
+        tokenPairsByBlockchains => {
           const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
           return {
             ...tokenPairsByBlockchains,
@@ -112,12 +113,16 @@ export class SwapsService {
               }
             }))
           };
-        })
-        .filter(item =>
-          item.tokenPairs.every(pair =>
+        }
+      );
+
+      // filter and remove bridge specific tokens in widget
+      updatedBridgeTokenPairsByBlockchainsArray.forEach(
+        item =>
+          (item.tokenPairs = item.tokenPairs.filter(pair =>
             Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
-          )
-        );
+          ))
+      );
 
       this._bridgeTokenPairsByBlockchainsArray.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)
