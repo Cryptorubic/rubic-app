@@ -1,0 +1,50 @@
+<div class="settings-list">
+  <app-settings-element
+    class="settings-list__item option option_pointer"
+    title="Dark mode"
+    desc="Theme for the web"
+    (click)="switchTheme()"
+  >
+    <app-rubic-toggler-theme></app-rubic-toggler-theme>
+  </app-settings-element>
+
+  <app-settings-element
+    class="settings-list__item option option_pointer"
+    title="English"
+    desc="Choose language"
+    (click)="type.emit('languages')"
+  >
+    <div class="option__function_arrow">
+      <img src="assets/images/icons/languages/en.svg" width="22" height="22" alt="English" />
+      <img
+        class="option__arrow-right"
+        src="assets/images/icons/arrow/arrow-right.svg"
+        width="6"
+        height="11"
+        alt="Go to tutorials"
+      />
+    </div>
+  </app-settings-element>
+
+  <app-settings-element class="settings-list__item option" title="Gas price" desc="Auto-updates">
+    <app-gas-indicator *noFrame></app-gas-indicator>
+  </app-settings-element>
+
+  <app-settings-element
+    class="settings-list__item option option_pointer"
+    title="Tutorials"
+    desc="How to use"
+    (click)="navigateExternalLink('https://www.youtube.com/c/RubicExchange')"
+  >
+    <div class="option__function_arrow">
+      <img src="assets/images/icons/academic.svg" width="32" height="28" alt="Tutorials" />
+      <img
+        class="option__arrow-right"
+        src="assets/images/icons/arrow/arrow-right.svg"
+        width="6"
+        height="11"
+        alt="Go to tutorials"
+      />
+    </div>
+  </app-settings-element>
+</div>

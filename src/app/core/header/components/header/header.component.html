@@ -1,6 +1,7 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
-  Rubic Cross-Chain has launched! Swap between 7,500 tokens across Ethereum, BSC, & Polygon. <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
+  Rubic Cross-Chain has launched! Swap between 7,500 tokens across Ethereum, BSC, & Polygon.
+  <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -80,9 +81,15 @@
       <app-user-profile class="rubic-header__profile-user"></app-user-profile>
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
+    <img
+      class="settings-menu"
+      src="assets/images/icons/settings.svg"
+      width="24"
+      height="26"
+      alt="Options"
+      (click)="isHeaderSettinsOpened = !isHeaderSettinsOpened"
+    />
 
-    <app-gas-indicator *noFrame="'any'; and: ($isMobile | async) === false"></app-gas-indicator>
-    <app-rubic-language-select *noFrame></app-rubic-language-select>
-    <app-rubic-toggler-theme></app-rubic-toggler-theme>
+    <app-header-settings [opened]="isHeaderSettinsOpened"></app-header-settings>
   </div>
 </header>

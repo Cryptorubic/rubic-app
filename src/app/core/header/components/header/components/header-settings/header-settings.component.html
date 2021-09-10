@@ -1,0 +1,24 @@
+<aside class="header-settings" *ngIf="opened">
+  <div class="header-settings__header" [class.header-settings__header_inside]="type !== 'settings'">
+    <div class="header-settings__back" (click)="type = 'settings'">
+      <img
+        src="assets/images/icons/arrow/arrow-right.svg"
+        width="7"
+        height="14px"
+        alt="Back to settings"
+      />
+    </div>
+    <h3 class="header-settings__title">{{ type }}</h3>
+    <img
+      class="header-settings__close"
+      src="assets/images/icons/crosshair.svg"
+      width="12"
+      height="12"
+      alt="Close"
+    />
+  </div>
+  <app-settings-list *ngIf="type === 'settings'" (type)="type = $event"></app-settings-list>
+  <ng-template [ngIf]="type === 'languages'">
+    <app-rubic-language-select *noFrame></app-rubic-language-select>
+  </ng-template>
+</aside>

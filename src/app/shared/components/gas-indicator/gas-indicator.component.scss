@@ -4,54 +4,12 @@
 .gas-indicator {
   display: flex;
   align-items: center;
-  justify-content: center;
-
-  height: 50px;
-  padding: 15px 17px;
 
   color: var(--primary-color);
-  font-size: 18px;
-
-  border: 1px solid var(--rubic-base-01);
-  border-radius: 50px;
-
-  @include b($desktop - 1) {
-    margin-left: 15px;
-    padding: 0;
-
-    border-color: transparent;
-
-    img {
-      margin-right: 5px;
-    }
-  }
-
-  @include b($mobile-md) {
-    position: absolute;
-    top: 60px;
-    right: 90px;
-    z-index: 10;
-
-    height: 30px;
-  }
-
-  @include b($mobile-sm) {
-    top: 75px;
-    right: 75px;
-
-    padding: 15px 10px;
-
-    border-color: transparent;
-
-    transform: scale(0.85);
-
-    img {
-      margin-right: 5px;
-    }
-  }
+  font-size: 16px;
+  line-height: 19px;
 
   &__image {
-    height: 20px;
     margin-right: 15px;
   }
 }

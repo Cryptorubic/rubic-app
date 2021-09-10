@@ -1,0 +1,46 @@
+@import 'src/styles';
+
+.languages {
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(3, 110px);
+    gap: 40px 100px;
+    padding: 30px 30px 36px;
+  }
+
+  &__list-item {
+    display: flex;
+    align-items: center;
+
+    color: var(--secondary-color);
+
+    font-size: 16px;
+    line-height: 19px;
+
+    cursor: pointer;
+
+    &_current {
+      color: var(--tui-text-01);
+    }
+  }
+
+  &__image {
+    margin-right: 15px;
+  }
+}
+
+@include b($mobile-md) {
+  .languages {
+    &__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .languages {
+    &__list {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+}

@@ -1,5 +1,18 @@
-<div class="theme-toggler" *ngIf="(isIframe$ | async) !== true" (click)="switchTheme()">
-  <img *ngIf="isDark" src="/assets/images/icons/night.svg" alt="Switch to light">
-  <img *ngIf="!isDark" src="/assets/images/icons/day.svg" alt="Switch to dark">
-</div>
+<div class="theme-toggler" *ngIf="(isIframe$ | async) !== true">
+  <img
+    *ngIf="isDark"
+    src="/assets/images/icons/night.svg"
+    width="25"
+    height="25"
+    alt="Switch to light"
+  />
+  <img
+    *ngIf="!isDark"
+    src="/assets/images/icons/day.svg"
+    width="25"
+    height="25"
+    alt="Switch to dark"
+  />
 
+  <tui-toggle class="theme-toggler__switch" size="l" [(ngModel)]="isDark"></tui-toggle>
+</div>

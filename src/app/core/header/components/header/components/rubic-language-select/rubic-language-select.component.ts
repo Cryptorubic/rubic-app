@@ -60,4 +60,8 @@ export class RubicLanguageSelectComponent {
     const language = this.filteredLanguageList[filteredLanguageIndex];
     this.translateService.use(language.lng);
   }
+
+  public setLanguage(lng: string) {
+    this.translateService.use(lng);
+  }
 }

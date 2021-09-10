@@ -50,6 +50,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
+  public isHeaderSettinsOpened = false;
+
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
   }

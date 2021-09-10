@@ -1,16 +1,9 @@
-<app-dropdown-selector
-  [dropdownButtonTemplate]="dropdownButtonTemplate"
-  [dropdownOptionsTemplates]="dropdownOptionsTemplates"
-  iconRight="tuiIconChevronDown"
-  (optionChange)="onLangChange($event)"
-></app-dropdown-selector>
-
 <ng-template #dropdownButtonTemplate>
   <button class="select" tabindex="0">
     <div class="select__current">
       {{ currentLanguage }}
     </div>
-    <img src="assets/images/icons/arrow-down.svg" alt="Select language">
+    <img src="assets/images/icons/arrow-down.svg" alt="Select language" />
   </button>
 </ng-template>
 
@@ -19,3 +12,21 @@
     {{ language.title }}
   </div>
 </ng-template>
+
+<div class="languages__list">
+  <div
+    class="languages__list-item"
+    [class.languages__list-item_current]="language.lng === currentLanguage"
+    *ngFor="let language of languagesList"
+    (click)="setLanguage(language.lng)"
+  >
+    <img
+      class="languages__image"
+      [src]="'assets/images/icons/languages/' + language.lng + '.svg'"
+      width="32"
+      height="32"
+      [alt]="language.title"
+    />
+    <div class="languages__title">{{ language.title }}</div>
+  </div>
+</div>
