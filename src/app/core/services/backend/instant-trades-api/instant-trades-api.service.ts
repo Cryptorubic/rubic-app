@@ -74,7 +74,7 @@ export class InstantTradesApiService {
     if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
       tradeInfo = {
         hash,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as keyof typeof TO_BACKEND_BLOCKCHAINS],
         provider,
         from_token: trade.from.token.address,
         to_token: trade.to.token.address,
@@ -85,7 +85,7 @@ export class InstantTradesApiService {
       tradeInfo = {
         hash,
         provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as keyof typeof TO_BACKEND_BLOCKCHAINS],
         from_token: trade.from.token.address,
         to_token: trade.to.token.address
       };
@@ -93,7 +93,7 @@ export class InstantTradesApiService {
       tradeInfo = {
         hash,
         provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain]
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as keyof typeof TO_BACKEND_BLOCKCHAINS]
       };
     }
 
@@ -132,10 +132,13 @@ export class InstantTradesApiService {
 
   private parseTradeApiToTableTrade(tradeApi: InstantTradesResponseApi): TableTrade {
     function getTableToken(type: 'from' | 'to'): TableToken {
-      const token = tradeApi[`${type}_token`];
-      const amount = tradeApi[`${type}_amount`];
+      const token = tradeApi[`${type}_token` as const];
+      const amount = tradeApi[`${type}_amount` as const];
       return {
-        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+        blockchain:
+          FROM_BACKEND_BLOCKCHAINS[
+            token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+          ],
         symbol: token.symbol,
         amount: Web3Public.fromWei(amount, token.decimals).toFixed(),
         image: token.image

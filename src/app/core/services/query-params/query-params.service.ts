@@ -19,28 +19,31 @@ import { Web3PublicService } from '../blockchain/web3-public-service/web3-public
 import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
+const DEFAULT_PARAMETERS = {
+  swap: {
+    fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+    toChain: BLOCKCHAIN_NAME.ETHEREUM,
+    from: {
+      [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
+      [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
+      [BLOCKCHAIN_NAME.HARMONY]: 'ONE'
+    },
+    to: {
+      [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC'
+    },
+    amount: '1'
+  }
+};
+
+type DefaultParametersFrom = keyof typeof DEFAULT_PARAMETERS.swap.from;
+type DefaultParametersTo = keyof typeof DEFAULT_PARAMETERS.swap.to;
+
 @Injectable({
   providedIn: 'root'
 })
 export class QueryParamsService {
-  private static DEFAULT_PARAMETERS = {
-    swap: {
-      fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-      toChain: BLOCKCHAIN_NAME.ETHEREUM,
-      from: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
-        [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
-        [BLOCKCHAIN_NAME.HARMONY]: 'ONE'
-      },
-      to: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC'
-      },
-      amount: '1'
-    }
-  };
-
   public currentQueryParams: QueryParams;
 
   private readonly _tokensSelectionDisabled$ = new BehaviorSubject<[boolean, boolean]>([
@@ -171,13 +174,13 @@ export class QueryParamsService {
           queryParams?.fromChain as BLOCKCHAIN_NAME
         )
           ? (queryParams.fromChain as BLOCKCHAIN_NAME)
-          : QueryParamsService.DEFAULT_PARAMETERS.swap.fromChain;
+          : DEFAULT_PARAMETERS.swap.fromChain;
 
         const toChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.toChain as BLOCKCHAIN_NAME
         )
           ? (queryParams.toChain as BLOCKCHAIN_NAME)
-          : QueryParamsService.DEFAULT_PARAMETERS.swap.toChain;
+          : DEFAULT_PARAMETERS.swap.toChain;
 
         const newParams = {
           ...queryParams,
@@ -189,10 +192,10 @@ export class QueryParamsService {
         };
 
         if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-          if (newParams.from === QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain]) {
-            newParams.from = QueryParamsService.DEFAULT_PARAMETERS.swap.to[fromChain];
+          if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
+            newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
           } else {
-            newParams.to = QueryParamsService.DEFAULT_PARAMETERS.swap.from[fromChain];
+            newParams.to = DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom];
           }
         }
 
@@ -354,7 +357,7 @@ export class QueryParamsService {
     this.translateService.use(language);
   }
 
-  private isBackgroundValid(stringToTest) {
+  private isBackgroundValid(stringToTest: string) {
     if (stringToTest === '') {
       return false;
     }

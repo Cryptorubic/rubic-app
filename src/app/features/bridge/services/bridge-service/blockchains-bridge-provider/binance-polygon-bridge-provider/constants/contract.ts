@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export const EVO_ADDRESSES = {

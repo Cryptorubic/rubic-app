@@ -27,6 +27,10 @@ export class MetamaskProvider extends PrivateProvider {
 
   public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
 
+  public get isMultiChainWallet(): boolean {
+    return false;
+  }
+
   get isInstalled(): boolean {
     return !!this.core;
   }

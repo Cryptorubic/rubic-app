@@ -101,7 +101,7 @@ export class TokensService {
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY
     ];
-    const promises = [];
+    const promises: Promise<BigNumber[]>[] = [];
 
     blockchains.forEach(blockchain => {
       promises.push(

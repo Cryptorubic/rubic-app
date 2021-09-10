@@ -31,6 +31,12 @@ export class WalletConnectProvider extends PrivateProvider {
     return !!this.core;
   }
 
+  get isMultiChainWallet(): boolean {
+    const multiChainWalletNames = ['Trust Wallet Android', 'Trust Wallet'];
+    const walletName = this.core.connector.peerMeta.name;
+    return multiChainWalletNames.includes(walletName);
+  }
+
   get isActive(): boolean {
     return this.isEnabled && this.core?.accounts.length > 0;
   }

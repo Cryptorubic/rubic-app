@@ -21,7 +21,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
@@ -36,6 +35,7 @@ enum ERROR_TYPE {
   TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
+  MULTICHAIN_WALLET = 'Multichain wallets are not supported',
   NO_AMOUNT = 'From amount was not entered'
 }
 
@@ -170,7 +170,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   get errorText(): Observable<string> {
-    let translateParams: { key: string; interpolateParams?: unknown };
+    let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
 
     switch (true) {
@@ -195,6 +195,10 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
         translateParams = { key: 'errors.setTronAddress' };
         break;
+      case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
+        translateParams = { key: 'errors.multichainWallet' };
+        break;
+      }
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         translateParams = {
           key: 'errors.chooseNetworkWallet',
@@ -311,9 +315,10 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     let balance = this.fromToken.amount;
     if (!this.fromToken.amount.isFinite()) {
       balance = (
-        await (
-          this.web3PublicService[this.fromToken.blockchain] as Web3Public
-        ).getTokenOrNativeBalance(this.authService.user.address, this.fromToken.address)
+        await this.web3PublicService[this.fromToken.blockchain].getTokenOrNativeBalance(
+          this.authService.user.address,
+          this.fromToken.address
+        )
       ).div(10 ** this.fromToken.decimals);
     }
 
@@ -324,8 +329,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private checkWrongBlockchainError(): void {
     if (this.providerConnectorService.provider) {
       const userBlockchain = this.providerConnectorService.network?.name;
+      const { isMultiChainWallet } = this.providerConnectorService.provider;
+      this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
+        isMultiChainWallet && this.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
         this.fromBlockchain !== userBlockchain &&
+        !isMultiChainWallet &&
         (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();

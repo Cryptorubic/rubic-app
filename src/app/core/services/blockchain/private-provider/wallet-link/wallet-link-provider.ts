@@ -38,6 +38,10 @@ export class WalletLinkProvider extends PrivateProvider {
     return !!this.core;
   }
 
+  get isMultiChainWallet(): boolean {
+    return false;
+  }
+
   get isActive(): boolean {
     return this.isEnabled && Boolean(this.core?.selectedAddress);
   }

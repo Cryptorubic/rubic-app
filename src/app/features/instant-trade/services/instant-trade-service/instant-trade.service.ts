@@ -133,7 +133,8 @@ export class InstantTradeService {
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
-    const shouldCalculateGas = shouldCalculateGasInBlockchain[fromBlockchain];
+    const shouldCalculateGas =
+      shouldCalculateGasInBlockchain[fromBlockchain as keyof typeof shouldCalculateGasInBlockchain];
 
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
@@ -152,7 +153,7 @@ export class InstantTradeService {
     let transactionHash: string;
     try {
       const options = {
-        onConfirm: async hash => {
+        onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
