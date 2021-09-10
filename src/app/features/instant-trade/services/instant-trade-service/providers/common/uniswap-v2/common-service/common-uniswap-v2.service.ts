@@ -364,15 +364,6 @@ export class CommonUniswapV2Service {
         b.profit.minus(a.profit).gt(0) ? 1 : -1
       );
 
-      // TODO: remove console.debug after qa tests
-      console.debug(
-        `[DEBUG] calldata ${JSON.stringify({
-          fromTokenAddress,
-          fromAmountAbsolute,
-          toToken
-        })}\nreturn ${JSON.stringify({ routeWithProfit: sortedByProfitRoutes[0] })}`
-      );
-
       return sortedByProfitRoutes[0];
     }
 

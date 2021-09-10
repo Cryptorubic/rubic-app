@@ -67,7 +67,8 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
+    "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum"
   },
   "navigation": {
     "about": "О компании",
