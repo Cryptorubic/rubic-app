@@ -400,6 +400,7 @@ export class CrossChainRoutingService {
         const trade = this.currentCrossChainTrade;
 
         this.providerConnectorService.checkSettings(trade.fromBlockchain);
+        await this.checkWorking(trade);
         await this.checkGasPrice(trade.toBlockchain);
         await this.checkPoolBalance(trade);
 
@@ -468,5 +469,38 @@ export class CrossChainRoutingService {
         );
       })()
     );
+  }
+
+  /**
+   * @description Check if contract is alive for now.
+   * @param trade Cross chain trade.
+   */
+  private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {
+    const { fromBlockchain, toBlockchain } = trade;
+
+    const fromContractAddress = this.contractAddresses[
+      fromBlockchain as SupportedCrossChainSwapBlockchain
+    ] as string;
+    const toContractAddress = this.contractAddresses[
+      toBlockchain as SupportedCrossChainSwapBlockchain
+    ] as string;
+    const fromWeb3Public: Web3Public = this.web3PublicService[fromBlockchain];
+    const toWeb3Public: Web3Public = this.web3PublicService[toBlockchain];
+
+    const sourceContractPaused = (await fromWeb3Public.callContractMethod(
+      fromContractAddress,
+      this.contractAbi,
+      'paused'
+    )) as string;
+
+    const targetContractPaused = (await toWeb3Public.callContractMethod(
+      toContractAddress,
+      this.contractAbi,
+      'paused'
+    )) as string;
+
+    if (sourceContractPaused || targetContractPaused) {
+      throw new CrossChainIsUnavailableWarning();
+    }
   }
 }
