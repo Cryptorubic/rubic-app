@@ -36,6 +36,7 @@ import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGas
 import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -85,6 +86,7 @@ export class CrossChainRoutingService {
     private readonly web3PrivateService: Web3PrivateService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
+    private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly useTestingModeService: UseTestingModeService
   ) {
     this.setUniswapProviders();
@@ -452,7 +454,7 @@ export class CrossChainRoutingService {
           .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
           .toFixed(0);
 
-        return this.web3PrivateService.tryExecuteContractMethod(
+        const receipt = await this.web3PrivateService.tryExecuteContractMethod(
           contractAddress,
           this.contractAbi,
           methodName,
@@ -467,6 +469,11 @@ export class CrossChainRoutingService {
             return includesErrCode && includesPhrase;
           }
         );
+        this.crossChainRoutingApiService.postTradeInWidget(
+          receipt.transactionHash,
+          trade.fromBlockchain
+        );
+        return receipt;
       })()
     );
   }
