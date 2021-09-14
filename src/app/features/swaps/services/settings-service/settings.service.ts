@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { AbstractControlOf } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -76,7 +77,7 @@ export class SettingsService {
     return this.crossChainRouting.valueChanges;
   }
 
-  constructor(private readonly storeService: StoreService) {
+  constructor(private readonly storeService: StoreService, private iframeService: IframeService) {
     this.defaultItSettings = {
       autoSlippageTolerance: true,
       slippageTolerance: 1,
@@ -105,6 +106,12 @@ export class SettingsService {
     }
     this.settingsForm.valueChanges.subscribe(form => {
       this.storeService.setItem('settings', JSON.stringify(form));
+    });
+
+    this.iframeService.widgetIntoViewport$.subscribe(widgetIntoViewport => {
+      this.instantTrade.patchValue({
+        autoRefresh: widgetIntoViewport
+      });
     });
   }
 

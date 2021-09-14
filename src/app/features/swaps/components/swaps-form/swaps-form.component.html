@@ -27,7 +27,7 @@
     <ng-container *onlyFrame>
       <app-rubic-refresh-button
         *ngIf="isInstantTrade && allowTrade && allowRefresh"
-        style="display: none"
+        style="display: none;"
         type="autoRefresh"
         (onRefresh)="onRefreshTrade.next()"
         [loadingStatus]="loadingStatus"
