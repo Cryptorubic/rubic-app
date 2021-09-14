@@ -9,10 +9,10 @@
   </app-settings-element>
 
   <app-settings-element
+    (click)="switchToLanguageSettings()"
     class="settings-list__item option option_pointer"
     title="English"
     desc="Choose language"
-    (click)="type.emit('languages')"
   >
     <div class="option__function_arrow">
       <img src="assets/images/icons/languages/en.svg" width="22" height="22" alt="English" />
@@ -26,7 +26,11 @@
     </div>
   </app-settings-element>
 
-  <app-settings-element class="settings-list__item option" title="Gas price" desc="Auto-updates">
+  <app-settings-element
+    class="settings-list__item option"
+    title="ETH Gas price"
+    desc="Auto-updates"
+  >
     <app-gas-indicator *noFrame></app-gas-indicator>
   </app-settings-element>
 

@@ -1,24 +1,46 @@
-<aside class="header-settings" *ngIf="opened">
-  <div class="header-settings__header" [class.header-settings__header_inside]="type !== 'settings'">
-    <div class="header-settings__back" (click)="type = 'settings'">
-      <img
-        src="assets/images/icons/arrow/arrow-right.svg"
-        width="7"
-        height="14px"
-        alt="Back to settings"
-      />
-    </div>
-    <h3 class="header-settings__title">{{ type }}</h3>
+<tui-hosted-dropdown tuiDropdownAlign="left" [content]="dropdown" [(open)]="isSettingsOpened">
+  <div class="header-settings__icon-wrapper">
     <img
-      class="header-settings__close"
-      src="assets/images/icons/crosshair.svg"
-      width="12"
-      height="12"
-      alt="Close"
+      *noFrame
+      class="header-settings__icon"
+      src="assets/images/icons/settings.svg"
+      width="24"
+      height="24"
+      alt="Open settings"
     />
   </div>
-  <app-settings-list *ngIf="type === 'settings'" (type)="type = $event"></app-settings-list>
-  <ng-template [ngIf]="type === 'languages'">
-    <app-rubic-language-select *noFrame></app-rubic-language-select>
-  </ng-template>
-</aside>
+</tui-hosted-dropdown>
+
+<ng-template #dropdown>
+  <aside class="header-settings">
+    <ng-container *ngLet="dynamicComponent$ | async as currentComponentData">
+      <div
+        class="header-settings__header"
+        [class.header-settings__header_inside]="!isDefaultComponent"
+      >
+        <div class="header-settings__back" (click)="backToSettings()">
+          <img
+            src="assets/images/icons/arrow/arrow-right.svg"
+            width="7"
+            height="14px"
+            alt="Back to settings"
+          />
+        </div>
+        <h3 class="header-settings__title">{{ currentComponentData.titleKey }}</h3>
+        <img
+          (click)="closeSettings()"
+          class="header-settings__close"
+          src="assets/images/icons/crosshair.svg"
+          width="12"
+          height="12"
+          alt="Close"
+        />
+      </div>
+      <div
+        polymorpheus-outlet
+        [content]="currentComponentData.component"
+        [context]="currentComponent$"
+      ></div>
+    </ng-container>
+  </aside>
+</ng-template>

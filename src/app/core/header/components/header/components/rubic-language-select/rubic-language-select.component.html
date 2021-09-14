@@ -1,18 +1,3 @@
-<ng-template #dropdownButtonTemplate>
-  <button class="select" tabindex="0">
-    <div class="select__current">
-      {{ currentLanguage }}
-    </div>
-    <img src="assets/images/icons/arrow-down.svg" alt="Select language" />
-  </button>
-</ng-template>
-
-<ng-template #dropdownOptionTemplate *ngFor="let language of filteredLanguageList">
-  <div class="dropdown-option">
-    {{ language.title }}
-  </div>
-</ng-template>
-
 <div class="languages__list">
   <div
     class="languages__list-item"

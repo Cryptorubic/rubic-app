@@ -1,25 +1,22 @@
 @import 'src/styles';
 
 .header-settings {
-  position: absolute;
-  top: 104px;
-  right: 0;
-  z-index: 1;
-
   width: 686px;
 
-  background-color: var(--main-form-background);
-
   border-radius: 20px;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
 
   transition: 300ms;
 
-  //&_opened {
-  //  right: 0;
-  //  left: auto;
-  //}
+  &__icon-wrapper {
+    display: flex;
+    align-items: center;
+    height: 50px;
+
+    img {
+      cursor: pointer;
+    }
+  }
 
   &__back {
     display: none;
@@ -40,6 +37,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    margin-bottom: 18px;
     padding: 14px 20px 0;
 
     img {
@@ -51,9 +49,7 @@
     &_inside {
       padding-bottom: 10px;
 
-      border-color: var(--border-color-secondary);
-
-      border-bottom: 1px solid;
+      border-bottom: 1px solid var(--border-color-secondary);
 
       .header-settings__back {
         display: flex;
@@ -74,7 +70,7 @@
   }
 
   &__title {
-    margin: 0 0 18px;
+    margin: 0;
 
     font-weight: 500;
     font-size: 18px;
@@ -88,11 +84,16 @@
 
 @include b($tablet) {
   .header-settings {
-    right: 50%;
+    min-width: 250px;
+  }
+}
 
-    width: 100%;
-    max-width: 610px;
+@include b($tablet) {
+  .header-settings {
+    width: auto;
 
-    transform: translateX(50%);
+    &__icon {
+      width: 20px;
+    }
   }
 }

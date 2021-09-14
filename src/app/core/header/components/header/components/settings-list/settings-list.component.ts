@@ -3,11 +3,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Output,
-  EventEmitter
+  EventEmitter,
+  Inject
 } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
+import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
+import { SettingsComponent } from 'src/app/core/header/components/header/components/header-settings/header-settings.component';
 
 @Component({
   selector: 'app-settings-list',
@@ -16,19 +20,22 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsListComponent {
+  @Output() type = new EventEmitter<string>();
+
   public readonly $isMobile: Observable<boolean>;
 
   private themeSubscription$: Subscription;
 
-  @Output() type = new EventEmitter<string>();
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
-    private readonly cdr: ChangeDetectorRef
-  ) {
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
-  }
+    private readonly cdr: ChangeDetectorRef,
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: BehaviorSubject<{
+      titleKey: string;
+      component: PolymorpheusComponent<SettingsComponent, object>;
+    }>
+  ) {}
 
   public switchTheme(): void {
     this.themeService.switchTheme();
@@ -36,5 +43,12 @@ export class SettingsListComponent {
 
   public navigateExternalLink(url: string): void {
     window.open(url, '_blank');
+  }
+
+  public switchToLanguageSettings(): void {
+    this.context.next({
+      titleKey: 'Languages',
+      component: new PolymorpheusComponent(RubicLanguageSelectComponent)
+    });
   }
 }

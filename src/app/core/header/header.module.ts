@@ -9,12 +9,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg';
 import {
   TuiDataListModule,
+  TuiDropdownControllerModule,
   TuiGroupModule,
   TuiHintModule,
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { IframeLogoutButtonComponent } from 'src/app/core/header/components/header/components/iframe-logout-button/iframe-logout-button.component';
 import { TuiBadgeModule } from '@taiga-ui/kit';
+import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -51,7 +53,9 @@ import { SettingsListComponent } from './components/header/components/settings-l
     TuiHintModule,
     TuiHostedDropdownModule,
     TuiGroupModule,
-    TuiBadgeModule
+    TuiBadgeModule,
+    PolymorpheusModule,
+    TuiDropdownControllerModule
   ],
   exports: [HeaderComponent, LoginButtonComponent]
 })

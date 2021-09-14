@@ -4,13 +4,25 @@
   display: block;
 }
 
-.theme-toggler {
+.theme-toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 
   cursor: pointer;
+
+  ::ng-deep &__switch {
+    width: 50px;
+    height: 30px;
+  }
+}
+
+::ng-deep tui-toggle {
+  &[data-tui-host-size='l'] {
+    width: 50px;
+    height: 30px;
+  }
 }
 
 @include b($tablet) {
