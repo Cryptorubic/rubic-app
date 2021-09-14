@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
-import { from, Observable, of, throwError } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -116,41 +116,55 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   }
 
   private async loadRubicTokenInfo(): Promise<void> {
-    this.httpService.get('networks/', {}, this.apiUrl).subscribe((response: RubicApiResponse[]) => {
-      const ethContractData = response.find(data => data.network === 'Ethereum');
-      const bscContractData = response.find(data => data.network === 'Binance-Smart-Chain');
+    this.httpService
+      .get('networks/', {}, this.apiUrl)
+      .pipe(
+        timeout(3000),
+        catchError(e => {
+          console.error(e);
+          this.tokenPairs$.next(List([]));
+          return EMPTY;
+        })
+      )
+      .subscribe((response: RubicApiResponse[]) => {
+        if (!response) {
+          this.tokenPairs$.next(List([]));
+          return;
+        }
+        const ethContractData = response.find(data => data.network === 'Ethereum');
+        const bscContractData = response.find(data => data.network === 'Binance-Smart-Chain');
 
-      const bridgeTokenPair: BridgeTokenPair = {
-        symbol: 'RBC',
-        image: '',
-        rank: 0,
+        const bridgeTokenPair: BridgeTokenPair = {
+          symbol: 'RBC',
+          image: '',
+          rank: 0,
 
-        tokenByBlockchain: {
-          [BLOCKCHAIN_NAME.ETHEREUM]: {
-            blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-            address: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].rubicTokenAddress,
-            name: 'Rubic',
-            symbol: 'RBC',
-            decimals: 18,
-            minAmount: parseFloat(ethContractData.min_amount),
-            maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].maxAmount
+          tokenByBlockchain: {
+            [BLOCKCHAIN_NAME.ETHEREUM]: {
+              blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+              address: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].rubicTokenAddress,
+              name: 'Rubic',
+              symbol: 'RBC',
+              decimals: 18,
+              minAmount: parseFloat(ethContractData.min_amount),
+              maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.ETHEREUM].maxAmount
+            },
+            [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
+              blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+              address: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].rubicTokenAddress,
+              name: 'Rubic',
+              symbol: 'BRBC',
+              decimals: 18,
+              minAmount: parseFloat(bscContractData.min_amount),
+              maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].maxAmount
+            }
           },
-          [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-            blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-            address: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].rubicTokenAddress,
-            name: 'Rubic',
-            symbol: 'BRBC',
-            decimals: 18,
-            minAmount: parseFloat(bscContractData.min_amount),
-            maxAmount: this.rubicConfig[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].maxAmount
-          }
-        },
 
-        fromEthFee: parseFloat(bscContractData.fee),
-        toEthFee: parseFloat(ethContractData.fee)
-      };
-      this.tokenPairs$.next(List([bridgeTokenPair]));
-    });
+          fromEthFee: parseFloat(bscContractData.fee),
+          toEthFee: parseFloat(ethContractData.fee)
+        };
+        this.tokenPairs$.next(List([bridgeTokenPair]));
+      });
   }
 
   public getProviderType(): BRIDGE_PROVIDER {

@@ -35,6 +35,7 @@ enum ERROR_TYPE {
   TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
+  MULTICHAIN_WALLET = 'Multichain wallets are not supported',
   NO_AMOUNT = 'From amount was not entered'
 }
 
@@ -169,7 +170,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   get errorText(): Observable<string> {
-    let translateParams: { key: string; interpolateParams?: unknown };
+    let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
 
     switch (true) {
@@ -194,6 +195,10 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
         translateParams = { key: 'errors.setTronAddress' };
         break;
+      case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
+        translateParams = { key: 'errors.multichainWallet' };
+        break;
+      }
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         translateParams = {
           key: 'errors.chooseNetworkWallet',
@@ -324,8 +329,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private checkWrongBlockchainError(): void {
     if (this.providerConnectorService.provider) {
       const userBlockchain = this.providerConnectorService.network?.name;
+      const { isMultiChainWallet } = this.providerConnectorService.provider;
+      this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
+        isMultiChainWallet && this.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
         this.fromBlockchain !== userBlockchain &&
+        !isMultiChainWallet &&
         (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();

@@ -67,7 +67,8 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network"
   },
   "navigation": {
     "about": "关于",
@@ -428,7 +429,7 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
-    "title": "維護",
+    "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
   },
   "modals": {
@@ -491,6 +492,6 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",
-    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
   }
 }

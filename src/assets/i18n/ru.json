@@ -67,7 +67,8 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
+    "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum"
   },
   "navigation": {
     "about": "О компании",
@@ -428,7 +429,7 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
-    "title": "Поддержка",
+    "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
   },
   "modals": {
@@ -491,6 +492,6 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
-    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
   }
 }
