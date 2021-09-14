@@ -17,7 +17,6 @@ export class StoreService {
 
   /**
    * Key to store data.
-   * @private
    */
   private readonly storageKey = 'rubicData';
 
