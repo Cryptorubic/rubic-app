@@ -2,8 +2,8 @@
   <header class="tokens-select__header" *noFrame>
     <h2>{{ 'modals.tokensListModal.title' | translate }}</h2>
   </header>
-  <div class="tokens-select__row">
-    <app-tokens-search-bar *noFrame [(query)]="query"></app-tokens-search-bar>
+  <div class="tokens-select__row" *noFrame>
+    <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
     <app-icon-button
       [icon]="listType === 'default' ? 'assets/images/icons/star.svg' : 'assets/images/icons/back.svg'"
       [tuiHint]="listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list'"
