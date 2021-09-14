@@ -23,6 +23,9 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 
+/**
+ * Service that contains actions (transformations and fetch) with tokens.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -31,6 +34,11 @@ export class TokensService {
    * Current tokens list state.
    */
   private readonly tokensSubject: BehaviorSubject<List<TokenAmount>>;
+
+  /**
+   * Current favorite tokens list state.
+   */
+  public readonly favoriteTokensSubject: BehaviorSubject<List<TokenAmount>>;
 
   /**
    * Current tokens request options state.
@@ -45,8 +53,17 @@ export class TokensService {
   /**
    * Get current tokens list.
    */
-  get tokens(): Observable<List<TokenAmount>> {
+  public get tokens(): Observable<List<TokenAmount>> {
     return this.tokensSubject
+      .asObservable()
+      .pipe(map(list => list.filter(token => token !== null)));
+  }
+
+  /**
+   * Get current tokens list.
+   */
+  public get favoriteTokens$(): Observable<List<TokenAmount>> {
+    return this.favoriteTokensSubject
       .asObservable()
       .pipe(map(list => list.filter(token => token !== null)));
   }
@@ -81,9 +98,19 @@ export class TokensService {
     private readonly store: StoreService
   ) {
     this.tokensSubject = new BehaviorSubject(List([]));
+    this.favoriteTokensSubject = new BehaviorSubject(List([]));
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
     this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
+    setTimeout(() => this.fetchFavoriteTokens(), 200);
     this.setupSubscriptions();
+  }
+
+  /**
+   * @description Set favorite tokens list.
+   * @param tokens Fvorite tokens list.
+   */
+  public setFavoriteTokens(tokens: List<TokenAmount>): void {
+    this.favoriteTokensSubject.next(tokens);
   }
 
   /**
@@ -95,20 +122,6 @@ export class TokensService {
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
         async tokens => {
-          // const userTokens = this.store.getItem('favoriteTokens') || [];
-          // const userUniqueTokens = (userTokens as TokenAmount[]).reduce((acc, userToken) => {
-          //   if (
-          //     !tokens.find(
-          //       backendToken =>
-          //         backendToken.blockchain === userToken.blockchain &&
-          //         backendToken.address === userToken.address
-          //     )
-          //   ) {
-          //     return [...acc, userToken];
-          //   }
-          //   return acc;
-          // }, []);
-          // const backendAndLocalTokens = tokens.concat(List(userUniqueTokens));
           if (!this.isTestingMode) {
             this.setDefaultTokenAmounts(tokens);
             await this.calculateUserTokensBalances();
@@ -135,6 +148,7 @@ export class TokensService {
 
   /**
    * @description Set new tokens.
+   * @param tokens Tokens list to set.
    */
   public setTokens(tokens: List<TokenAmount>): void {
     this.tokensSubject.next(tokens);
@@ -176,6 +190,26 @@ export class TokensService {
     }
   }
 
+  /**
+   * @description Calculate balance for token list.
+   * @param tokens Token list.
+   */
+  public async calculateUserTokensBalancesWithoutReAssign(
+    tokens: List<TokenAmount>
+  ): Promise<List<TokenAmount>> {
+    return this.userAddress
+      ? List(await this.getTokensWithBalance(tokens))
+      : tokens.map(token => ({
+          ...token,
+          amount: new BigNumber(NaN)
+        }));
+  }
+
+  /**
+   * @description Get balance for each token in list.
+   * @param tokens List of tokens.
+   * @return Promise<TokenAmount[]> Tokens with balance.
+   */
   private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
     const blockchains: BLOCKCHAIN_NAME[] = [
       BLOCKCHAIN_NAME.ETHEREUM,
@@ -244,16 +278,6 @@ export class TokensService {
     );
   }
 
-  public isOnlyBalanceUpdated(prevToken: TokenAmount, nextToken: TokenAmount): boolean {
-    if (!prevToken || !nextToken) {
-      return false;
-    }
-    return (
-      prevToken.blockchain === nextToken.blockchain &&
-      prevToken.address.toLowerCase() === nextToken.address.toLowerCase()
-    );
-  }
-
   /**
    * @description get native coin price in USD.
    * @param blockchain Token blockchain.
@@ -319,9 +343,9 @@ export class TokensService {
   }
 
   /**
-   *
-   * @param query
-   * @param network
+   * @description Fetch tokens from backend by search query string.
+   * @param query Search query.
+   * @param network Tokens network.
    */
   public fetchQueryTokens(
     query: string,
@@ -334,5 +358,41 @@ export class TokensService {
       ...(isAddress && { address: query })
     } as TokensRequestOptions;
     return this.tokensApiService.fetchQueryToken(params);
+  }
+
+  /**
+   * @description Add token to list of favorite tokens.
+   * @param favoriteToken Favorite token to add.
+   */
+  public addFavoriteToken(favoriteToken: TokenAmount): void {
+    this.store.addCollectionItem('favoriteTokens', favoriteToken);
+    this.favoriteTokensSubject.next(this.favoriteTokensSubject.value.concat(favoriteToken));
+  }
+
+  /**
+   * @description Remove token from list of favorite tokens.
+   * @param token Favorite token to remove.
+   */
+  public removeFavoriteToken(token: TokenAmount): void {
+    const filteredTokens = this.favoriteTokensSubject.value.filter(el => {
+      return (
+        (el.blockchain === token.blockchain && el.address !== token.address) ||
+        el.blockchain !== token.blockchain
+      );
+    });
+
+    this.store.setItem('favoriteTokens', filteredTokens.toArray());
+    this.favoriteTokensSubject.next(filteredTokens);
+  }
+
+  /**
+   * @description Fetch favorite tokens from local storage.
+   */
+  private async fetchFavoriteTokens(): Promise<void> {
+    const favoriteTokens = this.store.getItem('favoriteTokens') as TokenAmount[];
+    const tokensWithBalance = await this.calculateUserTokensBalancesWithoutReAssign(
+      List(favoriteTokens)
+    );
+    this.favoriteTokensSubject.next(tokensWithBalance);
   }
 }

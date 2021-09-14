@@ -11,7 +11,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { StoreService } from 'src/app/core/services/store/store.service';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
 
 @Component({
@@ -40,7 +40,7 @@ export class CustomTokenComponent {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private translateService: TranslateService,
-    private readonly store: StoreService
+    private readonly tokensService: TokensService
   ) {}
 
   /**
@@ -57,7 +57,7 @@ export class CustomTokenComponent {
       .subscribe((confirm: boolean) => {
         if (confirm) {
           const favoriteToken = { ...this.token, favorite: true } as AvailableTokenAmount;
-          this.store.addCollectionItem('favoriteTokens', favoriteToken);
+          this.tokensService.addFavoriteToken(favoriteToken);
           this.tokenSelected.emit(favoriteToken);
         }
       });

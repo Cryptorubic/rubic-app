@@ -1,5 +1,5 @@
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 export interface Store {
   /**
@@ -23,7 +23,7 @@ export interface Store {
    */
   chainId: number;
   /**
-   * User tokens that define as favorite for display first.
+   * User favorite tokens.
    */
-  favoriteTokens: AvailableTokenAmount | AvailableTokenAmount[];
+  favoriteTokens: TokenAmount | TokenAmount[];
 }

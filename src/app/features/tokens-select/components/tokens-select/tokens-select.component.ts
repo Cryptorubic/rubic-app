@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -20,7 +20,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, debounceTime, mapTo, takeUntil } from 'rxjs/operators';
+import { catchError, debounceTime, map, mapTo, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -31,6 +31,8 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { List } from 'immutable';
+import { AsyncPipe } from '@angular/common';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -54,8 +56,6 @@ export class TokensSelectComponent implements OnInit {
   public listType: 'default' | 'favorite' = 'default';
 
   public tokens: BehaviorSubject<AvailableTokenAmount[]>;
-
-  private favoriteTokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
 
   public customToken: AvailableTokenAmount;
 
@@ -85,22 +85,20 @@ export class TokensSelectComponent implements OnInit {
 
   public tokensListLoading: boolean;
 
+  public favoriteTokens$: Observable<AvailableTokenAmount[]>;
+
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
 
-  public switchMode(): void {
-    if (this.listType === 'default') {
-      this.listType = 'favorite';
-    } else {
-      this.listType = 'default';
-    }
-  }
+  public favoriteTokensToShow$: Observable<AvailableTokenAmount[]>;
+
+  private blockchainSubject = new BehaviorSubject<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM);
 
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
-      if (this.tokensList) {
+      if (this.tokensList?.listScroll) {
         this.tokensList.listScroll.scrollToIndex(0);
       }
     }
@@ -115,10 +113,6 @@ export class TokensSelectComponent implements OnInit {
     this.querySubject.next(value);
   }
 
-  public get favoriteTokens$(): Observable<AvailableTokenAmount[]> {
-    return this.favoriteTokensSubject.asObservable();
-  }
-
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: ComponentContext,
@@ -131,9 +125,22 @@ export class TokensSelectComponent implements OnInit {
     @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.initiateContextParams(context.data);
-    this.querySubject = new BehaviorSubject<string>('');
-    this.favoriteTokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
     this.tokensListLoading = false;
+    this.querySubject = new BehaviorSubject<string>('');
+    this.favoriteTokens$ = tokensService.favoriteTokens$.pipe(
+      map((tokens: List<TokenAmount>) => {
+        return tokens.map(el => ({ ...el, available: true })).toArray();
+      })
+    );
+    this.favoriteTokensToShow$ = combineLatest([
+      this.blockchainSubject.asObservable(),
+      this.favoriteTokens$
+    ]).pipe(
+      takeUntil(this.destroy$),
+      map(([blockchain, tokens]: [BLOCKCHAIN_NAME, AvailableTokenAmount[]]) => {
+        return tokens.filter(el => el.blockchain === blockchain);
+      })
+    );
   }
 
   /**
@@ -142,13 +149,23 @@ export class TokensSelectComponent implements OnInit {
    * @param toBlockchain To token blockchain.
    * @return boolean If token allowed in cross-chain returns true, otherwise false.
    */
-  // eslint-disable-next-line @typescript-eslint/member-ordering
   static allowInCrossChain(
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME
   ): boolean {
     const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
     return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
+  }
+
+  /**
+   * @description Switch tokens display mode (default and favorite).
+   */
+  public switchMode(): void {
+    if (this.listType === 'default') {
+      this.listType = 'favorite';
+    } else {
+      this.listType = 'default';
+    }
   }
 
   /**
@@ -170,7 +187,6 @@ export class TokensSelectComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.updateTokensList();
-    this.fetchFavoriteTokens();
     this.querySubject
       .pipe(takeUntil(this.destroy$), debounceTime(500))
       .subscribe(() => this.updateTokensList());
@@ -182,6 +198,7 @@ export class TokensSelectComponent implements OnInit {
    */
   private setNewBlockchain(chain: BLOCKCHAIN_NAME): void {
     this._blockchain = chain;
+    this.blockchainSubject.next(chain);
 
     const tokenType = this.formType === 'from' ? 'fromToken' : 'toToken';
     if (!this.form.value[tokenType]) {
@@ -206,9 +223,6 @@ export class TokensSelectComponent implements OnInit {
    * @param selectedToken Selected token.
    */
   public tokenSelect(selectedToken: AvailableTokenAmount): void {
-    if (selectedToken.favorite) {
-      this.favoriteTokensSubject.next([...this.favoriteTokensSubject.value, selectedToken]);
-    }
     this.context.completeWith(selectedToken);
   }
 
@@ -218,11 +232,37 @@ export class TokensSelectComponent implements OnInit {
   private updateTokensList(): void {
     this.customToken = null;
     this.tokens.pipe(takeUntil(this.destroy$)).subscribe(async tokens => {
-      const currentBlockchainTokens = tokens.filter(token => token.blockchain === this.blockchain);
-      const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
-      this.tokensToShow$.next(sortedAndFilteredTokens);
+      const favoriteTokens = new AsyncPipe(this.cdr).transform(this.favoriteTokens$);
+      const filterByBlockchain = (token: AvailableTokenAmount) =>
+        token.blockchain === this.blockchain;
 
-      if (!sortedAndFilteredTokens.length) {
+      const currentBlockchainTokens = tokens.filter(filterByBlockchain);
+      const currentBlockchainFavoriteTokens = favoriteTokens.filter(filterByBlockchain);
+
+      const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
+      const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
+        currentBlockchainFavoriteTokens
+      );
+
+      const tokensWithFavorite = sortedAndFilteredTokens.map(token => {
+        return {
+          ...token,
+          favorite:
+            favoriteTokens.find(
+              favoriteToken =>
+                favoriteToken.blockchain === token.blockchain &&
+                favoriteToken.address === token.address
+            )?.favorite || false
+        };
+      });
+      this.tokensToShow$.next(tokensWithFavorite);
+      this.tokensService.setFavoriteTokens(List(sortedAndFilteredFavoriteTokens));
+
+      const shouldSearch =
+        (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
+        (this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length);
+
+      if (shouldSearch) {
         this.loading = true;
         this.cdr.detectChanges();
         await this.tryParseQuery();
@@ -385,10 +425,5 @@ export class TokensSelectComponent implements OnInit {
         await this.tryParseQueryAsCustomToken();
       }
     }
-  }
-
-  private fetchFavoriteTokens(): void {
-    const favoriteTokens = this.store.getItem('favoriteTokens') as AvailableTokenAmount[];
-    this.favoriteTokensSubject.next(favoriteTokens);
   }
 }

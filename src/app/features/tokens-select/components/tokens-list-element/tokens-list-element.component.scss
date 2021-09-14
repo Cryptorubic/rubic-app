@@ -11,6 +11,8 @@
   }
 
   &__name-container {
+    max-width: 150px;
+
     @include iframe-horizontal {
       width: 60px;
     }
@@ -41,6 +43,28 @@
       @include iframe {
         font-size: 12px;
         line-height: 14px;
+      }
+    }
+  }
+
+  ::ng-deep &__favorite {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+
+    svg {
+      width: 24px;
+      height: 24px;
+
+      path {
+        fill: var(--form-dim-text-color);
+      }
+    }
+
+    &_active,
+    &:hover {
+      svg path {
+        fill: var(--main-green);
       }
     }
   }

@@ -66,19 +66,7 @@ export class StoreService {
       ...(value as [])
     ] as Store[T];
 
-    const newData = {
-      ...this.storageSubject.value,
-      [key]: newCollection
-    };
-
-    const jsonData = JSON.stringify(newData);
-
-    if (!this.isIframe) {
-      this.localStorage?.setItem(this.storageKey, jsonData);
-    } else {
-      this.document.cookie = `${this.storageKey}=${jsonData}`;
-    }
-    this.storageSubject.next(newData);
+    this.setItem(key, newCollection);
   }
 
   /**
@@ -161,5 +149,15 @@ export class StoreService {
       this.localStorage?.clear();
     }
     this.storageSubject.next(null);
+  }
+
+  /**
+   * @description Set some store collection data by key.
+   * @param key Store key.
+   * @param compareFn Function to filter collection values.
+   */
+  public setCollectionItem(key: keyof Store, compareFn: (el: unknown) => boolean) {
+    const newCollection = (this.storageSubject.value[key] as []).filter(compareFn);
+    this.setItem(key, newCollection);
   }
 }

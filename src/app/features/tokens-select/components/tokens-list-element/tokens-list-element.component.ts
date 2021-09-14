@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -11,13 +12,38 @@ import { map } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
+  /**
+   * Token element.
+   */
   @Input() token: TokenAmount;
 
+  /**
+   * Is iframe has horizontal view.
+   */
   public isHorizontalFrame$: Observable<boolean>;
 
-  constructor(iframeService: IframeService) {
+  constructor(
+    iframeService: IframeService,
+    private readonly tokensService: TokensService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
       map(appearance => appearance === 'horizontal')
     );
+  }
+
+  /**
+   * @description Make token favorite or not favorite in the list.
+   * @param event Click event.
+   */
+  public toggleFavorite(event: MouseEvent): void {
+    event.stopImmediatePropagation();
+    this.token.favorite = !this.token.favorite;
+    this.cdr.detectChanges();
+    if (this.token.favorite) {
+      this.tokensService.addFavoriteToken(this.token);
+    } else {
+      this.tokensService.removeFavoriteToken(this.token);
+    }
   }
 }

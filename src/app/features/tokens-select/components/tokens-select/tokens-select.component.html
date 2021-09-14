@@ -5,7 +5,9 @@
   <div class="tokens-select__row">
     <app-tokens-search-bar *noFrame [(query)]="query"></app-tokens-search-bar>
     <app-icon-button
-      [icon]="'assets/images/icons/heart.svg'"
+      [icon]="listType === 'default' ? 'assets/images/icons/star.svg' : 'assets/images/icons/back.svg'"
+      [tuiHint]="listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list'"
+      [tuiHintShowDelay]="500"
       [border]="true"
       (iconButtonClick)="switchMode()"
     >
@@ -19,7 +21,7 @@
     ></app-blockchains-aside>
     <app-tokens-list
       *ngIf="!customToken && !loading"
-      [tokens]="listType === 'default' ? (tokensToShow$ | async) : (favoriteTokens$ | async)"
+      [tokens]="listType === 'default' ? (tokensToShow$ | async) : (favoriteTokensToShow$ | async)"
       [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
       (tokenSelect)="tokenSelect($event)"
       (pageUpdate)="fetchNewPageTokens()"
