@@ -80,6 +80,7 @@
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
+    [priceImpact]="selectedProvider?.trade.uniswapV2Options?.priceImpact"
     [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"

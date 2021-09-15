@@ -68,11 +68,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
-  public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
-
   @Output() maxGasLimit = new EventEmitter<BigNumber>();
 
-  private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
+  public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
     { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
@@ -241,22 +239,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
     this.providersOrderCache = null;
-    switch (blockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.ETHEREUM];
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
-        break;
-      case BLOCKCHAIN_NAME.POLYGON:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
-        break;
-      case BLOCKCHAIN_NAME.HARMONY:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.HARMONY];
-        break;
-      default:
-        this.errorService.catch(new NotSupportedItNetwork());
+    if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
+      this.errorService.catch(new NotSupportedItNetwork());
+      return;
     }
+    this.providerControllers = INSTANT_TRADE_PROVIDERS[blockchain];
   }
 
   private setupSettingsForm(form: ItSettingsForm): void {
@@ -596,6 +583,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       this.tokensService.calculateUserTokensBalances();
 
+      if (this.isIframe$) {
+        this.needApprove = false;
+      }
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,
         providerIndex,

@@ -43,9 +43,12 @@ interface InstantTrade {
   gasFeeInEth?: BigNumber;
 
   /**
-   * Additional options
+   * Additional uniswap v2 options
    */
-  options?: unknown;
+  uniswapV2Options?: {
+    path: string[];
+    priceImpact: number; // in percents
+  };
 
   /**
    * Error.

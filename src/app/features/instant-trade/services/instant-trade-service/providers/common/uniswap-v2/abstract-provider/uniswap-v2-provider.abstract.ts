@@ -10,17 +10,13 @@ import { TransactionReceipt } from 'web3-eth';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import {
-  ContractAddressNetMode,
-  RoutingProvidersNetMode,
-  WethAddressNetMode
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
+import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 
 export class UniswapV2ProviderAbstract implements ItProvider {
-  private readonly blockchain: BLOCKCHAIN_NAME;
-
   private wethAddress: string;
+
+  private factoryAddress: string;
 
   private contractAddress: string;
 
@@ -28,27 +24,28 @@ export class UniswapV2ProviderAbstract implements ItProvider {
 
   private readonly maxTransitTokens: number;
 
+  private readonly lpFee: number;
+
   constructor(
-    blockchain: BLOCKCHAIN_NAME,
-    contractAddressNetMode: ContractAddressNetMode,
-    wethAddressNetMode: WethAddressNetMode,
-    routingProvidersNetMode: RoutingProvidersNetMode,
-    maxTransitTokens: number,
+    private readonly blockchain: BLOCKCHAIN_NAME,
+    uniswapV2Constants: UniswapV2Constants,
     private readonly commonUniswapV2: CommonUniswapV2Service,
     private readonly useTestingModeService: UseTestingModeService
   ) {
-    this.blockchain = blockchain;
-    this.maxTransitTokens = maxTransitTokens;
+    this.maxTransitTokens = uniswapV2Constants.maxTransitTokens;
+    this.lpFee = uniswapV2Constants.lpFee;
 
-    this.wethAddress = wethAddressNetMode.mainnet;
-    this.contractAddress = contractAddressNetMode.mainnet;
-    this.routingProviders = routingProvidersNetMode.mainnet;
+    this.contractAddress = uniswapV2Constants.contractAddressNetMode.mainnet;
+    this.wethAddress = uniswapV2Constants.wethAddressNetMode.mainnet;
+    this.factoryAddress = uniswapV2Constants.factoryAddressNetMode.mainnet;
+    this.routingProviders = uniswapV2Constants.routingProvidersNetMode.mainnet;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.wethAddress = wethAddressNetMode.testnet;
-        this.contractAddress = contractAddressNetMode.testnet;
-        this.routingProviders = routingProvidersNetMode.testnet;
+        this.contractAddress = uniswapV2Constants.contractAddressNetMode.testnet;
+        this.wethAddress = uniswapV2Constants.wethAddressNetMode.testnet;
+        this.factoryAddress = uniswapV2Constants.factoryAddressNetMode.testnet;
+        this.routingProviders = uniswapV2Constants.routingProvidersNetMode.testnet;
       }
     });
   }
@@ -77,10 +74,12 @@ export class UniswapV2ProviderAbstract implements ItProvider {
       fromToken,
       fromAmount,
       toToken,
-      this.wethAddress,
       this.contractAddress,
+      this.wethAddress,
+      this.factoryAddress,
       this.routingProviders,
       this.maxTransitTokens,
+      this.lpFee,
       shouldCalculateGas
     );
   }

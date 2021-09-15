@@ -57,6 +57,58 @@ $point-radius: 26px;
   }
 }
 
+.button-swap {
+  &_warning-low {
+    ::ng-deep {
+      tui-wrapper[data-appearance='secondary'] {
+        background-color: #baa743;
+      }
+    }
+  }
+
+  &_warning-high {
+    ::ng-deep {
+      tui-wrapper[data-appearance='secondary'] {
+        background-color: #d2474a;
+      }
+    }
+  }
+
+  &__hint {
+    position: relative;
+    top: -3px;
+
+    height: 15px;
+    margin-left: 6px;
+
+    ::ng-deep {
+      svg {
+        path:not(:last-child),
+        circle {
+          fill: white;
+          stroke: white;
+        }
+
+        path:last-child {
+          stroke: white;
+        }
+      }
+    }
+  }
+}
+
+.price-impact {
+  font-size: 16px;
+
+  &_low {
+    color: $rubic-warning;
+  }
+
+  &_high {
+    color: #e20000;
+  }
+}
+
 .error-button {
   ::ng-deep {
     .content {
