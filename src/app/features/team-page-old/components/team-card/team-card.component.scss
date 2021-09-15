@@ -10,7 +10,7 @@
   padding: 10px;
 
   background-color: var(--main-form-background);
-  border-radius: 14px;
+  border-radius: $border-radius-1;
   cursor: pointer;
 
   transition: transform 0.1s linear;
@@ -31,7 +31,7 @@
     object-fit: cover;
     object-position: 50% 2%;
 
-    border-radius: 14px;
+    border-radius: $border-radius-1;
   }
 
   &__description {

@@ -8,10 +8,11 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
-import { AbstractTuiThemeSwitcher } from '@taiga-ui/cdk';
+import { AbstractTuiThemeSwitcher, TuiDestroyService } from '@taiga-ui/cdk';
 import { DOCUMENT } from '@angular/common';
 import { Observable, Subscription } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rubic-toggler-theme',
@@ -33,6 +34,7 @@ export class RubicTogglerThemeComponent
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly themeService: ThemeService,
+    private readonly destroy$: TuiDestroyService,
     @Inject(DOCUMENT) document: Document,
     iframeService: IframeService
   ) {
@@ -41,10 +43,12 @@ export class RubicTogglerThemeComponent
   }
 
   public ngOnInit(): void {
-    this.themeSubscription$ = this.themeService.theme$.subscribe(theme => {
-      this.isDark = theme === 'dark';
-      this.cdr.detectChanges();
-    });
+    this.themeSubscription$ = this.themeService.theme$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(theme => {
+        this.isDark = theme === 'dark';
+        this.cdr.detectChanges();
+      });
   }
 
   public ngOnDestroy(): void {

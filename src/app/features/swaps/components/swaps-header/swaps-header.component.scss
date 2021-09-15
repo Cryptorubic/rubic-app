@@ -1,3 +1,5 @@
+@import 'src/styles';
+
 :host {
   display: block;
   padding: 5px;
@@ -22,7 +24,7 @@
   var(--form-header-color-1) 50%,
   var(--form-header-color-2) 50%,
   var(--form-header-color-2) 100%);
-  border-radius: 14px;
+  border-radius: $border-radius-1;
 
   &__blockchain {
     display: flex;

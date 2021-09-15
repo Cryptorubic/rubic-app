@@ -1,4 +1,4 @@
-<div class="theme-toggle" *ngIf="(isIframe$ | async) !== true">
+<div class="theme-toggle" *ngIf="!(isIframe$ | async)">
   <img
     *ngIf="isDark"
     src="/assets/images/icons/night.svg"

@@ -56,7 +56,11 @@
     >
   </nav>
 
-  <app-rubic-button class="rubic-header__buy-rbc" appearance="outline" (click)="buyRBC()"
+  <app-rubic-button
+    *noFrame=""
+    class="rubic-header__buy-rbc"
+    appearance="outline"
+    (click)="buyRBC()"
     >Buy RBC</app-rubic-button
   >
 
@@ -86,6 +90,6 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-header-settings></app-header-settings>
+    <app-settings *noFrame></app-settings>
   </div>
 </header>

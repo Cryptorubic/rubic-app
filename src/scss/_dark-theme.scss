@@ -106,7 +106,7 @@ html.dark {
     tui-dropdown-box {
       --tui-base-01: rgba(0, 0, 0, 0.5);
 
-      backdrop-filter: blur(5px);
+      backdrop-filter: $backdrop-blur-1;
     }
 
     .gradient {

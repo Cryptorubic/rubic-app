@@ -26,6 +26,9 @@ import { IframeSettingsButtonComponent } from './components/header/components/if
 import { HeaderSettingsComponent } from './components/header/components/header-settings/header-settings.component';
 import { SettingsElementComponent } from './components/header/components/settings-element/settings-element.component';
 import { SettingsListComponent } from './components/header/components/settings-list/settings-list.component';
+import { SettingsComponent } from './components/header/components/settings/settings.component';
+import { CurrentLanguageComponent } from './components/header/components/current-language/current-language.component';
+import { TutorialsComponent } from './components/header/components/tutorials/tutorials.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ import { SettingsListComponent } from './components/header/components/settings-l
     IframeSettingsButtonComponent,
     HeaderSettingsComponent,
     SettingsElementComponent,
-    SettingsListComponent
+    SettingsListComponent,
+    SettingsComponent,
+    CurrentLanguageComponent,
+    TutorialsComponent
   ],
   imports: [
     CommonModule,

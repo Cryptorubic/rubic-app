@@ -61,7 +61,11 @@ export class RubicLanguageSelectComponent {
     this.translateService.use(language.lng);
   }
 
-  public setLanguage(lng: string) {
+  /**
+   * @description set new current language
+   * @param lng new current language
+   */
+  public setLanguage(lng: string): void {
     this.translateService.use(lng);
   }
 }

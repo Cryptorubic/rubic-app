@@ -1,54 +1,13 @@
 <div class="settings-list">
   <app-settings-element
-    class="settings-list__item option option_pointer"
-    title="Dark mode"
-    desc="Theme for the web"
-    (click)="switchTheme()"
+    *ngFor="let item of settingsList"
+    class="settings-list__item"
+    [class.settings-list__item_pointer]="!!item.action"
+    [title]="item.title"
+    [desc]="item.description"
+    (click)="item.action && item.action()"
+    [component]="item.component"
+    [withAction]="item.arrow"
   >
-    <app-rubic-toggler-theme></app-rubic-toggler-theme>
-  </app-settings-element>
-
-  <app-settings-element
-    (click)="switchToLanguageSettings()"
-    class="settings-list__item option option_pointer"
-    [title]="currentLanguage.title"
-    desc="Choose language"
-  >
-    <div class="option__function_arrow">
-      <img [src]="currentLanguage.imgSrc" width="22" height="22" alt="English" />
-      <img
-        class="option__arrow-right"
-        src="assets/images/icons/arrow/arrow-right.svg"
-        width="6"
-        height="11"
-        alt="Go to tutorials"
-      />
-    </div>
-  </app-settings-element>
-
-  <app-settings-element
-    class="settings-list__item option"
-    title="ETH Gas price"
-    desc="Auto-updates"
-  >
-    <app-gas-indicator *noFrame></app-gas-indicator>
-  </app-settings-element>
-
-  <app-settings-element
-    class="settings-list__item option option_pointer"
-    title="Tutorials"
-    desc="How to use"
-    (click)="navigateExternalLink('https://www.youtube.com/c/RubicExchange')"
-  >
-    <div class="option__function_arrow">
-      <img src="assets/images/icons/academic.svg" width="32" height="28" alt="Tutorials" />
-      <img
-        class="option__arrow-right"
-        src="assets/images/icons/arrow/arrow-right.svg"
-        width="6"
-        height="11"
-        alt="Go to tutorials"
-      />
-    </div>
   </app-settings-element>
 </div>

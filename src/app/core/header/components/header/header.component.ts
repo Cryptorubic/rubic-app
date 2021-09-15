@@ -28,7 +28,8 @@ import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swap
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
-import { filter, first } from 'rxjs/operators';
+import { filter, first, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -80,7 +81,8 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly route: ActivatedRoute,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -101,7 +103,7 @@ export class HeaderComponent implements AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.authService.getCurrentUser().subscribe(() => this.cdr.detectChanges());
-    this.gasService.gasPrice.subscribe();
+    this.gasService.gasPrice.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   private async loadUser(): Promise<void> {
@@ -178,6 +180,9 @@ export class HeaderComponent implements AfterViewInit {
     });
   }
 
+  /**
+   * @description navigate to IT Ethereum and fill swap form from ETH to RBC
+   */
   public buyRBC() {
     this.router.navigate(['/']).then(() => {
       this.swapsService.availableTokens

@@ -12,7 +12,11 @@
 
     background: var(--plate-invert);
 
-    border-radius: 20px;
+    border-radius: $border-radius-2;
+    
+    &_pointer {
+      cursor: pointer;
+    }
   }
 }
 
