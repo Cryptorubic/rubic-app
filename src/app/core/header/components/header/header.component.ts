@@ -27,8 +27,8 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
-import { filter, first } from 'rxjs/operators';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { filter, first } from 'rxjs/operators';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -179,27 +179,29 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public buyRBC() {
-    this.swapsService.availableTokens
-      .pipe(
-        filter(tokens => tokens?.size > 0),
-        first()
-      )
-      .subscribe(tokens => {
-        const ETH = tokens.find(
-          token => token.symbol === 'ETH' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-        );
+    this.router.navigate(['/']).then(() => {
+      this.swapsService.availableTokens
+        .pipe(
+          filter(tokens => tokens?.size > 0),
+          first()
+        )
+        .subscribe(tokens => {
+          const ETH = tokens.find(
+            token => token.symbol === 'ETH' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
+          );
 
-        const RBC = tokens.find(
-          token => token.symbol === 'RBC' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-        );
+          const RBC = tokens.find(
+            token => token.symbol === 'RBC' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
+          );
 
-        this.swapFormService.input.patchValue({
-          fromToken: ETH,
-          toToken: RBC,
-          fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-          toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-          fromAmount: new BigNumber(1)
+          this.swapFormService.input.patchValue({
+            fromToken: ETH,
+            toToken: RBC,
+            fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+            toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+            fromAmount: new BigNumber(1)
+          });
         });
-      });
+    });
   }
 }

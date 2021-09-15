@@ -12,6 +12,9 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { SettingsComponent } from 'src/app/core/header/components/header/components/header-settings/header-settings.component';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
+import { languagesList } from 'src/app/core/header/models/languages-list';
 
 @Component({
   selector: 'app-settings-list',
@@ -26,10 +29,15 @@ export class SettingsListComponent {
 
   private themeSubscription$: Subscription;
 
+  public get currentLanguage(): LanguageListElement {
+    return languagesList.find(lang => lang.lng === this.translateService.currentLang);
+  }
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly translateService: TranslateService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: BehaviorSubject<{
       titleKey: string;

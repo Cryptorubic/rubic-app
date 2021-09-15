@@ -11,11 +11,11 @@
   <app-settings-element
     (click)="switchToLanguageSettings()"
     class="settings-list__item option option_pointer"
-    title="English"
+    [title]="currentLanguage.title"
     desc="Choose language"
   >
     <div class="option__function_arrow">
-      <img src="assets/images/icons/languages/en.svg" width="22" height="22" alt="English" />
+      <img [src]="currentLanguage.imgSrc" width="22" height="22" alt="English" />
       <img
         class="option__arrow-right"
         src="assets/images/icons/arrow/arrow-right.svg"
