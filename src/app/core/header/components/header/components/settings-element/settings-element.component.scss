@@ -1,6 +1,8 @@
 @import 'src/styles';
 
 .option {
+  position: relative;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;

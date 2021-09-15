@@ -182,6 +182,7 @@ export class HeaderComponent implements AfterViewInit {
 
   /**
    * @description navigate to IT Ethereum and fill swap form from ETH to RBC
+   * @return void
    */
   public buyRBC() {
     this.router.navigate(['/']).then(() => {

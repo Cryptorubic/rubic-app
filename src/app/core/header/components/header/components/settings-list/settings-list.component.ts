@@ -21,7 +21,7 @@ import { SettingsListItem } from 'src/app/core/header/models/settings-list-item'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsListComponent {
-  public settingsList: SettingsListItem[];
+  public readonly settingsList: SettingsListItem[];
 
   public readonly $isMobile: Observable<boolean>;
 
@@ -29,6 +29,7 @@ export class SettingsListComponent {
 
   /**
    * @description get current language
+   * @return object of current language
    */
   public get currentLanguage(): LanguageListElement {
     return languagesList.find(lang => lang.lng === this.translateService.currentLang);
@@ -44,27 +45,27 @@ export class SettingsListComponent {
   ) {
     this.settingsList = [
       {
-        title: 'Switch theme',
-        description: 'Theme for the web',
+        title: 'settings.header.switchTheme.title',
+        description: 'settings.header.switchTheme.desc',
         component: new PolymorpheusComponent(RubicTogglerThemeComponent),
         action: this.switchTheme.bind(this)
       },
       {
-        title: 'Language',
-        description: 'Choose language',
+        title: 'settings.header.language.title',
+        description: 'settings.header.language.desc',
         component: new PolymorpheusComponent(CurrentLanguageComponent),
         action: this.switchToLanguageSettings.bind(this),
         arrow: true
       },
       {
-        title: 'Gas price',
-        description: 'In Ethereum chain',
+        title: 'settings.header.gasPrice.title',
+        description: 'settings.header.gasPrice.desc',
         component: new PolymorpheusComponent(GasIndicatorComponent),
         arrow: false
       },
       {
-        title: 'Tutorials',
-        description: 'How to use',
+        title: 'settings.header.tutorials.title',
+        description: 'settings.header.tutorials.desc',
         component: new PolymorpheusComponent(TutorialsComponent),
         action: this.navigateExternalLink.bind(null, ['https://www.youtube.com/c/RubicExchange']),
         arrow: true
@@ -74,6 +75,7 @@ export class SettingsListComponent {
 
   /**
    * @description toggle dark or light site theme
+   * @return void
    */
   public switchTheme(): void {
     this.themeService.switchTheme();
@@ -82,6 +84,7 @@ export class SettingsListComponent {
   /**
    * @description navigate by url
    * @param url for navigate
+   * @return void
    */
   public navigateExternalLink(url: string): void {
     window.open(url, '_blank');
@@ -89,6 +92,7 @@ export class SettingsListComponent {
 
   /**
    * @description switch component to LanguageSettings
+   * @return void
    */
   public switchToLanguageSettings(): void {
     this.context.next({

@@ -205,24 +205,13 @@
 
     ::ng-deep &__buy-rbc {
       button[tuiButton][data-tui-host-size=l] {
-        height: 30px;
+        height: 40px;
 
         font-size: 14px;
 
         .wrapper {
-          padding: 0 12px !important;
+          padding: 0 20px !important;
         }
-      }
-    }
-  }
-}
-
-@include b($mobile-sm) {
-  .rubic-header {
-    &__logo {
-      img {
-        width: 76px;
-        height: 24px;
       }
     }
   }
