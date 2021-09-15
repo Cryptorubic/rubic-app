@@ -10,14 +10,13 @@
     <app-user-balance-container
       *noFrame
       [token]="selectedToken"
-      type="from"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
 
     <app-user-balance-container
       *onlyFrame="'horizontal'"
-      [hide]="'balance'"
       [token]="selectedToken"
+      hide="balance"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
     ></app-user-balance-container>
   </div>
