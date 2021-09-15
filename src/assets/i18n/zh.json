@@ -478,6 +478,24 @@
     },
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "ChooseLanguage"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {

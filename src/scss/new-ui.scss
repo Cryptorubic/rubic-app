@@ -1,4 +1,5 @@
 @import 'src/scss/vars';
+@import 'src/scss/mixins';
 
 html {
   --tui-primary: #{$rubic-primary} !important;
@@ -15,7 +16,7 @@ html {
 }
 
 tui-hint-box {
-  backdrop-filter: blur(5px);
+  backdrop-filter: $backdrop-blur-1;
 }
 
 tui-loader._loading {

@@ -1,6 +1,5 @@
 @import 'src/styles';
 
-
 .button-link {
   display: inline-block;
   padding: 14px 20px;
@@ -138,6 +137,11 @@
   &__profile-trades {
     position: relative;
   }
+
+  &__buy-rbc {
+    flex-shrink: 0;
+    margin-right: 25px;
+  }
 }
 
 .notification-counter {
@@ -198,13 +202,17 @@
         width: 95px;
       }
     }
-  }
-}
 
-@include b($mobile-sm) {
-  .rubic-header {
-    &__menu {
-      margin-left: 10px;
+    ::ng-deep &__buy-rbc {
+      button[tuiButton][data-tui-host-size=l] {
+        height: 40px;
+
+        font-size: 14px;
+
+        .wrapper {
+          padding: 0 20px !important;
+        }
+      }
     }
   }
 }

@@ -478,6 +478,24 @@
     },
     "bridge": {
       "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "ChooseLanguage"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {
