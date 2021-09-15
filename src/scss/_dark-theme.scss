@@ -1,0 +1,129 @@
+@import 'src/scss/vars';
+
+$backgrond-black: rgb(14, 17, 14);
+
+html.dark {
+  --main-form-background: rgba(0, 0, 0, 0.6);
+  --main-background: rgba(50, 50, 50, 0.6);
+
+  --form-header-color-1: rgba(94, 94, 94, 0.7);
+  --form-header-color-2: rgba(69, 69, 69, 0.7);
+
+  --form-dim-text-color: rgba(255, 255, 255, 0.7);
+
+  --rubic-secondary: rgba(106, 111, 107, 0.8);
+  --secondary-color: rgba(255, 255, 255, 0.5);
+
+  --form-bright-text-color: rgba(255, 255, 255, 0.9);
+  --form-bright-reversed-text-color: rgb(0, 0, 0);
+
+  --rubic-base-01: rgb(74, 167, 85, 25%);
+  --rubic-base-02: rgb(255, 255, 255);
+  --rubic-base-10: rgba(0, 0, 0, 0.35);
+  --rubic-base-11: rgb(0, 0, 0, 1);
+  --rubic-base-12: rgba(255, 255, 255, 0.8);
+  --rubic-base-13: rgba(0, 0, 0, 0.35);
+  --rubic-base-14: #2c2c2c;
+  --rubic-base-15: white;
+  --rubic-base-16: white;
+  --plate-invert: rgb(41, 41, 41, 0.6);
+
+  --tui-base-01: rgba(0, 0, 0, 0.8);
+  --tui-base-02: init;
+  --tui-base-03: rgb(110, 110, 110);
+  --tui-primary: rgba(0, 0, 0, 0.8);
+  --tui-secondary: rgba(255, 255, 255, 0.5);
+  --tui-text-01: var(--form-bright-text-color);
+  --tui-text-02: var(--form-dim-text-color);
+  --tui-text-03: var(--form-dim-text-color);
+  --tui-font-text-sы: rgb(255, 255, 255, 0.52);
+
+  --selection-color: rgb(0, 0, 0, 0.5);
+
+  --rubic-shadow-button-hover: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
+  --rubic-shadow-button-hover-dim: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
+  --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
+  --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
+
+  --rubic-filter-brightness: brightness(10);
+  --rubic-filter-invert: invert(0);
+
+  --border-color-secondary: rgba(255, 255, 255, 0.25);
+
+  &_colored {
+    background-color: $backgrond-black;
+  }
+
+  body {
+    background: transparent;
+
+    &.default-iframe-background {
+      background: linear-gradient(45deg, black, #4aa956) !important;
+    }
+
+    .sort-by-dropdown {
+      --tui-base-02: var(--main-form-background);
+    }
+
+    .settings__button-auto:not(.settings__button-auto_active) {
+      border-color: var(--rubic-base-02);
+    }
+
+    .blockchain-aside__blockchains-list button tui-wrapper {
+      --rubic-secondary: rgba(0, 0, 0, 0.8);
+    }
+
+    #onramper-widget {
+      filter: invert(1) hue-rotate(180deg) opacity(0.8) contrast(0.95);
+    }
+
+    .rubic-header .rubic-header__nav,
+    .user-profile {
+      --rubic-base-01: rgba(0, 0, 0, 0.35);
+    }
+
+    .tui-skeleton {
+      &::after {
+        background-color: rgba(130, 130, 130, 0.15);
+      }
+    }
+
+    app-rubic-button {
+      tui-wrapper {
+        --tui-primary: rgba(0, 0, 0, 0.35);
+        --tui-primary-text: var(--form-bright-text-color);
+      }
+    }
+
+    .swaps-form__delimiter .switcher img {
+      filter: brightness(1.5);
+    }
+
+    .swaps-header .swaps-header__icon {
+      filter: invert(1) opacity(0.7) hue-rotate(180deg);
+    }
+
+    tui-dropdown-box {
+      --tui-base-01: rgba(0, 0, 0, 0.5);
+
+      backdrop-filter: $backdrop-blur-1;
+    }
+
+    .gradient {
+      position: absolute;
+      top: -50px;
+      left: calc(50% - 400px);
+      z-index: -99;
+
+      display: block;
+      width: 800px;
+      height: 800px;
+
+      background-image: radial-gradient(var(--primary-color) 0%, $backgrond-black 70%, $backgrond-black 100%);
+
+      filter: blur(50px);
+
+      content: '';
+    }
+  }
+}

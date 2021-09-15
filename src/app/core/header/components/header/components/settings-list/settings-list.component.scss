@@ -1,0 +1,38 @@
+@import 'src/styles';
+
+.settings-list {
+  display: grid;
+  grid-auto-rows: 154px;
+  grid-auto-columns: 154px;
+  grid-column-gap: 10px;
+  padding: 0 20px 18px;
+
+  &__item {
+    display: block;
+    grid-row: 1;
+
+    background: var(--plate-invert);
+
+    border-radius: $border-radius-2;
+    
+    &_pointer {
+      cursor: pointer;
+    }
+  }
+}
+
+@include b($tablet) {
+  .settings-list {
+    display: block;
+
+    &__item {
+      position: relative;
+
+      margin-bottom: 5px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

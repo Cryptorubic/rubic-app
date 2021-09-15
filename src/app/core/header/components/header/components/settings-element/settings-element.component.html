@@ -1,0 +1,17 @@
+<div class="option">
+  <div class="option__function">
+    <div class="option__component" polymorpheus-outlet [content]="component"></div>
+    <img
+      *ngIf="withAction"
+      class="option__arrow-right"
+      src="assets/images/icons/arrow/arrow-right.svg"
+      width="6"
+      height="11"
+      alt="Go to tutorials"
+    />
+  </div>
+  <div class="option__info">
+    <h3 class="option__title">{{ title | translate }}</h3>
+    <div class="option__desc">{{ desc | translate }}</div>
+  </div>
+</div>
