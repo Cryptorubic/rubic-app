@@ -222,11 +222,11 @@
           "month": "September",
           "done": true,
           "data": [
-            "Cross-Chain Routing 2.0 development start, improving stability and decentralization",
+            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
             "AutoRefund system release",
             "Creating a 24/7 technical support team for our community",
             "Beginning of a new blockchain integration",
-            "Widgets: new partners and integrations",
+            "Rubic Relay Widget partners and integrations",
             "Beginning of Widget development: SDK/API",
             "Cross-chain fixes and improvements"
           ]
@@ -236,8 +236,8 @@
           "month": "",
           "done": true,
           "data": [
-            "0x integration and gas fees reducing",
-            "Three new blockchains integrated including Cross Chain Routing\nCandidates: \n \nAvalanche (AVAX), \nCardano (ADA), \nCosmos (ATOM), \nDOT (Polkadot)\nKusama (KSM), \nFantom (FTM), \nElrond (EGLD),\nEnjin (ENJ), \nPulsechain, \nOptimism, \nArbitrum\n",
+            "0x integration and gas fee reductions",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse Chain (HEX), Optimism, Arbitrum",
             "RBC Staking",
             "Widget: SDK/API release"
           ]
@@ -247,12 +247,12 @@
           "month": "",
           "done": true,
           "data": [
-            "Yield farming/Lending products integrations",
+            "Yield Farming and/or Lending Product integrations",
             "Governance",
-            "3-6 new blockchains integrated (including Cross Chain Routing)",
+            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
             "RBC Staking 2.0",
             "Mobile version (iOS, Android)",
-            "BTC bridges integration"
+            "BTC bridge integration"
           ]
         }
       }
