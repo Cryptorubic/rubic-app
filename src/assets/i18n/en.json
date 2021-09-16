@@ -222,8 +222,13 @@
           "month": "September",
           "done": true,
           "data": [
-            "New Bridge Integrations",
-            "New Blockchain Integrations"
+            "Cross-Chain Routing 2.0 development start, improving stability and decentralization",
+            "AutoRefund system release",
+            "Creating a 24/7 technical support team for our community",
+            "Beginning of a new blockchain integration",
+            "Widgets: new partners and integrations",
+            "Beginning of Widget development: SDK/API",
+            "Cross-chain fixes and improvements"
           ]
         },
         "7": {
@@ -231,11 +236,23 @@
           "month": "",
           "done": true,
           "data": [
-            "Staking/Farming introduction",
+            "0x integration and gas fees reducing",
+            "Three new blockchains integrated including Cross Chain Routing\nCandidates: \n \nAvalanche (AVAX), \nCardano (ADA), \nCosmos (ATOM), \nDOT (Polkadot)\nKusama (KSM), \nFantom (FTM), \nElrond (EGLD),\nEnjin (ENJ), \nPulsechain, \nOptimism, \nArbitrum\n",
+            "RBC Staking",
+            "Widget: SDK/API release"
+          ]
+        },
+        "8": {
+          "quarter": "Q1-Q2. 2022",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yield farming/Lending products integrations",
             "Governance",
-            "Mobile App",
-            "API For External Usage",
-            "New Blockchain Integration (L2)"
+            "3-6 new blockchains integrated (including Cross Chain Routing)",
+            "RBC Staking 2.0",
+            "Mobile version (iOS, Android)",
+            "BTC bridges integration"
           ]
         }
       }
