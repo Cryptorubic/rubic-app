@@ -22,6 +22,7 @@
     ></app-blockchains-aside>
     <app-tokens-list
       *ngIf="!customToken && !loading"
+      [hasQuery]="!!query"
       [tokens]="listType === 'default' ? (tokensToShow$ | async) : (favoriteTokensToShow$ | async)"
       [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
       (tokenSelect)="tokenSelect($event)"

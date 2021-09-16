@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, timer } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
@@ -104,13 +104,13 @@ export class TokensService {
     this.favoriteTokensSubject = new BehaviorSubject(List([]));
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
     this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
-    setTimeout(() => this.fetchFavoriteTokens(), 200);
+
     this.setupSubscriptions();
   }
 
   /**
    * @description Set favorite tokens list.
-   * @param tokens Fvorite tokens list.
+   * @param tokens Favorite tokens list.
    */
   public setFavoriteTokens(tokens: List<TokenAmount>): void {
     this.favoriteTokensSubject.next(tokens);
@@ -118,9 +118,14 @@ export class TokensService {
 
   /**
    * @description Setup service subscriptions.
-   * @todo Throw away subscriptions. It's not allow in services.
    */
   private setupSubscriptions(): void {
+    timer(500)
+      .pipe(
+        switchMap(() => this.fetchFavoriteTokens()),
+        take(1)
+      )
+      .subscribe();
     this.tokensRequestParametersSubject
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
@@ -369,8 +374,9 @@ export class TokensService {
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: TokenAmount): void {
-    this.store.addCollectionItem('favoriteTokens', favoriteToken);
-    this.favoriteTokensSubject.next(this.favoriteTokensSubject.value.concat(favoriteToken));
+    const collection = this.favoriteTokensSubject.value.concat(favoriteToken);
+    this.store.setItem('favoriteTokens', collection.toArray());
+    this.favoriteTokensSubject.next(collection);
   }
 
   /**

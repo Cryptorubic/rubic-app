@@ -54,21 +54,6 @@ export class StoreService {
   }
 
   /**
-   * @description Add some data to store collection.
-   * @param key Store object key.
-   * @param value Value to store.
-   */
-  public addCollectionItem<T extends keyof Store>(key: T, value: Store[T]): void {
-    const hasKey = Boolean(this.storageSubject.value[key]);
-    const newCollection = [
-      ...(hasKey ? [...(this.storageSubject.value[key] as [])] : []),
-      ...(value as [])
-    ] as Store[T];
-
-    this.setItem(key, newCollection);
-  }
-
-  /**
    * @description Set some store data by key.
    * @param key Store object key.
    * @param value Value to store.
@@ -148,15 +133,5 @@ export class StoreService {
       this.localStorage?.clear();
     }
     this.storageSubject.next(null);
-  }
-
-  /**
-   * @description Set some store collection data by key.
-   * @param key Store key.
-   * @param compareFn Function to filter collection values.
-   */
-  public setCollectionItem(key: keyof Store, compareFn: (el: unknown) => boolean) {
-    const newCollection = (this.storageSubject.value[key] as []).filter(compareFn);
-    this.setItem(key, newCollection);
   }
 }

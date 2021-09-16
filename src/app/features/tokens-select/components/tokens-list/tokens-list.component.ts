@@ -31,6 +31,8 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   @Output() public pageUpdate = new EventEmitter<number>();
 
+  @Input() public hasQuery: boolean;
+
   @Input() public tokensNetworkState: { count: number; page: number };
 
   @Input() public blockchain: BLOCKCHAIN_NAME;
@@ -47,7 +49,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     this.listScroll = scroll;
-    if (scroll && this.listScroll) {
+    if (scroll && this.listScroll && !Utils.compareObjects(scroll, this.listScroll)) {
       this.observeScroll();
     }
   }
@@ -99,7 +101,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
         takeUntil(this.destroy$),
         debounceTime(500),
         filter(el => {
-          if (this.loading) {
+          if (this.loading || this.hasQuery) {
             return false;
           }
           const endOfList = el.end > this.tokens.length - 50;
@@ -109,8 +111,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
               this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150));
 
           return endOfList && shouldFetch;
-        }),
-        debounceTime(500)
+        })
       )
       .subscribe(() => {
         this.pageUpdate.emit();

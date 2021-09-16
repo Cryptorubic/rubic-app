@@ -30,5 +30,5 @@ export interface Store {
   /**
    * User favorite tokens.
    */
-  favoriteTokens: TokenAmount | TokenAmount[];
+  favoriteTokens: TokenAmount[];
 }

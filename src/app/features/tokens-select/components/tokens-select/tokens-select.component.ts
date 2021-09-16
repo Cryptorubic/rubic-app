@@ -91,7 +91,7 @@ export class TokensSelectComponent implements OnInit {
     return this._blockchain;
   }
 
-  public favoriteTokensToShow$: Observable<AvailableTokenAmount[]>;
+  public favoriteTokensToShow$: BehaviorSubject<AvailableTokenAmount[]>;
 
   private blockchainSubject = new BehaviorSubject<BLOCKCHAIN_NAME>(BLOCKCHAIN_NAME.ETHEREUM);
 
@@ -125,22 +125,22 @@ export class TokensSelectComponent implements OnInit {
     @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.initiateContextParams(context.data);
+    this.favoriteTokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>(null);
     this.tokensListLoading = false;
     this.querySubject = new BehaviorSubject<string>('');
-    this.favoriteTokens$ = tokensService.favoriteTokens$.pipe(
+    this.favoriteTokens$ = this.tokensService.favoriteTokens$.pipe(
       map((tokens: List<TokenAmount>) => {
         return tokens.map(el => ({ ...el, available: true })).toArray();
       })
     );
-    this.favoriteTokensToShow$ = combineLatest([
-      this.blockchainSubject.asObservable(),
-      this.favoriteTokens$
-    ]).pipe(
-      takeUntil(this.destroy$),
-      map(([blockchain, tokens]: [BLOCKCHAIN_NAME, AvailableTokenAmount[]]) => {
-        return tokens.filter(el => el.blockchain === blockchain);
-      })
-    );
+    combineLatest([this.blockchainSubject.asObservable(), this.favoriteTokens$])
+      .pipe(
+        takeUntil(this.destroy$),
+        map(([blockchain, tokens]: [BLOCKCHAIN_NAME, AvailableTokenAmount[]]) => {
+          return tokens.filter(el => el.blockchain === blockchain);
+        })
+      )
+      .subscribe((tokens: AvailableTokenAmount[]) => this.favoriteTokensToShow$.next(tokens));
   }
 
   /**
@@ -237,7 +237,7 @@ export class TokensSelectComponent implements OnInit {
         token.blockchain === this.blockchain;
 
       const currentBlockchainTokens = tokens.filter(filterByBlockchain);
-      const currentBlockchainFavoriteTokens = favoriteTokens.filter(filterByBlockchain);
+      const currentBlockchainFavoriteTokens = favoriteTokens?.filter(filterByBlockchain) || [];
 
       const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
       const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
@@ -256,7 +256,7 @@ export class TokensSelectComponent implements OnInit {
         };
       });
       this.tokensToShow$.next(tokensWithFavorite);
-      this.tokensService.setFavoriteTokens(List(sortedAndFilteredFavoriteTokens));
+      this.favoriteTokensToShow$.next(sortedAndFilteredFavoriteTokens);
 
       const shouldSearch =
         (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
