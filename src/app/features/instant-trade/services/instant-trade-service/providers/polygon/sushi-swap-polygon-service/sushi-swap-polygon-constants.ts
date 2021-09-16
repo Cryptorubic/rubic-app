@@ -14,11 +14,6 @@ const wethAddressNetMode: ContractAddressNetMode = {
   testnet: '0x13c038147aa2c91cf1fdb6f17a12f27715a4ca99'
 };
 
-const factoryAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-  testnet: '0xc35dadb65012ec5796536bd9864ed8773abc74c4'
-};
-
 const routingProvidersNetMode: RoutingProvidersNetMode = {
   mainnet: [
     '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', // WMATIC
@@ -35,8 +30,6 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
 export const sushiSwapPolygonConstants: UniswapV2Constants = {
   contractAddressNetMode: sushiSwapPolygonContractAddressNetMode,
   wethAddressNetMode,
-  factoryAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens: 3,
-  lpFee: 0.003
+  maxTransitTokens: 3
 };

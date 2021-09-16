@@ -293,7 +293,7 @@ export class CrossChainRoutingService {
         blockchain as SupportedCrossChainSwapBlockchain
       ].calculateTrade(fromToken, fromAmount, toToken, false);
       return {
-        path: instantTrade.uniswapV2Options.path,
+        path: instantTrade.path,
         toAmount: instantTrade.to.amount
       };
     }

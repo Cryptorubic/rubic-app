@@ -14,11 +14,6 @@ const wethAddressNetMode: ContractAddressNetMode = {
   testnet: '0xd0a1e359811322d97991e03f863a0c30c2cf029c'
 };
 
-const factoryAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
-  testnet: '0xc35dadb65012ec5796536bd9864ed8773abc74c4'
-};
-
 const routingProvidersNetMode: RoutingProvidersNetMode = {
   mainnet: [
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH
@@ -35,8 +30,6 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
 export const sushiSwapEthConstants: UniswapV2Constants = {
   contractAddressNetMode: sushiSwapContractAddressNetMode,
   wethAddressNetMode,
-  factoryAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens: 1,
-  lpFee: 0.003
+  maxTransitTokens: 1
 };

@@ -11,11 +11,6 @@ const wethAddressNetMode: ContractAddressNetMode = {
   testnet: '0xc0320368514b7961256d62bd7bc984623c0f7f65' // WONE https://explorer.pops.one/
 };
 
-const factoryAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-  testnet: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4'
-};
-
 const routingProvidersNetMode = {
   mainnet: [
     '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a', // WONE
@@ -32,8 +27,6 @@ const routingProvidersNetMode = {
 export const sushiSwapHarmonyConstants: UniswapV2Constants = {
   contractAddressNetMode: sushiSwapHarmonyContracts,
   wethAddressNetMode,
-  factoryAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens: 2,
-  lpFee: 0.003
+  maxTransitTokens: 2
 };

@@ -14,11 +14,6 @@ const wethAddressNetMode: ContractAddressNetMode = {
   testnet: '0xae13d989dac2f0debff460ac112a837c89baa7cd'
 };
 
-const factoryAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0xca143ce32fe78f1f7019d7d551a6402fc5350c73',
-  testnet: '0x6725f303b657a9451d8ba641348b6761a6cc7a17'
-};
-
 const routingProvidersNetMode: RoutingProvidersNetMode = {
   mainnet: [
     '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', // WBNB
@@ -39,8 +34,6 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
 export const pancakeSwapConstants: UniswapV2Constants = {
   contractAddressNetMode: pancakeSwapContractAddressNetMode,
   wethAddressNetMode,
-  factoryAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens: 3,
-  lpFee: 0.0025
+  maxTransitTokens: 3
 };

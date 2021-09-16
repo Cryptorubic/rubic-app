@@ -43,14 +43,6 @@ interface InstantTrade {
   gasFeeInEth?: BigNumber;
 
   /**
-   * Additional uniswap v2 options
-   */
-  uniswapV2Options?: {
-    path: string[];
-    priceImpact: number; // in percents
-  };
-
-  /**
    * Error.
    */
   error?: RubicError<ERROR_TYPE>;

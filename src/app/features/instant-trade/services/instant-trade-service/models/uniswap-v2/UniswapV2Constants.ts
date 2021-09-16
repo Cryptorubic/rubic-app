@@ -7,8 +7,6 @@ export type RoutingProvidersNetMode = {
 export interface UniswapV2Constants {
   contractAddressNetMode: ContractAddressNetMode;
   wethAddressNetMode: ContractAddressNetMode;
-  factoryAddressNetMode: ContractAddressNetMode;
   routingProvidersNetMode: RoutingProvidersNetMode;
   maxTransitTokens: number;
-  lpFee: number;
 }
