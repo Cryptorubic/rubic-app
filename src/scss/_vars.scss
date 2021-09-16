@@ -8,6 +8,7 @@
   --green-btn-border-hover-bg: #e5f5e7;
 
   --primary-color: rgb(74, 169, 86);
+  --secondary-color: rgba(0, 0, 0, 0.5);
 
   --tui-text-font: 'Ubuntu', Arial, sans-serif !important;
 
@@ -16,6 +17,7 @@
 
   --rubic-base-03: rgba(250, 250, 250, 0.9);
   --rubic-secondary: rgb(244, 245, 244);
+  --border-color-secondary: rgba(255, 255, 255, 0.5);
 
   --form-header-color-1: rgb(235, 243, 236);
   --form-header-color-2: rgb(245, 249, 246);
@@ -35,10 +37,12 @@
   --rubic-base-14: #f4f4f4;
   --rubic-base-15: #868686;
   --rubic-base-16: rgb(99, 157, 106);
+  --plate-invert: rgb(250, 250, 250);
 
   --tui-text-02: #3b3a3a;
 
   --selection-color: rgb(243 249 243);
+  --rubic-filter-invert: invert(1);
 
   --rubic-shadow-button-hover: -5px -5px 15px rgba(255, 255, 255, 0.5), 5px 5px 15px rgba(59, 130, 67, 0.5);
   --rubic-shadow-button-hover-dim: -5px -5px 15px rgba(255, 255, 255, 0.1), 5px 5px 15px rgba(59, 130, 67, 0.2);
@@ -65,6 +69,12 @@ $rubic-warning: #dfcb5f;
 
 $grey-background: #f4f4f4;
 
+// ***** border raiuses *****
+$border-radius-1: 14px;
+$border-radius-2: 20px;
+
+// ***** filters *****
+$backdrop-blur-1: blur(5px);
 
 // ***** breakpoints *****
 $desktop: 1240;

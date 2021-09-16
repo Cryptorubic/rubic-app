@@ -1,0 +1,35 @@
+<ng-container *ngLet="dynamicComponent$ | async as currentComponentData">
+  <tui-hosted-dropdown
+    tuiDropdownAlign="left"
+    [content]="dropdown"
+    [(open)]="isSettingsOpened"
+    (openChange)="backToSettings()"
+  >
+    <div class="header-settings__icon-wrapper">
+      <img
+        class="header-settings__icon"
+        src="assets/images/icons/settings.svg"
+        width="24"
+        height="24"
+        alt="Open settings"
+      />
+    </div>
+  </tui-hosted-dropdown>
+
+  <ng-template #dropdown>
+    <aside class="header-settings">
+      <app-header-settings
+        [title]="currentComponentData.titleKey"
+        [haveBackButton]="!this.isDefaultComponent"
+        (closeClick)="closeSettings()"
+        (backClick)="backToSettings()"
+      ></app-header-settings>
+
+      <div
+        polymorpheus-outlet
+        [content]="currentComponentData.component"
+        [context]="currentComponent$"
+      ></div>
+    </aside>
+  </ng-template>
+</ng-container>

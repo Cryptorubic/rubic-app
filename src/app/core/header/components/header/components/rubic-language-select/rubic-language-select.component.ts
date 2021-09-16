@@ -24,6 +24,10 @@ export class RubicLanguageSelectComponent {
 
   public currentLanguage: string;
 
+  /**
+   * @description get current language object
+   * @return object of current language
+   */
   get filteredLanguageList(): LanguageListElement[] {
     return this.languagesList.filter(language => !language.active);
   }
@@ -42,6 +46,11 @@ export class RubicLanguageSelectComponent {
     });
   }
 
+  /**
+   * @description setup new active site language
+   * @param event language what need set
+   * @return void
+   */
   private setActiveLanguage(event: Partial<LangChangeEvent>) {
     this.cdr.markForCheck();
     if (this.currentLanguage) {
@@ -59,5 +68,14 @@ export class RubicLanguageSelectComponent {
   public onLangChange(filteredLanguageIndex: number) {
     const language = this.filteredLanguageList[filteredLanguageIndex];
     this.translateService.use(language.lng);
+  }
+
+  /**
+   * @description set new current language
+   * @param lng new current language
+   * @return void
+   */
+  public setLanguage(lng: string): void {
+    this.translateService.use(lng);
   }
 }

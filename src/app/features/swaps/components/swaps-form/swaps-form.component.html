@@ -17,7 +17,6 @@
         [swapType]="swapType"
       ></app-rubic-refresh-button>
 
-      <app-gas-indicator *ngIf="isMobile$ | async"></app-gas-indicator>
       <div class="swaps-form__settings">
         <app-settings-container></app-settings-container>
       </div>
@@ -27,7 +26,7 @@
     <ng-container *onlyFrame>
       <app-rubic-refresh-button
         *ngIf="isInstantTrade && allowTrade && allowRefresh"
-        style="display: none"
+        style="display: none;"
         type="autoRefresh"
         (onRefresh)="onRefreshTrade.next()"
         [loadingStatus]="loadingStatus"

@@ -1,0 +1,99 @@
+@import 'src/styles';
+
+.header-settings {
+  width: 686px;
+
+  border-radius: $border-radius-2;
+  backdrop-filter: $backdrop-blur-1;
+
+  transition: 300ms;
+
+  &__icon-wrapper {
+    display: flex;
+    align-items: center;
+    height: 50px;
+
+    img {
+      cursor: pointer;
+    }
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+
+    background: var(--main-background);
+
+    border-radius: 8px;
+
+    transform: rotate(180deg);
+    cursor: pointer;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 14px 20px 0;
+
+    img {
+      cursor: pointer;
+
+      filter: var(--rubic-filter-invert);
+    }
+
+    &_inside {
+      padding-bottom: 10px;
+
+      border-bottom: 1px solid var(--border-color-secondary);
+
+      .header-settings__back {
+        display: flex;
+      }
+
+      .header-settings__title {
+        align-self: center;
+        margin-right: 50%;
+        margin-bottom: 0;
+
+        transform: translateX(50%);
+      }
+
+      .header-settings__close {
+        display: none;
+      }
+    }
+  }
+
+  &__title {
+    margin: 0;
+
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
+
+@include b($tablet) {
+  .header-settings {
+    min-width: 250px;
+  }
+}
+
+@include b($tablet) {
+  .header-settings {
+    width: auto;
+
+    &__icon {
+      width: 20px;
+    }
+  }
+}

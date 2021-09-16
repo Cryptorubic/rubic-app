@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
@@ -25,6 +25,11 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import BigNumber from 'bignumber.js';
+import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { filter, first, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -50,6 +55,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
+  public isSettingsOpened = false;
+
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
   }
@@ -72,7 +79,10 @@ export class HeaderComponent implements AfterViewInit {
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     @Inject(WINDOW) private readonly window: Window,
-    @Inject(DOCUMENT) private readonly document: Document
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly route: ActivatedRoute,
+    private readonly gasService: GasService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
     this.$currentUser = this.authService.getCurrentUser();
@@ -93,6 +103,7 @@ export class HeaderComponent implements AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.authService.getCurrentUser().subscribe(() => this.cdr.detectChanges());
+    this.gasService.gasPrice.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   private async loadUser(): Promise<void> {
@@ -115,23 +126,27 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  public async navigateToSwaps(): Promise<void> {
+  public async navigateToSwaps(
+    fromToken?: TokenAmount,
+    toToken?: TokenAmount,
+    amount?: BigNumber
+  ): Promise<void> {
     const form = this.swapFormService.commonTrade.controls.input;
     const params = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
       toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      fromToken: null,
-      toToken: null,
-      fromAmount: null
+      fromToken: fromToken || null,
+      toToken: toToken || null,
+      fromAmount: amount || null
     } as SwapFormInput;
     form.patchValue(params);
     await this.router.navigate(['/'], {
       queryParams: {
         fromChain: BLOCKCHAIN_NAME.ETHEREUM,
         toChain: BLOCKCHAIN_NAME.ETHEREUM,
-        amount: undefined,
-        from: undefined,
-        to: undefined
+        amount: fromToken || undefined,
+        from: toToken || undefined,
+        to: amount || undefined
       },
       queryParamsHandling: 'merge'
     });
@@ -162,6 +177,37 @@ export class HeaderComponent implements AfterViewInit {
         to: undefined
       },
       queryParamsHandling: 'merge'
+    });
+  }
+
+  /**
+   * @description navigate to IT Ethereum and fill swap form from ETH to RBC
+   * @return void
+   */
+  public buyRBC() {
+    this.router.navigate(['/']).then(() => {
+      this.swapsService.availableTokens
+        .pipe(
+          filter(tokens => tokens?.size > 0),
+          first()
+        )
+        .subscribe(tokens => {
+          const ETH = tokens.find(
+            token => token.symbol === 'ETH' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
+          );
+
+          const RBC = tokens.find(
+            token => token.symbol === 'RBC' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
+          );
+
+          this.swapFormService.input.patchValue({
+            fromToken: ETH,
+            toToken: RBC,
+            fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+            toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+            fromAmount: new BigNumber(1)
+          });
+        });
     });
   }
 }
