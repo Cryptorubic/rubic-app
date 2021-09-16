@@ -7,12 +7,12 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import BigNumber from 'bignumber.js';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { ISwapFormInput, ISwapFormOutput } from 'src/app/shared/models/swaps/ISwapForm';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,6 +28,8 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -111,8 +113,6 @@ export class SwapButtonComponent implements OnInit {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
-  @Input() priceImpact? = 0; // in %
-
   @Input() swapButtonText? = 'Swap';
 
   @Output() approveClick = new EventEmitter<void>();
@@ -142,6 +142,8 @@ export class SwapButtonComponent implements OnInit {
   private _fromAmount: BigNumber;
 
   public tokensFilled: boolean;
+
+  public priceImpact: number;
 
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
@@ -217,6 +219,10 @@ export class SwapButtonComponent implements OnInit {
     return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
   }
 
+  private static isSwapForm(inputForm: ISwapFormInput): inputForm is SwapFormInput {
+    return 'fromAmount' in inputForm;
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
@@ -284,6 +290,15 @@ export class SwapButtonComponent implements OnInit {
     this.providerConnectorService.$networkChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.checkWrongBlockchainError();
     });
+
+    combineLatest([
+      this.formService.inputValueChanges.pipe(startWith(this.formService.inputValue)),
+      this.formService.outputValueChanges.pipe(startWith(this.formService.outputValue))
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([inputForm, outputForm]) => {
+        this.setPriceImpact(inputForm, outputForm);
+      });
   }
 
   private setFormValues(form: ISwapFormInput): void {
@@ -341,6 +356,34 @@ export class SwapButtonComponent implements OnInit {
 
       this.cdr.detectChanges();
     }
+  }
+
+  private setPriceImpact(inputForm: ISwapFormInput, outputForm: ISwapFormOutput) {
+    const { fromToken, toToken } = inputForm;
+    if (!fromToken?.price || !toToken?.price) {
+      return;
+    }
+
+    let fromAmount: BigNumber;
+    if (SwapButtonComponent.isSwapForm(inputForm)) {
+      fromAmount = inputForm.fromAmount;
+    } else {
+      fromAmount = (outputForm as CryptoTapFormOutput).fromAmount;
+    }
+    const { toAmount } = outputForm;
+    if (!fromAmount || !toAmount) {
+      return;
+    }
+
+    const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
+    const toTokenCost = toAmount.multipliedBy(toToken.price);
+    this.priceImpact = fromTokenCost
+      .minus(toTokenCost)
+      .dividedBy(fromTokenCost)
+      .multipliedBy(100)
+      .dp(2, BigNumber.ROUND_HALF_UP)
+      .toNumber();
+    this.cdr.detectChanges();
   }
 
   public onLogin() {

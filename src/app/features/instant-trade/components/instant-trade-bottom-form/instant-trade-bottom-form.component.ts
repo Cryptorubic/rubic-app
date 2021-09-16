@@ -449,6 +449,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
 
+      this.swapFormService.output.patchValue({
+        toAmount: this.selectedProvider.trade.to.amount
+      });
+
       this.setSlippageTolerance(this.selectedProvider);
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -462,19 +466,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         if (!trade) {
           return bestRate;
         }
-        const { gasFeeInUsd, to } = trade;
-        const amountInUsd = to.token.price ? to.amount?.multipliedBy(to.token.price) : to.amount;
 
-        if (amountInUsd) {
-          const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
-          return profit.gt(bestRate.profit)
-            ? {
-                index: i,
-                profit
-              }
-            : bestRate;
+        const { gasFeeInUsd, to } = trade;
+        let profit;
+        if (!to.token.price) {
+          profit = to.amount;
+        } else {
+          const amountInUsd = to.amount?.multipliedBy(to.token.price);
+          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
         }
-        return bestRate;
+
+        return profit?.gt(bestRate.profit)
+          ? {
+              index: i,
+              profit
+            }
+          : bestRate;
       },
       {
         index: -1,
@@ -510,6 +517,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
     }
+    this.swapFormService.output.patchValue({
+      toAmount: this.selectedProvider.trade.to.amount
+    });
     this.cdr.detectChanges();
 
     this.setSlippageTolerance(this.selectedProvider);
