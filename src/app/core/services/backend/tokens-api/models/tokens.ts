@@ -34,3 +34,5 @@ export interface TokensBackendResponse {
   total: number;
   result: List<Token>;
 }
+
+export const DEFAULT_PAGE_SIZE = 150;

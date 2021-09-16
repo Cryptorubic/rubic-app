@@ -15,7 +15,10 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
-import { TokensRequestOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
+import {
+  DEFAULT_PAGE_SIZE,
+  TokensRequestOptions
+} from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
@@ -162,7 +165,8 @@ export class TokensService {
     this.tokensSubject.next(
       tokens.map(token => ({
         ...token,
-        amount: new BigNumber(NaN)
+        amount: new BigNumber(NaN),
+        favorite: false
       }))
     );
   }
@@ -317,7 +321,7 @@ export class TokensService {
    */
   public fetchNetworkTokens(
     network: PAGINATED_BLOCKCHAIN_NAME,
-    pageSize: number = 150,
+    pageSize: number = DEFAULT_PAGE_SIZE,
     callback?: () => void
   ): void {
     this.tokensApiService

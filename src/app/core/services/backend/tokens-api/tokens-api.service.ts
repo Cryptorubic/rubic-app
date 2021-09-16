@@ -10,6 +10,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
+  DEFAULT_PAGE_SIZE,
   TokensBackendResponse,
   TokensRequestOptions,
   TokensResponse
@@ -25,7 +26,15 @@ import { HttpService } from '../../http/http.service';
   providedIn: 'root'
 })
 export class TokensApiService {
+  /**
+   * API path to backend token list.
+   */
   private readonly getTokensUrl: string = 'tokens/';
+
+  /**
+   * API path to iframe backend token list.
+   */
+  private readonly iframeTokensUrl: string = 'tokens/iframe/';
 
   constructor(
     private readonly httpService: HttpService,
@@ -40,17 +49,15 @@ export class TokensApiService {
   private static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map((token: BackendToken) => {
-          return {
-            ...token,
-            blockchain:
-              FROM_BACKEND_BLOCKCHAINS[
-                token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
-              ],
-            price: token.usd_price,
-            usedInIframe: token.used_in_iframe
-          };
-        })
+        .map((token: BackendToken) => ({
+          ...token,
+          blockchain:
+            FROM_BACKEND_BLOCKCHAINS[
+              token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+            ],
+          price: token.usd_price,
+          usedInIframe: token.used_in_iframe
+        }))
         .filter(token => token.address && token.blockchain)
     );
   }
@@ -74,9 +81,8 @@ export class TokensApiService {
    * @return Observable<List<Token>> Tokens list.
    */
   private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
-    const tokensPath = 'tokens/iframe/';
     return this.httpService
-      .get(tokensPath, params)
+      .get(this.iframeTokensUrl, params)
       .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
   }
 
@@ -86,7 +92,7 @@ export class TokensApiService {
    * @return Observable<List<Token>> Tokens.
    */
   private fetchBasicTokens(params: TokensRequestOptions): Observable<List<Token>> {
-    const options = { page: 1, page_size: 150, ...params };
+    const options = { page: 1, page_size: DEFAULT_PAGE_SIZE, ...params };
     const blockchainsToFetch = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -115,11 +121,13 @@ export class TokensApiService {
       ...(requestOptions.symbol && { symbol: requestOptions.symbol }),
       ...(requestOptions.address && { address: requestOptions.address })
     };
-    return this.httpService.get(this.getTokensUrl, options).pipe(
-      map((tokensResponse: BackendToken[]) => {
-        return tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List();
-      })
-    );
+    return this.httpService
+      .get(this.getTokensUrl, options)
+      .pipe(
+        map((tokensResponse: BackendToken[]) =>
+          tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List()
+        )
+      );
   }
 
   /**

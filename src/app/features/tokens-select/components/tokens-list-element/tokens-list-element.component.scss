@@ -12,6 +12,7 @@
 
   &__name-container {
     max-width: 150px;
+    margin-right: auto;
 
     @include iframe-horizontal {
       width: 60px;
@@ -50,38 +51,56 @@
   ::ng-deep &__favorite {
     display: flex;
     align-items: center;
-    margin-left: auto;
+    margin-left: 20px;
 
     svg {
       width: 24px;
       height: 24px;
 
       path {
-        fill: var(--form-dim-text-color);
+        transition: 0.2s ease-in-out;
+
+        stroke: var(--form-dim-text-color);
       }
     }
 
-    &_active,
-    &:hover {
-      svg path {
-        fill: var(--main-green);
-      }
+    &_active svg path {
+      fill: $rubic-warning;
+      stroke: none;
+    }
+
+    &:hover:not(&_active)  svg path {
+      stroke: var(--main-green);
     }
   }
 
   &__image-container {
     display: flex;
-    flex: 0 0 30px;
     align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
     margin-right: 20px;
 
     @include iframe-horizontal {
       margin-right: 10px;
     }
 
+    @include iframe-horizontal {
+      width: 30px;
+      height: 30px;
+    }
+
+    @include iframe-vertical {
+      width: 24px;
+      height: 24px;
+    }
+
     img {
       max-width: 38px;
       max-height: 38px;
+
+      border-radius: 25%;
 
       @include iframe-horizontal {
         max-width: 30px;
@@ -93,9 +112,5 @@
         max-height: 24px;
       }
     }
-  }
-
-  &__amount {
-    margin-left: auto;
   }
 }

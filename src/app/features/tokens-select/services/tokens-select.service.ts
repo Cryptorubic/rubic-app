@@ -1,6 +1,6 @@
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -18,7 +18,16 @@ export class TokensSelectService {
     private readonly iframeService: IframeService
   ) {}
 
-  showDialog(
+  /**
+   * @description Show tokens dialog.
+   * @param tokens Tokens to show.
+   * @param formType Tokens type (from || to)
+   * @param currentBlockchain Tokens blockchain.
+   * @param form Swap form information.
+   * @param allowedBlockchains Allowed blockchains for list.
+   * @param idPrefix Id prefix for GA.
+   */
+  public showDialog(
     tokens: BehaviorSubject<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
@@ -26,7 +35,7 @@ export class TokensSelectService {
     allowedBlockchains: BLOCKCHAIN_NAME[] | undefined,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
-    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
+    const size = (this.iframeService.isIframe ? 'fullscreen' : 'm') as TuiDialogSize;
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
       {

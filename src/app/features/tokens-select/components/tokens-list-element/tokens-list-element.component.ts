@@ -34,10 +34,8 @@ export class TokensListElementComponent {
 
   /**
    * @description Make token favorite or not favorite in the list.
-   * @param event Click event.
    */
-  public toggleFavorite(event: MouseEvent): void {
-    event.stopImmediatePropagation();
+  public toggleFavorite(): void {
     this.token.favorite = !this.token.favorite;
     this.cdr.detectChanges();
     if (this.token.favorite) {

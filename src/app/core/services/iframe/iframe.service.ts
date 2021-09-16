@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { WINDOW } from 'src/app/core/models/window';
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +40,16 @@ export class IframeService {
 
   public get originDomain(): string {
     const url =
-      window.location !== window.parent.location ? document.referrer : document.location.href;
+      this.window.location !== this.window.parent.location
+        ? document.referrer
+        : document.location.href;
     return new URL(url).hostname;
   }
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(WINDOW) private readonly window: Window
+  ) {}
 
   public setIframeStatus(iframe: string): void {
     if (iframe === 'vertical' || iframe === 'horizontal') {

@@ -7,9 +7,10 @@
     <app-icon-button
       [icon]="listType === 'default' ? 'assets/images/icons/star.svg' : 'assets/images/icons/back.svg'"
       [tuiHint]="listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list'"
-      [tuiHintShowDelay]="500"
+      [tuiHintShowDelay]="1500"
       [border]="true"
       (iconButtonClick)="switchMode()"
+      buttonSize="s"
     >
     </app-icon-button>
   </div>

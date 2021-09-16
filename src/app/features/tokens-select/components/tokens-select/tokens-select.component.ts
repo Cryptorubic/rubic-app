@@ -354,7 +354,8 @@ export class TokensSelectComponent implements OnInit {
             TokensSelectComponent.allowInCrossChain(
               blockchainToken.blockchain,
               oppositeToken.blockchain
-            )
+            ),
+          favorite: false
         };
 
         this.cdr.markForCheck();

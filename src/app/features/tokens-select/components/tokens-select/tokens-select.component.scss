@@ -25,6 +25,12 @@
   &__row {
     display: flex;
     grid-gap: 20px;
+    justify-content: space-between;
+
+    ::ng-deep tui-wrapper img {
+      max-width: 21px;
+      max-height: 21px;
+    }
   }
 
   &__header {
@@ -78,11 +84,17 @@
 }
 
 app-tokens-search-bar {
+  width: 100%;
   margin-bottom: 14px;
 }
 
 tui-loader {
   width: 240px;
+}
+
+app-icon-button {
+  width: 32px;
+  height: 32px;
 }
 
 @include b($mobile-md-minus) {

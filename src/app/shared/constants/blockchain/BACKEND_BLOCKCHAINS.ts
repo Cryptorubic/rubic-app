@@ -20,9 +20,3 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: 'polygon-test',
   [BLOCKCHAIN_NAME.HARMONY_TESTNET]: 'harmony-test'
 };
-
-export type BackendBlockchain = 'ethereum' | 'binance-smart-chain' | 'polygon' | 'harmony';
-
-export type BackendBlockchainObject<T> = {
-  [P in BackendBlockchain]: T;
-};

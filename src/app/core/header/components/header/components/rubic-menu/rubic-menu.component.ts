@@ -26,6 +26,7 @@ import { NAVIGATION_LIST } from 'src/app/core/header/components/header/component
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { WINDOW } from 'src/app/core/models/window';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({
@@ -74,7 +75,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector
+    @Inject(Injector) private injector: Injector,
+    @Inject(WINDOW) private window: Window
   ) {
     this.$currentUser = this.authService.getCurrentUser();
     this.$countUnread = this.counterNotificationsService.unread$;
@@ -124,6 +126,6 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   }
 
   isLinkActive(url: string) {
-    return window.location.pathname === url;
+    return this.window.location.pathname === url;
   }
 }
