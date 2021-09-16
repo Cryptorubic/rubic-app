@@ -7,12 +7,12 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import BigNumber from 'bignumber.js';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { ISwapFormInput, ISwapFormOutput } from 'src/app/shared/models/swaps/ISwapForm';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,8 +28,6 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
-import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -43,26 +41,21 @@ enum ERROR_TYPE {
   NO_AMOUNT = 'From amount was not entered'
 }
 
-enum PRICE_IMPACT {
-  LOW = 4.7,
-  HIGH = 15.01
-}
-
 @Component({
-  selector: 'app-swap-button',
-  templateUrl: './swap-button.component.html',
-  styleUrls: ['./swap-button.component.scss'],
+  selector: 'app-swap-button-container',
+  templateUrl: './swap-button-container.component.html',
+  styleUrls: ['./swap-button-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class SwapButtonComponent implements OnInit {
+export class SwapButtonContainerComponent implements OnInit {
   @Input() needApprove = false;
 
   @Input() status: TRADE_STATUS;
 
   @Input() formService: FormService;
 
-  @Input() idPrefix: string = '';
+  @Input() idPrefix = '';
 
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
@@ -113,7 +106,7 @@ export class SwapButtonComponent implements OnInit {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
-  @Input() swapButtonText? = 'Swap';
+  @Input() buttonText? = 'Swap';
 
   @Output() approveClick = new EventEmitter<void>();
 
@@ -127,13 +120,11 @@ export class SwapButtonComponent implements OnInit {
 
   public ERROR_TYPE = ERROR_TYPE;
 
-  public PRICE_IMPACT = PRICE_IMPACT;
-
   public needLogin: boolean;
 
   public needLoginLoading: boolean;
 
-  public dataLoading: boolean;
+  public loading: boolean;
 
   public errorType: Record<ERROR_TYPE, boolean>;
 
@@ -142,8 +133,6 @@ export class SwapButtonComponent implements OnInit {
   private _fromAmount: BigNumber;
 
   public tokensFilled: boolean;
-
-  public priceImpact: number;
 
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
@@ -164,7 +153,7 @@ export class SwapButtonComponent implements OnInit {
     return true;
   }
 
-  get networkErrorText(): void {
+  get switchNetworkText(): void {
     return this.translateService.instant('common.switchTo', {
       networkName: this.formService.inputValue.fromBlockchain
     });
@@ -219,10 +208,6 @@ export class SwapButtonComponent implements OnInit {
     return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
   }
 
-  private static isSwapForm(inputForm: ISwapFormInput): inputForm is SwapFormInput {
-    return 'fromAmount' in inputForm;
-  }
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
@@ -244,7 +229,6 @@ export class SwapButtonComponent implements OnInit {
       }),
       {}
     ) as Record<ERROR_TYPE, boolean>;
-    this.priceImpact = 0;
   }
 
   ngOnInit(): void {
@@ -291,25 +275,15 @@ export class SwapButtonComponent implements OnInit {
     this.providerConnectorService.$networkChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.checkWrongBlockchainError();
     });
-
-    combineLatest([
-      this.formService.inputValueChanges.pipe(startWith(this.formService.inputValue)),
-      this.formService.outputValueChanges.pipe(startWith(this.formService.outputValue))
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([inputForm, outputForm]) => {
-        this.setPriceImpact(inputForm, outputForm);
-      });
   }
 
   private setFormValues(form: ISwapFormInput): void {
-    this.dataLoading = true;
-    this.priceImpact = 0;
+    this.loading = true;
     this.cdr.detectChanges();
 
     this.tokensFilled = Boolean(form.fromToken && form.toToken);
     this.checkErrors().then(() => {
-      this.dataLoading = false;
+      this.loading = false;
       this.cdr.detectChanges();
     });
   }
@@ -358,34 +332,6 @@ export class SwapButtonComponent implements OnInit {
 
       this.cdr.detectChanges();
     }
-  }
-
-  private setPriceImpact(inputForm: ISwapFormInput, outputForm: ISwapFormOutput) {
-    const { fromToken, toToken } = inputForm;
-    if (!fromToken?.price || !toToken?.price) {
-      return;
-    }
-
-    let fromAmount: BigNumber;
-    if (SwapButtonComponent.isSwapForm(inputForm)) {
-      fromAmount = inputForm.fromAmount;
-    } else {
-      fromAmount = (outputForm as CryptoTapFormOutput).fromAmount;
-    }
-    const { toAmount } = outputForm;
-    if (!fromAmount || !toAmount) {
-      return;
-    }
-
-    const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
-    const toTokenCost = toAmount.multipliedBy(toToken.price);
-    this.priceImpact = fromTokenCost
-      .minus(toTokenCost)
-      .dividedBy(fromTokenCost)
-      .multipliedBy(100)
-      .dp(2, BigNumber.ROUND_HALF_UP)
-      .toNumber();
-    this.cdr.detectChanges();
   }
 
   public onLogin() {

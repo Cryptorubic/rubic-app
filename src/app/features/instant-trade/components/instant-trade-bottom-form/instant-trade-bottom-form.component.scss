@@ -245,14 +245,14 @@ $green: rgb(74, 169, 86);
     @include iframe-vertical {
       padding: 0 !important;
 
-      app-swap-button {
+      app-swap-button-container {
         width: 100%;
 
         margin-top: 16px !important;
       }
     }
 
-    app-swap-button {
+    app-swap-button-container {
       display: block;
 
       margin-top: 16px;

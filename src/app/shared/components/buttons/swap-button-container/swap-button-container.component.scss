@@ -8,18 +8,6 @@ $point-radius: 26px;
   }
 }
 
-:host-context(html.dark) {
-  .price-impact {
-    &_low {
-      color: #d8ba22fa;
-    }
-
-    &_high {
-      color: #f54e4f;
-    }
-  }
-}
-
 .buttons {
   display: grid;
   grid-column-gap: 20px;
@@ -66,58 +54,6 @@ $point-radius: 26px;
 
       background-color: var(--main-form-background);
     }
-  }
-}
-
-.button-swap {
-  &_warning-low {
-    ::ng-deep {
-      tui-wrapper[data-appearance='secondary'] {
-        background-color: #d6bd27;
-      }
-    }
-  }
-
-  &_warning-high {
-    ::ng-deep {
-      tui-wrapper[data-appearance='secondary'] {
-        background-color: #f5474a;
-      }
-    }
-  }
-
-  &__hint {
-    position: relative;
-    top: -3px;
-
-    height: 15px;
-    margin-left: 6px;
-
-    ::ng-deep {
-      svg {
-        path:not(:last-child),
-        circle {
-          fill: white;
-          stroke: white;
-        }
-
-        path:last-child {
-          stroke: white;
-        }
-      }
-    }
-  }
-}
-
-.price-impact {
-  font-size: 16px;
-
-  &_low {
-    color: rgba(203, 174, 20);
-  }
-
-  &_high {
-    color: #ff4c4d;
   }
 }
 

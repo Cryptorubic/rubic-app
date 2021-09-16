@@ -24,7 +24,6 @@ import {
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
-import { SwapButtonComponent } from 'src/app/shared/components/buttons/approve-button/swap-button.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
 import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
@@ -37,6 +36,7 @@ import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/g
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
+import { SwapButtonContainerComponent } from 'src/app/shared/components/buttons/swap-button-container/swap-button-container.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -59,6 +59,7 @@ import { SuccessTxModalComponent } from './components/success-tx-modal/success-t
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
 import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
+import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,7 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
-    SwapButtonComponent,
+    SwapButtonContainerComponent,
     RubicTokensComponent,
     RubicBlockchainsComponent,
     RubicRefreshButtonComponent,
@@ -101,7 +102,8 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     NoFrameDirective,
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
-    ThemedIconPipe
+    ThemedIconPipe,
+    SwapButtonComponent
   ],
   imports: [
     CommonModule,
@@ -149,7 +151,7 @@ import { PanelContentComponent } from './components/provider-panel/panel-content
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
-    SwapButtonComponent,
+    SwapButtonContainerComponent,
     WithRoundPipe,
     SafetyLinkDirective,
     RubicTokensComponent,

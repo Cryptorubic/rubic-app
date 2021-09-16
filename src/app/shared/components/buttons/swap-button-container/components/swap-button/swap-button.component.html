@@ -1,0 +1,34 @@
+<app-rubic-button
+  [class]="idPrefix + 'button-swap'"
+  [ngClass]="{
+    'button-swap_warning-low': priceImpact >= PRICE_IMPACT.LOW && priceImpact < PRICE_IMPACT.HIGH,
+    'button-swap_warning-high': priceImpact >= PRICE_IMPACT.HIGH
+  }"
+  [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading"
+  [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
+  (onClick)="onClick.emit()"
+  appearance="secondary"
+>
+  {{ priceImpact < PRICE_IMPACT.LOW ? buttonText : 'Swap Anyway' }}
+  <div
+    *ngIf="priceImpact >= PRICE_IMPACT.LOW"
+    class="button-swap__hint"
+    [inlineSVG]="'/assets/images/icons/hint-question.svg'"
+    [tuiHint]="priceImpactTemplate"
+    [tuiHintDirection]="'top-right'"
+    [tuiHintId]="'tui-hint_price-impact'"
+  ></div>
+</app-rubic-button>
+
+<ng-template #priceImpactTemplate>
+  <div class="price-impact">
+    Price impact is
+    <span
+      [ngClass]="{
+        'price-impact_low': priceImpact < PRICE_IMPACT.HIGH,
+        'price-impact_high': priceImpact >= PRICE_IMPACT.HIGH
+      }"
+      >-{{ priceImpact | number: '.0-2' }}%</span
+    >
+  </div>
+</ng-template>

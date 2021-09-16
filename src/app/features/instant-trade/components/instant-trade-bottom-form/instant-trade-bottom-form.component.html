@@ -78,14 +78,14 @@
   <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
-  <app-swap-button
+  <app-swap-button-container
     [needApprove]="needApprove"
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
-    [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
+    [buttonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (updateRatesClick)="onCalculateTrade$.next('normal')"
-  ></app-swap-button>
+  ></app-swap-button-container>
 </div>
