@@ -251,3 +251,23 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
     display: block;
   }
 }
+
+@include b($mobile-md) {
+  .menu-button {
+    ::ng-deep [data-tui-host-size='l'][tuiIconButton] {
+      width: 20px;
+      height: 24px;
+
+      &._hovered,
+      &._pressed,
+      &._focused {
+        background: transparent !important;
+        box-shadow: none;
+
+        .wrapper {
+          background: transparent;
+        }
+      }
+    }
+  }
+}

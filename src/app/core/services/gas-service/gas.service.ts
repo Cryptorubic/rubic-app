@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, of, timer } from 'rxjs';
-import { catchError, map, mergeMap, startWith } from 'rxjs/operators';
+import { catchError, map, mergeMap, startWith, timeout } from 'rxjs/operators';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { EthGasPriceResponse } from 'src/app/core/services/gas-service/models/eth-gas-response';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
@@ -53,8 +53,8 @@ export class GasService {
     this.currentNetworkGasPrice$ = new BehaviorSubject<number>(null);
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
-      [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this)
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchEthGas.bind(this),
+      [BLOCKCHAIN_NAME.POLYGON]: this.fetchEthGas.bind(this)
     };
     this.fetchGas();
   }
@@ -84,13 +84,12 @@ export class GasService {
    * @return Observable<number> Average gas price.
    */
   private fetchEthGas(): Observable<number | null> {
-    const gasResponse$ = this.httpService
-      .get('', null, 'https://gas-api.mywish.io/')
-      .pipe(
-        catchError(() =>
-          this.httpService.get('', null, 'https://ethgasstation.info/api/ethgasAPI.json')
-        )
-      );
+    const gasResponse$ = this.httpService.get('', null, 'https://gas-api.mywish.io/').pipe(
+      timeout(2000),
+      catchError(() =>
+        this.httpService.get('', null, 'https://ethgasstation.info/api/ethgasAPI.json')
+      )
+    );
     return gasResponse$.pipe(
       map((el: EthGasPriceResponse) => el.average / 10),
       catchError(() => of(null))
@@ -107,7 +106,7 @@ export class GasService {
     //   map((el: BscGasResponse) => el.standard),
     //   catchError(() => of(null))
     // );
-    return of(null);
+    return of(5);
   }
 
   /**

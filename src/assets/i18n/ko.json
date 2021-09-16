@@ -478,6 +478,24 @@
     },
     "bridge": {
       "walletAddress": "토큰이 제공되는 TRON 블록 체인의 지갑 주소."
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "ChooseLanguage"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {
