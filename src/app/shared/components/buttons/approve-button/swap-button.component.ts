@@ -244,6 +244,7 @@ export class SwapButtonComponent implements OnInit {
       }),
       {}
     ) as Record<ERROR_TYPE, boolean>;
+    this.priceImpact = 0;
   }
 
   ngOnInit(): void {
@@ -303,6 +304,7 @@ export class SwapButtonComponent implements OnInit {
 
   private setFormValues(form: ISwapFormInput): void {
     this.dataLoading = true;
+    this.priceImpact = 0;
     this.cdr.detectChanges();
 
     this.tokensFilled = Boolean(form.fromToken && form.toToken);

@@ -8,6 +8,18 @@ $point-radius: 26px;
   }
 }
 
+:host-context(html.dark) {
+  .price-impact {
+    &_low {
+      color: #d8ba22fa;
+    }
+
+    &_high {
+      color: #f54e4f;
+    }
+  }
+}
+
 .buttons {
   display: grid;
   grid-column-gap: 20px;
@@ -61,7 +73,7 @@ $point-radius: 26px;
   &_warning-low {
     ::ng-deep {
       tui-wrapper[data-appearance='secondary'] {
-        background-color: #baa743;
+        background-color: #d6bd27;
       }
     }
   }
@@ -69,7 +81,7 @@ $point-radius: 26px;
   &_warning-high {
     ::ng-deep {
       tui-wrapper[data-appearance='secondary'] {
-        background-color: #d2474a;
+        background-color: #f5474a;
       }
     }
   }
@@ -101,11 +113,11 @@ $point-radius: 26px;
   font-size: 16px;
 
   &_low {
-    color: $rubic-warning;
+    color: rgba(203, 174, 20);
   }
 
   &_high {
-    color: #e20000;
+    color: #ff4c4d;
   }
 }
 
