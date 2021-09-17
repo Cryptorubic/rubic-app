@@ -35,6 +35,9 @@ export class TokensService {
 
   private isTestingMode = false;
 
+  /**
+   * Checks if two tokens are equal.
+   */
   public static areTokensEqual(
     token0: { blockchain: BLOCKCHAIN_NAME; address: string },
     token1: { blockchain: BLOCKCHAIN_NAME; address: string }
@@ -175,6 +178,9 @@ export class TokensService {
     );
   }
 
+  /**
+   * Gets price of native token.
+   */
   public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
     const nativeCoin = this._tokens
       .getValue()
@@ -187,6 +193,9 @@ export class TokensService {
       .toPromise();
   }
 
+  /**
+   * Updates token's price and emits new tokens' list with updated token.
+   */
   public updateTokenPriceInUsd(token: TokenAmount): void {
     this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
       if (tokenPrice) {

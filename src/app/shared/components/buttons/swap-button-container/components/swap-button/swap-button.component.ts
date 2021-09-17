@@ -31,8 +31,14 @@ export class SwapButtonComponent implements OnInit {
 
   @Input() loading: boolean;
 
+  /**
+   * Text inside button
+   */
   @Input() buttonText: string;
 
+  /**
+   * Service containing form with input and output data
+   */
   @Input() formService: FormService;
 
   @Output() onClick = new EventEmitter<void>();
@@ -41,6 +47,9 @@ export class SwapButtonComponent implements OnInit {
 
   public TRADE_STATUS = TRADE_STATUS;
 
+  /**
+   * Price impact of trade in percents
+   */
   public priceImpact: number;
 
   get disabled() {

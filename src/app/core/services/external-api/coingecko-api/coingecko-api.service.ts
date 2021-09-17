@@ -68,6 +68,10 @@ export class CoingeckoApiService {
     return !!supportedBlockchains.find(supportedBlockchain => supportedBlockchain === blockchain);
   }
 
+  /**
+   * Gets price of native coin from coingecko.
+   * @param blockchain supported by {@link supportedBlockchains} blockchain
+   */
   public getNativeCoinPriceInUsdByCoingecko(
     blockchain: BLOCKCHAIN_NAME
   ): Observable<number | undefined> {
@@ -121,6 +125,10 @@ export class CoingeckoApiService {
       );
   }
 
+  /**
+   * Gets price of token from coingecko.
+   * @param token token with supported by {@link supportedBlockchains} blockchain
+   */
   public getTokenPrice(token: BlockchainToken): Observable<number | undefined> {
     if (token.address === NATIVE_TOKEN_ADDRESS) {
       return this.getNativeCoinPriceInUsdByCoingecko(token.blockchain);

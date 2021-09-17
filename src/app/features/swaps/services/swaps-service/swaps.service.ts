@@ -185,6 +185,11 @@ export class SwapsService {
     }
   }
 
+  /**
+   * Takes selected tokens from {@param form} and call functions to update their prices.
+   * Sets interval to update prices.
+   * @private
+   */
   private updateTokensPrices(form: SwapFormInput) {
     if (this.intervalId) {
       clearInterval(this.intervalId);
