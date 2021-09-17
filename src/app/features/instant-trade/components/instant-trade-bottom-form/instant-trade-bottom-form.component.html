@@ -47,12 +47,14 @@
 
         <ng-container *ngIf="selectedProvider">
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>
-            {{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}
+            <app-usd-price-container
+              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+            ></app-usd-price-container>
           </div>
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
-            <div class="instant-trade-bottom-form__usd-amount">
-              {{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}
-            </div>
+            <app-usd-price-container
+              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+            ></app-usd-price-container>
             <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
               Est. fee ${{ selectedProvider?.trade.gasFeeInUsd.toFixed(2) }}
             </div>

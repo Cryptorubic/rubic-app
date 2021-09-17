@@ -35,7 +35,6 @@ import { filter, distinctUntilChanged, map, startWith, switchMap, takeUntil } fr
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -539,14 +538,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getUsdPrice(amount?: BigNumber): string {
-    const usdPrice = (amount || this.selectedProvider?.trade.to.amount).multipliedBy(
-      this.toToken?.price
-    );
-    if (usdPrice.isNaN()) {
-      return '';
-    }
-    return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
+  public getUsdPrice(amount?: BigNumber): BigNumber {
+    return (amount || this.selectedProvider?.trade.to.amount).multipliedBy(this.toToken?.price);
   }
 
   public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {

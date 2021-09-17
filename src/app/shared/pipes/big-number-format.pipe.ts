@@ -4,7 +4,7 @@ import { BIG_NUMBER_FORMAT } from '../constants/formats/BIG_NUMBER_FORMAT';
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormatPipe implements PipeTransform {
-  transform(value: BigNumber | string | number, dp = -1): string {
+  transform(value: BigNumber | string | number, dp = -1, toFixed = false): string {
     if (typeof value === 'number') {
       value = value.toString();
     }
@@ -23,8 +23,11 @@ export class BigNumberFormatPipe implements PipeTransform {
     }
 
     if (dp !== -1) {
-      value = value.dp(dp);
+      return !toFixed
+        ? value.dp(dp).toFormat(BIG_NUMBER_FORMAT)
+        : value.toFormat(dp, BIG_NUMBER_FORMAT);
     }
+
     return value.toFormat(BIG_NUMBER_FORMAT);
   }
 }

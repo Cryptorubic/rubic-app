@@ -37,6 +37,7 @@ import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { SwapButtonContainerComponent } from 'src/app/shared/components/buttons/swap-button-container/swap-button-container.component';
+import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -89,6 +90,7 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     GasIndicatorComponent,
     PanelErrorContentComponent,
     PanelContentComponent,
+    UsdPriceContainerComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -168,7 +170,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     NoFrameDirective,
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
-    ThemedIconPipe
+    ThemedIconPipe,
+    UsdPriceContainerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]
