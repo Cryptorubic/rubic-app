@@ -13,7 +13,7 @@ export class VolumeApiService {
   private tradeVolume$: BehaviorSubject<TradeVolume>;
 
   /**
-   * @description Get trading volumes data.
+   * Returns trading volumes data as observable
    * @return Trade volumes.
    */
   public get tradingVolume$(): Observable<TradeVolume> {
@@ -26,7 +26,7 @@ export class VolumeApiService {
   }
 
   /**
-   * @description Make request for trade volumes with interval and update data volume.
+   * Makes request for trade volumes with interval and updates data volume.
    * @return Void.
    */
   private setTradeVolumeInterval(): void {
@@ -36,7 +36,7 @@ export class VolumeApiService {
   }
 
   /**
-   * @description Make request for trade volumes.
+   * Makes request for trade volumes.
    * @return Observable trade volume.
    */
   private fetchVolume(): Observable<TradeVolume> {
