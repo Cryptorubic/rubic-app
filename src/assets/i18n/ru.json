@@ -237,7 +237,7 @@
           "done": true,
           "data": [
             "0x integration and gas fee reductions",
-            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse Chain (HEX), Optimism, Arbitrum",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
             "RBC Staking",
             "Widget: SDK/API release"
           ]

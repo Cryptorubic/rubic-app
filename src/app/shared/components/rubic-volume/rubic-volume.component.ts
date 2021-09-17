@@ -15,10 +15,10 @@ export class RubicVolumeComponent {
   public volume$: Observable<TradeVolume>;
 
   constructor(
-    private contentLoaderService: ContentLoaderService,
-    private volumeApiService: VolumeApiService,
-    private destroy$: TuiDestroyService,
-    private cdr: ChangeDetectorRef
+    private readonly contentLoaderService: ContentLoaderService,
+    private readonly volumeApiService: VolumeApiService,
+    private readonly destroy$: TuiDestroyService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.volume$ = this.volumeApiService.tradingVolume$;
   }
