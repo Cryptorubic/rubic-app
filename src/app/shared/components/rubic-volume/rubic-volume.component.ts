@@ -3,7 +3,6 @@ import { VolumeApiService } from 'src/app/core/services/backend/volume-api/volum
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TradeVolume } from 'src/app/core/services/backend/volume-api/models/TradeVolume';
 import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { ContentLoaderService } from '../../../core/services/content-loader/content-loader.service';
 
 @Component({
@@ -21,6 +20,6 @@ export class RubicVolumeComponent {
     private destroy$: TuiDestroyService,
     private cdr: ChangeDetectorRef
   ) {
-    this.volume$ = this.volumeApiService.tradingVolume$.pipe(takeUntil(this.destroy$));
+    this.volume$ = this.volumeApiService.tradingVolume$;
   }
 }

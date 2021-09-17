@@ -3,13 +3,13 @@
   <div class="rubic-volume__values">
     <div class="rubic-volume__value-it">
       <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
-        {{ volume?.instantTrades.toFormat(0) }}
+        ${{ volume?.instantTrades.toFormat(0) }}
       </div>
       <div class="rubic-volume__label">{{ 'volume.instantTrades' | translate }}</div>
     </div>
     <div class="rubic-volume__value-it">
       <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
-        {{ volume?.bridges.toFormat(0) }}
+        ${{ volume?.bridges.toFormat(0) }}
       </div>
       <div class="rubic-volume__label">{{ 'volume.bridges' | translate }}</div>
     </div>

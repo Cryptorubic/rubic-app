@@ -13,8 +13,8 @@ export class VolumeApiService {
   private tradeVolume$: BehaviorSubject<TradeVolume>;
 
   /**
-   * @description get trading volumes data
-   * @return trade volumes
+   * @description Get trading volumes data.
+   * @return Trade volumes.
    */
   public get tradingVolume$(): Observable<TradeVolume> {
     return this.tradeVolume$.asObservable();
@@ -26,8 +26,8 @@ export class VolumeApiService {
   }
 
   /**
-   * @description make request for trade volumes with interval and update data volume
-   * @return void
+   * @description Make request for trade volumes with interval and update data volume.
+   * @return Void.
    */
   private setTradeVolumeInterval(): void {
     timer(2000, 1000 * 60 * 60)
@@ -36,8 +36,8 @@ export class VolumeApiService {
   }
 
   /**
-   * @description make request for trade volumes
-   * @return observable trade volume
+   * @description Make request for trade volumes.
+   * @return Observable trade volume.
    */
   private fetchVolume(): Observable<TradeVolume> {
     return this.httpService.get('total_values/').pipe(
