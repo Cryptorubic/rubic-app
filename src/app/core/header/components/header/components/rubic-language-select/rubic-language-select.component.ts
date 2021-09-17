@@ -1,15 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  QueryList,
-  TemplateRef,
-  ViewChildren
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { languagesList } from 'src/app/core/header/models/languages-list';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
+import { BehaviorSubject } from 'rxjs';
+import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
+import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SettingsListComponent } from 'src/app/core/header/components/header/components/settings-list/settings-list.component';
 
 @Component({
   selector: 'app-rubic-language-select',
@@ -18,8 +15,6 @@ import { LanguageListElement } from 'src/app/core/header/models/language-list-el
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicLanguageSelectComponent {
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
-
   public readonly languagesList: LanguageListElement[];
 
   public currentLanguage: string;
@@ -35,7 +30,9 @@ export class RubicLanguageSelectComponent {
   constructor(
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: BehaviorSubject<SettingsComponentData>
   ) {
     this.languagesList = languagesList;
     translateService.onLangChange.subscribe((event: LangChangeEvent) => {
@@ -65,11 +62,6 @@ export class RubicLanguageSelectComponent {
     })[0].active = true;
   }
 
-  public onLangChange(filteredLanguageIndex: number) {
-    const language = this.filteredLanguageList[filteredLanguageIndex];
-    this.translateService.use(language.lng);
-  }
-
   /**
    * @description set new current language
    * @param lng new current language
@@ -77,5 +69,17 @@ export class RubicLanguageSelectComponent {
    */
   public setLanguage(lng: string): void {
     this.translateService.use(lng);
+    this.switchToSettingsList();
+  }
+
+  /**
+   * @description switch component to settings list
+   * @return void
+   */
+  public switchToSettingsList(): void {
+    this.context.next({
+      titleKey: 'Languages',
+      component: new PolymorpheusComponent(SettingsListComponent)
+    });
   }
 }

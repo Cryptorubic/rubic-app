@@ -1,5 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { VolumeContent } from '../../models/content';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { VolumeApiService } from 'src/app/core/services/backend/volume-api/volume-api.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TradeVolume } from 'src/app/core/services/backend/volume-api/models/TradeVolume';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ContentLoaderService } from '../../../core/services/content-loader/content-loader.service';
 
 @Component({
@@ -9,9 +13,14 @@ import { ContentLoaderService } from '../../../core/services/content-loader/cont
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicVolumeComponent {
-  public volume: VolumeContent;
+  public volume$: Observable<TradeVolume>;
 
-  constructor(contentLoaderService: ContentLoaderService) {
-    this.volume = contentLoaderService.volumeContent;
+  constructor(
+    private contentLoaderService: ContentLoaderService,
+    private volumeApiService: VolumeApiService,
+    private destroy$: TuiDestroyService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.volume$ = this.volumeApiService.tradingVolume$.pipe(takeUntil(this.destroy$));
   }
 }
