@@ -6,6 +6,8 @@ import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
+import { EIP_1193 } from 'src/app/core/errors/models/standard/EIP-1193';
+import { EIP_1474 } from 'src/app/core/errors/models/standard/EIP-1474';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 
 @Injectable({
@@ -41,10 +43,14 @@ export class ErrorsService {
       label: this.translateService.instant(isWarning ? 'common.warning' : 'common.error'),
       status: isWarning ? TuiNotification.Warning : TuiNotification.Error,
       data: {},
-      autoClose: false
+      autoClose: 7000
     };
 
-    if (error?.type === ERROR_TYPE.COMPONENT || error?.type === ERROR_TYPE.RAW_MESSAGE) {
+    if (
+      error?.type === ERROR_TYPE.COMPONENT ||
+      error?.type === ERROR_TYPE.RAW_MESSAGE ||
+      this.isRPCError(error)
+    ) {
       const errorComponent = new PolymorpheusComponent(
         error.component || UnknownErrorComponent,
         this.injector
@@ -58,5 +64,21 @@ export class ErrorsService {
       ? this.translateService.instant(error.translateKey, error?.data)
       : error.message;
     this.notificationsService.show(text, options);
+  }
+
+  /**
+   *
+   * @param currentError
+   * @private
+   */
+  private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
+    const findRPCError = (rpcError: { code: string; message: string; description: string }) =>
+      currentError.message.includes(rpcError.code);
+    const providerRPCError = EIP_1193.find(findRPCError);
+    if (providerRPCError) {
+      return true;
+    }
+    const otherRPCError = EIP_1474.find(findRPCError);
+    return Boolean(otherRPCError);
   }
 }
