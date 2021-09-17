@@ -27,7 +27,6 @@ export class VolumeApiService {
 
   /**
    * Makes request for trade volumes with interval and updates data volume.
-   * @return Void.
    */
   private setTradeVolumeInterval(): void {
     timer(0, 1000 * 60 * 60)
