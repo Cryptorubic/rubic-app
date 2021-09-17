@@ -30,7 +30,7 @@ export class VolumeApiService {
    * @return Void.
    */
   private setTradeVolumeInterval(): void {
-    timer(0, 1000 * 60)
+    timer(0, 1000 * 60 * 60)
       .pipe(switchMap(() => this.fetchVolume()))
       .subscribe(volume => this.tradeVolume$.next(volume));
   }
