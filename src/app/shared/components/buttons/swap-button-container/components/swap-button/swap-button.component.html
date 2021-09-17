@@ -5,7 +5,10 @@
     'button-swap_warning-high': priceImpact >= PRICE_IMPACT.HIGH
   }"
   [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading"
-  [disabled]="status !== TRADE_STATUS.READY_TO_SWAP"
+  [disabled]="disabled"
+  [tuiHint]="disabled ? priceImpactTemplate : null"
+  [tuiHintDirection]="'top-right'"
+  [tuiHintId]="'tui-hint_price-impact'"
   (onClick)="onClick.emit()"
   appearance="secondary"
 >

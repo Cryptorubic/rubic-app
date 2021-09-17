@@ -9,11 +9,10 @@ import {
 } from '@angular/core';
 import { PRICE_IMPACT } from 'src/app/shared/components/buttons/swap-button-container/models/PRICE_IMPACT';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { combineLatest } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { ISwapFormInput, ISwapFormOutput } from 'src/app/shared/models/swaps/ISwapForm';
+import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import BigNumber from 'bignumber.js';
 import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
@@ -44,6 +43,10 @@ export class SwapButtonComponent implements OnInit {
 
   public priceImpact: number;
 
+  get disabled() {
+    return this.status !== TRADE_STATUS.READY_TO_SWAP;
+  }
+
   private static isSwapForm(inputForm: ISwapFormInput): inputForm is SwapFormInput {
     return 'fromAmount' in inputForm;
   }
@@ -56,18 +59,15 @@ export class SwapButtonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    combineLatest([
-      this.formService.inputValueChanges.pipe(startWith(this.formService.inputValue)),
-      this.formService.outputValueChanges.pipe(startWith(this.formService.outputValue))
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([inputForm, outputForm]) => {
-        this.priceImpact = 0;
-        this.setPriceImpact(inputForm, outputForm);
-      });
+    this.formService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.setPriceImpact();
+    });
   }
 
-  private setPriceImpact(inputForm: ISwapFormInput, outputForm: ISwapFormOutput) {
+  private setPriceImpact() {
+    const inputForm = this.formService.inputValue;
+    const outputForm = this.formService.outputValue;
+
     const { fromToken, toToken } = inputForm;
     if (!fromToken?.price || !toToken?.price) {
       return;
