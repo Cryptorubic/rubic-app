@@ -31,9 +31,8 @@ export class RubicTokensComponent implements OnInit {
   @Input() formType: 'from' | 'to';
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
-    const lengthEquality = value.length === this.tokensSubject.value.length;
     const deepEquality = Utils.compareObjects(value, this.tokensSubject.value);
-    if (!lengthEquality && !deepEquality) {
+    if (!deepEquality) {
       this.tokensSubject.next(value);
     }
   }

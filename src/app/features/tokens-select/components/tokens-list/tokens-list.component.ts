@@ -31,6 +31,8 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   @Output() public pageUpdate = new EventEmitter<number>();
 
+  @Input() public listType: 'default' | 'favorite';
+
   @Input() public hasQuery: boolean;
 
   @Input() public tokensNetworkState: { count: number; page: number };
@@ -101,7 +103,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
         takeUntil(this.destroy$),
         debounceTime(500),
         filter(el => {
-          if (this.loading || this.hasQuery) {
+          if (this.loading || this.hasQuery || this.listType === 'favorite') {
             return false;
           }
           const endOfList = el.end > this.tokens.length - 50;
