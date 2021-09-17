@@ -51,7 +51,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     this.listScroll = scroll;
-    if (scroll && this.listScroll && !Utils.compareObjects(scroll, this.listScroll)) {
+    if (scroll && this.listScroll) {
       this.observeScroll();
     }
   }
