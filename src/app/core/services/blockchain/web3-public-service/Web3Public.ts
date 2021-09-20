@@ -12,7 +12,7 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { from, Observable, of } from 'rxjs';
-import { HEALTCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
+import { HEALTHCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { HttpClient } from '@angular/common/http';
@@ -122,19 +122,19 @@ export class Web3Public {
    * @return null if healthcheck is not defined for current blockchain, else is node works status
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
-    const heathcheckData = HEALTCHECK[this.blockchain.name as Web3SupportedBlockchains];
-    if (!heathcheckData) {
+    const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3SupportedBlockchains];
+    if (!healthcheckData) {
       return of(null);
     }
 
     const contract = new this.web3.eth.Contract(
-      heathcheckData.contractAbi,
-      heathcheckData.contractAddress
+      healthcheckData.contractAbi,
+      healthcheckData.contractAddress
     );
 
-    return from(contract.methods[heathcheckData.method]().call()).pipe(
+    return from(contract.methods[healthcheckData.method]().call()).pipe(
       timeout(timeoutMs),
-      map(result => result === heathcheckData.expected),
+      map(result => result === healthcheckData.expected),
       catchError(err => {
         if (err?.name === 'TimeoutError') {
           console.debug(
@@ -340,7 +340,7 @@ export class Web3Public {
    * @param [options.methodArguments] executing method arguments
    * @return smart-contract pure method returned value
    */
-  public async callContractMethod(
+  public async callContractMethod<T = string>(
     contractAddress: string,
     contractAbi: AbiItem[],
     methodName: string,
@@ -348,7 +348,7 @@ export class Web3Public {
       methodArguments?: unknown[];
       from?: string;
     } = { methodArguments: [] }
-  ): Promise<string | string[]> {
+  ): Promise<T> {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return contract.methods[methodName](...options.methodArguments).call({
@@ -394,7 +394,7 @@ export class Web3Public {
 
     const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
-      this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI as AbiItem[], method)
+      this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
     const token: BlockchainTokenExtended = {
       blockchain: this.blockchain.name,

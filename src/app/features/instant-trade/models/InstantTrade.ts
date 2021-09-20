@@ -43,11 +43,6 @@ interface InstantTrade {
   gasFeeInEth?: BigNumber;
 
   /**
-   * Additional options
-   */
-  options?: unknown;
-
-  /**
    * Error.
    */
   error?: RubicError<ERROR_TYPE>;

@@ -1,16 +1,15 @@
 import {
-  ContractAddressNetMode,
   RoutingProvidersNetMode,
-  UniswapV2Constants,
-  WethAddressNetMode
+  UniswapV2Constants
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
+import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
 
 const quickSwapContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff',
   testnet: '0x73C885150dF0000EE99428999651Bf37Ad5aAa48'
 };
 
-const wethAddressNetMode: WethAddressNetMode = {
+const wethAddressNetMode: ContractAddressNetMode = {
   mainnet: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
   testnet: '0x13c038147aa2c91cf1fdb6f17a12f27715a4ca99'
 };
@@ -29,11 +28,9 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-const maxTransitTokens = 3;
-
 export const quickSwapConstants: UniswapV2Constants = {
   contractAddressNetMode: quickSwapContractAddressNetMode,
   wethAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens
+  maxTransitTokens: 3
 };

@@ -14,14 +14,6 @@ export class SushiSwapPolygonService extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.POLYGON;
-    super(
-      blockchain,
-      sushiSwapPolygonConstants.contractAddressNetMode,
-      sushiSwapPolygonConstants.wethAddressNetMode,
-      sushiSwapPolygonConstants.routingProvidersNetMode,
-      sushiSwapPolygonConstants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, sushiSwapPolygonConstants, commonUniswapV2, useTestingModeService);
   }
 }

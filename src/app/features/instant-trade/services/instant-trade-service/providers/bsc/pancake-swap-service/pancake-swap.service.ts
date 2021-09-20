@@ -14,14 +14,6 @@ export class PancakeSwapService extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-    super(
-      blockchain,
-      pancakeSwapConstants.contractAddressNetMode,
-      pancakeSwapConstants.wethAddressNetMode,
-      pancakeSwapConstants.routingProvidersNetMode,
-      pancakeSwapConstants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, pancakeSwapConstants, commonUniswapV2, useTestingModeService);
   }
 }

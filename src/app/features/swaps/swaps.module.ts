@@ -27,7 +27,6 @@ import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { CrossChainRoutingModule } from 'src/app/features/cross-chain-routing/cross-chain-routing.module';
 import { TokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/token-amount-input/token-amount-input.component';
-import { UsdPriceContainerComponent } from 'src/app/features/swaps/components/amount-input/components/usd-price-container/usd-price-container.component';
 import { UserBalanceContainerComponent } from 'src/app/features/swaps/components/amount-input/components/user-balance-container/user-balance-container.component';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
@@ -45,7 +44,6 @@ import { IframeSettingsComponent } from './components/swaps-settings/iframe-sett
     SettingsBridgeComponent,
     SettingsCcrComponent,
     TokenAmountInputComponent,
-    UsdPriceContainerComponent,
     UserBalanceContainerComponent,
     CrossChainSwapInfoComponent,
     IframeSettingsComponent,

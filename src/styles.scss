@@ -181,3 +181,14 @@ body.default-iframe-background {
     min-width: 155px;
   }
 }
+
+[id^='tui-hint_price-impact'] {
+  color: var(--tui-text-01) !important;
+  background: rgb(238, 238, 238) !important;
+}
+
+html.dark {
+  [id^='tui-hint_price-impact'] {
+    background: rgb(56, 56, 56) !important;
+  }
+}

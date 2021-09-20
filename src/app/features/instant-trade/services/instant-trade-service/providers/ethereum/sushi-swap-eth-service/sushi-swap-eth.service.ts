@@ -14,14 +14,6 @@ export class SushiSwapEthService extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    super(
-      blockchain,
-      sushiSwapEthConstants.contractAddressNetMode,
-      sushiSwapEthConstants.wethAddressNetMode,
-      sushiSwapEthConstants.routingProvidersNetMode,
-      sushiSwapEthConstants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, sushiSwapEthConstants, commonUniswapV2, useTestingModeService);
   }
 }

@@ -25,6 +25,7 @@
             [blockchain]="blockchain"
           ></app-iframe-blockchain-indicator>
         </ng-container>
+
         <div
           class="instant-trade-bottom-form__token-amount"
           *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
@@ -37,19 +38,23 @@
                 | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
           }}
         </div>
+
         <ng-template #iframeSkeleton>
           <div class="instant-trade-bottom-form__amount_skeleton-container">
             <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
           </div>
         </ng-template>
+
         <ng-container *ngIf="selectedProvider">
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>
-            {{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}
+            <app-usd-price-container
+              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+            ></app-usd-price-container>
           </div>
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
-            <div class="instant-trade-bottom-form__usd-amount">
-              {{ wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice() }}
-            </div>
+            <app-usd-price-container
+              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+            ></app-usd-price-container>
             <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
               Est. fee ${{ selectedProvider?.trade.gasFeeInUsd.toFixed(2) }}
             </div>
@@ -75,14 +80,14 @@
   <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
 <div class="instant-trade-bottom-form__swap">
-  <app-swap-button
+  <app-swap-button-container
     [needApprove]="needApprove"
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
-    [swapButtonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
+    [buttonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (updateRatesClick)="onCalculateTrade$.next('normal')"
-  ></app-swap-button>
+  ></app-swap-button-container>
 </div>
