@@ -140,7 +140,7 @@
       "title": "루빅 계약"
     },
     "roadmap": {
-      "title": "로드맵",
+      "title": "Roadmap",
       "data": {
         "0": {
           "quarter": "Q1. 2021",
@@ -223,8 +223,13 @@
           "month": "September",
           "done": true,
           "data": [
-            "New Bridge Integrations",
-            "New Blockchain Integrations"
+            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
+            "AutoRefund system release",
+            "Creating a 24/7 technical support team for our community",
+            "Beginning of a new blockchain integration",
+            "Rubic Relay Widget partners and integrations",
+            "Beginning of Widget development: SDK/API",
+            "Cross-chain fixes and improvements"
           ]
         },
         "7": {
@@ -232,11 +237,23 @@
           "month": "",
           "done": true,
           "data": [
-            "Staking/Farming introduction",
+            "0x integration and gas fee reductions",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
+            "RBC Staking",
+            "Widget: SDK/API release"
+          ]
+        },
+        "8": {
+          "quarter": "Q1-Q2. 2022",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yield Farming and/or Lending Product integrations",
             "Governance",
-            "Mobile App",
-            "API For External Usage",
-            "New Blockchain Integration (L2)"
+            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
+            "RBC Staking 2.0",
+            "Mobile version (iOS, Android)",
+            "BTC bridge integration"
           ]
         }
       }
@@ -479,6 +496,24 @@
     },
     "bridge": {
       "walletAddress": "토큰이 제공되는 TRON 블록 체인의 지갑 주소."
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "ChooseLanguage"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {
