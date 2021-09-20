@@ -183,9 +183,30 @@ body.default-iframe-background {
   right: 0;
   bottom: 0;
 
-  background-color: $backgrond-black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  z-index: 10000;
+  background-color: $backgrond-black;
+  z-index: 2147483001; /* cover carrot chat */
+  opacity: 1;
+
+  transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
+
+  &.disabled {
+    opacity: 0;
+    z-index: -10000;
+  }
+
+  img {
+    animation: 1.4s infinite 1s loader-icon-fadein;
+  }
+}
+
+@keyframes loader-icon-fadein {
+  0%   { opacity:1; }
+  50%  { opacity:0.3; }
+  100% { opacity:1; }
 }
 
 @include b($mobile-md) {
