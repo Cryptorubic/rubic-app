@@ -14,7 +14,7 @@
 
   <div class="bridge-bottom-form__footer">
     <div class="bridge-bottom-form__button">
-      <app-swap-button
+      <app-swap-button-container
         [needApprove]="needApprove"
         [status]="tradeStatus"
         [formService]="swapFormService"
@@ -25,7 +25,7 @@
         [maxAmount]="maxError"
         (swapClick)="handleClick('swap')"
         (approveClick)="handleClick('approve')"
-      ></app-swap-button>
+      ></app-swap-button-container>
     </div>
     <app-terms-n-conditions-container
       *noFrame

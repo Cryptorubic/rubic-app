@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
-import { filter, first, startWith } from 'rxjs/operators';
+import { filter, first, pairwise, startWith } from 'rxjs/operators';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
@@ -11,6 +11,7 @@ import { BridgeToken, BridgeTokenPair } from 'src/app/features/bridge/models/Bri
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
 @Injectable()
@@ -22,6 +23,8 @@ export class SwapsService {
   private _bridgeTokenPairsByBlockchainsArray = new BehaviorSubject<
     List<BridgeTokenPairsByBlockchains>
   >(undefined);
+
+  private intervalId: NodeJS.Timeout;
 
   get availableTokens(): Observable<List<TokenAmount>> {
     return this._availableTokens.asObservable();
@@ -46,7 +49,7 @@ export class SwapsService {
   constructor(
     private readonly swapFormService: SwapFormService,
     private readonly bridgeService: BridgeService,
-    private tokensService: TokensService,
+    private readonly tokensService: TokensService,
     private readonly iframeService: IframeService
   ) {
     this.subscribeOnTokens();
@@ -79,6 +82,7 @@ export class SwapsService {
               tokenAmount.address.toLowerCase() === bridgeToken.address.toLowerCase()
           )
         ) {
+          // don't add bridge specific tokens to widget tokens list
           if (this.iframeService.isIframe) {
             return null;
           }
@@ -99,8 +103,8 @@ export class SwapsService {
         };
       };
 
-      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray
-        .map(tokenPairsByBlockchains => {
+      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray.map(
+        tokenPairsByBlockchains => {
           const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
           return {
             ...tokenPairsByBlockchains,
@@ -112,12 +116,16 @@ export class SwapsService {
               }
             }))
           };
-        })
-        .filter(item =>
-          item.tokenPairs.every(pair =>
+        }
+      );
+
+      // filter and remove bridge specific tokens in widget
+      updatedBridgeTokenPairsByBlockchainsArray.forEach(
+        item =>
+          (item.tokenPairs = item.tokenPairs.filter(pair =>
             Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
-          )
-        );
+          ))
+      );
 
       this._bridgeTokenPairsByBlockchainsArray.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)
@@ -128,41 +136,75 @@ export class SwapsService {
 
   private subscribeOnForm() {
     this.swapFormService.inputValueChanges
-      .pipe(startWith(this.swapFormService.inputValue))
-      .subscribe(form => {
-        const { fromBlockchain, toBlockchain, fromToken, toToken } = form;
+      .pipe(startWith(null, this.swapFormService.inputValue), pairwise())
+      .subscribe(([prevForm, curForm]) => {
+        this.setSwapProviderType(curForm);
 
-        if (fromBlockchain === toBlockchain) {
-          this._swapProviderType$.next(SWAP_PROVIDER_TYPE.INSTANT_TRADE);
-        } else if (!fromToken || !toToken) {
-          if (!this.swapMode || this.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-            this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
-          }
-        } else {
-          this.bridgeTokenPairsByBlockchainsArray
-            .pipe(first())
-            .subscribe(bridgeTokenPairsByBlockchainsArray => {
-              const foundBridgeToken = bridgeTokenPairsByBlockchainsArray
-                .find(
-                  tokenPairsByBlockchains =>
-                    tokenPairsByBlockchains.fromBlockchain === fromBlockchain &&
-                    tokenPairsByBlockchains.toBlockchain === toBlockchain
-                )
-                ?.tokenPairs.find(
-                  tokenPair =>
-                    tokenPair.tokenByBlockchain[fromBlockchain].address.toLowerCase() ===
-                      fromToken.address.toLowerCase() &&
-                    tokenPair.tokenByBlockchain[toBlockchain].address.toLowerCase() ===
-                      toToken.address.toLowerCase()
-                );
-
-              if (foundBridgeToken) {
-                this._swapProviderType$.next(SWAP_PROVIDER_TYPE.BRIDGE);
-              } else {
-                this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
-              }
-            });
+        if (
+          !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) ||
+          !TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken)
+        ) {
+          this.updateTokensPrices(curForm);
         }
       });
+  }
+
+  private setSwapProviderType(form: SwapFormInput): void {
+    const { fromBlockchain, toBlockchain, fromToken, toToken } = form;
+
+    if (fromBlockchain === toBlockchain) {
+      this._swapProviderType$.next(SWAP_PROVIDER_TYPE.INSTANT_TRADE);
+    } else if (!fromToken || !toToken) {
+      if (!this.swapMode || this.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+      }
+    } else {
+      this.bridgeTokenPairsByBlockchainsArray
+        .pipe(first())
+        .subscribe(bridgeTokenPairsByBlockchainsArray => {
+          const foundBridgeToken = bridgeTokenPairsByBlockchainsArray
+            .find(
+              tokenPairsByBlockchains =>
+                tokenPairsByBlockchains.fromBlockchain === fromBlockchain &&
+                tokenPairsByBlockchains.toBlockchain === toBlockchain
+            )
+            ?.tokenPairs.find(
+              tokenPair =>
+                tokenPair.tokenByBlockchain[fromBlockchain].address.toLowerCase() ===
+                  fromToken.address.toLowerCase() &&
+                tokenPair.tokenByBlockchain[toBlockchain].address.toLowerCase() ===
+                  toToken.address.toLowerCase()
+            );
+
+          if (foundBridgeToken) {
+            this._swapProviderType$.next(SWAP_PROVIDER_TYPE.BRIDGE);
+          } else {
+            this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+          }
+        });
+    }
+  }
+
+  /**
+   * Takes selected tokens from {@param form} and call functions to update their prices.
+   * Sets interval to update prices.
+   * @param form Input form, which contains selected tokens.
+   */
+  private updateTokensPrices(form: SwapFormInput) {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+
+    const update = () => {
+      if (form?.fromToken) {
+        this.tokensService.updateTokenPriceInUsd(form.fromToken);
+      }
+      if (form?.toToken) {
+        this.tokensService.updateTokenPriceInUsd(form.toToken);
+      }
+    };
+
+    update();
+    this.intervalId = setInterval(update, 15_000);
   }
 }

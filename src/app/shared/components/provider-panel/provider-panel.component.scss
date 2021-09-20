@@ -1,7 +1,6 @@
 @import 'src/scss/vars';
 @import 'src/scss/mixins';
 
-$border-radius: 14px;
 $default-transition: 0.2s ease-in-out;
 $white: white;
 
@@ -39,7 +38,7 @@ $white: white;
     background: var(--rubic-base-10);
     border: 1px solid transparent;
     border-left-width: 5px;
-    border-radius: $border-radius;
+    border-radius: $border-radius-1;
 
     transition: $default-transition;
 

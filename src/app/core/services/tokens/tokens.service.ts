@@ -35,6 +35,19 @@ export class TokensService {
 
   private isTestingMode = false;
 
+  /**
+   * Checks if two tokens are equal.
+   */
+  public static areTokensEqual(
+    token0: { blockchain: BLOCKCHAIN_NAME; address: string },
+    token1: { blockchain: BLOCKCHAIN_NAME; address: string }
+  ): boolean {
+    return (
+      token0?.blockchain === token1?.blockchain &&
+      token0?.address.toLowerCase() === token1?.address.toLowerCase()
+    );
+  }
+
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
@@ -165,23 +178,38 @@ export class TokensService {
     );
   }
 
-  public isOnlyBalanceUpdated(prevToken: TokenAmount, nextToken: TokenAmount): boolean {
-    if (!prevToken || !nextToken) {
-      return false;
-    }
-    return (
-      prevToken.blockchain === nextToken.blockchain &&
-      prevToken.address.toLowerCase() === nextToken.address.toLowerCase()
-    );
-  }
-
-  public async getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
+  /**
+   * Gets price of native token.
+   */
+  public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
     const nativeCoin = this._tokens
       .getValue()
-      .find(token => token.blockchain === blockchain && token.address === NATIVE_TOKEN_ADDRESS);
-    return this.coingeckoApiService.getNativeCoinPriceInUsdByCoingecko(
-      blockchain,
-      nativeCoin?.price
-    );
+      .find(token =>
+        TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
+      );
+    return this.coingeckoApiService
+      .getNativeCoinPriceInUsdByCoingecko(blockchain)
+      .pipe(map(price => price || nativeCoin?.price))
+      .toPromise();
+  }
+
+  /**
+   * Updates token's price and emits new tokens' list with updated token.
+   */
+  public updateTokenPriceInUsd(token: TokenAmount): void {
+    this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
+      if (tokenPrice) {
+        const newToken = {
+          ...token,
+          price: tokenPrice
+        };
+        this._tokens.next(
+          this._tokens
+            .getValue()
+            .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+            .push(newToken)
+        );
+      }
+    });
   }
 }

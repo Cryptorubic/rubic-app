@@ -1,12 +1,4 @@
-import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
-
-export type ContractAddressNetMode = {
-  [mode in NetMode]: string;
-};
-
-export type WethAddressNetMode = {
-  [mode in NetMode]: string;
-};
+import { ContractAddressNetMode, NetMode } from 'src/app/shared/models/blockchain/NetMode';
 
 export type RoutingProvidersNetMode = {
   [mode in NetMode]: string[];
@@ -14,7 +6,7 @@ export type RoutingProvidersNetMode = {
 
 export interface UniswapV2Constants {
   contractAddressNetMode: ContractAddressNetMode;
-  wethAddressNetMode: WethAddressNetMode;
+  wethAddressNetMode: ContractAddressNetMode;
   routingProvidersNetMode: RoutingProvidersNetMode;
   maxTransitTokens: number;
 }

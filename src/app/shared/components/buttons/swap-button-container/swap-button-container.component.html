@@ -1,0 +1,133 @@
+<ng-container>
+  <!-- connect wallet button -->
+  <app-rubic-button
+    *ngIf="needLogin"
+    [id]="idPrefix + 'connect-wallet'"
+    [ngClass]="{ 'grey-background': !tokensFilled }"
+    [loading]="needLoginLoading"
+    [appearance]="tokensFilled ? 'secondary' : 'primary'"
+    (onClick)="onLogin()"
+  >
+    {{ 'navigation.login' | translate }}
+  </app-rubic-button>
+
+  <!-- update rate button -->
+  <ng-container *ngIf="!needLogin && status === TRADE_STATUS.OLD_TRADE_DATA">
+    <app-rubic-button
+      [attr.rate-is-updated]="true"
+      (click)="updateRatesClick.emit()"
+      appearance="secondary"
+    >
+      {{ 'tradePage.rateIsUpdated' | translate }}
+    </app-rubic-button>
+  </ng-container>
+
+  <ng-container *ngIf="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
+    <ng-container *ngIf="!hasError || loading">
+      <!-- with approve button -->
+      <ng-container *ngIf="needApprove">
+        <ng-container *noFrame>
+          <div class="buttons">
+            <app-rubic-button
+              [id]="idPrefix + 'approve'"
+              [loading]="
+                status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+                status === TRADE_STATUS.LOADING ||
+                loading
+              "
+              [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
+              (onClick)="approveClick.emit()"
+              appearance="secondary"
+            >
+              Approve
+            </app-rubic-button>
+
+            <app-swap-button
+              [idPrefix]="idPrefix"
+              [status]="status"
+              [loading]="loading"
+              [buttonText]="buttonText"
+              [formService]="formService"
+              (onClick)="swapClick.emit()"
+            ></app-swap-button>
+
+            <div class="buttons__timeline-container timeline">
+              <span class="timeline__connector"></span>
+              <div
+                class="timeline__point"
+                [attr.disabled]="
+                  status === TRADE_STATUS.READY_TO_SWAP ||
+                  status === TRADE_STATUS.SWAP_IN_PROGRESS ||
+                  status === TRADE_STATUS.DISABLED
+                "
+              >
+                1
+              </div>
+              <div
+                class="timeline__point"
+                [attr.disabled]="
+                  status === TRADE_STATUS.READY_TO_APPROVE ||
+                  status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+                  status === TRADE_STATUS.DISABLED
+                "
+              >
+                2
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *onlyFrame>
+          <app-rubic-button
+            appearance="secondary"
+            [loading]="
+              status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+              status === TRADE_STATUS.LOADING ||
+              loading
+            "
+            [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
+            (onClick)="approveClick.emit()"
+          >
+            {{ 'Approve' }}
+          </app-rubic-button>
+        </ng-container>
+      </ng-container>
+
+      <app-swap-button
+        *ngIf="!needApprove"
+        [idPrefix]="idPrefix"
+        [status]="status"
+        [loading]="loading"
+        [buttonText]="buttonText"
+        [formService]="formService"
+        (onClick)="swapClick.emit()"
+      ></app-swap-button>
+    </ng-container>
+
+    <ng-container *ngIf="hasError && !loading">
+      <!-- switch network button -->
+      <ng-container *ngIf="errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && allowChangeNetwork">
+        <app-rubic-button
+          [attr.error]="true"
+          appearance="secondary"
+          [loading]="status === TRADE_STATUS.LOADING"
+          (click)="changeNetwork()"
+        >
+          {{ switchNetworkText }}
+        </app-rubic-button>
+      </ng-container>
+
+      <!-- error info -->
+      <ng-container *ngIf="!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || !allowChangeNetwork">
+        <app-rubic-button
+          class="error-button"
+          [attr.error]="true"
+          appearance="secondary"
+          [disabled]="true"
+        >
+          {{ errorText | async }}
+        </app-rubic-button>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>

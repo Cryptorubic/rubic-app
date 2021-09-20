@@ -4,7 +4,14 @@ import { BIG_NUMBER_FORMAT } from '../constants/formats/BIG_NUMBER_FORMAT';
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormatPipe implements PipeTransform {
-  transform(value: BigNumber | string | number, dp = -1): string {
+  /**
+   * Converts number to {@link BIG_NUMBER_FORMAT}.
+   * @param value number to convert
+   * @param dp decimal places
+   * @param toFixed true if decimals in converted number must be strictly equal to {@param dp},
+   * false if decimal places can be less than or equal to {@param dp}
+   */
+  transform(value: BigNumber | string | number, dp = -1, toFixed = false): string {
     if (typeof value === 'number') {
       value = value.toString();
     }
@@ -14,17 +21,15 @@ export class BigNumberFormatPipe implements PipeTransform {
     }
 
     if (typeof value === 'string') {
-      const [integerPart, decimalPart] = value.split('.');
-      return (
-        new BigNumber(integerPart.split(',').join('')).toFormat(BIG_NUMBER_FORMAT) +
-        (value.includes('.') ? '.' : '') +
-        (decimalPart?.slice(0, dp === -1 ? decimalPart.length : dp + 1) || '')
-      );
+      value = new BigNumber(value.split(',').join(''));
     }
 
     if (dp !== -1) {
-      value = value.dp(dp);
+      return !toFixed
+        ? value.dp(dp).toFormat(BIG_NUMBER_FORMAT)
+        : value.toFormat(dp, BIG_NUMBER_FORMAT);
     }
+
     return value.toFormat(BIG_NUMBER_FORMAT);
   }
 }

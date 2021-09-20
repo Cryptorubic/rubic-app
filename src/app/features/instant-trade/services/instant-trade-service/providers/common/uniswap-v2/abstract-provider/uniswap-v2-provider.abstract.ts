@@ -1,6 +1,5 @@
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import BigNumber from 'bignumber.js';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { Observable } from 'rxjs';
 import {
   ItOptions,
@@ -10,16 +9,11 @@ import { TransactionReceipt } from 'web3-eth';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import {
-  ContractAddressNetMode,
-  RoutingProvidersNetMode,
-  WethAddressNetMode
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
+import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapInstantTrade';
 
 export class UniswapV2ProviderAbstract implements ItProvider {
-  private readonly blockchain: BLOCKCHAIN_NAME;
-
   private wethAddress: string;
 
   private contractAddress: string;
@@ -29,26 +23,22 @@ export class UniswapV2ProviderAbstract implements ItProvider {
   private readonly maxTransitTokens: number;
 
   constructor(
-    blockchain: BLOCKCHAIN_NAME,
-    contractAddressNetMode: ContractAddressNetMode,
-    wethAddressNetMode: WethAddressNetMode,
-    routingProvidersNetMode: RoutingProvidersNetMode,
-    maxTransitTokens: number,
+    private readonly blockchain: BLOCKCHAIN_NAME,
+    uniswapV2Constants: UniswapV2Constants,
     private readonly commonUniswapV2: CommonUniswapV2Service,
     private readonly useTestingModeService: UseTestingModeService
   ) {
-    this.blockchain = blockchain;
-    this.maxTransitTokens = maxTransitTokens;
+    this.maxTransitTokens = uniswapV2Constants.maxTransitTokens;
 
-    this.wethAddress = wethAddressNetMode.mainnet;
-    this.contractAddress = contractAddressNetMode.mainnet;
-    this.routingProviders = routingProvidersNetMode.mainnet;
+    this.contractAddress = uniswapV2Constants.contractAddressNetMode.mainnet;
+    this.wethAddress = uniswapV2Constants.wethAddressNetMode.mainnet;
+    this.routingProviders = uniswapV2Constants.routingProvidersNetMode.mainnet;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.wethAddress = wethAddressNetMode.testnet;
-        this.contractAddress = contractAddressNetMode.testnet;
-        this.routingProviders = routingProvidersNetMode.testnet;
+        this.contractAddress = uniswapV2Constants.contractAddressNetMode.testnet;
+        this.wethAddress = uniswapV2Constants.wethAddressNetMode.testnet;
+        this.routingProviders = uniswapV2Constants.routingProvidersNetMode.testnet;
       }
     });
   }
@@ -71,14 +61,14 @@ export class UniswapV2ProviderAbstract implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean
-  ): Promise<InstantTrade> {
+  ): Promise<UniswapInstantTrade> {
     return this.commonUniswapV2.calculateTrade(
       this.blockchain,
       fromToken,
       fromAmount,
       toToken,
-      this.wethAddress,
       this.contractAddress,
+      this.wethAddress,
       this.routingProviders,
       this.maxTransitTokens,
       shouldCalculateGas
@@ -103,7 +93,7 @@ export class UniswapV2ProviderAbstract implements ItProvider {
   }
 
   public async createTrade(
-    trade: InstantTrade,
+    trade: UniswapInstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
     return this.commonUniswapV2.createTrade(trade, this.contractAddress, options);

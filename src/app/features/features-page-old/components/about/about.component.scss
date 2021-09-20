@@ -155,7 +155,7 @@
     position: relative;
 
     margin-top: 100px;
-    padding-bottom: 300px;
+    padding-bottom: 100px;
 
     &::before {
       position: absolute;
@@ -195,6 +195,7 @@
       flex-direction: column;
       justify-content: space-between;
       margin-top: 50px;
+      padding-bottom: 50px;
 
       @include b(1100) {
         flex-direction: column;
@@ -224,6 +225,18 @@
 
         margin-left: auto;
         padding-left: 30px;
+
+        &:nth-child(odd) {
+          .span-roadmap-quarter {
+            right: 100%;
+            left: auto;
+
+            padding-right: 30px;
+
+            white-space: nowrap;
+            text-align: right;
+          }
+        }
 
         li {
           color: var(--form-bright-text-color);

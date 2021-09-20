@@ -12,7 +12,7 @@
   font-family: $sf-pro-font;
 
   background: var(--main-form-background);
-  border-radius: 14px;
+  border-radius: $border-radius-1;
   backdrop-filter: blur(24px);
 
   &__table-container {

@@ -155,7 +155,7 @@ export class SwapsFormComponent implements OnInit {
         this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
 
         this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
-        this.callFunctionWithTokenTypes(this.setTokenWithBalance.bind(this));
+        this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
 
         this.isLoading = false;
       });
@@ -189,7 +189,7 @@ export class SwapsFormComponent implements OnInit {
 
       this.selectedToken['from'] = form.fromToken;
       this.selectedToken['to'] = form.toToken;
-      this.callFunctionWithTokenTypes(this.setTokenWithBalance.bind(this));
+      this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
     }
   }
 
@@ -269,24 +269,25 @@ export class SwapsFormComponent implements OnInit {
     }
   }
 
-  private setTokenWithBalance(tokenType: TokenType): void {
+  private updateSelectedToken(tokenType: TokenType): void {
     const token = this.selectedToken[tokenType];
     if (!token) {
       return;
     }
 
-    const tokenWithBalance = this._supportedTokens.find(
+    const updatedToken = this._supportedTokens.find(
       supportedToken =>
         supportedToken.blockchain === token.blockchain &&
         supportedToken.address.toLowerCase() === token.address.toLowerCase()
     );
 
     if (
-      tokenWithBalance &&
-      (!tokenWithBalance.amount.isNaN() || !token.amount.isNaN()) &&
-      !tokenWithBalance.amount.eq(token.amount)
+      updatedToken &&
+      (((!updatedToken.amount.isNaN() || !token.amount.isNaN()) &&
+        !updatedToken.amount.eq(token.amount)) ||
+        token.price !== updatedToken.price)
     ) {
-      this.selectedToken[tokenType] = tokenWithBalance;
+      this.selectedToken[tokenType] = updatedToken;
 
       const formKey = tokenType === 'from' ? 'fromToken' : 'toToken';
       this.swapFormService.input.patchValue({
