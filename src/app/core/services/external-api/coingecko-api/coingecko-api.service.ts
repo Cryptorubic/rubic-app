@@ -16,21 +16,23 @@ const supportedBlockchains = [
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
 
+type NativeCoinsData = Record<
+  SupportedBlockchain,
+  {
+    coingeckoId: string;
+    price: BehaviorSubject<number>;
+    lastResponseTime: number;
+    isRequestInProgress: boolean;
+  }
+>;
+
 @Injectable({
   providedIn: 'root'
 })
 export class CoingeckoApiService {
   private readonly baseUrl = 'https://api.coingecko.com/api/v3/';
 
-  private nativeCoinsData: Record<
-    SupportedBlockchain,
-    {
-      coingeckoId: string;
-      price: BehaviorSubject<number>;
-      lastResponseTime: number;
-      isRequestInProgress: boolean;
-    }
-  >;
+  private nativeCoinsData: NativeCoinsData;
 
   private readonly tokenBlockchainId: Record<SupportedBlockchain, string>;
 
@@ -70,7 +72,7 @@ export class CoingeckoApiService {
 
   /**
    * Gets price of native coin from coingecko.
-   * @param blockchain supported by {@link supportedBlockchains} blockchain
+   * @param blockchain Supported by {@link supportedBlockchains} blockchain.
    */
   public getNativeCoinPriceInUsdByCoingecko(
     blockchain: BLOCKCHAIN_NAME
@@ -127,7 +129,7 @@ export class CoingeckoApiService {
 
   /**
    * Gets price of token from coingecko.
-   * @param token token with supported by {@link supportedBlockchains} blockchain
+   * @param token Token with supported by {@link supportedBlockchains} blockchain.
    */
   public getTokenPrice(token: BlockchainToken): Observable<number | undefined> {
     if (token.address === NATIVE_TOKEN_ADDRESS) {
