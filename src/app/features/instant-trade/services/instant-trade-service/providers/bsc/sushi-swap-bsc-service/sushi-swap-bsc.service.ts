@@ -14,14 +14,6 @@ export class SushiSwapBscService extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-    super(
-      blockchain,
-      sushiSwapBscConstants.contractAddressNetMode,
-      sushiSwapBscConstants.wethAddressNetMode,
-      sushiSwapBscConstants.routingProvidersNetMode,
-      sushiSwapBscConstants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, sushiSwapBscConstants, commonUniswapV2, useTestingModeService);
   }
 }

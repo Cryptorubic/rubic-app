@@ -42,7 +42,7 @@
     </div>
 
     <div class="swaps-form__button-container">
-      <app-swap-button
+      <app-swap-button-container
         idPrefix="crypto_tap_"
         [needApprove]="needApprove"
         [status]="tradeStatus"
@@ -50,7 +50,7 @@
         [fromAmount]="fromAmount"
         (approveClick)="approveTrade()"
         (swapClick)="createTrade()"
-      ></app-swap-button>
+      ></app-swap-button-container>
     </div>
   </main>
 </div>

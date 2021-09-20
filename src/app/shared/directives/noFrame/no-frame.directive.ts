@@ -1,6 +1,5 @@
 import { TemplateRef, ViewContainerRef, Directive, OnInit, Input } from '@angular/core';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { Subscription } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 
@@ -9,8 +8,6 @@ import { takeUntil } from 'rxjs/operators';
   providers: [TuiDestroyService]
 })
 export class NoFrameDirective<T> implements OnInit {
-  private $iframeSubscription: Subscription;
-
   @Input() noFrame: 'horizontal' | 'vertical' | 'any' = 'any';
 
   @Input() noFrameAnd = true;
@@ -23,7 +20,7 @@ export class NoFrameDirective<T> implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.$iframeSubscription = this.iframeService.iframeAppearance$
+    this.iframeService.iframeAppearance$
       .pipe(takeUntil(this.destroy$))
       .subscribe(iframeAppearance => {
         if (!this.noFrameAnd) {

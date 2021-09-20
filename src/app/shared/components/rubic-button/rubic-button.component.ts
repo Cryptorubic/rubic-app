@@ -52,7 +52,9 @@ export class RubicButtonComponent implements OnInit, OnDestroy {
 
   public themeSubscription$: Subscription;
 
-  constructor(private readonly themeService: ThemeService) {}
+  constructor(private readonly themeService: ThemeService) {
+    this._fullWidth = true;
+  }
 
   public ngOnInit(): void {
     this.themeSubscription$ = this.themeService.theme$.subscribe(el => {

@@ -172,7 +172,7 @@ export class CommonOneinchService {
       amountAbsolute
     );
 
-    const instantTrade = {
+    const instantTrade: InstantTrade = {
       blockchain,
       from: {
         token: fromToken,

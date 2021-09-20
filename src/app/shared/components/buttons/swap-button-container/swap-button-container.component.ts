@@ -4,14 +4,12 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output
 } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
@@ -26,6 +24,10 @@ import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { startWith, takeUntil } from 'rxjs/operators';
+import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -40,19 +42,20 @@ enum ERROR_TYPE {
 }
 
 @Component({
-  selector: 'app-swap-button',
-  templateUrl: './swap-button.component.html',
-  styleUrls: ['./swap-button.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-swap-button-container',
+  templateUrl: './swap-button-container.component.html',
+  styleUrls: ['./swap-button-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class SwapButtonComponent implements OnInit, OnDestroy {
+export class SwapButtonContainerComponent implements OnInit {
   @Input() needApprove = false;
 
   @Input() status: TRADE_STATUS;
 
   @Input() formService: FormService;
 
-  @Input() idPrefix: string = '';
+  @Input() idPrefix = '';
 
   @Input() set fromAmount(value: BigNumber) {
     this._fromAmount = value;
@@ -96,14 +99,14 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private maxAmountValue: string;
 
   @Input() set isBridgeNotSupported(value: boolean) {
-    this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value || false;
+    this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value;
   }
 
   @Input() set isTronAddressNotSet(value: boolean) {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
-  @Input() swapButtonText? = 'Swap';
+  @Input() buttonText? = 'Swap';
 
   @Output() approveClick = new EventEmitter<void>();
 
@@ -121,34 +124,21 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
 
   public needLoginLoading: boolean;
 
-  public dataLoading: boolean;
+  public loading: boolean;
 
   public errorType: Record<ERROR_TYPE, boolean>;
 
   private isTestingMode: boolean;
 
-  private fromBlockchain: BLOCKCHAIN_NAME;
-
-  private fromToken: TokenAmount;
-
   private _fromAmount: BigNumber;
 
-  private authServiceSubscription$: Subscription;
-
-  private useTestingModeSubscription$: Subscription;
-
-  private formServiceSubscription$: Subscription;
-
-  private providerConnectorServiceSubscription$: Subscription;
+  public tokensFilled: boolean;
 
   get hasError(): boolean {
     return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
   }
 
-  public tokensFilled: boolean;
-
-  public get allowChangeNetwork(): boolean {
-    const unsupportedItBlockchains = [BLOCKCHAIN_NAME.XDAI, BLOCKCHAIN_NAME.TRON];
+  get allowChangeNetwork(): boolean {
     const form = this.formService.inputValue;
     if (
       this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK ||
@@ -158,20 +148,21 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     }
 
     if (form.toBlockchain === form.fromBlockchain) {
-      return !unsupportedItBlockchains.some(el => el === form.fromBlockchain);
+      return InstantTradeService.isSupportedBlockchain(form.fromBlockchain);
     }
     return true;
   }
 
-  public get networkErrorText(): void {
+  get switchNetworkText(): void {
     return this.translateService.instant('common.switchTo', {
-      networkName: this.formService.commonTrade.controls.input.value.fromBlockchain
+      networkName: this.formService.inputValue.fromBlockchain
     });
   }
 
   get errorText(): Observable<string> {
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
+    const { fromToken, fromBlockchain } = this.formService.inputValue;
 
     switch (true) {
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
@@ -180,13 +171,13 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
         translateParams = {
           key: 'errors.minimumAmount',
-          interpolateParams: { amount: this.minAmountValue, token: this.fromToken?.symbol }
+          interpolateParams: { amount: this.minAmountValue, token: fromToken?.symbol }
         };
         break;
       case err[ERROR_TYPE.MORE_THAN_MAXIMUM]:
         translateParams = {
           key: 'errors.maximumAmount',
-          interpolateParams: { amount: this.maxAmountValue, token: this.fromToken?.symbol }
+          interpolateParams: { amount: this.maxAmountValue, token: fromToken?.symbol }
         };
         break;
       case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
@@ -202,7 +193,7 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
       case err[ERROR_TYPE.WRONG_BLOCKCHAIN]: {
         translateParams = {
           key: 'errors.chooseNetworkWallet',
-          interpolateParams: { blockchain: this.fromBlockchain || this.fromToken?.blockchain }
+          interpolateParams: { blockchain: fromBlockchain || fromToken?.blockchain }
         };
         break;
       }
@@ -224,11 +215,12 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
-    private translateService: TranslateService,
+    private readonly translateService: TranslateService,
     private readonly bridgeService: BridgeService,
     private readonly web3PublicService: Web3PublicService,
     private readonly withRoundPipe: WithRoundPipe,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -243,59 +235,55 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
     if (this.iframeService.isIframe) {
       this.needLoginLoading = false;
       this.needLogin = true;
-      this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-        this.needLogin = !user?.address;
-        this.cdr.detectChanges();
-      });
+      this.authService
+        .getCurrentUser()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(user => {
+          this.needLogin = !user?.address;
+          this.cdr.detectChanges();
+        });
     } else {
       this.needLoginLoading = true;
       this.needLogin = true;
-      this.authServiceSubscription$ = this.authService.getCurrentUser().subscribe(user => {
-        if (user !== undefined) {
-          this.needLoginLoading = false;
-          this.needLogin = !user?.address;
-        }
-        this.cdr.detectChanges();
-      });
+      this.authService
+        .getCurrentUser()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(user => {
+          if (user !== undefined) {
+            this.needLoginLoading = false;
+            this.needLogin = !user?.address;
+          }
+          this.cdr.detectChanges();
+        });
     }
 
-    this.useTestingModeSubscription$ = this.useTestingModeService.isTestingMode.subscribe(
-      isTestingMode => {
+    this.useTestingModeService.isTestingMode
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isTestingMode => {
         this.isTestingMode = isTestingMode;
         if (isTestingMode) {
           this.checkErrors();
         }
-      }
-    );
+      });
 
-    this.setFormValues(this.formService.commonTrade.controls.input.value);
-    this.formServiceSubscription$ =
-      this.formService.commonTrade.controls.input.valueChanges.subscribe(form => {
+    this.formService.inputValueChanges
+      .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
+      .subscribe(form => {
         this.setFormValues(form);
       });
 
-    this.providerConnectorServiceSubscription$ =
-      this.providerConnectorService.$networkChange.subscribe(() => {
-        this.checkWrongBlockchainError();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.authServiceSubscription$.unsubscribe();
-    this.useTestingModeSubscription$?.unsubscribe();
-    this.formServiceSubscription$?.unsubscribe();
-    this.providerConnectorServiceSubscription$?.unsubscribe();
+    this.providerConnectorService.$networkChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.checkWrongBlockchainError();
+    });
   }
 
   private setFormValues(form: ISwapFormInput): void {
-    this.dataLoading = true;
+    this.loading = true;
     this.cdr.detectChanges();
 
-    this.fromBlockchain = form.fromBlockchain;
     this.tokensFilled = Boolean(form.fromToken && form.toToken);
-    this.fromToken = form.fromToken;
     this.checkErrors().then(() => {
-      this.dataLoading = false;
+      this.loading = false;
       this.cdr.detectChanges();
     });
   }
@@ -306,20 +294,22 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   }
 
   private async checkInsufficientFundsError(): Promise<void> {
-    if (!this._fromAmount || !this.fromToken || !this.authService.user?.address) {
+    const { fromToken } = this.formService.inputValue;
+    if (!this._fromAmount || !fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
       return;
     }
 
-    let balance = this.fromToken.amount;
-    if (!this.fromToken.amount.isFinite()) {
-      balance = (
-        await this.web3PublicService[this.fromToken.blockchain].getTokenOrNativeBalance(
+    let balance = fromToken.amount;
+    if (!fromToken.amount.isFinite()) {
+      balance = Web3Public.fromWei(
+        await this.web3PublicService[fromToken.blockchain].getTokenOrNativeBalance(
           this.authService.user.address,
-          this.fromToken.address
-        )
-      ).div(10 ** this.fromToken.decimals);
+          fromToken.address
+        ),
+        fromToken.decimals
+      );
     }
 
     this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
@@ -329,13 +319,16 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   private checkWrongBlockchainError(): void {
     if (this.providerConnectorService.provider) {
       const userBlockchain = this.providerConnectorService.network?.name;
+      const { fromBlockchain } = this.formService.inputValue;
+
       const { isMultiChainWallet } = this.providerConnectorService.provider;
       this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
-        isMultiChainWallet && this.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
+        isMultiChainWallet && fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
+
       this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] =
-        this.fromBlockchain !== userBlockchain &&
+        fromBlockchain !== userBlockchain &&
         !isMultiChainWallet &&
-        (!this.isTestingMode || `${this.fromBlockchain}_TESTNET` !== userBlockchain);
+        (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
     }
@@ -348,8 +341,9 @@ export class SwapButtonComponent implements OnInit, OnDestroy {
   public async changeNetwork(): Promise<void> {
     const currentStatus = this.status;
     this.status = TRADE_STATUS.LOADING;
+    const { fromBlockchain } = this.formService.inputValue;
     try {
-      await this.providerConnectorService.switchChain(this.fromBlockchain);
+      await this.providerConnectorService.switchChain(fromBlockchain);
     } finally {
       this.status = currentStatus;
     }

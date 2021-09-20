@@ -216,14 +216,6 @@ $green: rgb(74, 169, 86);
     }
   }
 
-  &__usd-amount {
-    color: var(--form-dim-text-color);
-    font-size: 14px;
-    line-height: 17px;
-    letter-spacing: 0.1em;
-    text-align: right;
-  }
-
   &__iframe-info {
     position: absolute;
     bottom: -33px;
@@ -245,14 +237,14 @@ $green: rgb(74, 169, 86);
     @include iframe-vertical {
       padding: 0 !important;
 
-      app-swap-button {
+      app-swap-button-container {
         width: 100%;
 
         margin-top: 16px !important;
       }
     }
 
-    app-swap-button {
+    app-swap-button-container {
       display: block;
 
       margin-top: 16px;
@@ -273,10 +265,6 @@ $green: rgb(74, 169, 86);
 
     &__token-amount {
       margin-bottom: 0;
-    }
-
-    &__usd-amount {
-      text-align: left;
     }
   }
 }
