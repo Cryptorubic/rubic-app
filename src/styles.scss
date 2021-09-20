@@ -176,6 +176,18 @@ body.default-iframe-background {
   background: linear-gradient(45deg, #4aa956 20%, white);
 }
 
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-color: $backgrond-black;
+
+  z-index: 10000;
+}
+
 @include b($mobile-md) {
   tui-dropdown-box {
     min-width: 155px;
