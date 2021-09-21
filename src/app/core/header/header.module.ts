@@ -15,8 +15,9 @@ import {
   TuiHostedDropdownModule
 } from '@taiga-ui/core';
 import { IframeLogoutButtonComponent } from 'src/app/core/header/components/header/components/iframe-logout-button/iframe-logout-button.component';
-import { TuiBadgeModule } from '@taiga-ui/kit';
+import { TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
+import { FormsModule } from '@angular/forms';
 import { LoginButtonComponent } from './components/header/components/login-button/login-button.component';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
@@ -29,6 +30,7 @@ import { SettingsListComponent } from './components/header/components/settings-l
 import { SettingsComponent } from './components/header/components/settings/settings.component';
 import { CurrentLanguageComponent } from './components/header/components/current-language/current-language.component';
 import { TutorialsComponent } from './components/header/components/tutorials/tutorials.component';
+import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { TutorialsComponent } from './components/header/components/tutorials/tut
     SettingsListComponent,
     SettingsComponent,
     CurrentLanguageComponent,
-    TutorialsComponent
+    TutorialsComponent,
+    ThemeSwitcherComponent
   ],
   imports: [
     CommonModule,
@@ -61,7 +64,9 @@ import { TutorialsComponent } from './components/header/components/tutorials/tut
     TuiGroupModule,
     TuiBadgeModule,
     PolymorpheusModule,
-    TuiDropdownControllerModule
+    TuiDropdownControllerModule,
+    TuiToggleModule,
+    FormsModule
   ],
   exports: [HeaderComponent, LoginButtonComponent]
 })

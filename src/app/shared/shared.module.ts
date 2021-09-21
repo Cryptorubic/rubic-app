@@ -26,7 +26,6 @@ import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
-import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
@@ -74,7 +73,6 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     RubicButtonComponent,
     RubicSwitcherComponent,
     IconButtonComponent,
-    RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
@@ -146,10 +144,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     RubicButtonCircleComponent,
     RubicButtonComponent,
     RubicSwitcherComponent,
-    RubicTogglerThemeComponent,
     IconButtonComponent,
     ShortenAmountPipe,
-    RubicTogglerThemeComponent,
     RubicLanguageSelectComponent,
     RubicSelectWalletComponent,
     RubicVolumeComponent,
