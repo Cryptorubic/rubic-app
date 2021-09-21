@@ -73,7 +73,8 @@ export class ErrorsService {
    */
   private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
     const findRPCError = (rpcError: { code: string; message: string; description: string }) =>
-      currentError.message.includes(rpcError.code);
+      currentError.message.includes(rpcError.code) ||
+      (currentError?.code && String(currentError.code) === rpcError.code);
     const providerRPCError = EIP_1193.find(findRPCError);
     if (providerRPCError) {
       return true;
