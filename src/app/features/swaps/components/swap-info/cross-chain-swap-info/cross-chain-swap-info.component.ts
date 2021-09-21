@@ -5,9 +5,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
@@ -63,7 +61,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly swapsService: SwapsService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
@@ -74,11 +71,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.swapFormService.outputValueChanges
       .pipe(
         switchMap(form => {
-          if (
-            this.swapsService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
-            form.toAmount &&
-            !form.toAmount.isNaN()
-          ) {
+          if (form.toAmount?.isFinite()) {
             const firstSlippage =
               1 + this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
             const { fromAmount } = this.swapFormService.inputValue;
@@ -102,6 +95,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
               })
             );
           }
+
+          this.crossChainSwapInfo = null;
           return of(null);
         }),
         takeUntil(this.destroy$)
