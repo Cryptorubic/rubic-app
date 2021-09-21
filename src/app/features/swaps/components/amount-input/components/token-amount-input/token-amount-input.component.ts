@@ -79,6 +79,7 @@ export class TokenAmountInputComponent implements OnInit {
 
         this.prevSwapMode = this.swapsService.swapMode;
         this.selectedToken = fromToken;
+        this.cdr.detectChanges();
       });
 
     this.settingsService.crossChainRoutingValueChanges

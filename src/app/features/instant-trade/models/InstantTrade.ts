@@ -9,36 +9,39 @@ interface InstantTrade {
 
   from: {
     token: InstantTradeToken;
+
     /**
-     * Amount of input (WITH decimals)
+     * Amount of input (WITH decimals).
      */
     amount: BigNumber;
   };
+
   to: {
     token: InstantTradeToken;
+
     /**
-     * Amount of output without slippage (WITH decimals)
+     * Amount of output without slippage (WITH decimals).
      */
     amount: BigNumber;
   };
 
   /**
-   * Amount of predicted gas limit in absolute gas units
+   * Amount of predicted gas limit in absolute gas units.
    */
   gasLimit?: string;
 
   /**
-   * Gas price in Wei
+   * Gas price in Wei.
    */
   gasPrice?: string;
 
   /**
-   * Amount of predicted gas fee in usd$
+   * Amount of predicted gas fee in usd$.
    */
   gasFeeInUsd?: BigNumber;
 
   /**
-   * Amount of predicted gas fee in Ether
+   * Amount of predicted gas fee in Ether.
    */
   gasFeeInEth?: BigNumber;
 

@@ -31,7 +31,7 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { filter, distinctUntilChanged, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
@@ -46,7 +46,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
   value?: InstantTrade | null;
-  reason?: Error;
+  reason?: RubicError<ERROR_TYPE>;
 }
 
 @Component({
@@ -178,6 +178,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => {
         this.setupSwapForm(form);
+      });
+
+    this.swapFormService.input.controls.toToken.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(toToken => {
+        this.toToken = toToken;
+        this.cdr.detectChanges();
+        if (
+          TokensService.areTokensEqual(this.toToken, toToken) &&
+          this.toToken?.price !== toToken?.price
+        ) {
+          this.updateControllers();
+        }
       });
 
     this.settingsService.instantTradeValueChanges
@@ -419,33 +432,70 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Sets to providers calculated trade data, approve data and trade status.
+   * @param tradeData Calculated trade data.
+   * @param approveData Calculated info about whether provider must be approved or not.
+   */
   private setupControllers(
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>
   ): void {
-    const newProviders = this.providerControllers.map(
-      (controller, index) =>
-        ({
-          ...controller,
-          isSelected: false,
-          trade: tradeData[index]?.status === 'fulfilled' ? tradeData[index]?.value : null,
-          isBestRate: false,
-          needApprove: approveData[index],
-          tradeState:
-            tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
-              ? INSTANT_TRADES_STATUS.APPROVAL
-              : INSTANT_TRADES_STATUS.ERROR,
-          error: tradeData[index]?.status === 'rejected' ? tradeData[index]?.reason : null
-        } as ProviderControllerData)
-    );
-    this.providerControllers = newProviders;
+    this.providerControllers = this.providerControllers.map((controller, index) => {
+      const trade = tradeData[index]?.status === 'fulfilled' ? tradeData[index]?.value : null;
+      return {
+        ...controller,
+        isSelected: false,
+        trade: {
+          ...trade,
+          to: {
+            ...trade?.to,
+            token: this.toToken
+          }
+        },
+        isBestRate: false,
+        needApprove: approveData[index],
+        tradeState:
+          tradeData[index]?.status === 'fulfilled' && trade
+            ? INSTANT_TRADES_STATUS.APPROVAL
+            : INSTANT_TRADES_STATUS.ERROR,
+        error: tradeData[index]?.status === 'rejected' ? tradeData[index]?.reason : null
+      };
+    });
 
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+    this.chooseBestController();
+  }
+
+  /**
+   * Updates controllers data related to toToken's price.
+   */
+  private updateControllers() {
+    this.providerControllers = this.providerControllers.map(controller => ({
+      ...controller,
+      isSelected: false,
+      isBestRate: false,
+      trade: {
+        ...controller?.trade,
+        to: {
+          ...controller?.trade?.to,
+          token: this.toToken
+        }
+      }
+    }));
+
+    this.chooseBestController();
+  }
+
+  /**
+   * Selects best provider controller and updates trade status.
+   */
+  private chooseBestController() {
+    const bestProviderIndex = this.calculateBestRate(this.providerControllers.map(el => el.trade));
     if (bestProviderIndex !== -1) {
-      newProviders[bestProviderIndex].isBestRate = true;
-      newProviders[bestProviderIndex].isSelected = true;
+      this.providerControllers[bestProviderIndex].isBestRate = true;
+      this.providerControllers[bestProviderIndex].isSelected = true;
 
-      this.selectedProvider = newProviders[bestProviderIndex];
+      this.selectedProvider = this.providerControllers[bestProviderIndex];
 
       this.tradeStatus = this.selectedProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
@@ -463,6 +513,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /**
+   * Returns the most profitable provider based on usd$ price.
+   * @param tradeData Providers' trade data.
+   * @return number Index of the most profitable provider.
+   */
   private calculateBestRate(tradeData: InstantTrade[]): number {
     const { index: providerIndex } = tradeData.reduce(
       (bestRate, trade, i: number) => {
@@ -543,7 +598,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public getUsdPrice(amount?: BigNumber): BigNumber {
-    return (amount || this.selectedProvider?.trade.to.amount).multipliedBy(this.toToken?.price);
+    if (!amount && !this.selectedProvider?.trade.to.amount) {
+      return null;
+    }
+    if (!this.toToken?.price) {
+      return new BigNumber(NaN);
+    }
+    return (amount || this.selectedProvider?.trade.to.amount).multipliedBy(this.toToken.price);
   }
 
   public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {

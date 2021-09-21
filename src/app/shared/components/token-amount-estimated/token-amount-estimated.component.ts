@@ -3,23 +3,24 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnDestroy,
   OnInit
 } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-amount-estimated',
   templateUrl: './token-amount-estimated.component.html',
   styleUrls: ['./token-amount-estimated.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class AmountEstimatedComponent implements OnInit, OnDestroy {
+export class AmountEstimatedComponent implements OnInit {
   @Input() set loading(value: boolean) {
     this._loading = value;
     if (value) {
@@ -50,14 +51,15 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
     amount: BigNumber;
   };
 
-  public formSubscription$: Subscription;
-
   public hidden: boolean;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly destroy$: TuiDestroyService
+  ) {}
 
   ngOnInit() {
-    this.formSubscription$ = this.formService.outputValueChanges.subscribe(form => {
+    this.formService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
       if (!form.toAmount || form.toAmount.isNaN()) {
         this.hidden = true;
         this.tokensAmount = null;
@@ -78,9 +80,16 @@ export class AmountEstimatedComponent implements OnInit, OnDestroy {
 
       this.cdr.detectChanges();
     });
-  }
 
-  ngOnDestroy() {
-    this.formSubscription$.unsubscribe();
+    this.formService.input.controls.toToken.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(toToken => {
+        if (this.tokensAmount) {
+          this.usd =
+            toToken?.price &&
+            new BigNumber(this.tokensAmount).multipliedBy(toToken.price).toFixed(2);
+          this.cdr.detectChanges();
+        }
+      });
   }
 }

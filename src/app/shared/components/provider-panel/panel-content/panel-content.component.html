@@ -21,14 +21,14 @@
 
   <div class="provider-panel__right" *ngLet="tradeData?.usdPrice as price">
     <div
-      *ngIf="price && price > 0"
+      *ngIf="price?.isFinite() && price.gt(0)"
       class="provider-panel__token-usd-price"
       [ngClass]="{
         'tui-skeleton': providerData.loading,
         'tui-skeleton-text': providerData.loading
       }"
     >
-      ${{ price }}
+      ${{ price | bigNumberFormat: 2:true }}
     </div>
 
     <div

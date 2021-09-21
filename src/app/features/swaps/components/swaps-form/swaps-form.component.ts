@@ -120,7 +120,6 @@ export class SwapsFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnTokens();
-
     this.subscribeOnSettings();
 
     this.swapsService.swapMode$.pipe(takeUntil(this.destroy$)).subscribe(swapMode => {
