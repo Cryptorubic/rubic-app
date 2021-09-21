@@ -29,6 +29,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { filter, first, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -77,11 +78,13 @@ export class HeaderComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
+    private readonly myTradesService: MyTradesService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
+    this.myTradesService.updateTableTrades().subscribe();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();

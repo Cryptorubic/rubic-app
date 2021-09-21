@@ -74,7 +74,7 @@
       {{ 'navigation.myTrades' | translate }}
       <tui-badge
         class="notification-counter"
-        *ngIf="(countNotifications$ | async) && ($currentUser | async) === false"
+        *ngIf="(countNotifications$ | async) && ($currentUser | async)"
         size="s"
         [value]="countNotifications$ | async"
       ></tui-badge>
