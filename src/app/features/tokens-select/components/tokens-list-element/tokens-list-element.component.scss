@@ -59,6 +59,8 @@
       max-width: 38px;
       max-height: 38px;
 
+      border-radius: 25%;
+
       @include iframe-horizontal {
         max-width: 30px;
         max-height: 30px;
