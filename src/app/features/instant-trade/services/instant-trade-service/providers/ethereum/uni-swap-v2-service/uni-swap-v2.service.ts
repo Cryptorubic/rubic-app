@@ -14,14 +14,6 @@ export class UniSwapV2Service extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    super(
-      blockchain,
-      uniSwapV2Constants.contractAddressNetMode,
-      uniSwapV2Constants.wethAddressNetMode,
-      uniSwapV2Constants.routingProvidersNetMode,
-      uniSwapV2Constants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, uniSwapV2Constants, commonUniswapV2, useTestingModeService);
   }
 }

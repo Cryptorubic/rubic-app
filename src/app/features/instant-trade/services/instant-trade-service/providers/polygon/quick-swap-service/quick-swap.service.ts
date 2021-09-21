@@ -14,14 +14,6 @@ export class QuickSwapService extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.POLYGON;
-    super(
-      blockchain,
-      quickSwapConstants.contractAddressNetMode,
-      quickSwapConstants.wethAddressNetMode,
-      quickSwapConstants.routingProvidersNetMode,
-      quickSwapConstants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, quickSwapConstants, commonUniswapV2, useTestingModeService);
   }
 }

@@ -1,18 +1,40 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { languagesList } from 'src/app/core/header/models/languages-list';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
+import { languagesList } from 'src/app/core/header/models/languages-list';
 
 @Component({
   selector: 'app-current-language',
   templateUrl: './current-language.component.html',
   styleUrls: ['./current-language.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class CurrentLanguageComponent {
-  public get currentLanguage(): LanguageListElement {
-    return languagesList.find(lang => this.translateService.currentLang === lang.lng);
+export class CurrentLanguageComponent implements OnInit {
+  public currentLanguage: LanguageListElement;
+
+  constructor(
+    private readonly translateService: TranslateService,
+    private readonly destroy$: TuiDestroyService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
+    this.currentLanguage = this.getCurrentLanguage(this.translateService.currentLang);
   }
 
-  constructor(private readonly translateService: TranslateService) {}
+  public ngOnInit(): void {
+    this.translateService.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(currentLang => {
+      this.currentLanguage = this.getCurrentLanguage(currentLang.lang);
+      this.cdr.detectChanges();
+    });
+  }
+
+  /**
+   * Gets current language.
+   * @param CurrentLang code of current language.
+   */
+  private getCurrentLanguage(currentLang: string): LanguageListElement {
+    return languagesList.find(lang => lang.lng === currentLang);
+  }
 }

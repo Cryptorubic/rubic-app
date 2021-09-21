@@ -17,10 +17,12 @@ export class TokensListElementComponent {
    */
   @Input() token: TokenAmount;
 
+  public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
+
   /**
    * Is iframe has horizontal view.
    */
-  public isHorizontalFrame$: Observable<boolean>;
+  public readonly isHorizontalFrame$: Observable<boolean>;
 
   constructor(
     iframeService: IframeService,
@@ -32,8 +34,15 @@ export class TokensListElementComponent {
     );
   }
 
+  public onImageError($event: Event) {
+    const target = $event.target as HTMLImageElement;
+    if (target.src !== this.defaultImage) {
+      target.src = this.defaultImage;
+    }
+  }
+
   /**
-   * @description Make token favorite or not favorite in the list.
+   * Makes token favorite or not favorite in the list.
    */
   public toggleFavorite(): void {
     this.token.favorite = !this.token.favorite;

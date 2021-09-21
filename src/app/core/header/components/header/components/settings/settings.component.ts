@@ -4,12 +4,12 @@ import {
   Input,
   ViewChild,
   TemplateRef,
-  ChangeDetectorRef,
   Inject,
-  Injector
+  Injector,
+  OnInit
 } from '@angular/core';
 import { TuiHostedDropdownComponent } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -24,7 +24,7 @@ import { SettingsComponentData } from 'src/app/core/header/models/settings-compo
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
   @Input() displaySettings = false;
 
   @ViewChild(TuiHostedDropdownComponent)
@@ -42,10 +42,8 @@ export class SettingsComponent {
 
   public defaultComponent: SettingsComponentData;
 
-  private themeSubscription$: Subscription;
-
   /**
-   * @description get current visible component
+   * Gets current visible component.
    * @return currentComponent$
    */
   public get dynamicComponent$(): Observable<SettingsComponentData> {
@@ -55,7 +53,6 @@ export class SettingsComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
-    private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService,
     @Inject(Injector) public readonly injector: Injector
   ) {
@@ -65,28 +62,30 @@ export class SettingsComponent {
     };
     this.currentComponent$ = new BehaviorSubject(this.defaultComponent);
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
+  }
 
-    this.currentComponent$.pipe(takeUntil(this.destroy$)).subscribe(({ component }) => {
-      this.isDefaultComponent = component === this.defaultComponent.component;
+  public ngOnInit(): void {
+    this.currentComponent$.pipe(takeUntil(this.destroy$)).subscribe(({ titleKey }) => {
+      this.isDefaultComponent = titleKey === this.defaultComponent.titleKey;
     });
   }
 
   /**
-   * @description toggle theme
+   * Toggles theme.
    */
   public switchTheme(): void {
     this.themeService.switchTheme();
   }
 
   /**
-   * @description switch to default component
+   * Switches to default component.
    */
   public backToSettings(): void {
     this.currentComponent$.next(this.defaultComponent);
   }
 
   /**
-   * @description close dropdown with settings
+   * Close dropdown with settings.
    */
   public closeSettings() {
     this.isSettingsOpened = false;

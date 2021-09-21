@@ -20,3 +20,6 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: 'polygon-test',
   [BLOCKCHAIN_NAME.HARMONY_TESTNET]: 'harmony-test'
 };
+
+export type ToBackendBlockchains = keyof typeof TO_BACKEND_BLOCKCHAINS;
+export type FromBackendBlockchains = keyof typeof FROM_BACKEND_BLOCKCHAINS;

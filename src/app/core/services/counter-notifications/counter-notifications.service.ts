@@ -37,7 +37,9 @@ export class CounterNotificationsService {
             trades.filter(trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING).length
         )
       )
-      .subscribe(this._unreadReceived$);
+      .subscribe(v => {
+        this._unreadReceived$.next(v);
+      });
 
     this.authService
       .getCurrentUser()

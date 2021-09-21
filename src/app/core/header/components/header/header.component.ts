@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
@@ -27,9 +27,9 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
-import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { filter, first, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -78,13 +78,14 @@ export class HeaderComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
+    private readonly myTradesService: MyTradesService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly route: ActivatedRoute,
-    private readonly gasService: GasService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
+    // TODO: remake update table trades by the right way
+    this.myTradesService.updateTableTrades().subscribe();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
@@ -102,8 +103,10 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.authService.getCurrentUser().subscribe(() => this.cdr.detectChanges());
-    this.gasService.gasPrice.pipe(takeUntil(this.destroy$)).subscribe();
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.cdr.detectChanges());
   }
 
   private async loadUser(): Promise<void> {

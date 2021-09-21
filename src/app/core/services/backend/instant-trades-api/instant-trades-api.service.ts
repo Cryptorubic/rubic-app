@@ -3,7 +3,8 @@ import { Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS
+  TO_BACKEND_BLOCKCHAINS,
+  ToBackendBlockchains
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
@@ -74,7 +75,7 @@ export class InstantTradesApiService {
     if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
       tradeInfo = {
         hash,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain as keyof typeof TO_BACKEND_BLOCKCHAINS],
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
         provider,
         from_token: trade.from.token.address,
         to_token: trade.to.token.address,
@@ -85,7 +86,7 @@ export class InstantTradesApiService {
       tradeInfo = {
         hash,
         provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain as keyof typeof TO_BACKEND_BLOCKCHAINS],
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
         from_token: trade.from.token.address,
         to_token: trade.to.token.address
       };
@@ -93,7 +94,7 @@ export class InstantTradesApiService {
       tradeInfo = {
         hash,
         provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain as keyof typeof TO_BACKEND_BLOCKCHAINS]
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains]
       };
     }
 

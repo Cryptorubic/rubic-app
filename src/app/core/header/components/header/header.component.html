@@ -57,7 +57,7 @@
   </nav>
 
   <app-rubic-button
-    *noFrame=""
+    *noFrame="'any'"
     class="rubic-header__buy-rbc"
     appearance="outline"
     (click)="buyRBC()"
@@ -72,10 +72,9 @@
       routerLinkActive="button-link_active"
     >
       {{ 'navigation.myTrades' | translate }}
-
       <tui-badge
         class="notification-counter"
-        *ngIf="countNotifications$ | async"
+        *ngIf="(countNotifications$ | async) && ($currentUser | async)"
         size="s"
         [value]="countNotifications$ | async"
       ></tui-badge>

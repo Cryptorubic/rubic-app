@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
@@ -32,12 +31,13 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapInstantTrade';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonUniswapV2Service {
-  private readonly abi = CommonUniswapV2Abi;
+  private readonly contractAbi = CommonUniswapV2Abi;
 
   private readonly defaultEstimateGas = defaultEstimatedGas;
 
@@ -148,7 +148,7 @@ export class CommonUniswapV2Service {
   ) => {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
-      this.abi,
+      this.contractAbi,
       SWAP_METHOD.ETH_TO_TOKENS,
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
@@ -169,7 +169,7 @@ export class CommonUniswapV2Service {
   ) => {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
-      this.abi,
+      this.contractAbi,
       SWAP_METHOD.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
@@ -189,7 +189,7 @@ export class CommonUniswapV2Service {
   ) => {
     return this.web3Private.tryExecuteContractMethod(
       contractAddress,
-      this.abi,
+      this.contractAbi,
       SWAP_METHOD.TOKENS_TO_TOKENS,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
@@ -205,12 +205,12 @@ export class CommonUniswapV2Service {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
-    wethAddress: string,
     contractAddress: string,
+    wethAddress: string,
     routingProviders: string[],
     maxTransitTokens: number,
     shouldCalculateGas: boolean
-  ): Promise<InstantTrade> {
+  ): Promise<UniswapInstantTrade> {
     let fromTokenAddress = fromToken.address;
     const toTokenClone = { ...toToken };
 
@@ -251,7 +251,7 @@ export class CommonUniswapV2Service {
       gasPriceInUsd
     );
 
-    const instantTrade = {
+    const instantTrade: UniswapInstantTrade = {
       blockchain,
       from: {
         token: fromToken,
@@ -261,9 +261,7 @@ export class CommonUniswapV2Service {
         token: toToken,
         amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
-      options: {
-        path: route.path
-      }
+      path: route.path
     };
 
     if (!shouldCalculateGas) {
@@ -345,7 +343,7 @@ export class CommonUniswapV2Service {
       });
     }
 
-    if (this.settings.rubicOptimisation && toToken.price && this.walletAddress) {
+    if (this.settings.rubicOptimisation && toToken.price) {
       const routesWithProfit: UniswapV2CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
@@ -366,15 +364,6 @@ export class CommonUniswapV2Service {
 
       return sortedByProfitRoutes[0];
     }
-
-    // TODO: remove console.debug after qa tests
-    console.debug(
-      `[DEBUG] calldata ${JSON.stringify({
-        fromTokenAddress,
-        fromAmountAbsolute,
-        toToken
-      })}\nreturn ${JSON.stringify({ route: routes[0], estimatedGas: gasLimits[0] })}`
-    );
 
     return {
       route: routes[0],
@@ -425,7 +414,7 @@ export class CommonUniswapV2Service {
     await web3Public
       .multicallContractMethod<{ amounts: string[] }>(
         contractAddress,
-        this.abi,
+        this.contractAbi,
         uniswapMethodName,
         routesMethodArguments
       )
@@ -488,7 +477,11 @@ export class CommonUniswapV2Service {
     return routes[0]?.outputAbsoluteAmount;
   }
 
-  public async createTrade(trade: InstantTrade, contractAddress: string, options: ItOptions = {}) {
+  public async createTrade(
+    trade: UniswapInstantTrade,
+    contractAddress: string,
+    options: ItOptions = {}
+  ) {
     this.providerConnectorService.checkSettings(trade.blockchain);
 
     const web3Public = this.web3PublicService[trade.blockchain as Web3SupportedBlockchains];
@@ -500,8 +493,7 @@ export class CommonUniswapV2Service {
         trade.to.amount.multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance)),
         trade.to.token.decimals
       ),
-      // @ts-ignore
-      path: trade.options.path,
+      path: trade.path,
       to: this.walletAddress,
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
     };

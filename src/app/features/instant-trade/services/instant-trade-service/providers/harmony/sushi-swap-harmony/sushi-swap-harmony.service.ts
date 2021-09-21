@@ -14,14 +14,6 @@ export class SushiSwapHarmonyService extends UniswapV2ProviderAbstract {
     useTestingModeService: UseTestingModeService
   ) {
     const blockchain = BLOCKCHAIN_NAME.HARMONY;
-    super(
-      blockchain,
-      sushiSwapHarmonyConstants.contractAddressNetMode,
-      sushiSwapHarmonyConstants.wethAddressNetMode,
-      sushiSwapHarmonyConstants.routingProvidersNetMode,
-      sushiSwapHarmonyConstants.maxTransitTokens,
-      commonUniswapV2,
-      useTestingModeService
-    );
+    super(blockchain, sushiSwapHarmonyConstants, commonUniswapV2, useTestingModeService);
   }
 }

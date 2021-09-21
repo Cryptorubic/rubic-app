@@ -1,10 +1,9 @@
 @import 'src/scss/vars';
 
-$backgrond-black: rgb(14, 17, 14);
-
 html.dark {
   --main-form-background: rgba(0, 0, 0, 0.6);
   --main-background: rgba(50, 50, 50, 0.6);
+  --secondary-background: rgba(50, 50, 50, 0.6);
 
   --form-header-color-1: rgba(94, 94, 94, 0.7);
   --form-header-color-2: rgba(69, 69, 69, 0.7);
