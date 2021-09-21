@@ -49,7 +49,7 @@ export class RubicLanguageSelectComponent {
    * Setup new active site language.
    * @param Event language what need set.
    */
-  private setActiveLanguage(event: Partial<LangChangeEvent>) {
+  private setActiveLanguage(event: Partial<LangChangeEvent>): void {
     this.cdr.markForCheck();
     if (this.currentLanguage) {
       this.languagesList.filter(lang => {

@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ThemeSwitcherComponent {
-  public isDark$: Observable<boolean>;
+  public readonly isDark$: Observable<boolean>;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
