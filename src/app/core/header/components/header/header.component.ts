@@ -84,6 +84,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
+    // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();
     this.$currentUser = this.authService.getCurrentUser();
     this.pageScrolled = false;
