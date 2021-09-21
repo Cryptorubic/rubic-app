@@ -19,9 +19,9 @@
     </div>
   </div>
 
-  <div class="provider-panel__right">
+  <div class="provider-panel__right" *ngLet="tradeData?.usdPrice as price">
     <div
-      *ngIf="tradeData?.usdPrice as price"
+      *ngIf="price && price > 0"
       class="provider-panel__token-usd-price"
       [ngClass]="{
         'tui-skeleton': providerData.loading,

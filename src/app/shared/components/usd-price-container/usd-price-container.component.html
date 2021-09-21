@@ -9,5 +9,5 @@
   </span>
   <ng-template #usdPriceTooltip>${{ usdPrice | bigNumberFormat }}</ng-template>
 
-  <div *ngIf="usdPrice.isNaN() || usdPrice.eq(0)">USD Price is unavailable</div>
+  <div *ngIf="usdPrice.isNaN()">USD Price is unavailable</div>
 </div>
