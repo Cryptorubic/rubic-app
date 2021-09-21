@@ -48,7 +48,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     healthcheckService.healthCheck().then(isAvailable => {
       this.isBackendAvailable = isAvailable;
       document.getElementById('loader')?.classList.add('disabled');
-      setTimeout(() => document.getElementById('loader')?.remove()); /* ios safari */
+      setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
     });
   }
 
