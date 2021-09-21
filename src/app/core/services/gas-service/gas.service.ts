@@ -50,7 +50,7 @@ export class GasService {
   }
 
   /**
-   * @description Fetch gas in current network.
+   * Fetches gas in current network.
    */
   public fetchGas(): void {
     const timer$ = timer(0, this.requestInterval);
