@@ -595,6 +595,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
       this.tokensService.calculateUserTokensBalances();
+      this.tokensService.calculateFavoriteTokensBalances();
 
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,
@@ -660,6 +661,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       this.counterNotificationsService.updateUnread();
       await this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateFavoriteTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();

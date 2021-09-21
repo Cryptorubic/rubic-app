@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject, timer } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { map, skip, switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
@@ -101,7 +101,7 @@ export class TokensService {
     private readonly store: StoreService
   ) {
     this.tokensSubject = new BehaviorSubject(List([]));
-    this.favoriteTokensSubject = new BehaviorSubject(List([]));
+    this.favoriteTokensSubject = new BehaviorSubject(List(this.fetchFavoriteTokens()));
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
     this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
 
@@ -120,12 +120,6 @@ export class TokensService {
    * Setup service subscriptions.
    */
   private setupSubscriptions(): void {
-    timer(500)
-      .pipe(
-        switchMap(() => this.fetchFavoriteTokens()),
-        take(1)
-      )
-      .subscribe();
     this.tokensRequestParametersSubject
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
@@ -141,6 +135,7 @@ export class TokensService {
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
       await this.calculateUserTokensBalances();
+      await this.calculateFavoriteTokensBalances();
     });
 
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
@@ -148,6 +143,7 @@ export class TokensService {
         this.isTestingMode = true;
         this.tokensSubject.next(List(coingeckoTestTokens));
         await this.calculateUserTokensBalances();
+        await this.calculateFavoriteTokensBalances();
       }
     });
 
@@ -201,17 +197,31 @@ export class TokensService {
 
   /**
    * Calculate balance for token list.
-   * @param tokens Token list.
+   * @param favoriteTokens Favorite tokens list.
    */
-  public async calculateUserTokensBalancesWithoutReAssign(
-    tokens: List<TokenAmount>
-  ): Promise<List<TokenAmount>> {
-    return this.userAddress
-      ? List(await this.getTokensWithBalance(tokens))
-      : tokens.map(token => ({
+  public async calculateFavoriteTokensBalances(
+    favoriteTokens: List<TokenAmount> = this.favoriteTokensSubject.getValue()
+  ): Promise<void> {
+    if (!favoriteTokens.size || favoriteTokens.find(el => el === null)) {
+      return;
+    }
+
+    if (!this.userAddress) {
+      this.tokensSubject.next(
+        favoriteTokens.map(token => ({
           ...token,
-          amount: new BigNumber(NaN)
-        }));
+          amount: new BigNumber(0),
+          favorite: false
+        }))
+      );
+      return;
+    }
+
+    const tokensWithBalance = await this.getTokensWithBalance(favoriteTokens);
+
+    if (!this.isTestingMode || (this.isTestingMode && favoriteTokens.size < 1000)) {
+      this.favoriteTokensSubject.next(List(tokensWithBalance));
+    }
   }
 
   /**
@@ -227,12 +237,14 @@ export class TokensService {
       BLOCKCHAIN_NAME.HARMONY
     ];
     const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
+      const tokensAddresses = tokens
+        .filter(token => token.blockchain === blockchain)
+        .map(token => token.address)
+        .toArray();
+
       return this.web3PublicService[blockchain].getTokensBalances(
         this.userAddress,
-        tokens
-          .filter(token => token.blockchain === blockchain)
-          .map(token => token.address)
-          .toArray()
+        tokensAddresses
       );
     });
 
@@ -398,15 +410,7 @@ export class TokensService {
   /**
    * Fetch favorite tokens from local storage.
    */
-  private async fetchFavoriteTokens(): Promise<void> {
-    const favoriteTokens = this.store.getItem('favoriteTokens') as TokenAmount[];
-    this.authService
-      .getCurrentUser()
-      .pipe(
-        skip(1),
-        switchMap(() => this.calculateUserTokensBalancesWithoutReAssign(List(favoriteTokens))),
-        take(1)
-      )
-      .subscribe(tokens => this.favoriteTokensSubject.next(tokens));
+  private fetchFavoriteTokens(): TokenAmount[] {
+    return this.store.getItem('favoriteTokens');
   }
 }

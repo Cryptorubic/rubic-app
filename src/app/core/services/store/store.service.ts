@@ -32,7 +32,8 @@ export class StoreService {
     private readonly iframeService: IframeService
   ) {
     this.isIframe = iframeService.isIframe;
-    this.storageSubject = new BehaviorSubject<Store>(null);
+    const store = this.fetchData(iframeService.isIframe);
+    this.storageSubject = new BehaviorSubject<Store>(store);
   }
 
   /**
@@ -86,13 +87,13 @@ export class StoreService {
    * Fetch stored data from local storage or cookies.
    * @param isIframe Fetch data from cookies if its the iframe.
    */
-  public fetchData(isIframe: boolean): void {
+  public fetchData(isIframe: boolean): Store {
     this.isIframe = isIframe;
     const cookie = this.cookieService.get(this.storageKey);
     const data = JSON.parse(
       this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
     );
-    this.storageSubject.next(data || {});
+    return data as Store | {} as Store;
   }
 
   /**

@@ -359,6 +359,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           );
 
           await this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateFavoriteTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -398,6 +399,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
           this.counterNotificationsService.updateUnread();
           await this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateFavoriteTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.conditionalCalculate();
