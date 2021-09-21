@@ -13,11 +13,20 @@ import { map } from 'rxjs/operators';
 export class TokensListElementComponent {
   @Input() token: TokenAmount;
 
-  public isHorizontalFrame$: Observable<boolean>;
+  public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
+
+  public readonly isHorizontalFrame$: Observable<boolean>;
 
   constructor(iframeService: IframeService) {
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
       map(appearance => appearance === 'horizontal')
     );
+  }
+
+  public onImageError($event: Event) {
+    const target = $event.target as HTMLImageElement;
+    if (target.src !== this.defaultImage) {
+      target.src = this.defaultImage;
+    }
   }
 }
