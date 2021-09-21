@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -29,12 +29,8 @@ export class CounterNotificationsService {
     private readonly myTradesService: MyTradesService,
     private readonly storeService: StoreService
   ) {
-    console.log('counter');
     this.myTradesService.tableTrades$
       .pipe(
-        tap(trades => {
-          console.log(trades);
-        }),
         filter(trades => !!trades),
         map(
           trades =>
