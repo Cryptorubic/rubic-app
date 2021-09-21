@@ -159,6 +159,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.setupCalculatingTrades();
     this.setupHiddenCalculatingTrades();
+
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.swapFormService.inputValueChanges
@@ -229,6 +230,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (!this.allowTrade) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.selectedProvider = null;
+      this.swapFormService.output.patchValue({
+        toAmount: new BigNumber(NaN)
+      });
       this.cdr.detectChanges();
       return;
     }
