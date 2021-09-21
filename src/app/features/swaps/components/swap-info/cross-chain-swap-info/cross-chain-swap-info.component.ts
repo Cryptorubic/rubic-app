@@ -71,7 +71,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.swapFormService.outputValueChanges
       .pipe(
         switchMap(form => {
-          if (form.toAmount && !form.toAmount.isNaN()) {
+          if (form.toAmount?.isFinite()) {
             const firstSlippage =
               1 + this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
             const { fromAmount } = this.swapFormService.inputValue;

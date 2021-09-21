@@ -263,7 +263,7 @@ export class CrossChainRoutingService {
         firstTransitToken,
         minTransitTokenAmount
       );
-      if (minAmount.isNaN()) {
+      if (!minAmount?.isFinite()) {
         throw new InsufficientLiquidityError('CrossChainRouting');
       }
       return {
