@@ -198,6 +198,15 @@ body.default-iframe-background {
     z-index: -10000;
   }
 
+  &:not(.disabled) ~ * {
+    &.wave,
+    &.gradient {
+      @include ios {
+        position: static;
+      }
+    }
+  }
+
   img {
     animation: 1.4s infinite 1s loader-icon-fadein;
   }
