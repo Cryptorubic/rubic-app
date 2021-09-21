@@ -465,7 +465,9 @@
       "unsupportedPairsHint": "此令牌不可用於交換。 請選擇支持的對。",
       "clearParamsHint": "清除其他表單參數以選擇此令牌",
       "searchPlaceholder": "搜索姓名或粘貼地址",
-      "noSearchData": "沒什麼可顯示的"
+      "noSearchData": "沒什麼可顯示的",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "連接錢包",

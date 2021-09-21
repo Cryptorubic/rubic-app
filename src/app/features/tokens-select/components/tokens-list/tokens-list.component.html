@@ -5,17 +5,25 @@
     <tui-loader [showLoader]="!!loading">
       <!--standard mode -->
       <ul class="tokens-list" *noFrame>
-        <ng-container *ngIf="!tokens.length">
-          <span class="nothing-to-show-message">
-            {{ 'modals.tokensListModal.noSearchData' | translate }}
-          </span>
-        </ng-container>
         <cdk-virtual-scroll-viewport
           tuiScrollable
           itemSize="63"
           class="tokens-scrollbar tui-zero-scrollbar"
           [style.overflow]="loading ? 'hidden' : 'auto'"
         >
+          <ng-container *ngIf="!tokens.length">
+            <li class="nothing-to-show-message">
+              <ng-container *ngIf="hasQuery || listType === 'default'; else favoriteTokens">
+                {{ 'modals.tokensListModal.noSearchData' | translate }}
+              </ng-container>
+              <ng-template #favoriteTokens>
+                {{ 'modals.tokensListModal.noFavoriteData' | translate }}
+                <a class="nothing-to-show-message__link" (click)="listTypeChangeHandle.emit('default')">
+                  {{ 'modals.tokensListModal.backToTokens' | translate }}
+                </a>
+              </ng-template>
+            </li>
+          </ng-container>
           <li
             *cdkVirtualFor="let token of tokens; let i = index"
             class="tokens-list__item"

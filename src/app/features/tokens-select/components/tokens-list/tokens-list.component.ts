@@ -31,6 +31,8 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
 
   @Output() public pageUpdate = new EventEmitter<number>();
 
+  @Output() public listTypeChangeHandle = new EventEmitter<'default' | 'favorite'>();
+
   @Input() public listType: 'default' | 'favorite';
 
   @Input() public hasQuery: boolean;

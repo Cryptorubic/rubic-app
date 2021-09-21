@@ -465,7 +465,9 @@
       "unsupportedPairsHint": "此令牌不可用於交換。 請選擇支持的對。\n이 토큰은 스왑에 사용할 수 없습니다. 지원되는 쌍을 선택하십시오.",
       "clearParamsHint": "이 토큰을 선택하려면 다른 양식 매개 변수를 지우십시오.",
       "searchPlaceholder": "이름 검색 또는 주소 붙여 넣기",
-      "noSearchData": "표시 할 내용 없음"
+      "noSearchData": "표시 할 내용 없음",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "지갑 연결",

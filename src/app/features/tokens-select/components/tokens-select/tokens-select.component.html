@@ -31,6 +31,7 @@
       [tokensNetworkState]="tokensNetworkState"
       [blockchain]="blockchain"
       [loading]="tokensListLoading"
+      (listTypeChangeHandle)="listType = $event"
     ></app-tokens-list>
     <app-custom-token
       *ngIf="customToken && !loading"

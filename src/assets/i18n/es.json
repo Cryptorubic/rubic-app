@@ -465,7 +465,9 @@
       "unsupportedPairsHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
       "clearParamsHint": "Borrar otros parámetros de formulario para seleccionar este token",
       "searchPlaceholder": "Buscar nombre o pegar dirección",
-      "noSearchData": "Nada que mostrar"
+      "noSearchData": "Nada que mostrar",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "Conectar billetera",

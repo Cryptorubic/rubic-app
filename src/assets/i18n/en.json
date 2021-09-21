@@ -465,7 +465,9 @@
       "unsupportedPairsHint": "This token is unavailable for the swap. Please select supported pairs.",
       "clearParamsHint": "Clear other form parameters to select this token",
       "searchPlaceholder": "Search name or paste address",
-      "noSearchData": "Nothing to show"
+      "noSearchData": "Nothing to show",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "Connect wallet",

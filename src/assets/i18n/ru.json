@@ -461,11 +461,13 @@
     },
     "tokensListModal": {
       "defaultTitle": "Список токенов",
-      "favoriteTokensTitle": "Любимые токены",
+      "favoriteTokensTitle": "Избранные токены",
       "unsupportedPairsHint": "Этот токен недоступен для обмена. Пожалуйста, выберите поддерживаемые пары.",
       "clearParamsHint": "Очистите другие параметры формы, чтобы выбрать этот токен.",
       "searchPlaceholder": "Найдите по названию или вставьте адрес",
-      "noSearchData": "Нет подходящих данных"
+      "noSearchData": "Нет подходящих данных",
+      "noFavoriteData": "Нет избранных токенов в выбранной сети, ",
+      "backToTokens": "вернутся к списку всех токенов"
     },
     "walletsModal": {
       "title": "Подключить кошелёк",

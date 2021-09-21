@@ -111,8 +111,7 @@ $token-card-height: 55px;
 
 .nothing-to-show-message {
   position: relative;
-  top: 20px;
-  left: -10px;
+  margin-top: 20px;
 
   display: block;
 
@@ -120,6 +119,10 @@ $token-card-height: 55px;
   text-align: center;
 
   opacity: 0.6;
+
+  &__link {
+    cursor: pointer;
+  }
 }
 
 .tokens-container {
