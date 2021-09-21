@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-
   <head>
+    <!-- common site settings -->
     <meta charset="utf-8" />
-    <title>Rubic &ndash; Trading ReDeFined</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/" />
+    <!-- common site settings -->
 
+    <!-- indexing -->
     <meta name="fragment" content="”!”" />
     <meta name="robots" content="index,follow" />
+    <!-- indexing -->
+
+    <!-- description -->
+    <title>Rubic &ndash; Trading ReDeFined</title>
     <meta
       name="description"
       content="Rubic is a multichain DEX aggregator, with instant & cross-chain swaps for Ethereum, BSC, Polygon, Harmony, Tron & xDai, limit orders, fiat on-ramps and more!"
@@ -15,14 +22,11 @@
       name="keywords"
       content="cryptorubic, binance smart chain, bsc, bep20, wallet, token, instant trade, rbc, p2p trades, anonymizer, order book, layer2, erc20, blockchain, crypto, polygon, decentralized, ethereum, eth, p2p, swaps, DeFi, DEX, multichain, exchange, coin, cross-chain, bridge, cryptocurrency, crypto future, Rubic, cross-chain bridge"
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="msapplication-TileColor" content="white" />
-    <meta
-      name="msapplication-tileimage"
-      content="https://rubic.exchange/assets/images/rubic-logo.svg"
-    />
     <meta name="audience" content="all" />
     <meta name="author" content="Trading ReDeFined" />
+    <!-- description -->
+
+    <!-- Open Graph meta -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:url" content="https://rubic.exchange/" />
@@ -33,6 +37,9 @@
       property="og:description"
       content="Rubic is a multichain DEX aggregator, with instant & cross-chain swaps for Ethereum, BSC, Polygon, Harmony, Tron & xDai, limit orders, fiat on-ramps and more!"
     />
+    <!-- Open Graph meta -->
+
+    <!-- Twitter meta -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@CryptoRubic" />
     <meta property="twitter:url" content="https://rubic.exchange/" />
@@ -41,29 +48,63 @@
       name="twitter:description"
       content="Rubic is a multichain DEX aggregator, with instant & cross-chain swaps for Ethereum, BSC, Polygon, Harmony, Tron & xDai, limit orders, fiat on-ramps and more!"
     />
+    <!-- Twitter meta -->
 
-    <base href="/" />
-
+    <!-- common pwa settings -->
     <link rel="icon" href="./assets/favicon/favicon.svg" />
     <link rel="mask-icon" href="./assets/favicon/favicon.svg" color=”#4aa956" />
     <link rel="manifest" href="./manifest.json" />
-    <meta name="theme-color" content="#1e1e1e">
+    <meta name="theme-color" content="#1e1e1e" />
+    <!-- common pwa settings -->
 
-    <meta name="apple-mobile-web-app-capacity" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="apple-touch-icon" href="./assets/favicon/apple-touch-icon.png" />
-
+    <!-- windows pwa settings -->
     <meta name="msapplication-TileColor" content="#1e1e1e" />
     <meta name="msapplication-navbutton-color" content="#1e1e1e" />
+    <meta name="msapplication-square70x70logo" content="./assets/favicon/mstile/mstile-icon-128.png">
+    <meta name="msapplication-square150x150logo" content="./assets/favicon/mstile/mstile-icon-270.png">
+    <meta name="msapplication-square310x310logo" content="./assets/favicon/mstile/mstile-icon-558.png">
+    <meta name="msapplication-wide310x150logo" content="./assets/favicon/mstile/mstile-icon-558-270.png">
+    <meta name="msapplication-tileimage" content="./assets/favicon/favicon.svg" />
+    <!-- windows pwa settings -->
+
+    <!-- ios pwa settings -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./assets/favicon/apple-icon-180.png" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2048-2732.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2732-2048.jpg" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1668-2388.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2388-1668.jpg" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1536-2048.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2048-1536.jpg" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1668-2224.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2224-1668.jpg" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1620-2160.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2160-1620.jpg" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1284-2778.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2778-1284.jpg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1170-2532.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2532-1170.jpg" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1125-2436.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2436-1125.jpg" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)"/>
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1242-2688.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2688-1242.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-828-1792.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1792-828.jpg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1242-2208.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-2208-1242.jpg" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-750-1334.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1334-750.jpg" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="./assets/favicon/apple-splash/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" />
+    <!-- ios pwa settings -->
   </head>
 
   <body>
     <app-root></app-root>
-    <div id="gradient" class="gradient"></div>
-    <div id="wave" class="wave"></div>
     <div id="loader">
       <img src="assets/images/rubic-logo.svg" alt="rubic-logo">
     </div>
+    <div id="gradient" class="gradient"></div>
+    <div id="wave" class="wave"></div>
   </body>
-
 </html>
