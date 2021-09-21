@@ -37,6 +37,7 @@ import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-cha
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
+import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 
 @Injectable({
   providedIn: 'root'
@@ -256,18 +257,21 @@ export class CrossChainRoutingService {
 
     const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
       await this.getMinMaxTransitTokenAmounts();
-    if (!firstTransitTokenAmount.gte(minTransitTokenAmount)) {
+    if (firstTransitTokenAmount.lt(minTransitTokenAmount)) {
       const minAmount = await this.getFromTokenAmount(
         fromToken,
         firstTransitToken,
         minTransitTokenAmount
       );
+      if (minAmount.isNaN()) {
+        throw new InsufficientLiquidityError('CrossChainRouting');
+      }
       return {
         toAmount: trade.tokenOutAmount,
         minAmountError: minAmount
       };
     }
-    if (!firstTransitTokenAmount.lte(maxTransitTokenAmount)) {
+    if (firstTransitTokenAmount.gt(maxTransitTokenAmount)) {
       const maxAmount = await this.getFromTokenAmount(
         fromToken,
         firstTransitToken,
@@ -291,13 +295,20 @@ export class CrossChainRoutingService {
     toToken: InstantTradeToken
   ): Promise<{ path: string[]; toAmount: BigNumber }> {
     if (fromToken.address.toLowerCase() !== toToken.address.toLowerCase()) {
-      const instantTrade = await this.uniswapV2Providers[
-        blockchain as SupportedCrossChainSwapBlockchain
-      ].calculateTrade(fromToken, fromAmount, toToken, false);
-      return {
-        path: instantTrade.path,
-        toAmount: instantTrade.to.amount
-      };
+      try {
+        const instantTrade = await this.uniswapV2Providers[
+          blockchain as SupportedCrossChainSwapBlockchain
+        ].calculateTrade(fromToken, fromAmount, toToken, false);
+        return {
+          path: instantTrade.path,
+          toAmount: instantTrade.to.amount
+        };
+      } catch (err) {
+        if (err instanceof InsufficientLiquidityError) {
+          throw new InsufficientLiquidityError('CrossChainRouting');
+        }
+        throw err;
+      }
     }
     return { path: [fromToken.address], toAmount: fromAmount };
   }

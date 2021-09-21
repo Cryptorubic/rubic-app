@@ -1,14 +1,11 @@
 <tui-loader
-  *ngIf="allowTrade && (crossChainSwapInfo || isSwapInfoLoading)"
+  *ngIf="allowTrade && crossChainSwapInfo"
   [overlay]="true"
   [showLoader]="isSwapInfoLoading"
 >
-  <div class="swaps-info" *ngIf="crossChainSwapInfo">
+  <div class="swaps-info">
     <div class="swaps-info__title">
-      <div
-        class="swaps-info__title-hint"
-        [inlineSVG]="'/assets/images/icons/hint.svg'"
-      ></div>
+      <div class="swaps-info__title-hint" [inlineSVG]="'/assets/images/icons/hint.svg'"></div>
       <span class="swaps-info__content">
         {{ 'crossChainPage.swapInfo.title' | translate }}
       </span>
