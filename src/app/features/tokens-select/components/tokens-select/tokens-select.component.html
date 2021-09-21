@@ -1,6 +1,6 @@
 <section class="tokens-select">
   <header class="tokens-select__header" *noFrame>
-    <h2>{{ 'modals.tokensListModal.title' | translate }}</h2>
+    <h2>{{ (listType === 'default' ? 'modals.tokensListModal.defaultTitle' : 'modals.tokensListModal.favoriteTokensTitle') | translate }}</h2>
   </header>
   <div class="tokens-select__row" *noFrame>
     <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>

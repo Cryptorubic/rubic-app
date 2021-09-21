@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, skip, switchMap, take, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
@@ -109,7 +109,7 @@ export class TokensService {
   }
 
   /**
-   * @description Set favorite tokens list.
+   * Set favorite tokens list.
    * @param tokens Favorite tokens list.
    */
   public setFavoriteTokens(tokens: List<TokenAmount>): void {
@@ -117,7 +117,7 @@ export class TokensService {
   }
 
   /**
-   * @description Setup service subscriptions.
+   * Setup service subscriptions.
    */
   private setupSubscriptions(): void {
     timer(500)
@@ -163,7 +163,7 @@ export class TokensService {
   }
 
   /**
-   * @description Set default tokens.
+   * Set default tokens.
    * @param tokens Default tokens list.
    */
   private setDefaultTokenAmounts(tokens: List<Token> = this.tokensSubject.getValue()): void {
@@ -177,7 +177,7 @@ export class TokensService {
   }
 
   /**
-   * @description Calculate balance for token list.
+   * Calculate balance for token list.
    * @param tokens Token list.
    */
   public async calculateUserTokensBalances(
@@ -200,7 +200,7 @@ export class TokensService {
   }
 
   /**
-   * @description Calculate balance for token list.
+   * Calculate balance for token list.
    * @param tokens Token list.
    */
   public async calculateUserTokensBalancesWithoutReAssign(
@@ -257,7 +257,7 @@ export class TokensService {
   }
 
   /**
-   * @description Add token to tokens list.
+   * Add token to tokens list.
    * @param address Token address.
    * @param blockchain Token blockchain.
    * @return Observable<TokenAmount> Token with balance.
@@ -288,7 +288,7 @@ export class TokensService {
   }
 
   /**
-   * @description get native coin price in USD.
+   * Get native coin price in USD.
    * @param blockchain Token blockchain.
    * @return Promise<number> USD amount.
    */
@@ -303,7 +303,7 @@ export class TokensService {
   }
 
   /**
-   * @description Update pagination state for current network.
+   * Update pagination state for current network.
    * @param network Blockchain name.
    */
   private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME): void {
@@ -319,7 +319,7 @@ export class TokensService {
   }
 
   /**
-   * @description Fetch tokens for specific network.
+   * Fetch tokens for specific network.
    * @param network Requested network.
    * @param pageSize Requested page size.
    * @param callback Callback after success fetch.
@@ -352,7 +352,7 @@ export class TokensService {
   }
 
   /**
-   * @description Fetch tokens from backend by search query string.
+   * Fetch tokens from backend by search query string.
    * @param query Search query.
    * @param network Tokens network.
    */
@@ -380,7 +380,7 @@ export class TokensService {
   }
 
   /**
-   * @description Remove token from list of favorite tokens.
+   * Remove token from list of favorite tokens.
    * @param token Favorite token to remove.
    */
   public removeFavoriteToken(token: TokenAmount): void {
@@ -396,13 +396,17 @@ export class TokensService {
   }
 
   /**
-   * @description Fetch favorite tokens from local storage.
+   * Fetch favorite tokens from local storage.
    */
   private async fetchFavoriteTokens(): Promise<void> {
     const favoriteTokens = this.store.getItem('favoriteTokens') as TokenAmount[];
-    const tokensWithBalance = await this.calculateUserTokensBalancesWithoutReAssign(
-      List(favoriteTokens)
-    );
-    this.favoriteTokensSubject.next(tokensWithBalance);
+    this.authService
+      .getCurrentUser()
+      .pipe(
+        skip(1),
+        switchMap(() => this.calculateUserTokensBalancesWithoutReAssign(List(favoriteTokens))),
+        take(1)
+      )
+      .subscribe(tokens => this.favoriteTokensSubject.next(tokens));
   }
 }

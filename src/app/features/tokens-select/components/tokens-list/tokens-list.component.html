@@ -1,11 +1,15 @@
 <ng-container>
   <tui-scrollbar
-    *ngIf="tokens.length; else emptyListMessage"
     class="tokens-scrollbar tokens-container"
   >
-    <tui-loader [showLoader]="loading">
+    <tui-loader [showLoader]="!!loading">
       <!--standard mode -->
       <ul class="tokens-list" *noFrame>
+        <ng-container *ngIf="!tokens.length">
+          <span class="nothing-to-show-message">
+            {{ 'modals.tokensListModal.noSearchData' | translate }}
+          </span>
+        </ng-container>
         <cdk-virtual-scroll-viewport
           tuiScrollable
           itemSize="63"
@@ -79,11 +83,7 @@
     <!--vertical iframe -->
 
   </tui-scrollbar>
-  <ng-template #emptyListMessage>
-    <span class="nothing-to-show-message">{{
-      'modals.tokensListModal.noSearchData' | translate
-    }}</span>
-  </ng-template>
+
   <ng-template #disabledTokenHint>
     <div>
       {{ 'modals.tokensListModal.clearParamsHint' | translate }}

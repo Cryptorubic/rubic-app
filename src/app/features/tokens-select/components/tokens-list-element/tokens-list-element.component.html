@@ -3,16 +3,10 @@
     <img [src]="token.image || 'assets/images/icons/coins/empty.svg'" [alt]="token.name" />
   </div>
 
-  <div class="token-card__name-container" [tuiHint]="hint">
+  <div class="token-card__name-container">
     <span>{{ token.symbol }}</span>
     <small>{{ token.name }}</small>
   </div>
-
-  <ng-template #hint>
-    <span>{{ token.symbol }}</span>
-    <br>
-    <small>{{ token.name }}</small>
-  </ng-template>
 
   <div class="token-card__amount" *ngIf="token.amount.gt(0)">
     <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top" tuiHintMode="onDark">{{

@@ -460,7 +460,8 @@
       "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
-      "title": "Выберите токен",
+      "defaultTitle": "Список токенов",
+      "favoriteTokensTitle": "Любимые токены",
       "unsupportedPairsHint": "Этот токен недоступен для обмена. Пожалуйста, выберите поддерживаемые пары.",
       "clearParamsHint": "Очистите другие параметры формы, чтобы выбрать этот токен.",
       "searchPlaceholder": "Найдите по названию или вставьте адрес",

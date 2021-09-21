@@ -32,7 +32,6 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { List } from 'immutable';
-import { AsyncPipe } from '@angular/common';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -231,45 +230,46 @@ export class TokensSelectComponent implements OnInit {
    */
   private updateTokensList(): void {
     this.customToken = null;
-    this.tokens.pipe(takeUntil(this.destroy$)).subscribe(async tokens => {
-      const favoriteTokens = new AsyncPipe(this.cdr).transform(this.favoriteTokens$);
-      const filterByBlockchain = (token: AvailableTokenAmount) =>
-        token.blockchain === this.blockchain;
+    combineLatest([this.tokens, this.favoriteTokens$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async ([tokens, favoriteTokens]) => {
+        const filterByBlockchain = (token: AvailableTokenAmount) =>
+          token.blockchain === this.blockchain;
 
-      const currentBlockchainTokens = tokens.filter(filterByBlockchain);
-      const currentBlockchainFavoriteTokens = favoriteTokens?.filter(filterByBlockchain) || [];
+        const currentBlockchainTokens = tokens.filter(filterByBlockchain);
+        const currentBlockchainFavoriteTokens = favoriteTokens?.filter(filterByBlockchain) || [];
 
-      const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
-      const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
-        currentBlockchainFavoriteTokens
-      );
+        const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
+        const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
+          currentBlockchainFavoriteTokens
+        );
 
-      const tokensWithFavorite = sortedAndFilteredTokens.map(token => {
-        return {
-          ...token,
-          favorite:
-            favoriteTokens.find(
-              favoriteToken =>
-                favoriteToken.blockchain === token.blockchain &&
-                favoriteToken.address === token.address
-            )?.favorite || false
-        };
+        const tokensWithFavorite = sortedAndFilteredTokens.map(token => {
+          return {
+            ...token,
+            favorite:
+              favoriteTokens.find(
+                favoriteToken =>
+                  favoriteToken.blockchain === token.blockchain &&
+                  favoriteToken.address === token.address
+              )?.favorite || false
+          };
+        });
+        this.tokensToShow$.next(tokensWithFavorite);
+        this.favoriteTokensToShow$.next(sortedAndFilteredFavoriteTokens);
+
+        const shouldSearch =
+          (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
+          (this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length);
+
+        if (shouldSearch) {
+          this.loading = true;
+          this.cdr.detectChanges();
+          await this.tryParseQuery();
+          this.loading = false;
+          this.cdr.detectChanges();
+        }
       });
-      this.tokensToShow$.next(tokensWithFavorite);
-      this.favoriteTokensToShow$.next(sortedAndFilteredFavoriteTokens);
-
-      const shouldSearch =
-        (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
-        (this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length);
-
-      if (shouldSearch) {
-        this.loading = true;
-        this.cdr.detectChanges();
-        await this.tryParseQuery();
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
     this.tokensService.tokensNetworkState
       .pipe(takeUntil(this.destroy$))
       .subscribe((el: TokensNetworkState) => {
