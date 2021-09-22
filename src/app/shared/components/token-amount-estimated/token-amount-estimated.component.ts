@@ -40,7 +40,7 @@ export class AmountEstimatedComponent implements OnInit {
 
   private _loading: boolean;
 
-  public usd: string;
+  public usd: BigNumber;
 
   public tokensAmount: string;
 
@@ -74,7 +74,7 @@ export class AmountEstimatedComponent implements OnInit {
       this.blockchain = this.formService.inputValue.toBlockchain;
       const toAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
       this.tokensAmount = toAmount.toFixed();
-      this.usd = toToken?.price && toAmount.multipliedBy(toToken.price).toFixed(2);
+      this.usd = toToken?.price && toAmount.multipliedBy(toToken.price);
 
       this.fee = (form as CryptoTapFormOutput).fee;
 
@@ -85,9 +85,7 @@ export class AmountEstimatedComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(toToken => {
         if (this.tokensAmount) {
-          this.usd =
-            toToken?.price &&
-            new BigNumber(this.tokensAmount).multipliedBy(toToken.price).toFixed(2);
+          this.usd = toToken?.price && new BigNumber(this.tokensAmount).multipliedBy(toToken.price);
           this.cdr.detectChanges();
         }
       });
