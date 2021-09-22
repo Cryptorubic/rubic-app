@@ -68,6 +68,11 @@ export class CrossChainSwapInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.subscribeOnOutputValue();
+    this.subscribeOnSlippage();
+  }
+
+  private subscribeOnOutputValue(): void {
     this.swapFormService.outputValueChanges
       .pipe(
         switchMap(form => {
@@ -102,5 +107,27 @@ export class CrossChainSwapInfoComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  private subscribeOnSlippage(): void {
+    this.settingsService.crossChainRoutingValueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(settingsForm => {
+        const { toAmount } = this.swapFormService.outputValue;
+        if (toAmount?.isFinite()) {
+          const firstSlippage = 1 + settingsForm.slippageTolerance / 100;
+          const { fromAmount } = this.swapFormService.inputValue;
+          const maximumSpent = fromAmount.multipliedBy(firstSlippage);
+
+          const secondSlippage = 1 - settingsForm.slippageTolerance / 100;
+          const minimumReceived = toAmount.multipliedBy(secondSlippage);
+
+          this.crossChainSwapInfo = {
+            ...this.crossChainSwapInfo,
+            maximumSpent,
+            minimumReceived
+          };
+        }
+      });
   }
 }
