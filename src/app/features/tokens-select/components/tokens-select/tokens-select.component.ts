@@ -241,7 +241,7 @@ export class TokensSelectComponent implements OnInit {
 
         const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
         const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
-          currentBlockchainFavoriteTokens
+          currentBlockchainFavoriteTokens.map(el => ({ ...el, amount: new BigNumber(el.amount) }))
         );
 
         const tokensWithFavorite = sortedAndFilteredTokens.map(token => {
