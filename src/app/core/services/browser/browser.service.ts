@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 @Injectable({

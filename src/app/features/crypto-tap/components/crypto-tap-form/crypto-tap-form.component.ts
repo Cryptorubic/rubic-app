@@ -28,7 +28,7 @@ import { NotificationsService } from 'src/app/core/services/notifications/notifi
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-crypto-tap-form',

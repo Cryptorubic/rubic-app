@@ -43,7 +43,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';

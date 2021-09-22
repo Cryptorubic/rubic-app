@@ -23,7 +23,7 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 
 const DESKTOP_WIDTH = 1240;
 

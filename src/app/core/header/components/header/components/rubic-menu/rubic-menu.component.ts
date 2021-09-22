@@ -26,7 +26,7 @@ import { NAVIGATION_LIST } from 'src/app/core/header/components/header/component
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
 
 @Component({

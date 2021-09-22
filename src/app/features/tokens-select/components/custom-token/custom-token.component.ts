@@ -22,7 +22,7 @@ import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/
 })
 export class CustomTokenComponent {
   /**
-   * Does hints should be shown.
+   * Should hints be shown.
    */
   public hintsShown: boolean;
 
@@ -56,7 +56,7 @@ export class CustomTokenComponent {
       })
       .subscribe((confirm: boolean) => {
         if (confirm) {
-          const favoriteToken = { ...this.token, favorite: true } as AvailableTokenAmount;
+          const favoriteToken = { ...this.token, favorite: true };
           this.tokensService.addFavoriteToken(favoriteToken);
           this.tokenSelected.emit(favoriteToken);
         }

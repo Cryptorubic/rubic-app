@@ -19,7 +19,7 @@ export class TokensSelectService {
   ) {}
 
   /**
-   * @description Show tokens dialog.
+   * Show tokens dialog.
    * @param tokens Tokens to show.
    * @param formType Tokens type (from || to)
    * @param currentBlockchain Tokens blockchain.
@@ -28,6 +28,7 @@ export class TokensSelectService {
    * @param idPrefix Id prefix for GA.
    */
   public showDialog(
+    // @TODO Get rid of subjects in polymorpheus context.
     tokens: BehaviorSubject<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,

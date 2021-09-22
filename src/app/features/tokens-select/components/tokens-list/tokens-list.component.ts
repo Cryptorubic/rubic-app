@@ -18,6 +18,7 @@ import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Utils } from 'src/app/shared/models/utils/utils';
+import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
 
 @Component({
   selector: 'app-tokens-list',
@@ -27,30 +28,65 @@ import { Utils } from 'src/app/shared/models/utils/utils';
   providers: [TuiDestroyService]
 })
 export class TokensListComponent implements OnChanges, AfterViewInit {
-  @Output() public tokenSelect = new EventEmitter<AvailableTokenAmount>();
-
-  @Output() public pageUpdate = new EventEmitter<number>();
-
-  @Output() public listTypeChangeHandle = new EventEmitter<'default' | 'favorite'>();
-
+  /**
+   * List type.
+   */
   @Input() public listType: 'default' | 'favorite';
 
+  /**
+   * Does modal has search query string.
+   */
   @Input() public hasQuery: boolean;
 
-  @Input() public tokensNetworkState: { count: number; page: number };
+  /**
+   * State of count and page for current {@link blockchain}.
+   */
+  @Input() public tokensNetworkState: CountPage;
 
+  /**
+   * Current blockchain.
+   */
   @Input() public blockchain: BLOCKCHAIN_NAME;
 
+  /**
+   * List loading status.
+   */
   @Input() public loading: boolean;
 
+  /**
+   * Previously selected token.
+   */
   @Input() public prevSelectedToken: TokenAmount;
 
-  @Input() public set tokens(value: AvailableTokenAmount[]) {
-    if (value) {
-      this._tokens = value;
+  /**
+   * Set list of tokens.
+   * @param tokens List of tokens.
+   */
+  @Input() public set tokens(tokens: AvailableTokenAmount[]) {
+    if (tokens) {
+      this._tokens = tokens;
     }
   }
 
+  /**
+   * Emits event when token selected.
+   */
+  @Output() public tokenSelect = new EventEmitter<AvailableTokenAmount>();
+
+  /**
+   * Emits event when tokens page updated.
+   */
+  @Output() public pageUpdate = new EventEmitter<number>();
+
+  /**
+   * Emits event when tokens list type changed.
+   */
+  @Output() public listTypeChangeHandle = new EventEmitter<'default' | 'favorite'>();
+
+  /**
+   * Set {@link CdkVirtualScrollViewport}
+   * @param scroll
+   */
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     this.listScroll = scroll;
     if (scroll && this.listScroll) {

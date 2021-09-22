@@ -31,7 +31,7 @@ export class AuthService {
   private readonly $currentUser: BehaviorSubject<UserInterface>;
 
   /**
-   * Error code when user session has still active.
+   * Code when user session is still active.
    */
   private readonly USER_IS_IN_SESSION_CODE = '1000';
 

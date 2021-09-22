@@ -42,7 +42,7 @@ export class TokensApiService {
   ) {}
 
   /**
-   * @description Convert backend tokens to Token.
+   * @description Convert {@link BackendToken} to {@link Token} List.
    * @param tokens Tokens from backend response.
    * @return List<Token> Useful tokens list.
    */

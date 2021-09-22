@@ -4,10 +4,10 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { timer } from 'rxjs';
-import { NAVIGATOR } from 'src/app/core/models/navigator';
+import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
-  selector: 'app-metamask-error',
+  selector: 'polymorpheus-unknown-error',
   templateUrl: './unknown-error.component.html',
   styleUrls: ['./unknown-error.component.scss']
 })

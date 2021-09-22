@@ -28,7 +28,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'

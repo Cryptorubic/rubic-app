@@ -30,6 +30,10 @@ export class ErrorsService {
     throw error;
   }
 
+  /**
+   * Catch error, show console message and notification if it needed.
+   * @param error Caught error.
+   */
   public catch(error: RubicError<ERROR_TYPE>): void {
     console.debug(error);
 
@@ -67,19 +71,17 @@ export class ErrorsService {
   }
 
   /**
-   *
-   * @param currentError
-   * @private
+   * Check if error connected to RPC.
+   * @param currentError Error to check.
    */
   private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
     const findRPCError = (rpcError: { code: string; message: string; description: string }) =>
       currentError.message.includes(rpcError.code) ||
       (currentError?.code && String(currentError.code) === rpcError.code);
-    const providerRPCError = EIP_1193.find(findRPCError);
+    const providerRPCError = EIP_1193.some(findRPCError);
     if (providerRPCError) {
       return true;
     }
-    const otherRPCError = EIP_1474.find(findRPCError);
-    return Boolean(otherRPCError);
+    return EIP_1474.some(findRPCError);
   }
 }

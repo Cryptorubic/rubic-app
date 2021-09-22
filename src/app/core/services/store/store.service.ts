@@ -93,7 +93,7 @@ export class StoreService {
     const data = JSON.parse(
       this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
     );
-    return data as Store | {} as Store;
+    return (data || {}) as Store;
   }
 
   /**

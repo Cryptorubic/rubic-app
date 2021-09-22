@@ -2,7 +2,7 @@ import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
