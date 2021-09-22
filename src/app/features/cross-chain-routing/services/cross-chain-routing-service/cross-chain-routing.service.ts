@@ -65,18 +65,6 @@ export class CrossChainRoutingService {
     );
   }
 
-  private static checkBlockchains(
-    fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME
-  ): void | never {
-    if (
-      !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
-      !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
-    ) {
-      throw Error('Not supported blockchains');
-    }
-  }
-
   constructor(
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly pancakeSwapService: PancakeSwapService,
@@ -132,13 +120,16 @@ export class CrossChainRoutingService {
 
   public needApprove(): Observable<boolean> {
     const { fromToken } = this.swapFormService.inputValue;
+    if (!CrossChainRoutingService.isSupportedBlockchain(fromToken.blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+
     const web3Public: Web3Public = this.web3PublicService[fromToken.blockchain];
     if (Web3Public.isNativeAddress(fromToken.address)) {
       return of(false);
     }
 
-    const contractAddress =
-      this.contractAddresses[fromToken.blockchain as SupportedCrossChainSwapBlockchain];
+    const contractAddress = this.contractAddresses[fromToken.blockchain];
     return from(
       web3Public.getAllowance(
         fromToken.address,
@@ -150,8 +141,11 @@ export class CrossChainRoutingService {
 
   public approve(options: TransactionOptions = {}): Observable<TransactionReceipt> {
     const { fromToken } = this.swapFormService.inputValue;
-    const contractAddress =
-      this.contractAddresses[fromToken.blockchain as SupportedCrossChainSwapBlockchain];
+    if (!CrossChainRoutingService.isSupportedBlockchain(fromToken.blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+
+    const contractAddress = this.contractAddresses[fromToken.blockchain];
     return from(
       this.web3PrivateService.approveTokens(fromToken.address, contractAddress, 'infinity', options)
     );
@@ -190,17 +184,23 @@ export class CrossChainRoutingService {
 
   private async getFromTokenAmount(
     fromToken: BlockchainToken,
-    transitToken: BlockchainToken,
+    transitToken: InstantTradeToken,
     transitTokenAmount: BigNumber
   ): Promise<BigNumber> {
     if (fromToken.address.toLowerCase() === transitToken.address.toLowerCase()) {
       return transitTokenAmount;
     }
 
+    if (!CrossChainRoutingService.isSupportedBlockchain(fromToken.blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+
     const amountAbsolute = transitTokenAmount.gt(0)
-      ? await this.uniswapV2Providers[
-          fromToken.blockchain as SupportedCrossChainSwapBlockchain
-        ].getFromAmount(fromToken.address, transitToken, transitTokenAmount)
+      ? await this.uniswapV2Providers[fromToken.blockchain].getFromAmount(
+          fromToken.address,
+          transitToken,
+          transitTokenAmount
+        )
       : 0;
     return Web3Public.fromWei(amountAbsolute, fromToken.decimals);
   }
@@ -211,11 +211,16 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
   }> {
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
-    const fromBlockchain = fromToken.blockchain as SupportedCrossChainSwapBlockchain;
-    const toBlockchain = toToken.blockchain as SupportedCrossChainSwapBlockchain;
-    CrossChainRoutingService.checkBlockchains(fromBlockchain, toBlockchain);
+    const fromBlockchain = fromToken.blockchain;
+    const toBlockchain = toToken.blockchain;
+    if (
+      !CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) ||
+      !CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
+    ) {
+      throw Error('Not supported blockchains');
+    }
 
-    const firstTransitToken = this.transitTokens[fromBlockchain] as BlockchainToken;
+    const firstTransitToken = this.transitTokens[fromBlockchain];
     const secondTransitToken = this.transitTokens[toBlockchain];
 
     const { path: firstPath, toAmount: firstTransitTokenAmount } = await this.getPathAndToAmount(
@@ -289,16 +294,19 @@ export class CrossChainRoutingService {
   }
 
   private async getPathAndToAmount(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: SupportedCrossChainSwapBlockchain,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken
   ): Promise<{ path: string[]; toAmount: BigNumber }> {
     if (fromToken.address.toLowerCase() !== toToken.address.toLowerCase()) {
       try {
-        const instantTrade = await this.uniswapV2Providers[
-          blockchain as SupportedCrossChainSwapBlockchain
-        ].calculateTrade(fromToken, fromAmount, toToken, false);
+        const instantTrade = await this.uniswapV2Providers[blockchain].calculateTrade(
+          fromToken,
+          fromAmount,
+          toToken,
+          false
+        );
         return {
           path: instantTrade.path,
           toAmount: instantTrade.to.amount
@@ -348,8 +356,7 @@ export class CrossChainRoutingService {
           percent / 100
         );
 
-        const fromBlockchain = this.currentCrossChainTrade
-          .fromBlockchain as SupportedCrossChainSwapBlockchain;
+        const { fromBlockchain } = this.currentCrossChainTrade;
         const transitToken = this.transitTokens[fromBlockchain];
         const foundTransitToken = tokens.find(
           token =>
@@ -369,9 +376,10 @@ export class CrossChainRoutingService {
     );
   }
 
-  private async checkGasPrice(toBlockchain: BLOCKCHAIN_NAME): Promise<void | never> {
-    const contractAddress =
-      this.contractAddresses[toBlockchain as SupportedCrossChainSwapBlockchain];
+  private async checkGasPrice(
+    toBlockchain: SupportedCrossChainSwapBlockchain
+  ): Promise<void | never> {
+    const contractAddress = this.contractAddresses[toBlockchain];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
     const maxGasPrice = await web3Public.callContractMethod(
       contractAddress,
@@ -385,7 +393,7 @@ export class CrossChainRoutingService {
   }
 
   private async checkPoolBalance(trade: CrossChainRoutingTrade): Promise<void | never> {
-    const toBlockchain = trade.toBlockchain as SupportedCrossChainSwapBlockchain;
+    const { toBlockchain } = trade;
     const contractAddress = this.contractAddresses[toBlockchain];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
@@ -424,10 +432,8 @@ export class CrossChainRoutingService {
         const tokenInAmountMax = trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
         await web3PublicFromBlockchain.checkBalance(trade.tokenIn, tokenInAmountMax, walletAddress);
 
-        const contractAddress =
-          this.contractAddresses[trade.fromBlockchain as SupportedCrossChainSwapBlockchain];
-        const toBlockchainInContract =
-          this.toBlockchainsInContract[trade.toBlockchain as SupportedCrossChainSwapBlockchain];
+        const contractAddress = this.contractAddresses[trade.fromBlockchain];
+        const toBlockchainInContract = this.toBlockchainsInContract[trade.toBlockchain];
 
         const blockchainCryptoFee = await web3PublicFromBlockchain.callContractMethod(
           contractAddress,
@@ -465,26 +471,33 @@ export class CrossChainRoutingService {
           .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
           .toFixed(0);
 
-        const receipt = await this.web3PrivateService.tryExecuteContractMethod(
-          contractAddress,
-          this.contractAbi,
-          methodName,
-          methodArguments,
-          {
-            ...options,
-            value
-          },
-          err => {
-            const includesErrCode = err.message.includes('-32000');
-            const includesPhrase = err.message.includes('insufficient funds for transfer');
-            return includesErrCode && includesPhrase;
+        try {
+          const receipt = await this.web3PrivateService.tryExecuteContractMethod(
+            contractAddress,
+            this.contractAbi,
+            methodName,
+            methodArguments,
+            {
+              ...options,
+              value
+            },
+            err => {
+              const includesErrCode = err.message.includes('-32000');
+              const includesPhrase = err.message.includes('insufficient funds for transfer');
+              return includesErrCode && includesPhrase;
+            }
+          );
+          this.crossChainRoutingApiService.postTradeInWidget(
+            receipt.transactionHash,
+            trade.fromBlockchain
+          );
+          return receipt;
+        } catch (err) {
+          if (err.includes('swapContract: Not enough amount of tokens')) {
+            throw new CrossChainIsUnavailableWarning();
           }
-        );
-        this.crossChainRoutingApiService.postTradeInWidget(
-          receipt.transactionHash,
-          trade.fromBlockchain
-        );
-        return receipt;
+          throw err;
+        }
       })()
     );
   }
@@ -496,12 +509,8 @@ export class CrossChainRoutingService {
   private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {
     const { fromBlockchain, toBlockchain } = trade;
 
-    const fromContractAddress = this.contractAddresses[
-      fromBlockchain as SupportedCrossChainSwapBlockchain
-    ] as string;
-    const toContractAddress = this.contractAddresses[
-      toBlockchain as SupportedCrossChainSwapBlockchain
-    ] as string;
+    const fromContractAddress = this.contractAddresses[fromBlockchain];
+    const toContractAddress = this.contractAddresses[toBlockchain];
     const fromWeb3Public: Web3Public = this.web3PublicService[fromBlockchain];
     const toWeb3Public: Web3Public = this.web3PublicService[toBlockchain];
 
