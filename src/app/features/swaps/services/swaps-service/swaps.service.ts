@@ -59,7 +59,7 @@ export class SwapsService {
   private subscribeOnTokens() {
     combineLatest([
       this.bridgeService.tokens.pipe(filter(tokens => !!tokens.length)),
-      this.tokensService.tokens.pipe(filter(tokens => !!tokens.size))
+      this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size))
     ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts]) => {
       const updatedTokenAmounts = tokenAmounts.toArray();
 

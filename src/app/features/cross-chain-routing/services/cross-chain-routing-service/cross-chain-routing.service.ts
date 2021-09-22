@@ -339,7 +339,7 @@ export class CrossChainRoutingService {
       return of(null);
     }
 
-    return this.tokensService.tokens.pipe(
+    return this.tokensService.tokens$.pipe(
       filter(tokens => !!tokens.size),
       first(),
       switchMap(async tokens => {

@@ -55,7 +55,7 @@ export class MyTradesService {
   public updateTableTrades(): Observable<TableTrade[]> {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
-      this.tokensService.tokens.pipe(
+      this.tokensService.tokens$.pipe(
         filter(tokens => !!tokens.size),
         first()
       )

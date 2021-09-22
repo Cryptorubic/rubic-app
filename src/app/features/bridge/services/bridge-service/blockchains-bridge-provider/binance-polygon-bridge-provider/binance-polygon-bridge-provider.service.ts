@@ -189,7 +189,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     );
 
     return forkJoin([
-      this.tokensService.tokens.pipe(
+      this.tokensService.tokens$.pipe(
         filter(tokens => !!tokens?.size),
         first()
       ),

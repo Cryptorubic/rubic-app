@@ -19,12 +19,16 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
   providedIn: 'root'
 })
 export class TokensService {
-  private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
+  private readonly _tokens$: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
 
   private readonly _tokensRequestParameters = new Subject<Object>();
 
-  get tokens(): Observable<List<TokenAmount>> {
-    return this._tokens.asObservable();
+  get tokens$(): Observable<List<TokenAmount>> {
+    return this._tokens$.asObservable();
+  }
+
+  get tokens(): List<TokenAmount> {
+    return this._tokens$.getValue();
   }
 
   set tokensRequestParameters(parameters: Object) {
@@ -75,7 +79,7 @@ export class TokensService {
     useTestingMode.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._tokens.next(List(coingeckoTestTokens));
+        this._tokens$.next(List(coingeckoTestTokens));
         this.calculateUserTokensBalances();
       }
     });
@@ -84,11 +88,11 @@ export class TokensService {
   }
 
   public setTokens(tokens: List<TokenAmount>): void {
-    this._tokens.next(tokens);
+    this._tokens$.next(tokens);
   }
 
-  private setDefaultTokenAmounts(tokens: List<Token> = this._tokens.getValue()): void {
-    this._tokens.next(
+  private setDefaultTokenAmounts(tokens: List<Token> = this._tokens$.getValue()): void {
+    this._tokens$.next(
       tokens.map(token => ({
         ...token,
         amount: new BigNumber(NaN)
@@ -97,7 +101,7 @@ export class TokensService {
   }
 
   public async calculateUserTokensBalances(
-    tokens: List<TokenAmount> = this._tokens.getValue()
+    tokens: List<TokenAmount> = this._tokens$.getValue()
   ): Promise<void> {
     if (!tokens.size) {
       return;
@@ -151,7 +155,17 @@ export class TokensService {
     );
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      this._tokens.next(List(tokensWithBalance.flat()));
+      const tokensWithBalanceArray = tokensWithBalance.flat();
+      const updatedTokens = tokens.map(token => {
+        const tokenWithBalance = tokensWithBalanceArray.find(tWithBalance =>
+          TokensService.areTokensEqual(token, tWithBalance)
+        );
+        return {
+          ...token,
+          amount: tokenWithBalance.amount
+        };
+      });
+      this._tokens$.next(List(updatedTokens));
     }
   }
 
@@ -174,19 +188,18 @@ export class TokensService {
         usedInIframe: true,
         amount
       })),
-      tap((token: TokenAmount) => this._tokens.next(this._tokens.getValue().push(token)))
+      tap((token: TokenAmount) => this._tokens$.next(this.tokens.push(token)))
     );
   }
 
   /**
    * Gets price of native token.
+   * @param blockchain Blockchain of native token.
    */
   public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
-    const nativeCoin = this._tokens
-      .getValue()
-      .find(token =>
-        TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
-      );
+    const nativeCoin = this.tokens.find(token =>
+      TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
+    );
     return this.coingeckoApiService
       .getNativeCoinPriceInUsdByCoingecko(blockchain)
       .pipe(map(price => price || nativeCoin?.price))
@@ -195,17 +208,19 @@ export class TokensService {
 
   /**
    * Updates token's price and emits new tokens' list with updated token.
+   * @param token Token to update.
    */
   public updateTokenPriceInUsd(token: TokenAmount): void {
     this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
       if (tokenPrice) {
+        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
         const newToken = {
           ...token,
+          ...foundToken,
           price: tokenPrice
         };
-        this._tokens.next(
-          this._tokens
-            .getValue()
+        this._tokens$.next(
+          this.tokens
             .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
             .push(newToken)
         );

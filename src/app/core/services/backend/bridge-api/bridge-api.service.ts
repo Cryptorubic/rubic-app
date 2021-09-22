@@ -251,7 +251,7 @@ export class BridgeApiService {
   }
 
   private getTokenPrice(bridgeTokenPair: BridgeTokenPair): Observable<number> {
-    return this.tokensService.tokens.pipe(
+    return this.tokensService.tokens$.pipe(
       first(),
       map(backendTokens => {
         const prices = Object.values(BLOCKCHAIN_NAME)
