@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -9,10 +9,10 @@ import { LanguageListElement } from 'src/app/core/header/models/language-list-el
 import { languagesList } from 'src/app/core/header/models/languages-list';
 import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
-import { RubicTogglerThemeComponent } from 'src/app/core/header/components/header/components/rubic-toggler-theme/rubic-toggler-theme.component';
 import { CurrentLanguageComponent } from 'src/app/core/header/components/header/components/current-language/current-language.component';
 import { TutorialsComponent } from 'src/app/core/header/components/header/components/tutorials/tutorials.component';
 import { SettingsListItem } from 'src/app/core/header/models/settings-list-item';
+import { ThemeSwitcherComponent } from 'src/app/core/header/components/header/components/theme-switcher/theme-switcher.component';
 
 @Component({
   selector: 'app-settings-list',
@@ -23,13 +23,9 @@ import { SettingsListItem } from 'src/app/core/header/models/settings-list-item'
 export class SettingsListComponent {
   public readonly settingsList: SettingsListItem[];
 
-  public readonly $isMobile: Observable<boolean>;
-
-  private themeSubscription$: Subscription;
-
   /**
-   * @description get current language
-   * @return object of current language
+   * Gets current language.
+   * @return LanguageListElement current language object.
    */
   public get currentLanguage(): LanguageListElement {
     return languagesList.find(lang => lang.lng === this.translateService.currentLang);
@@ -47,7 +43,7 @@ export class SettingsListComponent {
       {
         title: 'settings.header.switchTheme.title',
         description: 'settings.header.switchTheme.desc',
-        component: new PolymorpheusComponent(RubicTogglerThemeComponent),
+        component: new PolymorpheusComponent(ThemeSwitcherComponent),
         action: this.switchTheme.bind(this)
       },
       {
@@ -74,25 +70,22 @@ export class SettingsListComponent {
   }
 
   /**
-   * @description toggle dark or light site theme
-   * @return void
+   * Toggle dark or light site theme.
    */
   public switchTheme(): void {
     this.themeService.switchTheme();
   }
 
   /**
-   * @description navigate by url
-   * @param url for navigate
-   * @return void
+   * Navigate by url.
+   * @param Url for navigate.
    */
   public navigateExternalLink(url: string): void {
     window.open(url, '_blank');
   }
 
   /**
-   * @description switch component to LanguageSettings
-   * @return void
+   * Switch component to LanguageSettings.
    */
   public switchToLanguageSettings(): void {
     this.context.next({

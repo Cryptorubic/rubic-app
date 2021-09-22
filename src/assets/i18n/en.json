@@ -504,7 +504,7 @@
       },
       "language": {
         "title": "Language",
-        "desc": "ChooseLanguage"
+        "desc": "Choose language"
       },
       "gasPrice": {
         "title": "Gas price",
