@@ -17,30 +17,30 @@ import {
   Web3PublicService,
   Web3SupportedBlockchains
 } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/constants/commonUniswapV2Abi';
+import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/commonUniswapV2Abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
   ItOptions,
   ItProvider
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
-import { defaultEstimatedGas } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/constants/defaultEstimatedGas';
-import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/models/CreateTradeMethod';
-import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/models/GasCalculationMethod';
+import { defaultEstimatedGas } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/defaultEstimatedGas';
+import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
+import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
 import { UniswapRoute } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapRoute';
-import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/models/UniswapV2Trade';
-import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/models/SWAP_METHOD';
+import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
+import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 import {
   UniswapV2CalculatedInfo,
   UniswapV2CalculatedInfoWithProfit
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/models/UniswapV2CalculatedInfo';
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/models/UniswapInstantTrade';
+import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapInstantTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 
 @Injectable()
-export abstract class AbstractUniswapV2Service implements ItProvider {
+export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly contractAbi = CommonUniswapV2Abi;
 
   private readonly defaultEstimateGas = defaultEstimatedGas;
@@ -63,31 +63,21 @@ export abstract class AbstractUniswapV2Service implements ItProvider {
   private maxTransitTokens: number;
 
   // Injected services
-  private readonly web3PublicService: Web3PublicService;
+  private readonly web3PublicService = inject(Web3PublicService);
 
-  private readonly web3Private: Web3PrivateService;
+  private readonly web3Private = inject(Web3PrivateService);
 
-  private readonly providerConnectorService: ProviderConnectorService;
+  private readonly providerConnectorService = inject(ProviderConnectorService);
 
-  private readonly authService: AuthService;
+  private readonly authService = inject(AuthService);
 
-  private readonly settingsService: SettingsService;
+  private readonly settingsService = inject(SettingsService);
 
-  private readonly tokensService: TokensService;
+  private readonly tokensService = inject(TokensService);
 
-  private readonly useTestingModeService: UseTestingModeService;
+  private readonly useTestingModeService = inject(UseTestingModeService);
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    // inject services
-    this.web3PublicService = inject(Web3PublicService);
-    this.web3Private = inject(Web3PrivateService);
-    this.providerConnectorService = inject(ProviderConnectorService);
-    this.authService = inject(AuthService);
-    this.settingsService = inject(SettingsService);
-    this.tokensService = inject(TokensService);
-    this.useTestingModeService = inject(UseTestingModeService);
-    // inject services
-
     this.setUniswapConstants(uniswapConstants);
 
     this.authService.getCurrentUser().subscribe(user => {

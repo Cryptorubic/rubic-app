@@ -37,7 +37,7 @@ import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
-import { AbstractUniswapV2Service } from '../../../instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/abstract-uniswap-v2.service';
+import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +49,7 @@ export class CrossChainRoutingService {
 
   private transitTokens: TransitTokens;
 
-  private uniswapV2Providers: Record<SupportedCrossChainSwapBlockchain, AbstractUniswapV2Service>;
+  private uniswapV2Providers: Record<SupportedCrossChainSwapBlockchain, CommonUniswapV2Service>;
 
   private toBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number>;
 
