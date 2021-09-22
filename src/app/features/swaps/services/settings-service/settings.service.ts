@@ -80,7 +80,7 @@ export class SettingsService {
   constructor(private readonly storeService: StoreService, private iframeService: IframeService) {
     this.defaultItSettings = {
       autoSlippageTolerance: true,
-      slippageTolerance: 1,
+      slippageTolerance: 2,
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,

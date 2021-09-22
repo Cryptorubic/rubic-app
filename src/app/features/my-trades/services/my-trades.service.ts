@@ -31,7 +31,9 @@ interface PanamaStatusResponse {
   };
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MyTradesService {
   private _tableTrades$ = new BehaviorSubject<TableTrade[]>(undefined);
 
@@ -62,6 +64,7 @@ export class MyTradesService {
         this.walletAddress = user?.address || null;
 
         if (!this.walletAddress || !tokens.size) {
+          this._tableTrades$.next([]);
           return EMPTY;
         }
 

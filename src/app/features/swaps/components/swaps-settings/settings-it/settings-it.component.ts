@@ -12,7 +12,7 @@ import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsItComponent implements OnInit {
-  private defaultSlippageTolerance = 1;
+  private defaultSlippageTolerance = 2;
 
   public instantTradeForm: FormGroup<ItSettingsForm>;
 

@@ -18,6 +18,7 @@ import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-
 import { HttpClient } from '@angular/common/http';
 import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
 import { RpcResponse } from 'src/app/core/services/blockchain/types/RpcResponse';
+import { Cacheable } from 'ts-cacheable';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -231,7 +232,7 @@ export class Web3Public {
    * @return average gas price in Wei
    */
   public async getGasPrice(): Promise<string> {
-    return this.web3.eth.getGasPrice();
+    return this.getGasPrice$().toPromise();
   }
 
   /**
@@ -239,7 +240,7 @@ export class Web3Public {
    * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
-    const gasPrice = await this.web3.eth.getGasPrice();
+    const gasPrice = await this.getGasPrice();
     return new BigNumber(gasPrice).div(10 ** 18);
   }
 
@@ -618,5 +619,14 @@ export class Web3Public {
       .toPromise();
 
     return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
+  }
+
+  /**
+   * @description calculates the average price per unit of gas according to web3
+   * @return average gas price in Wei
+   */
+  @Cacheable({ maxAge: 10000 })
+  private getGasPrice$(): Observable<string> {
+    return from(this.web3.eth.getGasPrice());
   }
 }
