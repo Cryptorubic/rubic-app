@@ -27,11 +27,12 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 import {
+  CountPage,
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { List } from 'immutable';
+import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -76,7 +77,7 @@ export class TokensSelectComponent implements OnInit {
 
   private form: FormGroup<ISwapFormInput>;
 
-  public tokensNetworkState: { page: number; count: number };
+  public tokensNetworkState: CountPage;
 
   @ViewChild(TokensListComponent) tokensList: TokensListComponent;
 
@@ -84,7 +85,7 @@ export class TokensSelectComponent implements OnInit {
 
   public tokensListLoading: boolean;
 
-  public favoriteTokens$: Observable<AvailableTokenAmount[]>;
+  public favoriteTokens$: Observable<LocalToken[]>;
 
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
@@ -127,11 +128,7 @@ export class TokensSelectComponent implements OnInit {
     this.favoriteTokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>(null);
     this.tokensListLoading = false;
     this.querySubject = new BehaviorSubject<string>('');
-    this.favoriteTokens$ = this.tokensService.favoriteTokens$.pipe(
-      map((tokens: List<TokenAmount>) => {
-        return tokens.map(el => ({ ...el, available: true })).toArray();
-      })
-    );
+    this.favoriteTokens$ = this.tokensService.favoriteTokens$;
     combineLatest([this.blockchainSubject.asObservable(), this.favoriteTokens$])
       .pipe(
         takeUntil(this.destroy$),
@@ -237,30 +234,21 @@ export class TokensSelectComponent implements OnInit {
           token.blockchain === this.blockchain;
 
         const currentBlockchainTokens = tokens.filter(filterByBlockchain);
-        const currentBlockchainFavoriteTokens = favoriteTokens?.filter(filterByBlockchain) || [];
-
         const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
-        const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
-          currentBlockchainFavoriteTokens
-        );
+        const tokensWithFavorite = sortedAndFilteredTokens.map(token => ({
+          ...token,
+          favorite: favoriteTokens.some(favoriteToken =>
+            TokensService.areTokensEqual(favoriteToken, token)
+          )
+        }));
+        const availableFavoriteTokens = tokensWithFavorite.filter(el => el.favorite);
 
-        const tokensWithFavorite = sortedAndFilteredTokens.map(token => {
-          return {
-            ...token,
-            favorite:
-              favoriteTokens.find(
-                favoriteToken =>
-                  favoriteToken.blockchain === token.blockchain &&
-                  favoriteToken.address === token.address
-              )?.favorite || false
-          };
-        });
         this.tokensToShow$.next(tokensWithFavorite);
-        this.favoriteTokensToShow$.next(sortedAndFilteredFavoriteTokens);
+        this.favoriteTokensToShow$.next(availableFavoriteTokens);
 
         const shouldSearch =
           (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
-          (this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length);
+          (this.listType === 'favorite' && !availableFavoriteTokens.length);
 
         if (shouldSearch) {
           this.loading = true;

@@ -25,6 +25,7 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -41,7 +42,7 @@ export class TokensService {
   /**
    * Current favorite tokens list state.
    */
-  public readonly favoriteTokensSubject: BehaviorSubject<List<TokenAmount>>;
+  public readonly favoriteTokensSubject: BehaviorSubject<LocalToken[]>;
 
   /**
    * Current tokens request options state.
@@ -65,10 +66,8 @@ export class TokensService {
   /**
    * Get current tokens list.
    */
-  public get favoriteTokens$(): Observable<List<TokenAmount>> {
-    return this.favoriteTokensSubject
-      .asObservable()
-      .pipe(map(list => list.filter(token => token !== null)));
+  public get favoriteTokens$(): Observable<LocalToken[]> {
+    return this.favoriteTokensSubject.asObservable();
   }
 
   /**
@@ -114,19 +113,11 @@ export class TokensService {
     private readonly store: StoreService
   ) {
     this.tokensSubject = new BehaviorSubject(List([]));
-    this.favoriteTokensSubject = new BehaviorSubject(List(this.fetchFavoriteTokens()));
+    this.favoriteTokensSubject = new BehaviorSubject(this.fetchFavoriteTokens());
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
     this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
 
     this.setupSubscriptions();
-  }
-
-  /**
-   * Set favorite tokens list.
-   * @param tokens Favorite tokens list.
-   */
-  public setFavoriteTokens(tokens: List<TokenAmount>): void {
-    this.favoriteTokensSubject.next(tokens);
   }
 
   /**
@@ -148,7 +139,6 @@ export class TokensService {
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
       await this.calculateUserTokensBalances();
-      await this.calculateFavoriteTokensBalances();
     });
 
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
@@ -156,7 +146,6 @@ export class TokensService {
         this.isTestingMode = true;
         this.tokensSubject.next(List(coingeckoTestTokens));
         await this.calculateUserTokensBalances();
-        await this.calculateFavoriteTokensBalances();
       }
     });
 
@@ -205,35 +194,6 @@ export class TokensService {
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
       this.tokensSubject.next(List(tokensWithBalance));
-    }
-  }
-
-  /**
-   * Calculate balance for token list.
-   * @param favoriteTokens Favorite tokens list.
-   */
-  public async calculateFavoriteTokensBalances(
-    favoriteTokens: List<TokenAmount> = this.favoriteTokensSubject.getValue()
-  ): Promise<void> {
-    if (!favoriteTokens.size || favoriteTokens.find(el => el === null)) {
-      return;
-    }
-
-    if (!this.userAddress) {
-      this.tokensSubject.next(
-        favoriteTokens.map(token => ({
-          ...token,
-          amount: new BigNumber(0),
-          favorite: false
-        }))
-      );
-      return;
-    }
-
-    const tokensWithBalance = await this.getTokensWithBalance(favoriteTokens);
-
-    if (!this.isTestingMode || (this.isTestingMode && favoriteTokens.size < 1000)) {
-      this.favoriteTokensSubject.next(List(tokensWithBalance));
     }
   }
 
@@ -351,14 +311,16 @@ export class TokensService {
   /**
    * Update pagination state for current network.
    * @param network Blockchain name.
+   * @param next Have next page or not.
    */
-  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME): void {
+  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME, next: string): void {
     const oldState = this.tokensNetworkStateSubject.value;
     const newState = {
       ...oldState,
       [network]: {
         ...oldState[network],
-        page: oldState[network].page + 1
+        page: oldState[network].page + 1,
+        maxPage: next ? oldState[network].maxPage + 1 : oldState[network].maxPage
       }
     } as TokensNetworkState;
     this.tokensNetworkStateSubject.next(newState);
@@ -386,7 +348,9 @@ export class TokensService {
           ...tokens,
           result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
         })),
-        tap(() => this.updateNetworkPage(network)),
+        tap((tokens: { total: number; result: List<TokenAmount>; next: string }) =>
+          this.updateNetworkPage(network, tokens.next)
+        ),
         switchMap((tokens: { total: number; result: List<TokenAmount> }) => {
           return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
         })
@@ -420,8 +384,12 @@ export class TokensService {
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: TokenAmount): void {
-    const collection = this.favoriteTokensSubject.value.concat(favoriteToken);
-    this.store.setItem('favoriteTokens', collection.toArray());
+    const localToken: LocalToken = {
+      address: favoriteToken.address,
+      blockchain: favoriteToken.blockchain
+    };
+    const collection = [...this.favoriteTokensSubject.value, localToken];
+    this.store.setItem('favoriteTokens', collection);
     this.favoriteTokensSubject.next(collection);
   }
 
@@ -430,21 +398,18 @@ export class TokensService {
    * @param token Favorite token to remove.
    */
   public removeFavoriteToken(token: TokenAmount): void {
-    const filteredTokens = this.favoriteTokensSubject.value.filter(el => {
-      return (
-        (el.blockchain === token.blockchain && el.address !== token.address) ||
-        el.blockchain !== token.blockchain
-      );
-    });
+    const filteredTokens = this.favoriteTokensSubject.value.filter(
+      el => !TokensService.areTokensEqual(el, token)
+    );
 
-    this.store.setItem('favoriteTokens', filteredTokens.toArray());
+    this.store.setItem('favoriteTokens', filteredTokens);
     this.favoriteTokensSubject.next(filteredTokens);
   }
 
   /**
    * Fetch favorite tokens from local storage.
    */
-  private fetchFavoriteTokens(): TokenAmount[] {
-    return this.store.getItem('favoriteTokens');
+  private fetchFavoriteTokens(): LocalToken[] {
+    return this.store.getItem('favoriteTokens') || [];
   }
 }

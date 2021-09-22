@@ -14,11 +14,12 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Utils } from 'src/app/shared/models/utils/utils';
 import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-tokens-list',
@@ -88,13 +89,14 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * @param scroll
    */
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
-    this.listScroll = scroll;
-    if (scroll && this.listScroll) {
-      this.observeScroll();
+    if (scroll) {
+      this.scrollSubject.next(scroll);
     }
   }
 
   private _tokens: AvailableTokenAmount[] = [];
+
+  public scrollSubject: BehaviorSubject<CdkVirtualScrollViewport>;
 
   public get tokens(): AvailableTokenAmount[] {
     return this._tokens;
@@ -114,6 +116,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
     private readonly destroy$: TuiDestroyService
   ) {
     this.pageUpdate = new EventEmitter<number>();
+    this.scrollSubject = new BehaviorSubject<CdkVirtualScrollViewport>(null);
   }
 
   /**
@@ -136,22 +139,32 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * Observe tokens scroll and fetch new if needed.
    */
   private observeScroll(): void {
-    this.listScroll.renderedRangeStream
+    this.scrollSubject
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(500),
-        filter(el => {
-          if (this.loading || this.hasQuery || this.listType === 'favorite') {
-            return false;
-          }
-          const endOfList = el.end > this.tokens.length - 50;
-          const shouldFetch =
-            !this.tokensNetworkState.count ||
-            (!this.tokensNetworkState &&
-              this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150));
+        switchMap(scroll =>
+          scroll.renderedRangeStream.pipe(
+            debounceTime(500),
+            filter(el => {
+              if (
+                this.loading ||
+                this.hasQuery ||
+                this.listType === 'favorite' ||
+                !this.tokensNetworkState ||
+                this.tokensNetworkState.maxPage === this.tokensNetworkState.page
+              ) {
+                return false;
+              }
+              const endOfList = el.end > this.tokens.length - 30;
+              const shouldFetch =
+                !this.tokensNetworkState.count ||
+                (!this.tokensNetworkState &&
+                  this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150));
 
-          return endOfList && shouldFetch;
-        })
+              return endOfList && shouldFetch;
+            })
+          )
+        )
       )
       .subscribe(() => {
         this.pageUpdate.emit();
