@@ -30,7 +30,6 @@ import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from 'src/app/features/cross-chain-ro
 import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
-import { UniswapV2ProviderAbstract } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-provider/uniswap-v2-provider.abstract';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
 import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
@@ -38,6 +37,7 @@ import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
+import { AbstractUniswapV2Service } from '../../../instant-trade/services/instant-trade-service/providers/common/uniswap-v2/abstract-service/abstract-uniswap-v2.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +49,7 @@ export class CrossChainRoutingService {
 
   private transitTokens: TransitTokens;
 
-  private uniswapV2Providers: Record<SupportedCrossChainSwapBlockchain, UniswapV2ProviderAbstract>;
+  private uniswapV2Providers: Record<SupportedCrossChainSwapBlockchain, AbstractUniswapV2Service>;
 
   private toBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number>;
 
