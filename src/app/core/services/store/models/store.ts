@@ -1,5 +1,5 @@
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 
 export interface Store {
   /**
@@ -30,5 +30,5 @@ export interface Store {
   /**
    * User favorite tokens.
    */
-  favoriteTokens: TokenAmount[];
+  favoriteTokens: LocalToken[];
 }

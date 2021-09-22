@@ -156,6 +156,38 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     >([]);
   }
 
+  private static calculateBestRate(tradeData: InstantTrade[]): number {
+    const { index: providerIndex } = tradeData.reduce(
+      (bestRate, trade, i: number) => {
+        if (!trade) {
+          return bestRate;
+        }
+
+        const { gasFeeInUsd, to } = trade;
+        let profit;
+        if (!to.token.price) {
+          profit = to.amount;
+        } else {
+          const amountInUsd = to.amount?.multipliedBy(to.token.price);
+          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
+        }
+
+        return profit?.gt(bestRate.profit)
+          ? {
+              index: i,
+              profit
+            }
+          : bestRate;
+      },
+      {
+        index: -1,
+        profit: new BigNumber(-Infinity)
+      }
+    );
+
+    return providerIndex;
+  }
+
   public ngOnInit(): void {
     this.setupCalculatingTrades();
     this.setupHiddenCalculatingTrades();
@@ -436,7 +468,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
     this.providerControllers = newProviders;
 
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+    const bestProviderIndex = InstantTradeBottomFormComponent.calculateBestRate(
+      tradeData.map(el => el.value)
+    );
     if (bestProviderIndex !== -1) {
       newProviders[bestProviderIndex].isBestRate = true;
       newProviders[bestProviderIndex].isSelected = true;
@@ -457,38 +491,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
     this.cdr.detectChanges();
-  }
-
-  private calculateBestRate(tradeData: InstantTrade[]): number {
-    const { index: providerIndex } = tradeData.reduce(
-      (bestRate, trade, i: number) => {
-        if (!trade) {
-          return bestRate;
-        }
-
-        const { gasFeeInUsd, to } = trade;
-        let profit;
-        if (!to.token.price) {
-          profit = to.amount;
-        } else {
-          const amountInUsd = to.amount?.multipliedBy(to.token.price);
-          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
-        }
-
-        return profit?.gt(bestRate.profit)
-          ? {
-              index: i,
-              profit
-            }
-          : bestRate;
-      },
-      {
-        index: -1,
-        profit: new BigNumber(-Infinity)
-      }
-    );
-
-    return providerIndex;
   }
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
@@ -584,8 +586,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
-      this.tokensService.calculateUserTokensBalances();
-      this.tokensService.calculateFavoriteTokensBalances();
+      await this.tokensService.calculateUserTokensBalances();
 
       if (this.isIframe$) {
         this.needApprove = false;
@@ -654,7 +655,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       this.counterNotificationsService.updateUnread();
       await this.tokensService.calculateUserTokensBalances();
-      await this.tokensService.calculateFavoriteTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
