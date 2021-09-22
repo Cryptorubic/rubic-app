@@ -147,7 +147,8 @@ export class TokensApiService {
       map((tokensResponse: TokensResponse) => {
         return {
           total: tokensResponse.count,
-          result: TokensApiService.prepareTokens(tokensResponse.results)
+          result: TokensApiService.prepareTokens(tokensResponse.results),
+          next: tokensResponse.next
         };
       })
     );

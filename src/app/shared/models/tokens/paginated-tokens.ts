@@ -3,6 +3,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 export interface CountPage {
   count: number | undefined;
   page: number;
+  maxPage: number;
 }
 
 export interface TokensNetworkState {

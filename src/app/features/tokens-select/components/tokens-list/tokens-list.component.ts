@@ -89,7 +89,9 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * @param scroll
    */
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
-    this.scrollSubject.next(scroll);
+    if (scroll) {
+      this.scrollSubject.next(scroll);
+    }
   }
 
   private _tokens: AvailableTokenAmount[] = [];
@@ -139,15 +141,21 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   private observeScroll(): void {
     this.scrollSubject
       .pipe(
+        takeUntil(this.destroy$),
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
-            takeUntil(this.destroy$),
             debounceTime(500),
             filter(el => {
-              if (this.loading || this.hasQuery || this.listType === 'favorite') {
+              if (
+                this.loading ||
+                this.hasQuery ||
+                this.listType === 'favorite' ||
+                !this.tokensNetworkState ||
+                this.tokensNetworkState.maxPage === this.tokensNetworkState.page
+              ) {
                 return false;
               }
-              const endOfList = el.end > this.tokens.length - 50;
+              const endOfList = el.end > this.tokens.length - 30;
               const shouldFetch =
                 !this.tokensNetworkState.count ||
                 (!this.tokensNetworkState &&

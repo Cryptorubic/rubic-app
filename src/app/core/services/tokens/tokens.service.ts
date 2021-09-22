@@ -114,7 +114,8 @@ export class TokensService {
     private readonly store: StoreService
   ) {
     this.tokensSubject = new BehaviorSubject(List([]));
-    this.favoriteTokensSubject = new BehaviorSubject(List(this.fetchFavoriteTokens()));
+    const favoriteTokens = List(this.fetchFavoriteTokens());
+    this.favoriteTokensSubject = new BehaviorSubject(favoriteTokens);
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
     this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
 
@@ -220,11 +221,11 @@ export class TokensService {
     }
 
     if (!this.userAddress) {
-      this.tokensSubject.next(
+      this.favoriteTokensSubject.next(
         favoriteTokens.map(token => ({
           ...token,
-          amount: new BigNumber(0),
-          favorite: false
+          amount: new BigNumber(NaN),
+          favorite: true
         }))
       );
       return;
@@ -351,14 +352,16 @@ export class TokensService {
   /**
    * Update pagination state for current network.
    * @param network Blockchain name.
+   * @param next Have next page or not.
    */
-  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME): void {
+  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME, next: string): void {
     const oldState = this.tokensNetworkStateSubject.value;
     const newState = {
       ...oldState,
       [network]: {
         ...oldState[network],
-        page: oldState[network].page + 1
+        page: oldState[network].page + 1,
+        maxPage: next ? oldState[network].maxPage + 1 : oldState[network].maxPage
       }
     } as TokensNetworkState;
     this.tokensNetworkStateSubject.next(newState);
@@ -386,7 +389,9 @@ export class TokensService {
           ...tokens,
           result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
         })),
-        tap(() => this.updateNetworkPage(network)),
+        tap((tokens: { total: number; result: List<TokenAmount>; next: string }) =>
+          this.updateNetworkPage(network, tokens.next)
+        ),
         switchMap((tokens: { total: number; result: List<TokenAmount> }) => {
           return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
         })
@@ -445,6 +450,7 @@ export class TokensService {
    * Fetch favorite tokens from local storage.
    */
   private fetchFavoriteTokens(): TokenAmount[] {
-    return this.store.getItem('favoriteTokens');
+    const tokens = this.store.getItem('favoriteTokens') || [];
+    return tokens.map(el => ({ ...el, amount: new BigNumber(0) }));
   }
 }

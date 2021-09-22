@@ -27,6 +27,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 import {
+  CountPage,
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
@@ -76,7 +77,7 @@ export class TokensSelectComponent implements OnInit {
 
   private form: FormGroup<ISwapFormInput>;
 
-  public tokensNetworkState: { page: number; count: number };
+  public tokensNetworkState: CountPage;
 
   @ViewChild(TokensListComponent) tokensList: TokensListComponent;
 
@@ -244,19 +245,28 @@ export class TokensSelectComponent implements OnInit {
           currentBlockchainFavoriteTokens.map(el => ({ ...el, amount: new BigNumber(el.amount) }))
         );
 
-        const tokensWithFavorite = sortedAndFilteredTokens.map(token => {
-          return {
-            ...token,
-            favorite:
-              favoriteTokens.find(
-                favoriteToken =>
-                  favoriteToken.blockchain === token.blockchain &&
-                  favoriteToken.address === token.address
-              )?.favorite || false
-          };
-        });
+        const tokensWithFavorite = sortedAndFilteredTokens.map(token => ({
+          ...token,
+          favorite:
+            favoriteTokens.find(
+              favoriteToken =>
+                favoriteToken.blockchain === token.blockchain &&
+                favoriteToken.address === token.address
+            )?.favorite || false
+        }));
+
+        const availableFavoriteTokens = sortedAndFilteredFavoriteTokens.map(token => ({
+          ...token,
+          available:
+            tokensWithFavorite.find(
+              availableToken =>
+                availableToken.blockchain === token.blockchain &&
+                availableToken.address === token.address
+            )?.available || false
+        }));
+
         this.tokensToShow$.next(tokensWithFavorite);
-        this.favoriteTokensToShow$.next(sortedAndFilteredFavoriteTokens);
+        this.favoriteTokensToShow$.next(availableFavoriteTokens);
 
         const shouldSearch =
           (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
