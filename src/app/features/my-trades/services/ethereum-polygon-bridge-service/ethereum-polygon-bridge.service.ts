@@ -8,7 +8,9 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { TransactionReceipt } from 'web3-eth';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EthereumPolygonBridgeService {
   constructor(
     private readonly bridgeApiService: BridgeApiService,
