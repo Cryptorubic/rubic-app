@@ -1,0 +1,14 @@
+<div class="content">
+  {{ 'errors.unknown' | translate }}
+  <span
+    class="content__icon"
+    [inlineSVG]="'assets/images/icons/copy.svg'"
+    (click)="copyToClipboard()"
+    [tuiManualHint]="template"
+    [tuiManualHintShow]="hintShown"
+  ></span>
+</div>
+
+<ng-template #template>
+  Error copied on clipboard. Please, send it to our support!
+</ng-template>

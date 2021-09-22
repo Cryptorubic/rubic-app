@@ -457,7 +457,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           await this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.conditionalCalculate();
+          await this.conditionalCalculate();
         },
         err => {
           this.tradeInProgressSubscription$?.unsubscribe();

@@ -52,7 +52,7 @@ export class CrossChainRoutingApiService {
   }
 
   /**
-   * @description get list of user's cross chain trades
+   * get list of user's cross chain trades
    * @param walletAddress wallet address of user
    * @return list of trades
    */
@@ -67,7 +67,7 @@ export class CrossChainRoutingApiService {
   }
 
   /**
-   * @description post trade with domain query {@link HTTPInterceptor} to save extended trade info in backend
+   * post trade with domain query {@link HTTPInterceptor} to save extended trade info in backend
    * @param transactionHash hash of crosschain swap transaction
    * @param blockchain swap origin blockchain
    */

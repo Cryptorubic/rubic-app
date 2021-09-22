@@ -78,7 +78,7 @@ export class Web3Public {
   }
 
   /**
-   * @description checks if a given address is a valid Ethereum address
+   * checks if a given address is a valid Ethereum address
    * @param address the address to check validity
    */
   static isAddressCorrect(address: string): boolean {
@@ -86,7 +86,7 @@ export class Web3Public {
   }
 
   /**
-   * @description converts Eth amount into Wei
+   * converts Eth amount into Wei
    * @param value to convert in Eth
    */
   static ethToWei(value: string | BigNumber): string {
@@ -94,7 +94,7 @@ export class Web3Public {
   }
 
   /**
-   * @description converts Wei amount into Eth
+   * converts Wei amount into Eth
    * @param value to convert in Wei
    */
   static weiToEth(value: string | BigNumber): string {
@@ -102,7 +102,7 @@ export class Web3Public {
   }
 
   /**
-   * @description checks if address is Ether native address
+   * checks if address is Ether native address
    * @param address address to check
    */
   static isNativeAddress = (address: string): boolean => {
@@ -110,7 +110,7 @@ export class Web3Public {
   };
 
   /**
-   * @description set new web3 provider
+   * set new web3 provider
    * @param provider
    */
   public setProvider(provider: Provider): void {
@@ -118,7 +118,7 @@ export class Web3Public {
   }
 
   /**
-   * @description HealthCheck current rpc node
+   * HealthCheck current rpc node
    * @param timeoutMs acceptable node response timeout
    * @return null if healthcheck is not defined for current blockchain, else is node works status
    */
@@ -150,7 +150,7 @@ export class Web3Public {
   }
 
   /**
-   * @description gets account balance in Eth units
+   * gets account balance in Eth units
    * @param address wallet address whose balance you want to find out
    * @param [options] additional options
    * @param [options.inWei = false] boolean flag to get integer result in Wei
@@ -180,7 +180,7 @@ export class Web3Public {
   }
 
   /**
-   * @description gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
+   * gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param address wallet address whose balance you want to find out
    * @return account tokens balance as integer (multiplied to 10 ** decimals)
@@ -193,14 +193,14 @@ export class Web3Public {
   }
 
   /**
-   * @description get latest block
+   * get latest block
    */
   public getBlock(): Promise<BlockTransactionString> {
     return this.web3.eth.getBlock('latest');
   }
 
   /**
-   * @description predicts the volume of gas required to execute the contract method
+   * predicts the volume of gas required to execute the contract method
    * @param contractAbi abi of smart-contract
    * @param contractAddress address of smart-contract
    * @param methodName method whose execution gas number is to be calculated
@@ -228,7 +228,7 @@ export class Web3Public {
   }
 
   /**
-   * @description calculates the average price per unit of gas according to web3
+   * calculates the average price per unit of gas according to web3
    * @return average gas price in Wei
    */
   public async getGasPrice(): Promise<string> {
@@ -236,7 +236,7 @@ export class Web3Public {
   }
 
   /**
-   * @description calculates the average price per unit of gas according to web3
+   * calculates the average price per unit of gas according to web3
    * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
@@ -245,7 +245,7 @@ export class Web3Public {
   }
 
   /**
-   * @description calculates the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
+   * calculates the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
    * @param gasLimit gas limit
    * @param etherPrice price of Eth unit
    * @return gas fee in usd$
@@ -256,7 +256,7 @@ export class Web3Public {
   }
 
   /**
-   * @description executes allowance method in ERC-20 token contract
+   * executes allowance method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address, allowed to spend
    * @param ownerAddress wallet address to spend from
@@ -276,7 +276,7 @@ export class Web3Public {
   }
 
   /**
-   * @description gets mined transaction gas fee in Ether
+   * gets mined transaction gas fee in Ether
    * @param hash transaction hash
    * @param [options] additional options
    * @param [options.inWei = false] if true, then the return value will be in Wei
@@ -302,7 +302,7 @@ export class Web3Public {
   }
 
   /**
-   * @description get a transaction by hash in several attempts
+   * get a transaction by hash in several attempts
    * @param hash hash of the target transaction
    * @param attempt current attempt number
    * @param attemptsLimit maximum allowed number of attempts
@@ -332,7 +332,7 @@ export class Web3Public {
   }
 
   /**
-   * @description call smart-contract pure method of smart-contract and returns its output value
+   * call smart-contract pure method of smart-contract and returns its output value
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
    * @param methodName calling method name
@@ -358,7 +358,7 @@ export class Web3Public {
   }
 
   /**
-   * @description gets information about token through ERC-20 token contract
+   * gets information about token through ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
@@ -382,7 +382,7 @@ export class Web3Public {
   }
 
   /**
-   * @description get ERC-20 token info by address
+   * get ERC-20 token info by address
    * @param tokenAddress address of token
    */
   private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
@@ -413,7 +413,7 @@ export class Web3Public {
   }
 
   /**
-   * @description get balance of multiple tokens via multicall
+   * get balance of multiple tokens via multicall
    * @param address wallet address
    * @param tokensAddresses tokens addresses
    */
@@ -445,7 +445,7 @@ export class Web3Public {
   }
 
   /**
-   * @description use multicall to make many calls in the single rpc request
+   * use multicall to make many calls in the single rpc request
    * @param contractAddress target contract address
    * @param contractAbi target contract abi
    * @param methodName target method name
@@ -491,7 +491,7 @@ export class Web3Public {
   }
 
   /**
-   * @description Checks if the specified address contains the required amount of these tokens.
+   * Checks if the specified address contains the required amount of these tokens.
    * Throws an InsufficientFundsError if the balance is insufficient
    * @param token token balance for which you need to check
    * @param amount required balance
@@ -525,7 +525,7 @@ export class Web3Public {
   }
 
   /**
-   * @description get estimated gas of several contract method execution via rpc batch request
+   * get estimated gas of several contract method execution via rpc batch request
    * @param abi contract ABI
    * @param contractAddress contract address
    * @param fromAddress sender address
@@ -567,7 +567,7 @@ export class Web3Public {
   }
 
   /**
-   * @description send batch request via web3
+   * send batch request via web3
    * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
    * @param calls Web3 method calls
    * @param callsParams ethereum method transaction parameters
@@ -595,7 +595,7 @@ export class Web3Public {
   }
 
   /**
-   * @description send batch request to rpc provider directly
+   * send batch request to rpc provider directly
    * @see {@link https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false|EthereumJSON-RPC}
    * @param rpcCallsData rpc methods and parameters list
    * @returns rpc batch request call result sorted in order of input parameters
@@ -622,7 +622,7 @@ export class Web3Public {
   }
 
   /**
-   * @description calculates the average price per unit of gas according to web3
+   * calculates the average price per unit of gas according to web3
    * @return average gas price in Wei
    */
   @Cacheable({ maxAge: 10000 })

@@ -30,6 +30,9 @@ export class AuthService {
    */
   private readonly $currentUser: BehaviorSubject<UserInterface>;
 
+  /**
+   * Code when user session is still active.
+   */
   private readonly USER_IS_IN_SESSION_CODE = '1000';
 
   get user(): UserInterface {
@@ -50,42 +53,26 @@ export class AuthService {
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
-    this.providerConnectorService.$addressChange.subscribe(address => {
-      if (this.isAuthProcess) {
-        return;
-      }
-      const user = this.$currentUser.getValue();
-      if (
-        user !== undefined &&
-        user !== null &&
-        user?.address !== null &&
-        address &&
-        user?.address !== address
-      ) {
-        this.signOut()
-          .pipe(mergeMap(() => this.signIn()))
-          .subscribe();
-      }
-    });
+    this.initSubscription();
   }
 
   /**
-   * @description Ger current user as observable.
-   * @returns User.
+   * Ger current user as observable.
+   * @returns Observable<UserInterface> User.
    */
   public getCurrentUser(): Observable<UserInterface> {
     return this.$currentUser.asObservable();
   }
 
   /**
-   * @description Fetch authorized user address or auth message in case there's no authorized user.
+   * Fetch authorized user address or auth message in case there's no authorized user.
    */
   private fetchWalletLoginBody(): Observable<WalletLoginInterface> {
     return this.httpService.get('auth/wallets/login/', {});
   }
 
   /**
-   * @description Authenticate user on backend.
+   * Authenticate user on backend.
    * @param address wallet address
    * @param nonce nonce to sign
    * @param signature signed nonce
@@ -109,7 +96,10 @@ export class AuthService {
       .toPromise();
   }
 
-  public async loadUser() {
+  /**
+   * Load user from backend.
+   */
+  public async loadUser(): Promise<void> {
     this.isAuthProcess = true;
     if (!this.providerConnectorService.provider) {
       try {
@@ -152,7 +142,7 @@ export class AuthService {
   }
 
   /**
-   * @description Initiate authentication via wallet message signing
+   * Initiate authentication via wallet message signing
    */
   public async signIn(): Promise<void> {
     try {
@@ -188,7 +178,7 @@ export class AuthService {
   }
 
   /**
-   * @description Initiate iframe authentication via wallet message signing
+   * Initiate iframe authentication via wallet message signing
    */
   public async iframeSignIn(): Promise<void> {
     try {
@@ -227,6 +217,9 @@ export class AuthService {
     }
   }
 
+  /**
+   * Login user without backend request.
+   */
   public async serverlessSignIn(): Promise<void> {
     try {
       this.isAuthProcess = true;
@@ -248,7 +241,7 @@ export class AuthService {
   }
 
   /**
-   * @description Logout request to backend.
+   * Logout request to backend.
    */
   public signOut(): Observable<string> {
     return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
@@ -260,13 +253,20 @@ export class AuthService {
     );
   }
 
+  /**
+   * Logout user from provider and application.
+   */
   public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
     this.store.clearStorage();
   }
 
-  private catchSignIn(err: Error & { code: number }) {
+  /**
+   * Catch and handle user login errors.
+   * @param err Login error.
+   */
+  private catchSignIn(err: Error & { code: number }): void {
     this.$currentUser.next(null);
     this.isAuthProcess = false;
     this.providerConnectorService.deActivate();
@@ -285,5 +285,29 @@ export class AuthService {
     this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
     this.$currentUser.next(null);
     this.isAuthProcess = false;
+  }
+
+  /**
+   * Init service subscription.
+   * @TODO Remove subscribes in service.
+   */
+  private initSubscription(): void {
+    this.providerConnectorService.$addressChange.subscribe(address => {
+      if (this.isAuthProcess) {
+        return;
+      }
+      const user = this.$currentUser.getValue();
+      if (
+        user !== undefined &&
+        user !== null &&
+        user?.address !== null &&
+        address &&
+        user?.address !== address
+      ) {
+        this.signOut()
+          .pipe(mergeMap(() => this.signIn()))
+          .subscribe();
+      }
+    });
   }
 }

@@ -476,7 +476,13 @@ export class CrossChainRoutingService {
           },
           err => {
             const includesErrCode = err.message.includes('-32000');
-            const includesPhrase = err.message.includes('insufficient funds for transfer');
+            const allowedErrors = [
+              'insufficient funds for transfer',
+              'insufficient funds for gas * price+ value'
+            ];
+            const includesPhrase = Boolean(
+              allowedErrors.find(error => err.message.includes(error))
+            );
             return includesErrCode && includesPhrase;
           }
         );
@@ -490,7 +496,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * @description Check if contract is alive for now.
+   * Check if contract is alive for now.
    * @param trade Cross chain trade.
    */
   private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {
