@@ -42,7 +42,7 @@ export class TokensApiService {
   ) {}
 
   /**
-   * @description Convert {@link BackendToken} to {@link Token} List.
+   * Convert {@link BackendToken} to {@link Token} List.
    * @param tokens Tokens from backend response.
    * @return List<Token> Useful tokens list.
    */
@@ -63,7 +63,7 @@ export class TokensApiService {
   }
 
   /**
-   * @description Fetch specific tokens from backend.
+   * Fetch specific tokens from backend.
    * @param params Request params.
    * @return Observable<List<Token>> Tokens list.
    */
@@ -76,7 +76,7 @@ export class TokensApiService {
   }
 
   /**
-   * @description Fetch iframe tokens from backend.
+   * Fetch iframe tokens from backend.
    * @param params Request params.
    * @return Observable<List<Token>> Tokens list.
    */
@@ -87,7 +87,7 @@ export class TokensApiService {
   }
 
   /**
-   * @description Fetch another networks basic tokens from backend.
+   * Fetch another networks basic tokens from backend.
    * @param params Request params.
    * @return Observable<List<Token>> Tokens.
    */
@@ -110,7 +110,7 @@ export class TokensApiService {
   }
 
   /**
-   * @description Fetch specific tokens by symbol or address.
+   * Fetch specific tokens by symbol or address.
    * @param requestOptions Network which tokens is searched.
    * @return Observable<TokensBackendResponse> Tokens response from backend with count.
    */
@@ -131,7 +131,7 @@ export class TokensApiService {
   }
 
   /**
-   * @description Fetch specific network tokens from backend.
+   * Fetch specific network tokens from backend.
    * @param requestOptions Network which tokens is searched.
    * @return Observable<TokensBackendResponse> Tokens response from backend with count.
    */

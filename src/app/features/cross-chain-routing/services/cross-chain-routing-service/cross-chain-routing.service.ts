@@ -496,7 +496,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * @description Check if contract is alive for now.
+   * Check if contract is alive for now.
    * @param trade Cross chain trade.
    */
   private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {

@@ -157,7 +157,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Switch tokens display mode (default and favorite).
+   * Switch tokens display mode (default and favorite).
    */
   public switchMode(): void {
     if (this.listType === 'default') {
@@ -168,7 +168,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Set component input parameters.
+   * Set component input parameters.
    * @param context Component context.
    */
   private initiateContextParams(context: ComponentInput): void {
@@ -182,7 +182,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Lifecycle hook.
+   * Lifecycle hook.
    */
   public ngOnInit(): void {
     this.updateTokensList();
@@ -192,7 +192,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Set new blockchain.
+   * Set new blockchain.
    * @param chain Blockchain.
    */
   private setNewBlockchain(chain: BLOCKCHAIN_NAME): void {
@@ -218,7 +218,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Handle token selection event.
+   * Handle token selection event.
    * @param selectedToken Selected token.
    */
   public tokenSelect(selectedToken: AvailableTokenAmount): void {
@@ -226,7 +226,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Update token list.
+   * Update token list.
    */
   private updateTokensList(): void {
     this.customToken = null;
@@ -278,7 +278,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Filter and sort tokens by comparator.
+   * Filter and sort tokens by comparator.
    * @param tokens Tokens to perform with.
    * @return AvailableTokenAmount[] Filtered and sorted tokens.
    */
@@ -315,7 +315,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description If query exists, parse custom token from Web3.
+   * If query exists, parse custom token from Web3.
    */
   private async tryParseQueryAsCustomToken(): Promise<void> {
     if (this.query) {
@@ -364,7 +364,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Fetch token images from Web3.
+   * Fetch token images from Web3.
    * @param token Token to display.
    * @return Promise<string> Token image url.
    */
@@ -392,7 +392,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Fetch new page tokens.
+   * Fetch new page tokens.
    */
   public fetchNewPageTokens(): void {
     this.tokensListLoading = true;
@@ -403,7 +403,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * @description Try to parse search query and fetch tokens form backend or web3.
+   * Try to parse search query and fetch tokens form backend or web3.
    */
   private async tryParseQuery(): Promise<void> {
     if (this.query.length) {

@@ -1,5 +1,5 @@
 /**
- * @description RPC Errors.
+ * RPC Errors.
  */
 export const EIP_1474 = [
   {

@@ -80,7 +80,7 @@ export class ProviderConnectorService {
   }
 
   /**
-   * @description Calculates an Ethereum specific signature.
+   * Calculates an Ethereum specific signature.
    * @param message Data to sign.
    * @return The signature.
    */
@@ -122,7 +122,7 @@ export class ProviderConnectorService {
   }
 
   /**
-   * @description opens a window with suggestion to add token to user's wallet
+   * opens a window with suggestion to add token to user's wallet
    * @param token token to add
    */
   public addToken(token: Token): Promise<void> {

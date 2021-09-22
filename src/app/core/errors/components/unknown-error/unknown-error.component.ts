@@ -26,7 +26,7 @@ export class UnknownErrorComponent {
   }
 
   /**
-   *  @description Copy error message to clipboard.
+   * Copy error message to clipboard.
    */
   public copyToClipboard(): void {
     this.showHint();
@@ -34,7 +34,7 @@ export class UnknownErrorComponent {
   }
 
   /**
-   * @description Show copy to clipboard hint.
+   * Show copy to clipboard hint.
    */
   private showHint(): void {
     this.hintShown = true;

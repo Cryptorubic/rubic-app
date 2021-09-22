@@ -44,7 +44,7 @@ export class CustomTokenComponent {
   ) {}
 
   /**
-   * @description Open accept import modal and add token to local token collection in case of accept.
+   * Open accept import modal and add token to local token collection in case of accept.
    */
   public handleImportClick(): void {
     this.dialogService

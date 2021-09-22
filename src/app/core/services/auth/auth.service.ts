@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   /**
-   * @description Ger current user as observable.
+   * Ger current user as observable.
    * @returns Observable<UserInterface> User.
    */
   public getCurrentUser(): Observable<UserInterface> {
@@ -65,14 +65,14 @@ export class AuthService {
   }
 
   /**
-   * @description Fetch authorized user address or auth message in case there's no authorized user.
+   * Fetch authorized user address or auth message in case there's no authorized user.
    */
   private fetchWalletLoginBody(): Observable<WalletLoginInterface> {
     return this.httpService.get('auth/wallets/login/', {});
   }
 
   /**
-   * @description Authenticate user on backend.
+   * Authenticate user on backend.
    * @param address wallet address
    * @param nonce nonce to sign
    * @param signature signed nonce
@@ -97,7 +97,7 @@ export class AuthService {
   }
 
   /**
-   * @description Load user from backend.
+   * Load user from backend.
    */
   public async loadUser(): Promise<void> {
     this.isAuthProcess = true;
@@ -142,7 +142,7 @@ export class AuthService {
   }
 
   /**
-   * @description Initiate authentication via wallet message signing
+   * Initiate authentication via wallet message signing
    */
   public async signIn(): Promise<void> {
     try {
@@ -178,7 +178,7 @@ export class AuthService {
   }
 
   /**
-   * @description Initiate iframe authentication via wallet message signing
+   * Initiate iframe authentication via wallet message signing
    */
   public async iframeSignIn(): Promise<void> {
     try {
@@ -218,7 +218,7 @@ export class AuthService {
   }
 
   /**
-   * @description Login user without backend request.
+   * Login user without backend request.
    */
   public async serverlessSignIn(): Promise<void> {
     try {
@@ -241,7 +241,7 @@ export class AuthService {
   }
 
   /**
-   * @description Logout request to backend.
+   * Logout request to backend.
    */
   public signOut(): Observable<string> {
     return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
@@ -254,7 +254,7 @@ export class AuthService {
   }
 
   /**
-   * @description Logout user from provider and application.
+   * Logout user from provider and application.
    */
   public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
@@ -288,7 +288,7 @@ export class AuthService {
   }
 
   /**
-   * @description Init service subscription.
+   * Init service subscription.
    * @TODO Remove subscribes in service.
    */
   private initSubscription(): void {

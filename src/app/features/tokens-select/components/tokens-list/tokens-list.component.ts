@@ -133,7 +133,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   }
 
   /**
-   * @description Observe tokens scroll and fetch new if needed.
+   * Observe tokens scroll and fetch new if needed.
    */
   private observeScroll(): void {
     this.listScroll.renderedRangeStream
@@ -159,7 +159,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   }
 
   /**
-   * @description Setup hints.
+   * Setup hints.
    * @param changes Detected changes.
    */
   private setupHints(changes: SimpleChanges): void {

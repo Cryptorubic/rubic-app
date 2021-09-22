@@ -37,7 +37,7 @@ export class StoreService {
   }
 
   /**
-   * @description Set whole store data.
+   * Set whole store data.
    * @param data Store data.
    */
   public setData(data: Partial<Store>): void {
@@ -55,7 +55,7 @@ export class StoreService {
   }
 
   /**
-   * @description Set some store data by key.
+   * Set some store data by key.
    * @param key Store object key.
    * @param value Value to store.
    */
@@ -76,7 +76,7 @@ export class StoreService {
   }
 
   /**
-   * @description Get store item by key.
+   * Get store item by key.
    * @param key Store key.
    */
   public getItem<T extends keyof Store>(key: T): Store[T] {
@@ -97,7 +97,7 @@ export class StoreService {
   }
 
   /**
-   * @description Delete stored data.
+   * Delete stored data.
    */
   public deleteData(): void {
     if (!this.isIframe) {
@@ -109,7 +109,7 @@ export class StoreService {
   }
 
   /**
-   * @description Delete store item data by key.
+   * Delete store item data by key.
    * @param key Store key.
    */
   public deleteItem(key: keyof Store): void {
@@ -127,7 +127,7 @@ export class StoreService {
   }
 
   /**
-   * @description Clear all data in user storage.
+   * Clear all data in user storage.
    */
   public clearStorage(): void {
     if (!this.isIframe) {

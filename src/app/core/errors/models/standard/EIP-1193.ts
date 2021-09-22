@@ -1,5 +1,5 @@
 /**
- * @description Provider rpc errors.
+ * Provider rpc errors.
  */
 export const EIP_1193 = [
   {

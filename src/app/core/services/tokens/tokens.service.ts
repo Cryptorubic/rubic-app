@@ -164,7 +164,7 @@ export class TokensService {
   }
 
   /**
-   * @description Set new tokens.
+   * Set new tokens.
    * @param tokens Tokens list to set.
    */
   public setTokens(tokens: List<TokenAmount>): void {
@@ -238,7 +238,7 @@ export class TokensService {
   }
 
   /**
-   * @description Get balance for each token in list.
+   * Get balance for each token in list.
    * @param tokens List of tokens.
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
@@ -416,7 +416,7 @@ export class TokensService {
   }
 
   /**
-   * @description Add token to list of favorite tokens.
+   * Add token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: TokenAmount): void {
