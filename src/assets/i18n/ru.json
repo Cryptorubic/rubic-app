@@ -69,7 +69,8 @@
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
-    "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum"
+    "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
+    "unknown": "Oops, something went wrong, please try again"
   },
   "navigation": {
     "about": "О компании",
@@ -460,11 +461,14 @@
       "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
-      "title": "Выберите токен",
+      "defaultTitle": "Список токенов",
+      "favoriteTokensTitle": "Избранные токены",
       "unsupportedPairsHint": "Этот токен недоступен для обмена. Пожалуйста, выберите поддерживаемые пары.",
       "clearParamsHint": "Очистите другие параметры формы, чтобы выбрать этот токен.",
       "searchPlaceholder": "Найдите по названию или вставьте адрес",
-      "noSearchData": "Нет подходящих данных"
+      "noSearchData": "Нет подходящих данных",
+      "noFavoriteData": "Нет избранных токенов в выбранной сети, ",
+      "backToTokens": "вернутся к списку всех токенов"
     },
     "walletsModal": {
       "title": "Подключить кошелёк",

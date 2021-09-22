@@ -97,7 +97,7 @@ export class ProviderPanelComponent {
   }
 
   /**
-   * @description Transform input controller data to comfortable.
+   * Transform input controller data to comfortable.
    * @param data Provider controller data.
    */
   private setupProviderData(data: ProviderControllerData): void {

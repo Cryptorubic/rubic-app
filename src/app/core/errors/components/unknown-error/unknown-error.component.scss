@@ -1,0 +1,25 @@
+.content {
+  &__icon {
+    position: relative;
+    top: 2px;
+    
+    margin-left: 10px;
+
+    ::ng-deep svg {
+      width: auto;
+      height: 15px;
+
+      cursor: pointer;
+      opacity: 0.5;
+
+      transition: 0.2s ease-in-out;
+
+      fill: var(--form-dim-text-color);
+
+      &:hover {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+  }
+}

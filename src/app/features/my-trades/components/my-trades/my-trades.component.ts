@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   HostListener,
+  Inject,
   OnInit
 } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -22,6 +23,7 @@ import { CounterNotificationsService } from 'src/app/core/services/counter-notif
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
+import { WINDOW } from '@ng-web-apis/common';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -53,12 +55,13 @@ export class MyTradesComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   ngOnInit(): void {
     this.counterNotificationsService.resetCounter();
-    this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
+    this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
     this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
     this.authService
@@ -155,6 +158,7 @@ export class MyTradesComponent implements OnInit {
           this.refreshTable();
 
           this.tokensService.calculateUserTokensBalances();
+          this.tokensService.calculateFavoriteTokensBalances();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
@@ -172,6 +176,6 @@ export class MyTradesComponent implements OnInit {
 
   @HostListener('window:resize')
   private onResize() {
-    this.isDesktop = window.innerWidth >= DESKTOP_WIDTH;
+    this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
   }
 }

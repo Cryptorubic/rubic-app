@@ -2,6 +2,7 @@ import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -47,13 +48,16 @@ export class IframeService implements OnDestroy {
 
   public get originDomain(): string {
     const url =
-      window.location !== window.parent.location ? document.referrer : document.location.href;
+      this.window.location !== this.window.parent.location
+        ? document.referrer
+        : document.location.href;
     return new URL(url).hostname;
   }
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private rendererFactory2: RendererFactory2
+    private rendererFactory2: RendererFactory2,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.setUpViewportListener();
   }

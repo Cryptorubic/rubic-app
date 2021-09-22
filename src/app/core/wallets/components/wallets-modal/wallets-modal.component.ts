@@ -16,7 +16,7 @@ import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/c
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { WINDOW } from 'src/app/core/models/window';
+import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
 import {

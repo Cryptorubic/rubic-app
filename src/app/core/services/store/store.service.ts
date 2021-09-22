@@ -1,31 +1,28 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
 import { LOCAL_STORAGE } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { WALLET_NAME } from '../../wallets/components/wallets-modal/models/providers';
-
-interface Store {
-  unreadTrades: number;
-  provider: WALLET_NAME;
-  settings: unknown;
-  theme: 'dark' | 'light';
-  chainId: number;
-}
+import { Store } from 'src/app/core/services/store/models/store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
-  private readonly $dataSubject: BehaviorSubject<Store>;
+  /**
+   * Data stored.
+   */
+  private readonly storageSubject: BehaviorSubject<Store>;
 
+  /**
+   * Key to store data.
+   */
   private readonly storageKey = 'rubicData';
 
-  public get $data(): Observable<Store> {
-    return this.$dataSubject.asObservable();
-  }
-
+  /**
+   * Is current app placed in iframe (In iframe localStorage using is not allow)
+   */
   public isIframe: boolean;
 
   constructor(
@@ -34,12 +31,18 @@ export class StoreService {
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
     private readonly iframeService: IframeService
   ) {
-    this.$dataSubject = new BehaviorSubject<Store>(null);
+    this.isIframe = iframeService.isIframe;
+    const store = this.fetchData(iframeService.isIframe);
+    this.storageSubject = new BehaviorSubject<Store>(store);
   }
 
+  /**
+   * Set whole store data.
+   * @param data Store data.
+   */
   public setData(data: Partial<Store>): void {
     const newData = {
-      ...this.$dataSubject.value,
+      ...this.storageSubject.value,
       ...data
     };
     const jsonData = JSON.stringify(newData);
@@ -48,12 +51,17 @@ export class StoreService {
     } else {
       this.document.cookie = `${this.storageKey}=${jsonData}`;
     }
-    this.$dataSubject.next(newData);
+    this.storageSubject.next(newData);
   }
 
+  /**
+   * Set some store data by key.
+   * @param key Store object key.
+   * @param value Value to store.
+   */
   public setItem<T extends keyof Store>(key: T, value: Store[T]): void {
     const newData = {
-      ...this.$dataSubject.value,
+      ...this.storageSubject.value,
       [key]: value
     };
 
@@ -64,34 +72,49 @@ export class StoreService {
     } else {
       this.document.cookie = `${this.storageKey}=${jsonData}`;
     }
-    this.$dataSubject.next(newData);
+    this.storageSubject.next(newData);
   }
 
+  /**
+   * Get store item by key.
+   * @param key Store key.
+   */
   public getItem<T extends keyof Store>(key: T): Store[T] {
-    return this.$dataSubject.value?.[key];
+    return this.storageSubject.value?.[key];
   }
 
-  public fetchData(isIframe: boolean): void {
+  /**
+   * Fetch stored data from local storage or cookies.
+   * @param isIframe Fetch data from cookies if its the iframe.
+   */
+  public fetchData(isIframe: boolean): Store {
     this.isIframe = isIframe;
     const cookie = this.cookieService.get(this.storageKey);
     const data = JSON.parse(
       this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
     );
-    this.$dataSubject.next(data || {});
+    return (data || {}) as Store;
   }
 
+  /**
+   * Delete stored data.
+   */
   public deleteData(): void {
     if (!this.isIframe) {
       this.localStorage?.removeItem(this.storageKey);
     } else {
       this.cookieService.delete(this.storageKey);
     }
-    this.$dataSubject.next(null);
+    this.storageSubject.next(null);
   }
 
+  /**
+   * Delete store item data by key.
+   * @param key Store key.
+   */
   public deleteItem(key: keyof Store): void {
     const newData: Store = {
-      ...this.$dataSubject.value,
+      ...this.storageSubject.value,
       [key]: undefined
     };
     const jsonData = JSON.stringify(newData);
@@ -100,13 +123,16 @@ export class StoreService {
     } else {
       this.cookieService.set(this.storageKey, jsonData);
     }
-    this.$dataSubject.next(newData);
+    this.storageSubject.next(newData);
   }
 
+  /**
+   * Clear all data in user storage.
+   */
   public clearStorage(): void {
     if (!this.isIframe) {
       this.localStorage?.clear();
     }
-    this.$dataSubject.next(null);
+    this.storageSubject.next(null);
   }
 }

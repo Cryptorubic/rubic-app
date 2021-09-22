@@ -8,6 +8,14 @@ tui-dialog {
     box-shadow: unset !important;
   }
 
+  &[data-size='m'] {
+    width: 36em !important;
+
+    > .content {
+      padding: 1.5em !important;
+    }
+  }
+
   &[data-size='s'] {
     .content {
       .heading {

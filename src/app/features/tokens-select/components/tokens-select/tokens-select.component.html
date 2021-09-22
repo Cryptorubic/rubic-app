@@ -1,8 +1,19 @@
 <section class="tokens-select">
   <header class="tokens-select__header" *noFrame>
-    <h2>{{ 'modals.tokensListModal.title' | translate }}</h2>
+    <h2>{{ (listType === 'default' ? 'modals.tokensListModal.defaultTitle' : 'modals.tokensListModal.favoriteTokensTitle') | translate }}</h2>
   </header>
-  <app-tokens-search-bar *noFrame [(query)]="query"></app-tokens-search-bar>
+  <div class="tokens-select__row" *noFrame>
+    <app-tokens-search-bar [(query)]="query"></app-tokens-search-bar>
+    <app-icon-button
+      [icon]="listType === 'default' ? 'assets/images/icons/star.svg' : 'assets/images/icons/back.svg'"
+      [tuiHint]="listType === 'default' ? 'List of favorite tokens' : 'Back to whole tokens list'"
+      [tuiHintShowDelay]="1500"
+      [border]="true"
+      (iconButtonClick)="switchMode()"
+      buttonSize="s"
+    >
+    </app-icon-button>
+  </div>
   <div class="tokens-select__content">
     <app-blockchains-aside
       [idPrefix]="idPrefix"
@@ -11,13 +22,20 @@
     ></app-blockchains-aside>
     <app-tokens-list
       *ngIf="!customToken && !loading"
-      [tokens]="tokensToShow$ | async"
+      [listType]="listType"
+      [hasQuery]="!!query"
+      [tokens]="listType === 'default' ? (tokensToShow$ | async) : (favoriteTokensToShow$ | async)"
       [prevSelectedToken]="prevSelectedToken?.blockchain === blockchain ? prevSelectedToken : null"
-      (tokenSelect)="onTokenSelect($event)"
+      (tokenSelect)="tokenSelect($event)"
+      (pageUpdate)="fetchNewPageTokens()"
+      [tokensNetworkState]="tokensNetworkState"
+      [blockchain]="blockchain"
+      [loading]="tokensListLoading"
+      (listTypeChangeHandle)="listType = $event"
     ></app-tokens-list>
     <app-custom-token
       *ngIf="customToken && !loading"
-      (tokenSelected)="onTokenSelect($event)"
+      (tokenSelected)="tokenSelect($event)"
       [token]="customToken"
     ></app-custom-token>
     <tui-loader *ngIf="loading" [showLoader]="loading" size="xl"></tui-loader>

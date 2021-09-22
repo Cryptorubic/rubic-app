@@ -28,6 +28,7 @@ import { NotificationsService } from 'src/app/core/services/notifications/notifi
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-modal/success-tx-modal.component';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -83,7 +84,8 @@ export class CryptoTapFormComponent implements OnInit {
     private readonly notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   ngOnInit(): void {
@@ -279,7 +281,7 @@ export class CryptoTapFormComponent implements OnInit {
         autoClose: false
       }
     );
-    if (window.location.pathname === '/crypto-tap') {
+    if (this.window.location.pathname === '/crypto-tap') {
       this.dialogService
         .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
           size: 's',

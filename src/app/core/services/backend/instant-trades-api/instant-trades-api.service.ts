@@ -62,7 +62,7 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description send request to server for add trade
+   * send request to server for add trade
    * @return instant trade object
    */
   public createTrade(
@@ -108,7 +108,7 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description update status of trade
+   * update status of trade
    * @param hash hash of transaction what we want to update
    */
   public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
@@ -117,7 +117,7 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description get list of user's instant trades
+   * get list of user's instant trades
    * @param walletAddress wallet address of user
    * @return list of trades
    */

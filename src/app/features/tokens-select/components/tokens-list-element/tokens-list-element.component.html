@@ -6,14 +6,24 @@
       (error)="onImageError($event)"
     />
   </div>
+
   <div class="token-card__name-container">
     <span>{{ token.symbol }}</span>
     <small>{{ token.name }}</small>
   </div>
+
   <div class="token-card__amount" *ngIf="token.amount.gt(0)">
     <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top" tuiHintMode="onDark">{{
       token.amount | bigNumberFormat | shortenAmount: (isHorizontalFrame ? 6 : 12):4
     }}</span>
     <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
   </div>
+
+  <div
+    *noFrame
+    class="token-card__favorite"
+    [ngClass]="{ 'token-card__favorite_active': token?.favorite }"
+    [inlineSVG]="'assets/images/icons/star2.svg'"
+    (click.stop)="toggleFavorite()"
+  ></div>
 </div>
