@@ -182,12 +182,11 @@ export class SwapsFormComponent implements OnInit {
   private setFormValues(form: SwapFormInput): void {
     this.fromBlockchain = form.fromBlockchain;
     this.toBlockchain = form.toBlockchain;
+    this.selectedToken['from'] = form.fromToken;
+    this.selectedToken['to'] = form.toToken;
 
     if (this._supportedTokens) {
       this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
-
-      this.selectedToken['from'] = form.fromToken;
-      this.selectedToken['to'] = form.toToken;
       this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
     }
   }
