@@ -22,7 +22,14 @@ import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTrad
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { ZRX_API_ADDRESS, ZRX_NATIVE_TOKEN } from './zrx-eth-constants';
+import { ZrxCalculateTradeParams } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/models/ZrxCalculateTradeParams';
+import { ZRX_API_ADDRESS } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/ZRX_API_ADDRESS';
+import { ZRX_NATIVE_TOKEN } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/ZRX_NATIVE_TOKEN';
+import {
+  SupportedZrxBlockchain,
+  supportedZrxBlockchains
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/SupportedZrxBlockchain';
+import { startWith } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,16 +41,24 @@ export class ZrxService implements ItProvider {
 
   private tradeData: ZrxApiResponse;
 
-  protected blockchain: BLOCKCHAIN_NAME;
+  protected blockchain: SupportedZrxBlockchain;
 
   private apiAddress: string;
 
   private isTestingMode: boolean;
 
+  public static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedZrxBlockchain {
+    return !!supportedZrxBlockchains.find(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
+  }
+
   constructor(
     private http: HttpClient,
     private readonly settingsService: SettingsService,
-    private readonly w3Public: Web3PublicService,
+    private readonly web3PublicService: Web3PublicService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly providerConnector: ProviderConnectorService,
     private readonly web3PrivateService: Web3PrivateService,
@@ -54,37 +69,31 @@ export class ZrxService implements ItProvider {
     private readonly httpService: HttpService,
     private readonly tokensService: TokensService
   ) {
-    useTestingModeService.isTestingMode.subscribe(value => {
-      if (value) {
-        this.isTestingMode = value;
+    this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(fromBlockchain => {
+      let blockchain: BLOCKCHAIN_NAME;
+      if (this.isTestingMode) {
+        blockchain = `${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME;
+      } else {
+        blockchain = fromBlockchain;
+      }
+      if (ZrxService.isSupportedBlockchain(blockchain)) {
+        this.blockchain = blockchain;
+        this.web3Public = this.web3PublicService[blockchain];
+        this.apiAddress = ZRX_API_ADDRESS[blockchain];
       }
     });
 
-    this.swapFormService.commonTrade.controls.input.controls.fromBlockchain.valueChanges.subscribe(
-      fromBlockchain => {
-        if (this.isTestingMode) {
-          const blockchain = `${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME;
-          this.blockchain = blockchain;
-          this.web3Public = this.w3Public[blockchain];
-          this.apiAddress = ZRX_API_ADDRESS[blockchain];
-        } else {
-          this.web3Public = this.w3Public[fromBlockchain];
-          this.blockchain = fromBlockchain;
-          this.apiAddress = ZRX_API_ADDRESS[fromBlockchain];
-        }
-      }
-    );
+    this.settingsService.instantTradeValueChanges
+      .pipe(startWith(this.settingsService.instantTradeValue))
+      .subscribe(formValue => {
+        this.settings = {
+          ...formValue,
+          slippageTolerance: formValue.slippageTolerance / 100
+        };
+      });
 
-    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
-    this.settings = {
-      ...form.value,
-      slippageTolerance: form.value.slippageTolerance / 100
-    };
-    form.valueChanges.subscribe(formValue => {
-      this.settings = {
-        ...formValue,
-        slippageTolerance: formValue.slippageTolerance / 100
-      };
+    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      this.isTestingMode = isTestingMode;
     });
   }
 
@@ -116,14 +125,13 @@ export class ZrxService implements ItProvider {
     if (Web3Public.isNativeAddress(fromToken.address)) {
       fromTokenClone.address = ZRX_NATIVE_TOKEN;
     }
-
     if (Web3Public.isNativeAddress(toToken.address)) {
       toTokenClone.address = ZRX_NATIVE_TOKEN;
     }
 
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPrice = await this.web3Public.getGasPriceInETH();
-    const params = {
+    const params: ZrxCalculateTradeParams = {
       sellToken: fromTokenClone.address,
       buyToken: toTokenClone.address,
       sellAmount: Web3Public.toWei(fromAmount, fromToken.decimals),
@@ -147,10 +155,7 @@ export class ZrxService implements ItProvider {
       },
       gasLimit: this.tradeData.estimatedGas,
       gasFeeInUsd,
-      gasFeeInEth,
-      options: {
-        gasOptimization: this.settings.rubicOptimisation
-      }
+      gasFeeInEth
     };
   }
 
@@ -177,9 +182,9 @@ export class ZrxService implements ItProvider {
     );
   }
 
-  public fetchTrade(params): Promise<ZrxApiResponse> {
+  private fetchTrade(params: ZrxCalculateTradeParams): Promise<ZrxApiResponse> {
     return this.httpService
-      .get('swap/v1/quote', params, this.apiAddress)
-      .toPromise() as Promise<ZrxApiResponse>;
+      .get<ZrxApiResponse>('swap/v1/quote', params, this.apiAddress)
+      .toPromise();
   }
 }
