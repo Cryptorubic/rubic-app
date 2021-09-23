@@ -1,5 +1,6 @@
 import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 const sushiSwapHarmonyContracts: ContractAddressNetMode = {
   mainnet: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
@@ -25,6 +26,7 @@ const routingProvidersNetMode = {
 };
 
 export const sushiSwapHarmonyConstants: UniswapV2Constants = {
+  blockchain: BLOCKCHAIN_NAME.HARMONY,
   contractAddressNetMode: sushiSwapHarmonyContracts,
   wethAddressNetMode,
   routingProvidersNetMode,
