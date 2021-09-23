@@ -76,22 +76,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.swapFormService.outputValueChanges
       .pipe(
         switchMap(form => {
-          if (form.toAmount?.isFinite()) {
-            const firstSlippage =
-              1 + this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-            const { fromAmount } = this.swapFormService.inputValue;
-            const maximumSpent = fromAmount.multipliedBy(firstSlippage);
-
-            const secondSlippage =
-              1 - this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-            const minimumReceived = form.toAmount.multipliedBy(secondSlippage);
-
+          const { toAmount } = form;
+          if (toAmount?.isFinite()) {
             return this.crossChainRoutingService.getFeeAmountData().pipe(
               map(platformFee => {
                 this.crossChainSwapInfo = {
-                  maximumSpent,
-                  minimumReceived,
-                  platformFee
+                  platformFee,
+                  ...this.getMaxSpentAndMinReceived()
                 };
                 this.fromToken = this.swapFormService.inputValue.fromToken;
                 this.toToken = this.swapFormService.inputValue.toToken;
@@ -105,31 +96,44 @@ export class CrossChainSwapInfoComponent implements OnInit {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.cdr.detectChanges();
-      });
+      .subscribe(() => this.cdr.detectChanges());
   }
 
   private subscribeOnSlippage(): void {
     this.settingsService.crossChainRoutingValueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(settingsForm => {
+      .subscribe(() => {
         const { toAmount } = this.swapFormService.outputValue;
         if (toAmount?.isFinite()) {
-          const firstSlippage = 1 + settingsForm.slippageTolerance / 100;
-          const { fromAmount } = this.swapFormService.inputValue;
-          const maximumSpent = fromAmount.multipliedBy(firstSlippage);
-
-          const secondSlippage = 1 - settingsForm.slippageTolerance / 100;
-          const minimumReceived = toAmount.multipliedBy(secondSlippage);
-
           this.crossChainSwapInfo = {
             ...this.crossChainSwapInfo,
-            maximumSpent,
-            minimumReceived
+            ...this.getMaxSpentAndMinReceived()
           };
           this.cdr.detectChanges();
         }
       });
+  }
+
+  /**
+   * Calculates maximum spent and minimum received amounts based on slippage.
+   */
+  private getMaxSpentAndMinReceived(): {
+    maximumSpent: BigNumber;
+    minimumReceived: BigNumber;
+  } {
+    const slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
+
+    const slippageFrom = new BigNumber(100).plus(slippage).dividedBy(100);
+    const { fromAmount } = this.swapFormService.inputValue;
+    const maximumSpent = fromAmount.multipliedBy(slippageFrom);
+
+    const secondTo = new BigNumber(100).minus(slippage).dividedBy(100);
+    const { toAmount } = this.swapFormService.outputValue;
+    const minimumReceived = toAmount.multipliedBy(secondTo);
+
+    return {
+      maximumSpent,
+      minimumReceived
+    };
   }
 }

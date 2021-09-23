@@ -88,14 +88,7 @@ export class SwapButtonComponent implements OnInit {
       fromAmount = (outputForm as CryptoTapFormOutput).fromAmount;
     }
     const { toAmount } = outputForm;
-    if (
-      !fromToken?.price ||
-      !toToken?.price ||
-      !fromAmount ||
-      fromAmount.isNaN() ||
-      !toAmount ||
-      toAmount.isNaN()
-    ) {
+    if (!fromToken?.price || !toToken?.price || !fromAmount?.isFinite() || !toAmount?.isFinite()) {
       this.priceImpact = 0;
       return;
     }
