@@ -104,9 +104,10 @@
       ></app-swap-button>
     </ng-container>
 
-    <ng-container *ngIf="hasError && !loading">
+    <ng-container *ngLet="(isMobile$ | async) as isMobile">
+      <ng-container *ngIf="hasError && !loading">
       <!-- switch network button -->
-      <ng-container *ngIf="errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && allowChangeNetwork">
+      <ng-container *ngIf="errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && allowChangeNetwork && !isMobile">
         <app-rubic-button
           [attr.error]="true"
           appearance="secondary"
@@ -118,7 +119,7 @@
       </ng-container>
 
       <!-- error info -->
-      <ng-container *ngIf="!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || !allowChangeNetwork">
+      <ng-container *ngIf="(!errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] || isMobile) || !allowChangeNetwork">
         <app-rubic-button
           class="error-button"
           [attr.error]="true"
@@ -128,6 +129,7 @@
           {{ errorText | async }}
         </app-rubic-button>
       </ng-container>
+    </ng-container>
     </ng-container>
   </ng-container>
 </ng-container>
