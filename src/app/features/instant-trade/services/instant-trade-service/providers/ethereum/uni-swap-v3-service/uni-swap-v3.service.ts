@@ -3,7 +3,6 @@ import { ItProvider } from 'src/app/features/instant-trade/services/instant-trad
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { from, Observable, of } from 'rxjs';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -24,7 +23,6 @@ import {
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { LiquidityPoolsController } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/controllers/LiquidityPoolsController';
 import {
-  ETHtoWETHEstimatedGas,
   swapEstimatedGas,
   WETHtoETHEstimatedGas
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/estimatedGas';
@@ -32,6 +30,8 @@ import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { EthAndWethSwapController } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/controllers/EthAndWethSwapController';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { UniswapV3Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Trade';
 
 interface IsEthFromOrTo {
   from: boolean;
@@ -58,7 +58,8 @@ export class UniSwapV3Service implements ItProvider {
     private readonly web3PrivateService: Web3PrivateService,
     private readonly settingsService: SettingsService,
     private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly tokensService: TokensService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.web3Public = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
@@ -155,27 +156,27 @@ export class UniSwapV3Service implements ItProvider {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken
-  ): Promise<InstantTrade> {
+  ): Promise<UniswapV3Trade> {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
-    if (this.ethAndWethSwapController.isEthAndWethSwap(fromToken.address, toToken.address)) {
-      const estimatedGas = isEth.from ? ETHtoWETHEstimatedGas : WETHtoETHEstimatedGas;
-      const { gasFeeInUsd, gasFeeInEth } = await this.getGasFees(estimatedGas);
-      return {
-        blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-        from: {
-          token: fromToken,
-          amount: fromAmount
-        },
-        to: {
-          token: toToken,
-          amount: fromAmount
-        },
-        gasLimit: estimatedGas.toFixed(),
-        gasFeeInUsd,
-        gasFeeInEth
-      };
-    }
+    // if (this.ethAndWethSwapController.isEthAndWethSwap(fromToken.address, toToken.address)) {
+    //   const estimatedGas = isEth.from ? ETHtoWETHEstimatedGas : WETHtoETHEstimatedGas;
+    //   const { gasFeeInUsd, gasFeeInEth } = await this.getGasFees(estimatedGas);
+    //   return {
+    //     blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    //     from: {
+    //       token: fromToken,
+    //       amount: fromAmount
+    //     },
+    //     to: {
+    //       token: toToken,
+    //       amount: fromAmount
+    //     },
+    //     gasLimit: estimatedGas.toFixed(),
+    //     gasFeeInUsd,
+    //     gasFeeInEth
+    //   };
+    // }
 
     const fromAmountAbsolute = fromAmount.multipliedBy(10 ** fromToken.decimals);
     const { route, gasData } = await this.getToAmountAndPath(
@@ -197,12 +198,10 @@ export class UniSwapV3Service implements ItProvider {
         token: toToken,
         amount: route.outputAbsoluteAmount.div(10 ** toToken.decimals)
       },
-      gasLimit: gasData.gasLimit,
+      gasLimit: gasData.gasLimit.toFixed(),
       gasFeeInUsd: gasData.gasFeeInUsd,
       gasFeeInEth: gasData.gasFeeInEth,
-      options: {
-        poolsPath: route
-      }
+      poolsPath: route
     };
   }
 
@@ -240,9 +239,7 @@ export class UniSwapV3Service implements ItProvider {
     gasPrice = gasPrice || (await this.web3Public.getGasPriceInETH());
     ethPrice =
       ethPrice ||
-      new BigNumber(
-        await this.coingeckoApiService.getNativeCoinPriceInUsdByCoingecko(BLOCKCHAIN_NAME.ETHEREUM)
-      );
+      new BigNumber(await this.tokensService.getNativeCoinPriceInUsd(BLOCKCHAIN_NAME.ETHEREUM));
     const gasFeeInEth = estimatedGas.multipliedBy(gasPrice);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
     return {
@@ -275,7 +272,7 @@ export class UniSwapV3Service implements ItProvider {
     const walletAddress = this.providerConnectorService.address;
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
     const gasPrice = await this.web3Public.getGasPriceInETH();
-    const ethPrice = await this.coingeckoApiService.getNativeCoinPriceInUsdByCoingecko(blockchain);
+    const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
 
     const getGasData = async (route: UniswapV3Route): Promise<Gas> => {
       const estimatedGas = await this.getEstimatedGas(
@@ -380,7 +377,7 @@ export class UniSwapV3Service implements ItProvider {
   }
 
   public async createTrade(
-    trade: InstantTrade,
+    trade: UniswapV3Trade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
@@ -402,7 +399,7 @@ export class UniSwapV3Service implements ItProvider {
       return this.ethAndWethSwapController.swapWethToEth(fromAmountAbsolute, options);
     }
 
-    const route = trade.options.poolsPath;
+    const route = trade.poolsPath;
     return this.swapTokens(
       route,
       fromAmountAbsolute,

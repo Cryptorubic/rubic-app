@@ -12,6 +12,8 @@ import { poolContractAbi } from 'src/app/features/instant-trade/services/instant
 import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Route';
 import { uniSwapV3Contracts } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import BigNumber from 'bignumber.js';
+import { Contract } from 'web3-eth-contract/types';
+import { EMPTY_ADDRESS } from 'src/app/shared/constants/order-book/empty-address';
 
 interface Immutables {
   token0: string;
@@ -19,7 +21,13 @@ interface Immutables {
   fee: number;
 }
 
-const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
+interface OptionsRecGraphVisitor {
+  routesLiquidityPools: LiquidityPool[];
+  fromAmountAbsolute: string;
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  routesPromises: Promise<UniswapV3Route>[];
+}
 
 export class LiquidityPoolsController {
   private readonly routerTokens: {
@@ -70,7 +78,7 @@ export class LiquidityPoolsController {
     return `0x${contractPath}`;
   }
 
-  private async getPoolImmutables(poolContract): Promise<Immutables> {
+  private async getPoolImmutables(poolContract: Contract): Promise<Immutables> {
     return Promise.all([
       poolContract.methods.token0().call(),
       poolContract.methods.token1().call(),
@@ -107,7 +115,7 @@ export class LiquidityPoolsController {
     fromTokenAddress: string,
     toTokenAddress: string
   ): Promise<LiquidityPool[]> {
-    const poolsAddressesPromises = [];
+    const poolsAddressesPromises: Promise<string>[] = [];
     Object.values(this.routerTokens).forEach(routeTokenAddress => {
       this.feeAmounts.forEach(fee => {
         if (
@@ -148,7 +156,7 @@ export class LiquidityPoolsController {
     );
     const routesPromises: Promise<UniswapV3Route>[] = [];
 
-    const optionsRecGraphVisitor = {
+    const optionsRecGraphVisitor: OptionsRecGraphVisitor = {
       routesLiquidityPools,
       fromTokenAddress,
       fromAmountAbsolute,
@@ -166,10 +174,10 @@ export class LiquidityPoolsController {
   }
 
   private recGraphVisitor(
-    options,
+    options: OptionsRecGraphVisitor,
     path: LiquidityPool[],
     lastTokenAddress: string,
-    mxTransitPools
+    maxTransitPools: number
   ) {
     const {
       routesLiquidityPools,
@@ -179,7 +187,7 @@ export class LiquidityPoolsController {
       routesPromises
     } = options;
 
-    if (path.length === mxTransitPools) {
+    if (path.length === maxTransitPools) {
       const pools = routesLiquidityPools.filter(pool =>
         LiquidityPoolsController.isPoolWithTokens(pool, lastTokenAddress, toTokenAddress)
       );
@@ -195,16 +203,17 @@ export class LiquidityPoolsController {
       });
       return;
     }
+
     routesLiquidityPools
       .filter(pool => !path.includes(pool))
       .forEach(pool => {
         if (pool.token0.toLowerCase() === lastTokenAddress.toLowerCase()) {
           const extendedPath = path.concat(pool);
-          this.recGraphVisitor(options, extendedPath, pool.token1, mxTransitPools);
+          this.recGraphVisitor(options, extendedPath, pool.token1, maxTransitPools);
         }
         if (pool.token1.toLowerCase() === lastTokenAddress.toLowerCase()) {
           const extendedPath = path.concat(pool);
-          this.recGraphVisitor(options, extendedPath, pool.token0, mxTransitPools);
+          this.recGraphVisitor(options, extendedPath, pool.token0, maxTransitPools);
         }
       });
   }

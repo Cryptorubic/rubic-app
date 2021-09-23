@@ -16,9 +16,9 @@ interface UniswapRoute {
 }
 
 interface Gas {
-  gasLimit;
-  gasFeeInUsd;
-  gasFeeInEth;
+  gasLimit: BigNumber;
+  gasFeeInUsd: BigNumber;
+  gasFeeInEth: BigNumber;
 }
 
 enum SWAP_METHOD {
