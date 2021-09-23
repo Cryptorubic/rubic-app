@@ -39,5 +39,11 @@ export const blockchainsList: BlockchainItem[] = [
     visibleName: 'Harmony',
     image: `${imageBaseSrc}harmony.svg`,
     id: null
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.AVALANCHE,
+    visibleName: 'Avalanche',
+    image: `${imageBaseSrc}avalanche.svg`,
+    id: null
   }
 ];

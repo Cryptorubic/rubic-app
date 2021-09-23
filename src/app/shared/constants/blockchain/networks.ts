@@ -100,6 +100,21 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 43114,
+    name: BLOCKCHAIN_NAME.AVALANCHE,
+    scannerUrl: 'https://cchain.explorer.avax.network/',
+    rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/avalanche.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.AVALANCHE,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'AVAX',
+      symbol: 'AVAX',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,
@@ -162,6 +177,22 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'ONE',
       symbol: 'ONE',
+      decimals: 18
+    }
+  },
+  {
+    id: 43113,
+    name: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
+    label: 'Avalanche',
+    scannerUrl: 'https://cchain.explorer.avax-test.network',
+    rpcLink: 'https://api.avax-test.network/ext/bc/C/rpc',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/harmony.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.HARMONY_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'AVAX',
+      symbol: 'AVAX',
       decimals: 18
     }
   }
