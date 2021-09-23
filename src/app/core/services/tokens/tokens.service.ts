@@ -196,14 +196,15 @@ export class TokensService {
     const tokensWithBalance = await this.getTokensWithBalance(tokens);
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      const tokensWithBalanceArray = tokensWithBalance.flat();
       const updatedTokens = tokens.map(token => {
-        const tokenWithBalance = tokensWithBalanceArray.find(tWithBalance =>
+        const currentToken = this.tokens.find(t => TokensService.areTokensEqual(token, t));
+        const balance = tokensWithBalance.find(tWithBalance =>
           TokensService.areTokensEqual(token, tWithBalance)
-        );
+        )?.amount;
         return {
           ...token,
-          amount: tokenWithBalance.amount
+          ...currentToken,
+          amount: balance
         };
       });
       this.tokensSubject.next(List(updatedTokens));

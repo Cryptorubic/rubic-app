@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: '//dev2-api.rubic.exchange/api',
+  apiBaseUrl: '//dev-api.rubic.exchange/api',
   crossChainApiBaseUrl: 'https://dev-crosschain.rubic.exchange/api'
 };
 
