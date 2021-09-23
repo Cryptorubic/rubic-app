@@ -24,18 +24,23 @@
     display: flex;
 
     font-weight: 300;
-
-    > div:first-child {
-      margin-right: 45px;
-    }
   }
 
   &__value {
+    min-height: 48px;
     margin-bottom: 5px;
 
     font-weight: 100;
     font-size: 48px;
     line-height: 48px;
+
+    &-it {
+      width: 48%;
+
+      &:first-child {
+        margin-right: 4%;
+      }
+    }
   }
 
   &__label {
@@ -58,6 +63,7 @@
     }
 
     &__value-it {
+      width: 100%;
       margin-bottom: 15px;
     }
   }

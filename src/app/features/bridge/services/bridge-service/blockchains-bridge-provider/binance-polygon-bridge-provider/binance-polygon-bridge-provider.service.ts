@@ -38,6 +38,8 @@ const EXCLUDED_TOKENS = {
   [BLOCKCHAIN_NAME.POLYGON]: ['0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270']
 };
 
+type EvoBridgeBlockchains = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN | BLOCKCHAIN_NAME.POLYGON;
+
 @Injectable()
 export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
   private evoTokenPairs: EvoBridgeTokenPair[];
@@ -69,7 +71,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         }
         return this.web3PrivateService.approveTokens(
           tokenFrom.address,
-          EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+          EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains],
           'infinity',
           {
             onTransactionHash: bridgeTrade.onTransactionHash
@@ -97,7 +99,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       web3Public.getAllowance(
         tokenFrom.address,
         this.authService.user.address,
-        EVO_ADDRESSES[bridgeTrade.fromBlockchain]
+        EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains]
       )
     ).pipe(
       map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
@@ -105,7 +107,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   }
 
   createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    const onTransactionHash = hash => {
+    const onTransactionHash = (hash: string) => {
       if (typeof bridgeTrade.onTransactionHash === 'function') {
         bridgeTrade.onTransactionHash(hash);
       }
@@ -118,11 +120,11 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       evoTokenPair =>
         evoTokenPair.tokenByBlockchain[bridgeTrade.fromBlockchain].address.toLowerCase() ===
         tokenFrom.address.toLowerCase()
-    ).evoInfo[bridgeTrade.fromBlockchain];
+    ).evoInfo[bridgeTrade.fromBlockchain as EvoBridgeBlockchains];
 
     return from(
       this.web3PrivateService.executeContractMethod(
-        EVO_ADDRESSES[bridgeTrade.fromBlockchain],
+        EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains],
         EVO_ABI as AbiItem[],
         'create',
         [
@@ -170,13 +172,15 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private loadTokens(): Observable<List<EvoBridgeTokenPair>> {
     const loadTokensAndConfig$ = from(this.fetchSupportedTokens()).pipe(
       switchMap(evoTokens => {
-        const blockchainTokens: { [key in BLOCKCHAIN_NAME]?: number[] } = {
+        const blockchainTokens: Record<EvoBridgeBlockchains, number[]> = {
           [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [],
           [BLOCKCHAIN_NAME.POLYGON]: []
         };
 
         evoTokens.forEach(token =>
-          Object.entries(token).forEach(([key, value]) => blockchainTokens[key].push(value.index))
+          Object.entries(token).forEach(([key, value]) =>
+            blockchainTokens[key as EvoBridgeBlockchains].push(value.index)
+          )
         );
         return from(this.fetchConfigs(blockchainTokens)).pipe(
           map(config => ({ evoTokens, config }))
@@ -197,8 +201,8 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private async fetchSupportedTokens(): Promise<EvoContractTokenInBlockchains[]> {
     const blockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
     const tokensListPromises = blockchains.map(blockchain =>
-      this.web3PublicService[blockchain].callContractMethod(
-        EVO_ADDRESSES[blockchain],
+      this.web3PublicService[blockchain].callContractMethod<string[]>(
+        EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
         EVO_ABI as AbiItem[],
         'listTokensNames'
       )
@@ -217,7 +221,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
     const tokensInfoPromises = blockchains.map(blockchain =>
       (this.web3PublicService[blockchain] as Web3Public).multicallContractMethod<EvoResponseToken>(
-        EVO_ADDRESSES[blockchain],
+        EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
         EVO_ABI as AbiItem[],
         'tokens',
         [
@@ -421,7 +425,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       return result;
     });
 
-    const blockchainsConfig = {};
+    const blockchainsConfig = {} as BlockchainsConfig;
 
     (await Promise.all(blockchainPromises)).forEach(
       (config, index) => (blockchainsConfig[blockchains[index].name] = config)

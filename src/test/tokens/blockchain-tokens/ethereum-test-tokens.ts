@@ -14,7 +14,8 @@ export const ETH: TokenAmount = {
   rank: TOKEN_RANK.HIGH,
   price: 1705,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const WETH: TokenAmount = {
@@ -27,7 +28,8 @@ export const WETH: TokenAmount = {
   rank: TOKEN_RANK.HIGH,
   price: 1705,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const WEENUS: TokenAmount = {
@@ -40,7 +42,8 @@ export const WEENUS: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 10,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const YEENUS: TokenAmount = {
@@ -53,7 +56,8 @@ export const YEENUS: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 50,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const XEENUS: TokenAmount = {
@@ -66,7 +70,8 @@ export const XEENUS: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 2,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const WSATT: TokenAmount = {
@@ -79,7 +84,8 @@ export const WSATT: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 5,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const RBC: TokenAmount = {
@@ -92,7 +98,8 @@ export const RBC: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 6,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const ethereumTestTokens = [ETH, WETH, WEENUS, YEENUS, XEENUS, WSATT, RBC];

@@ -28,8 +28,6 @@ export class TokenAmountInputComponent implements OnInit {
 
   @Input() tokens: AvailableTokenAmount[];
 
-  @Input() maxGasFee: BigNumber = new BigNumber(0);
-
   @Input() placeholder = '0.0';
 
   private get formattedAmount(): string {
@@ -37,7 +35,10 @@ export class TokenAmountInputComponent implements OnInit {
   }
 
   get usdPrice(): BigNumber {
-    return new BigNumber(this.formattedAmount || 0).multipliedBy(this.selectedToken?.price ?? 0);
+    if (!this.formattedAmount || !this.selectedToken) {
+      return null;
+    }
+    return new BigNumber(this.formattedAmount).multipliedBy(this.selectedToken?.price ?? 0);
   }
 
   public readonly DEFAULT_DECIMALS = 18;

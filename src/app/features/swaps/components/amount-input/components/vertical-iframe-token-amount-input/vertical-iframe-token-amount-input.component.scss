@@ -1,4 +1,4 @@
-@import '../../../../../../../styles';
+@import 'src/styles';
 
 :host {
   width: 100%;
@@ -64,6 +64,12 @@
     background-color: transparent;
 
     border: none;
+
+    @include iframe {
+      &__input {
+        padding: 0 16px 0 0;
+      }
+    }
   }
 
   app-user-balance-container {

@@ -14,77 +14,172 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
+import {
+  DEFAULT_PAGE_SIZE,
+  TokensRequestOptions
+} from 'src/app/core/services/backend/tokens-api/models/tokens';
+import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import {
+  PAGINATED_BLOCKCHAIN_NAME,
+  TokensNetworkState
+} from 'src/app/shared/models/tokens/paginated-tokens';
+import { StoreService } from 'src/app/core/services/store/store.service';
+import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 
+/**
+ * Service that contains actions (transformations and fetch) with tokens.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class TokensService {
-  private readonly _tokens: BehaviorSubject<List<TokenAmount>> = new BehaviorSubject(List([]));
+  /**
+   * Current tokens list state.
+   */
+  private readonly tokensSubject: BehaviorSubject<List<TokenAmount>>;
 
-  private readonly _tokensRequestParameters = new Subject<Object>();
+  /**
+   * Current favorite tokens list state.
+   */
+  public readonly favoriteTokensSubject: BehaviorSubject<LocalToken[]>;
 
-  get tokens(): Observable<List<TokenAmount>> {
-    return this._tokens.asObservable();
+  /**
+   * Current tokens request options state.
+   */
+  private readonly tokensRequestParametersSubject: Subject<{ [p: string]: unknown }>;
+
+  /**
+   * Current tokens network state.
+   */
+  private readonly tokensNetworkStateSubject: BehaviorSubject<TokensNetworkState>;
+
+  /**
+   * Get current tokens list.
+   */
+  public get tokens(): Observable<List<TokenAmount>> {
+    return this.tokensSubject
+      .asObservable()
+      .pipe(map(list => list.filter(token => token !== null)));
   }
 
-  set tokensRequestParameters(parameters: Object) {
-    this._tokensRequestParameters.next(parameters);
+  /**
+   * Get current tokens list.
+   */
+  public get favoriteTokens$(): Observable<LocalToken[]> {
+    return this.favoriteTokensSubject.asObservable();
   }
 
+  /**
+   * Set current tokens request options.
+   */
+  set tokensRequestParameters(parameters: { [p: string]: unknown }) {
+    this.tokensRequestParametersSubject.next(parameters);
+  }
+
+  /**
+   * Current user address.
+   */
   private userAddress: string;
 
+  /**
+   * Is testing mode currently activated.
+   */
   private isTestingMode = false;
+
+  /**
+   * Checks if two tokens are equal.
+   */
+  public static areTokensEqual(
+    token0: { blockchain: BLOCKCHAIN_NAME; address: string },
+    token1: { blockchain: BLOCKCHAIN_NAME; address: string }
+  ): boolean {
+    return (
+      token0?.blockchain === token1?.blockchain &&
+      token0?.address.toLowerCase() === token1?.address.toLowerCase()
+    );
+  }
+
+  public get tokensNetworkState(): Observable<TokensNetworkState> {
+    return this.tokensNetworkStateSubject.asObservable();
+  }
 
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
     private readonly useTestingMode: UseTestingModeService,
-    private readonly coingeckoApiService: CoingeckoApiService
+    private readonly coingeckoApiService: CoingeckoApiService,
+    private readonly store: StoreService
   ) {
-    this._tokensRequestParameters
+    this.tokensSubject = new BehaviorSubject(List([]));
+    this.favoriteTokensSubject = new BehaviorSubject(this.fetchFavoriteTokens());
+    this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
+    this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
+
+    this.setupSubscriptions();
+  }
+
+  /**
+   * Setup service subscriptions.
+   */
+  private setupSubscriptions(): void {
+    this.tokensRequestParametersSubject
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
-        tokens => {
+        async tokens => {
           if (!this.isTestingMode) {
             this.setDefaultTokenAmounts(tokens);
-            this.calculateUserTokensBalances();
+            await this.calculateUserTokensBalances();
           }
         },
         err => console.error('Error retrieving tokens', err)
       );
 
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
-      this.calculateUserTokensBalances();
+      await this.calculateUserTokensBalances();
     });
 
-    useTestingMode.isTestingMode.subscribe(isTestingMode => {
+    this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._tokens.next(List(coingeckoTestTokens));
-        this.calculateUserTokensBalances();
+        this.tokensSubject.next(List(coingeckoTestTokens));
+        await this.calculateUserTokensBalances();
       }
     });
 
-    this._tokensRequestParameters.next();
+    this.tokensRequestParametersSubject.next();
   }
 
+  /**
+   * Set new tokens.
+   * @param tokens Tokens list to set.
+   */
   public setTokens(tokens: List<TokenAmount>): void {
-    this._tokens.next(tokens);
+    this.tokensSubject.next(tokens);
   }
 
-  private setDefaultTokenAmounts(tokens: List<Token> = this._tokens.getValue()): void {
-    this._tokens.next(
+  /**
+   * Set default tokens.
+   * @param tokens Default tokens list.
+   */
+  private setDefaultTokenAmounts(tokens: List<Token> = this.tokensSubject.getValue()): void {
+    this.tokensSubject.next(
       tokens.map(token => ({
         ...token,
-        amount: new BigNumber(NaN)
+        amount: new BigNumber(NaN),
+        favorite: false
       }))
     );
   }
 
+  /**
+   * Calculate balance for token list.
+   * @param tokens Token list.
+   */
   public async calculateUserTokensBalances(
-    tokens: List<TokenAmount> = this._tokens.getValue()
+    tokens: List<TokenAmount> = this.tokensSubject.getValue()
   ): Promise<void> {
     if (!tokens.size) {
       return;
@@ -95,53 +190,63 @@ export class TokensService {
       return;
     }
 
+    const tokensWithBalance = await this.getTokensWithBalance(tokens);
+
+    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+      this.tokensSubject.next(List(tokensWithBalance));
+    }
+  }
+
+  /**
+   * Get balance for each token in list.
+   * @param tokens List of tokens.
+   * @return Promise<TokenAmount[]> Tokens with balance.
+   */
+  private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
     const blockchains: BLOCKCHAIN_NAME[] = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY
     ];
-    const promises = [];
+    const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
+      const tokensAddresses = tokens
+        .filter(token => token.blockchain === blockchain)
+        .map(token => token.address)
+        .toArray();
 
-    blockchains.forEach(blockchain => {
-      promises.push(
-        this.web3PublicService[blockchain].getTokensBalances(
-          this.userAddress,
-          tokens
-            .filter(token => token.blockchain === blockchain)
-            .map(token => token.address)
-            .toArray()
-        )
+      return this.web3PublicService[blockchain].getTokensBalances(
+        this.userAddress,
+        tokensAddresses
       );
     });
 
-    const balancesSettled = await Promise.allSettled(promises);
-    const tokensWithBalance: TokenAmount[][] = [];
-    blockchains.forEach((blockchain, blockchainIndex) => {
-      if (balancesSettled[blockchainIndex].status === 'fulfilled') {
-        const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
-          .value;
-        tokensWithBalance.push(
-          tokens
+    const balancesSettled = await Promise.allSettled(balances$);
+
+    return blockchains
+      .map((blockchain, blockchainIndex) => {
+        if (balancesSettled[blockchainIndex].status === 'fulfilled') {
+          const balances = (balancesSettled[blockchainIndex] as PromiseFulfilledResult<BigNumber[]>)
+            .value;
+          return tokens
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
               amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
             }))
-            .toArray()
-        );
-      }
-    });
-
-    tokensWithBalance.push(
-      tokens.filter(token => !blockchains.includes(token.blockchain)).toArray()
-    );
-
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      this._tokens.next(List(tokensWithBalance.flat()));
-    }
+            .toArray();
+        }
+        return null;
+      })
+      .flat();
   }
 
+  /**
+   * Add token to tokens list.
+   * @param address Token address.
+   * @param blockchain Token blockchain.
+   * @return Observable<TokenAmount> Token with balance.
+   */
   public addToken(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
     const web3Public: Web3Public = this.web3PublicService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
@@ -161,27 +266,150 @@ export class TokensService {
         usedInIframe: true,
         amount
       })),
-      tap((token: TokenAmount) => this._tokens.next(this._tokens.getValue().push(token)))
+      tap((token: TokenAmount) =>
+        this.tokensSubject.next(this.tokensSubject.getValue().push(token))
+      )
     );
   }
 
-  public isOnlyBalanceUpdated(prevToken: TokenAmount, nextToken: TokenAmount): boolean {
-    if (!prevToken || !nextToken) {
-      return false;
-    }
-    return (
-      prevToken.blockchain === nextToken.blockchain &&
-      prevToken.address.toLowerCase() === nextToken.address.toLowerCase()
-    );
-  }
-
-  public async getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
-    const nativeCoin = this._tokens
+  /**
+   * Gets price of native token.
+   * @param blockchain Token blockchain.
+   */
+  public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
+    const nativeCoin = this.tokensSubject
       .getValue()
-      .find(token => token.blockchain === blockchain && token.address === NATIVE_TOKEN_ADDRESS);
-    return this.coingeckoApiService.getNativeCoinPriceInUsdByCoingecko(
-      blockchain,
-      nativeCoin?.price
+      .find(token =>
+        TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
+      );
+    return this.coingeckoApiService
+      .getNativeCoinPriceInUsdByCoingecko(blockchain)
+      .pipe(map(price => price || nativeCoin?.price))
+      .toPromise();
+  }
+
+  /**
+   * Updates token's price and emits new tokens' list with updated token.
+   */
+  public updateTokenPriceInUsd(token: TokenAmount): void {
+    this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
+      if (tokenPrice) {
+        const newToken = {
+          ...token,
+          price: tokenPrice
+        };
+        this.tokensSubject.next(
+          this.tokensSubject
+            .getValue()
+            .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+            .push(newToken)
+        );
+      }
+    });
+  }
+
+  /**
+   * Update pagination state for current network.
+   * @param network Blockchain name.
+   * @param next Have next page or not.
+   */
+  private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME, next: string): void {
+    const oldState = this.tokensNetworkStateSubject.value;
+    const newState = {
+      ...oldState,
+      [network]: {
+        ...oldState[network],
+        page: oldState[network].page + 1,
+        maxPage: next ? oldState[network].maxPage + 1 : oldState[network].maxPage
+      }
+    } as TokensNetworkState;
+    this.tokensNetworkStateSubject.next(newState);
+  }
+
+  /**
+   * Fetch tokens for specific network.
+   * @param network Requested network.
+   * @param pageSize Requested page size.
+   * @param callback Callback after success fetch.
+   */
+  public fetchNetworkTokens(
+    network: PAGINATED_BLOCKCHAIN_NAME,
+    pageSize: number = DEFAULT_PAGE_SIZE,
+    callback?: () => void
+  ): void {
+    this.tokensApiService
+      .fetchSpecificBackendTokens({
+        network,
+        page: this.tokensNetworkStateSubject.value[network].page,
+        pageSize
+      })
+      .pipe(
+        map((tokens: { total: number; result: List<Token> }) => ({
+          ...tokens,
+          result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
+        })),
+        tap((tokens: { total: number; result: List<TokenAmount>; next: string }) =>
+          this.updateNetworkPage(network, tokens.next)
+        ),
+        switchMap((tokens: { total: number; result: List<TokenAmount> }) => {
+          return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
+        })
+      )
+      .subscribe((tokens: TokenAmount[]) => {
+        this.tokensSubject.next(this.tokensSubject.value.concat(tokens));
+        callback();
+      });
+  }
+
+  /**
+   * Fetch tokens from backend by search query string.
+   * @param query Search query.
+   * @param network Tokens network.
+   */
+  public fetchQueryTokens(
+    query: string,
+    network: PAGINATED_BLOCKCHAIN_NAME
+  ): Observable<List<Token>> {
+    const isAddress = query.includes('0x');
+    const params = {
+      network: TO_BACKEND_BLOCKCHAINS[network],
+      ...(!isAddress && { symbol: query }),
+      ...(isAddress && { address: query })
+    } as TokensRequestOptions;
+    return this.tokensApiService.fetchQueryToken(params);
+  }
+
+  /**
+   * Add token to list of favorite tokens.
+   * @param favoriteToken Favorite token to add.
+   */
+  public addFavoriteToken(favoriteToken: TokenAmount): void {
+    const localToken: LocalToken = {
+      address: favoriteToken.address,
+      blockchain: favoriteToken.blockchain
+    };
+    const collection = [...this.favoriteTokensSubject.value, localToken];
+    this.store.setItem('favoriteTokens', collection);
+    this.favoriteTokensSubject.next(collection);
+  }
+
+  /**
+   * Remove token from list of favorite tokens.
+   * @param token Favorite token to remove.
+   */
+  public removeFavoriteToken(token: TokenAmount): void {
+    const filteredTokens = this.favoriteTokensSubject.value.filter(
+      el => !TokensService.areTokensEqual(el, token)
     );
+
+    this.store.setItem('favoriteTokens', filteredTokens);
+    this.favoriteTokensSubject.next(filteredTokens);
+  }
+
+  /**
+   * Fetch favorite tokens from local storage.
+   */
+  private fetchFavoriteTokens(): LocalToken[] {
+    return this.store.getItem('favoriteTokens') || [];
   }
 }

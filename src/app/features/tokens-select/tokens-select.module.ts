@@ -12,6 +12,7 @@ import {
 import { TuiInputModule } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { InlineSVGModule } from 'ng-inline-svg';
 import { TokensSelectComponent } from './components/tokens-select/tokens-select.component';
 import { TokensSelectService } from './services/tokens-select.service';
 import { BlockchainsAsideComponent } from './components/blockchains-aside/blockchains-aside.component';
@@ -44,7 +45,8 @@ import { CustomTokenWarningModalComponent } from './components/custom-token-warn
     ScrollingModule,
     TuiHintModule,
     TuiManualHintModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    InlineSVGModule
   ],
   providers: [TokensSelectService],
   entryComponents: [TokensSelectComponent, CustomTokenWarningModalComponent]

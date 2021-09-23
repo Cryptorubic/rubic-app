@@ -26,15 +26,15 @@ jobs:
         run: npm install
 
       - name: Set up sshpass and npm
-        run : |
+        run: |
           sudo apt-get install sshpass
           npm install
 
       - name: Run build prod
-        run : npm run build
+        run: npm run build
 
       - name: Deploy on prod server
-        run : sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
+        run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
 
       - name: Run build stage
         run: npm run build:stage

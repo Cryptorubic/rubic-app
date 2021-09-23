@@ -13,6 +13,7 @@
 /* Global */
 @import 'scss/carrot-quest';
 @import 'scss/new-ui';
+@import 'scss/dark-theme';
 
 /* TaigaUI custom styles */
 @import 'scss/taiga-slyles';
@@ -120,7 +121,7 @@ a {
 
 tui-dropdown-box {
   min-width: auto;
-  max-height: 440px !important;
+  max-height: 560px !important;
 
   border: none !important;
   border-radius: 18px !important;
@@ -175,8 +176,61 @@ body.default-iframe-background {
   background: linear-gradient(45deg, #4aa956 20%, white);
 }
 
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: $backgrond-black;
+  z-index: 2147483001; /* cover carrot chat */
+  opacity: 1;
+
+  transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
+
+  &.disabled {
+    opacity: 0;
+    z-index: -10000;
+  }
+
+  &:not(.disabled) ~ * {
+    &.wave,
+    &.gradient {
+      @include ios {
+        position: static;
+      }
+    }
+  }
+
+  img {
+    animation: 1.4s infinite 1s loader-icon-fadein;
+  }
+}
+
+@keyframes loader-icon-fadein {
+  0%   { opacity:1; }
+  50%  { opacity:0.3; }
+  100% { opacity:1; }
+}
+
 @include b($mobile-md) {
   tui-dropdown-box {
     min-width: 155px;
+  }
+}
+
+[id^='tui-hint_price-impact'] {
+  color: var(--tui-text-01) !important;
+  background: rgb(238, 238, 238) !important;
+}
+
+html.dark {
+  [id^='tui-hint_price-impact'] {
+    background: rgb(56, 56, 56) !important;
   }
 }

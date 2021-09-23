@@ -34,3 +34,6 @@ jobs:
 
       - name: Run compile
         run: npm run compile
+
+      - name: Run build
+        run: npm run build

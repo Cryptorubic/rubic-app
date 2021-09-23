@@ -71,7 +71,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     const { decimals } = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
     const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
 
-    const onTradeTransactionHash = async hash => {
+    const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {
         bridgeTrade.onTransactionHash(hash);
       }

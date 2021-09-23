@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
 
 @Component({
   selector: 'app-icon-button',
@@ -10,6 +11,8 @@ export class IconButtonComponent {
   public _disabled: boolean;
 
   public _border: boolean;
+
+  @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'l';
 
   @Input() icon: string;
 

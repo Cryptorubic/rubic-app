@@ -1,17 +1,22 @@
-import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
 })
-export class IframeService {
+export class IframeService implements OnDestroy {
+  private documentListener: () => void;
+
   private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
 
   private readonly _iframeAppearance$ = new BehaviorSubject<'vertical' | 'horizontal'>(undefined);
 
   private readonly _device$ = new BehaviorSubject<'mobile' | 'desktop'>(undefined);
+
+  private readonly _widgetIntoViewport$ = new Subject<boolean>();
 
   public get isIframe$(): Observable<boolean> {
     return this._isIframe$.asObservable().pipe(filter(value => value !== undefined));
@@ -37,13 +42,29 @@ export class IframeService {
     return this._device$.getValue();
   }
 
+  public get widgetIntoViewport$(): Observable<boolean> {
+    return this._widgetIntoViewport$.asObservable();
+  }
+
   public get originDomain(): string {
     const url =
-      window.location !== window.parent.location ? document.referrer : document.location.href;
+      this.window.location !== this.window.parent.location
+        ? document.referrer
+        : document.location.href;
     return new URL(url).hostname;
   }
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private rendererFactory2: RendererFactory2,
+    @Inject(WINDOW) private readonly window: Window
+  ) {
+    this.setUpViewportListener();
+  }
+
+  ngOnDestroy() {
+    this.documentListener?.();
+  }
 
   public setIframeStatus(iframe: string): void {
     if (iframe === 'vertical' || iframe === 'horizontal') {
@@ -60,5 +81,16 @@ export class IframeService {
     }
 
     this._device$.next(device);
+  }
+
+  private setUpViewportListener(): void {
+    const renderer = this.rendererFactory2.createRenderer(null, null);
+    this.documentListener = renderer.listen('window', 'message', ($event: MessageEvent) => {
+      const isWidgetIntoViewportEvent = $event.data?.name === 'widget-into-viewport';
+      const widgetIntoViewportDefined = $event.data?.widgetIntoViewport !== undefined;
+      if (isWidgetIntoViewportEvent && widgetIntoViewportDefined) {
+        this._widgetIntoViewport$.next($event.data?.widgetIntoViewport);
+      }
+    });
   }
 }

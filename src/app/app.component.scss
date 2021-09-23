@@ -1,15 +1,5 @@
 @import 'src/styles';
 
-app-spinner {
-  position: fixed;
-  top: calc(50% - 30px);
-  left: 50%;
-
-  display: block;
-
-  transform: translateX(-50%);
-}
-
 ::ng-deep {
   app-my-trades,
   app-buy-crypto {

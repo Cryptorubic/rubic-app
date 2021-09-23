@@ -16,6 +16,8 @@ export abstract class RubicError<T extends ERROR_TYPE> extends Error {
 
   public displayError = true;
 
+  public code?: number;
+
   protected constructor(
     contentProvider: T extends ERROR_TYPE.TEXT
       ? TranslationKey

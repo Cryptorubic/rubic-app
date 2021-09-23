@@ -1,6 +1,7 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
-  Rubic Cross-Chain has launched! Swap between 7,500 tokens across Ethereum, BSC, & Polygon. <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
+  Rubic Cross-Chain has launched! Swap between 7,500 tokens across Ethereum, BSC, & Polygon.
+  <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -55,6 +56,14 @@
     >
   </nav>
 
+  <app-rubic-button
+    *noFrame
+    class="rubic-header__buy-rbc"
+    appearance="outline"
+    (click)="buyRBC()"
+    >Buy RBC</app-rubic-button
+  >
+
   <div class="rubic-header__profile">
     <a
       *noFrame
@@ -63,10 +72,9 @@
       routerLinkActive="button-link_active"
     >
       {{ 'navigation.myTrades' | translate }}
-
       <tui-badge
         class="notification-counter"
-        *ngIf="countNotifications$ | async"
+        *ngIf="(countNotifications$ | async) && ($currentUser | async)"
         size="s"
         [value]="countNotifications$ | async"
       ></tui-badge>
@@ -81,8 +89,6 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-gas-indicator *noFrame="'any'; and: ($isMobile | async) === false"></app-gas-indicator>
-    <app-rubic-language-select *noFrame></app-rubic-language-select>
-    <app-rubic-toggler-theme></app-rubic-toggler-theme>
+    <app-settings *noFrame></app-settings>
   </div>
 </header>

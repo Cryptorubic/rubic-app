@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { finalize, first, mergeMap, switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { RubicError } from 'src/app/core/errors/models/RubicError';
+import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { WalletLoginInterface, UserInterface } from './models/user.interface';
@@ -28,6 +30,9 @@ export class AuthService {
    */
   private readonly $currentUser: BehaviorSubject<UserInterface>;
 
+  /**
+   * Code when user session is still active.
+   */
   private readonly USER_IS_IN_SESSION_CODE = '1000';
 
   get user(): UserInterface {
@@ -48,42 +53,26 @@ export class AuthService {
   ) {
     this.isAuthProcess = false;
     this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
-    this.providerConnectorService.$addressChange.subscribe(address => {
-      if (this.isAuthProcess) {
-        return;
-      }
-      const user = this.$currentUser.getValue();
-      if (
-        user !== undefined &&
-        user !== null &&
-        user?.address !== null &&
-        address &&
-        user?.address !== address
-      ) {
-        this.signOut()
-          .pipe(mergeMap(() => this.signIn()))
-          .subscribe();
-      }
-    });
+    this.initSubscription();
   }
 
   /**
-   * @description Ger current user as observable.
-   * @returns User.
+   * Ger current user as observable.
+   * @returns Observable<UserInterface> User.
    */
   public getCurrentUser(): Observable<UserInterface> {
     return this.$currentUser.asObservable();
   }
 
   /**
-   * @description Fetch authorized user address or auth message in case there's no authorized user.
+   * Fetch authorized user address or auth message in case there's no authorized user.
    */
   private fetchWalletLoginBody(): Observable<WalletLoginInterface> {
     return this.httpService.get('auth/wallets/login/', {}) as Observable<WalletLoginInterface>;
   }
 
   /**
-   * @description Authenticate user on backend.
+   * Authenticate user on backend.
    * @param address wallet address
    * @param nonce nonce to sign
    * @param signature signed nonce
@@ -107,7 +96,10 @@ export class AuthService {
       .toPromise();
   }
 
-  public async loadUser() {
+  /**
+   * Load user from backend.
+   */
+  public async loadUser(): Promise<void> {
     this.isAuthProcess = true;
     if (!this.providerConnectorService.provider) {
       try {
@@ -150,12 +142,12 @@ export class AuthService {
   }
 
   /**
-   * @description Initiate authentication via wallet message signing
+   * Initiate authentication via wallet message signing
    */
   public async signIn(): Promise<void> {
     try {
       if (this.iframeService.isIframe) {
-        await this.serverlessSignIn();
+        await this.iframeSignIn();
         return;
       }
 
@@ -185,6 +177,49 @@ export class AuthService {
     }
   }
 
+  /**
+   * Initiate iframe authentication via wallet message signing
+   */
+  public async iframeSignIn(): Promise<void> {
+    try {
+      this.isAuthProcess = true;
+      const permissions = await this.providerConnectorService.requestPermissions();
+      const accountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      );
+
+      if (accountsPermission) {
+        await this.providerConnectorService.activate();
+
+        const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
+        if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
+          const { address } = walletLoginBody.payload.user;
+          this.$currentUser.next({ address });
+          this.isAuthProcess = false;
+          return;
+        }
+        const nonce = walletLoginBody.payload.message;
+        const signature = await this.providerConnectorService.signPersonal(nonce);
+        await this.sendSignedNonce(
+          this.providerConnectorService.address,
+          nonce,
+          signature,
+          this.providerConnectorService.provider.name
+        );
+
+        this.$currentUser.next({ address: this.providerConnectorService.address });
+      } else {
+        this.$currentUser.next(null);
+      }
+      this.isAuthProcess = false;
+    } catch (err) {
+      this.catchSignIn(err);
+    }
+  }
+
+  /**
+   * Login user without backend request.
+   */
   public async serverlessSignIn(): Promise<void> {
     try {
       this.isAuthProcess = true;
@@ -206,14 +241,9 @@ export class AuthService {
   }
 
   /**
-   * @description Logout request to backend.
+   * Logout request to backend.
    */
   public signOut(): Observable<string> {
-    if (this.iframeService.isIframe) {
-      this.serverlessSignOut();
-      return of('');
-    }
-
     return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
       finalize(() => {
         this.providerConnectorService.deActivate();
@@ -223,18 +253,25 @@ export class AuthService {
     );
   }
 
+  /**
+   * Logout user from provider and application.
+   */
   public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
     this.$currentUser.next(null);
     this.store.clearStorage();
   }
 
-  private catchSignIn(err) {
+  /**
+   * Catch and handle user login errors.
+   * @param err Login error.
+   */
+  private catchSignIn(err: Error & { code: number }): void {
     this.$currentUser.next(null);
     this.isAuthProcess = false;
     this.providerConnectorService.deActivate();
 
-    let error = err;
+    let error: Error = err;
     if (
       err.code === 4001 ||
       // metamask browser
@@ -245,8 +282,32 @@ export class AuthService {
       error = new SignRejectError();
     }
     this.headerStore.setWalletsLoadingStatus(false);
-    this.errorService.catch(error);
+    this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
     this.$currentUser.next(null);
     this.isAuthProcess = false;
+  }
+
+  /**
+   * Init service subscription.
+   * @TODO Remove subscribes in service.
+   */
+  private initSubscription(): void {
+    this.providerConnectorService.$addressChange.subscribe(address => {
+      if (this.isAuthProcess) {
+        return;
+      }
+      const user = this.$currentUser.getValue();
+      if (
+        user !== undefined &&
+        user !== null &&
+        user?.address !== null &&
+        address &&
+        user?.address !== address
+      ) {
+        this.signOut()
+          .pipe(mergeMap(() => this.signIn()))
+          .subscribe();
+      }
+    });
   }
 }

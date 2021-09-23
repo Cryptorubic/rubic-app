@@ -35,7 +35,6 @@ import { filter, distinctUntilChanged, map, startWith, switchMap, takeUntil } fr
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -68,11 +67,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
-  public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
-
   @Output() maxGasLimit = new EventEmitter<BigNumber>();
 
-  private readonly unsupportedItNetworks: BLOCKCHAIN_NAME[];
+  public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
     { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
@@ -159,6 +156,38 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     >([]);
   }
 
+  private static calculateBestRate(tradeData: InstantTrade[]): number {
+    const { index: providerIndex } = tradeData.reduce(
+      (bestRate, trade, i: number) => {
+        if (!trade) {
+          return bestRate;
+        }
+
+        const { gasFeeInUsd, to } = trade;
+        let profit;
+        if (!to.token.price) {
+          profit = to.amount;
+        } else {
+          const amountInUsd = to.amount?.multipliedBy(to.token.price);
+          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
+        }
+
+        return profit?.gt(bestRate.profit)
+          ? {
+              index: i,
+              profit
+            }
+          : bestRate;
+      },
+      {
+        index: -1,
+        profit: new BigNumber(-Infinity)
+      }
+    );
+
+    return providerIndex;
+  }
+
   public ngOnInit(): void {
     this.setupCalculatingTrades();
     this.setupHiddenCalculatingTrades();
@@ -241,22 +270,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
     this.providersOrderCache = null;
-    switch (blockchain) {
-      case BLOCKCHAIN_NAME.ETHEREUM:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.ETHEREUM];
-        break;
-      case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
-        break;
-      case BLOCKCHAIN_NAME.POLYGON:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.POLYGON];
-        break;
-      case BLOCKCHAIN_NAME.HARMONY:
-        this.providerControllers = INSTANT_TRADE_PROVIDERS[BLOCKCHAIN_NAME.HARMONY];
-        break;
-      default:
-        this.errorService.catch(new NotSupportedItNetwork());
+    if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
+      this.errorService.catch(new NotSupportedItNetwork());
+      return;
     }
+    this.providerControllers = INSTANT_TRADE_PROVIDERS[blockchain];
   }
 
   private setupSettingsForm(form: ItSettingsForm): void {
@@ -433,21 +451,26 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     tradeData: CalculationResult[],
     approveData: Array<boolean | null>
   ): void {
-    const newProviders = this.providerControllers.map((controller, index) => ({
-      ...controller,
-      isSelected: false,
-      trade: tradeData[index]?.status === 'fulfilled' ? (tradeData as unknown)[index]?.value : null,
-      isBestRate: false,
-      needApprove: approveData[index],
-      tradeState:
-        tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
-          ? INSTANT_TRADES_STATUS.APPROVAL
-          : INSTANT_TRADES_STATUS.ERROR,
-      error: tradeData[index]?.status === 'rejected' ? (tradeData as unknown)[index]?.reason : null
-    }));
+    const newProviders = this.providerControllers.map(
+      (controller, index) =>
+        ({
+          ...controller,
+          isSelected: false,
+          trade: tradeData[index]?.status === 'fulfilled' ? tradeData[index]?.value : null,
+          isBestRate: false,
+          needApprove: approveData[index],
+          tradeState:
+            tradeData[index]?.status === 'fulfilled' && tradeData[index]?.value
+              ? INSTANT_TRADES_STATUS.APPROVAL
+              : INSTANT_TRADES_STATUS.ERROR,
+          error: tradeData[index]?.status === 'rejected' ? tradeData[index]?.reason : null
+        } as ProviderControllerData)
+    );
     this.providerControllers = newProviders;
 
-    const bestProviderIndex = this.calculateBestRate(tradeData.map(el => el.value));
+    const bestProviderIndex = InstantTradeBottomFormComponent.calculateBestRate(
+      tradeData.map(el => el.value)
+    );
     if (bestProviderIndex !== -1) {
       newProviders[bestProviderIndex].isBestRate = true;
       newProviders[bestProviderIndex].isSelected = true;
@@ -459,40 +482,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
 
+      this.swapFormService.output.patchValue({
+        toAmount: this.selectedProvider.trade.to.amount
+      });
+
       this.setSlippageTolerance(this.selectedProvider);
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
     this.cdr.detectChanges();
-  }
-
-  private calculateBestRate(tradeData: InstantTrade[]): number {
-    const { index: providerIndex } = tradeData.reduce(
-      (bestRate, trade, i: number) => {
-        if (!trade) {
-          return bestRate;
-        }
-        const { gasFeeInUsd, to } = trade;
-        const amountInUsd = to.token.price ? to.amount?.multipliedBy(to.token.price) : to.amount;
-
-        if (amountInUsd) {
-          const profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
-          return profit.gt(bestRate.profit)
-            ? {
-                index: i,
-                profit
-              }
-            : bestRate;
-        }
-        return bestRate;
-      },
-      {
-        index: -1,
-        profit: new BigNumber(-Infinity)
-      }
-    );
-
-    return providerIndex;
   }
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
@@ -520,6 +518,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
     }
+    this.swapFormService.output.patchValue({
+      toAmount: this.selectedProvider.trade.to.amount
+    });
     this.cdr.detectChanges();
 
     this.setSlippageTolerance(this.selectedProvider);
@@ -528,20 +529,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setSlippageTolerance(provider: ProviderControllerData) {
     const providerName = provider.tradeProviderInfo.value;
     if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
+      const currentBlockchainDefaultSlippage =
+        defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
       this.settingsService.instantTrade.patchValue({
-        slippageTolerance: defaultSlippageTolerance[this.currentBlockchain][providerName]
+        slippageTolerance:
+          currentBlockchainDefaultSlippage[
+            providerName as keyof typeof currentBlockchainDefaultSlippage
+          ]
       });
     }
   }
 
-  public getUsdPrice(amount?: BigNumber): string {
-    const usdPrice = (amount || this.selectedProvider?.trade.to.amount).multipliedBy(
-      this.toToken?.price
-    );
-    if (usdPrice.isNaN()) {
-      return '';
-    }
-    return `$${usdPrice.toFormat(2, BIG_NUMBER_FORMAT)}`;
+  public getUsdPrice(amount?: BigNumber): BigNumber {
+    return (amount || this.selectedProvider?.trade.to.amount).multipliedBy(this.toToken?.price);
   }
 
   public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {
@@ -557,7 +557,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private setProviderState(
     tradeStatus: TRADE_STATUS,
     providerIndex: number,
-    providerState: INSTANT_TRADES_STATUS,
+    providerState?: INSTANT_TRADES_STATUS,
     needApprove?: boolean
   ): void {
     if (needApprove === undefined) {
@@ -567,7 +567,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = tradeStatus;
     this.providerControllers[providerIndex] = {
       ...this.providerControllers[providerIndex],
-      tradeState: providerState,
+      ...(providerState && { tradeState: providerState }),
       needApprove
     };
     this.cdr.detectChanges();
@@ -580,18 +580,17 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     const provider = this.providerControllers[providerIndex];
-    this.setProviderState(
-      TRADE_STATUS.APPROVE_IN_PROGRESS,
-      providerIndex,
-      INSTANT_TRADES_STATUS.TX_IN_PROGRESS
-    );
+    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS, providerIndex);
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
-      this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateUserTokensBalances();
 
+      if (this.isIframe$) {
+        this.needApprove = false;
+      }
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,
         providerIndex,

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS
+  TO_BACKEND_BLOCKCHAINS,
+  ToBackendBlockchains
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
@@ -61,7 +62,7 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description send request to server for add trade
+   * send request to server for add trade
    * @return instant trade object
    */
   public createTrade(
@@ -69,16 +70,12 @@ export class InstantTradesApiService {
     provider: INSTANT_TRADES_PROVIDER,
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
-  ): Observable<InstantTradesResponseApi | null> {
-    if (this.iframeService.isIframe) {
-      return of(null);
-    }
-
+  ): Observable<InstantTradesResponseApi> {
     let tradeInfo: InstantTradesPostApi;
     if (provider === INSTANT_TRADES_PROVIDER.ONEINCH || provider === INSTANT_TRADES_PROVIDER.ZRX) {
       tradeInfo = {
         hash,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
         provider,
         from_token: trade.from.token.address,
         to_token: trade.to.token.address,
@@ -89,7 +86,7 @@ export class InstantTradesApiService {
       tradeInfo = {
         hash,
         provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
         from_token: trade.from.token.address,
         to_token: trade.to.token.address
       };
@@ -97,7 +94,7 @@ export class InstantTradesApiService {
       tradeInfo = {
         hash,
         provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain]
+        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains]
       };
     }
 
@@ -111,20 +108,16 @@ export class InstantTradesApiService {
   }
 
   /**
-   * @description update status of trade
+   * update status of trade
    * @param hash hash of transaction what we want to update
    */
-  public patchTrade(hash: string): Observable<InstantTradesResponseApi | null> {
-    if (this.iframeService.isIframe) {
-      return of(null);
-    }
-
+  public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
     const url = instantTradesApiRoutes.editData;
     return this.httpService.patch(url, { hash });
   }
 
   /**
-   * @description get list of user's instant trades
+   * get list of user's instant trades
    * @param walletAddress wallet address of user
    * @return list of trades
    */
@@ -140,10 +133,13 @@ export class InstantTradesApiService {
 
   private parseTradeApiToTableTrade(tradeApi: InstantTradesResponseApi): TableTrade {
     function getTableToken(type: 'from' | 'to'): TableToken {
-      const token = tradeApi[`${type}_token`];
-      const amount = tradeApi[`${type}_amount`];
+      const token = tradeApi[`${type}_token` as const];
+      const amount = tradeApi[`${type}_amount` as const];
       return {
-        blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchain_network],
+        blockchain:
+          FROM_BACKEND_BLOCKCHAINS[
+            token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+          ],
         symbol: token.symbol,
         amount: Web3Public.fromWei(amount, token.decimals).toFixed(),
         image: token.image

@@ -80,11 +80,11 @@ export class ProviderConnectorService {
   }
 
   /**
-   * @description Calculates an Ethereum specific signature.
+   * Calculates an Ethereum specific signature.
    * @param message Data to sign.
    * @return The signature.
    */
-  public async signPersonal(message) {
+  public async signPersonal(message: string) {
     return this.web3.eth.personal.sign(message, this.provider.address, undefined);
   }
 
@@ -122,7 +122,7 @@ export class ProviderConnectorService {
   }
 
   /**
-   * @description opens a window with suggestion to add token to user's wallet
+   * opens a window with suggestion to add token to user's wallet
    * @param token token to add
    */
   public addToken(token: Token): Promise<void> {
@@ -195,7 +195,7 @@ export class ProviderConnectorService {
     ) {
       if (this.providerName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
-      } else {
+      } else if (!this.provider.isMultiChainWallet) {
         throw new NotSupportedNetworkError(selectedBlockchain);
       }
     }
@@ -213,18 +213,19 @@ export class ProviderConnectorService {
         rpc: 'https://rpc-mainnet.matic.network'
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
-        name: 'Harmony Mainnet Shard 0'
+        name: 'Harmony Mainnet Shard 0',
+        rpc: 'https://api.harmony.one'
       }
     };
     const params = {
       chainId: `0x${network.id.toString(16)}`,
-      chainName: defaultData[network.name]?.name || network.name,
+      chainName: defaultData[network.name as keyof typeof defaultData]?.name || network.name,
       nativeCurrency: {
         name: network.nativeCoin.name,
         symbol: network.nativeCoin.symbol,
         decimals: 18
       },
-      rpcUrls: [defaultData[network.name]?.rpc || network.rpcLink],
+      rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcLink],
       blockExplorerUrls: [network.scannerUrl],
       iconUrls: [`https://rubic.exchange/${network.imagePath}`]
     } as AddEthChainParams;

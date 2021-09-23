@@ -97,18 +97,17 @@ export class ProviderPanelComponent {
   }
 
   /**
-   * @description Transform input controller data to comfortable.
+   * Transform input controller data to comfortable.
    * @param data Provider controller data.
    */
   private setupProviderData(data: ProviderControllerData): void {
+    const usdPrice = data?.trade?.to?.amount.multipliedBy(data?.trade?.to?.token?.price);
     this.tradeData = {
       amount: data?.trade?.to?.amount,
       gasLimit: data?.trade?.gasLimit,
       gasFeeInUsd: data?.trade?.gasFeeInUsd,
       gasFeeInEth: data?.trade?.gasFeeInEth,
-      usdPrice: data?.trade?.to?.amount
-        .multipliedBy(data?.trade?.to?.token?.price)
-        .toFormat(2, BIG_NUMBER_FORMAT),
+      usdPrice: usdPrice && !usdPrice?.isNaN() ? usdPrice.toFormat(2, BIG_NUMBER_FORMAT) : '',
       toTokenDecimals: data?.trade?.to?.token?.decimals
     };
   }

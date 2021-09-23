@@ -55,7 +55,8 @@
     "noSelectedProvider": "No ha seleccionado ningún proveedor de intercambio",
     "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
-    "insufficientLiquidity": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
+    "insufficientLiquidityCCR": "Liquidez insuficiente para esta operación",
+    "insufficientLiquidityIT": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
     "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
     "1inchNotSupportedToken": "1inch no es compatible con uno de los tokens seleccionados.",
     "cancelDeadline": "Su transacción se ha revertido porque la fecha límite de la transacción ha expirado. Intente aumentar el tiempo límite de la transacción o la cantidad de gas.",
@@ -67,7 +68,9 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
+    "unknown": "Oops, something went wrong, please try again"
   },
   "navigation": {
     "about": "Información",
@@ -138,7 +141,7 @@
       "title": "Contrato de Rubic"
     },
     "roadmap": {
-      "title": "Hoja de Ruta",
+      "title": "Roadmap",
       "data": {
         "0": {
           "quarter": "Q1. 2021",
@@ -221,8 +224,13 @@
           "month": "September",
           "done": true,
           "data": [
-            "New Bridge Integrations",
-            "New Blockchain Integrations"
+            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
+            "AutoRefund system release",
+            "Creating a 24/7 technical support team for our community",
+            "Beginning of a new blockchain integration",
+            "Rubic Relay Widget partners and integrations",
+            "Beginning of Widget development: SDK/API",
+            "Cross-chain fixes and improvements"
           ]
         },
         "7": {
@@ -230,11 +238,23 @@
           "month": "",
           "done": true,
           "data": [
-            "Staking/Farming introduction",
+            "0x integration and gas fee reductions",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
+            "RBC Staking",
+            "Widget: SDK/API release"
+          ]
+        },
+        "8": {
+          "quarter": "Q1-Q2. 2022",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yield Farming and/or Lending Product integrations",
             "Governance",
-            "Mobile App",
-            "API For External Usage",
-            "New Blockchain Integration (L2)"
+            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
+            "RBC Staking 2.0",
+            "Mobile version (iOS, Android)",
+            "BTC bridge integration"
           ]
         }
       }
@@ -428,7 +448,7 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
-    "title": "Maintenance",
+    "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
   },
   "modals": {
@@ -441,11 +461,14 @@
       "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
-      "title": "Elija token",
+      "defaultTitle": "Tokens List",
+      "favoriteTokensTitle": "Favorite Tokens",
       "unsupportedPairsHint": "Este token no está disponible para el intercambio. Seleccione los pares compatibles.",
       "clearParamsHint": "Borrar otros parámetros de formulario para seleccionar este token",
       "searchPlaceholder": "Buscar nombre o pegar dirección",
-      "noSearchData": "Nada que mostrar"
+      "noSearchData": "Nada que mostrar",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "Conectar billetera",
@@ -477,6 +500,24 @@
     },
     "bridge": {
       "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "Choose language"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {
@@ -491,6 +532,6 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",
-    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
   }
 }

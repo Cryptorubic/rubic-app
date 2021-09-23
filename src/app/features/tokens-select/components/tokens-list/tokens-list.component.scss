@@ -111,8 +111,7 @@ $token-card-height: 55px;
 
 .nothing-to-show-message {
   position: relative;
-  top: 20px;
-  left: -10px;
+  margin-top: 20px;
 
   display: block;
 
@@ -120,23 +119,22 @@ $token-card-height: 55px;
   text-align: center;
 
   opacity: 0.6;
+
+  &__link {
+    cursor: pointer;
+  }
 }
 
 .tokens-container {
   position: relative;
-  left: -12px;
 
-  width: 290px;
   margin-right: 0;
   padding-top: 15px;
 
   @include iframe {
-    padding-top: 0;
-  }
-
-  @include iframe {
     position: static;
     left: unset;
+    padding-top: 0;
 
     width: 100%;
   }
@@ -147,7 +145,7 @@ $token-card-height: 55px;
 }
 
 .tokens-scrollbar {
-  height: 400px;
+  height: 428px;
 
   @include iframe-horizontal {
     height: $token-card-height + 20px;

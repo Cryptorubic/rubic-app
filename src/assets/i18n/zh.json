@@ -55,7 +55,8 @@
     "noSelectedProvider": "您尚未選擇任何掉期提供者",
     "notSupportedItNetwork": "即時交易不支持所選網絡",
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
-    "insufficientLiquidity": "這筆交易的流動性不足。 嘗試啟用多跳交易。",
+    "insufficientLiquidityCCR": "這筆交易的流動性不足",
+    "insufficientLiquidityIT": "這筆交易的流動性不足。 嘗試啟用多跳交易。",
     "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
     "1inchNotSupportedToken": "1inch 不支持所選代幣之一。",
     "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
@@ -67,7 +68,9 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
+    "unknown": "Oops, something went wrong, please try again"
   },
   "navigation": {
     "about": "关于",
@@ -138,7 +141,7 @@
       "title": "Rubic合同"
     },
     "roadmap": {
-      "title": "路线图",
+      "title": "Roadmap",
       "data": {
         "0": {
           "quarter": "Q1. 2021",
@@ -221,8 +224,13 @@
           "month": "September",
           "done": true,
           "data": [
-            "New Bridge Integrations",
-            "New Blockchain Integrations"
+            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
+            "AutoRefund system release",
+            "Creating a 24/7 technical support team for our community",
+            "Beginning of a new blockchain integration",
+            "Rubic Relay Widget partners and integrations",
+            "Beginning of Widget development: SDK/API",
+            "Cross-chain fixes and improvements"
           ]
         },
         "7": {
@@ -230,11 +238,23 @@
           "month": "",
           "done": true,
           "data": [
-            "Staking/Farming introduction",
+            "0x integration and gas fee reductions",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
+            "RBC Staking",
+            "Widget: SDK/API release"
+          ]
+        },
+        "8": {
+          "quarter": "Q1-Q2. 2022",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yield Farming and/or Lending Product integrations",
             "Governance",
-            "Mobile App",
-            "API For External Usage",
-            "New Blockchain Integration (L2)"
+            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
+            "RBC Staking 2.0",
+            "Mobile version (iOS, Android)",
+            "BTC bridge integration"
           ]
         }
       }
@@ -428,7 +448,7 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
-    "title": "維護",
+    "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
   },
   "modals": {
@@ -441,11 +461,14 @@
       "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
-      "title": "选择币种",
+      "defaultTitle": "Tokens List",
+      "favoriteTokensTitle": "Favorite Tokens",
       "unsupportedPairsHint": "此令牌不可用於交換。 請選擇支持的對。",
       "clearParamsHint": "清除其他表單參數以選擇此令牌",
       "searchPlaceholder": "搜索姓名或粘貼地址",
-      "noSearchData": "沒什麼可顯示的"
+      "noSearchData": "沒什麼可顯示的",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "連接錢包",
@@ -477,6 +500,24 @@
     },
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "Choose language"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {
@@ -491,6 +532,6 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",
-    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
   }
 }

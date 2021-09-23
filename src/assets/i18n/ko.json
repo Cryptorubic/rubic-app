@@ -55,7 +55,8 @@
     "noSelectedProvider": "스왑 제공 업체를 선택하지 않았습니다.",
     "notSupportedItNetwork": "선택한 네트워크는 즉시 거래에 지원되지 않습니다.",
     "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
-    "insufficientLiquidity": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오.",
+    "insufficientLiquidityCCR": "이 거래에 대한 유동성이 충분하지 않습니다",
+    "insufficientLiquidityIT": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오.",
     "1inchRefreshError":  "1inch는 현재 사용할 수 없습니다. 거래를 새로 고치세요.",
     "1inchNotSupportedToken": "1INCH는 선택한 토큰 중 하나를 지원하지 않습니다.",
     "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",
@@ -67,7 +68,9 @@
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later."
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
+    "unknown": "Oops, something went wrong, please try again"
   },
   "navigation": {
     "about": "소개",
@@ -138,7 +141,7 @@
       "title": "루빅 계약"
     },
     "roadmap": {
-      "title": "로드맵",
+      "title": "Roadmap",
       "data": {
         "0": {
           "quarter": "Q1. 2021",
@@ -221,8 +224,13 @@
           "month": "September",
           "done": true,
           "data": [
-            "New Bridge Integrations",
-            "New Blockchain Integrations"
+            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
+            "AutoRefund system release",
+            "Creating a 24/7 technical support team for our community",
+            "Beginning of a new blockchain integration",
+            "Rubic Relay Widget partners and integrations",
+            "Beginning of Widget development: SDK/API",
+            "Cross-chain fixes and improvements"
           ]
         },
         "7": {
@@ -230,11 +238,23 @@
           "month": "",
           "done": true,
           "data": [
-            "Staking/Farming introduction",
+            "0x integration and gas fee reductions",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
+            "RBC Staking",
+            "Widget: SDK/API release"
+          ]
+        },
+        "8": {
+          "quarter": "Q1-Q2. 2022",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yield Farming and/or Lending Product integrations",
             "Governance",
-            "Mobile App",
-            "API For External Usage",
-            "New Blockchain Integration (L2)"
+            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
+            "RBC Staking 2.0",
+            "Mobile version (iOS, Android)",
+            "BTC bridge integration"
           ]
         }
       }
@@ -428,7 +448,7 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "maintenance": {
-    "title": "유지",
+    "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
   },
   "modals": {
@@ -441,11 +461,14 @@
       "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
-      "title": "토큰 선택",
+      "defaultTitle": "Tokens List",
+      "favoriteTokensTitle": "Favorite Tokens",
       "unsupportedPairsHint": "此令牌不可用於交換。 請選擇支持的對。\n이 토큰은 스왑에 사용할 수 없습니다. 지원되는 쌍을 선택하십시오.",
       "clearParamsHint": "이 토큰을 선택하려면 다른 양식 매개 변수를 지우십시오.",
       "searchPlaceholder": "이름 검색 또는 주소 붙여 넣기",
-      "noSearchData": "표시 할 내용 없음"
+      "noSearchData": "표시 할 내용 없음",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "지갑 연결",
@@ -477,6 +500,24 @@
     },
     "bridge": {
       "walletAddress": "토큰이 제공되는 TRON 블록 체인의 지갑 주소."
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Switch Theme",
+        "desc": "Theme for the web"
+      },
+      "language": {
+        "title": "Language",
+        "desc": "Choose language"
+      },
+      "gasPrice": {
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "desc": "How to use"
+      }
     }
   },
   "volume": {
@@ -491,6 +532,6 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
-    "minerFee": "Can't estimate. Don't forget about miner fee. Try to leave the buffer of {{ nativeToken }} for gas."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
   }
 }

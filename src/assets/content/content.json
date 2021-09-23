@@ -1,7 +1,7 @@
 {
   "volume": {
-    "instantTradesVolume": "$13,389,837",
-    "bridgeVolume": "$12,363,669"
+    "instantTradesVolume": "$21,277,316",
+    "bridgeVolume": "$15,019,038"
   },
   "team": [
     {
@@ -166,6 +166,11 @@
       "img": "SvenMichael.jpg",
       "name": "Sven Michael",
       "role": "Business Development"
+    },
+    {
+      "img": "LeraSeikalis.png",
+      "name": "Lera Seikalis",
+      "role": "Picture Designer"
     }
   ]
 }

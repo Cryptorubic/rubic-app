@@ -28,6 +28,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
+import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 
 @Injectable({
@@ -78,7 +79,8 @@ export class InstantTradeService {
     private notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
-    private readonly successTxModalService: SuccessTxModalService
+    private readonly successTxModalService: SuccessTxModalService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.setBlockchainsProviders();
   }
@@ -139,7 +141,8 @@ export class InstantTradeService {
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
-    const shouldCalculateGas = shouldCalculateGasInBlockchain[fromBlockchain];
+    const shouldCalculateGas =
+      shouldCalculateGasInBlockchain[fromBlockchain as keyof typeof shouldCalculateGasInBlockchain];
 
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
@@ -158,7 +161,7 @@ export class InstantTradeService {
     let transactionHash: string;
     try {
       const options = {
-        onConfirm: async hash => {
+        onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
           await this.postTrade(hash, provider, trade);
@@ -280,7 +283,7 @@ export class InstantTradeService {
       }
     );
 
-    if (window.location.pathname === '/') {
+    if (this.window.location.pathname === '/') {
       this.successTxModalService.open();
     }
   }

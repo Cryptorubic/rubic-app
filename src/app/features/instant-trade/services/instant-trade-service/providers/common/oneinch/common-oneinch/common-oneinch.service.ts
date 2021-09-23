@@ -96,6 +96,7 @@ export class CommonOneinchService {
   }
 
   private async getSupportedTokensByBlockchain(blockchain: BLOCKCHAIN_NAME): Promise<string[]> {
+    blockchain = blockchain as keyof SupportedTokens;
     if (this.supportedTokens[blockchain].length) {
       return this.supportedTokens[blockchain];
     }
@@ -171,7 +172,7 @@ export class CommonOneinchService {
       amountAbsolute
     );
 
-    const instantTrade = {
+    const instantTrade: InstantTrade = {
       blockchain,
       from: {
         token: fromToken,
@@ -304,9 +305,9 @@ export class CommonOneinchService {
   }
 
   private specifyError(err: HttpErrorResponse, blockchain: BLOCKCHAIN_NAME): never {
-    if (err.error.message.includes("cannot estimate. Don't forget about miner fee.")) {
+    if (err.error.message.includes('cannot estimate')) {
       const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
-      const message = `Can't estimate. Don't forget about miner fee. Try to leave the buffer of ${nativeToken} for gas.`;
+      const message = `1inch sets increased costs on gas fee. For transaction enter less ${nativeToken} amount or top up your ${nativeToken} balance.`;
       throw new CustomError(message);
     }
     throw new CustomError(err.error.message);

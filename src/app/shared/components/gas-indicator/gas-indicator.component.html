@@ -1,4 +1,10 @@
-<div *ngIf="gasPrice$ | async as gasPrice" class="gas-indicator">
-  <img class="gas-indicator__image" src="../../../../assets/images/icons/gas.svg" alt="Gas price">
-  <span>{{ gasPrice }}</span>
+<div class="gas-indicator">
+  <img
+    class="gas-indicator__image"
+    src="assets/images/icons/gas.svg"
+    width="26"
+    height="27"
+    alt="Gas price"
+  />
+  <span *ngIf="gasPrice$ | async as gasPrice">{{ gasPrice }}</span>
 </div>

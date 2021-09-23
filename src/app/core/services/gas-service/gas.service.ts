@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, of, timer } from 'rxjs';
-import { catchError, map, mergeMap, startWith } from 'rxjs/operators';
-import { HttpService } from 'src/app/core/services/http/http.service';
-import { EthGasPriceResponse } from 'src/app/core/services/gas-service/models/eth-gas-response';
+import { BehaviorSubject, Observable, of, timer } from 'rxjs';
+import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import BigNumber from 'bignumber.js';
+import { HttpClient } from '@angular/common/http';
 
 interface NetworksGasPrice<T> {
   [BLOCKCHAIN_NAME.ETHEREUM]: T;
@@ -20,12 +19,7 @@ export class GasService {
   /**
    * Gas price functions for different networks.
    */
-  private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<number>>;
-
-  /**
-   * Current from blockchain.
-   */
-  private readonly fromChain$: Observable<BLOCKCHAIN_NAME | null>;
+  private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<number | null>>;
 
   /**
    * Current gas price subject.
@@ -44,12 +38,8 @@ export class GasService {
     return this.currentNetworkGasPrice$.asObservable();
   }
 
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly swapFormService: SwapFormService
-  ) {
-    this.requestInterval = 60;
-    this.fromChain$ = this.swapFormService.input.controls.fromBlockchain.valueChanges;
+  constructor(private readonly httpClient: HttpClient) {
+    this.requestInterval = 15_000;
     this.currentNetworkGasPrice$ = new BehaviorSubject<number>(null);
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -60,61 +50,72 @@ export class GasService {
   }
 
   /**
-   * @description Fetch gas in current network.
+   * Fetches gas in current network.
    */
   public fetchGas(): void {
-    const timer$ = timer(0, this.requestInterval * 1000);
-    combineLatest([this.fromChain$.pipe(startWith(BLOCKCHAIN_NAME.ETHEREUM)), timer$])
+    const timer$ = timer(0, this.requestInterval);
+    timer$
       .pipe(
-        mergeMap(([blockchainName, _]) => {
-          if (this.gasPriceFunctions[blockchainName]) {
-            return this.gasPriceFunctions[blockchainName]();
-          }
-          return of(null);
+        switchMap(() => {
+          return this.gasPriceFunctions[BLOCKCHAIN_NAME.ETHEREUM]();
         })
       )
-      .subscribe(gasPrice => {
-        this.currentNetworkGasPrice$.next(gasPrice as number);
+      .subscribe((gasPrice: number | null) => {
+        if (gasPrice) {
+          this.currentNetworkGasPrice$.next(gasPrice);
+        }
       });
   }
 
   /**
-   * @description Get ETH gas from MyWish api.
+   * Gets ETH gas from different APIs, sorted by priority, in case of errors.
    * @return Observable<number> Average gas price.
    */
   private fetchEthGas(): Observable<number | null> {
-    const gasResponse$ = this.httpService
-      .get('', null, 'https://gas-api.mywish.io/')
-      .pipe(
-        catchError(() =>
-          this.httpService.get('', null, 'https://ethgasstation.info/api/ethgasAPI.json')
+    const requestTimeout = 2000;
+    return this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
+      timeout(requestTimeout),
+      map((response: { medium: { maxFeePerGas: string } }) =>
+        new BigNumber(response.medium.maxFeePerGas)
+          .dividedBy(10 ** 9)
+          .dp(0)
+          .toNumber()
+      ),
+      catchError(() =>
+        this.httpClient.get('https://www.gasnow.org/api/v3/gas/price').pipe(
+          timeout(requestTimeout),
+          map((response: { data: { fast: string } }) =>
+            new BigNumber(response.data.fast)
+              .dividedBy(10 ** 9)
+              .dp(0)
+              .toNumber()
+          )
         )
-      );
-    return gasResponse$.pipe(
-      map((el: EthGasPriceResponse) => el.average / 10),
+      ),
+      catchError(() =>
+        this.httpClient.get('https://ethgasstation.info/api/ethgasAPI.json').pipe(
+          timeout(requestTimeout),
+          map((response: { average: number }) => response.average / 10)
+        )
+      ),
       catchError(() => of(null))
     );
   }
 
   /**
-   * @description Get BSC gas from BscGas api.
+   * Gets BSC gas.
    * @return Observable<number> Average gas price.
    */
-  private fetchBscGas(): Observable<number | null> {
-    // Uncomment when bsc API will be ready
-    // return this.httpService.get('', null, 'https://bscgas.info/gas/').pipe(
-    //   map((el: BscGasResponse) => el.standard),
-    //   catchError(() => of(null))
-    // );
-    return of(null);
+  private fetchBscGas(): Observable<number> {
+    return of(5);
   }
 
   /**
-   * @description Get Polygon gas from gas station api.
+   * Gets Polygon gas from gas station api.
    * @return Observable<number> Average gas price.
    */
   private fetchPolygonGas(): Observable<number | null> {
-    return this.httpService.get('', null, 'https://gasstation-mainnet.matic.network/').pipe(
+    return this.httpClient.get('https://gasstation-mainnet.matic.network/').pipe(
       map((el: PolygonGasResponse) => Math.floor(el.standard)),
       catchError(() => of(null))
     );

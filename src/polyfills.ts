@@ -56,12 +56,19 @@
 /** *************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js'; // Included with Angular CLI.
+import 'zone.js';
+import Process = NodeJS.Process; // Included with Angular CLI.
 
 /** *************************************************************************************************
  * APPLICATION IMPORTS
  */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-(window as any).global = window;
-(window as any).process = window.process || require('process');
-(window as any).Buffer = (window as any).Buffer || require('buffer').Buffer;
+interface RubicWindow extends Window {
+  global?: unknown;
+  process?: Process;
+  Buffer?: Buffer;
+}
+
+(window as RubicWindow).global = window;
+(window as RubicWindow).process = window.process || require('process');
+(window as RubicWindow).Buffer = (window as any).Buffer || require('buffer').Buffer;

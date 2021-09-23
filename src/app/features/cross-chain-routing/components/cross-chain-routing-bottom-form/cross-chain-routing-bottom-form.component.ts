@@ -88,7 +88,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private hiddenTradeData$: BehaviorSubject<{
     toAmount: BigNumber;
-    errorText?: string;
   }>;
 
   public toBlockchain: BLOCKCHAIN_NAME;
@@ -350,11 +349,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             catchError((err: RubicError<ERROR_TYPE>) => {
-              const errorText = err.translateKey || err.message;
-              this.hiddenTradeData$.next({ toAmount: null, errorText });
-              if (!this.errorText) {
-                this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
-              }
+              this.errorText = err.translateKey || err.message;
+              this.swapFormService.output.patchValue({
+                toAmount: new BigNumber(NaN)
+              });
+              this.tradeStatus = TRADE_STATUS.DISABLED;
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
@@ -369,7 +368,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   public setHiddenData() {
     const data = this.hiddenTradeData$.getValue();
     this.toAmount = data.toAmount;
-    this.errorText = data.errorText;
 
     if (this.toAmount && !this.toAmount.isNaN()) {
       this.tradeStatus = this.needApprove
@@ -459,7 +457,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           await this.tokensService.calculateUserTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.conditionalCalculate();
+          await this.conditionalCalculate();
         },
         err => {
           this.tradeInProgressSubscription$?.unsubscribe();
