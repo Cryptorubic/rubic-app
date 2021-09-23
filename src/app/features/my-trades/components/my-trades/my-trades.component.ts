@@ -147,7 +147,7 @@ export class MyTradesComponent implements OnInit {
     this.myTradesService
       .depositPolygonBridgeTradeAfterCheckpoint(trade.transactionHash, onTransactionHash)
       .subscribe(
-        _receipt => {
+        async _receipt => {
           tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
             label: this.translate.instant('notifications.successfulTradeTitle'),
@@ -157,8 +157,7 @@ export class MyTradesComponent implements OnInit {
 
           this.refreshTable();
 
-          this.tokensService.calculateUserTokensBalances();
-          this.tokensService.calculateFavoriteTokensBalances();
+          await this.tokensService.calculateUserTokensBalances();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
