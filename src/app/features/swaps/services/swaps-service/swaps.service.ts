@@ -93,7 +93,8 @@ export class SwapsService {
             rank: 0,
             price: 0,
             usedInIframe: false,
-            amount: new BigNumber(0)
+            amount: new BigNumber(0),
+            favorite: false
           });
         }
 

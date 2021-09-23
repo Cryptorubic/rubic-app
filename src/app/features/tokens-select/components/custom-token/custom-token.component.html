@@ -19,7 +19,7 @@
     class="custom-token__button"
     appearance="secondary"
     fullWidth
-    (onClick)="onImportClick()"
+    (onClick)="handleImportClick()"
     [disabled]="!token.available"
   >
     Import {{ token.symbol }}

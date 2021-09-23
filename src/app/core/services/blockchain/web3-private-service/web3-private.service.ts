@@ -69,7 +69,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description sends ERC-20 tokens and resolve the promise when the transaction is included in the block
+   * sends ERC-20 tokens and resolve the promise when the transaction is included in the block
    * @param contractAddress address of the smart-contract corresponding to the token
    * @param toAddress token receiver address
    * @param amount integer tokens amount to send (pre-multiplied by 10 ** decimals)
@@ -106,7 +106,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description sends ERC-20 tokens and resolve the promise without waiting for the transaction to be included in the block
+   * sends ERC-20 tokens and resolve the promise without waiting for the transaction to be included in the block
    * @param contractAddress address of the smart-contract corresponding to the token
    * @param toAddress token receiver address
    * @param amount integer tokens amount to send (pre-multiplied by 10 ** decimals)
@@ -132,7 +132,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description tries to send Eth in transaction and resolve the promise when the transaction is included in the block or rejects the error
+   * tries to send Eth in transaction and resolve the promise when the transaction is included in the block or rejects the error
    * @param toAddress Eth receiver address
    * @param value amount in Eth units
    * @param [options] additional options
@@ -169,7 +169,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description sends Eth in transaction and resolve the promise when the transaction is included in the block
+   * sends Eth in transaction and resolve the promise when the transaction is included in the block
    * @param toAddress Eth receiver address
    * @param value amount in Eth units
    * @param [options] additional options
@@ -211,7 +211,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description sends Eth in transaction and resolve the promise without waiting for the transaction to be included in the block
+   * sends Eth in transaction and resolve the promise without waiting for the transaction to be included in the block
    * @param toAddress Eth receiver address
    * @param value amount in Eth units
    * @param [options] additional options
@@ -242,7 +242,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description executes approve method in ERC-20 token contract
+   * executes approve method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address to approve
    * @param value integer value to approve (pre-multiplied by 10 ** decimals)
@@ -285,7 +285,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description tries to execute method of smart-contract and resolve the promise when the transaction is included in the block or rejects the error
+   * tries to execute method of smart-contract and resolve the promise when the transaction is included in the block or rejects the error
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
    * @param methodName executing method name
@@ -337,7 +337,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description executes method of smart-contract and resolve the promise when the transaction is included in the block
+   * executes method of smart-contract and resolve the promise when the transaction is included in the block
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
    * @param methodName executing method name
@@ -377,7 +377,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description executes method of smart-contract and resolve the promise without waiting for the transaction to be included in the block
+   * executes method of smart-contract and resolve the promise without waiting for the transaction to be included in the block
    * @param contractAddress address of smart-contract which method is to be executed
    * @param contractAbi abi of smart-contract which method is to be executed
    * @param methodName executing method name
@@ -407,7 +407,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description removes approval for token use
+   * removes approval for token use
    * @param tokenAddress tokenAddress address of the smart-contract corresponding to the token
    * @param spenderAddress wallet or contract address to approve
    */
@@ -419,7 +419,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description converts Eth amount into Wei
+   * Converts Eth amount into Wei.
    * @param value to convert in Eth
    */
   private ethToWei(value: string | BigNumber): string {
@@ -427,7 +427,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * @description converts Wei amount into Eth
+   * Converts Wei amount into Eth.
    * @param value to convert in Wei
    */
   private weiToEth(value: string | BigNumber): string {

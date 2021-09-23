@@ -69,7 +69,8 @@
     "maximumAmount": "Maximum amount is {{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
-    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network"
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
+    "unknown": "Oops, something went wrong, please try again"
   },
   "navigation": {
     "about": "About",
@@ -460,11 +461,14 @@
       "trackTrx": "Track the transaction status in <a target=\"_blank\" href=\"/my-trades\">My Trades</a> and tap «Receive» when appears to claim tokens in Ethereum network."
     },
     "tokensListModal": {
-      "title": "Select a token",
+      "defaultTitle": "Tokens List",
+      "favoriteTokensTitle": "Favorite Tokens",
       "unsupportedPairsHint": "This token is unavailable for the swap. Please select supported pairs.",
       "clearParamsHint": "Clear other form parameters to select this token",
       "searchPlaceholder": "Search name or paste address",
-      "noSearchData": "Nothing to show"
+      "noSearchData": "Nothing to show",
+      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "backToTokens": "back to whole tokens list"
     },
     "walletsModal": {
       "title": "Connect wallet",

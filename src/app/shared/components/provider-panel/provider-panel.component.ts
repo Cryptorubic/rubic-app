@@ -79,7 +79,7 @@ export class ProviderPanelComponent {
   }
 
   /**
-   * Calculate loading state.
+   * Calculates loading state.
    * @param tradeState Instant trade status.
    * @returns isLoading Is instant trade currently loading.
    */
@@ -96,7 +96,7 @@ export class ProviderPanelComponent {
   }
 
   /**
-   * @description Transform input controller data to comfortable.
+   * Transform input controller data to comfortable.
    * @param data Provider controller data.
    */
   private setupProviderData(data: ProviderControllerData): void {

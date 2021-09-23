@@ -14,7 +14,8 @@ const BNB: TokenAmount = {
   rank: TOKEN_RANK.HIGH,
   price: 1,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 const USDT: TokenAmount = {
@@ -27,7 +28,8 @@ const USDT: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 1,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 const ETH: TokenAmount = {
@@ -40,7 +42,8 @@ const ETH: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 1,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const BRBC: TokenAmount = {
@@ -53,7 +56,8 @@ export const BRBC: TokenAmount = {
   rank: TOKEN_RANK.LOW,
   price: 2,
   usedInIframe: true,
-  amount: new BigNumber(0)
+  amount: new BigNumber(0),
+  favorite: true
 };
 
 export const bscTestTokens = [BNB, USDT, ETH, BRBC];

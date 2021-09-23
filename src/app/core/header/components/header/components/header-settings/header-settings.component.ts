@@ -8,22 +8,22 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input } from 
 })
 export class HeaderSettingsComponent {
   /**
-   * @description title of header
+   * title of header
    */
   @Input() title: string;
 
   /**
-   * @description have header back button or not
+   * have header back button or not
    */
   @Input() haveBackButton: boolean;
 
   /**
-   * @description event emitter on click close button
+   * event emitter on click close button
    */
   @Output() closeClick = new EventEmitter();
 
   /**
-   * @description event emitter on click back button
+   * event emitter on click back button
    */
   @Output() backClick = new EventEmitter();
 

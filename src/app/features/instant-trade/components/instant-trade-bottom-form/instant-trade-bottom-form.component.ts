@@ -156,6 +156,43 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     >([]);
   }
 
+  /**
+   * Returns the most profitable provider based on usd$ price.
+   * @param tradeData Providers' trade data.
+   * @return number Index of the most profitable provider.
+   */
+  private static calculateBestRate(tradeData: InstantTrade[]): number {
+    const { index: providerIndex } = tradeData.reduce(
+      (bestRate, trade, i: number) => {
+        if (!trade) {
+          return bestRate;
+        }
+
+        const { gasFeeInUsd, to } = trade;
+        let profit;
+        if (!to.token.price) {
+          profit = to.amount;
+        } else {
+          const amountInUsd = to.amount?.multipliedBy(to.token.price);
+          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
+        }
+
+        return profit?.gt(bestRate.profit)
+          ? {
+              index: i,
+              profit
+            }
+          : bestRate;
+      },
+      {
+        index: -1,
+        profit: new BigNumber(-Infinity)
+      }
+    );
+
+    return providerIndex;
+  }
+
   public ngOnInit(): void {
     this.setupCalculatingTrades();
     this.setupHiddenCalculatingTrades();
@@ -490,7 +527,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
    * Selects best provider controller and updates trade status.
    */
   private chooseBestController() {
-    const bestProviderIndex = this.calculateBestRate(this.providerControllers.map(el => el.trade));
+    const bestProviderIndex = InstantTradeBottomFormComponent.calculateBestRate(
+      this.providerControllers.map(el => el.trade)
+    );
     if (bestProviderIndex !== -1) {
       this.providerControllers[bestProviderIndex].isBestRate = true;
       this.providerControllers[bestProviderIndex].isSelected = true;
@@ -511,43 +550,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
     this.cdr.detectChanges();
-  }
-
-  /**
-   * Returns the most profitable provider based on usd$ price.
-   * @param tradeData Providers' trade data.
-   * @return number Index of the most profitable provider.
-   */
-  private calculateBestRate(tradeData: InstantTrade[]): number {
-    const { index: providerIndex } = tradeData.reduce(
-      (bestRate, trade, i: number) => {
-        if (!trade) {
-          return bestRate;
-        }
-
-        const { gasFeeInUsd, to } = trade;
-        let profit;
-        if (!to.token.price) {
-          profit = to.amount;
-        } else {
-          const amountInUsd = to.amount?.multipliedBy(to.token.price);
-          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
-        }
-
-        return profit?.gt(bestRate.profit)
-          ? {
-              index: i,
-              profit
-            }
-          : bestRate;
-      },
-      {
-        index: -1,
-        profit: new BigNumber(-Infinity)
-      }
-    );
-
-    return providerIndex;
   }
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
@@ -649,7 +651,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
-      this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateUserTokensBalances();
 
       if (this.isIframe$) {
         this.needApprove = false;
