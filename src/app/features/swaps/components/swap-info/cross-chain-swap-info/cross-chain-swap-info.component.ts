@@ -96,7 +96,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
                 this.fromToken = this.swapFormService.inputValue.fromToken;
                 this.toToken = this.swapFormService.inputValue.toToken;
                 this.isSwapInfoLoading = false;
-                this.cdr.detectChanges();
               })
             );
           }
@@ -106,7 +105,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe();
+      .subscribe(() => {
+        this.cdr.detectChanges();
+      });
   }
 
   private subscribeOnSlippage(): void {
@@ -127,6 +128,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
             maximumSpent,
             minimumReceived
           };
+          this.cdr.detectChanges();
         }
       });
   }
