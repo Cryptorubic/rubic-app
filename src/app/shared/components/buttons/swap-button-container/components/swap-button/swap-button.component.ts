@@ -1,11 +1,11 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  Input,
-  Output,
+  ChangeDetectorRef,
+  Component,
   EventEmitter,
-  ChangeDetectorRef
+  Input,
+  OnInit,
+  Output
 } from '@angular/core';
 import { PRICE_IMPACT } from 'src/app/shared/components/buttons/swap-button-container/models/PRICE_IMPACT';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
@@ -16,6 +16,8 @@ import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import BigNumber from 'bignumber.js';
 import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 @Component({
   selector: 'app-swap-button',
@@ -62,6 +64,7 @@ export class SwapButtonComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly swapsService: SwapsService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.priceImpact = 0;
@@ -77,6 +80,11 @@ export class SwapButtonComponent implements OnInit {
   }
 
   private setPriceImpact() {
+    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
+      this.priceImpact = 0;
+      return;
+    }
+
     const inputForm = this.formService.inputValue;
     const outputForm = this.formService.outputValue;
 
