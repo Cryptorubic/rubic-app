@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
@@ -160,10 +160,16 @@ export class ZrxService implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    return this.commonUniswapV2.getAllowance(
-      this.blockchain,
-      tokenAddress,
-      this.tradeData?.allowanceTarget
+    const web3Public: Web3Public = this.web3PublicService[this.blockchain];
+    if (Web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
+    return from(
+      web3Public.getAllowance(
+        tokenAddress,
+        this.providerConnectorService.address,
+        this.tradeData?.allowanceTarget
+      )
     );
   }
 
@@ -173,11 +179,11 @@ export class ZrxService implements ItProvider {
       onTransactionHash?: (hash: string) => void;
     }
   ): Promise<void> {
-    await this.providerConnectorService.checkSettings(this.blockchain);
-    return this.commonUniswapV2.approve(
-      this.blockchain,
+    this.providerConnectorService.checkSettings(this.blockchain);
+    await this.web3PrivateService.approveTokens(
       tokenAddress,
       this.tradeData.allowanceTarget,
+      'infinity',
       options
     );
   }
