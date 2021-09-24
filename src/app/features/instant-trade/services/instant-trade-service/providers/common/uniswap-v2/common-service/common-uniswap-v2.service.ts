@@ -412,11 +412,13 @@ export class CommonUniswapV2Service {
 
     const routes: UniswapRoute[] = [];
     await web3Public
-      .multicallContractMethod<{ amounts: string[] }>(
+      .multicallContractMethods<{ amounts: string[] }>(
         contractAddress,
         this.contractAbi,
-        uniswapMethodName,
-        routesMethodArguments
+        routesMethodArguments.map(methodArguments => ({
+          methodName: uniswapMethodName,
+          methodArguments
+        }))
       )
       .then(responses => {
         responses.forEach((response, index) => {

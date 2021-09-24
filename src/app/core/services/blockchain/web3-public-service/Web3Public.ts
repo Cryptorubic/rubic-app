@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
 import { RpcResponse } from 'src/app/core/services/blockchain/types/RpcResponse';
 import { Cacheable } from 'ts-cacheable';
-import { Contract } from 'web3-eth-contract/types';
+import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -191,16 +191,6 @@ export class Web3Public {
 
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
-  }
-
-  /**
-   * @description creates a new contract instance with all its methods and events defined in its json interface object.
-   * @param address the address of the smart contract to call
-   * @param abi the json interface for the contract to instantiate
-   * @return contract the contract instance with all its methods and events.
-   */
-  public getContract(address: string, abi: AbiItem[]): Contract {
-    return new this.web3.eth.Contract(abi, address);
   }
 
   /**
@@ -472,17 +462,15 @@ export class Web3Public {
   }
 
   /**
-   * use multicall to make many calls in the single rpc request
-   * @param contractAddress target contract address
-   * @param contractAbi target contract abi
-   * @param methodName target method name
-   * @param methodCallsArguments list method calls parameters arrays
+   * Uses multicall to make many calls in the single rpc request.
+   * @param contractAddress Target contract address.
+   * @param contractAbi Target contract abi.
+   * @param methodsData Methods data, containing method's name and arguments.
    */
-  public async multicallContractMethod<Output>(
+  public async multicallContractMethods<Output>(
     contractAddress: string,
     contractAbi: AbiItem[],
-    methodName: string,
-    methodCallsArguments: unknown[][]
+    methodsData: MethodData[]
   ): Promise<
     {
       success: boolean;
@@ -490,23 +478,93 @@ export class Web3Public {
     }[]
   > {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
-    const calls: Call[] = methodCallsArguments.map(callArguments => ({
-      callData: contract.methods[methodName](...callArguments).encodeABI(),
+    const calls: Call[] = methodsData.map(({ methodName, methodArguments }) => ({
+      callData: contract.methods[methodName](...methodArguments).encodeABI(),
       target: contractAddress
     }));
 
     const outputs = await this.multicall(calls);
 
-    const methodOutputAbi = contractAbi.find(
-      funcSignature => funcSignature.name === methodName
-    ).outputs;
+    outputs.map((output, index) => {
+      const methodOutputAbi = contractAbi.find(
+        funcSignature => funcSignature.name === methodsData[index].methodName
+      ).outputs;
+      return {
+        success: output.success,
+        output: output.success
+          ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+          : null
+      };
+    });
 
-    return outputs.map(output => ({
-      success: output.success,
-      output: output.success
-        ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
-        : null
-    }));
+    return outputs.map((output, index) => {
+      const methodOutputAbi = contractAbi.find(
+        funcSignature => funcSignature.name === methodsData[index].methodName
+      ).outputs;
+      return {
+        success: output.success,
+        output: output.success
+          ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+          : null
+      };
+    });
+  }
+
+  /**
+   * Uses multicall to make many calls in the single rpc request.
+   * Takes several contract's addresses.
+   * @param contractAbi Target contract abi.
+   * @param contractsData Contract addresses and methods data, containing method's name and arguments.
+   */
+  public async multicallContractsMethods<Output>(
+    contractAbi: AbiItem[],
+    contractsData: {
+      contractAddress: string;
+      methodsData: MethodData[];
+    }[]
+  ): Promise<
+    {
+      success: boolean;
+      output: Output;
+    }[][]
+  > {
+    const calls: Call[][] = contractsData.map(({ contractAddress, methodsData }) => {
+      const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+      return methodsData.map(({ methodName, methodArguments }) => ({
+        callData: contract.methods[methodName](...methodArguments).encodeABI(),
+        target: contractAddress
+      }));
+    });
+
+    const outputs = await this.multicall(calls.flat());
+
+    let contractDataIndex = 0;
+    let methodDataIndex = 0;
+    const results = Array(contractsData.length);
+    results[0] = [];
+    outputs.forEach(output => {
+      if (contractsData[contractDataIndex].methodsData.length === methodDataIndex) {
+        contractDataIndex++;
+        results[contractDataIndex] = [];
+        methodDataIndex = 0;
+      }
+
+      const methodOutputAbi = contractAbi.find(
+        funcSignature =>
+          funcSignature.name ===
+          contractsData[contractDataIndex].methodsData[methodDataIndex].methodName
+      ).outputs;
+
+      results[contractDataIndex].push({
+        success: output.success,
+        output: output.success
+          ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+          : null
+      });
+
+      methodDataIndex++;
+    });
+    return results;
   }
 
   private async multicall(calls: Call[]): Promise<MulticallResponse[]> {

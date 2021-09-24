@@ -1,6 +1,11 @@
-import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/controllers/models/LiquidityPool';
+import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/models/LiquidityPool';
+import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
 
-export const routerTokensWithMode = {
+export const routerTokensNetMode: {
+  [mode in NetMode]: {
+    [tokenSymbol: string]: string;
+  };
+} = {
   mainnet: {
     WETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -15,12 +20,11 @@ export const routerTokensWithMode = {
   }
 };
 
-const mainnetRouterTokens = routerTokensWithMode.mainnet;
-const testnetRouterTokens = routerTokensWithMode.testnet;
+const mainnetRouterTokens = routerTokensNetMode.mainnet;
+const testnetRouterTokens = routerTokensNetMode.testnet;
 
 export const routerLiquidityPoolsWithMode: {
-  mainnet: LiquidityPool[];
-  testnet: LiquidityPool[];
+  [mode in NetMode]: LiquidityPool[];
 } = {
   mainnet: [
     {

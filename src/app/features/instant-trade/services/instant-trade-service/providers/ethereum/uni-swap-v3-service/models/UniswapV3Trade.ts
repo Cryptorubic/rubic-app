@@ -3,7 +3,7 @@ import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-
 
 export interface UniswapV3Trade extends InstantTrade {
   /**
-   * Pools' path to use in routing.
+   * Route info, containing path and output amount.
    */
-  poolsPath: UniswapV3Route;
+  route: UniswapV3Route;
 }

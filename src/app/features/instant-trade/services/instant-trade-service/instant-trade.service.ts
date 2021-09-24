@@ -30,6 +30,7 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
+import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,7 @@ export class InstantTradeService {
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
     private readonly uniswapV2Service: UniSwapV2Service,
+    private readonly uniswapV3Service: UniSwapV3Service,
     private readonly oneInchPolygonService: OneInchPolService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
@@ -90,7 +92,7 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDER.UNISWAP_V2]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: this.uniswapV2Service,
+        [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: this.uniswapV3Service,
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
         [INSTANT_TRADES_PROVIDER.ZRX]: this.zrxService
       },
