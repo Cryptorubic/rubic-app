@@ -194,6 +194,13 @@
       right: 20px;
       z-index: 100;
     }
+
+    &__refresh {
+      position: absolute;
+      top: 62px;
+      right: 50px;
+      z-index: 10;
+    }
   }
 }
 
@@ -208,6 +215,10 @@ app-analytics-link {
   .swaps-form {
     &__settings {
       top: 80px;
+    }
+
+    &__refresh {
+      top: 78px;
     }
   }
 }
