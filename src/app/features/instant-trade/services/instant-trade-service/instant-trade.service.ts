@@ -29,6 +29,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,35 @@ export class InstantTradeService {
     BLOCKCHAIN_NAME.TRON,
     BLOCKCHAIN_NAME.XDAI
   ];
+
+  constructor(
+    // Providers start
+    private readonly oneInchEthService: OneInchEthService,
+    private readonly uniswapV2Service: UniSwapV2Service,
+    private readonly oneInchPolygonService: OneInchPolService,
+    private readonly pancakeSwapService: PancakeSwapService,
+    private readonly quickSwapService: QuickSwapService,
+    private readonly oneInchBscService: OneInchBscService,
+    private readonly sushiSwapEthService: SushiSwapEthService,
+    private readonly sushiSwapPolygonService: SushiSwapPolygonService,
+    private readonly sushiSwapBscService: SushiSwapBscService,
+    private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
+    private readonly ethWethSwapProvider: EthWethSwapProviderService,
+    // Providers end
+    private readonly instantTradesApiService: InstantTradesApiService,
+    private readonly errorService: ErrorsService,
+    private readonly swapFormService: SwapFormService,
+    private readonly web3Public: Web3PublicService,
+    private translateService: TranslateService,
+    private notificationsService: NotificationsService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private injector: Injector,
+    private readonly successTxModalService: SuccessTxModalService,
+    @Inject(WINDOW) private readonly window: Window
+  ) {
+    this.setBlockchainsProviders();
+  }
 
   private blockchainsProviders: Partial<
     {
@@ -53,34 +83,6 @@ export class InstantTradeService {
 
   public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
-  }
-
-  constructor(
-    // Providers start
-    private readonly oneInchEthService: OneInchEthService,
-    private readonly uniswapV2Service: UniSwapV2Service,
-    private readonly oneInchPolygonService: OneInchPolService,
-    private readonly pancakeSwapService: PancakeSwapService,
-    private readonly quickSwapService: QuickSwapService,
-    private readonly oneInchBscService: OneInchBscService,
-    private readonly sushiSwapEthService: SushiSwapEthService,
-    private readonly sushiSwapPolygonService: SushiSwapPolygonService,
-    private readonly sushiSwapBscService: SushiSwapBscService,
-    private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
-    private readonly ethWethSwapProvider: EthWethSwapProviderService,
-    // Providers end
-    private readonly instantTradesApiService: InstantTradesApiService,
-    private readonly errorService: ErrorsService,
-    private readonly swapFormService: SwapFormService,
-    private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService,
-    private notificationsService: NotificationsService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector,
-    private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: Window
-  ) {
-    this.setBlockchainsProviders();
   }
 
   private setBlockchainsProviders(): void {
@@ -102,6 +104,9 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+      },
+      [BLOCKCHAIN_NAME.AVALANCHE]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService
       }
     };
   }
