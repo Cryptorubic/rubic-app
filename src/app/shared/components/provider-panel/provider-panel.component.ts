@@ -4,7 +4,6 @@ import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
 import { TradeData } from 'src/app/shared/components/provider-panel/models/trade-data';
 import { ProviderData } from 'src/app/shared/components/provider-panel/models/provider-data';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 
 @Component({
@@ -80,7 +79,7 @@ export class ProviderPanelComponent {
   }
 
   /**
-   * Calculate loading state.
+   * Calculates loading state.
    * @param tradeState Instant trade status.
    * @returns isLoading Is instant trade currently loading.
    */
@@ -101,13 +100,12 @@ export class ProviderPanelComponent {
    * @param data Provider controller data.
    */
   private setupProviderData(data: ProviderControllerData): void {
-    const usdPrice = data?.trade?.to?.amount.multipliedBy(data?.trade?.to?.token?.price);
     this.tradeData = {
       amount: data?.trade?.to?.amount,
       gasLimit: data?.trade?.gasLimit,
       gasFeeInUsd: data?.trade?.gasFeeInUsd,
       gasFeeInEth: data?.trade?.gasFeeInEth,
-      usdPrice: usdPrice && !usdPrice?.isNaN() ? usdPrice.toFormat(2, BIG_NUMBER_FORMAT) : '',
+      usdPrice: data?.trade?.to?.amount?.multipliedBy(data?.trade?.to?.token?.price),
       toTokenDecimals: data?.trade?.to?.token?.decimals
     };
   }

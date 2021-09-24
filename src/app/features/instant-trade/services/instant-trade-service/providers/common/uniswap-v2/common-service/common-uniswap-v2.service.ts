@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
@@ -19,7 +19,10 @@ import {
 } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/commonUniswapV2Abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
+import {
+  ItOptions,
+  ItProvider
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { defaultEstimatedGas } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/defaultEstimatedGas';
 import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
@@ -32,11 +35,12 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapInstantTrade';
+import { TransactionReceipt } from 'web3-eth';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class CommonUniswapV2Service {
+@Injectable()
+export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly contractAbi = CommonUniswapV2Abi;
 
   private readonly defaultEstimateGas = defaultEstimatedGas;
@@ -47,14 +51,35 @@ export class CommonUniswapV2Service {
 
   private settings: ItSettingsForm;
 
-  constructor(
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3Private: Web3PrivateService,
-    private readonly providerConnectorService: ProviderConnectorService,
-    private readonly authService: AuthService,
-    private readonly settingsService: SettingsService,
-    private readonly tokensService: TokensService
-  ) {
+  // Uniswap constants
+  private blockchain: BLOCKCHAIN_NAME;
+
+  private wethAddress: string;
+
+  private contractAddress: string;
+
+  private routingProviders: string[];
+
+  private maxTransitTokens: number;
+
+  // Injected services
+  private readonly web3PublicService = inject(Web3PublicService);
+
+  private readonly web3Private = inject(Web3PrivateService);
+
+  private readonly providerConnectorService = inject(ProviderConnectorService);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly settingsService = inject(SettingsService);
+
+  private readonly tokensService = inject(TokensService);
+
+  private readonly useTestingModeService = inject(UseTestingModeService);
+
+  protected constructor(uniswapConstants: UniswapV2Constants) {
+    this.setUniswapConstants(uniswapConstants);
+
     this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address;
     });
@@ -69,28 +94,40 @@ export class CommonUniswapV2Service {
       });
   }
 
-  public getAllowance(
-    blockchain: BLOCKCHAIN_NAME,
-    tokenAddress: string,
-    contractAddress: string
-  ): Observable<BigNumber> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain as Web3SupportedBlockchains];
+  private setUniswapConstants(uniswapConstants: UniswapV2Constants) {
+    this.blockchain = uniswapConstants.blockchain;
+    this.maxTransitTokens = uniswapConstants.maxTransitTokens;
+
+    this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
+    this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
+    this.routingProviders = uniswapConstants.routingProvidersNetMode.mainnet;
+
+    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this.contractAddress = uniswapConstants.contractAddressNetMode.testnet;
+        this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
+        this.routingProviders = uniswapConstants.routingProvidersNetMode.testnet;
+      }
+    });
+  }
+
+  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+    const web3Public: Web3Public = this.web3PublicService[this.blockchain];
     if (Web3Public.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
-      web3Public.getAllowance(tokenAddress, this.providerConnectorService.address, contractAddress)
+      web3Public.getAllowance(
+        tokenAddress,
+        this.providerConnectorService.address,
+        this.contractAddress
+      )
     );
   }
 
-  public async approve(
-    blockchain: BLOCKCHAIN_NAME,
-    tokenAddress: string,
-    contractAddress: string,
-    options: TransactionOptions
-  ): Promise<void> {
-    this.providerConnectorService.checkSettings(blockchain);
-    await this.web3Private.approveTokens(tokenAddress, contractAddress, 'infinity', options);
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
+    this.providerConnectorService.checkSettings(this.blockchain);
+    await this.web3Private.approveTokens(tokenAddress, this.contractAddress, 'infinity', options);
   }
 
   private calculateTokensToTokensGasLimit: GasCalculationMethod = (
@@ -142,12 +179,11 @@ export class CommonUniswapV2Service {
   private createEthToTokensTrade: CreateTradeMethod = (
     trade: UniswapV2Trade,
     options: ItOptions,
-    contractAddress: string,
     gasLimit: string,
     gasPrice?: string
   ) => {
     return this.web3Private.tryExecuteContractMethod(
-      contractAddress,
+      this.contractAddress,
       this.contractAbi,
       SWAP_METHOD.ETH_TO_TOKENS,
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -163,12 +199,11 @@ export class CommonUniswapV2Service {
   private createTokensToEthTrade: CreateTradeMethod = (
     trade: UniswapV2Trade,
     options: ItOptions,
-    contractAddress: string,
     gasLimit: string,
     gasPrice?: string
   ) => {
     return this.web3Private.tryExecuteContractMethod(
-      contractAddress,
+      this.contractAddress,
       this.contractAbi,
       SWAP_METHOD.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -183,12 +218,11 @@ export class CommonUniswapV2Service {
   private createTokensToTokensTrade: CreateTradeMethod = (
     trade: UniswapV2Trade,
     options: ItOptions,
-    contractAddress: string,
     gasLimit: string,
     gasPrice?: string
   ) => {
     return this.web3Private.tryExecuteContractMethod(
-      contractAddress,
+      this.contractAddress,
       this.contractAbi,
       SWAP_METHOD.TOKENS_TO_TOKENS,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -201,14 +235,9 @@ export class CommonUniswapV2Service {
   };
 
   public async calculateTrade(
-    blockchain: BLOCKCHAIN_NAME,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
-    contractAddress: string,
-    wethAddress: string,
-    routingProviders: string[],
-    maxTransitTokens: number,
     shouldCalculateGas: boolean
   ): Promise<UniswapInstantTrade> {
     let fromTokenAddress = fromToken.address;
@@ -216,13 +245,13 @@ export class CommonUniswapV2Service {
 
     let estimatedGasPredictionMethod = this.calculateTokensToTokensGasLimit;
 
-    const web3Public: Web3Public = this.web3PublicService[blockchain as Web3SupportedBlockchains];
+    const web3Public: Web3Public = this.web3PublicService[this.blockchain];
     if (Web3Public.isNativeAddress(fromTokenAddress)) {
-      fromTokenAddress = wethAddress;
+      fromTokenAddress = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateEthToTokensGasLimit;
     }
     if (Web3Public.isNativeAddress(toTokenClone.address)) {
-      toTokenClone.address = wethAddress;
+      toTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
     }
 
@@ -234,7 +263,7 @@ export class CommonUniswapV2Service {
     if (shouldCalculateGas) {
       gasPrice = await web3Public.getGasPrice();
       gasPriceInEth = Web3Public.fromWei(gasPrice);
-      const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
+      const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     }
 
@@ -242,17 +271,13 @@ export class CommonUniswapV2Service {
       fromTokenAddress,
       fromAmountAbsolute,
       toTokenClone,
-      routingProviders,
-      maxTransitTokens,
-      contractAddress,
-      web3Public,
       shouldCalculateGas,
       estimatedGasPredictionMethod,
       gasPriceInUsd
     );
 
     const instantTrade: UniswapInstantTrade = {
-      blockchain,
+      blockchain: this.blockchain,
       from: {
         token: fromToken,
         amount: fromAmount
@@ -285,10 +310,6 @@ export class CommonUniswapV2Service {
     fromTokenAddress: string,
     fromAmountAbsolute: string,
     toToken: InstantTradeToken,
-    routingProviders: string[],
-    maxTransitTokens: number,
-    contractAddress: string,
-    web3Public: Web3Public,
     shouldCalculateGas: boolean,
     gasCalculationMethodName: GasCalculationMethod,
     gasPriceInUsd?: BigNumber
@@ -298,10 +319,6 @@ export class CommonUniswapV2Service {
         fromTokenAddress,
         toToken.address,
         fromAmountAbsolute,
-        routingProviders,
-        this.settings.disableMultihops ? 0 : maxTransitTokens,
-        contractAddress,
-        web3Public,
         'getAmountsOut'
       )
     ).sort((a, b) => (b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1));
@@ -330,9 +347,10 @@ export class CommonUniswapV2Service {
     const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
     if (this.walletAddress) {
+      const web3Public: Web3Public = this.web3PublicService[this.blockchain];
       const estimatedGasLimits = await web3Public.batchEstimatedGas(
         CommonUniswapV2Abi,
-        contractAddress,
+        this.contractAddress,
         this.walletAddress,
         gasRequests.map(item => item.callData)
       );
@@ -375,13 +393,9 @@ export class CommonUniswapV2Service {
     fromTokenAddress: string,
     toTokenAddress: string,
     amountAbsolute: string,
-    routingProviders: string[],
-    maxTransitTokens: number,
-    contractAddress: string,
-    web3Public: Web3Public,
     uniswapMethodName: 'getAmountsOut' | 'getAmountsIn'
   ): Promise<UniswapRoute[]> {
-    const vertexes: string[] = routingProviders
+    const vertexes: string[] = this.routingProviders
       .map(elem => elem.toLowerCase())
       .filter(
         elem => elem !== toTokenAddress.toLowerCase() && elem !== fromTokenAddress.toLowerCase()
@@ -406,14 +420,16 @@ export class CommonUniswapV2Service {
         });
     };
 
+    const maxTransitTokens = this.settings.disableMultihops ? 0 : this.maxTransitTokens;
     for (let i = 0; i <= maxTransitTokens; i++) {
       recGraphVisitor(initialPath, i);
     }
 
     const routes: UniswapRoute[] = [];
+    const web3Public: Web3Public = this.web3PublicService[this.blockchain];
     await web3Public
       .multicallContractMethod<{ amounts: string[] }>(
-        contractAddress,
+        this.contractAddress,
         this.contractAbi,
         uniswapMethodName,
         routesMethodArguments
@@ -442,46 +458,30 @@ export class CommonUniswapV2Service {
   }
 
   public async getFromAmount(
-    blockchain: BLOCKCHAIN_NAME,
     fromTokenAddress: string,
     toToken: InstantTradeToken,
-    toAmount: BigNumber,
-    wethAddress: string,
-    routingProviders: string[],
-    maxTransitTokens: number,
-    contractAddress: string
+    toAmount: BigNumber
   ): Promise<BigNumber> {
     const toTokenClone = { ...toToken };
-    const web3Public: Web3Public = this.web3PublicService[blockchain as Web3SupportedBlockchains];
 
     if (Web3Public.isNativeAddress(fromTokenAddress)) {
-      fromTokenAddress = wethAddress;
+      fromTokenAddress = this.wethAddress;
     }
     if (Web3Public.isNativeAddress(toTokenClone.address)) {
-      toTokenClone.address = wethAddress;
+      toTokenClone.address = this.wethAddress;
     }
 
     const toAmountAbsolute = Web3Public.toWei(toAmount, toToken.decimals);
     const routes = (
-      await this.getAllRoutes(
-        fromTokenAddress,
-        toToken.address,
-        toAmountAbsolute,
-        routingProviders,
-        maxTransitTokens,
-        contractAddress,
-        web3Public,
-        'getAmountsIn'
-      )
+      await this.getAllRoutes(fromTokenAddress, toToken.address, toAmountAbsolute, 'getAmountsIn')
     ).sort((a, b) => (b.outputAbsoluteAmount.lt(a.outputAbsoluteAmount) ? 1 : -1));
     return routes[0]?.outputAbsoluteAmount;
   }
 
   public async createTrade(
     trade: UniswapInstantTrade,
-    contractAddress: string,
     options: ItOptions = {}
-  ) {
+  ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(trade.blockchain);
 
     const web3Public = this.web3PublicService[trade.blockchain as Web3SupportedBlockchains];
@@ -506,12 +506,6 @@ export class CommonUniswapV2Service {
       createTradeMethod = this.createTokensToEthTrade;
     }
 
-    return createTradeMethod(
-      uniswapV2Trade,
-      options,
-      contractAddress,
-      trade.gasLimit,
-      trade.gasPrice
-    );
+    return createTradeMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
   }
 }

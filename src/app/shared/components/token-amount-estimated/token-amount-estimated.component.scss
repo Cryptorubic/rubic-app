@@ -56,20 +56,7 @@
     }
   }
 
-  &__usd-container {
-    @include iframe-card;
-    display: inline-flex;
-    float: right;
-
-    min-width: 50px;
-    overflow: hidden;
-
-    color: var(--form-dim-text-color);
-    font-weight: 400;
-    font-size: 14px;
-    text-align: right;
-    text-overflow: ellipsis;
-
+  app-usd-price-container {
     @include iframe-horizontal {
       position: absolute;
       bottom: -33px;
@@ -79,31 +66,6 @@
         margin-left: 0;
       };
     }
-
-    @include iframe-vertical {
-      width: fit-content;
-    }
-
-    span {
-      margin-left: 10px;
-
-      @include iframe-vertical {
-        margin-left: 0;
-      }
-    }
-
-    &_placeholder {
-      color: rgb(117, 117, 117);
-    }
-  }
-
-  &__usd {
-    overflow: hidden;
-
-    letter-spacing: 0.1em;
-
-    text-align: right;
-    text-overflow: ellipsis;
   }
 
   &__tokens-container {
@@ -206,23 +168,6 @@
       padding-top: 0;
     }
 
-    &__usd-container {
-      order: 1;
-      width: 100%;
-      margin-bottom: 0;
-      margin-left: 0;
-
-      text-align: left;
-
-      span {
-        margin-left: auto;
-      }
-    }
-
-    &__usd {
-      text-align: left;
-    }
-
     &__fee {
       margin-right: 0;
     }
@@ -231,12 +176,6 @@
 
 @include b($mobile-sm) {
   .bottom-amount {
-    &__usd-container {
-      span {
-        margin-left: 0;
-      }
-    }
-
     &__tokens-container {
       text-align: left;
     }

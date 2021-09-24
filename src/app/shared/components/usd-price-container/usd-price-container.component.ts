@@ -10,5 +10,7 @@ import BigNumber from 'bignumber.js';
 export class UsdPriceContainerComponent {
   @Input() public usdPrice: BigNumber;
 
+  @Input() public loading = false;
+
   constructor() {}
 }

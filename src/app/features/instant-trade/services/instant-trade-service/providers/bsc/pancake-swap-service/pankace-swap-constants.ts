@@ -3,6 +3,7 @@ import {
   UniswapV2Constants
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 const pancakeSwapContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
@@ -32,6 +33,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
 };
 
 export const pancakeSwapConstants: UniswapV2Constants = {
+  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   contractAddressNetMode: pancakeSwapContractAddressNetMode,
   wethAddressNetMode,
   routingProvidersNetMode,

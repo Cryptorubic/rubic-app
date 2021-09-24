@@ -64,7 +64,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   ) {
     super();
 
-    this.tokensService.tokens
+    this.tokensService.tokens$
       .pipe(
         filter(tokens => !!tokens.size),
         first()

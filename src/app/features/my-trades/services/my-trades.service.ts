@@ -5,10 +5,10 @@ import {
   catchError,
   defaultIfEmpty,
   filter,
+  first,
   map,
   mergeMap,
-  switchMap,
-  takeWhile
+  switchMap
 } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
@@ -57,7 +57,10 @@ export class MyTradesService {
   public updateTableTrades(): Observable<TableTrade[]> {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
-      this.tokensService.tokens.pipe(takeWhile(tokens => tokens.size === 0, true))
+      this.tokensService.tokens$.pipe(
+        filter(tokens => !!tokens.size),
+        first()
+      )
     ]).pipe(
       switchMap(([user, tokens]) => {
         this.tokens = tokens;

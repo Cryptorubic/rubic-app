@@ -21,7 +21,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { TranslateService } from '@ngx-translate/core';
 import { TransactionReceipt } from 'web3-eth';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { OneinchSwapResponse } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapResponse';
@@ -31,6 +30,7 @@ import { OneinchApproveResponse } from 'src/app/features/instant-trade/services/
 import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchQuoteRequest';
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -59,8 +59,7 @@ export class CommonOneinchService {
     private readonly settingsService: SettingsService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
-    private readonly tokensService: TokensService,
-    private readonly translateService: TranslateService
+    private readonly tokensService: TokensService
   ) {
     this.oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
     this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/';
@@ -161,7 +160,7 @@ export class CommonOneinchService {
       !supportedTokensAddresses.includes(fromTokenAddress.toLowerCase()) ||
       !supportedTokensAddresses.includes(toTokenAddress.toLowerCase())
     ) {
-      throw new CustomError(this.translateService.instant('errors.1inchNotSupportedToken'));
+      throw new OneinchNotSupportedTokens();
     }
 
     const amountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);

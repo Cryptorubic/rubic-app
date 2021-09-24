@@ -234,7 +234,6 @@ export class BridgeApiService {
   ): Promise<void> {
     return this.getTokenPrice(bridgeTrade.token)
       .pipe(
-        first(),
         mergeMap(price => {
           const body: BridgeBotRequest = {
             txHash: transactionHash,
@@ -252,7 +251,8 @@ export class BridgeApiService {
   }
 
   private getTokenPrice(bridgeTokenPair: BridgeTokenPair): Observable<number> {
-    return this.tokensService.tokens.pipe(
+    return this.tokensService.tokens$.pipe(
+      first(),
       map(backendTokens => {
         const prices = Object.values(BLOCKCHAIN_NAME)
           .map(

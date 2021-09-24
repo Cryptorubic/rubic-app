@@ -1,3 +1,11 @@
 <ng-container>
-  <span>{{ 'errors.insufficientFunds'  | translate: { tokenSymbol: tokenSymbol, balance: balance, requiredBalance: requiredBalance } }}</span>
+  <span>{{
+    'errors.insufficientFunds'
+      | translate
+        : {
+            tokenSymbol: tokenSymbol,
+            balance: balance,
+            requiredBalance: requiredBalance
+          }
+  }}</span>
 </ng-container>

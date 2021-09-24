@@ -35,10 +35,11 @@
         [src]="currentBlockchain?.imagePath"
         alt="($currentBlockchain | async)?.name"
         width="25"
-        height="25">
+        height="25"
+      />
     </div>
     <div class="user-profile__address">
-      {{ ($currentUser | async)?.address | shortAddress: 5:3  }}
+      {{ ($currentUser | async)?.address | shortAddress: 5:3 }}
     </div>
   </div>
 </ng-container>

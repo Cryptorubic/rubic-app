@@ -3,6 +3,7 @@ import {
   UniswapV2Constants
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 const sushiSwapContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
@@ -28,6 +29,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
 };
 
 export const sushiSwapEthConstants: UniswapV2Constants = {
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   contractAddressNetMode: sushiSwapContractAddressNetMode,
   wethAddressNetMode,
   routingProvidersNetMode,

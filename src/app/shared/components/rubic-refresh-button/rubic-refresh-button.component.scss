@@ -13,17 +13,6 @@
 
   cursor: pointer;
 
-  @include b($mobile-md - 1) {
-    position: absolute;
-    top: 62px;
-    right: 50px;
-    z-index: 10;
-  }
-
-  @include b($mobile-sm) {
-    top: 78px;
-  }
-
   img {
     width: 16px;
     height: 16px;
