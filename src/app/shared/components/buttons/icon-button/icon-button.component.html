@@ -1,10 +1,10 @@
 <button
   tuiIconButton
   [style.transform]="'scale(' + scale + ')'"
-  [ngClass]="{bordered: _border}"
+  [ngClass]="{ bordered: _border }"
   [disabled]="_disabled"
   (click)="onClick()"
   [size]="buttonSize"
 >
-  <img [src]="icon" alt=""/>
+  <img [src]="icon" alt="" />
 </button>
