@@ -4,6 +4,7 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { AVAX_SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 
 const joeAvalancheContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0x60aE616a2155Ee3d9A68541Ba4544862310933d4',
@@ -31,10 +32,11 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const pangolinAvalancheConstants: UniswapV2Constants = {
+export const joeAvalancheConstants: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.AVALANCHE,
   contractAddressNetMode: joeAvalancheContractAddressNetMode,
   wethAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens: 3
+  maxTransitTokens: 3,
+  methods: AVAX_SWAP_METHOD
 };

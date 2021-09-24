@@ -146,6 +146,30 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
       isSelected: false,
       isCollapsed: false,
       needApprove: null
+    },
+    {
+      trade: null,
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      tradeProviderInfo: {
+        label: 'Pangolin',
+        value: INSTANT_TRADES_PROVIDER.PANGOLIN
+      },
+      isBestRate: false,
+      isSelected: false,
+      isCollapsed: false,
+      needApprove: null
+    },
+    {
+      trade: null,
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      tradeProviderInfo: {
+        label: 'Joe',
+        value: INSTANT_TRADES_PROVIDER.JOE
+      },
+      isBestRate: false,
+      isSelected: false,
+      isCollapsed: false,
+      needApprove: null
     }
   ]
 };

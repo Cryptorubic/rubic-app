@@ -30,6 +30,8 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
+import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
+import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +56,8 @@ export class InstantTradeService {
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
+    private readonly pangolinAvalancheService: PangolinAvalancheService,
+    private readonly joeAvalancheService: JoeAvalancheService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -106,7 +110,9 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
       },
       [BLOCKCHAIN_NAME.AVALANCHE]: {
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,
+        [INSTANT_TRADES_PROVIDER.PANGOLIN]: this.pangolinAvalancheService,
+        [INSTANT_TRADES_PROVIDER.JOE]: this.joeAvalancheService
       }
     };
   }
