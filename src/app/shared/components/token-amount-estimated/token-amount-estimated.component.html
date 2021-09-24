@@ -1,7 +1,10 @@
-<div class="bottom-amount" [ngClass]="{'bottom-amount_hidden-iframe-stub': hidden}">
+<div class="bottom-amount" [ngClass]="{ 'bottom-amount_hidden-iframe-stub': hidden }">
   <ng-container *ngIf="!hidden || errorText">
     <div class="bottom-amount__blockchain-and-value">
-      <app-iframe-blockchain-indicator *onlyFrame="'vertical'" [blockchain]="blockchain"></app-iframe-blockchain-indicator>
+      <app-iframe-blockchain-indicator
+        *onlyFrame="'vertical'"
+        [blockchain]="blockchain"
+      ></app-iframe-blockchain-indicator>
       <div
         class="bottom-amount__tokens-container"
         [ngClass]="{
@@ -27,17 +30,7 @@
       </div>
     </div>
 
-    <div
-      class="bottom-amount__usd-container"
-      *ngIf="usd || loading"
-      [ngClass]="{
-        'tui-skeleton': loading,
-        'tui-skeleton_text': loading,
-        'bottom-amount__usd-container_placeholder': !usd
-      }"
-    >
-      <span class="bottom-amount__usd">${{ usd | bigNumberFormat: 2 }}</span>
-    </div>
+    <app-usd-price-container [usdPrice]="usd" [loading]="loading"></app-usd-price-container>
 
     <!-- for Crypto tap -->
     <div

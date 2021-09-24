@@ -75,7 +75,10 @@ module.exports = {
     },
     {
       files: ['*.component.html'],
-      extends: ['plugin:@angular-eslint/template/recommended'],
+      extends: [
+        'plugin:@angular-eslint/template/recommended',
+        'plugin:prettier/recommended'
+      ],
       rules: {
         'max-len': ['warn', { code: 200 }]
       }

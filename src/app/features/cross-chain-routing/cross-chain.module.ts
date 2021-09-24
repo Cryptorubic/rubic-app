@@ -8,4 +8,4 @@ import { CrossChainRoutingBottomFormComponent } from 'src/app/features/cross-cha
   imports: [CommonModule, SharedModule],
   exports: [CrossChainRoutingBottomFormComponent]
 })
-export class CrossChainRoutingModule {}
+export class CrossChainModule {}

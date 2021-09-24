@@ -419,9 +419,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         },
         err => {
+          this.errorsService.catch(err);
+
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch(err);
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }
@@ -460,9 +461,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           await this.conditionalCalculate();
         },
         err => {
+          this.errorsService.catch(err);
+
           this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.errorsService.catch(err);
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }

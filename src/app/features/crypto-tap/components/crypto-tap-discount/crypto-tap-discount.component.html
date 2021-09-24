@@ -1,8 +1,12 @@
 <ng-container *ngIf="bestRate; else switchRBC">
   <div class="discount-container" *ngIf="discount && +discount > 0">
-    <img src="assets/images/icons/cross-chain-swaps/tick.svg" alt="ok"><span>{{discount}}% {{ 'tradePage.discountRBC' | translate}}</span>
+    <img src="assets/images/icons/cross-chain-swaps/tick.svg" alt="ok" /><span
+      >{{ discount }}% {{ 'tradePage.discountRBC' | translate }}</span
+    >
   </div>
 </ng-container>
 <ng-template #switchRBC>
-  <button class="discount-button" (click)="onSwitchClick()">{{ 'tradePage.rbcLowFees' | translate }}</button>
+  <button class="discount-button" (click)="onSwitchClick()">
+    {{ 'tradePage.rbcLowFees' | translate }}
+  </button>
 </ng-template>

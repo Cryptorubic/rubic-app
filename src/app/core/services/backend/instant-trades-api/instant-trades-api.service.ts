@@ -14,11 +14,9 @@ import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { ProviderConnectorService } from '../../blockchain/provider-connector/provider-connector.service';
 
 const instantTradesApiRoutes = {
   createData: 'instant_trades/',
@@ -34,9 +32,7 @@ export class InstantTradesApiService {
 
   constructor(
     private httpService: HttpService,
-    private useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService,
-    private readonly iframeService: IframeService
+    private useTestingModeService: UseTestingModeService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
   }

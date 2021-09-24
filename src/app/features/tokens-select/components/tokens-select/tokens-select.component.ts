@@ -391,7 +391,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * Try to parse search query and fetch tokens form backend or web3.
+   * Tries to parse search query and fetch tokens form backend or web3.
    */
   private async tryParseQuery(): Promise<void> {
     if (this.query.length) {

@@ -1,21 +1,23 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  Input,
-  Output,
+  ChangeDetectorRef,
+  Component,
   EventEmitter,
-  ChangeDetectorRef
+  Input,
+  OnInit,
+  Output
 } from '@angular/core';
 import { PRICE_IMPACT } from 'src/app/shared/components/buttons/swap-button-container/models/PRICE_IMPACT';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import BigNumber from 'bignumber.js';
 import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 
 @Component({
   selector: 'app-swap-button',
@@ -32,12 +34,12 @@ export class SwapButtonComponent implements OnInit {
   @Input() loading: boolean;
 
   /**
-   * Text inside button
+   * Text inside button.
    */
   @Input() buttonText: string;
 
   /**
-   * Service containing form with input and output data
+   * Service containing form with input and output data.
    */
   @Input() formService: FormService;
 
@@ -48,7 +50,7 @@ export class SwapButtonComponent implements OnInit {
   public TRADE_STATUS = TRADE_STATUS;
 
   /**
-   * Price impact of trade in percents
+   * Price impact of trade in percents.
    */
   public priceImpact: number;
 
@@ -62,26 +64,31 @@ export class SwapButtonComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly swapsService: SwapsService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.priceImpact = 0;
   }
 
   ngOnInit(): void {
-    this.formService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.setPriceImpact();
-    });
+    this.formService.outputValueChanges
+      .pipe(startWith(this.formService.outputValue), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setPriceImpact();
+        this.cdr.detectChanges();
+      });
   }
 
   private setPriceImpact() {
+    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
+      this.priceImpact = 0;
+      return;
+    }
+
     const inputForm = this.formService.inputValue;
     const outputForm = this.formService.outputValue;
 
     const { fromToken, toToken } = inputForm;
-    if (!fromToken?.price || !toToken?.price) {
-      return;
-    }
-
     let fromAmount: BigNumber;
     if (SwapButtonComponent.isSwapForm(inputForm)) {
       fromAmount = inputForm.fromAmount;
@@ -89,7 +96,8 @@ export class SwapButtonComponent implements OnInit {
       fromAmount = (outputForm as CryptoTapFormOutput).fromAmount;
     }
     const { toAmount } = outputForm;
-    if (!fromAmount || !toAmount) {
+    if (!fromToken?.price || !toToken?.price || !fromAmount?.isFinite() || !toAmount?.isFinite()) {
+      this.priceImpact = 0;
       return;
     }
 
@@ -101,6 +109,5 @@ export class SwapButtonComponent implements OnInit {
       .multipliedBy(100)
       .dp(2, BigNumber.ROUND_HALF_UP)
       .toNumber();
-    this.cdr.detectChanges();
   }
 }
