@@ -29,8 +29,8 @@ import { GasCalculationMethod } from 'src/app/features/instant-trade/services/in
 import { UniswapRoute } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapRoute';
 import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
 import {
-  SWAP_METHOD,
-  SWAP_METHODS
+  DEFAULT_SWAP_METHODS,
+  ISwapMethods
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 import {
   UniswapV2CalculatedInfo,
@@ -65,8 +65,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private maxTransitTokens: number;
 
-  private swapMethods: SWAP_METHODS;
-
   // Injected services
   private readonly web3PublicService = inject(Web3PublicService);
 
@@ -81,6 +79,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly tokensService = inject(TokensService);
 
   private readonly useTestingModeService = inject(UseTestingModeService);
+
+  protected swapsMethod: ISwapMethods = DEFAULT_SWAP_METHODS;
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
     this.setUniswapConstants(uniswapConstants);
@@ -102,7 +102,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private setUniswapConstants(uniswapConstants: UniswapV2Constants) {
     this.blockchain = uniswapConstants.blockchain;
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
-    this.swapMethods = uniswapConstants.methods || SWAP_METHOD;
 
     this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
     this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
@@ -144,7 +143,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ) => {
     return {
       callData: {
-        contractMethod: this.swapMethods.TOKENS_TO_TOKENS,
+        contractMethod: this.swapsMethod.TOKENS_TO_TOKENS,
         params: [amountIn, amountOutMin, path, this.walletAddress, deadline]
       },
       defaultGasLimit: this.defaultEstimateGas.tokensToTokens[path.length - 2]
@@ -159,7 +158,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ) => {
     return {
       callData: {
-        contractMethod: this.swapMethods.ETH_TO_TOKENS,
+        contractMethod: this.swapsMethod.ETH_TO_TOKENS,
         params: [amountIn, path, this.walletAddress, deadline],
         value: amountOutMin
       },
@@ -175,7 +174,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ) => {
     return {
       callData: {
-        contractMethod: this.swapMethods.TOKENS_TO_ETH,
+        contractMethod: this.swapsMethod.TOKENS_TO_ETH,
         params: [amountIn, amountOutMin, path, this.walletAddress, deadline]
       },
       defaultGasLimit: this.defaultEstimateGas.tokensToEth[path.length - 2]
@@ -191,7 +190,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return this.web3Private.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
-      this.swapMethods.ETH_TO_TOKENS,
+      this.swapsMethod.ETH_TO_TOKENS,
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
@@ -211,7 +210,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return this.web3Private.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
-      this.swapMethods.TOKENS_TO_ETH,
+      this.swapsMethod.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
@@ -230,7 +229,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return this.web3Private.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
-      this.swapMethods.TOKENS_TO_TOKENS,
+      this.swapsMethod.TOKENS_TO_TOKENS,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,

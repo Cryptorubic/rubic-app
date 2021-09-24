@@ -4,7 +4,6 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { AVAX_SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 
 const pangolinAvalancheContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
@@ -37,6 +36,14 @@ export const pangolinAvalancheConstants: UniswapV2Constants = {
   contractAddressNetMode: pangolinAvalancheContractAddressNetMode,
   wethAddressNetMode,
   routingProvidersNetMode,
-  maxTransitTokens: 3,
-  methods: AVAX_SWAP_METHOD
+  maxTransitTokens: 3
 };
+
+export enum AVAX_SWAP_METHOD {
+  TOKENS_TO_TOKENS = 'swapExactTokensForTokens',
+  ETH_TO_TOKENS = 'swapExactETHForTokens',
+  TOKENS_TO_ETH = 'swapExactTokensForETH',
+  TOKENS_TO_TOKENS_SUPPORTING_FEE = 'swapExactTokensForTokensSupportingFeeOnTransferTokens',
+  ETH_TO_TOKENS_SUPPORTING_FEE = 'swapExactETHForTokensSupportingFeeOnTransferTokens',
+  TOKENS_TO_ETH_SUPPORTING_FEE = 'swapExactTokensForETHSupportingFeeOnTransferTokens'
+}

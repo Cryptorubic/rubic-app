@@ -183,13 +183,13 @@ export default [
   {
     id: 43113,
     name: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
-    label: 'Avalanche',
+    label: 'Avalanche testnet',
     scannerUrl: 'https://cchain.explorer.avax-test.network',
     rpcLink: 'https://api.avax-test.network/ext/bc/C/rpc',
     additionalRpcLink: '',
-    imagePath: 'assets/images/icons/coins/harmony.svg',
+    imagePath: 'assets/images/icons/coins/avalanche.svg',
     nativeCoin: {
-      blockchain: BLOCKCHAIN_NAME.HARMONY_TESTNET,
+      blockchain: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
       address: NATIVE_TOKEN_ADDRESS,
       name: 'AVAX',
       symbol: 'AVAX',

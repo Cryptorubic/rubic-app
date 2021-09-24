@@ -38,12 +38,12 @@ export const blockchainsList: BlockchainItem[] = [
     symbol: BLOCKCHAIN_NAME.HARMONY,
     visibleName: 'Harmony',
     image: `${imageBaseSrc}harmony.svg`,
-    id: null
+    id: 1666600000
   },
   {
     symbol: BLOCKCHAIN_NAME.AVALANCHE,
     visibleName: 'Avalanche',
     image: `${imageBaseSrc}avalanche.svg`,
-    id: null
+    id: 43114
   }
 ];

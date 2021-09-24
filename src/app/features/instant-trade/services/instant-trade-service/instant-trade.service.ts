@@ -74,13 +74,7 @@ export class InstantTradeService {
   }
 
   private blockchainsProviders: Partial<
-    {
-      [blockchain in BLOCKCHAIN_NAME]: Partial<
-        {
-          [provider in INSTANT_TRADES_PROVIDER]: ItProvider;
-        }
-      >;
-    }
+    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>
   >;
 
   private modalShowing: Subscription;
