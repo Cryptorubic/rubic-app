@@ -652,7 +652,7 @@ export class Web3Public {
   }
 
   /**
-   * send batch request via web3
+   * Sends batch request via web3.
    * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
    * @param calls Web3 method calls
    * @param callsParams ethereum method transaction parameters

@@ -1,10 +1,6 @@
-<div class="token-card" *ngLet="(isHorizontalFrame$ | async) as isHorizontalFrame">
+<div class="token-card" *ngLet="isHorizontalFrame$ | async as isHorizontalFrame">
   <div class="token-card__image-container">
-    <img
-      [src]="token.image || defaultImage"
-      [alt]="token.name"
-      (error)="onImageError($event)"
-    />
+    <img [src]="token.image || defaultImage" [alt]="token.name" (error)="onImageError($event)" />
   </div>
 
   <div class="token-card__name-container">

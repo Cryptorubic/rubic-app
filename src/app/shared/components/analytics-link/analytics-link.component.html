@@ -1,9 +1,5 @@
 <div class="analytics" *ngIf="fromToken?.blockchain !== blockchainNames.HARMONY && tokenInfoUrl">
-  <a
-    [href]="'https://keks.app/' + tokenInfoUrl"
-    target="_blank"
-    class="analytics__link"
-  >
+  <a [href]="'https://keks.app/' + tokenInfoUrl" target="_blank" class="analytics__link">
     <img src="assets/images/icons/analytic.svg" alt="Analytics" />
     <span>{{ 'common.analytics' | translate }}</span>
   </a>

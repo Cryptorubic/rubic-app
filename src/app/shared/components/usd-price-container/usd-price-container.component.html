@@ -1,13 +1,18 @@
-<div class="usd-price-container" *ngIf="usdPrice">
-  <span
-    *ngIf="!usdPrice.isNaN() && !usdPrice.eq(0)"
+<div class="usd-price-container" *ngIf="usdPrice || loading">
+  <div
+    *ngIf="(usdPrice?.isFinite() && usdPrice.gt(0)) || loading"
     class="usd-price-container__price"
+    [ngClass]="{
+      'tui-skeleton': loading,
+      'tui-skeleton_text': loading
+    }"
     [tuiHint]="usdPriceTooltip"
     tuiHintDirection="top"
     tuiHintMode="onDark"
-    >${{ usdPrice | bigNumberFormat: 2:true }}
-  </span>
+  >
+    ${{ usdPrice | bigNumberFormat: 2:true }}
+  </div>
   <ng-template #usdPriceTooltip>${{ usdPrice | bigNumberFormat }}</ng-template>
 
-  <div *ngIf="usdPrice.isNaN() || usdPrice.eq(0)">USD Price is unavailable</div>
+  <div *ngIf="usdPrice?.isNaN()">USD Price is unavailable</div>
 </div>

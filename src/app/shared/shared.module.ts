@@ -27,7 +27,6 @@ import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount
 import { RubicTokensComponent } from 'src/app/shared/components/rubic-tokens/rubic-tokens.component';
 import { RubicBlockchainsComponent } from 'src/app/shared/components/rubic-blockchains/rubic-blockchains.component';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
-import { RubicSelectWalletComponent } from 'src/app/core/header/components/header/components/rubic-select-wallet/rubic-select-wallet.component';
 import { SwapsHeaderComponent } from 'src/app/features/swaps/components/swaps-header/swaps-header.component';
 import { RubicRefreshButtonComponent } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { TermsNConditionsContainerComponent } from 'src/app/shared/components/terms-n-conditions-container/terms-n-conditions-container.component';
@@ -74,7 +73,6 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     RubicSwitcherComponent,
     IconButtonComponent,
     RubicLanguageSelectComponent,
-    RubicSelectWalletComponent,
     RubicVolumeComponent,
     SwapButtonContainerComponent,
     RubicTokensComponent,
@@ -147,7 +145,6 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     IconButtonComponent,
     ShortenAmountPipe,
     RubicLanguageSelectComponent,
-    RubicSelectWalletComponent,
     RubicVolumeComponent,
     SwapButtonContainerComponent,
     WithRoundPipe,

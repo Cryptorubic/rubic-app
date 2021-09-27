@@ -4,12 +4,12 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { combineLatest, from, Observable, of, throwError } from 'rxjs';
+import { forkJoin, from, Observable, of, throwError } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, first, map, switchMap, tap } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
@@ -188,8 +188,11 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       })
     );
 
-    return combineLatest([
-      this.tokensService.tokens.pipe(filter(tokens => !!tokens?.size)),
+    return forkJoin([
+      this.tokensService.tokens$.pipe(
+        filter(tokens => !!tokens?.size),
+        first()
+      ),
       loadTokensAndConfig$
     ]).pipe(
       map(([swapTokens, { evoTokens, config }]) =>
@@ -380,9 +383,9 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       .filter(elem => elem);
   }
 
-  private async fetchConfigs(
-    blockchainTokenIds: { [key in BLOCKCHAIN_NAME]?: number[] }
-  ): Promise<BlockchainsConfig> {
+  private async fetchConfigs(blockchainTokenIds: {
+    [key in BLOCKCHAIN_NAME]?: number[];
+  }): Promise<BlockchainsConfig> {
     const blockchains = [
       {
         name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

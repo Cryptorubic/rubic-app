@@ -1,7 +1,6 @@
 @import 'src/styles';
 
 .usd-price-container {
-
   @include iframe-card;
   display: flex;
   justify-content: flex-end;
@@ -16,24 +15,14 @@
     justify-content: flex-start;
   }
 
-  &_hidden {
-    visibility: hidden;
-
-    @include b($mobile-sm) {
-      display: none;
-    }
-  }
-
   &__price {
+    min-width: 37px;
+
     overflow: hidden;
 
     letter-spacing: 0.1em;
     text-overflow: ellipsis;
 
     cursor: default;
-
-    @include iframe-horizontal {
-      font-size: 12px;
-    }
   }
 }

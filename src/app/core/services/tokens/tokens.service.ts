@@ -55,18 +55,23 @@ export class TokensService {
   private readonly tokensNetworkStateSubject: BehaviorSubject<TokensNetworkState>;
 
   /**
-   * Get current tokens list.
+   * Tokens list as observable.
    */
-  public get tokens(): Observable<List<TokenAmount>> {
-    return this.tokensSubject
-      .asObservable()
-      .pipe(map(list => list.filter(token => token !== null)));
+  get tokens$(): Observable<List<TokenAmount>> {
+    return this.tokensSubject.asObservable();
+  }
+
+  /**
+   * Current tokens list.
+   */
+  get tokens(): List<TokenAmount> {
+    return this.tokensSubject.getValue();
   }
 
   /**
    * Get current tokens list.
    */
-  public get favoriteTokens$(): Observable<LocalToken[]> {
+  get favoriteTokens$(): Observable<LocalToken[]> {
     return this.favoriteTokensSubject.asObservable();
   }
 
@@ -121,7 +126,7 @@ export class TokensService {
   }
 
   /**
-   * Setup service subscriptions.
+   * Setups service subscriptions.
    */
   private setupSubscriptions(): void {
     this.tokensRequestParametersSubject
@@ -129,7 +134,7 @@ export class TokensService {
       .subscribe(
         async tokens => {
           if (!this.isTestingMode) {
-            this.setDefaultTokenAmounts(tokens);
+            this.setDefaultTokensParams(tokens);
             await this.calculateUserTokensBalances();
           }
         },
@@ -153,7 +158,7 @@ export class TokensService {
   }
 
   /**
-   * Set new tokens.
+   * Sets new tokens.
    * @param tokens Tokens list to set.
    */
   public setTokens(tokens: List<TokenAmount>): void {
@@ -161,10 +166,10 @@ export class TokensService {
   }
 
   /**
-   * Set default tokens.
-   * @param tokens Default tokens list.
+   * Sets default tokens params.
+   * @param tokens Tokens list.
    */
-  private setDefaultTokenAmounts(tokens: List<Token> = this.tokensSubject.getValue()): void {
+  private setDefaultTokensParams(tokens: List<Token> = this.tokens): void {
     this.tokensSubject.next(
       tokens.map(token => ({
         ...token,
@@ -175,25 +180,34 @@ export class TokensService {
   }
 
   /**
-   * Calculate balance for token list.
+   * Calculates balance for token list.
    * @param tokens Token list.
    */
-  public async calculateUserTokensBalances(
-    tokens: List<TokenAmount> = this.tokensSubject.getValue()
-  ): Promise<void> {
+  public async calculateUserTokensBalances(tokens: List<TokenAmount> = this.tokens): Promise<void> {
     if (!tokens.size) {
       return;
     }
 
     if (!this.userAddress) {
-      this.setDefaultTokenAmounts(tokens);
+      this.setDefaultTokensParams(tokens);
       return;
     }
 
     const tokensWithBalance = await this.getTokensWithBalance(tokens);
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
-      this.tokensSubject.next(List(tokensWithBalance));
+      const updatedTokens = tokens.map(token => {
+        const currentToken = this.tokens.find(t => TokensService.areTokensEqual(token, t));
+        const balance = tokensWithBalance.find(tWithBalance =>
+          TokensService.areTokensEqual(token, tWithBalance)
+        )?.amount;
+        return {
+          ...token,
+          ...currentToken,
+          amount: balance
+        };
+      });
+      this.tokensSubject.next(List(updatedTokens));
     }
   }
 
@@ -242,7 +256,7 @@ export class TokensService {
   }
 
   /**
-   * Add token to tokens list.
+   * Adds token to tokens list.
    * @param address Token address.
    * @param blockchain Token blockchain.
    * @return Observable<TokenAmount> Token with balance.
@@ -266,22 +280,18 @@ export class TokensService {
         usedInIframe: true,
         amount
       })),
-      tap((token: TokenAmount) =>
-        this.tokensSubject.next(this.tokensSubject.getValue().push(token))
-      )
+      tap((token: TokenAmount) => this.tokensSubject.next(this.tokens.push(token)))
     );
   }
 
   /**
    * Gets price of native token.
-   * @param blockchain Token blockchain.
+   * @param blockchain Blockchain of native token.
    */
   public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
-    const nativeCoin = this.tokensSubject
-      .getValue()
-      .find(token =>
-        TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
-      );
+    const nativeCoin = this.tokens.find(token =>
+      TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
+    );
     return this.coingeckoApiService
       .getNativeCoinPriceInUsdByCoingecko(blockchain)
       .pipe(map(price => price || nativeCoin?.price))
@@ -290,17 +300,19 @@ export class TokensService {
 
   /**
    * Updates token's price and emits new tokens' list with updated token.
+   * @param token Token to update.
    */
   public updateTokenPriceInUsd(token: TokenAmount): void {
     this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
       if (tokenPrice) {
+        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
         const newToken = {
           ...token,
+          ...foundToken,
           price: tokenPrice
         };
         this.tokensSubject.next(
-          this.tokensSubject
-            .getValue()
+          this.tokens
             .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
             .push(newToken)
         );
@@ -309,7 +321,7 @@ export class TokensService {
   }
 
   /**
-   * Update pagination state for current network.
+   * Updates pagination state for current network.
    * @param network Blockchain name.
    * @param next Have next page or not.
    */
@@ -327,7 +339,7 @@ export class TokensService {
   }
 
   /**
-   * Fetch tokens for specific network.
+   * Fetches tokens for specific network.
    * @param network Requested network.
    * @param pageSize Requested page size.
    * @param callback Callback after success fetch.
@@ -362,7 +374,7 @@ export class TokensService {
   }
 
   /**
-   * Fetch tokens from backend by search query string.
+   * Fetches tokens from backend by search query string.
    * @param query Search query.
    * @param network Tokens network.
    */
@@ -380,7 +392,7 @@ export class TokensService {
   }
 
   /**
-   * Add token to list of favorite tokens.
+   * Adds token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: TokenAmount): void {
@@ -394,7 +406,7 @@ export class TokensService {
   }
 
   /**
-   * Remove token from list of favorite tokens.
+   * Removes token from list of favorite tokens.
    * @param token Favorite token to remove.
    */
   public removeFavoriteToken(token: TokenAmount): void {
@@ -407,7 +419,7 @@ export class TokensService {
   }
 
   /**
-   * Fetch favorite tokens from local storage.
+   * Fetches favorite tokens from local storage.
    */
   private fetchFavoriteTokens(): LocalToken[] {
     return this.store.getItem('favoriteTokens') || [];

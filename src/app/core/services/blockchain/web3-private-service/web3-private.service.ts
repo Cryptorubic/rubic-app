@@ -419,7 +419,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * converts Eth amount into Wei
+   * Converts Eth amount into Wei.
    * @param value to convert in Eth
    */
   private ethToWei(value: string | BigNumber): string {
@@ -427,7 +427,7 @@ export class Web3PrivateService {
   }
 
   /**
-   * converts Wei amount into Eth
+   * Converts Wei amount into Eth.
    * @param value to convert in Wei
    */
   private weiToEth(value: string | BigNumber): string {

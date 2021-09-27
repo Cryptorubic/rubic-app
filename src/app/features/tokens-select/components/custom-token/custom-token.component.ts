@@ -57,8 +57,8 @@ export class CustomTokenComponent {
       .subscribe((confirm: boolean) => {
         if (confirm) {
           const favoriteToken = { ...this.token, favorite: true };
-          this.tokensService.addFavoriteToken(favoriteToken);
           this.tokenSelected.emit(favoriteToken);
+          this.tokensService.addFavoriteToken(favoriteToken);
         }
       });
   }

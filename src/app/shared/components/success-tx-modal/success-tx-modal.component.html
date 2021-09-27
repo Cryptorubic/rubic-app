@@ -6,7 +6,9 @@
         src="assets/images/bridge/success-image.svg"
         alt="Success"
       />
-      <h3 *noFrame="'horizontal'" class="modal__title">{{ 'notifications.tradeInProgress' | translate }}</h3>
+      <h3 *noFrame="'horizontal'" class="modal__title">
+        {{ 'notifications.tradeInProgress' | translate }}
+      </h3>
     </main>
     <footer class="modal__footer">
       <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
@@ -16,7 +18,9 @@
           <span inlineSVG="assets/images/icons/link-arrow.svg"></span>
         </a>
       </ng-container>
-      <h3 *onlyFrame="'horizontal'" class="modal__title">{{ 'modals.successTxModal.title' | translate }}</h3>
+      <h3 *onlyFrame="'horizontal'" class="modal__title">
+        {{ 'modals.successTxModal.title' | translate }}
+      </h3>
       <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
         {{ 'common.OK' | translate }}
       </app-rubic-button>

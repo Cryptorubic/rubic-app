@@ -38,7 +38,10 @@ export class TokenAmountInputComponent implements OnInit {
     if (!this.formattedAmount || !this.selectedToken) {
       return null;
     }
-    return new BigNumber(this.formattedAmount).multipliedBy(this.selectedToken?.price ?? 0);
+    if (!this.selectedToken?.price) {
+      return new BigNumber(NaN);
+    }
+    return new BigNumber(this.formattedAmount).multipliedBy(this.selectedToken.price);
   }
 
   public readonly DEFAULT_DECIMALS = 18;
@@ -76,6 +79,7 @@ export class TokenAmountInputComponent implements OnInit {
 
         this.prevSwapMode = this.swapsService.swapMode;
         this.selectedToken = fromToken;
+        this.cdr.detectChanges();
       });
 
     this.settingsService.crossChainRoutingValueChanges
