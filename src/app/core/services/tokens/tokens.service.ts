@@ -302,7 +302,7 @@ export class TokensService {
         const newToken = {
           ...token,
           ...foundToken,
-          price: tokenPrice
+          price: tokenPrice || token.price
         };
         this.tokensSubject.next(
           this.tokens
