@@ -19,5 +19,4 @@ interface AllQueryParams {
 
 export type QueryParams = {
   [P in AdditionalTokens]: string[];
-} &
-  AllQueryParams;
+} & AllQueryParams;

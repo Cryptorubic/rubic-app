@@ -384,11 +384,9 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       .filter(elem => elem);
   }
 
-  private async fetchConfigs(
-    blockchainTokenIds: {
-      [key in BLOCKCHAIN_NAME]?: number[];
-    }
-  ): Promise<BlockchainsConfig> {
+  private async fetchConfigs(blockchainTokenIds: {
+    [key in BLOCKCHAIN_NAME]?: number[];
+  }): Promise<BlockchainsConfig> {
     const blockchains = [
       {
         name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
