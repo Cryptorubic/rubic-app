@@ -499,7 +499,7 @@ export class CrossChainRoutingService {
           );
           return receipt;
         } catch (err) {
-          const errMessage = err.message || err?.toString();
+          const errMessage = err.message || err.toString?.();
           if (errMessage.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
           }

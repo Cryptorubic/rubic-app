@@ -236,7 +236,7 @@ export class TokensSelectComponent implements OnInit {
         const availableFavoriteTokens = tokensWithFavorite.filter(el => el.favorite);
 
         this.tokensToShow$.next(tokensWithFavorite);
-        this.favoriteTokensToShow$?.next(availableFavoriteTokens);
+        this.favoriteTokensToShow$.next(availableFavoriteTokens);
 
         const shouldSearch =
           (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
