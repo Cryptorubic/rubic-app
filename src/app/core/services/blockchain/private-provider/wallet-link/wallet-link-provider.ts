@@ -121,11 +121,11 @@ export class WalletLinkProvider extends PrivateProvider {
         }
       }
 
-      this.onNetworkChanges.next(chainInfo);
-      this.onAddressChanges.next(address);
       this.selectedAddress = address;
       this.selectedChain = chainInfo.name;
       this.isEnabled = true;
+      this.onNetworkChanges.next(chainInfo);
+      this.onAddressChanges.next(address);
     } catch (error) {
       if (!(error instanceof RubicError)) {
         throw new WalletlinkError();
