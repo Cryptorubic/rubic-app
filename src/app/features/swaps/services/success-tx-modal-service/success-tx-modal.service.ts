@@ -12,12 +12,12 @@ export class SuccessTxModalService {
     private readonly iframeService: IframeService
   ) {}
 
-  public open(): void {
+  public open(type: 'default' | 'ccr' = 'default'): void {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
-        data: { idPrefix: '' }
+        data: { idPrefix: '', type }
       })
       .subscribe();
   }

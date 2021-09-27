@@ -481,6 +481,7 @@
     },
     "successTxModal": {
       "title": "The transaction was successfully sent!",
+      "ccrTitle": "Successful swap in source network!",
       "seeDetails": "See details in ",
       "link": "My Trades"
     }

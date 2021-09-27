@@ -16,12 +16,18 @@ import { takeUntil } from 'rxjs/operators';
 export class SuccessTxModalComponent {
   public idPrefix: string;
 
+  public type: 'default' | 'ccr';
+
   constructor(
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, { idPrefix: string }>
+    private readonly context: TuiDialogContext<
+      boolean,
+      { idPrefix: string; type: 'default' | 'ccr' }
+    >
   ) {
     this.idPrefix = context.data.idPrefix;
+    this.type = context.data.type;
     timer(modalConfig.modalLifetime)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onConfirm());
