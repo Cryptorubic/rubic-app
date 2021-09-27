@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { TokenAmount } from '../../../../shared/models/tokens/TokenAmount';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
-  selector: 'app-custom-token-warning-modal',
+  selector: 'polymorpheus-custom-token-warning-modal',
   templateUrl: './custom-token-warning-modal.component.html',
   styleUrls: ['./custom-token-warning-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
