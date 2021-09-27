@@ -124,7 +124,7 @@ export class ZrxService implements ItProvider {
       this.web3Public.getAllowance(
         tokenAddress,
         this.providerConnectorService.address,
-        this.currentTradeData.allowanceTarget
+        this.currentTradeData?.allowanceTarget
       )
     );
   }
