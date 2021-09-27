@@ -187,7 +187,7 @@ export default [
     scannerUrl: 'https://cchain.explorer.avax-test.network',
     rpcLink: 'https://api.avax-test.network/ext/bc/C/rpc',
     additionalRpcLink: '',
-    imagePath: 'assets/images/icons/coins/avalanche.svg',
+    imagePath: 'assets/images/icons/coins/avalanche-testnet.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
       address: NATIVE_TOKEN_ADDRESS,

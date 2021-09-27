@@ -41,11 +41,10 @@ import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/ins
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
+import { AbiItem } from 'web3-utils';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
-  private readonly contractAbi = CommonUniswapV2Abi;
-
   private readonly defaultEstimateGas = defaultEstimatedGas;
 
   private readonly GAS_MARGIN = 1.2;
@@ -79,6 +78,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly tokensService = inject(TokensService);
 
   private readonly useTestingModeService = inject(UseTestingModeService);
+
+  protected contractAbi: AbiItem[] = CommonUniswapV2Abi;
 
   protected swapsMethod: ISwapMethods = DEFAULT_SWAP_METHODS;
 
