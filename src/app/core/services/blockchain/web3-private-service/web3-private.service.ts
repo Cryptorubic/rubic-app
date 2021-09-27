@@ -6,6 +6,7 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import { minGasPriceInBlockchain } from 'src/app/core/services/blockchain/constants/minGasPriceInBlockchain';
+import CustomError from 'src/app/core/errors/models/custom-error';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
@@ -46,7 +47,7 @@ export class Web3PrivateService {
     try {
       const errorMessage = JSON.parse(err.message.slice(24)).message;
       if (errorMessage) {
-        return Error(errorMessage);
+        return new CustomError(errorMessage);
       }
     } catch (_ignored) {}
     return err as unknown as Error;
@@ -322,7 +323,7 @@ export class Web3PrivateService {
         options
       );
     } catch (err) {
-      if (allowError && allowError(err)) {
+      if (allowError?.(err)) {
         return this.executeContractMethod(
           contractAddress,
           contractAbi,

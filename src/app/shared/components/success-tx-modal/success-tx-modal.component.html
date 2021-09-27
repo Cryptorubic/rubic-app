@@ -19,7 +19,10 @@
         </a>
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
-        {{ 'modals.successTxModal.title' | translate }}
+        {{
+          (type === 'default' ? 'modals.successTxModal.title' : 'modals.successTxModal.ccrTitle')
+            | translate
+        }}
       </h3>
       <app-rubic-button fullWidth appearance="secondary" (click)="onConfirm()">
         {{ 'common.OK' | translate }}

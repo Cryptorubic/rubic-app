@@ -25,7 +25,7 @@ export class TokenAmountDirective {
 
   @HostListener('ngModelChange')
   private onChange(): void {
-    const nativeValue: string = this.elementRef.nativeElement.value;
+    const nativeValue: string = this.elementRef.nativeElement.value || '';
     let value = nativeValue.replaceAll(',', '');
 
     let caretPosition = this.elementRef.nativeElement.selectionStart;
