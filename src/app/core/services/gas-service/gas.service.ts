@@ -26,7 +26,7 @@ export class GasService {
   private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<number | null>>;
 
   /**
-   * Eth gas price subject.
+   * Gas price in Gwei subject.
    */
   private readonly networkGasPrice$: NetworksGasPrice<BehaviorSubject<number | null>>;
 
@@ -59,7 +59,7 @@ export class GasService {
   }
 
   /**
-   * Gas price for selected blockchain as observable.
+   * Gas price in Gwei for selected blockchain as observable.
    * @param blockchain Blockchain to get gas price from.
    */
   public getGasPrice$(blockchain: BLOCKCHAIN_NAME): Observable<number | null> {

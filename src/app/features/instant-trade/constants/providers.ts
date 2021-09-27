@@ -35,7 +35,7 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
       trade: null,
       tradeState: INSTANT_TRADES_STATUS.CALCULATION,
       tradeProviderInfo: {
-        label: 'Uniswap',
+        label: 'Uniswap V2',
         value: INSTANT_TRADES_PROVIDER.UNISWAP_V2
       },
       isBestRate: false,

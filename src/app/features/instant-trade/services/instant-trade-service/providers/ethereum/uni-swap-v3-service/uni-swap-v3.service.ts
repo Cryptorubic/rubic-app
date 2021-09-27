@@ -153,7 +153,7 @@ export class UniSwapV3Service implements ItProvider {
             first()
           )
           .toPromise()
-      );
+      ).dividedBy(10 ** 9);
       const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     }
@@ -163,7 +163,8 @@ export class UniSwapV3Service implements ItProvider {
       fromTokenWrapped.address,
       toTokenWrapped,
       isEth,
-      shouldCalculateGas
+      shouldCalculateGas,
+      gasPriceInUsd
     );
 
     const trade: UniswapV3Trade = {
@@ -248,32 +249,32 @@ export class UniSwapV3Service implements ItProvider {
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
-    const gasRequests = routes.map(route =>
-      this.getEstimatedGasMethodSignature(
-        route,
-        fromAmountAbsolute,
-        toToken.address,
-        isEth,
-        deadline
-      )
-    );
-    const gasLimits = gasRequests.map(item => item.defaultGasLimit);
-
-    if (this.walletAddress) {
-      const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
-        uniSwapV3ContractData.swapRouter.abi,
-        uniSwapV3ContractData.swapRouter.address,
-        this.walletAddress,
-        gasRequests.map(item => item.callData)
-      );
-      estimatedGasLimits.forEach((elem, index) => {
-        if (elem?.isFinite()) {
-          gasLimits[index] = elem;
-        }
-      });
-    }
-
     if (this.settings.rubicOptimisation && toToken.price) {
+      const gasRequests = routes.map(route =>
+        this.getEstimatedGasMethodSignature(
+          route,
+          fromAmountAbsolute,
+          toToken.address,
+          isEth,
+          deadline
+        )
+      );
+      const gasLimits = gasRequests.map(item => item.defaultGasLimit);
+
+      if (this.walletAddress) {
+        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
+          uniSwapV3ContractData.swapRouter.abi,
+          uniSwapV3ContractData.swapRouter.address,
+          this.walletAddress,
+          gasRequests.map(item => item.callData)
+        );
+        estimatedGasLimits.forEach((elem, index) => {
+          if (elem?.isFinite()) {
+            gasLimits[index] = elem;
+          }
+        });
+      }
+
       const calculatedProfits: UniswapV3CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
@@ -291,9 +292,26 @@ export class UniSwapV3Service implements ItProvider {
     }
 
     const route = routes[0];
+    const estimateGasParams = this.getEstimatedGasMethodSignature(
+      route,
+      fromAmountAbsolute,
+      toToken.address,
+      isEth,
+      deadline
+    );
+    const estimatedGas = await this.web3Public
+      .getEstimatedGas(
+        uniSwapV3ContractData.swapRouter.abi,
+        uniSwapV3ContractData.swapRouter.address,
+        estimateGasParams.callData.contractMethod,
+        estimateGasParams.callData.params,
+        this.walletAddress,
+        estimateGasParams.callData.value
+      )
+      .catch(() => estimateGasParams.defaultGasLimit);
     return {
       route,
-      estimatedGas: gasLimits[0]
+      estimatedGas
     };
   }
 

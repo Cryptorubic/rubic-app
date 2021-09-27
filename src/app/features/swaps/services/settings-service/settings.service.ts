@@ -83,7 +83,7 @@ export class SettingsService {
       slippageTolerance: 2,
       deadline: 20,
       disableMultihops: false,
-      rubicOptimisation: true,
+      rubicOptimisation: false,
       autoRefresh: true
     };
     this.defaultCcrSettings = {

@@ -639,7 +639,9 @@ export class Web3Public {
           from: fromAddress,
           to: contractAddress,
           data,
-          ...(callsData[index].value && { value: `0x${callsData[index].value.toString(16)}` })
+          ...(callsData[index].value && {
+            value: `0x${new BigNumber(callsData[index].value).toString(16)}`
+          })
         }
       }));
 

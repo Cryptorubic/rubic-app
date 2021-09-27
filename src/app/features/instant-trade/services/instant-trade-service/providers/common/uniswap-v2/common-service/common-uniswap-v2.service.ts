@@ -334,33 +334,33 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
     const slippage = new BigNumber(1).minus(this.settings.slippageTolerance);
-
-    const gasRequests = routes.map(route =>
-      gasCalculationMethodName(
-        fromAmountAbsolute,
-        route.outputAbsoluteAmount.multipliedBy(slippage).toFixed(0),
-        route.path,
-        deadline
-      )
-    );
-    const gasLimits = gasRequests.map(item => item.defaultGasLimit);
-
-    if (this.walletAddress) {
-      const web3Public: Web3Public = this.web3PublicService[this.blockchain];
-      const estimatedGasLimits = await web3Public.batchEstimatedGas(
-        this.contractAbi,
-        this.contractAddress,
-        this.walletAddress,
-        gasRequests.map(item => item.callData)
-      );
-      estimatedGasLimits.forEach((elem, index) => {
-        if (elem?.isFinite()) {
-          gasLimits[index] = elem;
-        }
-      });
-    }
+    const web3Public: Web3Public = this.web3PublicService[this.blockchain];
 
     if (this.settings.rubicOptimisation && toToken.price) {
+      const gasRequests = routes.map(route =>
+        gasCalculationMethodName(
+          fromAmountAbsolute,
+          route.outputAbsoluteAmount.multipliedBy(slippage).toFixed(0),
+          route.path,
+          deadline
+        )
+      );
+      const gasLimits = gasRequests.map(item => item.defaultGasLimit);
+
+      if (this.walletAddress) {
+        const estimatedGasLimits = await web3Public.batchEstimatedGas(
+          this.contractAbi,
+          this.contractAddress,
+          this.walletAddress,
+          gasRequests.map(item => item.callData)
+        );
+        estimatedGasLimits.forEach((elem, index) => {
+          if (elem?.isFinite()) {
+            gasLimits[index] = elem;
+          }
+        });
+      }
+
       const routesWithProfit: UniswapV2CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
@@ -378,9 +378,26 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       return routesWithProfit.sort((a, b) => b.profit.comparedTo(a.profit))[0];
     }
 
+    const route = routes[0];
+    const estimateGasParams = gasCalculationMethodName(
+      fromAmountAbsolute,
+      route.outputAbsoluteAmount.multipliedBy(slippage).toFixed(0),
+      route.path,
+      deadline
+    );
+    const estimatedGas = await web3Public
+      .getEstimatedGas(
+        this.contractAbi,
+        this.contractAddress,
+        estimateGasParams.callData.contractMethod,
+        estimateGasParams.callData.params,
+        this.walletAddress,
+        estimateGasParams.callData.value
+      )
+      .catch(() => estimateGasParams.defaultGasLimit);
     return {
-      route: routes[0],
-      estimatedGas: gasLimits[0]
+      route,
+      estimatedGas
     };
   }
 

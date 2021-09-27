@@ -19,7 +19,6 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { ZrxApiResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/zrx/zrx-types';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { ZrxCalculateTradeParams } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/models/ZrxCalculateTradeParams';
@@ -62,26 +61,15 @@ export class ZrxService implements ItProvider {
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly providerConnector: ProviderConnectorService,
     private readonly web3PrivateService: Web3PrivateService,
-    private readonly commonUniswapV2: CommonUniswapV2Service,
     public providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly httpService: HttpService,
     private readonly tokensService: TokensService
   ) {
-    this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(fromBlockchain => {
-      let blockchain: BLOCKCHAIN_NAME;
-      if (this.isTestingMode) {
-        blockchain = `${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME;
-      } else {
-        blockchain = fromBlockchain;
-      }
-      if (ZrxService.isSupportedBlockchain(blockchain)) {
-        this.blockchain = blockchain;
-        this.web3Public = this.web3PublicService[blockchain];
-        this.apiAddress = ZRX_API_ADDRESS[blockchain];
-      }
-    });
+    this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(() =>
+      this.setZrxParams()
+    );
 
     this.settingsService.instantTradeValueChanges
       .pipe(startWith(this.settingsService.instantTradeValue))
@@ -94,7 +82,24 @@ export class ZrxService implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
+      this.setZrxParams();
     });
+  }
+
+  private setZrxParams() {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    this.web3Public = this.web3PublicService[fromBlockchain];
+
+    let blockchain: BLOCKCHAIN_NAME;
+    if (this.isTestingMode) {
+      blockchain = `${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME;
+    } else {
+      blockchain = fromBlockchain;
+    }
+    if (ZrxService.isSupportedBlockchain(blockchain)) {
+      this.blockchain = blockchain;
+      this.apiAddress = ZRX_API_ADDRESS[blockchain];
+    }
   }
 
   public createTrade(
@@ -160,12 +165,11 @@ export class ZrxService implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    const web3Public: Web3Public = this.web3PublicService[this.blockchain];
     if (Web3Public.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
-      web3Public.getAllowance(
+      this.web3Public.getAllowance(
         tokenAddress,
         this.providerConnectorService.address,
         this.tradeData?.allowanceTarget

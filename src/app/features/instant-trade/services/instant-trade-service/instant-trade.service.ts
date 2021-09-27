@@ -229,7 +229,7 @@ export class InstantTradeService {
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
         catchError(err => {
-          console.debug(err);
+          console.debug(err, provider);
           return of(null);
         })
       )
