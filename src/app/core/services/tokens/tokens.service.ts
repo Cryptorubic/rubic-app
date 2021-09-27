@@ -72,7 +72,7 @@ export class TokensService {
    * Get current tokens list.
    */
   get favoriteTokens$(): Observable<LocalToken[]> {
-    return this.favoriteTokensSubject.asObservable();
+    return this.favoriteTokensSubject.asObservable().pipe(map(el => el || []));
   }
 
   /**
