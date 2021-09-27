@@ -15,10 +15,11 @@
         <div class="tokens__inner">
           <div class="tokens__image-container">
             <img
-              [src]="selectedToken.image || 'assets/images/icons/coins/empty.svg'"
+              [src]="selectedToken.image || defaultImage"
               width="18px"
               height="18px"
               [alt]="selectedToken.symbol"
+              (error)="onImageError($event)"
             />
           </div>
           <div class="tokens__symbol">

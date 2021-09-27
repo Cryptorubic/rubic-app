@@ -101,6 +101,10 @@
     }
   }
 
+  &__image-container img {
+    border-radius: 25%;
+  }
+
   &__inner {
     display: flex;
     grid-gap: 8px;
