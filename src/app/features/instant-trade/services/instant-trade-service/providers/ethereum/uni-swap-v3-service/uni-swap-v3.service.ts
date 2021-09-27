@@ -30,7 +30,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UniswapV3Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Trade';
-import { filter, first, startWith } from 'rxjs/operators';
+import { startWith } from 'rxjs/operators';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
@@ -145,15 +145,7 @@ export class UniSwapV3Service implements ItProvider {
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
     if (shouldCalculateGas) {
-      gasPriceInEth = new BigNumber(
-        await this.gasService
-          .getGasPrice$(this.blockchain)
-          .pipe(
-            filter(value => !!value),
-            first()
-          )
-          .toPromise()
-      ).dividedBy(10 ** 9);
+      gasPriceInEth = await this.gasService.getGasPriceInEth(this.blockchain);
       const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     }

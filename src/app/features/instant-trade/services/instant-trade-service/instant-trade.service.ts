@@ -36,16 +36,11 @@ import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instan
   providedIn: 'root'
 })
 export class InstantTradeService {
-  private static readonly unsupportedItNetworks: BLOCKCHAIN_NAME[] = [
-    BLOCKCHAIN_NAME.TRON,
-    BLOCKCHAIN_NAME.XDAI
-  ];
+  private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
 
-  private blockchainsProviders: Partial<{
-    [blockchain in BLOCKCHAIN_NAME]: Partial<{
-      [provider in INSTANT_TRADES_PROVIDER]: ItProvider;
-    }>;
-  }>;
+  private blockchainsProviders: Partial<
+    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>
+  >;
 
   private modalShowing: Subscription;
 
@@ -73,10 +68,10 @@ export class InstantTradeService {
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
     private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService,
-    private notificationsService: NotificationsService,
+    private readonly translateService: TranslateService,
+    private readonly notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector,
+    @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
     @Inject(WINDOW) private readonly window: Window
   ) {
@@ -221,7 +216,7 @@ export class InstantTradeService {
     });
   }
 
-  public getApprove(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<boolean[]> | never {
+  public getAllowance(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<boolean[]> | never {
     const { fromToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]

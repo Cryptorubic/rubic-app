@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, timer } from 'rxjs';
-import { catchError, map, switchMap, timeout } from 'rxjs/operators';
+import { catchError, filter, first, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
@@ -67,6 +67,24 @@ export class GasService {
       throw Error('Not supported blockchain');
     }
     return this.networkGasPrice$[blockchain].asObservable();
+  }
+
+  /**
+   * Gas price in Eth for selected blockchain.
+   * @param blockchain Blockchain to get gas price from.
+   */
+  public async getGasPriceInEth(blockchain: BLOCKCHAIN_NAME): Promise<BigNumber> {
+    if (!GasService.isSupportedBlockchain(blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+    return new BigNumber(
+      await this.networkGasPrice$[blockchain]
+        .pipe(
+          filter(value => !!value),
+          first()
+        )
+        .toPromise()
+    ).dividedBy(10 ** 9);
   }
 
   /**

@@ -3,7 +3,10 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ItProvider } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
+import {
+  ItOptions,
+  ItProvider
+} from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -29,6 +32,9 @@ import {
   supportedZrxBlockchains
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/SupportedZrxBlockchain';
 import { startWith } from 'rxjs/operators';
+import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { GasService } from 'src/app/core/services/gas-service/gas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,11 +44,13 @@ export class ZrxService implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  private tradeData: ZrxApiResponse;
+  private currentTradeData: ZrxApiResponse;
 
   protected blockchain: SupportedZrxBlockchain;
 
   private apiAddress: string;
+
+  private walletAddress: string;
 
   private isTestingMode: boolean;
 
@@ -55,17 +63,19 @@ export class ZrxService implements ItProvider {
   }
 
   constructor(
-    private http: HttpClient,
+    private readonly http: HttpClient,
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly providerConnector: ProviderConnectorService,
     private readonly web3PrivateService: Web3PrivateService,
-    public providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly httpService: HttpService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly authService: AuthService,
+    private readonly gasService: GasService
   ) {
     this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(() =>
       this.setZrxParams()
@@ -79,6 +89,10 @@ export class ZrxService implements ItProvider {
           slippageTolerance: formValue.slippageTolerance / 100
         };
       });
+
+    this.authService.getCurrentUser().subscribe(user => {
+      this.walletAddress = user?.address;
+    });
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       this.isTestingMode = isTestingMode;
@@ -102,27 +116,34 @@ export class ZrxService implements ItProvider {
     }
   }
 
-  public createTrade(
-    trade: InstantTrade,
-    options: {
-      onConfirm?: (hash: string) => void;
-      onApprove?: (hash: string) => void;
-    } = {}
-  ): Promise<TransactionReceipt> {
-    const amount = Web3Public.fromWei(trade.from.amount, 18);
-    return this.web3PrivateService.sendTransaction(this.tradeData.to, amount, {
-      data: this.tradeData.data,
-      gas: this.tradeData.gas,
-      gasPrice: this.tradeData.gasPrice,
-      value: this.tradeData.value,
-      onTransactionHash: options.onConfirm
-    });
+  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+    if (Web3Public.isNativeAddress(tokenAddress)) {
+      return of(new BigNumber(Infinity));
+    }
+    return from(
+      this.web3Public.getAllowance(
+        tokenAddress,
+        this.providerConnectorService.address,
+        this.currentTradeData.allowanceTarget
+      )
+    );
+  }
+
+  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
+    this.providerConnectorService.checkSettings(this.blockchain);
+    await this.web3PrivateService.approveTokens(
+      tokenAddress,
+      this.currentTradeData.allowanceTarget,
+      'infinity',
+      options
+    );
   }
 
   public async calculateTrade(
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    shouldCalculateGas: boolean
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
@@ -134,62 +155,60 @@ export class ZrxService implements ItProvider {
       toTokenClone.address = ZRX_NATIVE_TOKEN;
     }
 
-    const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
-    const gasPrice = await this.web3Public.getGasPriceInETH();
     const params: ZrxCalculateTradeParams = {
       sellToken: fromTokenClone.address,
       buyToken: toTokenClone.address,
       sellAmount: Web3Public.toWei(fromAmount, fromToken.decimals),
-      slippagePercentage: this.settings.slippageTolerance.toString(),
-      excludedSources: 'Uniswap_V3'
+      slippagePercentage: this.settings.slippageTolerance.toString()
     };
+    this.currentTradeData = await this.fetchTrade(params);
 
-    this.tradeData = await this.fetchTrade(params);
-    const gasFeeInEth = new BigNumber(this.tradeData.estimatedGas).multipliedBy(gasPrice);
-    const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
-
-    return {
+    const trade: InstantTrade = {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       from: {
         token: fromToken,
-        amount: new BigNumber(this.tradeData.sellAmount)
+        amount: new BigNumber(this.currentTradeData.sellAmount)
       },
       to: {
         token: toToken,
-        amount: new BigNumber(this.tradeData.buyAmount).div(10 ** toToken.decimals)
-      },
-      gasLimit: this.tradeData.estimatedGas,
-      gasFeeInUsd,
-      gasFeeInEth
+        amount: Web3Public.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
+      }
+    };
+    if (!shouldCalculateGas) {
+      return trade;
+    }
+
+    const estimatedGas = new BigNumber(this.currentTradeData.estimatedGas);
+    const gasPriceInEth = await this.gasService.getGasPriceInEth(this.blockchain);
+    const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
+    const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
+    const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
+    const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
+
+    return {
+      ...trade,
+      gasLimit: estimatedGas.toFixed(0),
+      gasFeeInEth,
+      gasFeeInUsd
     };
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
-      return of(new BigNumber(Infinity));
-    }
-    return from(
-      this.web3Public.getAllowance(
-        tokenAddress,
-        this.providerConnectorService.address,
-        this.tradeData?.allowanceTarget
-      )
-    );
-  }
+  public async createTrade(
+    trade: InstantTrade,
+    options: ItOptions = {}
+  ): Promise<TransactionReceipt> {
+    this.providerConnector.checkSettings(trade.blockchain);
 
-  public async approve(
-    tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    }
-  ): Promise<void> {
-    this.providerConnectorService.checkSettings(this.blockchain);
-    await this.web3PrivateService.approveTokens(
-      tokenAddress,
-      this.tradeData.allowanceTarget,
-      'infinity',
-      options
-    );
+    const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
+    await this.web3Public.checkBalance(trade.from.token, amount, this.walletAddress);
+
+    return this.web3PrivateService.sendTransaction(this.currentTradeData.to, amount, {
+      data: this.currentTradeData.data,
+      gas: this.currentTradeData.gas,
+      gasPrice: this.currentTradeData.gasPrice,
+      value: this.currentTradeData.value,
+      onTransactionHash: options.onConfirm
+    });
   }
 
   private fetchTrade(params: ZrxCalculateTradeParams): Promise<ZrxApiResponse> {
