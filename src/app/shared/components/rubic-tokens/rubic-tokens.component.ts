@@ -30,6 +30,8 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formType: 'from' | 'to';
 
+  public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
+
   @Input() set tokens(value: AvailableTokenAmount[]) {
     const deepEquality = Utils.compareObjects(value, this.tokensSubject.value);
     if (!deepEquality) {
@@ -122,5 +124,12 @@ export class RubicTokensComponent implements OnInit {
     this.selectedToken = null;
     const formKey = this.formType === 'from' ? 'fromToken' : 'toToken';
     this.formService.input.patchValue({ [formKey]: null });
+  }
+
+  public onImageError($event: Event): void {
+    const target = $event.target as HTMLImageElement;
+    if (target.src !== this.defaultImage) {
+      target.src = this.defaultImage;
+    }
   }
 }

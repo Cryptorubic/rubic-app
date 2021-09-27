@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
@@ -32,7 +32,6 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -85,8 +84,6 @@ export class TokensSelectComponent implements OnInit {
 
   public tokensListLoading: boolean;
 
-  public favoriteTokens$: Observable<LocalToken[]>;
-
   get blockchain(): BLOCKCHAIN_NAME {
     return this._blockchain;
   }
@@ -128,7 +125,6 @@ export class TokensSelectComponent implements OnInit {
     this.favoriteTokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>(null);
     this.tokensListLoading = false;
     this.querySubject = new BehaviorSubject<string>('');
-    this.favoriteTokens$ = this.tokensService.favoriteTokens$;
   }
 
   /**
@@ -220,7 +216,10 @@ export class TokensSelectComponent implements OnInit {
   private updateTokensList(): void {
     this.customToken = null;
     const preventRepeat = distinctUntilChanged((prev: [], next: []) => prev.length === next.length);
-    combineLatest([this.tokens.pipe(preventRepeat), this.favoriteTokens$.pipe(preventRepeat)])
+    combineLatest([
+      this.tokens.pipe(preventRepeat),
+      this.tokensService.favoriteTokens$.pipe(preventRepeat)
+    ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(async ([tokens, favoriteTokens]) => {
         const filterByBlockchain = (token: AvailableTokenAmount) =>
