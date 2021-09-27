@@ -388,17 +388,18 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
-          const approveDataObservable = this.authService.user?.address
-            ? this.instantTradeService.getAllowance(providersNames)
-            : of(new Array(this.providerControllers.length).fill(null));
           const tradeDataObservable = from(
             this.instantTradeService.calculateTrades(providersNames)
           );
 
           return tradeDataObservable.pipe(
-            mergeMap(tradeData =>
-              approveDataObservable.pipe(map(approveData => ({ tradeData, approveData })))
-            ),
+            mergeMap(tradeData => {
+              const approveDataObservable = this.authService.user?.address
+                ? this.instantTradeService.getAllowance(providersNames)
+                : of(new Array(this.providerControllers.length).fill(null));
+
+              return approveDataObservable.pipe(map(approveData => ({ tradeData, approveData })));
+            }),
             map(({ tradeData, approveData }) => {
               this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
 
