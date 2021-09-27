@@ -42,6 +42,12 @@ export class InstantTradeService {
     BLOCKCHAIN_NAME.XDAI
   ];
 
+  private blockchainsProviders: Partial<
+    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>
+  >;
+
+  private modalShowing: Subscription;
+
   constructor(
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
@@ -72,12 +78,6 @@ export class InstantTradeService {
   ) {
     this.setBlockchainsProviders();
   }
-
-  private blockchainsProviders: Partial<
-    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>
-  >;
-
-  private modalShowing: Subscription;
 
   public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);

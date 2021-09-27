@@ -1,11 +1,14 @@
 <section class="iframe-wallets-warning">
   <div class="iframe-wallets-warning__container">
-    <h3> This wallet is not supported in {{ appearance }} frame</h3>
+    <h3>This wallet is not supported in {{ appearance }} frame</h3>
     <div>
-      To connect this wallet go to the rubic.exchange or use Metamask wallet which supported in the widget
+      To connect this wallet go to the rubic.exchange or use Metamask wallet which supported in the
+      widget
     </div>
     <div class="iframe-wallets-warning__buttons">
-      <app-rubic-button fullWidth bordered (click)="onCancel()">{{ 'common.cancel' | translate }}</app-rubic-button>
+      <app-rubic-button fullWidth bordered (click)="onCancel()">{{
+        'common.cancel' | translate
+      }}</app-rubic-button>
       <a [href]="noFrameLink" rel="noopener noreferrer" target="_blank">
         <app-rubic-button fullWidth appearance="secondary">Go to rubic.exchange</app-rubic-button>
       </a>

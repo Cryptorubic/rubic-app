@@ -20,7 +20,7 @@ import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableToke
 import { FormGroup } from '@ngneat/reactive-forms';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, debounceTime, map, mapTo, takeUntil } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, mapTo, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -129,14 +129,6 @@ export class TokensSelectComponent implements OnInit {
     this.tokensListLoading = false;
     this.querySubject = new BehaviorSubject<string>('');
     this.favoriteTokens$ = this.tokensService.favoriteTokens$;
-    combineLatest([this.blockchainSubject.asObservable(), this.favoriteTokens$])
-      .pipe(
-        takeUntil(this.destroy$),
-        map(([blockchain, tokens]: [BLOCKCHAIN_NAME, AvailableTokenAmount[]]) => {
-          return tokens.filter(el => el.blockchain === blockchain);
-        })
-      )
-      .subscribe((tokens: AvailableTokenAmount[]) => this.favoriteTokensToShow$.next(tokens));
   }
 
   /**
@@ -227,7 +219,8 @@ export class TokensSelectComponent implements OnInit {
    */
   private updateTokensList(): void {
     this.customToken = null;
-    combineLatest([this.tokens, this.favoriteTokens$])
+    const preventRepeat = distinctUntilChanged((prev: [], next: []) => prev.length === next.length);
+    combineLatest([this.tokens.pipe(preventRepeat), this.favoriteTokens$.pipe(preventRepeat)])
       .pipe(takeUntil(this.destroy$))
       .subscribe(async ([tokens, favoriteTokens]) => {
         const filterByBlockchain = (token: AvailableTokenAmount) =>
@@ -391,7 +384,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * Try to parse search query and fetch tokens form backend or web3.
+   * Tries to parse search query and fetch tokens form backend or web3.
    */
   private async tryParseQuery(): Promise<void> {
     if (this.query.length) {

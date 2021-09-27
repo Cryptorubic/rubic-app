@@ -77,7 +77,7 @@ export class CryptoTapTokensService {
   private setUpTokens() {
     const supportedToBlockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
 
-    combineLatest([this.tokensService.tokens, this._cryptoTapTokens$.asObservable()]).subscribe(
+    combineLatest([this.tokensService.tokens$, this._cryptoTapTokens$.asObservable()]).subscribe(
       ([tokens, cryptoTapTokens]) => {
         if (!tokens?.size || !cryptoTapTokens?.length) {
           return;
