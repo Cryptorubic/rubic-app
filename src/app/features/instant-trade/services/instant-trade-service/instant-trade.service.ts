@@ -39,11 +39,15 @@ export class InstantTradeService {
     BLOCKCHAIN_NAME.XDAI
   ];
 
-  private blockchainsProviders: Partial<{
-    [blockchain in BLOCKCHAIN_NAME]: Partial<{
-      [provider in INSTANT_TRADES_PROVIDER]: ItProvider;
-    }>;
-  }>;
+  private blockchainsProviders: Partial<
+    {
+      [blockchain in BLOCKCHAIN_NAME]: Partial<
+        {
+          [provider in INSTANT_TRADES_PROVIDER]: ItProvider;
+        }
+      >;
+    }
+  >;
 
   private modalShowing: Subscription;
 

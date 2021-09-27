@@ -480,7 +480,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open('ccr');
+      this.successTxModalService.open('cross-chain-routing');
     }
   }
 
