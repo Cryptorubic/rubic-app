@@ -26,7 +26,7 @@ import {
 import { defaultEstimatedGas } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/defaultEstimatedGas';
 import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
-import { UniswapRoute } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapRoute';
+import { UniswapRoute } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapRoute';
 import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
 import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 import {
@@ -343,19 +343,18 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         deadline
       )
     );
-
     const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
     if (this.walletAddress) {
       const web3Public: Web3Public = this.web3PublicService[this.blockchain];
       const estimatedGasLimits = await web3Public.batchEstimatedGas(
-        CommonUniswapV2Abi,
+        this.contractAbi,
         this.contractAddress,
         this.walletAddress,
         gasRequests.map(item => item.callData)
       );
       estimatedGasLimits.forEach((elem, index) => {
-        if (elem && !elem.isNaN()) {
+        if (elem?.isFinite()) {
           gasLimits[index] = elem;
         }
       });
@@ -376,11 +375,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         };
       });
 
-      const sortedByProfitRoutes = routesWithProfit.sort((a, b) =>
-        b.profit.minus(a.profit).gt(0) ? 1 : -1
-      );
-
-      return sortedByProfitRoutes[0];
+      return routesWithProfit.sort((a, b) => b.profit.comparedTo(a.profit))[0];
     }
 
     return {

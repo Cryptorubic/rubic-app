@@ -6,11 +6,15 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 
-interface NetworksGasPrice<T> {
-  [BLOCKCHAIN_NAME.ETHEREUM]: T;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: T;
-  [BLOCKCHAIN_NAME.POLYGON]: T;
-}
+const supportedBlockchains = [
+  BLOCKCHAIN_NAME.ETHEREUM,
+  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  BLOCKCHAIN_NAME.POLYGON
+] as const;
+
+type SupportedBlockchain = typeof supportedBlockchains[number];
+
+type NetworksGasPrice<T> = Record<SupportedBlockchain, T>;
 
 @Injectable({
   providedIn: 'root'
@@ -22,37 +26,53 @@ export class GasService {
   private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<number | null>>;
 
   /**
-   * Current gas price subject.
+   * Eth gas price subject.
    */
-  private readonly currentNetworkGasPrice$: BehaviorSubject<number>;
+  private readonly networkGasPrice$: NetworksGasPrice<BehaviorSubject<number | null>>;
 
   /**
    * Gas price update interval in seconds.
    */
   private readonly requestInterval: number;
 
-  /**
-   * Gas price for current network.
-   */
-  public get gasPrice(): Observable<number> {
-    return this.currentNetworkGasPrice$.asObservable();
+  private static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedBlockchain {
+    return !!supportedBlockchains.find(supBlockchain => supBlockchain === blockchain);
   }
 
   constructor(private readonly httpClient: HttpClient) {
     this.requestInterval = 15_000;
-    this.currentNetworkGasPrice$ = new BehaviorSubject<number>(null);
+
+    this.networkGasPrice$ = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null)
+    };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
       [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this)
     };
-    this.fetchGas();
+
+    this.setIntervalOnGasPriceRefreshing();
   }
 
   /**
-   * Fetches gas in current network.
+   * Gas price for selected blockchain as observable.
+   * @param blockchain Blockchain to get gas price from.
    */
-  public fetchGas(): void {
+  public getGasPrice$(blockchain: BLOCKCHAIN_NAME): Observable<number | null> {
+    if (!GasService.isSupportedBlockchain(blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+    return this.networkGasPrice$[blockchain].asObservable();
+  }
+
+  /**
+   * Updates gas price in interval.
+   */
+  private setIntervalOnGasPriceRefreshing(): void {
     const timer$ = timer(0, this.requestInterval);
     timer$
       .pipe(
@@ -60,9 +80,9 @@ export class GasService {
           return this.gasPriceFunctions[BLOCKCHAIN_NAME.ETHEREUM]();
         })
       )
-      .subscribe((gasPrice: number | null) => {
-        if (gasPrice) {
-          this.currentNetworkGasPrice$.next(gasPrice);
+      .subscribe((ethGasPrice: number | null) => {
+        if (ethGasPrice) {
+          this.networkGasPrice$[BLOCKCHAIN_NAME.ETHEREUM].next(ethGasPrice);
         }
       });
   }
