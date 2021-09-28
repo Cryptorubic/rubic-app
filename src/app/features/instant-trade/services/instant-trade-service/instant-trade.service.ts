@@ -48,6 +48,10 @@ export class InstantTradeService {
 
   private modalShowing: Subscription;
 
+  public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
+    return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
+  }
+
   constructor(
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
@@ -77,10 +81,6 @@ export class InstantTradeService {
     @Inject(WINDOW) private readonly window: Window
   ) {
     this.setBlockchainsProviders();
-  }
-
-  public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
-    return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
   private setBlockchainsProviders(): void {
