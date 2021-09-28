@@ -5,6 +5,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { timer } from 'rxjs';
 import { modalConfig } from 'src/app/shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
+import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 
 @Component({
   selector: 'app-success-tx-modal',
@@ -16,12 +17,18 @@ import { takeUntil } from 'rxjs/operators';
 export class SuccessTxModalComponent {
   public idPrefix: string;
 
+  public type: SuccessTxModalType;
+
   constructor(
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, { idPrefix: string }>
+    private readonly context: TuiDialogContext<
+      boolean,
+      { idPrefix: string; type: SuccessTxModalType }
+    >
   ) {
     this.idPrefix = context.data.idPrefix;
+    this.type = context.data.type;
     timer(modalConfig.modalLifetime)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onConfirm());

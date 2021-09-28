@@ -58,8 +58,9 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Input() idPrefix = '';
 
-  @Input() set fromAmount(value: BigNumber) {
+  @Input() set fromAmount(value: BigNumber | null) {
     this._fromAmount = value;
+    this.errorType[ERROR_TYPE.NO_AMOUNT] = Boolean(value === null ? true : value?.isNaN());
     this.checkInsufficientFundsError();
   }
 
@@ -171,6 +172,9 @@ export class SwapButtonContainerComponent implements OnInit {
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
         break;
+      case err[ERROR_TYPE.NO_AMOUNT]:
+        translateParams = { key: 'errors.noEnteredAmount' };
+        break;
       case err[ERROR_TYPE.LESS_THAN_MINIMUM]:
         translateParams = {
           key: 'errors.minimumAmount',
@@ -236,7 +240,11 @@ export class SwapButtonContainerComponent implements OnInit {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    this.setupSubscriptions();
+  }
+
+  private setupSubscriptions(): void {
     if (this.iframeService.isIframe) {
       this.needLoginLoading = false;
       this.needLogin = true;
