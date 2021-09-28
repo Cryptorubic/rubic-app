@@ -482,13 +482,13 @@ export class CrossChainRoutingService {
               value
             },
             err => {
-              const includesErrCode = err.message.includes('-32000');
+              const includesErrCode = err?.message?.includes('-32000');
               const allowedErrors = [
                 'insufficient funds for transfer',
                 'insufficient funds for gas * price+ value'
               ];
               const includesPhrase = Boolean(
-                allowedErrors.find(error => err.message.includes(error))
+                allowedErrors.find(error => err?.message?.includes(error))
               );
               return includesErrCode && includesPhrase;
             }
@@ -500,7 +500,7 @@ export class CrossChainRoutingService {
           return receipt;
         } catch (err) {
           const errMessage = err.message || err.toString?.();
-          if (errMessage.includes('swapContract: Not enough amount of tokens')) {
+          if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
           }
           throw err;
