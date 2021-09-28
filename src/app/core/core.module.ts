@@ -9,13 +9,14 @@ import { SwapsModule } from 'src/app/features/swaps/swaps.module';
 import { MyTradesModule } from 'src/app/features/my-trades/my-trades.module';
 import { WalletsModule } from 'src/app/core/wallets/wallets.module';
 import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
+import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
+import { IframeInterceptor } from 'src/app/core/interceptors/iframe-interceptor';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
 import { SharedModule } from '../shared/shared.module';
 import { configLoader, httpLoaderFactory } from './app.loaders';
 import { ContentLoaderService } from './services/content-loader/content-loader.service';
-import { HTTPInterceptor } from './interceptors/http-interceptor';
 import { ErrorsModule } from './errors/errors.module';
 
 @NgModule({
@@ -30,7 +31,12 @@ import { ErrorsModule } from './errors/errors.module';
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: HTTPInterceptor,
+      useClass: RubicExchangeInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: IframeInterceptor,
       multi: true
     },
     NG_EVENT_PLUGINS

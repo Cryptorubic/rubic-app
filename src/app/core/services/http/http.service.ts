@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -12,15 +12,8 @@ export class HttpService {
   constructor(private http: HttpClient) {}
 
   public get<T>(url: string, data?: {}, path?: string): Observable<T> {
-    const headers = new HttpHeaders({
-      'Cache-Control': 'max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
-      Pragma: 'no-cache',
-      Expires: '0'
-    });
-    data = data || {};
     return this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
-      params: data,
-      headers
+      params: data || {}
     });
   }
 
