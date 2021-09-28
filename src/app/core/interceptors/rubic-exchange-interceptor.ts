@@ -7,17 +7,31 @@ import {
   HttpXsrfTokenExtractor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
+/**
+ * Intercepts requests targeted to 'rubic.exchange' domains.
+ */
 @Injectable()
 export class RubicExchangeInterceptor implements HttpInterceptor {
-  constructor(private readonly tokenExtractor: HttpXsrfTokenExtractor) {}
+  constructor(
+    private readonly tokenExtractor: HttpXsrfTokenExtractor,
+    private readonly iframeService: IframeService
+  ) {}
 
   intercept(httpRequest: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (!httpRequest.url.includes('rubic.exchange')) {
       return next.handle(httpRequest);
     }
 
-    const newRequest = httpRequest.clone({
+    let newRequest = this.setDefaultParams(httpRequest);
+    newRequest = this.addIframeHostDomain(newRequest);
+    newRequest = this.addTokenHeader(newRequest);
+    return next.handle(newRequest);
+  }
+
+  private setDefaultParams<T>(httpRequest: HttpRequest<T>): HttpRequest<T> {
+    return httpRequest.clone({
       headers: httpRequest.headers
         .append(
           'Cache-Control',
@@ -27,17 +41,26 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
         .append('Expires', '0'),
       withCredentials: true
     });
+  }
 
-    const token = this.tokenExtractor.getToken();
-    const tokenHeaderName = 'X-CSRFToken';
-    if (token !== null && !newRequest.headers.has(tokenHeaderName)) {
-      return next.handle(
-        newRequest.clone({
-          headers: newRequest.headers.set(tokenHeaderName, token)
-        })
-      );
+  private addIframeHostDomain<T>(httpRequest: HttpRequest<T>): HttpRequest<T> {
+    const domain = this.iframeService.originDomain;
+    if (domain.includes('rubic.exchange')) {
+      return httpRequest;
     }
 
-    return next.handle(newRequest);
+    return httpRequest.clone({ params: httpRequest.params.set('domain', domain) });
+  }
+
+  private addTokenHeader<T>(httpRequest: HttpRequest<T>): HttpRequest<T> {
+    const token = this.tokenExtractor.getToken();
+    const tokenHeaderName = 'X-CSRFToken';
+    if (token !== null && !httpRequest.headers.has(tokenHeaderName)) {
+      return httpRequest.clone({
+        headers: httpRequest.headers.set(tokenHeaderName, token)
+      });
+    }
+
+    return httpRequest;
   }
 }
