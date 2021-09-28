@@ -71,14 +71,10 @@ tui-notification {
   font-size: $rubic-font-size-01;
 }
 
-tui-notifications-host {
-  margin-top: 101px;
-}
+tui-notification {
+  top: var(--scroll-size);
 
-@include b($desktop) {
-  tui-notifications-host {
-    margin-top: 58px;
-  }
+  transition: 0.2s ease-in-out;
 }
 
 @include b($mobile-md-minus) {
