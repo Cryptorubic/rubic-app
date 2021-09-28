@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { from, Observable, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
   ItOptions,
   ItProvider
@@ -16,7 +15,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { ZrxApiResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/zrx/zrx-types';
@@ -31,7 +29,7 @@ import {
   SupportedZrxBlockchain,
   supportedZrxBlockchains
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/SupportedZrxBlockchain';
-import { startWith } from 'rxjs/operators';
+import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
@@ -45,6 +43,8 @@ export class ZrxService implements ItProvider {
   private settings: ItSettingsForm;
 
   private currentTradeData: ZrxApiResponse;
+
+  private tradeDataIsUpdated: BehaviorSubject<boolean>;
 
   protected blockchain: SupportedZrxBlockchain;
 
@@ -63,10 +63,8 @@ export class ZrxService implements ItProvider {
   }
 
   constructor(
-    private readonly http: HttpClient,
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly coingeckoApiService: CoingeckoApiService,
     private readonly providerConnector: ProviderConnectorService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly providerConnectorService: ProviderConnectorService,
@@ -77,6 +75,8 @@ export class ZrxService implements ItProvider {
     private readonly authService: AuthService,
     private readonly gasService: GasService
   ) {
+    this.tradeDataIsUpdated = new BehaviorSubject(false);
+
     this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(() =>
       this.setZrxParams()
     );
@@ -120,12 +120,17 @@ export class ZrxService implements ItProvider {
     if (Web3Public.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
-    return from(
-      this.web3Public.getAllowance(
-        tokenAddress,
-        this.providerConnectorService.address,
-        this.currentTradeData?.allowanceTarget
-      )
+    return this.tradeDataIsUpdated.pipe(
+      filter(value => !!value),
+      first(),
+      mergeMap(() => {
+        this.tradeDataIsUpdated.next(false);
+        return this.web3Public.getAllowance(
+          tokenAddress,
+          this.providerConnectorService.address,
+          this.currentTradeData?.allowanceTarget
+        );
+      })
     );
   }
 
@@ -162,6 +167,7 @@ export class ZrxService implements ItProvider {
       slippagePercentage: this.settings.slippageTolerance.toString()
     };
     this.currentTradeData = await this.fetchTrade(params);
+    this.tradeDataIsUpdated.next(true);
 
     const trade: InstantTrade = {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,

@@ -17,7 +17,7 @@ import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constant
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
-import { BehaviorSubject, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -31,15 +31,7 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  mergeMap,
-  startWith,
-  switchMap,
-  takeUntil
-} from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
@@ -388,19 +380,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
+          const approveDataObservable = this.authService.user?.address
+            ? this.instantTradeService.getAllowance(providersNames)
+            : of(new Array(this.providerControllers.length).fill(null));
           const tradeDataObservable = from(
             this.instantTradeService.calculateTrades(providersNames)
           );
 
-          return tradeDataObservable.pipe(
-            mergeMap(tradeData => {
-              const approveDataObservable = this.authService.user?.address
-                ? this.instantTradeService.getAllowance(providersNames)
-                : of(new Array(this.providerControllers.length).fill(null));
-
-              return approveDataObservable.pipe(map(approveData => ({ tradeData, approveData })));
-            }),
-            map(({ tradeData, approveData }) => {
+          return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
+            map(([approveData, tradeData]) => {
               this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
 
               this.setupControllers(tradeData, approveData);
