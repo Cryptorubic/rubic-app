@@ -47,7 +47,7 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
 
   private addIframeHostDomain<T>(httpRequest: HttpRequest<T>): HttpRequest<T> {
     const domain = this.iframeService.originDomain;
-    if (domain.includes('rubic.exchange')) {
+    if (domain.includes(this.DOMAIN_SUBSTRING)) {
       return httpRequest;
     }
 
