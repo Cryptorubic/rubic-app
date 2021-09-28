@@ -530,6 +530,7 @@
   "notifications": {
     "tradeInProgress": "Trade in progress",
     "successfulTradeTitle": "Successful trade",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",

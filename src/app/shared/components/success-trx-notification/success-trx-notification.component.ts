@@ -1,4 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
+import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 
 @Component({
   selector: 'app-success-trx-notification',
@@ -7,5 +10,12 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SuccessTrxNotificationComponent {
-  constructor() {}
+  public type: SuccessTxModalType;
+
+  constructor(
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<void, { type: SuccessTxModalType }>
+  ) {
+    this.type = context.data.type || 'default';
+  }
 }

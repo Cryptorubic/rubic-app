@@ -530,6 +530,7 @@
   "notifications": {
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",

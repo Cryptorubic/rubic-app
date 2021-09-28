@@ -530,6 +530,7 @@
   "notifications": {
     "tradeInProgress": "진행중인 거래",
     "successfulTradeTitle": "성공적인 거래",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",

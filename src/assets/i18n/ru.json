@@ -530,6 +530,7 @@
   "notifications": {
     "tradeInProgress": "Сделка в процессе выполнения",
     "successfulTradeTitle": "Сделка проведена успешно",
+    "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
