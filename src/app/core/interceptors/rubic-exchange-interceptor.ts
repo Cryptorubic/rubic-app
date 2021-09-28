@@ -14,13 +14,15 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
  */
 @Injectable()
 export class RubicExchangeInterceptor implements HttpInterceptor {
+  private readonly DOMAIN_SUBSTRING = 'rubic.exchange';
+
   constructor(
     private readonly tokenExtractor: HttpXsrfTokenExtractor,
     private readonly iframeService: IframeService
   ) {}
 
   intercept(httpRequest: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (!httpRequest.url.includes('rubic.exchange')) {
+    if (!httpRequest.url.includes(this.DOMAIN_SUBSTRING)) {
       return next.handle(httpRequest);
     }
 
