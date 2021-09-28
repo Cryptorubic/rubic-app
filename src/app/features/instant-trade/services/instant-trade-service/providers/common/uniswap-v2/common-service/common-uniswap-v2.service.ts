@@ -26,7 +26,7 @@ import {
 import { defaultEstimatedGas } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/defaultEstimatedGas';
 import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
-import { UniswapRoute } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapRoute';
+import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
 import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
 import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 import {
@@ -34,7 +34,7 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UniswapInstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapInstantTrade';
+import { UniswapV2InstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2InstantTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
@@ -239,7 +239,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean
-  ): Promise<UniswapInstantTrade> {
+  ): Promise<UniswapV2InstantTrade> {
     let fromTokenAddress = fromToken.address;
     const toTokenClone = { ...toToken };
 
@@ -276,7 +276,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       gasPriceInUsd
     );
 
-    const instantTrade: UniswapInstantTrade = {
+    const instantTrade: UniswapV2InstantTrade = {
       blockchain: this.blockchain,
       from: {
         token: fromToken,
@@ -406,7 +406,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     toTokenAddress: string,
     amountAbsolute: string,
     uniswapMethodName: 'getAmountsOut' | 'getAmountsIn'
-  ): Promise<UniswapRoute[]> {
+  ): Promise<UniswapV2Route[]> {
     const vertexes: string[] = this.routingProviders
       .map(elem => elem.toLowerCase())
       .filter(
@@ -437,7 +437,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       recGraphVisitor(initialPath, i);
     }
 
-    const routes: UniswapRoute[] = [];
+    const routes: UniswapV2Route[] = [];
     const web3Public: Web3Public = this.web3PublicService[this.blockchain];
     await web3Public
       .multicallContractMethods<{ amounts: string[] }>(
@@ -493,7 +493,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   public async createTrade(
-    trade: UniswapInstantTrade,
+    trade: UniswapV2InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(trade.blockchain);

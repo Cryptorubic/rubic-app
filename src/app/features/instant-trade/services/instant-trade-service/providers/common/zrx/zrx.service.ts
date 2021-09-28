@@ -179,7 +179,7 @@ export class ZrxService implements ItProvider {
     }
 
     const estimatedGas = new BigNumber(this.currentTradeData.estimatedGas);
-    const gasPriceInEth = await this.gasService.getGasPriceInEth(this.blockchain);
+    const gasPriceInEth = await this.gasService.getGasPriceInEthUnits(this.blockchain);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);

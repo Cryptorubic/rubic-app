@@ -462,10 +462,10 @@ export class Web3Public {
   }
 
   /**
-   * Uses multicall to make many calls in the single rpc request.
+   * Uses multicall to make many methods calls in one contract.
    * @param contractAddress Target contract address.
    * @param contractAbi Target contract abi.
-   * @param methodsData Methods data, containing method's name and arguments.
+   * @param methodsData Methods data, containing methods' names and arguments.
    */
   public async multicallContractMethods<Output>(
     contractAddress: string,
@@ -511,10 +511,9 @@ export class Web3Public {
   }
 
   /**
-   * Uses multicall to make many calls in the single rpc request.
-   * Takes several contract's addresses.
+   * Uses multicall to make many methods calls in several contracts.
    * @param contractAbi Target contract abi.
-   * @param contractsData Contract addresses and methods data, containing method's name and arguments.
+   * @param contractsData Contract addresses and methods data, containing methods' names and arguments.
    */
   public async multicallContractsMethods<Output>(
     contractAbi: AbiItem[],
@@ -682,7 +681,7 @@ export class Web3Public {
   }
 
   /**
-   * send batch request to rpc provider directly
+   * Sends batch request to rpc provider directly.
    * @see {@link https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false|EthereumJSON-RPC}
    * @param rpcCallsData rpc methods and parameters list
    * @returns rpc batch request call result sorted in order of input parameters

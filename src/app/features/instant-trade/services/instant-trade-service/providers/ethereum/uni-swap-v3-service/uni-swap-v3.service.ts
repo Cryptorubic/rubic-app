@@ -145,7 +145,7 @@ export class UniSwapV3Service implements ItProvider {
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
     if (shouldCalculateGas) {
-      gasPriceInEth = await this.gasService.getGasPriceInEth(this.blockchain);
+      gasPriceInEth = await this.gasService.getGasPriceInEthUnits(this.blockchain);
       const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     }

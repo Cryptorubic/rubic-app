@@ -70,10 +70,10 @@ export class GasService {
   }
 
   /**
-   * Gas price in Eth for selected blockchain.
+   * Gas price in Eth units for selected blockchain.
    * @param blockchain Blockchain to get gas price from.
    */
-  public async getGasPriceInEth(blockchain: BLOCKCHAIN_NAME): Promise<BigNumber> {
+  public async getGasPriceInEthUnits(blockchain: BLOCKCHAIN_NAME): Promise<BigNumber> {
     if (!GasService.isSupportedBlockchain(blockchain)) {
       throw Error('Not supported blockchain');
     }

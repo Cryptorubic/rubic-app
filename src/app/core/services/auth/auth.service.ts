@@ -68,7 +68,7 @@ export class AuthService {
    * Fetch authorized user address or auth message in case there's no authorized user.
    */
   private fetchWalletLoginBody(): Observable<WalletLoginInterface> {
-    return this.httpService.get('auth/wallets/login/', {}) as Observable<WalletLoginInterface>;
+    return this.httpService.get<WalletLoginInterface>('auth/wallets/login/', {});
   }
 
   /**
