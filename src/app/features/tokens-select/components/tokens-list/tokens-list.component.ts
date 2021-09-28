@@ -20,6 +20,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Utils } from 'src/app/shared/models/utils/utils';
 import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
+import { StoreService } from 'src/app/core/services/store/store.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -113,7 +114,8 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly storeService: StoreService
   ) {
     this.pageUpdate = new EventEmitter<number>();
     this.scrollSubject = new BehaviorSubject<CdkVirtualScrollViewport>(null);
@@ -151,7 +153,8 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
                 this.hasQuery ||
                 this.listType === 'favorite' ||
                 !this.tokensNetworkState ||
-                this.tokensNetworkState.maxPage === this.tokensNetworkState.page
+                this.tokensNetworkState.maxPage === this.tokensNetworkState.page ||
+                this.storeService.isIframe
               ) {
                 return false;
               }
