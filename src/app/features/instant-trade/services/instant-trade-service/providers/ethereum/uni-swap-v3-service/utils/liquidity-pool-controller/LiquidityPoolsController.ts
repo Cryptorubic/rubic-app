@@ -111,21 +111,32 @@ export class LiquidityPoolsController {
     fromTokenAddress: string,
     toTokenAddress: string
   ): Promise<LiquidityPool[]> {
-    const getPoolMethodArguments: [string, string, FeeAmount][] = [];
+    let getPoolMethodArguments: { tokenA: string; tokenB: string; fee: FeeAmount }[] = [];
     Object.values(this.routerTokens).forEach(routeTokenAddress => {
       this.feeAmounts.forEach(fee => {
         if (
           fromTokenAddress.toLowerCase() !== routeTokenAddress.toLowerCase() &&
           toTokenAddress.toLowerCase() !== routeTokenAddress.toLowerCase()
         ) {
-          getPoolMethodArguments.push([fromTokenAddress, routeTokenAddress, fee]);
-          getPoolMethodArguments.push([toTokenAddress, routeTokenAddress, fee]);
+          getPoolMethodArguments.push({ tokenA: fromTokenAddress, tokenB: routeTokenAddress, fee });
+          getPoolMethodArguments.push({ tokenA: toTokenAddress, tokenB: routeTokenAddress, fee });
         }
       });
     });
     this.feeAmounts.forEach(fee => {
-      getPoolMethodArguments.push([fromTokenAddress, toTokenAddress, fee]);
+      getPoolMethodArguments.push({ tokenA: fromTokenAddress, tokenB: toTokenAddress, fee });
     });
+    getPoolMethodArguments = getPoolMethodArguments.filter(
+      methodArguments =>
+        !this.routerLiquidityPools.find(
+          pool =>
+            LiquidityPoolsController.isPoolWithTokens(
+              pool,
+              methodArguments.tokenA,
+              methodArguments.tokenB
+            ) && pool.fee === methodArguments.fee
+        )
+    );
 
     const poolsAddresses = (
       await this.web3Public.multicallContractMethods<{ 0: string }>(
@@ -133,7 +144,7 @@ export class LiquidityPoolsController {
         factoryContractAbi,
         getPoolMethodArguments.map(methodArguments => ({
           methodName: 'getPool',
-          methodArguments
+          methodArguments: [methodArguments.tokenA, methodArguments.tokenB, methodArguments.fee]
         }))
       )
     ).map(result => result.output[0]);
@@ -143,9 +154,9 @@ export class LiquidityPoolsController {
         if (poolAddress !== EMPTY_ADDRESS) {
           return {
             address: poolAddress,
-            token0: getPoolMethodArguments[index][0],
-            token1: getPoolMethodArguments[index][1],
-            fee: getPoolMethodArguments[index][2]
+            token0: getPoolMethodArguments[index].tokenA,
+            token1: getPoolMethodArguments[index].tokenB,
+            fee: getPoolMethodArguments[index].fee
           };
         }
         return null;
