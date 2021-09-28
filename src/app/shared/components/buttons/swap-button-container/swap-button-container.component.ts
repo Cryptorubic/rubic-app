@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output
@@ -25,7 +26,7 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TUI_IS_MOBILE, TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
@@ -129,7 +130,7 @@ export class SwapButtonContainerComponent implements OnInit {
 
   public errorType: Record<ERROR_TYPE, boolean>;
 
-  public readonly isMobile$: Observable<boolean>;
+  public readonly isMobile$: boolean;
 
   private isTestingMode: boolean;
 
@@ -224,7 +225,8 @@ export class SwapButtonContainerComponent implements OnInit {
     private readonly withRoundPipe: WithRoundPipe,
     private readonly iframeService: IframeService,
     private readonly headerStore: HeaderStore,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    @Inject(TUI_IS_MOBILE) readonly isMobile: boolean
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -233,7 +235,7 @@ export class SwapButtonContainerComponent implements OnInit {
       }),
       {}
     ) as Record<ERROR_TYPE, boolean>;
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
+    this.isMobile = isMobile;
   }
 
   ngOnInit(): void {
