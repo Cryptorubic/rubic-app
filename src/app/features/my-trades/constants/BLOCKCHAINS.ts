@@ -13,6 +13,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.HARMONY]: Blockchain;
   [BLOCKCHAIN_NAME.TRON]: Blockchain;
   [BLOCKCHAIN_NAME.XDAI]: Blockchain;
+  [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
 };
 
@@ -38,6 +39,11 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.HARMONY,
     name: 'Harmony',
     img: `${imageBaseSrc}harmony.svg`
+  },
+  [BLOCKCHAIN_NAME.MOONRIVER]: {
+    key: BLOCKCHAIN_NAME.MOONRIVER,
+    name: 'Moonriver',
+    img: `${imageBaseSrc}moonriver.svg`
   },
   [BLOCKCHAIN_NAME.TRON]: {
     key: BLOCKCHAIN_NAME.TRON,

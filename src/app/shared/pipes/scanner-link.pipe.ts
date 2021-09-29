@@ -78,6 +78,14 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.MOONRIVER]: {
+    baseUrl: 'https://blockscout.moonriver.moonbeam.network/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.HARMONY_TESTNET]: {
     baseUrl: 'https://explorer.testnet.harmony.one/',
     nativeCoinUrl: '',

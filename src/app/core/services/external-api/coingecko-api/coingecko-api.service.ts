@@ -11,6 +11,7 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
+  BLOCKCHAIN_NAME.MOONRIVER,
   BLOCKCHAIN_NAME.XDAI
 ] as const;
 
@@ -42,6 +43,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binancecoin',
       [BLOCKCHAIN_NAME.POLYGON]: 'matic-network',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.XDAI]: 'xdai'
     };
 
@@ -62,6 +64,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon-pos',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony-shard-0',
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.XDAI]: 'xdai'
     };
   }

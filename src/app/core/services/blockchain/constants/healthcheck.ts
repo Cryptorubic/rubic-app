@@ -25,5 +25,11 @@ export const HEALTHCHECK = {
     contractAbi: ERC20_ABI,
     method: 'symbol',
     expected: '1USDT'
+  },
+  [BLOCKCHAIN_NAME.MOONRIVER]: {
+    contractAddress: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C',
+    contractAbi: ERC20_ABI,
+    method: 'symbol',
+    expected: 'USDT'
   }
 };

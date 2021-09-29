@@ -11,6 +11,7 @@ export interface TokensNetworkState {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: CountPage;
   [BLOCKCHAIN_NAME.POLYGON]: CountPage;
   [BLOCKCHAIN_NAME.HARMONY]: CountPage;
+  [BLOCKCHAIN_NAME.MOONRIVER]: CountPage;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: CountPage;
 }
 

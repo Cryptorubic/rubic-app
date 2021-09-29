@@ -39,5 +39,11 @@ export const blockchainsList: BlockchainItem[] = [
     visibleName: 'Harmony',
     image: `${imageBaseSrc}harmony.svg`,
     id: null
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.MOONRIVER,
+    visibleName: 'Moonriver',
+    image: `${imageBaseSrc}moonriver.svg`,
+    id: null
   }
 ];

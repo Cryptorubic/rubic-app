@@ -221,7 +221,8 @@ export class TokensService {
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.HARMONY
+      BLOCKCHAIN_NAME.HARMONY,
+      BLOCKCHAIN_NAME.MOONRIVER
     ];
     const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
       const tokensAddresses = tokens
