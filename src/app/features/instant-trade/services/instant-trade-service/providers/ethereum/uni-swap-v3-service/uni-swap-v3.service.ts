@@ -39,21 +39,17 @@ import {
   swapEstimatedGas,
   WETHtoETHEstimatedGas
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/estimatedGas';
+import {
+  UniswapV3CalculatedInfo,
+  UniswapV3CalculatedInfoWithProfit
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
 
 interface IsEthFromOrTo {
   from: boolean;
   to: boolean;
 }
 
-interface UniswapV3CalculatedInfo {
-  route: UniswapV3Route;
-  estimatedGas?: BigNumber;
-}
-
-interface UniswapV3CalculatedInfoWithProfit extends UniswapV3CalculatedInfo {
-  estimatedGas: BigNumber;
-  profit: BigNumber;
-}
+const RUBIC_OPTIMIZATION_DISABLED = true;
 
 @Injectable({
   providedIn: 'root'
@@ -144,6 +140,7 @@ export class UniSwapV3Service implements ItProvider {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    shouldCalculateGas = shouldCalculateGas || RUBIC_OPTIMIZATION_DISABLED;
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;

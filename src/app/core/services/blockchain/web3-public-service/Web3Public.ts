@@ -488,18 +488,6 @@ export class Web3Public {
 
     const outputs = await this.multicall(calls);
 
-    outputs.map((output, index) => {
-      const methodOutputAbi = contractAbi.find(
-        funcSignature => funcSignature.name === methodsData[index].methodName
-      ).outputs;
-      return {
-        success: output.success,
-        output: output.success
-          ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
-          : null
-      };
-    });
-
     return outputs.map((output, index) => {
       const methodOutputAbi = contractAbi.find(
         funcSignature => funcSignature.name === methodsData[index].methodName
