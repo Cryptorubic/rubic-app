@@ -17,7 +17,7 @@ import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { PCacheable } from 'ts-cacheable';
 import { uniSwapV3ContractData } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import BigNumber from 'bignumber.js';
-import { Utils } from 'src/app/shared/utils/utils';
+import { compareAddresses } from 'src/app/shared/utils/utils';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -38,7 +38,7 @@ export class LiquidityPoolsController {
     let lastTokenAddress = initialTokenAddress;
     pools.forEach(pool => {
       contractPath += pool.fee.toString(16).padStart(6, '0');
-      const newTokenAddress = Utils.compareAddresses(pool.token0, lastTokenAddress)
+      const newTokenAddress = compareAddresses(pool.token0, lastTokenAddress)
         ? pool.token1
         : pool.token0;
       contractPath += newTokenAddress.slice(2).toLowerCase();
@@ -107,8 +107,8 @@ export class LiquidityPoolsController {
       ...Object.values(this.routerTokens)
         .filter(
           routerTokenAddress =>
-            !Utils.compareAddresses(fromTokenAddress, routerTokenAddress) &&
-            !Utils.compareAddresses(toTokenAddress, routerTokenAddress)
+            !compareAddresses(fromTokenAddress, routerTokenAddress) &&
+            !compareAddresses(toTokenAddress, routerTokenAddress)
         )
         .map(routerTokenAddress =>
           this.feeAmounts
@@ -224,13 +224,13 @@ export class LiquidityPoolsController {
       .filter(pool => !path.includes(pool))
       .map(pool => {
         const methodsData: { poolsPath: LiquidityPool[]; methodData: MethodData }[] = [];
-        if (Utils.compareAddresses(pool.token0, lastTokenAddress)) {
+        if (compareAddresses(pool.token0, lastTokenAddress)) {
           const extendedPath = path.concat(pool);
           methodsData.push(
             ...this.getQuoterMethodsData(options, extendedPath, pool.token1, maxTransitPools)
           );
         }
-        if (Utils.compareAddresses(pool.token1, lastTokenAddress)) {
+        if (compareAddresses(pool.token1, lastTokenAddress)) {
           const extendedPath = path.concat(pool);
           methodsData.push(
             ...this.getQuoterMethodsData(options, extendedPath, pool.token0, maxTransitPools)

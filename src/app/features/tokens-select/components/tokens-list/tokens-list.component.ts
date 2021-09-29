@@ -17,7 +17,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { Utils } from 'src/app/shared/utils/utils';
+import { compareObjects } from 'src/app/shared/utils/utils';
 import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
 
@@ -176,10 +176,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
    * @param changes Detected changes.
    */
   private setupHints(changes: SimpleChanges): void {
-    const hasChanges = !Utils.compareObjects(
-      changes.tokens?.currentValue,
-      changes.tokens?.previousValue
-    );
+    const hasChanges = compareObjects(changes.tokens?.currentValue, changes.tokens?.previousValue);
     if (hasChanges) {
       const tokensNumber = changes.tokens.currentValue.length;
       this.hintsShown = Array(tokensNumber).fill(false);

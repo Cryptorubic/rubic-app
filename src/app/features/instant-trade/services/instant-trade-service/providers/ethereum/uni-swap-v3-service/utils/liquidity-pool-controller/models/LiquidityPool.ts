@@ -1,13 +1,12 @@
-import { Utils } from 'src/app/shared/utils/utils';
+import { compareAddresses } from 'src/app/shared/utils/utils';
 
 export type FeeAmount = 500 | 3000 | 10000;
 
 export class LiquidityPool {
   public static isPoolWithTokens(pool: LiquidityPool, tokenA: string, tokenB: string): boolean {
     return (
-      (Utils.compareAddresses(pool.token0, tokenA) &&
-        Utils.compareAddresses(pool.token1, tokenB)) ||
-      (Utils.compareAddresses(pool.token1, tokenA) && Utils.compareAddresses(pool.token0, tokenB))
+      (compareAddresses(pool.token0, tokenA) && compareAddresses(pool.token1, tokenB)) ||
+      (compareAddresses(pool.token1, tokenA) && compareAddresses(pool.token0, tokenB))
     );
   }
 
