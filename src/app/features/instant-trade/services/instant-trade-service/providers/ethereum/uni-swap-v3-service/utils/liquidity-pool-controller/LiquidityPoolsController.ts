@@ -26,9 +26,7 @@ interface RecGraphVisitorOptions {
 }
 
 export class LiquidityPoolsController {
-  private readonly routerTokens: {
-    [symbol: string]: string;
-  };
+  private readonly routerTokens: Record<string, string>;
 
   private readonly routerLiquidityPools: LiquidityPool[];
 
@@ -83,7 +81,7 @@ export class LiquidityPoolsController {
     };
   }
 
-  constructor(private readonly web3Public: Web3Public, isTestingMode: boolean) {
+  constructor(private readonly web3Public: Web3Public, isTestingMode = false) {
     if (!isTestingMode) {
       this.routerTokens = routerTokensNetMode.mainnet;
       this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
@@ -103,20 +101,26 @@ export class LiquidityPoolsController {
     toTokenAddress: string
   ): Promise<LiquidityPool[]> {
     let getPoolMethodArguments: { tokenA: string; tokenB: string; fee: FeeAmount }[] = [];
-    Object.values(this.routerTokens).forEach(routeTokenAddress => {
-      this.feeAmounts.forEach(fee => {
-        if (
-          fromTokenAddress.toLowerCase() !== routeTokenAddress.toLowerCase() &&
-          toTokenAddress.toLowerCase() !== routeTokenAddress.toLowerCase()
-        ) {
-          getPoolMethodArguments.push({ tokenA: fromTokenAddress, tokenB: routeTokenAddress, fee });
-          getPoolMethodArguments.push({ tokenA: toTokenAddress, tokenB: routeTokenAddress, fee });
-        }
-      });
-    });
-    this.feeAmounts.forEach(fee => {
-      getPoolMethodArguments.push({ tokenA: fromTokenAddress, tokenB: toTokenAddress, fee });
-    });
+    getPoolMethodArguments.push(
+      ...Object.values(this.routerTokens)
+        .filter(
+          routerTokenAddress =>
+            fromTokenAddress.toLowerCase() !== routerTokenAddress.toLowerCase() &&
+            toTokenAddress.toLowerCase() !== routerTokenAddress.toLowerCase()
+        )
+        .map(routerTokenAddress =>
+          this.feeAmounts
+            .map(fee => [
+              { tokenA: fromTokenAddress, tokenB: routerTokenAddress, fee },
+              { tokenA: toTokenAddress, tokenB: routerTokenAddress, fee }
+            ])
+            .flat()
+        )
+        .flat()
+    );
+    getPoolMethodArguments.push(
+      ...this.feeAmounts.map(fee => ({ tokenA: fromTokenAddress, tokenB: toTokenAddress, fee }))
+    );
     getPoolMethodArguments = getPoolMethodArguments.filter(
       methodArguments =>
         !this.routerLiquidityPools.find(
@@ -160,17 +164,15 @@ export class LiquidityPoolsController {
     routeMaxTransitPools: number
   ): Promise<UniswapV3Route[]> {
     const routesLiquidityPools = await this.getAllLiquidityPools(fromTokenAddress, toTokenAddress);
-    const quoterMethodsData: { poolsPath: LiquidityPool[]; methodData: MethodData }[] = [];
-
     const options: RecGraphVisitorOptions = {
       routesLiquidityPools,
       fromTokenAddress,
       fromAmountAbsolute,
       toTokenAddress
     };
-    for (let i = 0; i <= routeMaxTransitPools; i++) {
-      quoterMethodsData.push(...this.getQuoterMethodsData(options, [], fromTokenAddress, i));
-    }
+    const quoterMethodsData = [...Array(routeMaxTransitPools + 1)]
+      .map((_, index) => this.getQuoterMethodsData(options, [], fromTokenAddress, index))
+      .flat();
 
     return this.web3Public
       .multicallContractMethods<{ 0: string }>(

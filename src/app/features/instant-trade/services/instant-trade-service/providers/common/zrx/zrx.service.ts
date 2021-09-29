@@ -56,9 +56,7 @@ export class ZrxService implements ItProvider {
   public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
   ): blockchain is SupportedZrxBlockchain {
-    return !!supportedZrxBlockchains.find(
-      supportedBlockchain => supportedBlockchain === blockchain
-    );
+    return supportedZrxBlockchains.some(supportedBlockchain => supportedBlockchain === blockchain);
   }
 
   constructor(
@@ -206,7 +204,7 @@ export class ZrxService implements ItProvider {
     const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
     await this.web3Public.checkBalance(trade.from.token, amount, this.walletAddress);
 
-    return this.web3PrivateService.sendTransaction(this.currentTradeData.to, amount, {
+    return this.web3PrivateService.trySendTransaction(this.currentTradeData.to, amount, {
       data: this.currentTradeData.data,
       gas: this.currentTradeData.gas,
       gasPrice: this.currentTradeData.gasPrice,

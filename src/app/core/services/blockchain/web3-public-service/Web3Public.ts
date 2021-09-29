@@ -381,6 +381,9 @@ export class Web3Public {
     methodArguments: unknown[]
   ): string {
     const methodSignature = contractAbi.find(abiItem => abiItem.name === methodName);
+    if (methodSignature === undefined) {
+      throw Error('No such method in abi');
+    }
     return this.web3.eth.abi.encodeFunctionCall(methodSignature, methodArguments as string[]);
   }
 
@@ -537,33 +540,23 @@ export class Web3Public {
 
     const outputs = await this.multicall(calls.flat());
 
-    let contractDataIndex = 0;
-    let methodDataIndex = 0;
-    const results = Array(contractsData.length);
-    results[0] = [];
-    outputs.forEach(output => {
-      if (contractsData[contractDataIndex].methodsData.length === methodDataIndex) {
-        contractDataIndex++;
-        results[contractDataIndex] = [];
-        methodDataIndex = 0;
-      }
+    let outputIndex = 0;
+    return contractsData.map(contractData =>
+      contractData.methodsData.map(methodData => {
+        const methodOutputAbi = contractAbi.find(
+          funcSignature => funcSignature.name === methodData.methodName
+        ).outputs;
+        const output = outputs[outputIndex];
+        outputIndex++;
 
-      const methodOutputAbi = contractAbi.find(
-        funcSignature =>
-          funcSignature.name ===
-          contractsData[contractDataIndex].methodsData[methodDataIndex].methodName
-      ).outputs;
-
-      results[contractDataIndex].push({
-        success: output.success,
-        output: output.success
-          ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
-          : null
-      });
-
-      methodDataIndex++;
-    });
-    return results;
+        return {
+          success: output.success,
+          output: output.success
+            ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+            : null
+        };
+      })
+    );
   }
 
   private async multicall(calls: Call[]): Promise<MulticallResponse[]> {

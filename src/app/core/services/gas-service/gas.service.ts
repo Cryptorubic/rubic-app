@@ -38,7 +38,7 @@ export class GasService {
   private static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
   ): blockchain is SupportedBlockchain {
-    return !!supportedBlockchains.find(supBlockchain => supBlockchain === blockchain);
+    return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
   constructor(private readonly httpClient: HttpClient) {

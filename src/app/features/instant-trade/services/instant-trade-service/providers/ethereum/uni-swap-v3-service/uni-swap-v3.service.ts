@@ -87,6 +87,7 @@ export class UniSwapV3Service implements ItProvider {
 
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.web3Public = this.web3PublicService[this.blockchain];
+    this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public);
     this.wethAddress = wethAddressNetMode.mainnet;
 
     this.settingsService.instantTradeValueChanges
@@ -104,10 +105,7 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.liquidityPoolsController = new LiquidityPoolsController(
-          this.web3Public,
-          isTestingMode
-        );
+        this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, true);
         this.wethAddress = wethAddressNetMode.testnet;
       }
     });
