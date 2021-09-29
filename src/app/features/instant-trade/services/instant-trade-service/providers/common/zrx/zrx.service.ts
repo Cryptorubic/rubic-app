@@ -37,6 +37,8 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
   providedIn: 'root'
 })
 export class ZrxService implements ItProvider {
+  private readonly gasMargin: number;
+
   private web3Public: Web3Public;
 
   private settings: ItSettingsForm;
@@ -70,6 +72,7 @@ export class ZrxService implements ItProvider {
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
   ) {
+    this.gasMargin = 1.2; // 120%
     this.tradeDataIsUpdated = new BehaviorSubject(false);
 
     this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(() =>
@@ -179,7 +182,7 @@ export class ZrxService implements ItProvider {
       return trade;
     }
 
-    const { estimatedGas } = this.currentTradeData;
+    const estimatedGas = Web3Public.calculateGasMargin(this.currentTradeData.gas, this.gasMargin);
     const gasPriceInEth = Web3Public.fromWei(this.currentTradeData.gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
@@ -204,13 +207,17 @@ export class ZrxService implements ItProvider {
     const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
     await this.web3Public.checkBalance(trade.from.token, amount, this.walletAddress);
 
-    return this.web3PrivateService.trySendTransaction(this.currentTradeData.to, amount, {
-      data: this.currentTradeData.data,
-      gas: this.currentTradeData.gas,
-      gasPrice: this.currentTradeData.gasPrice,
-      value: this.currentTradeData.value,
-      onTransactionHash: options.onConfirm
-    });
+    return this.web3PrivateService.trySendTransaction(
+      this.currentTradeData.to,
+      this.currentTradeData.value,
+      {
+        data: this.currentTradeData.data,
+        gas: this.currentTradeData.gas,
+        gasPrice: this.currentTradeData.gasPrice,
+        inWei: true,
+        onTransactionHash: options.onConfirm
+      }
+    );
   }
 
   private fetchTrade(params: ZrxCalculateTradeParams): Promise<ZrxApiResponse> {
