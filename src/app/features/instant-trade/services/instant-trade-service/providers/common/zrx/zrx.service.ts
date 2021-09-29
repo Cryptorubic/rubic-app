@@ -32,7 +32,6 @@ import {
 import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { GasService } from 'src/app/core/services/gas-service/gas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -65,15 +64,13 @@ export class ZrxService implements ItProvider {
   constructor(
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
-    private readonly providerConnector: ProviderConnectorService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly httpService: HttpService,
     private readonly tokensService: TokensService,
-    private readonly authService: AuthService,
-    private readonly gasService: GasService
+    private readonly authService: AuthService
   ) {
     this.tradeDataIsUpdated = new BehaviorSubject(false);
 
@@ -127,7 +124,7 @@ export class ZrxService implements ItProvider {
         this.tradeDataIsUpdated.next(false);
         return this.web3Public.getAllowance(
           tokenAddress,
-          this.providerConnectorService.address,
+          this.walletAddress,
           this.currentTradeData?.allowanceTarget
         );
       })
@@ -184,16 +181,17 @@ export class ZrxService implements ItProvider {
       return trade;
     }
 
-    const estimatedGas = new BigNumber(this.currentTradeData.estimatedGas);
-    const gasPriceInEth = await this.gasService.getGasPriceInEthUnits(this.blockchain);
+    const { estimatedGas } = this.currentTradeData;
+    const gasPriceInEth = Web3Public.fromWei(this.currentTradeData.gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
-    const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
+    const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
+    const gasFeeInUsd = gasPriceInUsd.multipliedBy(estimatedGas);
 
     return {
       ...trade,
-      gasLimit: estimatedGas.toFixed(0),
+      gasLimit: estimatedGas,
+      gasPrice: this.currentTradeData.gasPrice,
       gasFeeInEth,
       gasFeeInUsd
     };
@@ -203,7 +201,7 @@ export class ZrxService implements ItProvider {
     trade: InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
-    this.providerConnector.checkSettings(trade.blockchain);
+    this.providerConnectorService.checkSettings(trade.blockchain);
 
     const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
     await this.web3Public.checkBalance(trade.from.token, amount, this.walletAddress);

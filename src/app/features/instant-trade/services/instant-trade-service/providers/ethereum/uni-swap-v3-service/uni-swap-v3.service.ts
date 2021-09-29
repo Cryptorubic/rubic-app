@@ -22,7 +22,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { LiquidityPoolsController } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/LiquidityPoolsController';
 
 import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Route';
@@ -60,6 +59,8 @@ interface UniswapV3CalculatedInfoWithProfit extends UniswapV3CalculatedInfo {
   providedIn: 'root'
 })
 export class UniSwapV3Service implements ItProvider {
+  private readonly gasMargin: number;
+
   private readonly blockchain: BLOCKCHAIN_NAME;
 
   private web3Public: Web3Public;
@@ -78,12 +79,15 @@ export class UniSwapV3Service implements ItProvider {
     private readonly authService: AuthService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly settingsService: SettingsService,
-    private readonly coingeckoApiService: CoingeckoApiService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly tokensService: TokensService,
     private readonly gasService: GasService
   ) {
+    this.gasMargin = 1.2; // 120%
+
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+    this.web3Public = this.web3PublicService[this.blockchain];
+    this.wethAddress = wethAddressNetMode.mainnet;
 
     this.settingsService.instantTradeValueChanges
       .pipe(startWith(this.settingsService.instantTradeValue))
@@ -99,11 +103,11 @@ export class UniSwapV3Service implements ItProvider {
     });
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      this.web3Public = this.web3PublicService[this.blockchain];
-      this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, isTestingMode);
-      if (!isTestingMode) {
-        this.wethAddress = wethAddressNetMode.mainnet;
-      } else {
+      if (isTestingMode) {
+        this.liquidityPoolsController = new LiquidityPoolsController(
+          this.web3Public,
+          isTestingMode
+        );
         this.wethAddress = wethAddressNetMode.testnet;
       }
     });
@@ -116,7 +120,7 @@ export class UniSwapV3Service implements ItProvider {
     return from(
       this.web3Public.getAllowance(
         tokenAddress,
-        this.providerConnectorService.address,
+        this.walletAddress,
         uniSwapV3ContractData.swapRouter.address
       )
     );
@@ -175,12 +179,14 @@ export class UniSwapV3Service implements ItProvider {
       return trade;
     }
 
-    const gasFeeInEth = estimatedGas.multipliedBy(gasPriceInEth);
-    const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
+    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
+    const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 
     return {
       ...trade,
-      gasLimit: estimatedGas.toFixed(0),
+      gasLimit: increasedGas,
+      gasPrice: Web3Public.toWei(gasPriceInEth),
       gasFeeInEth,
       gasFeeInUsd
     };
@@ -390,17 +396,17 @@ export class UniSwapV3Service implements ItProvider {
     const fromAmountAbsolute = Web3Public.toWei(trade.from.amount, trade.from.token.decimals);
     const { toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
-    const { route } = trade;
-    return this.swapTokens(route, fromAmountAbsolute, toTokenWrapped.address, isEth, options);
+    return this.swapTokens(trade, fromAmountAbsolute, toTokenWrapped.address, isEth, options);
   }
 
   private swapTokens(
-    route: UniswapV3Route,
+    trade: UniswapV3Trade,
     fromAmountAbsolute: string,
     toTokenAddress: string,
     isEth: IsEthFromOrTo,
     options: ItOptions
   ): Promise<TransactionReceipt> {
+    const { route } = trade;
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
     const amountOutMin = route.outputAbsoluteAmount
       .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
@@ -450,7 +456,9 @@ export class UniSwapV3Service implements ItProvider {
       methodArguments,
       {
         value: isEth.from ? fromAmountAbsolute : null,
-        onTransactionHash: options.onConfirm
+        onTransactionHash: options.onConfirm,
+        gas: trade.gasLimit,
+        gasPrice: trade.gasPrice
       }
     );
   }
