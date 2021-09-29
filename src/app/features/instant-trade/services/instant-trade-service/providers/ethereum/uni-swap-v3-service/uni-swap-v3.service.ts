@@ -140,7 +140,7 @@ export class UniSwapV3Service implements ItProvider {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
-    shouldCalculateGas = shouldCalculateGas || RUBIC_OPTIMIZATION_DISABLED;
+    shouldCalculateGas = shouldCalculateGas || !RUBIC_OPTIMIZATION_DISABLED;
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
