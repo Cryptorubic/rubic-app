@@ -16,7 +16,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { Utils } from 'src/app/shared/models/utils/utils';
+import { Utils } from 'src/app/shared/utils/utils';
 
 @Component({
   selector: 'app-rubic-tokens',
