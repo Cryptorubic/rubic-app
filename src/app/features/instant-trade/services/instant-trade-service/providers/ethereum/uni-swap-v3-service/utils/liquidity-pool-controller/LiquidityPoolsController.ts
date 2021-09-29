@@ -127,7 +127,7 @@ export class LiquidityPoolsController {
       methodArguments =>
         !this.routerLiquidityPools.find(
           pool =>
-            LiquidityPool.isPoolWithTokens(pool, methodArguments.tokenA, methodArguments.tokenB) &&
+            pool.isPoolWithTokens(methodArguments.tokenA, methodArguments.tokenB) &&
             pool.fee === methodArguments.fee
         )
     );
@@ -208,7 +208,7 @@ export class LiquidityPoolsController {
 
     if (path.length === maxTransitPools) {
       const pools = routesLiquidityPools.filter(pool =>
-        LiquidityPool.isPoolWithTokens(pool, lastTokenAddress, toTokenAddress)
+        pool.isPoolWithTokens(lastTokenAddress, toTokenAddress)
       );
       return pools.map(pool =>
         LiquidityPoolsController.getQuoterMethodData(
