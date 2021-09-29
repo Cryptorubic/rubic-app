@@ -34,15 +34,6 @@ export class LiquidityPoolsController {
 
   private readonly feeAmounts: FeeAmount[];
 
-  public static isPoolWithTokens(pool: LiquidityPool, tokenA: string, tokenB: string): boolean {
-    return (
-      (pool.token0.toLowerCase() === tokenA.toLowerCase() &&
-        pool.token1.toLowerCase() === tokenB.toLowerCase()) ||
-      (pool.token1.toLowerCase() === tokenA.toLowerCase() &&
-        pool.token0.toLowerCase() === tokenB.toLowerCase())
-    );
-  }
-
   public static getEncodedPoolsPath(pools: LiquidityPool[], initialTokenAddress: string): string {
     let contractPath = initialTokenAddress.slice(2).toLowerCase();
     let lastTokenAddress = initialTokenAddress;
@@ -130,11 +121,8 @@ export class LiquidityPoolsController {
       methodArguments =>
         !this.routerLiquidityPools.find(
           pool =>
-            LiquidityPoolsController.isPoolWithTokens(
-              pool,
-              methodArguments.tokenA,
-              methodArguments.tokenB
-            ) && pool.fee === methodArguments.fee
+            LiquidityPool.isPoolWithTokens(pool, methodArguments.tokenA, methodArguments.tokenB) &&
+            pool.fee === methodArguments.fee
         )
     );
 
@@ -152,12 +140,12 @@ export class LiquidityPoolsController {
     return poolsAddresses
       .map((poolAddress, index) => {
         if (poolAddress !== EMPTY_ADDRESS) {
-          return {
-            address: poolAddress,
-            token0: getPoolMethodArguments[index].tokenA,
-            token1: getPoolMethodArguments[index].tokenB,
-            fee: getPoolMethodArguments[index].fee
-          };
+          return new LiquidityPool(
+            poolAddress,
+            getPoolMethodArguments[index].tokenA,
+            getPoolMethodArguments[index].tokenB,
+            getPoolMethodArguments[index].fee
+          );
         }
         return null;
       })
@@ -216,7 +204,7 @@ export class LiquidityPoolsController {
 
     if (path.length === maxTransitPools) {
       const pools = routesLiquidityPools.filter(pool =>
-        LiquidityPoolsController.isPoolWithTokens(pool, lastTokenAddress, toTokenAddress)
+        LiquidityPool.isPoolWithTokens(pool, lastTokenAddress, toTokenAddress)
       );
       return pools.map(pool =>
         LiquidityPoolsController.getQuoterMethodData(

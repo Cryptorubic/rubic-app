@@ -1,11 +1,7 @@
 import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/models/LiquidityPool';
 import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
 
-export const routerTokensNetMode: {
-  [mode in NetMode]: {
-    [tokenSymbol: string]: string;
-  };
-} = {
+export const routerTokensNetMode: Record<NetMode, Record<string, string>> = {
   mainnet: {
     WETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -23,77 +19,75 @@ export const routerTokensNetMode: {
 const mainnetRouterTokens = routerTokensNetMode.mainnet;
 const testnetRouterTokens = routerTokensNetMode.testnet;
 
-export const routerLiquidityPoolsWithMode: {
-  [mode in NetMode]: LiquidityPool[];
-} = {
+export const routerLiquidityPoolsWithMode: Record<NetMode, LiquidityPool[]> = {
   mainnet: [
-    {
-      address: '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8',
-      token0: mainnetRouterTokens.USDC,
-      token1: mainnetRouterTokens.WETH,
-      fee: 3000
-    },
-    {
-      address: '0x7858E59e0C01EA06Df3aF3D20aC7B0003275D4Bf',
-      token0: mainnetRouterTokens.USDC,
-      token1: mainnetRouterTokens.USDT,
-      fee: 500
-    },
-    {
-      address: '0xCBCdF9626bC03E24f779434178A73a0B4bad62eD',
-      token0: mainnetRouterTokens.WBTC,
-      token1: mainnetRouterTokens.WETH,
-      fee: 3000
-    },
-    {
-      address: '0x4e68Ccd3E89f51C3074ca5072bbAC773960dFa36',
-      token0: mainnetRouterTokens.WETH,
-      token1: mainnetRouterTokens.USDT,
-      fee: 3000
-    },
-    {
-      address: '0x6c6Bc977E13Df9b0de53b251522280BB72383700',
-      token0: mainnetRouterTokens.DAI,
-      token1: mainnetRouterTokens.USDC,
-      fee: 500
-    },
-    {
-      address: '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640',
-      token0: mainnetRouterTokens.USDC,
-      token1: mainnetRouterTokens.WETH,
-      fee: 500
-    }
+    new LiquidityPool(
+      '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8',
+      mainnetRouterTokens.USDC,
+      mainnetRouterTokens.WETH,
+      3000
+    ),
+    new LiquidityPool(
+      '0x7858E59e0C01EA06Df3aF3D20aC7B0003275D4Bf',
+      mainnetRouterTokens.USDC,
+      mainnetRouterTokens.USDT,
+      500
+    ),
+    new LiquidityPool(
+      '0xCBCdF9626bC03E24f779434178A73a0B4bad62eD',
+      mainnetRouterTokens.WBTC,
+      mainnetRouterTokens.WETH,
+      3000
+    ),
+    new LiquidityPool(
+      '0x4e68Ccd3E89f51C3074ca5072bbAC773960dFa36',
+      mainnetRouterTokens.WETH,
+      mainnetRouterTokens.USDT,
+      3000
+    ),
+    new LiquidityPool(
+      '0x6c6Bc977E13Df9b0de53b251522280BB72383700',
+      mainnetRouterTokens.DAI,
+      mainnetRouterTokens.USDC,
+      500
+    ),
+    new LiquidityPool(
+      '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640',
+      mainnetRouterTokens.USDC,
+      mainnetRouterTokens.WETH,
+      500
+    )
   ],
   testnet: [
-    {
-      address: '0x44e0B6E92796B2b87535C1272592cC7E8927460D',
-      token0: testnetRouterTokens.WEENUS,
-      token1: testnetRouterTokens.WETH,
-      fee: 3000
-    },
-    {
-      address: '0x6492b8262251477EAd7e3fF05F922a853699E159',
-      token0: testnetRouterTokens.XEENUS,
-      token1: testnetRouterTokens.WETH,
-      fee: 3000
-    },
-    {
-      address: '0x7623e43DD003361a4AD870217F5168F9128024e3',
-      token0: testnetRouterTokens.WEENUS,
-      token1: testnetRouterTokens.WETH,
-      fee: 10000
-    },
-    {
-      address: '0x6D6d9609bb827fE6253F1C6c75C76C5Cd12B8773',
-      token0: testnetRouterTokens.XEENUS,
-      token1: testnetRouterTokens.WETH,
-      fee: 500
-    },
-    {
-      address: '0xd023579d5a7C1015D2c6999566aff23248255088',
-      token0: testnetRouterTokens.XEENUS,
-      token1: testnetRouterTokens.WEENUS,
-      fee: 3000
-    }
+    new LiquidityPool(
+      '0x44e0B6E92796B2b87535C1272592cC7E8927460D',
+      testnetRouterTokens.WEENUS,
+      testnetRouterTokens.WETH,
+      3000
+    ),
+    new LiquidityPool(
+      '0x6492b8262251477EAd7e3fF05F922a853699E159',
+      testnetRouterTokens.XEENUS,
+      testnetRouterTokens.WETH,
+      3000
+    ),
+    new LiquidityPool(
+      '0x7623e43DD003361a4AD870217F5168F9128024e3',
+      testnetRouterTokens.WEENUS,
+      testnetRouterTokens.WETH,
+      10000
+    ),
+    new LiquidityPool(
+      '0x6D6d9609bb827fE6253F1C6c75C76C5Cd12B8773',
+      testnetRouterTokens.XEENUS,
+      testnetRouterTokens.WETH,
+      500
+    ),
+    new LiquidityPool(
+      '0xd023579d5a7C1015D2c6999566aff23248255088',
+      testnetRouterTokens.XEENUS,
+      testnetRouterTokens.WEENUS,
+      3000
+    )
   ]
 };
