@@ -171,7 +171,7 @@ export class ZrxService implements ItProvider {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       from: {
         token: fromToken,
-        amount: new BigNumber(this.currentTradeData.sellAmount)
+        amount: Web3Public.fromWei(this.currentTradeData.sellAmount, fromToken.decimals)
       },
       to: {
         token: toToken,
