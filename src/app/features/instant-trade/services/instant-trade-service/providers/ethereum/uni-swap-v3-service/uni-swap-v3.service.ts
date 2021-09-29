@@ -395,7 +395,7 @@ export class UniSwapV3Service implements ItProvider {
     return this.swapTokens(trade, fromAmountAbsolute, toTokenWrapped.address, isEth, options);
   }
 
-  private swapTokens(
+  private async swapTokens(
     trade: UniswapV3Trade,
     fromAmountAbsolute: string,
     toTokenAddress: string,
@@ -430,12 +430,12 @@ export class UniSwapV3Service implements ItProvider {
           NATIVE_TOKEN_ADDRESS,
           deadline
         );
-      const exactInputMethodEncoded = this.web3Public.encodeFunctionCall(
+      const exactInputMethodEncoded = await this.web3Public.encodeFunctionCall(
         uniSwapV3ContractData.swapRouter.abi,
         exactInputMethodName,
         exactInputMethodArguments
       );
-      const unwrapWETHMethodEncoded = this.web3Public.encodeFunctionCall(
+      const unwrapWETHMethodEncoded = await this.web3Public.encodeFunctionCall(
         uniSwapV3ContractData.swapRouter.abi,
         'unwrapWETH9',
         [amountOutMin, this.walletAddress]
@@ -451,7 +451,7 @@ export class UniSwapV3Service implements ItProvider {
       methodName,
       methodArguments,
       {
-        value: isEth.from ? fromAmountAbsolute : null,
+        value: isEth.from ? fromAmountAbsolute : undefined,
         onTransactionHash: options.onConfirm,
         gas: trade.gasLimit,
         gasPrice: trade.gasPrice

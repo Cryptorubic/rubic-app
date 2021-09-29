@@ -212,7 +212,7 @@ export class ZrxService implements ItProvider {
       this.currentTradeData.value,
       {
         data: this.currentTradeData.data,
-        gas: this.currentTradeData.gas,
+        gas: trade.gasLimit,
         gasPrice: this.currentTradeData.gasPrice,
         inWei: true,
         onTransactionHash: options.onConfirm

@@ -375,11 +375,11 @@ export class Web3Public {
    * @param methodArguments the parameters to encode
    * @return the ABI encoded function call. Means function signature + parameters
    */
-  public encodeFunctionCall(
+  public async encodeFunctionCall(
     contractAbi: AbiItem[],
     methodName: string,
     methodArguments: unknown[]
-  ): string {
+  ): Promise<string> {
     const methodSignature = contractAbi.find(abiItem => abiItem.name === methodName);
     if (methodSignature === undefined) {
       throw Error('No such method in abi');
