@@ -84,6 +84,8 @@ export class LiquidityPoolsController {
   }
 
   constructor(private readonly web3Public: Web3Public, isTestingMode = false) {
+    this.feeAmounts = [500, 3000, 10000];
+
     if (!isTestingMode) {
       this.routerTokens = routerTokensNetMode.mainnet;
       this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
@@ -91,8 +93,6 @@ export class LiquidityPoolsController {
       this.routerTokens = routerTokensNetMode.testnet;
       this.routerLiquidityPools = routerLiquidityPoolsWithMode.testnet;
     }
-
-    this.feeAmounts = [500, 3000, 10000];
   }
 
   @PCacheable({

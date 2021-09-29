@@ -105,6 +105,7 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
+        this.web3Public = this.web3PublicService[this.blockchain];
         this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, true);
         this.wethAddress = wethAddressNetMode.testnet;
       }
