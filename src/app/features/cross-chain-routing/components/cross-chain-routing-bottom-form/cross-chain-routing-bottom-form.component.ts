@@ -430,7 +430,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async createTrade(): Promise<void> {
-    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
@@ -481,7 +480,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open('cross-chain-routing');
     }
   }
 

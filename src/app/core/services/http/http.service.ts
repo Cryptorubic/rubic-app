@@ -12,9 +12,8 @@ export class HttpService {
   constructor(private http: HttpClient) {}
 
   public get<T>(url: string, data?: {}, path?: string): Observable<T> {
-    data = data || {};
     return this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
-      params: data
+      params: data || {}
     });
   }
 
