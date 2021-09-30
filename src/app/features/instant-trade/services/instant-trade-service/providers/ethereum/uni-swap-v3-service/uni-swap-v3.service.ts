@@ -147,7 +147,6 @@ export class UniSwapV3Service implements ItProvider {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
-    shouldCalculateGas = !RUBIC_OPTIMIZATION_DISABLED && shouldCalculateGas;
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
@@ -264,7 +263,7 @@ export class UniSwapV3Service implements ItProvider {
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
 
-    if (this.settings.rubicOptimisation && toToken.price) {
+    if (!RUBIC_OPTIMIZATION_DISABLED && this.settings.rubicOptimisation && toToken.price) {
       const gasRequests = routes.map(route =>
         this.getEstimatedGasMethodSignature(
           route,

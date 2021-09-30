@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js';
 
-export const ETHtoWETHEstimatedGas = new BigNumber(28_000);
-
 export const WETHtoETHEstimatedGas = new BigNumber(36_000);
 
 export const swapEstimatedGas = [
