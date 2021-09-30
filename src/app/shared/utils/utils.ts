@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 /**
  * Compares two objects for equality.
  * @param object1 First object to compare.
@@ -14,4 +16,16 @@ export function compareObjects(object1: object, object2: object): boolean {
  */
 export function compareAddresses(address0: string, address1: string): boolean {
   return address0.toLowerCase() === address1.toLowerCase();
+}
+
+/**
+ * Subtracts percent from given amount.
+ * @param amount Given amount from which to subtract.
+ * @param percent Percent to subtract.
+ */
+export function subtractPercent(
+  amount: number | BigNumber | string,
+  percent: number | BigNumber | string
+): BigNumber {
+  return new BigNumber(amount).multipliedBy(new BigNumber(1).minus(percent));
 }

@@ -40,6 +40,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { subtractPercent } from 'src/app/shared/utils/utils';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
@@ -343,13 +344,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
-    const slippage = new BigNumber(1).minus(this.settings.slippageTolerance);
+    const { slippageTolerance } = this.settings;
 
     if (this.settings.rubicOptimisation && toToken.price) {
       const gasRequests = routes.map(route =>
         gasCalculationMethodName(
           fromAmountAbsolute,
-          route.outputAbsoluteAmount.multipliedBy(slippage).toFixed(0),
+          subtractPercent(route.outputAbsoluteAmount, slippageTolerance).toFixed(0),
           route.path,
           deadline
         )
@@ -390,7 +391,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const route = routes[0];
     const estimateGasParams = gasCalculationMethodName(
       fromAmountAbsolute,
-      route.outputAbsoluteAmount.multipliedBy(slippage).toFixed(0),
+      subtractPercent(route.outputAbsoluteAmount, slippageTolerance).toFixed(0),
       route.path,
       deadline
     );
@@ -510,7 +511,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const uniswapV2Trade: UniswapV2Trade = {
       amountIn: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
       amountOutMin: Web3Public.toWei(
-        trade.to.amount.multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance)),
+        subtractPercent(trade.to.amount, this.settings.slippageTolerance),
         trade.to.token.decimals
       ),
       path: trade.path,

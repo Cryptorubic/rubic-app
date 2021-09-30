@@ -43,6 +43,7 @@ import {
   UniswapV3CalculatedInfo,
   UniswapV3CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
+import { subtractPercent } from 'src/app/shared/utils/utils';
 
 interface IsEthFromOrTo {
   from: boolean;
@@ -345,9 +346,10 @@ export class UniSwapV3Service implements ItProvider {
     walletAddress: string,
     deadline: number
   ): MethodData {
-    const amountOutMin = route.outputAbsoluteAmount
-      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
-      .toFixed(0);
+    const amountOutMin = subtractPercent(
+      route.outputAbsoluteAmount,
+      this.settings.slippageTolerance
+    ).toFixed(0);
 
     if (route.poolsPath.length === 1) {
       return {
@@ -404,9 +406,10 @@ export class UniSwapV3Service implements ItProvider {
   ): Promise<TransactionReceipt> {
     const { route } = trade;
     const deadline = Math.floor(Date.now() / 1000) + 60 * this.settings.deadline;
-    const amountOutMin = route.outputAbsoluteAmount
-      .multipliedBy(new BigNumber(1).minus(this.settings.slippageTolerance))
-      .toFixed(0);
+    const amountOutMin = subtractPercent(
+      route.outputAbsoluteAmount,
+      this.settings.slippageTolerance
+    ).toFixed(0);
 
     let methodName: string;
     let methodArguments: unknown[];
