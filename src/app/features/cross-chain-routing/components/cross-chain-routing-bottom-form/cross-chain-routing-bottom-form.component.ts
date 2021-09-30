@@ -217,7 +217,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.conditionalCalculate('normal');
   }
 
-  private async conditionalCalculate(type?: CalculateTradeType): Promise<void> {
+  private conditionalCalculate(type?: CalculateTradeType): void {
     const { fromToken, toToken } = this.swapFormService.inputValue;
     if (!fromToken?.address || !toToken?.address) {
       this.maxError = false;
@@ -273,6 +273,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               }
               this.minError = minAmountError || false;
               this.maxError = maxAmountError || false;
+              this.errorText = '';
 
               this.needApprove = needApprove;
 
@@ -369,7 +370,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     const data = this.hiddenTradeData$.getValue();
     this.toAmount = data.toAmount;
 
-    if (this.toAmount && !this.toAmount.isNaN()) {
+    if (this.toAmount?.isFinite()) {
+      this.errorText = '';
+      this.swapFormService.output.patchValue({
+        toAmount: this.toAmount
+      });
       this.tradeStatus = this.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
         : TRADE_STATUS.READY_TO_SWAP;
