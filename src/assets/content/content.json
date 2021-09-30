@@ -38,6 +38,28 @@
       ]
     },
     {
+      "img": "KirilRomanov.jpg",
+      "name": "Kirill Romanov",
+      "role": "Chief Operating Officer",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/enjoyit"
+        }
+      ]
+    },
+    {
+      "img": "MoraBrook.jpg",
+      "name": "Mora Brook",
+      "role": "Chief Marketing Officer",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/Mora_Bruk"
+        }
+      ]
+    },
+    {
       "img": "SergeyAndreev.png",
       "name": "Sergey Andreev",
       "role": "Frontend Developer",
