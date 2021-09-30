@@ -227,6 +227,11 @@ export class CommonOneinchService {
         throw new Error('User has not connected');
       }
 
+      const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
+      if (!allowance) {
+        throw new Error('User have no allowance');
+      }
+
       const swapTradeParams: OneinchSwapRequest = {
         params: {
           ...quoteTradeParams.params,

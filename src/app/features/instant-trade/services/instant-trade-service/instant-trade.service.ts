@@ -29,6 +29,8 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { Queue } from 'src/app/shared/models/utils/queue';
+import CustomError from 'src/app/core/errors/models/custom-error';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +47,7 @@ export class InstantTradeService {
     }>;
   }>;
 
-  private modalShowing: Subscription;
+  private readonly modalSubscriptions: Queue<Subscription>;
 
   public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
@@ -169,7 +171,7 @@ export class InstantTradeService {
         );
       }
 
-      this.modalShowing.unsubscribe();
+      this.modalSubscriptions.pop();
       this.updateTrade(transactionHash);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
@@ -186,7 +188,7 @@ export class InstantTradeService {
         })
         .catch(_err => {});
     } catch (err) {
-      this.modalShowing?.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
       if (transactionHash) {
         this.updateTrade(transactionHash);
       }
@@ -202,7 +204,8 @@ export class InstantTradeService {
       .pipe(
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
-        )
+        ),
+        catchError(err => of(new CustomError(err.message)))
       )
       .subscribe();
   }
@@ -240,17 +243,19 @@ export class InstantTradeService {
         trade.from.token.address,
         {
           onTransactionHash: () => {
-            this.modalShowing = this.notificationsService.show(
-              this.translateService.instant('notifications.approveInProgress'),
-              {
-                status: TuiNotification.Info,
-                autoClose: false
-              }
+            this.modalSubscriptions.push(
+              this.notificationsService.show(
+                this.translateService.instant('notifications.approveInProgress'),
+                {
+                  status: TuiNotification.Info,
+                  autoClose: false
+                }
+              )
             );
           }
         }
       );
-      this.modalShowing.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
       this.notificationsService.show(
         this.translateService.instant('notifications.successApprove'),
         {
@@ -259,18 +264,20 @@ export class InstantTradeService {
         }
       );
     } catch (err) {
-      this.modalShowing?.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
       throw err;
     }
   }
 
   private notifyTradeInProgress() {
-    this.modalShowing = this.notificationsService.show(
-      this.translateService.instant('notifications.tradeInProgress'),
-      {
-        status: TuiNotification.Info,
-        autoClose: false
-      }
+    this.modalSubscriptions.push(
+      this.notificationsService.show(
+        this.translateService.instant('notifications.tradeInProgress'),
+        {
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      )
     );
 
     if (this.window.location.pathname === '/') {

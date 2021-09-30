@@ -21,13 +21,27 @@ import { Utils } from 'src/app/shared/models/utils/utils';
 import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService],
+  animations: [
+    trigger('itemAnimation', [
+      transition(':enter', [
+        style({ opacity: '0.25' }),
+        animate(
+          '0.25s ease',
+          style({
+            opacity: '1'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class TokensListComponent implements OnChanges, AfterViewInit {
   /**

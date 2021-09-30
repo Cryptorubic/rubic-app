@@ -18,6 +18,10 @@
       max-width: 125px;
     }
 
+    @include b($mobile-sm) {
+      max-width: 93px;
+    }
+
     @include iframe-horizontal {
       width: 60px;
     }

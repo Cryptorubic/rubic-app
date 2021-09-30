@@ -38,6 +38,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
+import InsufficientFoundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 
 @Injectable({
   providedIn: 'root'
@@ -502,6 +503,12 @@ export class CrossChainRoutingService {
           const errMessage = err.message || err.toString?.();
           if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
+          }
+
+          if (errMessage?.includes('err: insufficient funds for gas * price + value')) {
+            throw new InsufficientFoundsGasPriceValueError(
+              this.swapFormService.input.controls.fromToken.value.symbol
+            );
           }
           throw err;
         }

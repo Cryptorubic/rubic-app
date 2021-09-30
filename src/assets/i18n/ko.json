@@ -70,7 +70,8 @@
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again"
+    "unknown": "Oops, something went wrong, please try again",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
   },
   "navigation": {
     "about": "소개",

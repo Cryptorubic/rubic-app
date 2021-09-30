@@ -16,6 +16,6 @@ export class SuccessTrxNotificationComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { type: SuccessTxModalType }>
   ) {
-    this.type = context.data.type || 'default';
+    this.type = context.data?.type || 'default';
   }
 }
