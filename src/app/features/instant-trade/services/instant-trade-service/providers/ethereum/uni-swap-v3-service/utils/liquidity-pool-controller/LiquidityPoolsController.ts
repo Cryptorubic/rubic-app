@@ -26,6 +26,9 @@ interface RecGraphVisitorOptions {
   toTokenAddress: string;
 }
 
+/**
+ * Works with requests, related to Uniswap v3 liquidity pools.
+ */
 export class LiquidityPoolsController {
   private readonly routerTokens: Record<string, string>;
 
@@ -33,6 +36,12 @@ export class LiquidityPoolsController {
 
   private readonly feeAmounts: FeeAmount[];
 
+  /**
+   * Converts uni v3 route to encoded bytes string to pass it to contract.
+   * @param pools Liquidity pools, included in route.
+   * @param initialTokenAddress From token address.
+   * @return string Encoded string.
+   */
   public static getEncodedPoolsPath(pools: LiquidityPool[], initialTokenAddress: string): string {
     let contractPath = initialTokenAddress.slice(2).toLowerCase();
     let lastTokenAddress = initialTokenAddress;
@@ -47,6 +56,13 @@ export class LiquidityPoolsController {
     return `0x${contractPath}`;
   }
 
+  /**
+   * Returns swap method's name and arguments to pass it to Quoter contract.
+   * @param poolsPath Pools, included in route.
+   * @param fromAmountAbsolute From amount.
+   * @param fromTokenAddress From token address.
+   * @param toTokenAddress To token address.
+   */
   private static getQuoterMethodData(
     poolsPath: LiquidityPool[],
     fromAmountAbsolute: string,
@@ -95,33 +111,42 @@ export class LiquidityPoolsController {
     }
   }
 
+  /**
+   * Returns all liquidity pools, containing passed tokens addresses, and concatenates with most popular pools.
+   * @param firstTokenAddress First token address.
+   * @param secondTokenAddress Second token address.
+   */
   @PCacheable({
     maxAge: 1000 * 60 * 10
   })
   private async getAllLiquidityPools(
-    fromTokenAddress: string,
-    toTokenAddress: string
+    firstTokenAddress: string,
+    secondTokenAddress: string
   ): Promise<LiquidityPool[]> {
     let getPoolMethodArguments: { tokenA: string; tokenB: string; fee: FeeAmount }[] = [];
     getPoolMethodArguments.push(
       ...Object.values(this.routerTokens)
         .filter(
           routerTokenAddress =>
-            !compareAddresses(fromTokenAddress, routerTokenAddress) &&
-            !compareAddresses(toTokenAddress, routerTokenAddress)
+            !compareAddresses(firstTokenAddress, routerTokenAddress) &&
+            !compareAddresses(secondTokenAddress, routerTokenAddress)
         )
         .map(routerTokenAddress =>
           this.feeAmounts
             .map(fee => [
-              { tokenA: fromTokenAddress, tokenB: routerTokenAddress, fee },
-              { tokenA: toTokenAddress, tokenB: routerTokenAddress, fee }
+              { tokenA: firstTokenAddress, tokenB: routerTokenAddress, fee },
+              { tokenA: secondTokenAddress, tokenB: routerTokenAddress, fee }
             ])
             .flat()
         )
         .flat()
     );
     getPoolMethodArguments.push(
-      ...this.feeAmounts.map(fee => ({ tokenA: fromTokenAddress, tokenB: toTokenAddress, fee }))
+      ...this.feeAmounts.map(fee => ({
+        tokenA: firstTokenAddress,
+        tokenB: secondTokenAddress,
+        fee
+      }))
     );
     getPoolMethodArguments = getPoolMethodArguments.filter(
       methodArguments =>
@@ -159,6 +184,13 @@ export class LiquidityPoolsController {
       .concat(this.routerLiquidityPools);
   }
 
+  /**
+   * Returns all routes between given tokens with output amount.
+   * @param fromAmountAbsolute From token amount in Wei.
+   * @param fromTokenAddress From token address.
+   * @param toTokenAddress To token address.
+   * @param routeMaxTransitPools Max amount of transit pools.
+   */
   public async getAllRoutes(
     fromAmountAbsolute: string,
     fromTokenAddress: string,
@@ -198,6 +230,14 @@ export class LiquidityPoolsController {
       });
   }
 
+  /**
+   * Returns swap methods' names and arguments, built with passed pools' addresses, to use it in Quoter contract.
+   * @param options
+   * @param path
+   * @param lastTokenAddress
+   * @param maxTransitPools
+   * @private
+   */
   private getQuoterMethodsData(
     options: RecGraphVisitorOptions,
     path: LiquidityPool[],

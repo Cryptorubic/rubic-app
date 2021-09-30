@@ -45,6 +45,9 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
 import { subtractPercent } from 'src/app/shared/utils/utils';
 
+/**
+ * Shows whether Eth is used as from or to token.
+ */
 interface IsEthFromOrTo {
   from: boolean;
   to: boolean;
@@ -56,6 +59,9 @@ const RUBIC_OPTIMIZATION_DISABLED = true;
   providedIn: 'root'
 })
 export class UniSwapV3Service implements ItProvider {
+  /**
+   * Amount by which estimated gas should be increased (1.2 = 120%).
+   */
   private readonly gasMargin: number;
 
   private readonly blockchain: BLOCKCHAIN_NAME;
@@ -80,7 +86,7 @@ export class UniSwapV3Service implements ItProvider {
     private readonly tokensService: TokensService,
     private readonly gasService: GasService
   ) {
-    this.gasMargin = 1.2; // 120%
+    this.gasMargin = 1.2;
 
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
     this.web3Public = this.web3PublicService[this.blockchain];
@@ -189,6 +195,11 @@ export class UniSwapV3Service implements ItProvider {
     };
   }
 
+  /**
+   * Returns passed tokens with updated addresses to use in contracts.
+   * @param fromToken From token.
+   * @param toToken To token.
+   */
   private getWrappedTokens(
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken
@@ -215,6 +226,15 @@ export class UniSwapV3Service implements ItProvider {
     };
   }
 
+  /**
+   * Returns most profitable route and possibly estimated gas, if {@param shouldCalculateGas} flag is true.
+   * @param fromAmountAbsolute From amount in Wei.
+   * @param fromTokenAddress From token address.
+   * @param toToken To token address.
+   * @param isEth Flags, showing if Eth was used as one of tokens.
+   * @param shouldCalculateGas Flag whether gas should be estimated or not.
+   * @param gasPriceInUsd Gas price in usd.
+   */
   private async getToAmountAndPath(
     fromAmountAbsolute: string,
     fromTokenAddress: string,
@@ -310,6 +330,14 @@ export class UniSwapV3Service implements ItProvider {
     };
   }
 
+  /**
+   * Returns encoded data of estimated gas function and default estimated gas.
+   * @param route Route to use in a swap.
+   * @param fromAmountAbsolute From amount in Wei.
+   * @param toTokenAddress To token address.
+   * @param isEth Flags, showing if Eth was used as one of tokens.
+   * @param deadline Deadline of swap in seconds.
+   */
   private getEstimatedGasMethodSignature(
     route: UniswapV3Route,
     fromAmountAbsolute: string,
@@ -339,6 +367,14 @@ export class UniSwapV3Service implements ItProvider {
     };
   }
 
+  /**
+   * Returns swap method's name and argument to use in Swap contract.
+   * @param route Route to use in a swap.
+   * @param fromAmountAbsolute From amount in Wei.
+   * @param toTokenAddress To token address.
+   * @param walletAddress Wallet address, making swap.
+   * @param deadline Deadline of swap in seconds.
+   */
   private getSwapRouterExactInputMethodParams(
     route: UniswapV3Route,
     fromAmountAbsolute: string,
@@ -397,6 +433,14 @@ export class UniSwapV3Service implements ItProvider {
     return this.swapTokens(trade, fromAmountAbsolute, toTokenWrapped.address, isEth, options);
   }
 
+  /**
+   * Executes swap method in Swap contract.
+   * @param trade Uniswap v3 trade.
+   * @param fromAmountAbsolute From amount in Wei.
+   * @param toTokenAddress To token address.
+   * @param isEth Flags, showing if Eth was used as one of tokens.
+   * @param options Instant trade options.
+   */
   private async swapTokens(
     trade: UniswapV3Trade,
     fromAmountAbsolute: string,

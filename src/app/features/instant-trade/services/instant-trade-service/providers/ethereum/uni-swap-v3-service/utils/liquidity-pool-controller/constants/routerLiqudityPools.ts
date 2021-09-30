@@ -1,6 +1,9 @@
 import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/models/LiquidityPool';
 import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
 
+/**
+ * Most popular tokens in uni v3 to use in a route.
+ */
 export const routerTokensNetMode: Record<NetMode, Record<string, string>> = {
   mainnet: {
     WETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -19,6 +22,9 @@ export const routerTokensNetMode: Record<NetMode, Record<string, string>> = {
 const mainnetRouterTokens = routerTokensNetMode.mainnet;
 const testnetRouterTokens = routerTokensNetMode.testnet;
 
+/**
+ * Most popular liquidity pools in uni v3 to use in a route.
+ */
 export const routerLiquidityPoolsWithMode: Record<NetMode, LiquidityPool[]> = {
   mainnet: [
     new LiquidityPool(

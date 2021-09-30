@@ -98,6 +98,9 @@ export class ZrxService implements ItProvider {
     });
   }
 
+  /**
+   * Updates zrx data, which depends on selected blockchain.
+   */
   private setZrxParams() {
     const { fromBlockchain } = this.swapFormService.inputValue;
     this.web3Public = this.web3PublicService[fromBlockchain];
@@ -220,6 +223,10 @@ export class ZrxService implements ItProvider {
     );
   }
 
+  /**
+   * Fetches zrx data from their api.
+   * @param params Zrx params.
+   */
   private fetchTrade(params: ZrxCalculateTradeParams): Promise<ZrxApiResponse> {
     return this.httpService
       .get<ZrxApiResponse>('swap/v1/quote', params, this.apiAddress)
