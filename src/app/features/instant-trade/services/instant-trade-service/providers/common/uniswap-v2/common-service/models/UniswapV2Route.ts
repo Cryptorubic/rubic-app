@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-export interface UniswapRoute {
+export interface UniswapV2Route {
   path: string[];
   outputAbsoluteAmount: BigNumber;
 }

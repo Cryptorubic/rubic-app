@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
 import { RpcResponse } from 'src/app/core/services/blockchain/types/RpcResponse';
 import { Cacheable } from 'ts-cacheable';
+import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
 import MULTICALL_ABI from '../constants/multicall-abi';
 import { Call } from '../types/call';
@@ -358,7 +359,7 @@ export class Web3Public {
   }
 
   /**
-   * gets information about token through ERC-20 token contract
+   * Gets information about token through ERC-20 token contract.
    * @param tokenAddress address of the smart-contract corresponding to the token
    * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
@@ -366,6 +367,25 @@ export class Web3Public {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
+
+  /**
+   * Encodes a function call using its JSON interface object and given parameters.
+   * @param contractAbi the JSON interface object of a function.
+   * @param methodName method name for encode
+   * @param methodArguments the parameters to encode
+   * @return the ABI encoded function call. Means function signature + parameters
+   */
+  public async encodeFunctionCall(
+    contractAbi: AbiItem[],
+    methodName: string,
+    methodArguments: unknown[]
+  ): Promise<string> {
+    const methodSignature = contractAbi.find(abiItem => abiItem.name === methodName);
+    if (methodSignature === undefined) {
+      throw Error('No such method in abi');
+    }
+    return this.web3.eth.abi.encodeFunctionCall(methodSignature, methodArguments as string[]);
+  }
 
   private getTokenInfoCachingDecorator(): (
     tokenAddress: string
@@ -445,17 +465,15 @@ export class Web3Public {
   }
 
   /**
-   * use multicall to make many calls in the single rpc request
-   * @param contractAddress target contract address
-   * @param contractAbi target contract abi
-   * @param methodName target method name
-   * @param methodCallsArguments list method calls parameters arrays
+   * Uses multicall to make many methods calls in one contract.
+   * @param contractAddress Target contract address.
+   * @param contractAbi Target contract abi.
+   * @param methodsData Methods data, containing methods' names and arguments.
    */
-  public async multicallContractMethod<Output>(
+  public async multicallContractMethods<Output>(
     contractAddress: string,
     contractAbi: AbiItem[],
-    methodName: string,
-    methodCallsArguments: unknown[][]
+    methodsData: MethodData[]
   ): Promise<
     {
       success: boolean;
@@ -463,23 +481,70 @@ export class Web3Public {
     }[]
   > {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
-    const calls: Call[] = methodCallsArguments.map(callArguments => ({
-      callData: contract.methods[methodName](...callArguments).encodeABI(),
+    const calls: Call[] = methodsData.map(({ methodName, methodArguments }) => ({
+      callData: contract.methods[methodName](...methodArguments).encodeABI(),
       target: contractAddress
     }));
 
     const outputs = await this.multicall(calls);
 
-    const methodOutputAbi = contractAbi.find(
-      funcSignature => funcSignature.name === methodName
-    ).outputs;
+    return outputs.map((output, index) => {
+      const methodOutputAbi = contractAbi.find(
+        funcSignature => funcSignature.name === methodsData[index].methodName
+      ).outputs;
+      return {
+        success: output.success,
+        output: output.success
+          ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+          : null
+      };
+    });
+  }
 
-    return outputs.map(output => ({
-      success: output.success,
-      output: output.success
-        ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
-        : null
-    }));
+  /**
+   * Uses multicall to make many methods calls in several contracts.
+   * @param contractAbi Target contract abi.
+   * @param contractsData Contract addresses and methods data, containing methods' names and arguments.
+   */
+  public async multicallContractsMethods<Output>(
+    contractAbi: AbiItem[],
+    contractsData: {
+      contractAddress: string;
+      methodsData: MethodData[];
+    }[]
+  ): Promise<
+    {
+      success: boolean;
+      output: Output;
+    }[][]
+  > {
+    const calls: Call[][] = contractsData.map(({ contractAddress, methodsData }) => {
+      const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+      return methodsData.map(({ methodName, methodArguments }) => ({
+        callData: contract.methods[methodName](...methodArguments).encodeABI(),
+        target: contractAddress
+      }));
+    });
+
+    const outputs = await this.multicall(calls.flat());
+
+    let outputIndex = 0;
+    return contractsData.map(contractData =>
+      contractData.methodsData.map(methodData => {
+        const methodOutputAbi = contractAbi.find(
+          funcSignature => funcSignature.name === methodData.methodName
+        ).outputs;
+        const output = outputs[outputIndex];
+        outputIndex++;
+
+        return {
+          success: output.success,
+          output: output.success
+            ? (this.web3.eth.abi.decodeParameters(methodOutputAbi, output.returnData) as Output)
+            : null
+        };
+      })
+    );
   }
 
   private async multicall(calls: Call[]): Promise<MulticallResponse[]> {
@@ -554,7 +619,9 @@ export class Web3Public {
           from: fromAddress,
           to: contractAddress,
           data,
-          ...(callsData[index].value && { value: `0x${callsData[index].value.toString(16)}` })
+          ...(callsData[index].value && {
+            value: `0x${new BigNumber(callsData[index].value).toString(16)}`
+          })
         }
       }));
 
@@ -595,7 +662,7 @@ export class Web3Public {
   }
 
   /**
-   * send batch request to rpc provider directly
+   * Sends batch request to rpc provider directly.
    * @see {@link https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false|EthereumJSON-RPC}
    * @param rpcCallsData rpc methods and parameters list
    * @returns rpc batch request call result sorted in order of input parameters

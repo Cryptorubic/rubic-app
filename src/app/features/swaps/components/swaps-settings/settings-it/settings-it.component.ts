@@ -25,17 +25,17 @@ export class SettingsItComponent implements OnInit {
   }
 
   private setForm(): void {
-    const form = this.settingsService.settingsForm.controls.INSTANT_TRADE;
+    const form = this.settingsService.instantTradeValue;
     this.instantTradeForm = new FormGroup<ItSettingsForm>({
-      autoSlippageTolerance: new FormControl<boolean>(form.value.autoSlippageTolerance),
-      slippageTolerance: new FormControl<number>(form.value.slippageTolerance),
-      deadline: new FormControl<number>(form.value.deadline),
-      disableMultihops: new FormControl<boolean>(form.value.disableMultihops),
-      rubicOptimisation: new FormControl<boolean>(form.value.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(form.value.autoRefresh)
+      autoSlippageTolerance: new FormControl<boolean>(form.autoSlippageTolerance),
+      slippageTolerance: new FormControl<number>(form.slippageTolerance),
+      deadline: new FormControl<number>(form.deadline),
+      disableMultihops: new FormControl<boolean>(form.disableMultihops),
+      rubicOptimisation: new FormControl<boolean>(form.rubicOptimisation),
+      autoRefresh: new FormControl<boolean>(form.autoRefresh)
     });
-    this.slippageTolerance = form.value.slippageTolerance;
-    this.setFormChanges(form);
+    this.slippageTolerance = form.slippageTolerance;
+    this.setFormChanges(this.settingsService.instantTrade);
   }
 
   private setFormChanges(form: AbstractControl<ItSettingsForm>): void {
