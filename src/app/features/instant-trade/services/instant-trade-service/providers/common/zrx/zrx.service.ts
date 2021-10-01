@@ -75,7 +75,7 @@ export class ZrxService implements ItProvider {
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
   ) {
-    this.gasMargin = 1.2; // 120%
+    this.gasMargin = 1.4;
     this.tradeDataIsUpdated = new BehaviorSubject(false);
 
     this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(() =>
