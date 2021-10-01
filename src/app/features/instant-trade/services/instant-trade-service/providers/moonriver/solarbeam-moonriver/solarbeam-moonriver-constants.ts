@@ -3,7 +3,7 @@ import { UniswapV2Constants } from 'src/app/features/instant-trade/services/inst
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 const sushiSwapSolarBeamContracts: ContractAddressNetMode = {
-  mainnet: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+  mainnet: '0xAA30eF758139ae4a7f798112902Bf6d65612045f',
   // TODO: add  testnet address
   testnet: ''
 };
