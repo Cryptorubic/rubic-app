@@ -111,19 +111,19 @@ export class GasService {
    */
   private fetchEthGas(): Observable<number | null> {
     const requestTimeout = 2000;
-    return this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
+    return this.httpClient.get('https://www.gasnow.org/api/v3/gas/price').pipe(
       timeout(requestTimeout),
-      map((response: { medium: { maxFeePerGas: string } }) =>
-        new BigNumber(response.medium.maxFeePerGas)
+      map((response: { data: { fast: string } }) =>
+        new BigNumber(response.data.fast)
           .dividedBy(10 ** 9)
           .dp(0)
           .toNumber()
       ),
       catchError(() =>
-        this.httpClient.get('https://www.gasnow.org/api/v3/gas/price').pipe(
+        this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
           timeout(requestTimeout),
-          map((response: { data: { fast: string } }) =>
-            new BigNumber(response.data.fast)
+          map((response: { medium: { maxFeePerGas: string } }) =>
+            new BigNumber(response.medium.maxFeePerGas)
               .dividedBy(10 ** 9)
               .dp(0)
               .toNumber()
