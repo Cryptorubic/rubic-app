@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, timer } from 'rxjs';
-import { catchError, map, switchMap, timeout } from 'rxjs/operators';
+import { catchError, filter, first, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 
-interface NetworksGasPrice<T> {
-  [BLOCKCHAIN_NAME.ETHEREUM]: T;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: T;
-  [BLOCKCHAIN_NAME.POLYGON]: T;
-}
+const supportedBlockchains = [
+  BLOCKCHAIN_NAME.ETHEREUM,
+  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  BLOCKCHAIN_NAME.POLYGON
+] as const;
+
+type SupportedBlockchain = typeof supportedBlockchains[number];
+
+type NetworksGasPrice<T> = Record<SupportedBlockchain, T>;
 
 @Injectable({
   providedIn: 'root'
@@ -22,37 +26,71 @@ export class GasService {
   private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<number | null>>;
 
   /**
-   * Current gas price subject.
+   * Gas price in Gwei subject.
    */
-  private readonly currentNetworkGasPrice$: BehaviorSubject<number>;
+  private readonly networkGasPrice$: NetworksGasPrice<BehaviorSubject<number | null>>;
 
   /**
    * Gas price update interval in seconds.
    */
   private readonly requestInterval: number;
 
-  /**
-   * Gas price for current network.
-   */
-  public get gasPrice(): Observable<number> {
-    return this.currentNetworkGasPrice$.asObservable();
+  private static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedBlockchain {
+    return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
   constructor(private readonly httpClient: HttpClient) {
     this.requestInterval = 15_000;
-    this.currentNetworkGasPrice$ = new BehaviorSubject<number>(null);
+
+    this.networkGasPrice$ = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null)
+    };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
       [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this)
     };
-    this.fetchGas();
+
+    this.setIntervalOnGasPriceRefreshing();
   }
 
   /**
-   * Fetches gas in current network.
+   * Gas price in Gwei for selected blockchain as observable.
+   * @param blockchain Blockchain to get gas price from.
    */
-  public fetchGas(): void {
+  public getGasPrice$(blockchain: BLOCKCHAIN_NAME): Observable<number | null> {
+    if (!GasService.isSupportedBlockchain(blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+    return this.networkGasPrice$[blockchain].asObservable();
+  }
+
+  /**
+   * Gas price in Eth units for selected blockchain.
+   * @param blockchain Blockchain to get gas price from.
+   */
+  public async getGasPriceInEthUnits(blockchain: BLOCKCHAIN_NAME): Promise<BigNumber> {
+    if (!GasService.isSupportedBlockchain(blockchain)) {
+      throw Error('Not supported blockchain');
+    }
+    return new BigNumber(
+      await this.networkGasPrice$[blockchain]
+        .pipe(
+          filter(value => !!value),
+          first()
+        )
+        .toPromise()
+    ).dividedBy(10 ** 9);
+  }
+
+  /**
+   * Updates gas price in interval.
+   */
+  private setIntervalOnGasPriceRefreshing(): void {
     const timer$ = timer(0, this.requestInterval);
     timer$
       .pipe(
@@ -60,9 +98,9 @@ export class GasService {
           return this.gasPriceFunctions[BLOCKCHAIN_NAME.ETHEREUM]();
         })
       )
-      .subscribe((gasPrice: number | null) => {
-        if (gasPrice) {
-          this.currentNetworkGasPrice$.next(gasPrice);
+      .subscribe((ethGasPrice: number | null) => {
+        if (ethGasPrice) {
+          this.networkGasPrice$[BLOCKCHAIN_NAME.ETHEREUM].next(ethGasPrice);
         }
       });
   }
@@ -73,19 +111,19 @@ export class GasService {
    */
   private fetchEthGas(): Observable<number | null> {
     const requestTimeout = 2000;
-    return this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
+    return this.httpClient.get('https://www.gasnow.org/api/v3/gas/price').pipe(
       timeout(requestTimeout),
-      map((response: { medium: { maxFeePerGas: string } }) =>
-        new BigNumber(response.medium.maxFeePerGas)
+      map((response: { data: { fast: string } }) =>
+        new BigNumber(response.data.fast)
           .dividedBy(10 ** 9)
           .dp(0)
           .toNumber()
       ),
       catchError(() =>
-        this.httpClient.get('https://www.gasnow.org/api/v3/gas/price').pipe(
+        this.httpClient.get('https://gas-price-api.1inch.io/v1.2/1').pipe(
           timeout(requestTimeout),
-          map((response: { data: { fast: string } }) =>
-            new BigNumber(response.data.fast)
+          map((response: { medium: { maxFeePerGas: string } }) =>
+            new BigNumber(response.medium.maxFeePerGas)
               .dividedBy(10 ** 9)
               .dp(0)
               .toNumber()

@@ -164,7 +164,7 @@ export class Web3PrivateService {
       });
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
-      console.error(`Tokens transfer error. ${err}`);
+      console.error('Send transaction error', err);
       throw Web3PrivateService.parseError(err);
     }
   }
@@ -205,7 +205,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
-          console.error(`Tokens transfer error. ${err}`);
+          console.error('Send transaction error', err);
           reject(Web3PrivateService.parseError(err as unknown as Web3Error));
         });
     });

@@ -21,7 +21,7 @@ import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-b
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 
@@ -73,9 +73,12 @@ export class MyTradesComponent implements OnInit {
         this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
 
         if (this.walletAddress) {
-          this.myTradesService.updateTableTrades().subscribe(trades => {
-            this.updateTableData(trades);
-          });
+          this.myTradesService
+            .updateTableTrades()
+            .pipe(first())
+            .subscribe(trades => {
+              this.updateTableData(trades);
+            });
         } else {
           this.tableData$.next([]);
           this.loading = false;
@@ -113,7 +116,10 @@ export class MyTradesComponent implements OnInit {
   public refreshTable(): void {
     this.loading = true;
     this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-    this.myTradesService.updateTableTrades().subscribe(trades => this.updateTableData(trades));
+    this.myTradesService
+      .updateTableTrades()
+      .pipe(first())
+      .subscribe(trades => this.updateTableData(trades));
   }
 
   public showConnectWalletModal(): void {

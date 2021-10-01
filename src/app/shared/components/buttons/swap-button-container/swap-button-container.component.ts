@@ -28,8 +28,8 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
+import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
-import { HeaderStore } from '../../../../core/header/services/header.store';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
