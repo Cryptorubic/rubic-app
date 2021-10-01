@@ -29,6 +29,7 @@ import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-mo
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from 'src/polyfills';
 
 @Component({
   selector: 'app-crypto-tap-form',
@@ -85,7 +86,7 @@ export class CryptoTapFormComponent implements OnInit {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   ngOnInit(): void {
@@ -281,6 +282,17 @@ export class CryptoTapFormComponent implements OnInit {
         autoClose: false
       }
     );
+
+    this.window.dataLayer?.push({
+      event: 'cryptoTapTransactionSigned',
+      ecategory: ' transaction',
+      eaction: 'ok',
+      elabel: '',
+      evalue: '',
+      transaction: true,
+      interactionType: false
+    });
+
     if (this.window.location.pathname === '/crypto-tap') {
       this.dialogService
         .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {

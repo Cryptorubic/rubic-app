@@ -29,6 +29,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from 'src/polyfills';
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +75,7 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.setBlockchainsProviders();
   }
@@ -154,6 +155,18 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
+
+          // Inform gtm that tx was signed
+          this.window.dataLayer?.push({
+            event: 'transactionSigned',
+            ecategory: ' transaction',
+            eaction: 'ok',
+            elabel: '',
+            evalue: '',
+            transaction: true,
+            interactionType: false
+          });
+
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
         }

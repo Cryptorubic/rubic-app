@@ -63,12 +63,14 @@ import Process = NodeJS.Process; // Included with Angular CLI.
  * APPLICATION IMPORTS
  */
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-interface RubicWindow extends Window {
+export interface RubicWindow extends Window {
   global?: unknown;
   process?: Process;
   Buffer?: Buffer;
+  dataLayer?: any[];
 }
 
 (window as RubicWindow).global = window;
+(window as RubicWindow).dataLayer = (window as any).dataLayer;
 (window as RubicWindow).process = window.process || require('process');
 (window as RubicWindow).Buffer = (window as any).Buffer || require('buffer').Buffer;
