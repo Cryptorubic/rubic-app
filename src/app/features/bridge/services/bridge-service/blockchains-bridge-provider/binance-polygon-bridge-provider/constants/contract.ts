@@ -1,6 +1,5 @@
-// @ts-nocheck
-
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { AbiItem } from 'web3-utils';
 
 export const EVO_ADDRESSES = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '0x62f68F767Ac07BE54512dBb5b16a8075fF7E305b',
@@ -497,4 +496,4 @@ export const EVO_ABI = [
     type: 'function'
   },
   { stateMutability: 'payable', type: 'receive' }
-];
+] as AbiItem[];

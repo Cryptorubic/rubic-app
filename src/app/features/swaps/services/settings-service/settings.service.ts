@@ -9,7 +9,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
   slippageTolerance: number;
-  deadline: number;
+  deadline: number; // in minutes
   disableMultihops: boolean;
   rubicOptimisation: boolean;
   autoRefresh: boolean;

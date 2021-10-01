@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-gas-indicator',
@@ -15,6 +16,6 @@ export class GasIndicatorComponent {
   public gasPrice$: Observable<number>;
 
   constructor(private readonly gasService: GasService) {
-    this.gasPrice$ = this.gasService.gasPrice;
+    this.gasPrice$ = this.gasService.getGasPrice$(BLOCKCHAIN_NAME.ETHEREUM);
   }
 }

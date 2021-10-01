@@ -136,26 +136,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  constructor(
-    public readonly swapFormService: SwapFormService,
-    private readonly instantTradeService: InstantTradeService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly errorService: ErrorsService,
-    private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly tokensService: TokensService,
-    private readonly settingsService: SettingsService,
-    private readonly counterNotificationsService: CounterNotificationsService,
-    iframeService: IframeService,
-    private readonly destroy$: TuiDestroyService
-  ) {
-    this.isIframe$ = iframeService.isIframe$;
-    this.onCalculateTrade$ = new Subject<'normal' | 'hidden'>();
-    this.hiddenDataAmounts$ = new BehaviorSubject<
-      { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
-    >([]);
-  }
-
   /**
    * Returns the most profitable provider based on usd$ price.
    * @param tradeData Providers' trade data.
@@ -191,6 +171,26 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
 
     return providerIndex;
+  }
+
+  constructor(
+    public readonly swapFormService: SwapFormService,
+    private readonly instantTradeService: InstantTradeService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly errorService: ErrorsService,
+    private readonly authService: AuthService,
+    private readonly web3PublicService: Web3PublicService,
+    private readonly tokensService: TokensService,
+    private readonly settingsService: SettingsService,
+    private readonly counterNotificationsService: CounterNotificationsService,
+    iframeService: IframeService,
+    private readonly destroy$: TuiDestroyService
+  ) {
+    this.isIframe$ = iframeService.isIframe$;
+    this.onCalculateTrade$ = new Subject<'normal' | 'hidden'>();
+    this.hiddenDataAmounts$ = new BehaviorSubject<
+      { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+    >([]);
   }
 
   public ngOnInit(): void {
@@ -322,10 +322,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         });
       }
     }
+
     this.settingsForm = form;
 
     if (needRecalculation) {
-      this.conditionalCalculate();
+      this.conditionalCalculate('normal');
     }
   }
 
@@ -380,7 +381,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             provider => provider.tradeProviderInfo.value
           );
           const approveDataObservable = this.authService.user?.address
-            ? this.instantTradeService.getApprove(providersNames)
+            ? this.instantTradeService.getAllowance(providersNames)
             : of(new Array(this.providerControllers.length).fill(null));
           const tradeDataObservable = from(
             this.instantTradeService.calculateTrades(providersNames)
