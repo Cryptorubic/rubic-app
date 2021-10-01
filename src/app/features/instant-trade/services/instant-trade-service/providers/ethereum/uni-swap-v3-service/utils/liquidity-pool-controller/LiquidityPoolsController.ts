@@ -38,6 +38,8 @@ export class LiquidityPoolsController {
 
   /**
    * Converts uni v3 route to encoded bytes string to pass it to contract.
+   * Structure of encoded string: '0x${tokenAddress_0}${toHex(fee_0)}${tokenAddress_1}${toHex(fee_1)}...${tokenAddress_n}.
+   * toHex(fee_i) must be of length 6, so leading zeroes are added.
    * @param pools Liquidity pools, included in route.
    * @param initialTokenAddress From token address.
    * @return string Encoded string.
