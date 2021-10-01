@@ -3,4 +3,5 @@ export interface ZrxCalculateTradeParams {
   buyToken: string;
   sellAmount: string;
   slippagePercentage: string;
+  affiliateAddress?: string;
 }

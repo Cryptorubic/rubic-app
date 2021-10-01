@@ -32,6 +32,9 @@ import {
 import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { environment } from 'src/environments/environment';
+
+const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 
 @Injectable({
   providedIn: 'root'
@@ -167,6 +170,9 @@ export class ZrxService implements ItProvider {
       sellAmount: Web3Public.toWei(fromAmount, fromToken.decimals),
       slippagePercentage: this.settings.slippageTolerance.toString()
     };
+    if (AFFILIATE_ADDRESS) {
+      params.affiliateAddress = AFFILIATE_ADDRESS;
+    }
     this.currentTradeData = await this.fetchTrade(params);
     this.tradeDataIsUpdated.next(true);
 
