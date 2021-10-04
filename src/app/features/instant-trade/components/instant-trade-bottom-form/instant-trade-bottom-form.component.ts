@@ -129,10 +129,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       !this.providersOrderCache?.length ||
       this.providerControllers.some(item => item.isBestRate)
     ) {
-      this.providersOrderCache = [...this.providerControllers]
-        .sort(item => (item.isBestRate ? -1 : 1))
-        .sort(item => (item.error ? 1 : -1))
-        .map(item => item.tradeProviderInfo.value);
+      const bestProviders: INSTANT_TRADES_PROVIDER[] = [];
+      const errorProviders: INSTANT_TRADES_PROVIDER[] = [];
+      const restProviders: INSTANT_TRADES_PROVIDER[] = [];
+
+      this.providerControllers.forEach(el => {
+        if (el.isBestRate) {
+          bestProviders.push(el.tradeProviderInfo.value);
+        } else if (el.error) {
+          errorProviders.push(el.tradeProviderInfo.value);
+        } else {
+          restProviders.push(el.tradeProviderInfo.value);
+        }
+      });
+
+      this.providersOrderCache = [...bestProviders, ...restProviders, ...errorProviders];
     }
     return this.providersOrderCache.map(providerName =>
       this.providerControllers.find(provider => provider.tradeProviderInfo.value === providerName)
