@@ -188,7 +188,8 @@ export class InstantTradeService {
         .catch(_err => {});
     } catch (err) {
       this.modalShowing?.unsubscribe();
-      if (transactionHash) {
+
+      if (transactionHash && this.isTransactionCancelled(err)) {
         this.updateTrade(transactionHash, false);
       }
 
@@ -206,6 +207,16 @@ export class InstantTradeService {
         )
       )
       .subscribe();
+  }
+
+  /**
+   * Checks if transaction is `cancelled` or `pending`.
+   * @param err Error thrown during creating transaction.
+   */
+  private isTransactionCancelled(err: Error): boolean {
+    return !err.message.includes(
+      'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+    );
   }
 
   /**
