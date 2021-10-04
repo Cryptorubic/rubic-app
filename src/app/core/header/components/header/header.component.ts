@@ -96,7 +96,7 @@ export class HeaderComponent implements AfterViewInit {
       this.window.onscroll = () => {
         const scrolled = this.window.pageYOffset || this.document.documentElement.scrollTop;
         this.pageScrolled = scrolled > scrolledHeight;
-        this.setupNotificationPosition();
+        this.setNotificationPosition();
       };
     }
     this.countNotifications$ = this.counterNotificationsService.unread$;
@@ -111,9 +111,9 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   /**
-   * Setups notification position based on window scroll and width.
+   * Set notification position based on window scroll and width.
    */
-  private setupNotificationPosition(): void {
+  private setNotificationPosition(): void {
     const offset = 90;
     const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
     this.window.document.documentElement.style.setProperty('--scroll-size', pixelOffset);

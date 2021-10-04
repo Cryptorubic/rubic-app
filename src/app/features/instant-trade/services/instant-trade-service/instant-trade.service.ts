@@ -77,6 +77,7 @@ export class InstantTradeService {
     private readonly successTxModalService: SuccessTxModalService,
     @Inject(WINDOW) private readonly window: Window
   ) {
+    this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
   }
 

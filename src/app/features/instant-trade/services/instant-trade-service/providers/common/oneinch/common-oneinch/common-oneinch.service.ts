@@ -228,7 +228,7 @@ export class CommonOneinchService {
       }
 
       const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
-      if (!allowance) {
+      if (new BigNumber(amountAbsolute).gt(allowance)) {
         throw new Error('User have no allowance');
       }
 

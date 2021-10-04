@@ -11,7 +11,7 @@ export class Queue<T> {
    * Push value to the store.
    * @param value Value to insert in the store.
    */
-  public push(value: T) {
+  public push(value: T): void {
     this.store.push(value);
   }
 

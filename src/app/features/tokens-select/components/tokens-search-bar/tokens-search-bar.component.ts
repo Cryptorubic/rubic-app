@@ -10,7 +10,6 @@ import {
   Renderer2
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
@@ -24,17 +23,12 @@ export class TokensSearchBarComponent implements AfterViewInit {
 
   @Output() queryChange = new EventEmitter<string>();
 
-  private openCount: number;
-
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly viewRef: ViewContainerRef,
     private readonly renderer: Renderer2,
-    @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     @Inject(WINDOW) private readonly window: Window
-  ) {
-    this.openCount = 0;
-  }
+  ) {}
 
   public ngAfterViewInit(): void {
     this.focusOnBar();
