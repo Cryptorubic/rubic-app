@@ -31,8 +31,7 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { SeaDexMoonrRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/seadex-moonriver/seadex-moonriver.service';
-import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver-constants.service';
+import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 
 @Injectable({
@@ -67,7 +66,6 @@ export class InstantTradeService {
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly zrxService: ZrxService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
-    private readonly seaDexMoonriverService: SeaDexMoonrRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -108,7 +106,6 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.MOONRIVER]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapMoonRiverService,
-        [INSTANT_TRADES_PROVIDER.SEADEX]: this.seaDexMoonriverService,
         [INSTANT_TRADES_PROVIDER.SOLARBEAM]: this.solarBeamMoonriverService
       }
     };

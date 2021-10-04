@@ -7,6 +7,5 @@ export enum INSTANT_TRADES_PROVIDER {
   SUSHISWAP = 'sushiswap',
   ZRX = 'zerox',
   SOLARBEAM = 'solarbeam',
-  SEADEX = 'seadex',
   WRAPPED = 'wrapped'
 }

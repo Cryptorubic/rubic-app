@@ -122,13 +122,6 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
         label: 'Solarbeam',
         value: INSTANT_TRADES_PROVIDER.SOLARBEAM
       }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Seadex',
-        value: INSTANT_TRADES_PROVIDER.SEADEX
-      }
     }
   ]
 };

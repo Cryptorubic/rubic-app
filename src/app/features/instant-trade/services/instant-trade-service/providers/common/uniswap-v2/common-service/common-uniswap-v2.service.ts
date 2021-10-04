@@ -15,7 +15,6 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 import { startWith } from 'rxjs/operators';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
-import moonriverAbi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/moonriver-abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
   ItOptions,
@@ -45,7 +44,7 @@ import { subtractPercent } from 'src/app/shared/utils/utils';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
-  private readonly contractAbi: AbiItem[];
+  protected contractAbi: AbiItem[];
 
   private readonly defaultEstimateGas: DefaultEstimatedGas;
 
@@ -55,14 +54,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  private web3Public: Web3Public;
+  protected web3Public: Web3Public;
 
   // Uniswap constants
   private blockchain: BLOCKCHAIN_NAME;
 
   private wethAddress: string;
 
-  private contractAddress: string;
+  protected contractAddress: string;
 
   private routingProviders: string[];
 
@@ -91,9 +90,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     this.gasMargin = 1.2; // 120%
 
     this.setUniswapConstants(uniswapConstants);
-
-    this.contractAbi =
-      this.blockchain === BLOCKCHAIN_NAME.MOONRIVER ? moonriverAbi : defaultUniswapV2Abi;
 
     this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address;
@@ -127,6 +123,18 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         this.routingProviders = uniswapConstants.routingProvidersNetMode.testnet;
       }
     });
+  }
+
+  protected getRoutes(routesMethodArguments: unknown[], methodName: string) {
+    return this.web3Public.multicallContractMethods<{ amounts: string[] }>(
+      this.contractAddress,
+      this.contractAbi,
+      routesMethodArguments.map((methodArguments: string[]) => ({
+        methodName,
+        methodArguments,
+        fee: '0'
+      }))
+    );
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
@@ -435,11 +443,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       if (path.length === mxTransitTokens + 1) {
         const finalPath = path.concat(toTokenAddress);
         routesPaths.push(finalPath);
-        if (this.blockchain === BLOCKCHAIN_NAME.MOONRIVER) {
-          routesMethodArguments.push([amountAbsolute, finalPath, '0']);
-        } else {
-          routesMethodArguments.push([amountAbsolute, finalPath]);
-        }
+        routesMethodArguments.push([amountAbsolute, finalPath]);
         return;
       }
 
@@ -457,15 +461,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const routes: UniswapV2Route[] = [];
-    await this.web3Public
-      .multicallContractMethods<{ amounts: string[] }>(
-        this.contractAddress,
-        this.contractAbi,
-        routesMethodArguments.map(methodArguments => ({
-          methodName: uniswapMethodName,
-          methodArguments
-        }))
-      )
+    await this.getRoutes(routesMethodArguments, uniswapMethodName)
       .then(responses => {
         responses.forEach((response, index) => {
           if (!response.success) {

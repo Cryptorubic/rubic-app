@@ -64,10 +64,6 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
     name: '0x',
     image: `${imageBasePath}zrx.png`
   },
-  [INSTANT_TRADES_PROVIDER.SEADEX]: {
-    name: 'Seadex',
-    image: `${imageBasePath}seadex.png`
-  },
   [INSTANT_TRADES_PROVIDER.SOLARBEAM]: {
     name: 'Solarbeam',
     image: `${imageBasePath}solarbeam.png`
