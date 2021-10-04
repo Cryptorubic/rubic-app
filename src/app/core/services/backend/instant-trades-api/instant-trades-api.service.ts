@@ -59,7 +59,7 @@ export class InstantTradesApiService {
 
   /**
    * Sends request to add trade.
-   * @return instant Trade object.
+   * @return InstantTradesResponseApi Instant trade object.
    */
   public createTrade(
     hash: string,
@@ -90,7 +90,7 @@ export class InstantTradesApiService {
    * Sends request to update trade's status.
    * @param hash Hash of transaction what we want to update.
    * @param success If true status is `completed`, otherwise `cancelled`.
-   * @return instant Trade object.
+   * @return InstantTradesResponseApi Instant trade object.
    */
   public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
     const url = instantTradesApiRoutes.editData;
