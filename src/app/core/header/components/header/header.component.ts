@@ -116,7 +116,7 @@ export class HeaderComponent implements AfterViewInit {
   private setNotificationPosition(): void {
     const offset = 90;
     const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
-    this.window.document.documentElement.style.setProperty('--scroll-size', pixelOffset);
+    this.document.documentElement.style.setProperty('--scroll-size', pixelOffset);
   }
 
   private async loadUser(): Promise<void> {

@@ -173,7 +173,7 @@ export class InstantTradeService {
         );
       }
 
-      this.modalSubscriptions.pop();
+      this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
