@@ -31,6 +31,7 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +74,7 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.setBlockchainsProviders();
   }
@@ -155,6 +156,18 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
+
+          // Inform gtm that tx was signed
+          this.window.dataLayer?.push({
+            event: 'transactionSigned',
+            ecategory: ' transaction',
+            eaction: 'ok',
+            elabel: '',
+            evalue: '',
+            transaction: true,
+            interactionType: false
+          });
+
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
         }
@@ -171,7 +184,7 @@ export class InstantTradeService {
       }
 
       this.modalShowing.unsubscribe();
-      this.updateTrade(transactionHash);
+      this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
         autoClose: 15000
@@ -188,8 +201,9 @@ export class InstantTradeService {
         .catch(_err => {});
     } catch (err) {
       this.modalShowing?.unsubscribe();
-      if (transactionHash) {
-        this.updateTrade(transactionHash);
+
+      if (transactionHash && this.isTransactionCancelled(err)) {
+        this.updateTrade(transactionHash, false);
       }
 
       throw err;
@@ -208,8 +222,23 @@ export class InstantTradeService {
       .subscribe();
   }
 
-  private updateTrade(hash: string) {
-    return this.instantTradesApiService.patchTrade(hash).subscribe({
+  /**
+   * Checks if transaction is `cancelled` or `pending`.
+   * @param err Error thrown during creating transaction.
+   */
+  private isTransactionCancelled(err: Error): boolean {
+    return !err.message.includes(
+      'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+    );
+  }
+
+  /**
+   * Calls api service method to update transaction's status.
+   * @param hash Transaction's hash.
+   * @param success If true status is `completed`, otherwise `cancelled`.
+   */
+  private updateTrade(hash: string, success: boolean) {
+    return this.instantTradesApiService.patchTrade(hash, success).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
   }
