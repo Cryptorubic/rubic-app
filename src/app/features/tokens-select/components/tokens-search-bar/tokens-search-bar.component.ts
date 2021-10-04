@@ -66,7 +66,7 @@ export class TokensSearchBarComponent implements AfterViewInit {
   }
 
   /**
-   * Handle input query change.
+   * Handles input query change.
    * @param model Input string.
    */
   public onQueryChanges(model: string): void {

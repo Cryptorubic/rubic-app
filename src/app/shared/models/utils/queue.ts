@@ -8,7 +8,7 @@ export class Queue<T> {
   private store: T[] = [];
 
   /**
-   * Push value to the store.
+   * Pushes value to the store.
    * @param value Value to insert in the store.
    */
   public push(value: T): void {
@@ -16,7 +16,7 @@ export class Queue<T> {
   }
 
   /**
-   * Pop value from the store.
+   * Popes value from the store.
    */
   public pop(): T | undefined {
     return this.store.shift();

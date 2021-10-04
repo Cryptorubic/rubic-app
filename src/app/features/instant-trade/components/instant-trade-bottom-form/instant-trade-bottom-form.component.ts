@@ -570,7 +570,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Focus some of providers. If user have selected provider, keep old index.
+   * Focuses some of providers. If user have selected provider, keep old index.
    * @param bestProviderIndex Best provider index.
    */
   private selectController(bestProviderIndex: number): void {

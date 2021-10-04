@@ -436,8 +436,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async createTrade(): Promise<void> {
-    this.cdr.detectChanges();
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     const onTransactionHash = () => {
