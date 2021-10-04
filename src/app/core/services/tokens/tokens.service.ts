@@ -93,6 +93,11 @@ export class TokensService {
   private isTestingMode = false;
 
   /**
+   * Amount of test tokens.
+   */
+  private readonly testTokensNumber: number;
+
+  /**
    * Checks if two tokens are equal.
    */
   public static areTokensEqual(
@@ -121,6 +126,8 @@ export class TokensService {
     this.favoriteTokensSubject = new BehaviorSubject(this.fetchFavoriteTokens());
     this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
     this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
+
+    this.testTokensNumber = coingeckoTestTokens.length;
 
     this.setupSubscriptions();
   }
@@ -158,14 +165,6 @@ export class TokensService {
   }
 
   /**
-   * Sets new tokens.
-   * @param tokens Tokens list to set.
-   */
-  public setTokens(tokens: List<TokenAmount>): void {
-    this.tokensSubject.next(tokens);
-  }
-
-  /**
    * Sets default tokens params.
    * @param tokens Tokens list.
    */
@@ -195,7 +194,7 @@ export class TokensService {
 
     const tokensWithBalance = await this.getTokensWithBalance(tokens);
 
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size < 1000)) {
+    if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
       const updatedTokens = tokens.map(token => {
         const currentToken = this.tokens.find(t => TokensService.areTokensEqual(token, t));
         const balance = tokensWithBalance.find(tWithBalance =>
@@ -253,6 +252,7 @@ export class TokensService {
         }
         return null;
       })
+      .filter(t => t !== null)
       .flat();
   }
 
@@ -369,7 +369,7 @@ export class TokensService {
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
-        this.tokensSubject.next(this.tokensSubject.value.concat(tokens));
+        this.tokensSubject.next(this.tokens.concat(tokens));
         callback();
       });
   }

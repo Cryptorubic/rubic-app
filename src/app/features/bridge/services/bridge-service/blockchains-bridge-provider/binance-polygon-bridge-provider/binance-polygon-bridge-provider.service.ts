@@ -223,13 +223,12 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     }
 
     const tokensInfoPromises = blockchains.map(blockchain =>
-      (this.web3PublicService[blockchain] as Web3Public).multicallContractMethod<EvoResponseToken>(
+      (this.web3PublicService[blockchain] as Web3Public).multicallContractMethods<EvoResponseToken>(
         EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
-        EVO_ABI as AbiItem[],
-        'tokens',
+        EVO_ABI,
         [
           ...Array(Math.min(tokensInBlockchains[0].length, tokensInBlockchains[1].length)).keys()
-        ].map(number => [number])
+        ].map(number => ({ methodName: 'tokens', methodArguments: [number] }))
       )
     );
 
@@ -403,11 +402,13 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       const configResponse = (
         await (
           this.web3PublicService[blockchain.name] as Web3Public
-        ).multicallContractMethod<ConfigResponse>(
+        ).multicallContractMethods<ConfigResponse>(
           EVO_ADDRESSES[blockchain.name],
-          EVO_ABI as AbiItem[],
-          'configs',
-          tokenIds.map(id => [id, blockchain.destinationId])
+          EVO_ABI,
+          tokenIds.map(id => ({
+            methodName: 'configs',
+            methodArguments: [id, blockchain.destinationId]
+          }))
         )
       ).map(response => response.output);
 

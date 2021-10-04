@@ -29,6 +29,8 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
+import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
 import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
@@ -37,10 +39,7 @@ import { JoeAvalancheService } from 'src/app/features/instant-trade/services/ins
   providedIn: 'root'
 })
 export class InstantTradeService {
-  private static readonly unsupportedItNetworks: BLOCKCHAIN_NAME[] = [
-    BLOCKCHAIN_NAME.TRON,
-    BLOCKCHAIN_NAME.XDAI
-  ];
+  private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
 
   private blockchainsProviders: Partial<
     Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>
@@ -56,6 +55,7 @@ export class InstantTradeService {
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
     private readonly uniswapV2Service: UniSwapV2Service,
+    private readonly uniswapV3Service: UniSwapV3Service,
     private readonly oneInchPolygonService: OneInchPolService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
@@ -66,6 +66,7 @@ export class InstantTradeService {
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
+    private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
     // Providers end
@@ -73,10 +74,10 @@ export class InstantTradeService {
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
     private readonly web3Public: Web3PublicService,
-    private translateService: TranslateService,
-    private notificationsService: NotificationsService,
+    private readonly translateService: TranslateService,
+    private readonly notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector,
+    @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
     @Inject(WINDOW) private readonly window: Window
   ) {
@@ -87,8 +88,10 @@ export class InstantTradeService {
     this.blockchainsProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchEthService,
-        [INSTANT_TRADES_PROVIDER.UNISWAP]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService
+        [INSTANT_TRADES_PROVIDER.UNISWAP_V2]: this.uniswapV2Service,
+        [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: this.uniswapV3Service,
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
+        [INSTANT_TRADES_PROVIDER.ZRX]: this.zrxService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchBscService,
@@ -222,7 +225,7 @@ export class InstantTradeService {
     });
   }
 
-  public getApprove(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<boolean[]> | never {
+  public getAllowance(providersNames: INSTANT_TRADES_PROVIDER[]): Observable<boolean[]> | never {
     const { fromToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
@@ -230,7 +233,7 @@ export class InstantTradeService {
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
         catchError(err => {
-          console.debug(err);
+          console.debug(err, provider);
           return of(null);
         })
       )

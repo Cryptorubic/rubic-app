@@ -18,7 +18,7 @@
     {
       "img": "AlexandraKorneva.png",
       "name": "Alexandra Korneva",
-      "role": "PR and Marketing",
+      "role": "Founder",
       "links": [
         {
           "icon": "LinkedIn.svg",
@@ -34,6 +34,28 @@
         {
           "icon": "Telegram.svg",
           "url": "https://t.me/Eugene_Korol"
+        }
+      ]
+    },
+    {
+      "img": "KirilRomanov.jpg",
+      "name": "Kirill Romanov",
+      "role": "Chief Operating Officer",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/enjoyit"
+        }
+      ]
+    },
+    {
+      "img": "MoraBrook.jpg",
+      "name": "Mora Brook",
+      "role": "Chief Marketing Officer",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/Mora_Bruk"
         }
       ]
     },

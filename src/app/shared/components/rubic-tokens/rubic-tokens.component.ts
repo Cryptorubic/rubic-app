@@ -16,7 +16,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { Utils } from 'src/app/shared/models/utils/utils';
+import { compareObjects } from 'src/app/shared/utils/utils';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -33,7 +33,7 @@ export class RubicTokensComponent implements OnInit {
   public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
-    const deepEquality = Utils.compareObjects(value, this.tokensSubject.value);
+    const deepEquality = compareObjects(value, this.tokensSubject.value);
     if (!deepEquality) {
       this.tokensSubject.next(value);
     }
