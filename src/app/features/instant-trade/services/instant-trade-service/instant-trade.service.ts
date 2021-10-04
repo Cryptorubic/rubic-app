@@ -31,7 +31,7 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { RubicWindow } from 'src/polyfills';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'

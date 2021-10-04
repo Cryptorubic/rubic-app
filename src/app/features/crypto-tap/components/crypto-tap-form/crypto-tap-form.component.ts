@@ -29,7 +29,7 @@ import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-mo
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
-import { RubicWindow } from 'src/polyfills';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Component({
   selector: 'app-crypto-tap-form',

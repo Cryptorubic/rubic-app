@@ -57,19 +57,13 @@
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js';
-import Process = NodeJS.Process; // Included with Angular CLI.
+import { RubicWindow } from 'src/app/shared/utils/rubic-window'; // Included with Angular CLI.
 
 /** *************************************************************************************************
  * APPLICATION IMPORTS
  */
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-export interface RubicWindow extends Window {
-  global?: unknown;
-  process?: Process;
-  Buffer?: Buffer;
-  dataLayer?: any[];
-}
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 (window as RubicWindow).global = window;
 (window as RubicWindow).dataLayer = (window as any).dataLayer;
 (window as RubicWindow).process = window.process || require('process');
