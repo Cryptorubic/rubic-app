@@ -4,7 +4,6 @@ import {
   Component,
   EventEmitter,
   Inject,
-  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -12,7 +11,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
   distinctUntilChanged,
@@ -86,7 +85,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
-  private hiddenTradeData$: BehaviorSubject<{
+  private readonly hiddenTradeData$: BehaviorSubject<{
     toAmount: BigNumber;
   }>;
 
@@ -147,13 +146,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private errorsService: ErrorsService,
-    public swapFormService: SwapFormService,
-    private settingsService: SettingsService,
-    private cdr: ChangeDetectorRef,
-    private authService: AuthService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
+    public readonly swapFormService: SwapFormService,
+    private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly authService: AuthService,
     private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
