@@ -31,6 +31,7 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +74,7 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.setBlockchainsProviders();
   }
@@ -155,6 +156,18 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
+
+          // Inform gtm that tx was signed
+          this.window.dataLayer?.push({
+            event: 'transactionSigned',
+            ecategory: ' transaction',
+            eaction: 'ok',
+            elabel: '',
+            evalue: '',
+            transaction: true,
+            interactionType: false
+          });
+
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
         }
