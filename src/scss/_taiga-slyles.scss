@@ -71,7 +71,8 @@ tui-notification {
   font-size: $rubic-font-size-01;
 }
 
-tui-notification {
+tui-notification-alert {
+  position: relative;
   top: var(--scroll-size);
 
   transition: 0.2s ease-in-out;
