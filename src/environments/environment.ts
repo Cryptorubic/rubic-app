@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apiBaseUrl: '//dev-api.rubic.exchange/api',
-  crossChainApiBaseUrl: 'https://dev-crosschain.rubic.exchange/api'
+  crossChainApiBaseUrl: 'https://dev-crosschain.rubic.exchange/api',
+  zrxAffiliateAddress: undefined as string
 };
 
 /*

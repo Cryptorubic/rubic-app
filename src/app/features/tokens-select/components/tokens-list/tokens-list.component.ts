@@ -4,8 +4,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  SimpleChanges,
-  OnChanges,
   ViewChild,
   AfterViewInit,
   ChangeDetectorRef
@@ -17,7 +15,6 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { Utils } from 'src/app/shared/models/utils/utils';
 import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
@@ -43,7 +40,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ])
   ]
 })
-export class TokensListComponent implements OnChanges, AfterViewInit {
+export class TokensListComponent implements AfterViewInit {
   /**
    * List type.
    */
@@ -81,6 +78,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   @Input() public set tokens(tokens: AvailableTokenAmount[]) {
     if (tokens) {
       this._tokens = tokens;
+      this.setupHints(this._tokens);
     }
   }
 
@@ -143,16 +141,7 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   }
 
   /**
-   * Lifecycle hook.
-   */
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.tokens) {
-      this.setupHints(changes);
-    }
-  }
-
-  /**
-   * Observe tokens scroll and fetch new if needed.
+   * Observes tokens scroll and fetch new if needed.
    */
   private observeScroll(): void {
     this.scrollSubject
@@ -189,22 +178,16 @@ export class TokensListComponent implements OnChanges, AfterViewInit {
   }
 
   /**
-   * Setup hints.
-   * @param changes Detected changes.
+   * Setups hints.
+   * @param tokens Current {@link tokens} value.
    */
-  private setupHints(changes: SimpleChanges): void {
-    const hasChanges = !Utils.compareObjects(
-      changes.tokens?.currentValue,
-      changes.tokens?.previousValue
-    );
-    if (hasChanges) {
-      const tokensNumber = changes.tokens.currentValue.length;
-      this.hintsShown = Array(tokensNumber).fill(false);
-    }
+  private setupHints(tokens: AvailableTokenAmount[]): void {
+    const tokensNumber = tokens.length;
+    this.hintsShown = Array(tokensNumber).fill(false);
   }
 
   /**
-   * Select token.
+   * Selects token.
    * @param token Selected token.
    */
   public onTokenSelect(token: AvailableTokenAmount): void {

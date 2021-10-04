@@ -68,7 +68,7 @@ export class InstantTradesApiService {
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
     let tradeInfo: InstantTradesPostApi;
-    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH) {
+    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH || provider === INSTANT_TRADES_PROVIDER.ZRX) {
       tradeInfo = {
         hash,
         network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
@@ -78,7 +78,10 @@ export class InstantTradesApiService {
         from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
         to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
       };
-    } else if (provider === INSTANT_TRADES_PROVIDER.WRAPPED) {
+    } else if (
+      provider === INSTANT_TRADES_PROVIDER.WRAPPED ||
+      provider === INSTANT_TRADES_PROVIDER.UNISWAP_V3
+    ) {
       tradeInfo = {
         hash,
         provider,
