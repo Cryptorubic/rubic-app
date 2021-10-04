@@ -11,25 +11,16 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { from, Observable, of } from 'rxjs';
-import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
-import {
-  crossChainSwapContractAddresses,
-  SupportedCrossChainSwapBlockchain,
-  supportedCrossChainSwapBlockchains
-} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import {
-  TransitTokens,
-  transitTokensWithMode
-} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
 import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CROSS_CHAIN_ROUTING_SWAP_METHOD';
 import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
 import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
@@ -38,12 +29,22 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
+import { AbiItem } from 'web3-utils';
+import {
+  SupportedCrossChainSwapBlockchain,
+  supportedCrossChainSwapBlockchains
+} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+import {
+  TransitTokens,
+  transitTokensWithMode
+} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
+import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrossChainRoutingService {
-  private contractAbi = crossChainSwapContractAbi;
+  private readonly contractAbi: AbiItem[];
 
   private contractAddresses: Record<SupportedCrossChainSwapBlockchain, string>;
 
@@ -78,17 +79,18 @@ export class CrossChainRoutingService {
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly useTestingModeService: UseTestingModeService
   ) {
+    this.contractAbi = crossChainSwapContractAbi;
+
     this.setUniswapProviders();
     this.setToBlockchainsInContract();
+    this.contractAddresses = crossChainSwapContractAddresses.mainnet;
+    this.transitTokens = transitTokensWithMode.mainnet;
 
     this.settingsService.crossChainRoutingValueChanges
       .pipe(startWith(this.settingsService.crossChainRoutingValue))
       .subscribe(settings => {
         this.settings = settings;
       });
-
-    this.contractAddresses = crossChainSwapContractAddresses.mainnet;
-    this.transitTokens = transitTokensWithMode.mainnet;
 
     this.initTestingMode();
   }
@@ -348,8 +350,7 @@ export class CrossChainRoutingService {
     }
 
     return this.tokensService.tokens$.pipe(
-      filter(tokens => !!tokens.size),
-      first(),
+      first(tokens => !!tokens.size),
       switchMap(async tokens => {
         const percent = await this.getFeeAmountInPercents();
         const amount = this.currentCrossChainTrade.firstTransitTokenAmount.multipliedBy(
@@ -421,9 +422,11 @@ export class CrossChainRoutingService {
         const trade = this.currentCrossChainTrade;
 
         this.providerConnectorService.checkSettings(trade.fromBlockchain);
-        await this.checkWorking(trade);
-        await this.checkGasPrice(trade.toBlockchain);
-        await this.checkPoolBalance(trade);
+        await Promise.all([
+          this.checkWorking(trade),
+          this.checkGasPrice(trade.toBlockchain),
+          this.checkPoolBalance(trade)
+        ]);
 
         const web3PublicFromBlockchain: Web3Public = this.web3PublicService[trade.fromBlockchain];
         const walletAddress = this.providerConnectorService.address;
@@ -510,7 +513,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Check if contract is alive for now.
+   * Checks if contract is alive.
    * @param trade Cross chain trade.
    */
   private async checkWorking(trade: CrossChainRoutingTrade): Promise<void> {

@@ -1,13 +1,11 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import { SupportedCrossChainSwapBlockchain } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
 
-export type TransitTokens = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: InstantTradeToken;
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: InstantTradeToken;
-  [BLOCKCHAIN_NAME.POLYGON]: InstantTradeToken;
-};
+export type TransitTokens = Record<SupportedCrossChainSwapBlockchain, InstantTradeToken>;
 
-export const transitTokensWithMode: { mainnet: TransitTokens; testnet: TransitTokens } = {
+export const transitTokensWithMode: Record<NetMode, TransitTokens> = {
   mainnet: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {
       address: '0xA4EED63db85311E22dF4473f87CcfC3DaDCFA3E3',

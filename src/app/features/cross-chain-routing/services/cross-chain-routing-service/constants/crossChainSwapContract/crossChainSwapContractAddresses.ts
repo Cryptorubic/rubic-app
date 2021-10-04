@@ -1,13 +1,6 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ContractAddressesNetMode } from 'src/app/shared/models/blockchain/NetMode';
-
-export const supportedCrossChainSwapBlockchains = [
-  BLOCKCHAIN_NAME.ETHEREUM,
-  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  BLOCKCHAIN_NAME.POLYGON
-] as const;
-
-export type SupportedCrossChainSwapBlockchain = typeof supportedCrossChainSwapBlockchains[number];
+import { SupportedCrossChainSwapBlockchain } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 
 export const crossChainSwapContractAddresses: ContractAddressesNetMode<SupportedCrossChainSwapBlockchain> =
   {
