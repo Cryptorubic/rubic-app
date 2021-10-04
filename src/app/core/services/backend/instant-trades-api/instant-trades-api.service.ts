@@ -58,8 +58,8 @@ export class InstantTradesApiService {
   }
 
   /**
-   * send request to server for add trade
-   * @return instant trade object
+   * Sends request to add trade.
+   * @return instant Trade object.
    */
   public createTrade(
     hash: string,
@@ -67,35 +67,15 @@ export class InstantTradesApiService {
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
-    let tradeInfo: InstantTradesPostApi;
-    if (provider === INSTANT_TRADES_PROVIDER.ONEINCH || provider === INSTANT_TRADES_PROVIDER.ZRX) {
-      tradeInfo = {
-        hash,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
-        provider,
-        from_token: trade.from.token.address,
-        to_token: trade.to.token.address,
-        from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
-        to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
-      };
-    } else if (
-      provider === INSTANT_TRADES_PROVIDER.WRAPPED ||
-      provider === INSTANT_TRADES_PROVIDER.UNISWAP_V3
-    ) {
-      tradeInfo = {
-        hash,
-        provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
-        from_token: trade.from.token.address,
-        to_token: trade.to.token.address
-      };
-    } else {
-      tradeInfo = {
-        hash,
-        provider,
-        network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains]
-      };
-    }
+    const tradeInfo: InstantTradesPostApi = {
+      hash,
+      network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
+      provider,
+      from_token: trade.from.token.address,
+      to_token: trade.to.token.address,
+      from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
+      to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
+    };
 
     if (this.isTestingMode) {
       tradeInfo.network = 'ethereum-test';
@@ -107,18 +87,20 @@ export class InstantTradesApiService {
   }
 
   /**
-   * update status of trade
-   * @param hash hash of transaction what we want to update
+   * Sends request to update trade's status.
+   * @param hash Hash of transaction what we want to update.
+   * @param success If true status is `completed`, otherwise `cancelled`.
+   * @return instant Trade object.
    */
-  public patchTrade(hash: string): Observable<InstantTradesResponseApi> {
+  public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
     const url = instantTradesApiRoutes.editData;
-    return this.httpService.patch(url, { hash });
+    return this.httpService.patch(url, { hash, success });
   }
 
   /**
-   * get list of user's instant trades
-   * @param walletAddress wallet address of user
-   * @return list of trades
+   * Sends request to get list of user's instant trades.
+   * @param walletAddress Wallet address of user.
+   * @return list List of trades.
    */
   public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
     return this.httpService
