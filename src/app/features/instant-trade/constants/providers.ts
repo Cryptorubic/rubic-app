@@ -112,21 +112,21 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
     {
       ...defaultState,
       tradeProviderInfo: {
-        label: 'Moonriver',
+        label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
-        label: 'Moonriver',
+        label: 'Solarbeam',
         value: INSTANT_TRADES_PROVIDER.SOLARBEAM
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
-        label: 'Moonriver',
+        label: 'Seadex',
         value: INSTANT_TRADES_PROVIDER.SEADEX
       }
     }

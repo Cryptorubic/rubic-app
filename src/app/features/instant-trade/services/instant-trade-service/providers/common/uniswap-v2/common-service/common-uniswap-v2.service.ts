@@ -429,14 +429,17 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       );
     const initialPath = [fromTokenAddress];
     const routesPaths: string[][] = [];
-    const routesMethodArguments: [string, string[]][] = [];
+    const routesMethodArguments: [string, string[], string?][] = [];
 
     const recGraphVisitor = (path: string[], mxTransitTokens: number): void => {
       if (path.length === mxTransitTokens + 1) {
         const finalPath = path.concat(toTokenAddress);
         routesPaths.push(finalPath);
-        console.log(uniswapMethodName);
-        routesMethodArguments.push([amountAbsolute, finalPath]);
+        if (this.blockchain === BLOCKCHAIN_NAME.MOONRIVER) {
+          routesMethodArguments.push([amountAbsolute, finalPath, '0']);
+        } else {
+          routesMethodArguments.push([amountAbsolute, finalPath]);
+        }
         return;
       }
 
