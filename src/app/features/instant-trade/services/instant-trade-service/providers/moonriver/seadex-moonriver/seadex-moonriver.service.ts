@@ -5,7 +5,7 @@ import { seaDexMoonRiverConstants } from 'src/app/features/instant-trade/service
 @Injectable({
   providedIn: 'root'
 })
-export class SeadexMoonriverService extends CommonUniswapV2Service {
+export class SeaDexMoonrRiverService extends CommonUniswapV2Service {
   constructor() {
     super(seaDexMoonRiverConstants);
   }

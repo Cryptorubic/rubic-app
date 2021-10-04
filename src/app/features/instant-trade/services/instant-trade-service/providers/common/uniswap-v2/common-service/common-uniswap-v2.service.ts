@@ -14,7 +14,8 @@ import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/commonUniswapV2Abi';
+import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
+import moonriverAbi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/moonriver-abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
   ItOptions,
@@ -23,7 +24,7 @@ import {
 import {
   DefaultEstimatedGas,
   defaultEstimatedGas
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/defaultEstimatedGas';
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
 import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
 import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
@@ -85,11 +86,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly gasService = inject(GasService);
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    this.contractAbi = CommonUniswapV2Abi;
+    this.contractAbi = defaultUniswapV2Abi;
     this.defaultEstimateGas = defaultEstimatedGas;
     this.gasMargin = 1.2; // 120%
 
     this.setUniswapConstants(uniswapConstants);
+
+    this.contractAbi =
+      this.blockchain === BLOCKCHAIN_NAME.MOONRIVER ? moonriverAbi : defaultUniswapV2Abi;
 
     this.authService.getCurrentUser().subscribe(user => {
       this.walletAddress = user?.address;
@@ -358,7 +362,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
+        const web3Public: Web3Public = this.web3PublicService[this.blockchain];
+        const estimatedGasLimits = await web3Public.batchEstimatedGas(
           this.contractAbi,
           this.contractAddress,
           this.walletAddress,
@@ -430,6 +435,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       if (path.length === mxTransitTokens + 1) {
         const finalPath = path.concat(toTokenAddress);
         routesPaths.push(finalPath);
+        console.log(uniswapMethodName);
         routesMethodArguments.push([amountAbsolute, finalPath]);
         return;
       }

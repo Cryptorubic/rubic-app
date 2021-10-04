@@ -31,6 +31,9 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { SeaDexMoonrRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/seadex-moonriver/seadex-moonriver.service';
+import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver-constants.service';
+import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +66,9 @@ export class InstantTradeService {
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly zrxService: ZrxService,
+    private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
+    private readonly seaDexMoonriverService: SeaDexMoonrRiverService,
+    private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -99,6 +105,11 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+      },
+      [BLOCKCHAIN_NAME.MOONRIVER]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapMoonRiverService,
+        [INSTANT_TRADES_PROVIDER.SEADEX]: this.seaDexMoonriverService,
+        [INSTANT_TRADES_PROVIDER.SOLARBEAM]: this.solarBeamMoonriverService
       }
     };
   }
@@ -219,6 +230,7 @@ export class InstantTradeService {
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
+
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
         catchError(err => {

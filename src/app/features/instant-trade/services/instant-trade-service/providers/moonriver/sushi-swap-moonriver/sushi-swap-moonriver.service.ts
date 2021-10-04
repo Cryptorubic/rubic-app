@@ -5,7 +5,7 @@ import { sushiSwapMoonRiverConstants } from 'src/app/features/instant-trade/serv
 @Injectable({
   providedIn: 'root'
 })
-export class SushiSwapMoonriverService extends CommonUniswapV2Service {
+export class SushiSwapMoonRiverService extends CommonUniswapV2Service {
   constructor() {
     super(sushiSwapMoonRiverConstants);
   }
