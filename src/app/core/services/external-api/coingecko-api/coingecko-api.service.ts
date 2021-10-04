@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, first, map, skip, timeout } from 'rxjs/operators';
+import { catchError, first, map, skip, tap, timeout } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
@@ -111,7 +111,13 @@ export class CoingeckoApiService {
       .pipe(
         timeout(requestTimeout),
         map((response: { [key: string]: { usd: string } }) => {
-          const price = +response[coingeckoId].usd;
+          return +response[coingeckoId].usd;
+        }),
+        catchError(_err => {
+          console.debug('Coingecko is not alive');
+          return of(undefined);
+        }),
+        tap(price => {
           this.nativeCoinsData = {
             ...this.nativeCoinsData,
             [blockchain]: {
@@ -121,11 +127,6 @@ export class CoingeckoApiService {
             }
           };
           nativeCoinData.price.next(price);
-          return price;
-        }),
-        catchError(_err => {
-          console.debug('Coingecko is not alive');
-          return of(undefined);
         })
       );
   }

@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js';
 
-export const defaultEstimatedGas = {
+export interface DefaultEstimatedGas {
+  tokensToTokens: BigNumber[];
+  tokensToEth: BigNumber[];
+  ethToTokens: BigNumber[];
+}
+
+export const defaultEstimatedGas: DefaultEstimatedGas = {
   tokensToTokens: [
     new BigNumber(120_000),
     new BigNumber(220_000),

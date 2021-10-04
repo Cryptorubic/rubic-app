@@ -32,6 +32,7 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -119,7 +120,8 @@ export class TokensSelectComponent implements OnInit {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     private readonly store: StoreService,
-    @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService
+    @Inject(TuiDestroyService) @Self() private readonly destroy$: TuiDestroyService,
+    private readonly useTestingModeService: UseTestingModeService
   ) {
     this.initiateContextParams(context.data);
     this.favoriteTokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>(null);
@@ -376,11 +378,17 @@ export class TokensSelectComponent implements OnInit {
    * Fetch new page tokens.
    */
   public fetchNewPageTokens(): void {
-    this.tokensListLoading = true;
-    this.tokensService.fetchNetworkTokens(this.blockchain as PAGINATED_BLOCKCHAIN_NAME, 150, () => {
-      this.tokensListLoading = false;
-      this.cdr.detectChanges();
-    });
+    if (!this.useTestingModeService.isTestingMode.getValue()) {
+      this.tokensListLoading = true;
+      this.tokensService.fetchNetworkTokens(
+        this.blockchain as PAGINATED_BLOCKCHAIN_NAME,
+        150,
+        () => {
+          this.tokensListLoading = false;
+          this.cdr.detectChanges();
+        }
+      );
+    }
   }
 
   /**
