@@ -39,6 +39,7 @@ import {
   transitTokensWithMode
 } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,7 @@ export class CrossChainRoutingService {
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
+    private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
@@ -108,7 +110,8 @@ export class CrossChainRoutingService {
     this.uniswapV2Providers = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.uniSwapV2Service,
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.pancakeSwapService,
-      [BLOCKCHAIN_NAME.POLYGON]: this.quickSwapService
+      [BLOCKCHAIN_NAME.POLYGON]: this.quickSwapService,
+      [BLOCKCHAIN_NAME.AVALANCHE]: this.pangolinAvalancheService
     };
   }
 
@@ -116,7 +119,8 @@ export class CrossChainRoutingService {
     this.toBlockchainsInContract = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 2,
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 1,
-      [BLOCKCHAIN_NAME.POLYGON]: 3
+      [BLOCKCHAIN_NAME.POLYGON]: 3,
+      [BLOCKCHAIN_NAME.AVALANCHE]: 4
     };
   }
 
