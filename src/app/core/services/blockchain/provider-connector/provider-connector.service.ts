@@ -215,6 +215,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',
         rpc: 'https://api.harmony.one'
+      },
+      [BLOCKCHAIN_NAME.MOONRIVER]: {
+        name: 'Moonriver',
+        rpc: 'https://rpc.moonriver.moonbeam.network'
       }
     };
     const params = {
