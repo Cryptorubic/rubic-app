@@ -41,6 +41,7 @@ import { UniswapV2Constants } from 'src/app/features/instant-trade/services/inst
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { subtractPercent } from 'src/app/shared/utils/utils';
+import { Multicall } from 'src/app/core/services/blockchain/types/multicall';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
@@ -125,14 +126,19 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     });
   }
 
-  protected getRoutes(routesMethodArguments: unknown[], methodName: string) {
+  /**
+   * Makes multi call method of contract.
+   * @param routesMethodArguments Arguments for calling method of contract.
+   * @param methodName Method of contract.
+   * @param fee Base fee for tx.
+   */
+  protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
     return this.web3Public.multicallContractMethods<{ amounts: string[] }>(
       this.contractAddress,
       this.contractAbi,
       routesMethodArguments.map((methodArguments: string[]) => ({
         methodName,
-        methodArguments,
-        fee: '0'
+        methodArguments
       }))
     );
   }
@@ -437,7 +443,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       );
     const initialPath = [fromTokenAddress];
     const routesPaths: string[][] = [];
-    const routesMethodArguments: [string, string[], string?][] = [];
+    const routesMethodArguments: [string, string[]][] = [];
 
     const recGraphVisitor = (path: string[], mxTransitTokens: number): void => {
       if (path.length === mxTransitTokens + 1) {
