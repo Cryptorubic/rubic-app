@@ -11,7 +11,7 @@ const sushiSwapAvalancheContractAddressNetMode: ContractAddressNetMode = {
 };
 
 const wethAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
+  mainnet: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
   testnet: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c'
 };
 
