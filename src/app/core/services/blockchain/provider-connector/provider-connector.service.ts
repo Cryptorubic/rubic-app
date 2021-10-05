@@ -215,6 +215,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',
         rpc: 'https://api.harmony.one'
+      },
+      [BLOCKCHAIN_NAME.AVALANCHE]: {
+        name: 'Avalanche Mainnet',
+        rpc: 'https://api.avax.network/ext/bc/C/rpc'
       }
     };
     const params = {
