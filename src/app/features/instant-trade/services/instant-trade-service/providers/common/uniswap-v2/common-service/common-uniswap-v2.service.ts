@@ -130,7 +130,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
    * Makes multi call method of contract.
    * @param routesMethodArguments Arguments for calling method of contract.
    * @param methodName Method of contract.
-   * @param fee Base fee for tx.
+   * @return Promise<Multicall[]>
    */
   protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
     return this.web3Public.multicallContractMethods<{ amounts: string[] }>(

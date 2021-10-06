@@ -18,6 +18,7 @@ export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
    * @param routesMethodArguments Arguments for calling method of contract.
    * @param methodName Method of contract.
    * @param fee Base fee for tx.
+   * @return Promise<Multicall[]>
    */
   protected getRoutes(
     routesMethodArguments: unknown[],
