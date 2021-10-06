@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
 import { List } from 'immutable';
-import { defer, from, Observable, of, throwError } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { MaticPOSClient } from '@maticnetwork/maticjs';
-import BigNumber from 'bignumber.js';
-import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { first, tap } from 'rxjs/operators';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -21,9 +16,13 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import networks from '../../../../../../shared/constants/blockchain/networks';
+import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import posRootChainManagerAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAbi';
+import posRootChainManagerAddress from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAddress';
+import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
+import { compareAddresses } from 'src/app/shared/utils/utils';
+import { PCacheable } from 'ts-cacheable';
+import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 interface PolygonGraphToken {
@@ -38,46 +37,31 @@ interface PolygonGraphResponse {
   };
 }
 
+const POLYGON_GRAPH_API_URL =
+  'https://api.thegraph.com/subgraphs/name/maticnetwork/mainnet-root-subgraphs';
+
+const ERC20_TOKEN_TYPE = '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c7ac37c0a345b';
+
 @Injectable()
 export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
-  private readonly polygonGraphApiUrl =
-    'https://api.thegraph.com/subgraphs/name/maticnetwork/mainnet-root-subgraphs';
-
-  private readonly ERC20_TOKEN_TYPE =
-    '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c7ac37c0a345b';
-
   private readonly web3PublicEth: Web3Public;
 
   private readonly web3PublicPolygon: Web3Public;
-
-  private isTestingMode = false;
 
   constructor(
     private readonly httpClient: HttpClient,
     private readonly web3PublicService: Web3PublicService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
-    private readonly useTestingModeService: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService,
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
   ) {
     super();
-
-    this.tokensService.tokens$
-      .pipe(
-        filter(tokens => !!tokens.size),
-        first()
-      )
-      .subscribe(tokenAmounts => {
-        this.getTokensList(tokenAmounts);
-      });
-
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     this.web3PublicPolygon = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
 
-    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      this.isTestingMode = isTestingMode;
+    this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)).subscribe(tokenAmounts => {
+      this.getTokensList(tokenAmounts);
     });
   }
 
@@ -87,7 +71,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         first: 1000,
         where: {
           isPOS: true,
-          tokenType: "${this.ERC20_TOKEN_TYPE}"
+          tokenType: "${ERC20_TOKEN_TYPE}"
         }
       ) {
         rootToken
@@ -97,7 +81,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }`;
 
     this.httpClient
-      .post(this.polygonGraphApiUrl, {
+      .post(POLYGON_GRAPH_API_URL, {
         query
       })
       .subscribe(
@@ -133,12 +117,12 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     const ethAddress = token.rootToken;
     let polygonAddress = token.childToken;
 
-    // Mapping from API for ETH token is wrong
+    // Mapping for ETH native token is corrected
     if (ethAddress === NATIVE_TOKEN_ADDRESS) {
       polygonAddress = '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619';
     }
 
-    // Mapping from API for MATIC token is wrong
+    // Mapping for MATIC native token is incorrect
     if (polygonAddress === NATIVE_TOKEN_ADDRESS) {
       return null;
     }
@@ -146,10 +130,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     try {
       const ethToken = tokenAmounts
         .filter(item => item.blockchain === BLOCKCHAIN_NAME.ETHEREUM)
-        .find(tokenAmount => tokenAmount.address.toLowerCase() === ethAddress.toLowerCase());
+        .find(tokenAmount => compareAddresses(tokenAmount.address, ethAddress));
       const polygonToken = tokenAmounts
         .filter(item => item.blockchain === BLOCKCHAIN_NAME.POLYGON)
-        .find(tokenAmount => tokenAmount.address.toLowerCase() === polygonAddress.toLowerCase());
+        .find(tokenAmount => compareAddresses(tokenAmount.address, polygonAddress));
 
       if (!ethToken || !polygonToken) {
         return null;
@@ -187,7 +171,6 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         toEthFee: 0
       };
     } catch (err) {
-      // tslint:disable-next-line:no-console
       console.debug('Error getting polygon tokens:', err, token.rootToken, token.childToken);
       return null;
     }
@@ -201,26 +184,69 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     return of(0);
   }
 
-  private getMaticPOSClient(fromBlockchain: BLOCKCHAIN_NAME): MaticPOSClient {
-    const ethRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.ETHEREUM).rpcLink;
-    const maticRPC = networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink;
-    const network = 'mainnet';
-    const version = 'v1';
-
-    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      return new MaticPOSClient({
-        network,
-        version,
-        maticProvider: maticRPC,
-        parentProvider: this.providerConnectorService.web3
-      });
+  /**
+   * Gets contract address in Ethereum to send tokens to.
+   * @param tokenAddress Address of token to send.
+   * @return Promise<string> Ethereum contract address.
+   */
+  @PCacheable({
+    maxAge: 15 * 60 * 1000
+  })
+  private async getPredicateAddress(tokenAddress: string): Promise<string> {
+    const tokenType = await this.web3PublicEth.callContractMethod(
+      posRootChainManagerAddress,
+      posRootChainManagerAbi,
+      'tokenToType',
+      { methodArguments: [tokenAddress] }
+    );
+    if (!tokenType) {
+      throw new Error('Invalid Token Type');
     }
-    return new MaticPOSClient({
-      network,
-      version,
-      maticProvider: this.providerConnectorService.web3,
-      parentProvider: ethRPC
-    });
+    return await this.web3PublicEth.callContractMethod(
+      posRootChainManagerAddress,
+      posRootChainManagerAbi,
+      'typeToPredicate',
+      { methodArguments: [tokenType] }
+    );
+  }
+
+  public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
+    if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.POLYGON) {
+      return of(false);
+    }
+
+    const token = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM];
+    if (Web3Public.isNativeAddress(token.address)) {
+      return of(false);
+    }
+
+    return from(
+      (async () => {
+        const predicateAddress = await this.getPredicateAddress(token.address);
+        const walletAddress = this.authService.userAddress;
+        const allowance = await this.web3PublicEth.callContractMethod(
+          token.address,
+          ERC20_TOKEN_ABI,
+          'allowance',
+          {
+            methodArguments: [walletAddress, predicateAddress]
+          }
+        );
+        return bridgeTrade.amount.gt(Web3Public.fromWei(allowance, token.decimals));
+      })()
+    );
+  }
+
+  public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
+    return from(
+      (async () => {
+        const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
+        const predicateAddress = await this.getPredicateAddress(token.address);
+        return this.web3PrivateService.approveTokens(token.address, predicateAddress, 'infinity', {
+          onTransactionHash: bridgeTrade.onTransactionHash
+        });
+      })()
+    );
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
@@ -229,163 +255,70 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
           receipt.transactionHash,
-          this.providerConnectorService.address
+          this.authService.userAddress
         );
-      }),
-      catchError(err => {
-        if (err.code === 4001) {
-          return throwError(new UserRejectError());
-        }
-        return throwError(err);
-      })
-    );
-  }
-
-  public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
-    if (bridgeTrade.fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
-      return of(false);
-    }
-
-    const maticPOSClient = this.getMaticPOSClient(BLOCKCHAIN_NAME.ETHEREUM);
-    const userAddress = this.authService.user.address;
-    const tokenAddress = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].address;
-    const { decimals } = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM];
-    const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
-    if (bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
-      return of(false);
-    }
-    return from(maticPOSClient.getERC20Allowance(userAddress, tokenAddress)).pipe(
-      map(allowance => amountInWei.gt(allowance))
-    );
-  }
-
-  public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
-    const userAddress = this.authService.user.address;
-    const tokenAddress = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain].address;
-
-    return this.needApprove(bridgeTrade).pipe(
-      switchMap(needApprove => {
-        if (!needApprove) {
-          console.error('You should check bridge trade allowance before approve');
-          return throwError(new UndefinedError());
-        }
-        return from(
-          maticPOSClient.approveMaxERC20ForDeposit(tokenAddress, {
-            from: userAddress,
-            onTransactionHash: bridgeTrade.onTransactionHash
-          })
-        ) as Observable<TransactionReceipt>;
       })
     );
   }
 
   private createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    const maticPOSClient = this.getMaticPOSClient(bridgeTrade.fromBlockchain);
-    const userAddress = this.providerConnectorService.address;
+    const walletAddress = this.authService.userAddress;
+    const fromToken = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
+    const amountAbsolute = Web3Public.toWei(bridgeTrade.amount, fromToken.decimals);
 
-    const { token } = bridgeTrade;
-    const tokenAddress = token.tokenByBlockchain[bridgeTrade.fromBlockchain].address;
-    const { decimals } = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
-    const amountInWei = bridgeTrade.amount.multipliedBy(10 ** decimals);
-
-    const onTradeTransactionHashFactory = (status: TRANSACTION_STATUS) => {
-      return async (hash: string) => {
-        if (bridgeTrade.onTransactionHash) {
-          bridgeTrade.onTransactionHash(hash);
-        }
-        await this.bridgeApiService.postPolygonTransaction(
-          bridgeTrade,
-          status,
-          hash,
-          this.providerConnectorService.address
-        );
-      };
+    const onTradeTransactionHash = async (hash: string) => {
+      if (bridgeTrade.onTransactionHash) {
+        bridgeTrade.onTransactionHash(hash);
+      }
+      await this.bridgeApiService.postPolygonTransaction(
+        bridgeTrade,
+        TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS,
+        hash,
+        walletAddress
+      );
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      const onTradeTransactionHashFn = onTradeTransactionHashFactory(
-        TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS
-      );
-      if (token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM].symbol === 'ETH') {
-        return this.depositEther(
-          maticPOSClient,
-          userAddress,
-          amountInWei,
-          onTradeTransactionHashFn
+      if (Web3Public.isNativeAddress(fromToken.address)) {
+        return from(
+          this.web3PrivateService.tryExecuteContractMethod(
+            posRootChainManagerAddress,
+            posRootChainManagerAbi,
+            'depositEtherFor',
+            [walletAddress],
+            {
+              value: amountAbsolute,
+              onTransactionHash: onTradeTransactionHash
+            }
+          )
         );
       }
-      return this.depositERC20(
-        maticPOSClient,
-        userAddress,
-        tokenAddress,
-        amountInWei,
-        bridgeTrade.onTransactionHash,
-        onTradeTransactionHashFn
+
+      return from(
+        this.web3PublicEth.encodeParameter('uint256', amountAbsolute).then(encodedAmount =>
+          this.web3PrivateService.tryExecuteContractMethod(
+            posRootChainManagerAddress,
+            posRootChainManagerAbi,
+            'depositFor',
+            [walletAddress, fromToken.address, encodedAmount],
+            {
+              onTransactionHash: onTradeTransactionHash
+            }
+          )
+        )
       );
     }
 
-    const onTradeTransactionHash = onTradeTransactionHashFactory(
-      TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS
+    return from(
+      this.web3PrivateService.tryExecuteContractMethod(
+        fromToken.address,
+        UChild_ERC20_ABI,
+        'withdraw',
+        [amountAbsolute],
+        {
+          onTransactionHash: onTradeTransactionHash
+        }
+      )
     );
-    return this.burnERC20(
-      maticPOSClient,
-      userAddress,
-      tokenAddress,
-      amountInWei,
-      onTradeTransactionHash
-    );
-  }
-
-  private depositEther(
-    maticPOSClient: MaticPOSClient,
-    userAddress: string,
-    amountInWei: BigNumber,
-    onTradeTransactionHash: (hash: string) => void
-  ): Observable<TransactionReceipt> {
-    return defer(() => {
-      return maticPOSClient.depositEtherForUser(userAddress, amountInWei.toFixed(), {
-        from: userAddress,
-        onTransactionHash: onTradeTransactionHash
-      });
-    });
-  }
-
-  private depositERC20(
-    maticPOSClient: MaticPOSClient,
-    userAddress: string,
-    tokenAddress: string,
-    amountInWei: BigNumber,
-    onApprove: (hash: string) => void,
-    onTradeTransactionHash: (hash: string) => void
-  ): Observable<TransactionReceipt> {
-    return defer(async () => {
-      const allowance = await maticPOSClient.getERC20Allowance(userAddress, tokenAddress);
-      if (amountInWei.gt(allowance)) {
-        await maticPOSClient.approveMaxERC20ForDeposit(tokenAddress, {
-          from: userAddress,
-          onTransactionHash: onApprove
-        });
-      }
-      return maticPOSClient.depositERC20ForUser(tokenAddress, userAddress, amountInWei.toFixed(), {
-        from: userAddress,
-        onTransactionHash: onTradeTransactionHash
-      });
-    });
-  }
-
-  private burnERC20(
-    maticPOSClient: MaticPOSClient,
-    userAddress: string,
-    tokenAddress: string,
-    amountInWei: BigNumber,
-    onTradeTransactionHash: (hash: string) => void
-  ): Observable<TransactionReceipt> {
-    return defer(async () => {
-      return maticPOSClient.burnERC20(tokenAddress, amountInWei.toFixed(), {
-        from: userAddress,
-        onTransactionHash: onTradeTransactionHash
-      });
-    });
   }
 }

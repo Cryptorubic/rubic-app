@@ -324,14 +324,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  public async approveTrade(): Promise<void> {
+  public approveTrade(): void {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
 
     let approveInProgressSubscription$: Subscription;
     const bridgeTradeRequest: BridgeTradeRequest = {
       onTransactionHash: () => {
-        this.cdr.detectChanges();
         approveInProgressSubscription$ = this.notificationsService.show(
           this.translateService.instant('bridgePage.approveProgressMessage'),
           {
@@ -372,7 +371,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  public async createTrade(): Promise<void> {
+  public createTrade(): void {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {

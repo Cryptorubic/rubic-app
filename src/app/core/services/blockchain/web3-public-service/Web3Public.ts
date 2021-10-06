@@ -370,10 +370,10 @@ export class Web3Public {
 
   /**
    * Encodes a function call using its JSON interface object and given parameters.
-   * @param contractAbi the JSON interface object of a function.
-   * @param methodName method name for encode
-   * @param methodArguments the parameters to encode
-   * @return the ABI encoded function call. Means function signature + parameters
+   * @param contractAbi The JSON interface object of a function.
+   * @param methodName Method name to encode.
+   * @param methodArguments Parameters to encode.
+   * @return string An ABI encoded function call. Means function signature + parameters.
    */
   public async encodeFunctionCall(
     contractAbi: AbiItem[],
@@ -385,6 +385,16 @@ export class Web3Public {
       throw Error('No such method in abi');
     }
     return this.web3.eth.abi.encodeFunctionCall(methodSignature, methodArguments as string[]);
+  }
+
+  /**
+   * Encodes passed parameter to solidity type.
+   * @param type Solidity type.
+   * @param parameter Parameter to encode.
+   * @return string Encoded parameter.
+   */
+  public async encodeParameter(type: 'uint256', parameter: unknown): Promise<string> {
+    return this.web3.eth.abi.encodeParameter(type, parameter);
   }
 
   private getTokenInfoCachingDecorator(): (
