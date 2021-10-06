@@ -102,26 +102,26 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
     }
   ],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    },
+    // {
+    //   ...defaultState,
+    //   tradeProviderInfo: {
+    //     label: 'Sushiswap',
+    //     value: INSTANT_TRADES_PROVIDER.SUSHISWAP
+    //   }
+    // },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Pangolin',
         value: INSTANT_TRADES_PROVIDER.PANGOLIN
       }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Joe',
-        value: INSTANT_TRADES_PROVIDER.JOE
-      }
     }
+    // {
+    //   ...defaultState,
+    //   tradeProviderInfo: {
+    //     label: 'Joe',
+    //     value: INSTANT_TRADES_PROVIDER.JOE
+    //   }
+    // }
   ]
 };
