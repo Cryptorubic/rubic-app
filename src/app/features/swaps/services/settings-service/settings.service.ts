@@ -5,6 +5,7 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { AbstractControlOf } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -23,6 +24,7 @@ export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
   slippageTolerance: number;
   autoRefresh: boolean;
+  promoCode: PromoCode | null;
 }
 
 export interface SettingsForm {
@@ -135,7 +137,8 @@ export class SettingsService {
           this.defaultItSettings.autoSlippageTolerance
         ),
         slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
-        autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh)
+        autoRefresh: new FormControl<boolean>(this.defaultCcrSettings.autoRefresh),
+        promoCode: new FormControl<PromoCode | null>(null)
       })
     });
   }

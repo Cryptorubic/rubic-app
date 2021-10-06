@@ -4,6 +4,7 @@ import {
   CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -29,7 +30,8 @@ export class SettingsCcrComponent implements OnInit {
     this.crossChainRoutingForm = new FormGroup<CcrSettingsForm>({
       autoSlippageTolerance: new FormControl<boolean>(formValue.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(formValue.slippageTolerance),
-      autoRefresh: new FormControl<boolean>(formValue.autoRefresh)
+      autoRefresh: new FormControl<boolean>(formValue.autoRefresh),
+      promoCode: new FormControl<PromoCode | null>(null)
     });
     this.slippageTolerance = formValue.slippageTolerance;
     this.setFormChanges();

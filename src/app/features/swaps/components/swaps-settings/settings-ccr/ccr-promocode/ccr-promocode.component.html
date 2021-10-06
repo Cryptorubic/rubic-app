@@ -1,0 +1,11 @@
+<div class="wrapper">
+  <label for="promoCode">{{ 'settings.crossChainRouting.promoCodeTitle' | translate }}</label>
+
+  <tui-input
+    id="promoCode"
+    tuiTextfieldSize="s"
+    [tuiTextfieldLabelOutside]="true"
+    [ngModel]="promoCodeText"
+    (ngModelChange)="onPromoCodeTextChanges($event)"
+  ></tui-input>
+</div>

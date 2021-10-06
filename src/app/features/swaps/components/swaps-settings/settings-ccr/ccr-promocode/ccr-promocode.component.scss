@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+
+
+  label {
+    font-weight: 300;
+    font-size: 16px;
+  }
+
+  ::ng-deep {
+    tui-wrapper[data-appearance='textfield'] {
+
+      width: 120px;
+
+      color: var(--form-bright-text-color);
+
+      border-radius: 100px;
+      box-shadow: none;
+
+      input {
+        padding-right: 10px !important;
+      }
+
+      input,
+      input::placeholder {
+        text-align: left;
+      }
+    }
+
+    input + .content .placeholder {
+      text-align: left;
+    }
+
+    .wrapper {
+      display: flex;
+    }
+
+    .value-decoration {
+      margin-left: auto;
+    }
+  }
+}
