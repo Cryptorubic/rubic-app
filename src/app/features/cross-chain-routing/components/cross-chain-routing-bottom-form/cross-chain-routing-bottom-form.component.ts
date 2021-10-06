@@ -251,8 +251,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
-        debounceTime(200),
         filter(el => el === 'normal'),
+        debounceTime(200),
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
