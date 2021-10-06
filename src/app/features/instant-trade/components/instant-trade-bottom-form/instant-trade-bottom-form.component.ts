@@ -31,7 +31,15 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { distinctUntilChanged, filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  takeUntil
+} from 'rxjs/operators';
 
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
@@ -364,6 +372,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         filter(el => {
           return el === 'normal';
         }),
+        debounceTime(200),
         switchMap(() => {
           this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
