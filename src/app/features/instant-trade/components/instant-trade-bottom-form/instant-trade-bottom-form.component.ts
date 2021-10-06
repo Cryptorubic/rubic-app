@@ -369,9 +369,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
-        filter(el => {
-          return el === 'normal';
-        }),
+        filter(el => el === 'normal'),
         debounceTime(200),
         switchMap(() => {
           this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
