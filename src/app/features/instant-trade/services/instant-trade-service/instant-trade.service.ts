@@ -187,7 +187,7 @@ export class InstantTradeService {
       }
 
       this.modalSubscriptions.pop()?.unsubscribe();
-      this.updateTrade(transactionHash);
+      this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
         autoClose: 15000
@@ -204,8 +204,9 @@ export class InstantTradeService {
         .catch(_err => {});
     } catch (err) {
       this.modalSubscriptions.pop()?.unsubscribe();
-      if (transactionHash) {
-        this.updateTrade(transactionHash);
+
+      if (transactionHash && this.isTransactionCancelled(err)) {
+        this.updateTrade(transactionHash, false);
       }
 
       throw err;
@@ -225,8 +226,23 @@ export class InstantTradeService {
       .subscribe();
   }
 
-  private updateTrade(hash: string) {
-    return this.instantTradesApiService.patchTrade(hash).subscribe({
+  /**
+   * Checks if transaction is `cancelled` or `pending`.
+   * @param err Error thrown during creating transaction.
+   */
+  private isTransactionCancelled(err: Error): boolean {
+    return !err.message.includes(
+      'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
+    );
+  }
+
+  /**
+   * Calls api service method to update transaction's status.
+   * @param hash Transaction's hash.
+   * @param success If true status is `completed`, otherwise `cancelled`.
+   */
+  private updateTrade(hash: string, success: boolean) {
+    return this.instantTradesApiService.patchTrade(hash, success).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
   }
