@@ -100,6 +100,21 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 250,
+    name: BLOCKCHAIN_NAME.FANTOM,
+    scannerUrl: 'https://ftmscan.com',
+    rpcLink: 'https://rpc.ftm.tools',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/fantom.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.FANTOM,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'FTM',
+      symbol: 'FTM',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,
@@ -162,6 +177,21 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'ONE',
       symbol: 'ONE',
+      decimals: 18
+    }
+  },
+  {
+    id: 4002,
+    name: BLOCKCHAIN_NAME.FANTOM_TESTNET,
+    scannerUrl: 'https://testnet.ftmscan.com/',
+    rpcLink: 'https://rpc.testnet.fantom.network',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/fantom.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.FANTOM_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'FTM',
+      symbol: 'FTM',
       decimals: 18
     }
   }

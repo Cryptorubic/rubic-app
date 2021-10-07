@@ -25,5 +25,11 @@ export const HEALTHCHECK = {
     contractAbi: ERC20_ABI,
     method: 'symbol',
     expected: '1USDT'
+  },
+  [BLOCKCHAIN_NAME.FANTOM]: {
+    contractAddress: '0x049d68029688eabf473097a2fc38ef61633a3c7a',
+    contractAbi: ERC20_ABI,
+    method: 'symbol',
+    expected: 'fUSDT'
   }
 };

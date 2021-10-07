@@ -215,6 +215,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',
         rpc: 'https://api.harmony.one'
+      },
+      [BLOCKCHAIN_NAME.FANTOM]: {
+        name: 'Fantom Opera',
+        rpc: 'https://rpc.ftm.tools'
       }
     };
     const params = {
