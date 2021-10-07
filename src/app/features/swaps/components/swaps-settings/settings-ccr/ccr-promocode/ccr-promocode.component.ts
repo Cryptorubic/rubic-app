@@ -18,6 +18,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { debounceTime, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
 
+/**
+ * Crosschain routing promocode input
+ */
 @Component({
   selector: 'app-ccr-promocode',
   templateUrl: './ccr-promocode.component.html',
@@ -26,8 +29,14 @@ import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
   providers: [TuiDestroyService]
 })
 export class CcrPromocodeComponent implements OnInit, OnChanges {
+  /**
+   * Sets promo code object
+   */
   @Input() promoCode: PromoCode | null = null;
 
+  /**
+   * Emits promo code object after text input and validation
+   */
   @Output() promoCodeChange = new EventEmitter<PromoCode | null>();
 
   @ViewChildren('loading,accepted,wrong') iconsTemplates: QueryList<TemplateRef<unknown>>;

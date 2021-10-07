@@ -17,6 +17,11 @@ export class PromoCodeApiService {
 
   constructor(private httpService: HttpService, private authService: AuthService) {}
 
+  /**
+   * Validates text promo code
+   * @param promoCodeText
+   * @returns promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data
+   */
   public validatePromoCode(promoCodeText: string): Observable<PromoCode> {
     /* return this.httpService.get(PromoCodeApiService.apiUrl, {
       walletAddress: this.authService.userAddress,
