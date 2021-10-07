@@ -51,7 +51,10 @@
     </div>
 
     <div class="settings__form-row">
-      <app-ccr-promocode></app-ccr-promocode>
+      <app-ccr-promocode
+        [(promoCode)]="promoCode"
+        (promoCodeChange)="onPromoCodeChanges($event)"
+      ></app-ccr-promocode>
     </div>
   </form>
 </div>

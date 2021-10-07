@@ -10,6 +10,14 @@ export function compareObjects(object1: object, object2: object): boolean {
 }
 
 /**
+ * Copies object.
+ * @param object object to copy.
+ */
+export function copyObject<T>(object: T): T {
+  return JSON.parse(JSON.stringify(object));
+}
+
+/**
  * Compares two addresses case insensitive.
  * @param address0 First address.
  * @param address1 Second address.

@@ -31,6 +31,7 @@ export class PromoCodeApiService {
         promoCodeText === 'TESTPROMO'
           ? ({
               status: 'accepted',
+              text: promoCodeText,
               usesLeft: 112,
               usesLimit: 200,
               validUntil: new Date('11.01.2021')

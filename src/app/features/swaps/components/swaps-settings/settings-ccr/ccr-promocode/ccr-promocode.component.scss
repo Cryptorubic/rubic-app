@@ -1,6 +1,16 @@
+@import 'src/styles';
+
 :host {
   display: block;
   width: 100%;
+}
+
+.hint {
+  height: 15px;
+  margin-right: 10px;
+  margin-left: 6px;
+
+  cursor: pointer;
 }
 
 .wrapper {
@@ -18,6 +28,8 @@
 
   ::ng-deep {
     tui-wrapper[data-appearance='textfield'] {
+
+      --tui-primary: rgba(255, 255, 255, 0.5);
 
       width: 120px;
 
@@ -46,6 +58,24 @@
 
     .value-decoration {
       margin-left: auto;
+    }
+  }
+
+  &[status='accepted'] {
+    ::ng-deep {
+      tui-wrapper[data-appearance='textfield']::after {
+        border-color: $rubic-primary;
+      }
+    }
+  }
+
+  &[status='outdated'],
+  &[status='wrong'],
+  &[status='rejected'] {
+    ::ng-deep {
+      tui-wrapper[data-appearance='textfield']::after {
+        border-color: $rubic-text-error;
+      }
     }
   }
 }

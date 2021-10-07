@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { AbstractControlOf } from '@ngneat/reactive-forms/lib/types';
+import { AbstractControlOf, ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
+import { copyObject } from 'src/app/shared/utils/utils';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -107,7 +108,7 @@ export class SettingsService {
       );
     }
     this.settingsForm.valueChanges.subscribe(form => {
-      this.storeService.setItem('settings', JSON.stringify(form));
+      this.storeService.setItem('settings', this.serializeForm(form));
     });
 
     this.iframeService.widgetIntoViewport$.subscribe(widgetIntoViewport => {
@@ -141,5 +142,16 @@ export class SettingsService {
         promoCode: new FormControl<PromoCode | null>(null)
       })
     });
+  }
+
+  /**
+   * Delete some form properties and serialize it to JSON string
+   * @param form to serialize
+   */
+  private serializeForm(form: ControlsValue<SettingsForm>): string {
+    const formClone = copyObject(form);
+    delete formClone.CROSS_CHAIN_ROUTING.promoCode;
+
+    return JSON.stringify(formClone);
   }
 }

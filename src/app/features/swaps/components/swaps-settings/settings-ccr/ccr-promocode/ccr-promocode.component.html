@@ -1,6 +1,10 @@
-<div class="wrapper">
+<div class="wrapper" [attr.status]="promoCode?.status || ''">
   <label for="promoCode">{{ 'settings.crossChainRouting.promoCodeTitle' | translate }}</label>
-
+  <div
+    class="hint"
+    inlineSVG="/assets/images/icons/hint.svg"
+    [tuiHint]="'settings.crossChainRouting.promoCode' | translate"
+  ></div>
   <tui-input
     id="promoCode"
     tuiTextfieldSize="s"

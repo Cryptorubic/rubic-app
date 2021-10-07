@@ -5,14 +5,14 @@ import {
   Input,
   Output,
   OnInit,
-  OnChanges,
-  SimpleChanges
+  OnChanges
 } from '@angular/core';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 import { PromoCodeApiService } from 'src/app/core/services/backend/promo-code-api/promo-code-api.service';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
 
 @Component({
   selector: 'app-ccr-promocode',
@@ -22,9 +22,9 @@ import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
   providers: [TuiDestroyService]
 })
 export class CcrPromocodeComponent implements OnInit, OnChanges {
-  @Input() ngModel: PromoCode | null = null;
+  @Input() promoCode: PromoCode | null = null;
 
-  @Output() ngModelChange = new EventEmitter<PromoCode | null>();
+  @Output() promoCodeChange = new EventEmitter<PromoCode | null>();
 
   public promoCodeText: string;
 
@@ -39,21 +39,23 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
     this.debouncePromoCodeInput$
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(200),
-        switchMap(promoCodeText => this.promoCodeApiService.validatePromoCode(promoCodeText))
+        debounceTime(400),
+        switchMap(promoCodeText =>
+          promoCodeText ? this.promoCodeApiService.validatePromoCode(promoCodeText) : of(null)
+        )
       )
       .subscribe(promoCode => {
-        this.ngModel = promoCode;
-        this.ngModelChange.emit(promoCode);
+        this.promoCode = promoCode;
+        this.promoCodeChange.emit(promoCode);
       });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: NgChanges<CcrPromocodeComponent>) {
     if (
-      changes.ngModel?.previousValue !== changes.ngModel?.currentValue &&
-      changes.ngModel.currentValue
+      changes.promoCode?.previousValue !== changes.promoCode?.currentValue &&
+      changes.promoCode.currentValue
     ) {
-      this.promoCodeText = changes.ngModel.currentValue?.text || '';
+      this.promoCodeText = changes.promoCode.currentValue?.text || '';
     }
   }
 
