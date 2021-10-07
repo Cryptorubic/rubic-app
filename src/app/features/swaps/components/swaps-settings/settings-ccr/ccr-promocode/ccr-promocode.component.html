@@ -1,4 +1,4 @@
-<div class="wrapper" [attr.status]="promoCode?.status || ''">
+<div class="wrapper" [attr.status]="validationInProcess ? '' : promoCode?.status">
   <label for="promoCode">{{ 'settings.crossChainRouting.promoCodeTitle' | translate }}</label>
   <div
     class="hint"
@@ -9,7 +9,20 @@
     id="promoCode"
     tuiTextfieldSize="s"
     [tuiTextfieldLabelOutside]="true"
+    [tuiTextfieldCustomContent]="iconTemplate"
     [ngModel]="promoCodeText"
     (ngModelChange)="onPromoCodeTextChanges($event)"
   ></tui-input>
+
+  <ng-template #loading>
+    <tui-loader size="xs"></tui-loader>
+  </ng-template>
+
+  <ng-template #accepted>
+    <tui-svg class="success" src="tuiIconCheck"></tui-svg>
+  </ng-template>
+
+  <ng-template #wrong>
+    <tui-svg class="success" src="tuiIconCloseLarge"></tui-svg>
+  </ng-template>
 </div>

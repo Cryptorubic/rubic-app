@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import {
   AcceptedPromoCode,
   PromoCode,
@@ -23,11 +23,8 @@ export class PromoCodeApiService {
       promoCode: promoCodeText
     }); */
 
-    return of({
-      status: 'wrong',
-      text: promoCodeText
-    } as WrongPromoCode).pipe(
-      map(promoCode =>
+    return timer(2000).pipe(
+      map(() =>
         promoCodeText === 'TESTPROMO'
           ? ({
               status: 'accepted',
@@ -36,7 +33,10 @@ export class PromoCodeApiService {
               usesLimit: 200,
               validUntil: new Date('11.01.2021')
             } as AcceptedPromoCode)
-          : promoCode
+          : ({
+              status: 'wrong',
+              text: promoCodeText
+            } as WrongPromoCode)
       )
     );
   }

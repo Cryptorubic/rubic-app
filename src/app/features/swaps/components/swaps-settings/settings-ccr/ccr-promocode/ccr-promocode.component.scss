@@ -39,13 +39,23 @@
       box-shadow: none;
 
       input {
-        padding-right: 10px !important;
+        padding-right: 26px !important;
+
+        + div.content {
+          padding-right: 0;
+        }
       }
 
       input,
       input::placeholder {
         text-align: left;
       }
+    }
+
+    tui-loader {
+      --primary-color: rgba(255, 255, 255, 0.5);
+
+      width: 30px;
     }
 
     input + .content .placeholder {
@@ -59,12 +69,20 @@
     .value-decoration {
       margin-left: auto;
     }
+
+    .custom-content {
+      width: unset;
+    }
   }
 
   &[status='accepted'] {
     ::ng-deep {
       tui-wrapper[data-appearance='textfield']::after {
         border-color: $rubic-primary;
+      }
+
+      tui-svg {
+        color: $rubic-primary;
       }
     }
   }
@@ -75,6 +93,10 @@
     ::ng-deep {
       tui-wrapper[data-appearance='textfield']::after {
         border-color: $rubic-text-error;
+      }
+
+      tui-svg {
+        color: $rubic-text-error;
       }
     }
   }

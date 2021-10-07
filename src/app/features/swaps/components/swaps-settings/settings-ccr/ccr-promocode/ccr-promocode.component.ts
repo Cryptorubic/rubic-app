@@ -5,13 +5,17 @@ import {
   Input,
   Output,
   OnInit,
-  OnChanges
+  OnChanges,
+  TemplateRef,
+  ViewChildren,
+  QueryList,
+  ChangeDetectorRef
 } from '@angular/core';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 import { PromoCodeApiService } from 'src/app/core/services/backend/promo-code-api/promo-code-api.service';
 import { of, Subject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
 
 @Component({
@@ -26,27 +30,56 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
 
   @Output() promoCodeChange = new EventEmitter<PromoCode | null>();
 
+  @ViewChildren('loading,accepted,wrong') iconsTemplates: QueryList<TemplateRef<unknown>>;
+
   public promoCodeText: string;
+
+  public validationInProcess = false;
 
   private debouncePromoCodeInput$ = new Subject<string>();
 
+  public get iconTemplate(): TemplateRef<unknown> | '' {
+    if (!this.iconsTemplates) {
+      return '';
+    }
+
+    if (this.validationInProcess) {
+      return this.iconsTemplates.get(0);
+    }
+
+    if (!this.promoCode?.status) {
+      return '';
+    }
+
+    return this.promoCode.status === 'accepted'
+      ? this.iconsTemplates.get(1)
+      : this.iconsTemplates.get(2);
+  }
+
   constructor(
     private promoCodeApiService: PromoCodeApiService,
-    private destroy$: TuiDestroyService
+    private destroy$: TuiDestroyService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.debouncePromoCodeInput$
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(400),
+        debounceTime(100),
+        tap(() => {
+          this.validationInProcess = true;
+          this.cdr.markForCheck();
+        }),
         switchMap(promoCodeText =>
           promoCodeText ? this.promoCodeApiService.validatePromoCode(promoCodeText) : of(null)
         )
       )
       .subscribe(promoCode => {
+        this.validationInProcess = false;
         this.promoCode = promoCode;
         this.promoCodeChange.emit(promoCode);
+        this.cdr.markForCheck();
       });
   }
 
