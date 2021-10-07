@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   first,
@@ -251,6 +252,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         filter(el => el === 'normal'),
+        debounceTime(200),
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
