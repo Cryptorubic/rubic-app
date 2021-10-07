@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, timer } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
   AcceptedPromoCode,
   PromoCode,
-  WrongPromoCode
+  RejectedPromoCode
 } from 'src/app/features/swaps/models/PromoCode';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -28,7 +28,7 @@ export class PromoCodeApiService {
       promoCode: promoCodeText
     }); */
 
-    return timer(2000).pipe(
+    return of(null).pipe(
       map(() =>
         promoCodeText === 'TESTPROMO'
           ? ({
@@ -39,9 +39,10 @@ export class PromoCodeApiService {
               validUntil: new Date('11.01.2021')
             } as AcceptedPromoCode)
           : ({
-              status: 'wrong',
-              text: promoCodeText
-            } as WrongPromoCode)
+              status: 'rejected',
+              text: promoCodeText,
+              code: 4000
+            } as RejectedPromoCode)
       )
     );
   }

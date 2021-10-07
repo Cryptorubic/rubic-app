@@ -13,25 +13,47 @@
   cursor: pointer;
 }
 
-.wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 12px;
+.promo-code-wrapper {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
 
+    &:not(:last-child) {
+      margin-bottom: 6px;
+    }
+  }
 
   label {
     font-weight: 300;
     font-size: 16px;
   }
 
+  .message {
+    padding: 0 6px;
+
+    line-height: 13px;
+
+    small {
+      font-size: 11px;
+    }
+  }
+
+  tui-input {
+    flex: 1;
+  }
+
   ::ng-deep {
+    tui-primitive-textfield {
+      width: 100%;
+    }
+
     tui-wrapper[data-appearance='textfield'] {
 
       --tui-primary: rgba(255, 255, 255, 0.5);
 
-      width: 120px;
+      min-width: 120px;
 
       color: var(--form-bright-text-color);
 
@@ -76,6 +98,14 @@
   }
 
   &[status='accepted'] {
+    .message {
+      small {
+        display: block;
+
+        color: $rubic-primary;
+      }
+    }
+
     ::ng-deep {
       tui-wrapper[data-appearance='textfield']::after {
         border-color: $rubic-primary;
@@ -90,6 +120,16 @@
   &[status='outdated'],
   &[status='wrong'],
   &[status='rejected'] {
+    .message {
+      width: 100%;
+
+      text-align: right;
+
+      small {
+        color: $rubic-text-error;
+      }
+    }
+
     ::ng-deep {
       tui-wrapper[data-appearance='textfield']::after {
         border-color: $rubic-text-error;
@@ -97,6 +137,20 @@
 
       tui-svg {
         color: $rubic-text-error;
+      }
+    }
+  }
+
+  &[status='rejected'] {
+    .message {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0;
+
+      line-height: 17px;
+
+      .hint {
+        margin-right: 0;
       }
     }
   }

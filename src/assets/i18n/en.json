@@ -508,7 +508,25 @@
       "slippageTitle": "Slippage tolerance",
       "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
       "promoCodeTitle": "Promo Code",
-      "promoCode": "What is promo code?"
+      "promoCodeHint": "Enter the promo code here to have a gas refund for your trade",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "Uses left",
+          "validUntil": "Valid until"
+        },
+        "rejected": {
+          "text": "Your promo code has been rejected",
+          "reason": {
+            "4000": "The promo code has already been used before. You can only use this promo code once."
+          }
+        },
+        "outdated": {
+          "text": "This promo code has expired."
+        },
+        "wrong": {
+          "text": "The promo code is entered incorrectly or it does not exist."
+        }
+      }
     },
     "header": {
       "switchTheme": {
