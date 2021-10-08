@@ -11,6 +11,14 @@
   margin-left: 6px;
 
   cursor: pointer;
+
+  &_error {
+    ::ng-deep {
+      path {
+        fill: $rubic-text-error;
+      }
+    }
+  }
 }
 
 .promo-code-wrapper {
@@ -53,7 +61,7 @@
 
       --tui-primary: rgba(255, 255, 255, 0.5);
 
-      min-width: 120px;
+      min-width: 140px;
 
       color: var(--form-bright-text-color);
 

@@ -13,10 +13,11 @@ import {
 } from '@angular/core';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 import { PromoCodeApiService } from 'src/app/core/services/backend/promo-code-api/promo-code-api.service';
-import { of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { debounceTime, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 /**
  * Crosschain routing promocode input
@@ -45,6 +46,8 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
 
   public validationInProcess = false;
 
+  public isLoggedIn$: Observable<boolean>;
+
   private debouncePromoCodeInput$ = new Subject<string>();
 
   public get iconTemplate(): TemplateRef<unknown> | '' {
@@ -66,10 +69,13 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
   }
 
   constructor(
-    private promoCodeApiService: PromoCodeApiService,
-    private destroy$: TuiDestroyService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private readonly promoCodeApiService: PromoCodeApiService,
+    private readonly destroy$: TuiDestroyService,
+    private readonly cdr: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    this.isLoggedIn$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
+  }
 
   ngOnInit() {
     this.debouncePromoCodeInput$
