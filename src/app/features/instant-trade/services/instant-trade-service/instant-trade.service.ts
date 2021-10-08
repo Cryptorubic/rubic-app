@@ -31,6 +31,9 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
+import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
+import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 
 @Injectable({
@@ -62,8 +65,11 @@ export class InstantTradeService {
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly zrxService: ZrxService,
+    private readonly pangolinAvalancheService: PangolinAvalancheService,
+    private readonly joeAvalancheService: JoeAvalancheService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -100,6 +106,11 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+      },
+      [BLOCKCHAIN_NAME.AVALANCHE]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,
+        [INSTANT_TRADES_PROVIDER.PANGOLIN]: this.pangolinAvalancheService,
+        [INSTANT_TRADES_PROVIDER.JOE]: this.joeAvalancheService
       }
     };
   }
