@@ -6,5 +6,7 @@ export enum INSTANT_TRADES_PROVIDER {
   QUICKSWAP = 'quickswap',
   SUSHISWAP = 'sushiswap',
   ZRX = 'zerox',
+  PANGOLIN = 'pangolin',
+  JOE = 'joe',
   WRAPPED = 'wrapped'
 }

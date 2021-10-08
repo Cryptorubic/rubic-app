@@ -3,159 +3,125 @@ import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/ins
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeProviderController } from 'src/app/features/instant-trade/models/instant-trades-provider-controller';
 
+const defaultState: InstantTradeProviderController = {
+  trade: null,
+  tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+  tradeProviderInfo: null,
+  isBestRate: false,
+  isSelected: false,
+  isCollapsed: false,
+  needApprove: null
+};
+
 export const INSTANT_TRADE_PROVIDERS: Partial<
   Record<BLOCKCHAIN_NAME, InstantTradeProviderController[]>
 > = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Uniswap V3',
         value: INSTANT_TRADES_PROVIDER.UNISWAP_V3
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: '1inch',
         value: INSTANT_TRADES_PROVIDER.ONEINCH
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Uniswap V2',
         value: INSTANT_TRADES_PROVIDER.UNISWAP_V2
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
-    },
-    {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
-      tradeProviderInfo: {
-        label: '0x',
-        value: INSTANT_TRADES_PROVIDER.ZRX
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     }
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: '1inch',
         value: INSTANT_TRADES_PROVIDER.ONEINCH
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Pancakeswap',
         value: INSTANT_TRADES_PROVIDER.PANCAKESWAP
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     }
   ],
   [BLOCKCHAIN_NAME.POLYGON]: [
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: '1inch',
         value: INSTANT_TRADES_PROVIDER.ONEINCH
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: null,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Quickswap',
         value: INSTANT_TRADES_PROVIDER.QUICKSWAP
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     },
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     }
   ],
   [BLOCKCHAIN_NAME.HARMONY]: [
     {
-      trade: null,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
+      ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      },
-      isBestRate: false,
-      isSelected: false,
-      isCollapsed: false,
-      needApprove: null
+      }
     }
+  ],
+  [BLOCKCHAIN_NAME.AVALANCHE]: [
+    // {
+    //   ...defaultState,
+    //   tradeProviderInfo: {
+    //     label: 'Sushiswap',
+    //     value: INSTANT_TRADES_PROVIDER.SUSHISWAP
+    //   }
+    // },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Pangolin',
+        value: INSTANT_TRADES_PROVIDER.PANGOLIN
+      }
+    }
+    // {
+    //   ...defaultState,
+    //   tradeProviderInfo: {
+    //     label: 'Joe',
+    //     value: INSTANT_TRADES_PROVIDER.JOE
+    //   }
+    // }
   ]
 };

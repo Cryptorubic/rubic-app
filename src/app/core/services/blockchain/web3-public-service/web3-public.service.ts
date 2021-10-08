@@ -14,7 +14,8 @@ export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
-  BLOCKCHAIN_NAME.HARMONY
+  BLOCKCHAIN_NAME.HARMONY,
+  BLOCKCHAIN_NAME.AVALANCHE
 ] as const;
 
 export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number];
@@ -35,6 +36,8 @@ export class Web3PublicService {
 
   public [BLOCKCHAIN_NAME.HARMONY]: Web3Public;
 
+  public [BLOCKCHAIN_NAME.AVALANCHE]: Web3Public;
+
   public readonly [BLOCKCHAIN_NAME.TRON]: Web3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.XDAI]: Web3Public = null;
@@ -46,6 +49,8 @@ export class Web3PublicService {
   public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: Web3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.HARMONY_TESTNET]: Web3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Web3Public = null;
 
   constructor(
     publicProvider: PublicProviderService,
