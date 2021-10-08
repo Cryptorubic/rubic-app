@@ -503,30 +503,26 @@
       "walletAddress": "토큰이 제공되는 TRON 블록 체인의 지갑 주소."
     },
     "crossChainRouting": {
-      "autoRefreshTitle":  "Auto refresh",
-      "autoRefresh": "Update trade parameters each 15 seconds.",
-      "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "promoCodeTitle": "Promo Code",
-      "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
-      "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
+      "promoCodeTitle": "프로모션 코드",
+      "promoCodeHint": "거래에 대한 가스 환불을 받으려면 여기에 프로모션 코드를 입력하세요.",
+      "promoCodeLoginRequired": "프로모션 코드를 사용하려면 지갑을 연결하십시오.",
       "promoCode": {
         "accepted": {
-          "usesLeft": "Uses left",
-          "validUntil": "Valid until"
+          "usesLeft": "왼쪽 사용",
+          "validUntil": "다음까지 유효"
         },
         "rejected": {
-          "text": "Your promo code is not valid.",
+          "text": "프로모션 코드가 거부되었습니다",
           "reason": {
-            "4000": "You have already used the promo code before. You can only use this promo code once.",
-            "4001": "The promo code have reached the maximum numbers of use."
+            "4000": "프로모션 코드는 이미 사용된 적이 있습니다. 이 프로모션 코드는 한 번만 사용할 수 있습니다.",
+            "4001": "프로모션 코드의 최대 사용 횟수에 도달했습니다."
           }
         },
         "outdated": {
-          "text": "This promo code has expired."
+          "text": "이 프로모션 코드는 만료되었습니다."
         },
         "wrong": {
-          "text": "The promo code is entered incorrectly or it does not exist."
+          "text": "프로모션 코드가 잘못 입력되었거나 존재하지 않습니다."
         }
       }
     },

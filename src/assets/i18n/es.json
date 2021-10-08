@@ -503,30 +503,26 @@
       "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
     },
     "crossChainRouting": {
-      "autoRefreshTitle":  "Auto refresh",
-      "autoRefresh": "Update trade parameters each 15 seconds.",
-      "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "promoCodeTitle": "Promo Code",
-      "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
-      "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
+      "promoCodeTitle": "Código promocional",
+      "promoCodeHint": "Ingrese el código de promoción aquí para obtener un reembolso de gasolina por su operación",
+      "promoCodeLoginRequired": "Por favor, conecte su billetera para usar el código de promoción",
       "promoCode": {
         "accepted": {
-          "usesLeft": "Uses left",
-          "validUntil": "Valid until"
+          "usesLeft": "Se usa a la izquierda",
+          "validUntil": "Válido hasta"
         },
         "rejected": {
-          "text": "Your promo code is not valid.",
+          "text": "Su código promocional ha sido rechazado",
           "reason": {
-            "4000": "You have already used the promo code before. You can only use this promo code once.",
-            "4001": "The promo code have reached the maximum numbers of use."
+            "4000": "El código de promoción ya se ha utilizado antes. Solo puede utilizar este código de promoción una vez.",
+            "4001": "Se ha alcanzado el número máximo de usos del código promocional."
           }
         },
         "outdated": {
-          "text": "This promo code has expired."
+          "text": "Este código de promoción ha caducado"
         },
         "wrong": {
-          "text": "The promo code is entered incorrectly or it does not exist."
+          "text": "El código de promoción se ingresó incorrectamente o no existe."
         }
       }
     },

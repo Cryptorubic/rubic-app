@@ -503,30 +503,26 @@
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
     "crossChainRouting": {
-      "autoRefreshTitle":  "Auto refresh",
-      "autoRefresh": "Update trade parameters each 15 seconds.",
-      "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
-      "promoCodeTitle": "Promo Code",
-      "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
-      "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
+      "promoCodeTitle": "促銷代碼",
+      "promoCodeHint": "在此處輸入促銷代碼以獲得您交易的 gas 退款",
+      "promoCodeLoginRequired": "請連接您的錢包以使用促銷代碼。",
       "promoCode": {
         "accepted": {
-          "usesLeft": "Uses left",
-          "validUntil": "Valid until"
+          "usesLeft": "左使用",
+          "validUntil": "有效期至"
         },
         "rejected": {
-          "text": "Your promo code is not valid.",
+          "text": "您的促銷代碼已被拒絕",
           "reason": {
-            "4000": "You have already used the promo code before. You can only use this promo code once.",
-            "4001": "The promo code have reached the maximum numbers of use."
+            "4000": "此優惠碼已被使用過，此優惠碼只能使用一次。.",
+            "4001": "已達到促銷代碼的最大使用次數。"
           }
         },
         "outdated": {
-          "text": "This promo code has expired."
+          "text": "此促銷代碼已過期。"
         },
         "wrong": {
-          "text": "The promo code is entered incorrectly or it does not exist."
+          "text": "促銷代碼輸入錯誤或不存在。"
         }
       }
     },
