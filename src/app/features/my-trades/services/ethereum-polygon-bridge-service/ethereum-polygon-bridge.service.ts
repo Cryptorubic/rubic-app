@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { defer, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import networks from 'src/app/shared/constants/blockchain/networks';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TransactionReceipt } from 'web3-eth';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { MaticPOSClient } from 'rubic-app-maticjs';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ import { MaticPOSClient } from 'rubic-app-maticjs';
 export class EthereumPolygonBridgeService {
   constructor(
     private readonly bridgeApiService: BridgeApiService,
+    private readonly authService: AuthService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {}
 
@@ -27,7 +29,7 @@ export class EthereumPolygonBridgeService {
       maticProvider: networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink,
       parentProvider: this.providerConnectorService.web3
     });
-    const userAddress = this.providerConnectorService.address;
+    const walletAddress = this.authService.userAddress;
 
     const onTradeTransactionHash = async (hash: string) => {
       if (onTransactionHash) {
@@ -42,7 +44,7 @@ export class EthereumPolygonBridgeService {
 
     return defer(async () => {
       const receipt = await maticPOSClient.exitERC20(burnTransactionHash, {
-        from: userAddress,
+        from: walletAddress,
         onTransactionHash: onTradeTransactionHash
       });
       await this.bridgeApiService.patchPolygonTransaction(
