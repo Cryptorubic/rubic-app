@@ -420,6 +420,14 @@ export class CrossChainRoutingService {
   public createTrade(options: TransactionOptions = {}): Observable<TransactionReceipt> {
     return from(
       (async () => {
+        if (this.iframeService.isIframe || this.settings.promoCode?.status === 'accepted') {
+          this.crossChainRoutingApiService.postTrade(
+            '0xbc1ef7b0a1de412c5e1ac992af170e57e46dc872a0d46f707741feb33953c178',
+            BLOCKCHAIN_NAME.POLYGON,
+            this.settings.promoCode?.text
+          );
+        }
+
         const trade = this.currentCrossChainTrade;
 
         this.providerConnectorService.checkSettings(trade.fromBlockchain);

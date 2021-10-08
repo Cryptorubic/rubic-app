@@ -518,7 +518,8 @@
         "rejected": {
           "text": "Your promo code has been rejected",
           "reason": {
-            "4000": "The promo code has already been used before. You can only use this promo code once."
+            "4000": "The promo code has already been used before. You can only use this promo code once.",
+            "4001": "The maximum number of uses of the promo code has been reached."
           }
         },
         "outdated": {

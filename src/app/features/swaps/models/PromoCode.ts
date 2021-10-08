@@ -1,26 +1,26 @@
 export type PromoCode = AcceptedPromoCode | RejectedPromoCode | WrongPromoCode | OutdatedPromoCode;
 
-interface BasePromoCode {
+export interface BasicPromoCode {
   status: 'accepted' | 'outdated' | 'wrong' | 'rejected';
   text: string;
 }
 
-export interface AcceptedPromoCode extends BasePromoCode {
+export interface AcceptedPromoCode extends BasicPromoCode {
   status: 'accepted';
   usesLeft: number;
   usesLimit: number;
   validUntil: Date;
 }
 
-export interface RejectedPromoCode extends BasePromoCode {
+export interface RejectedPromoCode extends BasicPromoCode {
   status: 'rejected';
   code: number;
 }
 
-export interface WrongPromoCode extends BasePromoCode {
+export interface WrongPromoCode extends BasicPromoCode {
   status: 'wrong';
 }
 
-export interface OutdatedPromoCode extends BasePromoCode {
+export interface OutdatedPromoCode extends BasicPromoCode {
   status: 'outdated';
 }

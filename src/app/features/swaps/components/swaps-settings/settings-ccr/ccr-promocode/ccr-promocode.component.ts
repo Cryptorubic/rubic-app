@@ -9,13 +9,14 @@ import {
   TemplateRef,
   ViewChildren,
   QueryList,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Self
 } from '@angular/core';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 import { PromoCodeApiService } from 'src/app/core/services/backend/promo-code-api/promo-code-api.service';
 import { Observable, of, Subject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { debounceTime, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 
@@ -70,7 +71,7 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
 
   constructor(
     private readonly promoCodeApiService: PromoCodeApiService,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef,
     authService: AuthService
   ) {
@@ -81,14 +82,15 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
     this.debouncePromoCodeInput$
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(100),
         tap(() => {
           this.validationInProcess = true;
           this.cdr.markForCheck();
         }),
-        switchMap(promoCodeText =>
-          promoCodeText ? this.promoCodeApiService.validatePromoCode(promoCodeText) : of(null)
-        )
+        switchMap(promoCodeText => {
+          return promoCodeText
+            ? this.promoCodeApiService.validatePromoCode(promoCodeText, true)
+            : of(null);
+        })
       )
       .subscribe(promoCode => {
         this.validationInProcess = false;
