@@ -502,6 +502,34 @@
     "bridge": {
       "walletAddress": "Адрес кошелька в блокчейне TRON, на который будут предоставляться токены."
     },
+    "crossChainRouting": {
+      "autoRefreshTitle":  "Автообновление",
+      "autoRefresh": "Обновление курса каждые 15 секунд.",
+      "slippageTitle": "Допустимое проскальзывание",
+      "slippage": "Ваша транзакция откатится, если цена изменится не в вашу пользу, чем на этот процент.",
+      "promoCodeTitle": "Промокод",
+      "promoCodeHint": "Введите промокод, чтобы получить возврат средств за газ для текущего обмена.",
+      "promoCodeLoginRequired": "Для использования промокода необходимо подключить кошелек.",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "Uses left",
+          "validUntil": "Valid until"
+        },
+        "rejected": {
+          "text": "Your promo code is not valid.",
+          "reason": {
+            "4000": "You have already used the promo code before. You can only use this promo code once.",
+            "4001": "The promo code have reached the maximum numbers of use."
+          }
+        },
+        "outdated": {
+          "text": "This promo code has expired."
+        },
+        "wrong": {
+          "text": "The promo code is entered incorrectly or it does not exist."
+        }
+      }
+    },
     "header": {
       "switchTheme": {
         "title": "Switch Theme",
