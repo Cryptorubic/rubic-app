@@ -145,8 +145,8 @@ export class SettingsService {
   }
 
   /**
-   * Delete some form properties and serialize it to JSON string
-   * @param form to serialize
+   * Deletes some form properties and serialize it to JSON string.
+   * @param form form to serialize
    */
   private serializeForm(form: ControlsValue<SettingsForm>): string {
     const formClone = copyObject(form);

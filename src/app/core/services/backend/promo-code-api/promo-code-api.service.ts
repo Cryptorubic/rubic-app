@@ -10,7 +10,7 @@ import {
 } from 'src/app/features/swaps/models/PromoCode';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { PromoCodeApiResponse } from 'src/app/core/services/backend/promo-code-api/models/promo-code-api-response';
 
@@ -37,7 +37,7 @@ export class PromoCodeApiService {
    * @param promoCodeText text to validate
    * @param [autoRevalidateIfAccepted = false] if true and promo code status is accepted, sets interval to refresh promo code data
    * @param [revalidationTimeout = 5000] promo code data refreshing interval
-   * @returns promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data
+   * @returns string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data
    */
   public validatePromoCode(
     promoCodeText: string,
@@ -61,14 +61,13 @@ export class PromoCodeApiService {
   private setInterval(revalidationTimeout: number): void {
     this.interval$ = interval(revalidationTimeout);
 
-    this.intervalSubscription$ = this.interval$.subscribe(() => {
-      const promoCodeText = this.settingsService.crossChainRoutingValue.promoCode?.text;
-      if (promoCodeText) {
-        this.getPromoCodeByText(promoCodeText).subscribe(promoCode =>
-          this.settingsService.crossChainRouting.patchValue({ promoCode })
-        );
-      }
-    });
+    this.intervalSubscription$ = this.interval$
+      .pipe(
+        map(() => this.settingsService.crossChainRoutingValue.promoCode?.text),
+        filter(promoCodeText => !!promoCodeText),
+        switchMap(promoCodeText => this.getPromoCodeByText(promoCodeText))
+      )
+      .subscribe(promoCode => this.settingsService.crossChainRouting.patchValue({ promoCode }));
   }
 
   /**
@@ -107,7 +106,7 @@ export class PromoCodeApiService {
   /**
    * Parses promo code api response
    */
-  private parseApiResponse(promoCodeText: string, response: PromoCodeApiResponse) {
+  private parseApiResponse(promoCodeText: string, response: PromoCodeApiResponse): PromoCode {
     const promo: BasicPromoCode = { status: response.status, text: promoCodeText };
     if (response.status === 'accepted') {
       return {
