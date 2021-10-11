@@ -13,7 +13,6 @@ export interface TokensNetworkState {
   [BLOCKCHAIN_NAME.HARMONY]: CountPage;
   [BLOCKCHAIN_NAME.FANTOM]: CountPage;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: CountPage;
-  [BLOCKCHAIN_NAME.FANTOM_TESTNET]: CountPage;
 }
 
 export type PAGINATED_BLOCKCHAIN_NAME = Exclude<

@@ -8,8 +8,7 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   xdai: BLOCKCHAIN_NAME.XDAI,
   harmony: BLOCKCHAIN_NAME.HARMONY,
   fantom: BLOCKCHAIN_NAME.FANTOM,
-  'ethereum-test': BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
-  'fantom-test': BLOCKCHAIN_NAME.FANTOM_TESTNET
+  'ethereum-test': BLOCKCHAIN_NAME.ETHEREUM_TESTNET
 };
 
 export const TO_BACKEND_BLOCKCHAINS = {
@@ -21,8 +20,7 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: 'ethereum-test',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'binance-test',
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: 'polygon-test',
-  [BLOCKCHAIN_NAME.HARMONY_TESTNET]: 'harmony-test',
-  [BLOCKCHAIN_NAME.FANTOM_TESTNET]: 'fantom-test'
+  [BLOCKCHAIN_NAME.HARMONY_TESTNET]: 'harmony-test'
 };
 
 export type ToBackendBlockchains = keyof typeof TO_BACKEND_BLOCKCHAINS;

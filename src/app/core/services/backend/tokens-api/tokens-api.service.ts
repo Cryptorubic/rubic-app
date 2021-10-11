@@ -97,7 +97,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.HARMONY
+      BLOCKCHAIN_NAME.HARMONY,
+      BLOCKCHAIN_NAME.FANTOM
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
     const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get(this.getTokensUrl, { ...options, network })

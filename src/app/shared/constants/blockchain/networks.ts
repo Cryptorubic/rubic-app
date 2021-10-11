@@ -179,20 +179,5 @@ export default [
       symbol: 'ONE',
       decimals: 18
     }
-  },
-  {
-    id: 4002,
-    name: BLOCKCHAIN_NAME.FANTOM_TESTNET,
-    scannerUrl: 'https://testnet.ftmscan.com/',
-    rpcLink: 'https://rpc.testnet.fantom.network',
-    additionalRpcLink: '',
-    imagePath: 'assets/images/icons/coins/fantom.svg',
-    nativeCoin: {
-      blockchain: BLOCKCHAIN_NAME.FANTOM_TESTNET,
-      address: NATIVE_TOKEN_ADDRESS,
-      name: 'FTM',
-      symbol: 'FTM',
-      decimals: 18
-    }
   }
 ] as const;

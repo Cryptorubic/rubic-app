@@ -354,7 +354,8 @@ export class TokensSelectComponent implements OnInit {
     const blockchains = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
-      [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
+      [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
+      [BLOCKCHAIN_NAME.FANTOM]: 'fantom'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]

@@ -5,7 +5,7 @@ import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/
 @Injectable({
   providedIn: 'root'
 })
-export class SushiSwapFantomServiceService extends CommonUniswapV2Service {
+export class SushiSwapFantomService extends CommonUniswapV2Service {
   constructor() {
     super(sushiSwapFantomConstants);
   }

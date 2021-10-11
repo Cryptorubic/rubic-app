@@ -17,7 +17,8 @@ const wethAddressNetMode: ContractAddressNetMode = {
 
 const routingProvidersNetMode: RoutingProvidersNetMode = {
   mainnet: [
-    '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83' // wFTM
+    '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', // wFTM
+    '0x049d68029688eAbF473097a2fC38ef61633A3C7A' // fUSDT
   ],
   testnet: [
     '0x1957d5e8496628d755a4b2151bca03ecc379bdd6' // wFTM
@@ -25,7 +26,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
 };
 
 export const sushiSwapFantomConstants: UniswapV2Constants = {
-  blockchain: BLOCKCHAIN_NAME.POLYGON,
+  blockchain: BLOCKCHAIN_NAME.FANTOM,
   contractAddressNetMode: sushiSwapFantomContractAddressNetMode,
   wethAddressNetMode,
   routingProvidersNetMode,

@@ -6,12 +6,12 @@ import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 const spiritSwapFantomContractAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0xF491e7B69E4244ad4002BC14e878a34207E38c29',
+  mainnet: '0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52',
   testnet: undefined
 };
 
 const wethAddressNetMode: ContractAddressNetMode = {
-  mainnet: '0x74b23882a30290451a17c44f4f05243b6b58c76d',
+  mainnet: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
   testnet: '0x1957d5e8496628d755a4b2151bca03ecc379bdd6'
 };
 

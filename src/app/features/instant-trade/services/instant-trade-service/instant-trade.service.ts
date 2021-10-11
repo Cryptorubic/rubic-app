@@ -32,6 +32,9 @@ import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { SushiSwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
+import { SpookySwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
+import { SpiritSwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +65,9 @@ export class InstantTradeService {
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly sushiSwapFantomService: SushiSwapFantomService,
+    private readonly spookySwapFantomService: SpookySwapFantomService,
+    private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly zrxService: ZrxService,
     // Providers end
@@ -100,6 +106,11 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+      },
+      [BLOCKCHAIN_NAME.FANTOM]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
+        [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: this.spookySwapFantomService,
+        [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService
       }
     };
   }
