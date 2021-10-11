@@ -5,5 +5,5 @@ export const shouldCalculateGasInBlockchain = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: false,
   [BLOCKCHAIN_NAME.POLYGON]: false,
   [BLOCKCHAIN_NAME.HARMONY]: false,
-  [BLOCKCHAIN_NAME.AVALANCHE]: false
+  [BLOCKCHAIN_NAME.AVALANCHE]: true
 };
