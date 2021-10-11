@@ -118,6 +118,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public TRADE_STATUS = TRADE_STATUS;
 
+  private autoSelect: boolean;
+
   get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(
@@ -135,9 +137,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       !this.providersOrderCache?.length ||
       this.providerControllers.some(item => item.isBestRate)
     ) {
-      this.providersOrderCache = [...this.providerControllers]
-        .sort(item => (item.isBestRate ? -1 : 1))
-        .map(item => item.tradeProviderInfo.value);
+      const bestProviders: INSTANT_TRADES_PROVIDER[] = [];
+      const errorProviders: INSTANT_TRADES_PROVIDER[] = [];
+      const restProviders: INSTANT_TRADES_PROVIDER[] = [];
+
+      this.providerControllers.forEach(el => {
+        if (el.isBestRate) {
+          bestProviders.push(el.tradeProviderInfo.value);
+        } else if (el.error) {
+          errorProviders.push(el.tradeProviderInfo.value);
+        } else {
+          restProviders.push(el.tradeProviderInfo.value);
+        }
+      });
+
+      this.providersOrderCache = [...bestProviders, ...restProviders, ...errorProviders];
     }
     return this.providersOrderCache.map(providerName =>
       this.providerControllers.find(provider => provider.tradeProviderInfo.value === providerName)
@@ -194,6 +208,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     iframeService: IframeService,
     private readonly destroy$: TuiDestroyService
   ) {
+    this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
     this.onCalculateTrade$ = new Subject<'normal' | 'hidden'>();
     this.hiddenDataAmounts$ = new BehaviorSubject<
@@ -288,6 +303,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (!this.allowTrade) {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.selectedProvider = null;
+      this.autoSelect = true;
       this.swapFormService.output.patchValue({
         toAmount: new BigNumber(NaN)
       });
@@ -375,6 +391,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
             this.selectedProvider = null;
+            this.autoSelect = true;
             this.needApprove = false;
             this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
             this.cdr.detectChanges();
@@ -540,9 +557,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
     if (bestProviderIndex !== -1) {
       this.providerControllers[bestProviderIndex].isBestRate = true;
-      this.providerControllers[bestProviderIndex].isSelected = true;
 
-      this.selectedProvider = this.providerControllers[bestProviderIndex];
+      this.selectController(bestProviderIndex);
 
       this.tradeStatus = this.selectedProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
@@ -558,6 +574,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
     this.cdr.detectChanges();
+  }
+
+  /**
+   * Focuses some of providers. If user have selected provider, keep old index.
+   * @param bestProviderIndex Best provider index.
+   */
+  private selectController(bestProviderIndex: number): void {
+    if (this.autoSelect) {
+      this.selectedProvider = this.providerControllers[bestProviderIndex];
+      this.providerControllers[bestProviderIndex].isSelected = true;
+    } else {
+      const currentSelectedProviderIndex = this.providerControllers.findIndex(
+        el => el.tradeProviderInfo.value === this.selectedProvider.tradeProviderInfo.value
+      );
+      this.providerControllers[currentSelectedProviderIndex].isSelected = true;
+    }
   }
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
@@ -578,6 +610,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       };
     });
     this.selectedProvider = this.providerControllers.find(provider => provider.isSelected);
+    this.autoSelect = false;
 
     if (this.selectedProvider.needApprove !== null) {
       this.tradeStatus = this.selectedProvider.needApprove

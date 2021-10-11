@@ -70,7 +70,8 @@
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
-    "unknown": "Oops, something went wrong, please try again"
+    "unknown": "Oops, something went wrong, please try again",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
   },
   "navigation": {
     "about": "О компании",
@@ -530,6 +531,7 @@
   "notifications": {
     "tradeInProgress": "Сделка в процессе выполнения",
     "successfulTradeTitle": "Сделка проведена успешно",
+    "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",

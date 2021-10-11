@@ -17,13 +17,28 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
+import { StoreService } from 'src/app/core/services/store/store.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService],
+  animations: [
+    trigger('itemAnimation', [
+      transition(':enter', [
+        style({ opacity: '0.25' }),
+        animate(
+          '0.25s ease',
+          style({
+            opacity: '1'
+          })
+        )
+      ])
+    ])
+  ]
 })
 export class TokensListComponent implements AfterViewInit {
   /**
@@ -111,7 +126,8 @@ export class TokensListComponent implements AfterViewInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly storeService: StoreService
   ) {
     this.pageUpdate = new EventEmitter<number>();
     this.scrollSubject = new BehaviorSubject<CdkVirtualScrollViewport>(null);
@@ -140,7 +156,8 @@ export class TokensListComponent implements AfterViewInit {
                 this.hasQuery ||
                 this.listType === 'favorite' ||
                 !this.tokensNetworkState ||
-                this.tokensNetworkState.maxPage === this.tokensNetworkState.page
+                this.tokensNetworkState.maxPage === this.tokensNetworkState.page ||
+                this.storeService.isIframe
               ) {
                 return false;
               }
