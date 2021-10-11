@@ -19,7 +19,6 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import posRootChainManagerAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAbi';
 import posRootChainManagerAddress from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAddress';
-import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PCacheable } from 'ts-cacheable';
 import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
@@ -224,13 +223,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       (async () => {
         const predicateAddress = await this.getPredicateAddress(token.address);
         const walletAddress = this.authService.userAddress;
-        const allowance = await this.web3PublicEth.callContractMethod(
+        const allowance = await this.web3PublicEth.getAllowance(
           token.address,
-          ERC20_TOKEN_ABI,
-          'allowance',
-          {
-            methodArguments: [walletAddress, predicateAddress]
-          }
+          walletAddress,
+          predicateAddress
         );
         return bridgeTrade.amount.gt(Web3Public.fromWei(allowance, token.decimals));
       })()

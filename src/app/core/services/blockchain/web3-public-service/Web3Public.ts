@@ -259,8 +259,8 @@ export class Web3Public {
   /**
    * executes allowance method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param spenderAddress wallet or contract address, allowed to spend
    * @param ownerAddress wallet address to spend from
+   * @param spenderAddress wallet or contract address, allowed to spend
    * @return tokens amount, allowed to be spent
    */
   public async getAllowance(
