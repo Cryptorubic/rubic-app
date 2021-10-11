@@ -1,74 +1,78 @@
-<div
-  *ngLet="isLoggedIn$ | async as isLoggedIn"
-  class="promo-code-wrapper"
-  [attr.status]="validationInProcess ? '' : promoCode?.status"
->
-  <div class="row">
-    <label for="promoCode">{{ 'settings.crossChainRouting.promoCodeTitle' | translate }}</label>
-    <div
-      class="hint"
-      inlineSVG="/assets/images/icons/hint.svg"
-      [tuiHint]="'settings.crossChainRouting.promoCodeHint' | translate"
-    ></div>
-    <tui-input
-      id="promoCode"
-      tuiTextfieldSize="s"
-      [disabled]="!isLoggedIn"
-      [tuiTextfieldLabelOutside]="true"
-      [tuiTextfieldCustomContent]="iconTemplate"
-      [ngModel]="promoCodeText"
-      (ngModelChange)="onPromoCodeTextChanges($event)"
-    ></tui-input>
+<ng-container *ngIf="(promoCodesExists | async) === true">
+  <div
+    *ngLet="isLoggedIn$ | async as isLoggedIn"
+    class="promo-code-wrapper"
+    [attr.status]="validationInProcess ? '' : promoCode?.status"
+  >
+    <div class="row">
+      <label for="promoCode">{{ 'settings.crossChainRouting.promoCodeTitle' | translate }}</label>
+      <div
+        class="hint"
+        inlineSVG="/assets/images/icons/hint.svg"
+        [tuiHint]="'settings.crossChainRouting.promoCodeHint' | translate"
+      ></div>
+      <tui-input
+        id="promoCode"
+        tuiTextfieldSize="s"
+        [disabled]="!isLoggedIn"
+        [tuiTextfieldLabelOutside]="true"
+        [tuiTextfieldCustomContent]="iconTemplate"
+        [ngModel]="promoCodeText"
+        (ngModelChange)="onPromoCodeTextChanges($event)"
+      ></tui-input>
+    </div>
+
+    <ng-container *ngIf="isLoggedIn; else promoDisabled">
+      <div
+        class="row"
+        *ngIf="!validationInProcess && promoCode?.status as status"
+        [ngSwitch]="status"
+      >
+        <div class="message" *ngSwitchCase="'accepted'">
+          <small>
+            {{ 'settings.crossChainRouting.promoCode.accepted.usesLeft' | translate }}:
+            {{ promoCode.usesLeft }} / {{ promoCode.usesLimit }}
+          </small>
+          <small>
+            {{ 'settings.crossChainRouting.promoCode.accepted.validUntil' | translate }}:
+            {{ promoCode.validUntil | date: 'medium' }}
+          </small>
+        </div>
+        <div class="message" *ngSwitchCase="'rejected'">
+          <small>{{ 'settings.crossChainRouting.promoCode.rejected.text' | translate }}</small>
+          <div
+            class="hint hint_error"
+            inlineSVG="/assets/images/icons/hint.svg"
+            tuiHintMode="error"
+            [tuiHint]="
+              'settings.crossChainRouting.promoCode.rejected.reason.' + promoCode.code.toString()
+                | translate
+            "
+          ></div>
+        </div>
+        <div class="message" *ngSwitchDefault>
+          <small>{{
+            'settings.crossChainRouting.promoCode.' + status + '.text' | translate
+          }}</small>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #promoDisabled>
+      <div class="row message">
+        <small>{{ 'settings.crossChainRouting.promoCodeLoginRequired' | translate }}</small>
+      </div>
+    </ng-template>
   </div>
 
-  <ng-container *ngIf="isLoggedIn; else promoDisabled">
-    <div
-      class="row"
-      *ngIf="!validationInProcess && promoCode?.status as status"
-      [ngSwitch]="status"
-    >
-      <div class="message" *ngSwitchCase="'accepted'">
-        <small>
-          {{ 'settings.crossChainRouting.promoCode.accepted.usesLeft' | translate }}:
-          {{ promoCode.usesLeft }} / {{ promoCode.usesLimit }}
-        </small>
-        <small>
-          {{ 'settings.crossChainRouting.promoCode.accepted.validUntil' | translate }}:
-          {{ promoCode.validUntil | date: 'medium' }}
-        </small>
-      </div>
-      <div class="message" *ngSwitchCase="'rejected'">
-        <small>{{ 'settings.crossChainRouting.promoCode.rejected.text' | translate }}</small>
-        <div
-          class="hint hint_error"
-          inlineSVG="/assets/images/icons/hint.svg"
-          tuiHintMode="error"
-          [tuiHint]="
-            'settings.crossChainRouting.promoCode.rejected.reason.' + promoCode.code.toString()
-              | translate
-          "
-        ></div>
-      </div>
-      <div class="message" *ngSwitchDefault>
-        <small>{{ 'settings.crossChainRouting.promoCode.' + status + '.text' | translate }}</small>
-      </div>
-    </div>
-  </ng-container>
-  <ng-template #promoDisabled>
-    <div class="row message">
-      <small>{{ 'settings.crossChainRouting.promoCodeLoginRequired' | translate }}</small>
-    </div>
+  <ng-template #loading>
+    <tui-loader size="xs"></tui-loader>
   </ng-template>
-</div>
 
-<ng-template #loading>
-  <tui-loader size="xs"></tui-loader>
-</ng-template>
+  <ng-template #accepted>
+    <tui-svg class="success" src="tuiIconCheck"></tui-svg>
+  </ng-template>
 
-<ng-template #accepted>
-  <tui-svg class="success" src="tuiIconCheck"></tui-svg>
-</ng-template>
-
-<ng-template #wrong>
-  <tui-svg class="success" src="tuiIconCloseLarge"></tui-svg>
-</ng-template>
+  <ng-template #wrong>
+    <tui-svg class="success" src="tuiIconCloseLarge"></tui-svg>
+  </ng-template>
+</ng-container>

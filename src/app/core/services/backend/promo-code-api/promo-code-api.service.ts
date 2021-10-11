@@ -12,7 +12,11 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { PromoCodeApiResponse } from 'src/app/core/services/backend/promo-code-api/models/promo-code-api-response';
+import {
+  PromoCodeApiResponse,
+  PromoCodesCheckExistenceResponse
+} from 'src/app/core/services/backend/promo-code-api/models/promo-code-api-response';
+import { Cacheable } from 'ts-cacheable';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +34,26 @@ export class PromoCodeApiService {
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService
-  ) {}
+  ) {
+    this.promoCodesExists().subscribe();
+  }
+
+  /**
+   * Checks if at least one active promo code exists.
+   */
+  @Cacheable()
+  public promoCodesExists(): Observable<boolean> {
+    const endpoint = 'check';
+    return this.httpService
+      .get<PromoCodesCheckExistenceResponse>(`${PromoCodeApiService.apiUrl}/${endpoint}`)
+      .pipe(
+        map(response => response.exists),
+        catchError(e => {
+          console.error(e);
+          return of(false);
+        })
+      );
+  }
 
   /**
    * Validates text promo code

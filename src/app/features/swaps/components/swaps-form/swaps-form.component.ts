@@ -283,8 +283,8 @@ export class SwapsFormComponent implements OnInit {
 
     if (
       updatedToken &&
-      (((!updatedToken.amount.isNaN() || !token.amount.isNaN()) &&
-        !updatedToken.amount.eq(token.amount)) ||
+      (((!updatedToken.amount?.isNaN() || !token.amount?.isNaN()) &&
+        !updatedToken.amount?.eq(token.amount)) ||
         token.price !== updatedToken.price)
     ) {
       this.selectedToken[tokenType] = updatedToken;

@@ -1,3 +1,7 @@
+export interface PromoCodesCheckExistenceResponse {
+  exists: boolean;
+}
+
 export type PromoCodeApiResponse =
   | AcceptedPromoCodeApiResponse
   | RejectedPromoCodeApiResponse

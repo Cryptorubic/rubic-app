@@ -49,6 +49,8 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
 
   public isLoggedIn$: Observable<boolean>;
 
+  public promoCodesExists: Observable<boolean>;
+
   private debouncePromoCodeInput$ = new Subject<string>();
 
   public get iconTemplate(): TemplateRef<unknown> | '' {
@@ -79,6 +81,7 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.promoCodesExists = this.promoCodeApiService.promoCodesExists();
     this.debouncePromoCodeInput$
       .pipe(
         takeUntil(this.destroy$),
