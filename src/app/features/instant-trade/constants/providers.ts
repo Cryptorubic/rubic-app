@@ -44,6 +44,13 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
         label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
       }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: '0x',
+        value: INSTANT_TRADES_PROVIDER.ZRX
+      }
     }
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [

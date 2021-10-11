@@ -12,6 +12,7 @@ import { NetworkErrorComponent } from './components/network-error/network-error.
 import { TotalSupplyOverflowErrorComponent } from './components/total-supply-overflow-error/total-supply-overflow-error.component';
 import { OverQueryLimitErrorComponent } from './components/over-query-limit-error/over-query-limit-error.component';
 import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-overflow-error/max-gas-price-overflow-error.component';
+import { InsufficientFundsCcrErrorComponent } from './components/insufficient-funds-ccr-error/insufficient-funds-ccr-error.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-ov
     TotalSupplyOverflowErrorComponent,
     OverQueryLimitErrorComponent,
     MaxGasPriceOverflowErrorComponent,
-    UnknownErrorComponent
+    UnknownErrorComponent,
+    InsufficientFundsCcrErrorComponent
   ],
   imports: [CommonModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
   entryComponents: [
@@ -34,7 +36,8 @@ import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-ov
     NetworkErrorComponent,
     TotalSupplyOverflowErrorComponent,
     OverQueryLimitErrorComponent,
-    UnknownErrorComponent
+    UnknownErrorComponent,
+    InsufficientFundsCcrErrorComponent
   ]
 })
 export class ErrorsModule {}
