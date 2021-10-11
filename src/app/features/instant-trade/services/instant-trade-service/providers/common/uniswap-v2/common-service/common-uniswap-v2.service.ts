@@ -448,35 +448,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const routes: UniswapV2Route[] = [];
-    if (this.contractAddress.startsWith('0x1b')) {
-      console.log(this.web3Public);
-      this.web3Public
-        .callContractMethod(this.contractAddress, this.contractAbi, 'WETH')
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      // this.web3Public
-      //   .callContractMethod(this.contractAddress, this.contractAbi, 'getAmountsOut', {
-      //     methodArguments: [
-      //       '1000000000000000',
-      //       [
-      //         '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
-      //         '0x049d68029688eabf473097a2fc38ef61633a3c7a'
-      //       ]
-      //     ]
-      //   })
-      //   .then(res => {
-      //     debugger;
-      //     console.log(res);
-      //   })
-      //   .catch(err => {
-      //     debugger;
-      //     console.log(err);
-      //   });
-    }
+
     await this.web3Public
       .multicallContractMethods<{ amounts: string[] }>(
         this.contractAddress,

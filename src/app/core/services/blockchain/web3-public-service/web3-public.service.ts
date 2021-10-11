@@ -117,7 +117,6 @@ export class Web3PublicService {
   }
 
   private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains) {
-    console.log(rpcLink, blockchainName);
     const web3Public = new Web3Public(
       new Web3(rpcLink),
       BlockchainsInfo.getBlockchainByName(blockchainName),
