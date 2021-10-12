@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 
 @Component({
-  selector: 'app-success-tx-modal',
+  selector: 'polymorpheus-success-tx-modal',
   templateUrl: './success-tx-modal.component.html',
   styleUrls: ['./success-tx-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

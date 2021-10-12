@@ -6,7 +6,7 @@ import {
   TO_BACKEND_BLOCKCHAINS
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
@@ -69,6 +69,7 @@ export class TokensApiService {
    */
   public getTokensList(params: { [p: string]: unknown }): Observable<List<Token>> {
     return this.iframeService.isIframe$.pipe(
+      debounceTime(50),
       switchMap(isIframe => {
         return isIframe ? this.fetchIframeTokens(params) : this.fetchBasicTokens(null);
       })
