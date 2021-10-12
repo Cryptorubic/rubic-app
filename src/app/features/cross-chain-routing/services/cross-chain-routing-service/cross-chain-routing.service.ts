@@ -13,7 +13,6 @@ import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-privat
 import { from, Observable, of } from 'rxjs';
 import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
@@ -48,9 +47,9 @@ import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cros
 export class CrossChainRoutingService {
   private readonly contractAbi: AbiItem[];
 
-  private contractAddresses: Record<SupportedCrossChainSwapBlockchain, string>;
+  private readonly contractAddresses: Record<SupportedCrossChainSwapBlockchain, string>;
 
-  private transitTokens: TransitTokens;
+  private readonly transitTokens: TransitTokens;
 
   private uniswapV2Providers: Record<SupportedCrossChainSwapBlockchain, CommonUniswapV2Service>;
 
@@ -79,32 +78,20 @@ export class CrossChainRoutingService {
     private readonly web3PrivateService: Web3PrivateService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
-    private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly crossChainRoutingApiService: CrossChainRoutingApiService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
     this.setUniswapProviders();
     this.setToBlockchainsInContract();
-    this.contractAddresses = crossChainSwapContractAddresses.mainnet;
-    this.transitTokens = transitTokensWithMode.mainnet;
+    this.contractAddresses = crossChainSwapContractAddresses;
+    this.transitTokens = transitTokensWithMode;
 
     this.settingsService.crossChainRoutingValueChanges
       .pipe(startWith(this.settingsService.crossChainRoutingValue))
       .subscribe(settings => {
         this.settings = settings;
       });
-
-    this.initTestingMode();
-  }
-
-  private initTestingMode(): void {
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.contractAddresses = crossChainSwapContractAddresses.testnet;
-        this.transitTokens = transitTokensWithMode.testnet;
-      }
-    });
   }
 
   private setUniswapProviders(): void {
