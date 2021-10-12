@@ -38,6 +38,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
+import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 
 @Injectable({
   providedIn: 'root'
@@ -482,13 +483,13 @@ export class CrossChainRoutingService {
               value
             },
             err => {
-              const includesErrCode = err.message.includes('-32000');
+              const includesErrCode = err?.message?.includes('-32000');
               const allowedErrors = [
                 'insufficient funds for transfer',
                 'insufficient funds for gas * price+ value'
               ];
               const includesPhrase = Boolean(
-                allowedErrors.find(error => err.message.includes(error))
+                allowedErrors.find(error => err?.message?.includes(error))
               );
               return includesErrCode && includesPhrase;
             }
@@ -500,8 +501,14 @@ export class CrossChainRoutingService {
           return receipt;
         } catch (err) {
           const errMessage = err.message || err.toString?.();
-          if (errMessage.includes('swapContract: Not enough amount of tokens')) {
+          if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
+          }
+
+          if (errMessage?.includes('err: insufficient funds for gas * price + value')) {
+            throw new InsufficientFundsGasPriceValueError(
+              this.swapFormService.inputValue.fromToken.symbol
+            );
           }
           throw err;
         }

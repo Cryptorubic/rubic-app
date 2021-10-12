@@ -96,8 +96,8 @@ export class TokensSelectComponent implements OnInit {
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
-      if (this.tokensList?.listScroll) {
-        this.tokensList.listScroll.scrollToIndex(0);
+      if (this.tokensList?.scrollSubject?.value) {
+        this.tokensList.scrollSubject.value.scrollToIndex(0, 'smooth');
       }
     }
   }
