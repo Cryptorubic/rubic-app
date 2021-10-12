@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import * as config from 'src/test/enviroment.test.json';
-import { BlockchainsInfo } from '../../blockchain-info';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 
 /**
  * Stub for unit tests.

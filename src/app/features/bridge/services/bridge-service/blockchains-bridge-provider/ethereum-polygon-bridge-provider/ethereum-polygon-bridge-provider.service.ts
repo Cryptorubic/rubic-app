@@ -3,8 +3,8 @@ import { List } from 'immutable';
 import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { first, tap } from 'rxjs/operators';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
@@ -16,12 +16,13 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import posRootChainManagerAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAbi';
 import posRootChainManagerAddress from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAddress';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PCacheable } from 'ts-cacheable';
 import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
+import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 interface PolygonGraphToken {
@@ -291,7 +292,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       }
 
       return from(
-        this.web3PublicEth.encodeParameter('uint256', amountAbsolute).then(encodedAmount =>
+        Web3Pure.encodeParameter('uint256', amountAbsolute).then(encodedAmount =>
           this.web3PrivateService.tryExecuteContractMethod(
             posRootChainManagerAddress,
             posRootChainManagerAbi,

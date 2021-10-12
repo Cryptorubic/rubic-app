@@ -7,7 +7,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { MaticPOSClient } from 'rubic-app-maticjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 
 @Injectable({
   providedIn: 'root'
