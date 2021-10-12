@@ -224,10 +224,13 @@ export class CrossChainRoutingService {
       firstTransitToken
     );
 
-    const feeAmountInPercents = await this.getFeeAmountInPercents();
-    const secondTransitTokenAmount = firstTransitTokenAmount
-      .multipliedBy(100 - feeAmountInPercents)
-      .dividedBy(100);
+    const secondTransitTokenAmount = await this.getSecondTransitTokenAmount(
+      firstTransitToken,
+      secondTransitToken,
+      firstTransitTokenAmount,
+      fromBlockchain,
+      toBlockchain
+    );
 
     const { path: secondPath, toAmount } = await this.getPathAndToAmount(
       toBlockchain,
@@ -315,9 +318,40 @@ export class CrossChainRoutingService {
     return { path: [fromToken.address], toAmount: fromAmount };
   }
 
+  private async getSecondTransitTokenAmount(
+    firstTransitToken: InstantTradeToken,
+    secondTransitToken: InstantTradeToken,
+    firstTransitTokenAmount: BigNumber,
+    fromBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BLOCKCHAIN_NAME
+  ): Promise<BigNumber> {
+    const feeAmountInPercents = await this.getFeeAmountInPercents();
+    const amount = firstTransitTokenAmount.multipliedBy(100 - feeAmountInPercents).dividedBy(100);
+
+    if (
+      fromBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
+      toBlockchain === BLOCKCHAIN_NAME.AVALANCHE
+    ) {
+      const firstTransitTokenPrice = await this.tokensService.getTokenPrice({
+        address: firstTransitToken.address,
+        blockchain: fromBlockchain
+      });
+      const secondTransitTokenPrice = await this.tokensService.getTokenPrice({
+        address: secondTransitToken.address,
+        blockchain: toBlockchain
+      });
+      return amount.multipliedBy(firstTransitTokenPrice).dividedBy(secondTransitTokenPrice);
+    }
+
+    return amount;
+  }
+
   private async getFeeAmountInPercents(): Promise<number> {
-    const fromBlockchain = this.swapFormService.inputValue
-      .fromBlockchain as SupportedCrossChainSwapBlockchain;
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
+      throw Error('Not supported blockchains');
+    }
+
     const contractAddress = this.contractAddresses[fromBlockchain];
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
     const toBlockchainInContract = this.toBlockchainsInContract[fromBlockchain];

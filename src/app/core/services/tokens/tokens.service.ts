@@ -300,6 +300,28 @@ export class TokensService {
   }
 
   /**
+   * Gets token price.
+   * @param token Token to get price for.
+   */
+  public getTokenPrice(token: {
+    address: string;
+    blockchain: BLOCKCHAIN_NAME;
+  }): Promise<number | undefined> {
+    return this.coingeckoApiService
+      .getTokenPrice(token)
+      .pipe(
+        map(tokenPrice => {
+          if (!tokenPrice) {
+            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+            return foundToken?.price;
+          }
+          return tokenPrice;
+        })
+      )
+      .toPromise();
+  }
+
+  /**
    * Updates token's price and emits new tokens' list with updated token.
    * @param token Token to update.
    */
