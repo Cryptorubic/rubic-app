@@ -63,8 +63,7 @@ export class Web3PrivateService {
     }
     if (!gasPrice) {
       // TODO: gas во всем Web3Private требует рефакторинга
-      // @ts-ignore
-      return minGasPrice;
+      return minGasPrice.toFixed();
     }
     return BigNumber.max(gasPrice, minGasPrice).toFixed();
   }
