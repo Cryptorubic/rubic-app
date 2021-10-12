@@ -50,7 +50,6 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
     if (domain.includes(this.DOMAIN_SUBSTRING)) {
       return httpRequest;
     }
-
     return httpRequest.clone({ params: httpRequest.params.set('domain', domain) });
   }
 
@@ -62,7 +61,6 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
         headers: httpRequest.headers.set(tokenHeaderName, token)
       });
     }
-
     return httpRequest;
   }
 }
