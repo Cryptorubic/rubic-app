@@ -101,6 +101,7 @@ export class ProviderPanelComponent {
    */
   private setupProviderData(data: ProviderControllerData): void {
     this.tradeData = {
+      blockchain: data?.trade?.blockchain,
       amount: data?.trade?.to?.amount,
       gasLimit: data?.trade?.gasLimit,
       gasFeeInUsd: data?.trade?.gasFeeInUsd,
