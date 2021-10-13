@@ -39,6 +39,7 @@ import {
 } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 
 @Injectable({
@@ -78,7 +79,8 @@ export class CrossChainRoutingService {
     private readonly web3PrivateService: Web3PrivateService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
-    private readonly crossChainRoutingApiService: CrossChainRoutingApiService
+    private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
+    private readonly iframeService: IframeService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
@@ -522,10 +524,16 @@ export class CrossChainRoutingService {
               return includesErrCode && includesPhrase;
             }
           );
-          this.crossChainRoutingApiService.postTradeInWidget(
-            receipt.transactionHash,
-            trade.fromBlockchain
-          );
+
+          // post trade data to log widget domain, or to apply promo code
+          if (this.iframeService.isIframe || this.settings.promoCode?.status === 'accepted') {
+            this.crossChainRoutingApiService.postTrade(
+              receipt.transactionHash,
+              trade.fromBlockchain,
+              this.settings.promoCode?.text
+            );
+          }
+
           return receipt;
         } catch (err) {
           const errMessage = err.message || err.toString?.();
