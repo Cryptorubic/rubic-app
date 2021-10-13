@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, timeout } from 'rxjs/operators';
 import { from, Observable, of, Subject, throwError } from 'rxjs';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -55,6 +55,7 @@ export class PanamaBridgeProviderService {
     this.httpClient
       .get(`${this.apiUrl}tokens`)
       .pipe(
+        timeout(3000),
         map((response: PanamaResponse) => {
           if (response.code !== this.PANAMA_SUCCESS_CODE) {
             console.debug('Error retrieving panama tokens', response);
@@ -65,6 +66,10 @@ export class PanamaBridgeProviderService {
               token => token.ethContractAddress || token.ethSymbol === 'ETH'
             )
           );
+        }),
+        catchError(e => {
+          console.error(e);
+          return of(List([]));
         })
       )
       .subscribe(tokens => this.tokens$.next(tokens));

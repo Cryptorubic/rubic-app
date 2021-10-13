@@ -9,7 +9,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap, timeout } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
@@ -185,14 +185,16 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         return from(this.fetchConfigs(blockchainTokens)).pipe(
           map(config => ({ evoTokens, config }))
         );
+      }),
+      timeout(3000),
+      catchError(err => {
+        console.error(err);
+        return of({ evoTokens: [], config: {} });
       })
     );
 
     return forkJoin([
-      this.tokensService.tokens$.pipe(
-        filter(tokens => !!tokens?.size),
-        first()
-      ),
+      this.tokensService.tokens$.pipe(first(tokens => !!tokens?.size)),
       loadTokensAndConfig$
     ]).pipe(
       map(([swapTokens, { evoTokens, config }]) =>
