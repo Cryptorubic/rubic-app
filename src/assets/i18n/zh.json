@@ -504,10 +504,10 @@
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
     "crossChainRouting": {
-      "autoRefreshTitle":  "Auto refresh",
-      "autoRefresh": "Updates trade parameters each 15 seconds.",
-      "slippageTitle": "Slippage tolerance",
-      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "autoRefreshTitle": "自動刷新",
+      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "slippageTitle": "滑點公差",
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
       "promoCodeTitle": "促銷代碼",
       "promoCodeHint": "在此處輸入促銷代碼以獲得您交易的 gas 退款",
       "promoCodeLoginRequired": "請連接您的錢包以使用促銷代碼。",
