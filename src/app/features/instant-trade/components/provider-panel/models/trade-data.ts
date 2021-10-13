@@ -6,6 +6,7 @@ export interface TradeData {
    * Blockchain name.
    */
   blockchain: BLOCKCHAIN_NAME;
+
   /**
    * Amount of output without slippage in absolute token units (WITHOUT decimals).
    */
