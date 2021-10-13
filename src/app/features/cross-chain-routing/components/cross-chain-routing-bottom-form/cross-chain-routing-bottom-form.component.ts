@@ -453,7 +453,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe(
-        async (_: TransactionReceipt) => {
+        async () => {
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show<{ type: SuccessTxModalType }>(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),

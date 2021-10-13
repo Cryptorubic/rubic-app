@@ -7,6 +7,7 @@ import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import { minGasPriceInBlockchain } from 'src/app/core/services/blockchain/constants/minGasPriceInBlockchain';
 import CustomError from 'src/app/core/errors/models/custom-error';
+import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
 import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
@@ -37,6 +38,9 @@ export class Web3PrivateService {
   private static parseError(err: Web3Error): Error {
     if (err.message.includes('Transaction has been reverted by the EVM')) {
       return new TransactionRevertedError();
+    }
+    if (err.message.includes('Failed to check for transaction receipt')) {
+      return new FailedToCheckForTransactionReceiptError();
     }
     if (err.code === -32603) {
       return new LowGasError();
