@@ -1,6 +1,11 @@
 import BigNumber from 'bignumber.js';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface TradeData {
+  /**
+   * Blockchain name.
+   */
+  blockchain: BLOCKCHAIN_NAME;
   /**
    * Amount of output without slippage in absolute token units (WITHOUT decimals).
    */
