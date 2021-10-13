@@ -1,6 +1,6 @@
 // @ts-ignore
-import config from '../../../../../test/enviroment.test.json';
-import { BLOCKCHAIN_NAME } from '../../../../shared/models/blockchain/BLOCKCHAIN_NAME';
+import config from 'src/test/enviroment.test.json';
+import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
  * Stub for unit tests.

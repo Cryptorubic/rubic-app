@@ -7,16 +7,16 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { from, Observable, of } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import {
   maxTransitPools,
   uniSwapV3ContractData,
   wethAddressNetMode
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import {
   ItSettingsForm,
@@ -34,7 +34,7 @@ import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
+import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
 import {
   swapEstimatedGas,
   WETHtoETHEstimatedGas
@@ -44,6 +44,7 @@ import {
   UniswapV3CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
 import { subtractPercent } from 'src/app/shared/utils/utils';
+import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
 
 /**
  * Shows whether Eth is used as from or to token.
@@ -476,12 +477,12 @@ export class UniSwapV3Service implements ItProvider {
           NATIVE_TOKEN_ADDRESS,
           deadline
         );
-      const exactInputMethodEncoded = await this.web3Public.encodeFunctionCall(
+      const exactInputMethodEncoded = await Web3Pure.encodeFunctionCall(
         uniSwapV3ContractData.swapRouter.abi,
         exactInputMethodName,
         exactInputMethodArguments
       );
-      const unwrapWETHMethodEncoded = await this.web3Public.encodeFunctionCall(
+      const unwrapWETHMethodEncoded = await Web3Pure.encodeFunctionCall(
         uniSwapV3ContractData.swapRouter.abi,
         'unwrapWETH9',
         [amountOutMin, this.walletAddress]

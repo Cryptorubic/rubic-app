@@ -10,9 +10,9 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletconnectError } from 'src/app/core/errors/models/provider/WalletconnectError';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { BlockchainsInfo } from '../../blockchain-info';
-import { PrivateProvider } from '../private-provider';
-import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models/providers';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 
 export class WalletConnectProvider extends PrivateProvider {
   private isEnabled: boolean;
