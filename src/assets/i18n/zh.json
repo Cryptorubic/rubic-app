@@ -503,6 +503,30 @@
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
+    "crossChainRouting": {
+      "promoCodeTitle": "促銷代碼",
+      "promoCodeHint": "在此處輸入促銷代碼以獲得您交易的 gas 退款",
+      "promoCodeLoginRequired": "請連接您的錢包以使用促銷代碼。",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "左使用",
+          "validUntil": "有效期至"
+        },
+        "rejected": {
+          "text": "您的促銷代碼已被拒絕",
+          "reason": {
+            "4000": "此優惠碼已被使用過，此優惠碼只能使用一次。.",
+            "4001": "已達到促銷代碼的最大使用次數。"
+          }
+        },
+        "outdated": {
+          "text": "此促銷代碼已過期。"
+        },
+        "wrong": {
+          "text": "促銷代碼輸入錯誤或不存在。"
+        }
+      }
+    },
     "header": {
       "switchTheme": {
         "title": "Switch Theme",
