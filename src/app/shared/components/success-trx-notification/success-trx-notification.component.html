@@ -1,4 +1,11 @@
 <div class="notification">
-  <div>{{ 'notifications.successfulTradeTitle' | translate }}</div>
+  <div>
+    {{
+      (type === 'cross-chain-routing'
+        ? 'notifications.successfulCCRTradeTitle'
+        : 'notifications.successfulTradeTitle'
+      ) | translate
+    }}
+  </div>
   <span *noFrame [innerHTML]="'notifications.successfulTradeParagraph' | translate"></span>
 </div>

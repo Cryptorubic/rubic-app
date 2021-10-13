@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
-import { TradeData } from 'src/app/shared/components/provider-panel/models/trade-data';
-import { ProviderData } from 'src/app/shared/components/provider-panel/models/provider-data';
+import { TradeData } from 'src/app/features/instant-trade/components/provider-panel/models/trade-data';
+import { ProviderData } from 'src/app/features/instant-trade/components/provider-panel/models/provider-data';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 
 @Component({

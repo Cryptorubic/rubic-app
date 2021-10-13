@@ -6,7 +6,7 @@ import {
   TO_BACKEND_BLOCKCHAINS
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
@@ -69,6 +69,7 @@ export class TokensApiService {
    */
   public getTokensList(params: { [p: string]: unknown }): Observable<List<Token>> {
     return this.iframeService.isIframe$.pipe(
+      debounceTime(50),
       switchMap(isIframe => {
         return isIframe ? this.fetchIframeTokens(params) : this.fetchBasicTokens(null);
       })
@@ -97,7 +98,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.HARMONY
+      BLOCKCHAIN_NAME.HARMONY,
+      BLOCKCHAIN_NAME.AVALANCHE
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
     const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get(this.getTokensUrl, { ...options, network })
