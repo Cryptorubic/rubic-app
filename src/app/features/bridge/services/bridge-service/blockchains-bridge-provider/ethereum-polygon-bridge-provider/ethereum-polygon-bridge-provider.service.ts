@@ -4,7 +4,7 @@ import { defer, from, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { MaticPOSClient } from '@maticnetwork/maticjs';
 import BigNumber from 'bignumber.js';
-import { catchError, filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap, timeout } from 'rxjs/operators';
 import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
@@ -64,14 +64,9 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   ) {
     super();
 
-    this.tokensService.tokens$
-      .pipe(
-        filter(tokens => !!tokens.size),
-        first()
-      )
-      .subscribe(tokenAmounts => {
-        this.getTokensList(tokenAmounts);
-      });
+    this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)).subscribe(tokenAmounts => {
+      this.getTokensList(tokenAmounts);
+    });
 
     this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
     this.web3PublicPolygon = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
@@ -100,6 +95,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       .post(this.polygonGraphApiUrl, {
         query
       })
+      .pipe(timeout(3000))
       .subscribe(
         async (response: PolygonGraphResponse) => {
           if (!response.data) {
