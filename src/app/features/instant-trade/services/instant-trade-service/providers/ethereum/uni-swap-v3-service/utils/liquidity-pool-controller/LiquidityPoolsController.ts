@@ -1,4 +1,4 @@
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import {
   routerLiquidityPoolsWithMode,
   routerTokensNetMode
