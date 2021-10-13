@@ -5,5 +5,6 @@ export const TOKENS_PAGINATION = {
   [BLOCKCHAIN_NAME.ETHEREUM]: { count: undefined, page: 2, maxPage: 3 },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: { count: undefined, page: 2, maxPage: 3 },
   [BLOCKCHAIN_NAME.POLYGON]: { count: undefined, page: 2, maxPage: 3 },
-  [BLOCKCHAIN_NAME.HARMONY]: { count: undefined, page: 2, maxPage: 2 }
+  [BLOCKCHAIN_NAME.HARMONY]: { count: undefined, page: 2, maxPage: 2 },
+  [BLOCKCHAIN_NAME.FANTOM]: { count: undefined, page: 2, maxPage: 2 }
 } as TokensNetworkState;
