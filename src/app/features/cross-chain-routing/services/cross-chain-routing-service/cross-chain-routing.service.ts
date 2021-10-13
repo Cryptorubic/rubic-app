@@ -38,6 +38,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 
 @Injectable({
@@ -77,7 +78,8 @@ export class CrossChainRoutingService {
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly iframeService: IframeService
   ) {
     this.setUniswapProviders();
     this.setToBlockchainsInContract();
@@ -494,10 +496,16 @@ export class CrossChainRoutingService {
               return includesErrCode && includesPhrase;
             }
           );
-          this.crossChainRoutingApiService.postTradeInWidget(
-            receipt.transactionHash,
-            trade.fromBlockchain
-          );
+
+          // post trade data to log widget domain, or to apply promo code
+          if (this.iframeService.isIframe || this.settings.promoCode?.status === 'accepted') {
+            this.crossChainRoutingApiService.postTrade(
+              receipt.transactionHash,
+              trade.fromBlockchain,
+              this.settings.promoCode?.text
+            );
+          }
+
           return receipt;
         } catch (err) {
           const errMessage = err.message || err.toString?.();

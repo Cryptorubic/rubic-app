@@ -2,12 +2,12 @@
   <form [formGroup]="crossChainRoutingForm" class="settings__form">
     <div class="settings__form-row settings__form-row_large-input">
       <label for="slippageTolerance">{{
-        'settings.instantTrades.slippageTitle' | translate
+        'settings.crossChainRouting.slippageTitle' | translate
       }}</label>
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
-        [tuiHint]="'settings.instantTrades.slippage' | translate"
+        [tuiHint]="'settings.crossChainRouting.slippage' | translate"
       ></div>
     </div>
     <div class="settings__form-row settings__form-row_united">
@@ -22,30 +22,39 @@
       </div>
       <tui-input-number
         id="slippageTolerance"
+        tuiTextfieldSize="s"
+        postfix="%"
         [ngModel]="slippageTolerance"
         (ngModelChange)="onSlippageToleranceChange($event)"
         [ngModelOptions]="{ standalone: true }"
         [tuiTextfieldLabelOutside]="true"
-        [tuiTextfieldSize]="'s'"
         [max]="50"
         [min]="defaultSlippageTolerance"
-        [postfix]="'%'"
         >{{ defaultSlippageTolerance }}%
       </tui-input-number>
     </div>
 
     <div class="settings__form-row">
-      <label for="autoRefresh">{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
+      <label for="autoRefresh">{{
+        'settings.crossChainRouting.autoRefreshTitle' | translate
+      }}</label>
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"
-        [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
+        [tuiHint]="'settings.crossChainRouting.autoRefresh' | translate"
       ></div>
       <tui-toggle
         class="settings__toggle"
         id="autoRefresh"
         formControlName="autoRefresh"
       ></tui-toggle>
+    </div>
+
+    <div class="settings__form-row">
+      <app-ccr-promocode
+        [(promoCode)]="promoCode"
+        (promoCodeChange)="onPromoCodeChanges($event)"
+      ></app-ccr-promocode>
     </div>
   </form>
 </div>
