@@ -47,8 +47,6 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly $isMobile: Observable<boolean>;
 
-  public pageScrolled: boolean;
-
   public $currentUser: Observable<UserInterface>;
 
   public countNotifications$: Observable<number>;
@@ -72,7 +70,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly storeService: StoreService,
-    private router: Router,
+    private readonly router: Router,
     private readonly errorService: ErrorsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly queryParamsService: QueryParamsService,
@@ -87,15 +85,12 @@ export class HeaderComponent implements AfterViewInit {
     // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();
     this.$currentUser = this.authService.getCurrentUser();
-    this.pageScrolled = false;
     this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
     this.$isMobile = this.headerStore.getMobileDisplayStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
-      const scrolledHeight = 50;
+      this.setNotificationPosition();
       this.window.onscroll = () => {
-        const scrolled = this.window.pageYOffset || this.document.documentElement.scrollTop;
-        this.pageScrolled = scrolled > scrolledHeight;
         this.setNotificationPosition();
       };
     }

@@ -7,10 +7,10 @@ import { AbiItem } from 'web3-utils';
 import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
 import { minGasPriceInBlockchain } from 'src/app/core/services/blockchain/constants/minGasPriceInBlockchain';
 import CustomError from 'src/app/core/errors/models/custom-error';
-import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { UserRejectError } from '../../../errors/models/provider/UserRejectError';
-import { ProviderConnectorService } from '../provider-connector/provider-connector.service';
-import { LowGasError } from '../../../errors/models/provider/LowGasError';
+import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
+import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { LowGasError } from 'src/app/core/errors/models/provider/LowGasError';
 
 type Web3Error = {
   message: string;
@@ -63,8 +63,7 @@ export class Web3PrivateService {
     }
     if (!gasPrice) {
       // TODO: gas во всем Web3Private требует рефакторинга
-      // @ts-ignore
-      return minGasPrice;
+      return minGasPrice.toFixed();
     }
     return BigNumber.max(gasPrice, minGasPrice).toFixed();
   }

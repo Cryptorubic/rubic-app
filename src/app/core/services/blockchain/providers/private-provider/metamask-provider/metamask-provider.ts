@@ -8,10 +8,10 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { CoinbaseExtensionError } from 'src/app/core/errors/models/provider/CoinbaseExtensionError';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
-import { PrivateProvider } from '../private-provider';
+import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 
-import { BlockchainsInfo } from '../../blockchain-info';
-import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models/providers';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 
 export class MetamaskProvider extends PrivateProvider {
   private isEnabled = false;

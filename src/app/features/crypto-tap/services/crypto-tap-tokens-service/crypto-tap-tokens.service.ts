@@ -4,8 +4,8 @@ import { CryptoTapToken } from 'src/app/features/crypto-tap/models/CryptoTapToke
 import { FromToAvailableTokens } from 'src/app/features/crypto-tap/models/FromToAvailableTokens';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CryptoTapFormService } from 'src/app/features/crypto-tap/services/crypto-tap-form-service/crypto-tap-form.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { HttpClient } from '@angular/common/http';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';

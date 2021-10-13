@@ -3,15 +3,15 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of, throwError } from 'rxjs';
 
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import BigNumber from 'bignumber.js';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import {
   ABI,
   contractAddressEthereum,

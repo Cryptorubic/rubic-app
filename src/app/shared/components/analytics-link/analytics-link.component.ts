@@ -12,7 +12,7 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 
 const WETH_ADDRESSES = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
