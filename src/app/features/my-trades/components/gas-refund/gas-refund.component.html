@@ -1,0 +1,8 @@
+<ng-container *ngLet="userPromotions$ | async as userPromotions">
+  <div class="gas-refund" *ngIf="userPromotions?.length">
+    <div class="gas-refund__header header">
+      <div class="header__title">{{ 'gasRefund.title' | translate }}</div>
+      <app-rotating-icon [rotating]="isLoading" (iconClick)="refreshRefunds()"></app-rotating-icon>
+    </div>
+  </div>
+</ng-container>

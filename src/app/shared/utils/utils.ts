@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { switchMap } from 'rxjs/operators';
+import { of, OperatorFunction } from 'rxjs';
 
 /**
  * Compares two objects for equality.
@@ -36,4 +38,11 @@ export function subtractPercent(
   percent: number | BigNumber | string
 ): BigNumber {
   return new BigNumber(amount).multipliedBy(new BigNumber(1).minus(percent));
+}
+
+/**
+ * Maps stream to void: emits, and completes the stream.
+ */
+export function mapToVoid(): OperatorFunction<unknown, void> {
+  return switchMap(of) as OperatorFunction<unknown, void>;
 }

@@ -1,0 +1,32 @@
+@import 'src/styles';
+
+.gas-refund {
+  max-width: 1240px;
+  margin: 0 auto 44px;
+  padding: 30px 35px 40px;
+
+  font-family: $sf-pro-font;
+
+  background: var(--main-form-background);
+  border-radius: $border-radius-1;
+  backdrop-filter: blur(24px);
+
+  &__header {
+    margin-bottom: 44px;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+
+  &__title {
+
+    margin-right: 10px;
+
+    color: var(--form-bright-text-color);
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 29px;
+  }
+}

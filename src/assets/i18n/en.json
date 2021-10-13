@@ -408,6 +408,9 @@
   "myTrades": {
     "title": "My Trades"
   },
+  "gasRefund": {
+    "title": "Gas Refund"
+  },
   "tradesTable": {
     "columns": {
       "status": "Status",
