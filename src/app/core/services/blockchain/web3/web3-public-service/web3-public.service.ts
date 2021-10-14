@@ -4,11 +4,11 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { first, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import ConnectionLink from '../types/ConnectionLink';
-import { Web3Public } from './Web3Public';
-import { PublicProviderService } from '../public-provider/public-provider.service';
-import { BlockchainsInfo } from '../blockchain-info';
-import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import ConnectionLink from 'src/app/core/services/blockchain/models/ConnectionLink';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { PublicProviderService } from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider.service';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,

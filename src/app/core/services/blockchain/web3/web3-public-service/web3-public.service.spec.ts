@@ -11,17 +11,17 @@ import {
   XEENUS,
   YEENUS
 } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
-import { Web3PublicService } from './web3-public.service';
-import { PublicProviderService } from '../public-provider/public-provider.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicProviderService } from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider.service';
 
-import { Web3Public } from './Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 // @ts-ignore
-import config from '../../../../../test/enviroment.test.json';
-import publicProviderServiceStub from '../public-provider/public-provider-service-stub';
+import config from 'src/test/enviroment.test.json';
+import publicProviderServiceStub from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider-service-stub';
 
-import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
-import { useTestingModeStub } from '../../use-testing-mode/use-testing-mode.stub';
+import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { useTestingModeStub } from 'src/app/core/services/use-testing-mode/use-testing-mode.stub';
 
 describe('Web3PublicService', () => {
   let service: Web3PublicService;

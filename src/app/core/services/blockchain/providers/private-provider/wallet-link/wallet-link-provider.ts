@@ -13,9 +13,9 @@ import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import BigNumber from 'bignumber.js';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { WalletlinkWrongNetwork } from 'src/app/core/errors/models/provider/WalletlinkWrongNetwork';
-import { BlockchainsInfo } from '../../blockchain-info';
-import { PrivateProvider } from '../private-provider';
-import { WALLET_NAME } from '../../../../wallets/components/wallets-modal/models/providers';
+import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 
 export class WalletLinkProvider extends PrivateProvider {
   private isMobileMode = false;

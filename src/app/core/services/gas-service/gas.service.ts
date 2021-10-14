@@ -5,8 +5,8 @@ import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/pol
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
 import { Cacheable } from 'ts-cacheable';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
