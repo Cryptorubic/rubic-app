@@ -174,7 +174,7 @@ export class InstantTradeService {
           // Inform gtm that tx was signed
           this.window.dataLayer?.push({
             event: 'transactionSigned',
-            ecategory: ' transaction',
+            ecategory: 'transaction',
             eaction: 'ok',
             elabel: '',
             evalue: '',
