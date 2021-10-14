@@ -669,7 +669,10 @@ export class Web3Public {
       .post<RpcResponse<T>[]>((<HttpProvider>this.web3.currentProvider).host, batch)
       .toPromise();
 
-    return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
+    if (Array.isArray(response)) {
+      return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
+    }
+    return [response];
   }
 
   /**
