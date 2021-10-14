@@ -2,8 +2,8 @@
 
 .gas-refund {
   max-width: 1240px;
-  margin: 0 auto 44px;
-  padding: 30px 35px 40px;
+  margin: 0 auto 22px;
+  padding: 30px 35px 20px;
 
   font-family: $sf-pro-font;
 
@@ -30,3 +30,93 @@
     line-height: 29px;
   }
 }
+
+.body {
+  display: flex;
+
+  ::ng-deep tui-scrollbar {
+    div.content {
+      width: auto;
+    }
+  }
+}
+
+.cards {
+  display: flex;
+
+  margin-bottom: 20px;
+
+  &__item {
+    &:not(:last-child) {
+      margin-right: 52px;
+    }
+  }
+}
+
+.card {
+  width: 434px;
+  padding: 35px 66px 35px 40px;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  border-radius: 20px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 36px;
+
+    > span {
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 120%;
+    }
+
+    app-info-hint {
+      margin-left: 10px;
+    }
+  }
+
+  &__body {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 38px;
+  }
+
+  &__text {
+    &_big {
+      font-weight: 300;
+      font-size: 36px;
+      line-height: 120%;
+    }
+
+    &_label {
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 120%;
+    }
+
+    &_link {
+      color: $rubic-primary;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 120%;
+      text-decoration: underline;
+
+      cursor: pointer;
+    }
+  }
+
+  ::ng-deep app-rubic-button {
+    button {
+      width: auto !important;
+    }
+  }
+}
+
+.more-link {
+  margin-left: 8px;
+}
+

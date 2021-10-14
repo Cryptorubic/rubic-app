@@ -8,6 +8,7 @@ import {
   TuiDropdownControllerModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiScrollbarModule,
   TuiSvgModule
 } from '@taiga-ui/core';
 import { TuiLetModule } from '@taiga-ui/cdk';
@@ -44,7 +45,8 @@ import { GasRefundComponent } from './components/gas-refund/gas-refund.component
     TuiDropdownControllerModule,
     TuiButtonModule,
     TuiDataListModule,
-    TuiSvgModule
+    TuiSvgModule,
+    TuiScrollbarModule
   ],
   providers: [GasRefundService]
 })

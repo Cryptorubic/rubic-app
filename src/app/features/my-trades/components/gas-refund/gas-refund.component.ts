@@ -26,4 +26,10 @@ export class GasRefundComponent {
       .pipe(watch(this.cdr))
       .subscribe(() => (this.isLoading = false));
   }
+
+  public isButtonDisabled(refundDate: Date): boolean {
+    return refundDate > new Date();
+  }
+
+  public onRefundClick() {}
 }

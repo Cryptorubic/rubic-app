@@ -18,19 +18,31 @@ export class GasRefundApiService {
       walletAddress: this.authService.userAddress
     }); */
 
-    return timer(520).pipe(
+    return timer(0).pipe(
       map(() => [
         {
           id: '123',
           transactions: ['0x1234', '0x12345'],
           totalRefundUSD: 12.345,
-          refundDate: new Date()
+          refundDate: new Date(1634054988964)
         },
         {
           id: '124',
           transactions: ['0x12346'],
           totalRefundUSD: 0.345,
-          refundDate: new Date()
+          refundDate: new Date(Date.now() + 100000)
+        },
+        {
+          id: '125',
+          transactions: ['0x1234', '0x12345'],
+          totalRefundUSD: 12.345,
+          refundDate: new Date(Date.now() + 100000)
+        },
+        {
+          id: '126',
+          transactions: ['0x12346'],
+          totalRefundUSD: 0.345,
+          refundDate: new Date(Date.now() + 100000)
         }
       ])
     );
