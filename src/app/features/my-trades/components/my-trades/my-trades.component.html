@@ -1,12 +1,11 @@
 <div class="my-trades">
   <div class="my-trades__header header">
     <div class="header__title">{{ 'myTrades.title' | translate }}</div>
-    <app-rubic-refresh-button
-      type="refresh"
-      (onRefresh)="refreshTable()"
-      [loadingStatus]="loadingStatus"
+    <app-rotating-icon
+      (iconClick)="refreshTable()"
+      [rotating]="loading"
       *ngIf="walletAddress"
-    ></app-rubic-refresh-button>
+    ></app-rotating-icon>
   </div>
 
   <tui-loader [overlay]="true" [showLoader]="loading" [ngClass]="{ 'position-up': !isDesktop }">
