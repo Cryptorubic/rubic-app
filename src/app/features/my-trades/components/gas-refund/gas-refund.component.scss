@@ -68,9 +68,14 @@
     margin-bottom: 36px;
 
     > span {
+      overflow: hidden;
+
       font-weight: 500;
       font-size: 24px;
       line-height: 120%;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     app-info-hint {
@@ -109,9 +114,30 @@
     }
   }
 
+  &__table {
+    width: 254px;
+
+    td {
+      > * {
+        vertical-align: middle;
+      }
+
+      > img {
+        float: right;
+      }
+    }
+
+    tr {
+      height: 30px;
+
+      cursor: pointer;
+    }
+  }
+
   ::ng-deep app-rubic-button {
     button {
       width: auto !important;
+      min-width: 200px;
     }
   }
 }

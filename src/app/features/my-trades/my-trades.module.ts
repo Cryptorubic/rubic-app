@@ -6,6 +6,7 @@ import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownControllerModule,
+  TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiScrollbarModule,
@@ -46,7 +47,8 @@ import { GasRefundComponent } from './components/gas-refund/gas-refund.component
     TuiButtonModule,
     TuiDataListModule,
     TuiSvgModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    TuiHintModule
   ],
   providers: [GasRefundService]
 })
