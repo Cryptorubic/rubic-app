@@ -47,6 +47,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 interface BlockchainInfo {
@@ -164,6 +165,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly successTxModalService: SuccessTxModalService
   ) {
     this.onCalculateTrade$ = new Subject();
@@ -446,17 +448,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.notifyTradeInProgress();
-
-      // Inform gtm that tx was signed
-      this.window.dataLayer?.push({
-        event: 'transactionSigned',
-        ecategory: 'transaction',
-        eaction: 'ok',
-        elabel: '',
-        evalue: '',
-        transaction: true,
-        interactionType: false
-      });
+      this.gtmService.notifySignTransaction();
     };
 
     this.crossChainRoutingService

@@ -37,6 +37,7 @@ import { JoeAvalancheService } from 'src/app/features/instant-trade/services/ins
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,7 @@ export class InstantTradeService {
     private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
+    private readonly gtmService: GoogleTagManagerService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -170,17 +172,7 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
-
-          // Inform gtm that tx was signed
-          this.window.dataLayer?.push({
-            event: 'transactionSigned',
-            ecategory: 'transaction',
-            eaction: 'ok',
-            elabel: '',
-            evalue: '',
-            transaction: true,
-            interactionType: false
-          });
+          this.gtmService.notifySignTransaction();
 
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;

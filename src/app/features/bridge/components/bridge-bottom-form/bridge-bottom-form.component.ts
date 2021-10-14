@@ -46,6 +46,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -162,6 +163,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
     private readonly iframeService: IframeService,
+    private readonly gtmService: GoogleTagManagerService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.isBridgeSupported = true;
@@ -381,17 +383,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.notifyTradeInProgress();
-
-        // Inform gtm that tx was signed
-        this.window.dataLayer?.push({
-          event: 'transactionSigned',
-          ecategory: 'transaction',
-          eaction: 'ok',
-          elabel: '',
-          evalue: '',
-          transaction: true,
-          interactionType: false
-        });
+        this.gtmService.notifySignTransaction();
       }
     };
 
