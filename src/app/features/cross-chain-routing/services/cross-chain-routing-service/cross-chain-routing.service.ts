@@ -155,7 +155,7 @@ export class CrossChainRoutingService {
     maxAmount: BigNumber;
   }> {
     const secondTransitToken = this.transitTokens[toBlockchain];
-    const transitAmountMargin = 0.1; // 10%
+    const transitAmountMargin = 0.2; // 20%
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
     const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
