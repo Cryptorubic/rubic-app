@@ -198,10 +198,10 @@ export class SwapsService {
 
     const update = () => {
       if (form?.fromToken) {
-        this.tokensService.updateTokenPriceInUsd(form.fromToken);
+        this.tokensService.getTokenPrice(form.fromToken);
       }
       if (form?.toToken) {
-        this.tokensService.updateTokenPriceInUsd(form.toToken);
+        this.tokensService.getTokenPrice(form.toToken);
       }
     };
 

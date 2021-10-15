@@ -300,7 +300,7 @@ export class TokensService {
   }
 
   /**
-   * Gets token price.
+   * Gets token price and updates tokens list.
    * @param token Token to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
@@ -315,11 +315,13 @@ export class TokensService {
       .getTokenPrice(token)
       .pipe(
         switchMap(async tokenPrice => {
+          const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+
           if (!tokenPrice) {
-            tokenPrice = this.tokens.find(t => TokensService.areTokensEqual(t, token))?.price;
+            tokenPrice = foundToken?.price;
 
             if (!tokenPrice && searchBackend) {
-              return (
+              tokenPrice = (
                 await this.fetchQueryTokens(
                   token.address,
                   token.blockchain as PAGINATED_BLOCKCHAIN_NAME
@@ -327,32 +329,23 @@ export class TokensService {
               ).get(0)?.price;
             }
           }
+
+          if (tokenPrice && foundToken) {
+            const newToken = {
+              ...foundToken,
+              price: tokenPrice
+            };
+            this.tokensSubject.next(
+              this.tokens
+                .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+                .push(newToken)
+            );
+          }
+
           return tokenPrice;
         })
       )
       .toPromise();
-  }
-
-  /**
-   * Updates token's price and emits new tokens' list with updated token.
-   * @param token Token to update.
-   */
-  public updateTokenPriceInUsd(token: TokenAmount): void {
-    this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
-      if (tokenPrice) {
-        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-        const newToken = {
-          ...token,
-          ...foundToken,
-          price: tokenPrice || token.price
-        };
-        this.tokensSubject.next(
-          this.tokens
-            .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
-            .push(newToken)
-        );
-      }
-    });
   }
 
   /**
