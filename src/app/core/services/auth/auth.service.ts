@@ -10,7 +10,7 @@ import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { WalletLoginInterface, UserInterface } from './models/user.interface';
-import { ProviderConnectorService } from '../blockchain/provider-connector/provider-connector.service';
+import { ProviderConnectorService } from '../blockchain/providers/provider-connector-service/provider-connector.service';
 import { StoreService } from '../store/store.service';
 
 /**

@@ -12,12 +12,12 @@ import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
 import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { MetamaskProvider } from '../private-provider/metamask-provider/metamask-provider';
-import { WalletConnectProvider } from '../private-provider/wallet-connect/wallet-connect-provider';
-import { WalletLinkProvider } from '../private-provider/wallet-link/wallet-link-provider';
-import { StoreService } from '../../store/store.service';
-import { WALLET_NAME } from '../../../wallets/components/wallets-modal/models/providers';
-import { PrivateProvider } from '../private-provider/private-provider';
+import { MetamaskProvider } from 'src/app/core/services/blockchain/providers/private-provider/metamask-provider/metamask-provider';
+import { WalletConnectProvider } from 'src/app/core/services/blockchain/providers/private-provider/wallet-connect/wallet-connect-provider';
+import { WalletLinkProvider } from 'src/app/core/services/blockchain/providers/private-provider/wallet-link/wallet-link-provider';
+import { StoreService } from 'src/app/core/services/store/store.service';
+import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 
 @Injectable({
   providedIn: 'root'

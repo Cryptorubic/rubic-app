@@ -14,17 +14,20 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 import { from, Observable, of } from 'rxjs';
 import { HEALTHCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
-import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { HttpClient } from '@angular/common/http';
-import { BatchCall } from 'src/app/core/services/blockchain/types/BatchCall';
-import { RpcResponse } from 'src/app/core/services/blockchain/types/RpcResponse';
+import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
+import { RpcResponse } from 'src/app/core/services/blockchain/models/RpcResponse';
 import { Cacheable } from 'ts-cacheable';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
-import ERC20_TOKEN_ABI from '../constants/erc-20-abi';
-import MULTICALL_ABI from '../constants/multicall-abi';
-import { Call } from '../types/call';
-import { MULTICALL_ADDRESSES, MULTICALL_ADDRESSES_TESTNET } from '../constants/multicall-addresses';
-import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
+import MULTICALL_ABI from 'src/app/core/services/blockchain/constants/multicall-abi';
+import { Call } from 'src/app/core/services/blockchain/models/call';
+import {
+  MULTICALL_ADDRESSES,
+  MULTICALL_ADDRESSES_TESTNET
+} from 'src/app/core/services/blockchain/constants/multicall-addresses';
+import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 
 interface MulticallResponse {
   success: boolean;
@@ -259,8 +262,8 @@ export class Web3Public {
   /**
    * executes allowance method in ERC-20 token contract
    * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param spenderAddress wallet or contract address, allowed to spend
    * @param ownerAddress wallet address to spend from
+   * @param spenderAddress wallet or contract address, allowed to spend
    * @return tokens amount, allowed to be spent
    */
   public async getAllowance(
@@ -367,25 +370,6 @@ export class Web3Public {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
     this.getTokenInfoCachingDecorator();
-
-  /**
-   * Encodes a function call using its JSON interface object and given parameters.
-   * @param contractAbi the JSON interface object of a function.
-   * @param methodName method name for encode
-   * @param methodArguments the parameters to encode
-   * @return the ABI encoded function call. Means function signature + parameters
-   */
-  public async encodeFunctionCall(
-    contractAbi: AbiItem[],
-    methodName: string,
-    methodArguments: unknown[]
-  ): Promise<string> {
-    const methodSignature = contractAbi.find(abiItem => abiItem.name === methodName);
-    if (methodSignature === undefined) {
-      throw Error('No such method in abi');
-    }
-    return this.web3.eth.abi.encodeFunctionCall(methodSignature, methodArguments as string[]);
-  }
 
   private getTokenInfoCachingDecorator(): (
     tokenAddress: string
@@ -685,7 +669,10 @@ export class Web3Public {
       .post<RpcResponse<T>[]>((<HttpProvider>this.web3.currentProvider).host, batch)
       .toPromise();
 
-    return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
+    if (Array.isArray(response)) {
+      return response.sort((a, b) => a.id - b.id).map(item => (item.error ? null : item.result));
+    }
+    return [response];
   }
 
   /**
