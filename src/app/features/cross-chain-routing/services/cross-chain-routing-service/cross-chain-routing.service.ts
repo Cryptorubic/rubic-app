@@ -148,27 +148,41 @@ export class CrossChainRoutingService {
     );
   }
 
-  private async getMinMaxTransitTokenAmounts(): Promise<{
+  private async getMinMaxTransitTokenAmounts(
+    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    toBlockchain: SupportedCrossChainSwapBlockchain
+  ): Promise<{
     minAmount: BigNumber;
     maxAmount: BigNumber;
   }> {
-    const { fromToken } = this.swapFormService.inputValue;
-    const fromBlockchain = fromToken.blockchain;
-    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
-      throw Error('Not supported blockchain');
-    }
-
-    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
+    const secondTransitToken = this.transitTokens[toBlockchain];
+    const transitAmountMargin = 0.1; // 10%
+    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
     const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
-      const transitTokenAmountAbsolute = await web3Public.callContractMethod(
-        this.contractAddresses[fromBlockchain],
+      const secondTransitTokenAmountAbsolute = await web3Public.callContractMethod(
+        this.contractAddresses[toBlockchain],
         this.contractAbi,
         type === 'minAmount' ? 'minTokenAmount' : 'maxTokenAmount'
       );
+      const secondTransitTokenAmount = Web3Public.fromWei(
+        secondTransitTokenAmountAbsolute,
+        secondTransitToken.decimals
+      );
 
-      const transitToken = this.transitTokens[fromBlockchain];
-      return Web3Public.fromWei(transitTokenAmountAbsolute, transitToken.decimals);
+      const firstTransitTokenAmount = await this.calculateTransitTokensCourse(
+        toBlockchain,
+        fromBlockchain,
+        secondTransitTokenAmount
+      );
+      if (firstTransitTokenAmount.eq(secondTransitTokenAmount)) {
+        return firstTransitTokenAmount;
+      }
+
+      if (type === 'minAmount') {
+        return firstTransitTokenAmount.multipliedBy(1 + transitAmountMargin);
+      }
+      return firstTransitTokenAmount.multipliedBy(1 - transitAmountMargin);
     };
 
     return Promise.all([getAmount('minAmount'), getAmount('maxAmount')]).then(
@@ -228,11 +242,9 @@ export class CrossChainRoutingService {
     );
 
     const secondTransitTokenAmount = await this.getSecondTransitTokenAmount(
-      firstTransitToken,
-      secondTransitToken,
-      firstTransitTokenAmount,
       fromBlockchain,
-      toBlockchain
+      toBlockchain,
+      firstTransitTokenAmount
     );
 
     const { path: secondPath, toAmount } = await this.getPathAndToAmount(
@@ -261,7 +273,7 @@ export class CrossChainRoutingService {
     this.currentCrossChainTrade = trade;
 
     const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
-      await this.getMinMaxTransitTokenAmounts();
+      await this.getMinMaxTransitTokenAmounts(fromBlockchain, toBlockchain);
     if (firstTransitTokenAmount.lt(minTransitTokenAmount)) {
       const minAmount = await this.getFromTokenAmount(
         fromToken,
@@ -322,31 +334,45 @@ export class CrossChainRoutingService {
   }
 
   private async getSecondTransitTokenAmount(
-    firstTransitToken: InstantTradeToken,
-    secondTransitToken: InstantTradeToken,
-    firstTransitTokenAmount: BigNumber,
-    fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME
+    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    toBlockchain: SupportedCrossChainSwapBlockchain,
+    firstTransitTokenAmount: BigNumber
   ): Promise<BigNumber> {
     const feeAmountInPercents = await this.getFeeAmountInPercents();
     const amount = firstTransitTokenAmount.multipliedBy(100 - feeAmountInPercents).dividedBy(100);
+    return this.calculateTransitTokensCourse(fromBlockchain, toBlockchain, amount);
+  }
 
+  /**
+   * Converts one transit token's amount to another, using current dollar course.
+   * @param fromTransitTokenBlockchain First transit token's blockchain.
+   * @param toTransitTokenBlockchain Second transit token's blockchain.
+   * @param fromTransitTokenAmount First transit token's amount.
+   * @returns Promise<BigNumber> Second transit token's amount.
+   */
+  private async calculateTransitTokensCourse(
+    fromTransitTokenBlockchain: SupportedCrossChainSwapBlockchain,
+    toTransitTokenBlockchain: SupportedCrossChainSwapBlockchain,
+    fromTransitTokenAmount: BigNumber
+  ): Promise<BigNumber> {
     if (
-      fromBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
-      toBlockchain === BLOCKCHAIN_NAME.AVALANCHE
+      fromTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
+      toTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE
     ) {
       const firstTransitTokenPrice = await this.tokensService.getTokenPrice({
-        address: firstTransitToken.address,
-        blockchain: fromBlockchain
+        address: this.transitTokens[fromTransitTokenBlockchain].address,
+        blockchain: fromTransitTokenBlockchain
       });
       const secondTransitTokenPrice = await this.tokensService.getTokenPrice({
-        address: secondTransitToken.address,
-        blockchain: toBlockchain
+        address: this.transitTokens[toTransitTokenBlockchain].address,
+        blockchain: toTransitTokenBlockchain
       });
-      return amount.multipliedBy(firstTransitTokenPrice).dividedBy(secondTransitTokenPrice);
+      return fromTransitTokenAmount
+        .multipliedBy(firstTransitTokenPrice)
+        .dividedBy(secondTransitTokenPrice);
     }
 
-    return amount;
+    return fromTransitTokenAmount;
   }
 
   private async getFeeAmountInPercents(): Promise<number> {
