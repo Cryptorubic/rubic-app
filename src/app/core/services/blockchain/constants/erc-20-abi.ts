@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export default [
+const ERC20_TOKEN_ABI = [
   {
     constant: true,
     inputs: [],
@@ -272,3 +272,5 @@ export default [
     type: 'event'
   }
 ] as AbiItem[];
+
+export default ERC20_TOKEN_ABI;

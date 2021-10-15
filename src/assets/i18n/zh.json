@@ -70,7 +70,8 @@
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again"
+    "unknown": "Oops, something went wrong, please try again",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
   },
   "navigation": {
     "about": "关于",
@@ -502,6 +503,34 @@
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
+    "crossChainRouting": {
+      "autoRefreshTitle": "自動刷新",
+      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "slippageTitle": "滑點公差",
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "promoCodeTitle": "促銷代碼",
+      "promoCodeHint": "在此處輸入促銷代碼以獲得您交易的 gas 退款",
+      "promoCodeLoginRequired": "請連接您的錢包以使用促銷代碼。",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "左使用",
+          "validUntil": "有效期至"
+        },
+        "rejected": {
+          "text": "您的促銷代碼已被拒絕",
+          "reason": {
+            "4000": "此優惠碼已被使用過，此優惠碼只能使用一次。.",
+            "4001": "已達到促銷代碼的最大使用次數。"
+          }
+        },
+        "outdated": {
+          "text": "此促銷代碼已過期。"
+        },
+        "wrong": {
+          "text": "促銷代碼輸入錯誤或不存在。"
+        }
+      }
+    },
     "header": {
       "switchTheme": {
         "title": "Switch Theme",
@@ -530,6 +559,7 @@
   "notifications": {
     "tradeInProgress": "進行中的交易",
     "successfulTradeTitle": "成功的交易",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",

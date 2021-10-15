@@ -4,6 +4,7 @@ import {
   CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
+import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -18,6 +19,8 @@ export class SettingsCcrComponent implements OnInit {
 
   public slippageTolerance: number;
 
+  public promoCode: PromoCode | null = null;
+
   constructor(private readonly settingsService: SettingsService) {}
 
   public ngOnInit(): void {
@@ -29,9 +32,11 @@ export class SettingsCcrComponent implements OnInit {
     this.crossChainRoutingForm = new FormGroup<CcrSettingsForm>({
       autoSlippageTolerance: new FormControl<boolean>(formValue.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(formValue.slippageTolerance),
-      autoRefresh: new FormControl<boolean>(formValue.autoRefresh)
+      autoRefresh: new FormControl<boolean>(formValue.autoRefresh),
+      promoCode: new FormControl<PromoCode | null>(null)
     });
     this.slippageTolerance = formValue.slippageTolerance;
+    this.promoCode = formValue.promoCode;
     this.setFormChanges();
   }
 
@@ -42,6 +47,7 @@ export class SettingsCcrComponent implements OnInit {
     this.settingsService.crossChainRoutingValueChanges.subscribe(settings => {
       this.crossChainRoutingForm.patchValue({ ...settings }, { emitEvent: false });
       this.slippageTolerance = settings.slippageTolerance;
+      this.promoCode = settings.promoCode;
     });
   }
 
@@ -65,5 +71,9 @@ export class SettingsCcrComponent implements OnInit {
       autoSlippageTolerance: false,
       slippageTolerance: this.slippageTolerance
     });
+  }
+
+  public onPromoCodeChanges(promoCode: PromoCode | null) {
+    this.crossChainRoutingForm.patchValue({ promoCode });
   }
 }

@@ -14,15 +14,14 @@ import {
 } from 'src/app/core/services/backend/cross-chain-routing-api/models/CrossChainTradesResponseApi';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { environment } from 'src/environments/environment';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
-export const BASE_URL = `${environment.crossChainApiBaseUrl}/`;
+export const BASE_URL = `${environment.crossChain.baseApiUrl}/`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrossChainRoutingApiService {
-  constructor(private readonly httpService: HttpService, private iframeService: IframeService) {}
+  constructor(private readonly httpService: HttpService) {}
 
   static getTableToken(token: CrossChainTokenApi, amount: string): TableToken {
     return {
@@ -67,17 +66,19 @@ export class CrossChainRoutingApiService {
   }
 
   /**
-   * post trade with domain query {@link HTTPInterceptor} to save extended trade info in backend
+   * post trade with domain query {@link RubicExchangeInterceptor} to save extended trade info in backend
    * @param transactionHash hash of crosschain swap transaction
    * @param blockchain swap origin blockchain
+   * @param [promoCodeText] promo code text if promo code has been successfully applied
    */
-  public postTradeInWidget(transactionHash: string, blockchain: BLOCKCHAIN_NAME): Promise<void> {
-    if (!this.iframeService.isIframe) {
-      return Promise.resolve();
-    }
+  public postTrade(
+    transactionHash: string,
+    blockchain: BLOCKCHAIN_NAME,
+    promoCodeText?: string
+  ): Promise<void> {
     const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains];
     return this.httpService
-      .patch('trades/', { transactionHash, network }, {}, BASE_URL)
+      .patch('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
       .pipe(
         catchError(err => {
           console.error(err);

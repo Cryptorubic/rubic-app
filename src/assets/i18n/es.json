@@ -70,7 +70,8 @@
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again"
+    "unknown": "Oops, something went wrong, please try again",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
   },
   "navigation": {
     "about": "Información",
@@ -502,6 +503,34 @@
     "bridge": {
       "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
     },
+    "crossChainRouting": {
+      "autoRefreshTitle": "Autorefrescar",
+      "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos.",
+      "slippageTitle": "Tolerancia al deslizamiento",
+      "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
+      "promoCodeTitle": "Código promocional",
+      "promoCodeHint": "Ingrese el código de promoción aquí para obtener un reembolso de gasolina por su operación",
+      "promoCodeLoginRequired": "Por favor, conecte su billetera para usar el código de promoción",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "Se usa a la izquierda",
+          "validUntil": "Válido hasta"
+        },
+        "rejected": {
+          "text": "Su código promocional ha sido rechazado",
+          "reason": {
+            "4000": "El código de promoción ya se ha utilizado antes. Solo puede utilizar este código de promoción una vez.",
+            "4001": "Se ha alcanzado el número máximo de usos del código promocional."
+          }
+        },
+        "outdated": {
+          "text": "Este código de promoción ha caducado"
+        },
+        "wrong": {
+          "text": "El código de promoción se ingresó incorrectamente o no existe."
+        }
+      }
+    },
     "header": {
       "switchTheme": {
         "title": "Switch Theme",
@@ -530,6 +559,7 @@
   "notifications": {
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",

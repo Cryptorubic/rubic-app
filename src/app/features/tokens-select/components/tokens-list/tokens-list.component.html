@@ -26,7 +26,8 @@
             </li>
           </ng-container>
           <li
-            *cdkVirtualFor="let token of tokens; let i = index"
+            *cdkVirtualFor="let token of tokens; let i = index; templateCacheSize: 0"
+            @itemAnimation
             class="tokens-list__item"
             [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
             [tuiManualHint]="disabledTokenHint"

@@ -13,8 +13,10 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.HARMONY]: Blockchain;
   [BLOCKCHAIN_NAME.TRON]: Blockchain;
   [BLOCKCHAIN_NAME.XDAI]: Blockchain;
+  [BLOCKCHAIN_NAME.AVALANCHE]: Blockchain;
   [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
+  [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
 };
 
 const imageBaseSrc = 'assets/images/icons/coins/';
@@ -55,9 +57,19 @@ export const BLOCKCHAINS: Blockchains = {
     name: 'XDAI',
     img: `${imageBaseSrc}xdai.svg`
   },
+  [BLOCKCHAIN_NAME.AVALANCHE]: {
+    key: BLOCKCHAIN_NAME.AVALANCHE,
+    name: 'Avalanche',
+    img: `${imageBaseSrc}avalanche.svg`
+  },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
     key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
     name: 'Kovan',
     img: `${imageBaseSrc}kovan.png`
+  },
+  [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: {
+    key: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
+    name: 'Avalanche',
+    img: `${imageBaseSrc}avalanche-testnet.svg`
   }
 };

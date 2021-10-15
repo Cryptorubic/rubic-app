@@ -1,0 +1,165 @@
+@import 'src/styles';
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.hint {
+  height: 15px;
+  margin-right: 10px;
+  margin-left: 6px;
+
+  cursor: pointer;
+
+  &_error {
+    ::ng-deep {
+      path {
+        fill: $rubic-text-error;
+      }
+    }
+  }
+}
+
+.promo-code-wrapper {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+
+    &:not(:last-child) {
+      margin-bottom: 6px;
+    }
+  }
+
+  label {
+    font-weight: 300;
+    font-size: 16px;
+  }
+
+  .message {
+    padding: 0 6px;
+
+    line-height: 13px;
+
+    small {
+      font-size: 11px;
+    }
+  }
+
+  tui-input {
+    flex: 1;
+  }
+
+  ::ng-deep {
+    tui-primitive-textfield {
+      width: 100%;
+    }
+
+    tui-wrapper[data-appearance='textfield'] {
+
+      --tui-primary: rgba(255, 255, 255, 0.5);
+
+      min-width: 160px;
+
+      color: var(--form-bright-text-color);
+
+      border-radius: 100px;
+      box-shadow: none;
+
+      input {
+        padding-right: 28px !important;
+
+        + div.content {
+          padding-right: 0;
+        }
+      }
+
+      input,
+      input::placeholder {
+        text-align: left;
+      }
+    }
+
+    tui-loader {
+      --primary-color: rgba(255, 255, 255, 0.5);
+
+      width: 30px;
+    }
+
+    input + .content .placeholder {
+      text-align: left;
+    }
+
+    .wrapper {
+      display: flex;
+    }
+
+    .value-decoration {
+      margin-left: auto;
+    }
+
+    .custom-content {
+      width: unset;
+    }
+  }
+
+  &[status='accepted'] {
+    .message {
+      small {
+        display: block;
+
+        color: $rubic-primary;
+      }
+    }
+
+    ::ng-deep {
+      tui-wrapper[data-appearance='textfield']::after {
+        border-color: $rubic-primary;
+      }
+
+      tui-svg {
+        color: $rubic-primary;
+      }
+    }
+  }
+
+  &[status='outdated'],
+  &[status='wrong'],
+  &[status='rejected'] {
+    .message {
+      width: 100%;
+
+      text-align: right;
+
+      small {
+        color: $rubic-text-error;
+      }
+    }
+
+    ::ng-deep {
+      tui-wrapper[data-appearance='textfield']::after {
+        border-color: $rubic-text-error;
+      }
+
+      tui-svg {
+        color: $rubic-text-error;
+      }
+    }
+  }
+
+  &[status='rejected'] {
+    .message {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0;
+
+      line-height: 17px;
+
+      .hint {
+        margin-right: 0;
+      }
+    }
+  }
+}

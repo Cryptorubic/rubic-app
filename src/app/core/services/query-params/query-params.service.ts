@@ -15,8 +15,8 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 const DEFAULT_PARAMETERS = {
@@ -28,6 +28,7 @@ const DEFAULT_PARAMETERS = {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
       [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
       [BLOCKCHAIN_NAME.HARMONY]: 'ONE',
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'AVAX',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR'
     },
     to: {

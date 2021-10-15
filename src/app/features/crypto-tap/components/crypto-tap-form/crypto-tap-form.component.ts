@@ -283,16 +283,6 @@ export class CryptoTapFormComponent implements OnInit {
       }
     );
 
-    this.window.dataLayer?.push({
-      event: 'cryptoTapTransactionSigned',
-      ecategory: ' transaction',
-      eaction: 'ok',
-      elabel: '',
-      evalue: '',
-      transaction: true,
-      interactionType: false
-    });
-
     if (this.window.location.pathname === '/crypto-tap') {
       this.dialogService
         .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {

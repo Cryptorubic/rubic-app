@@ -9,8 +9,8 @@ import { TokensApiService } from 'src/app/core/services/backend/tokens-api/token
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -221,6 +221,7 @@ export class TokensService {
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY,
+      BLOCKCHAIN_NAME.AVALANCHE,
       BLOCKCHAIN_NAME.MOONRIVER
     ];
     const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {

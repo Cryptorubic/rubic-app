@@ -70,7 +70,8 @@
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again"
+    "unknown": "Oops, something went wrong, please try again",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
   },
   "navigation": {
     "about": "About",
@@ -497,10 +498,38 @@
       "deadlineTitle": "Transaction deadline",
       "deadline": "Your transaction will revert if it is pending for more than this period of time.",
       "autoRefreshTitle": "Auto refresh",
-      "autoRefresh": "Update trade parameters each 15 seconds."
+      "autoRefresh": "Updates trade parameters each 15 seconds."
     },
     "bridge": {
       "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
+    },
+    "crossChainRouting": {
+      "autoRefreshTitle":  "Auto refresh",
+      "autoRefresh": "Updates trade parameters each 15 seconds.",
+      "slippageTitle": "Slippage tolerance",
+      "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
+      "promoCodeTitle": "Promo Code",
+      "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
+      "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "Uses left",
+          "validUntil": "Valid until"
+        },
+        "rejected": {
+          "text": "Your promo code is not valid.",
+          "reason": {
+            "4000": "You have already used the promo code before. You can only use this promo code once.",
+            "4001": "The promo code have reached the maximum numbers of use."
+          }
+        },
+        "outdated": {
+          "text": "This promo code has expired."
+        },
+        "wrong": {
+          "text": "The promo code is entered incorrectly or it does not exist."
+        }
+      }
     },
     "header": {
       "switchTheme": {
@@ -530,6 +559,7 @@
   "notifications": {
     "tradeInProgress": "Trade in progress",
     "successfulTradeTitle": "Successful trade",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",

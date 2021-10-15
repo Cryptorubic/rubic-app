@@ -6,10 +6,10 @@ import {
   CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { from, Observable, of } from 'rxjs';
 import { filter, first, map, startWith, switchMap } from 'rxjs/operators';
 import {
@@ -38,6 +38,9 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
+import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +79,8 @@ export class CrossChainRoutingService {
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly iframeService: IframeService
   ) {
     this.setUniswapProviders();
     this.setToBlockchainsInContract();
@@ -415,7 +419,7 @@ export class CrossChainRoutingService {
     }
   }
 
-  public createTrade(options: TransactionOptions = {}): Observable<TransactionReceipt> {
+  public createTrade(options: TransactionOptions = {}): Observable<void> {
     return from(
       (async () => {
         const trade = this.currentCrossChainTrade;
@@ -471,42 +475,71 @@ export class CrossChainRoutingService {
           .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
           .toFixed(0);
 
+        let transactionHash: string;
         try {
-          const receipt = await this.web3PrivateService.tryExecuteContractMethod(
+          await this.web3PrivateService.tryExecuteContractMethod(
             contractAddress,
             this.contractAbi,
             methodName,
             methodArguments,
             {
               ...options,
-              value
+              value,
+              onTransactionHash: (hash: string) => {
+                if (options.onTransactionHash) {
+                  options.onTransactionHash(hash);
+                }
+                transactionHash = hash;
+              }
             },
             err => {
-              const includesErrCode = err.message.includes('-32000');
+              const includesErrCode = err?.message?.includes('-32000');
               const allowedErrors = [
                 'insufficient funds for transfer',
                 'insufficient funds for gas * price+ value'
               ];
               const includesPhrase = Boolean(
-                allowedErrors.find(error => err.message.includes(error))
+                allowedErrors.find(error => err?.message?.includes(error))
               );
               return includesErrCode && includesPhrase;
             }
           );
-          this.crossChainRoutingApiService.postTradeInWidget(
-            receipt.transactionHash,
-            trade.fromBlockchain
-          );
-          return receipt;
+
+          await this.postCrossChainTrade(transactionHash);
         } catch (err) {
+          if (err instanceof FailedToCheckForTransactionReceiptError) {
+            await this.postCrossChainTrade(transactionHash);
+            return;
+          }
+
           const errMessage = err.message || err.toString?.();
-          if (errMessage.includes('swapContract: Not enough amount of tokens')) {
+          if (errMessage?.includes('swapContract: Not enough amount of tokens')) {
             throw new CrossChainIsUnavailableWarning();
           }
+          if (errMessage?.includes('err: insufficient funds for gas * price + value')) {
+            throw new InsufficientFundsGasPriceValueError(
+              this.swapFormService.inputValue.fromToken.symbol
+            );
+          }
+
           throw err;
         }
       })()
     );
+  }
+
+  /**
+   * Posts trade data to log widget domain, or to apply promo code.
+   * @param transactionHash Hash of checked transaction.
+   */
+  private async postCrossChainTrade(transactionHash: string): Promise<void> {
+    if (this.iframeService.isIframe || this.settings.promoCode?.status === 'accepted') {
+      await this.crossChainRoutingApiService.postTrade(
+        transactionHash,
+        this.currentCrossChainTrade.fromBlockchain,
+        this.settings.promoCode?.text
+      );
+    }
   }
 
   /**

@@ -101,6 +101,21 @@ export default [
     }
   },
   {
+    id: 43114,
+    name: BLOCKCHAIN_NAME.AVALANCHE,
+    scannerUrl: 'https://cchain.explorer.avax.network/',
+    rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/avalanche.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.AVALANCHE,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'AVAX',
+      symbol: 'AVAX',
+      decimals: 18
+    }
+  },
+  {
     id: 1285,
     name: BLOCKCHAIN_NAME.MOONRIVER,
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
@@ -177,6 +192,22 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'ONE',
       symbol: 'ONE',
+      decimals: 18
+    }
+  },
+  {
+    id: 43113,
+    name: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
+    label: 'Avalanche testnet',
+    scannerUrl: 'https://cchain.explorer.avax-test.network',
+    rpcLink: 'https://api.avax-test.network/ext/bc/C/rpc',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/avalanche-testnet.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'AVAX',
+      symbol: 'AVAX',
       decimals: 18
     }
   }

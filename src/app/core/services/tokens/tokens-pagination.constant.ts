@@ -6,5 +6,6 @@ export const TOKENS_PAGINATION = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: { count: undefined, page: 2, maxPage: 3 },
   [BLOCKCHAIN_NAME.POLYGON]: { count: undefined, page: 2, maxPage: 3 },
   [BLOCKCHAIN_NAME.HARMONY]: { count: undefined, page: 2, maxPage: 2 },
+  [BLOCKCHAIN_NAME.AVALANCHE]: { count: undefined, page: 1, maxPage: 1 },
   [BLOCKCHAIN_NAME.MOONRIVER]: { count: undefined, page: 2, maxPage: 2 }
 } as TokensNetworkState;

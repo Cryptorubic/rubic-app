@@ -12,6 +12,7 @@ import { forkJoin, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
+  debounceTime,
   distinctUntilChanged,
   filter,
   first,
@@ -27,7 +28,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -44,6 +45,8 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -160,7 +163,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly successTxModalService: SuccessTxModalService,
     private readonly iframeService: IframeService,
-    @Inject(WINDOW) private readonly window: Window
+    private readonly gtmService: GoogleTagManagerService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.isBridgeSupported = true;
     this.onCalculateTrade$ = new Subject<void>();
@@ -277,6 +281,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
+        debounceTime(200),
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
@@ -324,14 +329,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  public async approveTrade(): Promise<void> {
+  public approveTrade(): void {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
 
     let approveInProgressSubscription$: Subscription;
     const bridgeTradeRequest: BridgeTradeRequest = {
       onTransactionHash: () => {
-        this.cdr.detectChanges();
         approveInProgressSubscription$ = this.notificationsService.show(
           this.translateService.instant('bridgePage.approveProgressMessage'),
           {
@@ -372,13 +376,14 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  public async createTrade(): Promise<void> {
+  public createTrade(): void {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.notifyTradeInProgress();
+        this.gtmService.notifySignTransaction();
       }
     };
 

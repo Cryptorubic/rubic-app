@@ -12,8 +12,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -96,8 +96,8 @@ export class TokensSelectComponent implements OnInit {
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
-      if (this.tokensList?.listScroll) {
-        this.tokensList.listScroll.scrollToIndex(0);
+      if (this.tokensList?.scrollSubject?.value) {
+        this.tokensList.scrollSubject.value.scrollToIndex(0, 'smooth');
       }
     }
   }

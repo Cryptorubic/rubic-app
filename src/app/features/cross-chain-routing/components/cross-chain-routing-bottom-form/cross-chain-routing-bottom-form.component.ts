@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   first,
@@ -44,6 +45,9 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
+import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 interface BlockchainInfo {
@@ -160,7 +164,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService,
-    @Inject(WINDOW) private readonly window: Window,
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly successTxModalService: SuccessTxModalService
   ) {
     this.onCalculateTrade$ = new Subject();
@@ -251,6 +256,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         filter(el => el === 'normal'),
+        debounceTime(200),
         switchMap(() => {
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
@@ -435,11 +441,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async createTrade(): Promise<void> {
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     const onTransactionHash = () => {
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.notifyTradeInProgress();
+      this.gtmService.notifySignTransaction();
     };
 
     this.crossChainRoutingService
@@ -448,13 +457,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe(
-        async (_: TransactionReceipt) => {
+        async () => {
           this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
+          this.notificationsService.show<{ type: SuccessTxModalType }>(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),
             {
               status: TuiNotification.Success,
-              autoClose: 15000
+              autoClose: 15000,
+              data: {
+                type: 'cross-chain-routing'
+              }
             }
           );
 
@@ -485,7 +497,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open('cross-chain-routing');
+      this.successTxModalService.open();
     }
   }
 

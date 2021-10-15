@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { NAVIGATION_LIST } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-list';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';

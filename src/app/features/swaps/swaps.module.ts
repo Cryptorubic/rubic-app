@@ -35,6 +35,7 @@ import { SwapsFormComponent } from './components/swaps-form/swaps-form.component
 import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
 import { IframeSettingsComponent } from './components/swaps-settings/iframe-settings/iframe-settings.component';
+import { CcrPromocodeComponent } from './components/swaps-settings/settings-ccr/ccr-promocode/ccr-promocode.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { IframeSettingsComponent } from './components/swaps-settings/iframe-sett
     UserBalanceContainerComponent,
     CrossChainSwapInfoComponent,
     IframeSettingsComponent,
-    VerticalIframeTokenAmountInputComponent
+    VerticalIframeTokenAmountInputComponent,
+    CcrPromocodeComponent
   ],
   exports: [],
   imports: [
