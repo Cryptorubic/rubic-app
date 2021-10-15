@@ -26,10 +26,10 @@ export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
     fee = '0'
   ): Promise<Multicall[]> {
     const methodParams = routesMethodArguments.map((methodArguments: string[]) => {
-      methodArguments.concat(fee);
+      const solarMethodArguments = methodArguments.concat(fee);
       return {
         methodName,
-        methodArguments
+        methodArguments: solarMethodArguments
       };
     });
 

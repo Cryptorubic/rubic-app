@@ -16,7 +16,7 @@ const wethAddressNetMode: ContractAddressNetMode = {
 
 const routingProvidersNetMode = {
   mainnet: [
-    '0x98878B06940aE243284CA214f92Bb71a2b032B8A', // WMOVR
+    '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d', // WMOVR
     '0xB44a9B6905aF7c801311e8F4E76932ee959c663C', // USDT
     '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D', // USDC
     '0x80A16016cC4A2E6a2CACA8a4a498b1699fF0f844', // DAI
