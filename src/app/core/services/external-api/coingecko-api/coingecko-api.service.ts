@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, first, map, skip, tap, timeout } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -138,7 +138,7 @@ export class CoingeckoApiService {
     address: string;
     blockchain: BLOCKCHAIN_NAME;
   }): Observable<number | undefined> {
-    if (token.address === NATIVE_TOKEN_ADDRESS) {
+    if (Web3Public.isNativeAddress(token.address)) {
       return this.getNativeCoinPriceInUsdByCoingecko(token.blockchain);
     }
 

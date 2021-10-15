@@ -302,18 +302,30 @@ export class TokensService {
   /**
    * Gets token price.
    * @param token Token to get price for.
+   * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
-  public getTokenPrice(token: {
-    address: string;
-    blockchain: BLOCKCHAIN_NAME;
-  }): Promise<number | undefined> {
+  public getTokenPrice(
+    token: {
+      address: string;
+      blockchain: BLOCKCHAIN_NAME;
+    },
+    searchBackend = false
+  ): Promise<number | undefined> {
     return this.coingeckoApiService
       .getTokenPrice(token)
       .pipe(
-        map(tokenPrice => {
+        switchMap(async tokenPrice => {
           if (!tokenPrice) {
-            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-            return foundToken?.price;
+            tokenPrice = this.tokens.find(t => TokensService.areTokensEqual(t, token))?.price;
+
+            if (!tokenPrice && searchBackend) {
+              return (
+                await this.fetchQueryTokens(
+                  token.address,
+                  token.blockchain as PAGINATED_BLOCKCHAIN_NAME
+                ).toPromise()
+              ).get(0)?.price;
+            }
           }
           return tokenPrice;
         })

@@ -18,7 +18,7 @@ export const transitTokensWithMode: TransitTokens = {
   [BLOCKCHAIN_NAME.POLYGON]: {
     address: '0xc3cFFDAf8F3fdF07da6D5e3A89B8723D5E385ff8',
     decimals: 18,
-    symbol: 'MRBC'
+    symbol: 'RBC'
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
     address: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',

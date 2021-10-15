@@ -42,6 +42,8 @@ import { PangolinAvalancheService } from 'src/app/features/instant-trade/service
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
+import { compareAddresses } from 'src/app/shared/utils/utils';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -75,6 +77,7 @@ export class CrossChainRoutingService {
     private readonly quickSwapService: QuickSwapService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly providerConnectorService: ProviderConnectorService,
+    private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
     private readonly web3PrivateService: Web3PrivateService,
@@ -128,11 +131,7 @@ export class CrossChainRoutingService {
 
     const contractAddress = this.contractAddresses[fromToken.blockchain];
     return from(
-      web3Public.getAllowance(
-        fromToken.address,
-        this.providerConnectorService.address,
-        contractAddress
-      )
+      web3Public.getAllowance(fromToken.address, this.authService.userAddress, contractAddress)
     ).pipe(map(allowance => allowance.eq(0)));
   }
 
@@ -198,7 +197,7 @@ export class CrossChainRoutingService {
     transitToken: InstantTradeToken,
     transitTokenAmount: BigNumber
   ): Promise<BigNumber> {
-    if (fromToken.address.toLowerCase() === transitToken.address.toLowerCase()) {
+    if (compareAddresses(fromToken.address, transitToken.address)) {
       return transitTokenAmount;
     }
 
@@ -311,7 +310,7 @@ export class CrossChainRoutingService {
     fromAmount: BigNumber,
     toToken: InstantTradeToken
   ): Promise<{ path: string[]; toAmount: BigNumber }> {
-    if (fromToken.address.toLowerCase() !== toToken.address.toLowerCase()) {
+    if (compareAddresses(fromToken.address, toToken.address)) {
       try {
         const instantTrade = await this.uniswapV2Providers[blockchain].calculateTrade(
           fromToken,
@@ -359,14 +358,21 @@ export class CrossChainRoutingService {
       fromTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
       toTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE
     ) {
-      const firstTransitTokenPrice = await this.tokensService.getTokenPrice({
-        address: this.transitTokens[fromTransitTokenBlockchain].address,
-        blockchain: fromTransitTokenBlockchain
-      });
-      const secondTransitTokenPrice = await this.tokensService.getTokenPrice({
-        address: this.transitTokens[toTransitTokenBlockchain].address,
-        blockchain: toTransitTokenBlockchain
-      });
+      const firstTransitTokenPrice = await this.tokensService.getTokenPrice(
+        {
+          address: this.transitTokens[fromTransitTokenBlockchain].address,
+          blockchain: fromTransitTokenBlockchain
+        },
+        true
+      );
+      const secondTransitTokenPrice = await this.tokensService.getTokenPrice(
+        {
+          address: this.transitTokens[toTransitTokenBlockchain].address,
+          blockchain: toTransitTokenBlockchain
+        },
+        true
+      );
+
       return fromTransitTokenAmount
         .multipliedBy(firstTransitTokenPrice)
         .dividedBy(secondTransitTokenPrice);
@@ -417,7 +423,7 @@ export class CrossChainRoutingService {
         const foundTransitToken = tokens.find(
           token =>
             token.blockchain === fromBlockchain &&
-            token.address.toLowerCase() === transitToken.address.toLowerCase()
+            compareAddresses(token.address, transitToken.address)
         );
         const amountInUsd = foundTransitToken?.price
           ? amount.multipliedBy(foundTransitToken.price)
@@ -484,7 +490,7 @@ export class CrossChainRoutingService {
         ]);
 
         const web3PublicFromBlockchain: Web3Public = this.web3PublicService[trade.fromBlockchain];
-        const walletAddress = this.providerConnectorService.address;
+        const walletAddress = this.authService.userAddress;
 
         const slippageTolerance = this.settings.slippageTolerance / 100;
         const tokenInAmountMax = trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
