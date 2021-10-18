@@ -149,7 +149,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Gets min and max permitted amount of transit token in source blockchain.
+   * Gets min and max permitted amounts of transit token in targeted blockchain and converts to transit token in source blockchain.
    * @param fromBlockchain Source blockchain.
    * @param toBlockchain Targeted blockchain.
    */
