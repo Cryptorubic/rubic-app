@@ -310,7 +310,7 @@ export class CrossChainRoutingService {
     fromAmount: BigNumber,
     toToken: InstantTradeToken
   ): Promise<{ path: string[]; toAmount: BigNumber }> {
-    if (compareAddresses(fromToken.address, toToken.address)) {
+    if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
         const instantTrade = await this.uniswapV2Providers[blockchain].calculateTrade(
           fromToken,
