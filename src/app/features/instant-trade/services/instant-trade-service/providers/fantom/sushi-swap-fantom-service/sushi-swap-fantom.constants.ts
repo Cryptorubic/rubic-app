@@ -6,7 +6,7 @@ import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 const sushiSwapFantomContractAddressNetMode: ContractAddressNetMode = {
-  mainnet: '',
+  mainnet: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
   testnet: undefined
 };
 
