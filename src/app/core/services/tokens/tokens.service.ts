@@ -319,7 +319,7 @@ export class TokensService {
 
           if (!tokenPrice) {
             if (foundToken?.price) {
-              tokenPrice = foundToken?.price;
+              tokenPrice = foundToken.price;
             } else if (searchBackend) {
               tokenPrice = (
                 await this.fetchQueryTokens(
