@@ -44,8 +44,7 @@ export class SwapsHeaderComponent {
     const typeIcons: { [SWAP in SWAP_PROVIDER_TYPE]: string } = {
       [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: 'it.svg',
       [SWAP_PROVIDER_TYPE.BRIDGE]: 'bridge.svg',
-      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'ccr.svg',
-      [SWAP_PROVIDER_TYPE.CRYPTO_TAP]: 'ct.svg'
+      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'ccr.svg'
     };
     const defaultPath = '/assets/images/icons/swap-types/';
     this.iconUrl = defaultPath + typeIcons[swapType];

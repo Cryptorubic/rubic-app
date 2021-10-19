@@ -99,8 +99,6 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
-      } else if (hasParams) {
-        this.initiateCryptoTapParams(queryParams);
       }
     }
   }
@@ -160,10 +158,6 @@ export class QueryParamsService {
           })
         });
       });
-  }
-
-  private initiateCryptoTapParams(_params: QueryParams): void {
-    // TODO: add crypto tap params
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
