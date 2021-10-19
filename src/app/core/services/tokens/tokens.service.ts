@@ -330,7 +330,7 @@ export class TokensService {
           }
           return of(tokenPrice);
         }),
-        map(tokenPrice => {
+        tap(tokenPrice => {
           if (tokenPrice) {
             const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
             if (foundToken && tokenPrice !== foundToken.price) {
@@ -345,7 +345,6 @@ export class TokensService {
               );
             }
           }
-          return tokenPrice;
         })
       )
       .toPromise();
