@@ -31,20 +31,5 @@
     </div>
 
     <app-usd-price-container [usdPrice]="usd" [loading]="loading"></app-usd-price-container>
-
-    <!-- for Crypto tap -->
-    <div
-      *ngIf="fee?.token"
-      class="bottom-amount__fee"
-      [ngClass]="{ 'tui-skeleton': loading, 'tui-skeleton_text': loading }"
-    >
-      <span
-        >{{ 'tradePage.providerFee' | translate }}: {{ fee.amount + '&nbsp;' + fee.token.symbol }} ≈
-        ${{ fee.amount.multipliedBy(fee.token.price) | bigNumberFormat: 2 }}</span
-      >
-    </div>
-    <div class="bottom-amount__additional-content">
-      <ng-content></ng-content>
-    </div>
   </ng-container>
 </div>

@@ -3,15 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, first, map, skip, tap, timeout } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
-  BLOCKCHAIN_NAME.XDAI
+  BLOCKCHAIN_NAME.XDAI,
+  BLOCKCHAIN_NAME.AVALANCHE
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -42,7 +42,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binancecoin',
       [BLOCKCHAIN_NAME.POLYGON]: 'matic-network',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
-      [BLOCKCHAIN_NAME.XDAI]: 'xdai'
+      [BLOCKCHAIN_NAME.XDAI]: 'xdai',
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2'
     };
 
     supportedBlockchains.forEach(blockchain => {
@@ -62,7 +63,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon-pos',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony-shard-0',
-      [BLOCKCHAIN_NAME.XDAI]: 'xdai'
+      [BLOCKCHAIN_NAME.XDAI]: 'xdai',
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche'
     };
   }
 
@@ -132,8 +134,11 @@ export class CoingeckoApiService {
    * Gets price of token from coingecko.
    * @param token Token with supported by {@link supportedBlockchains} blockchain.
    */
-  public getTokenPrice(token: BlockchainToken): Observable<number | undefined> {
-    if (token.address === NATIVE_TOKEN_ADDRESS) {
+  public getTokenPrice(token: {
+    address: string;
+    blockchain: BLOCKCHAIN_NAME;
+  }): Observable<number | undefined> {
+    if (Web3Public.isNativeAddress(token.address)) {
       return this.getNativeCoinPriceInUsdByCoingecko(token.blockchain);
     }
 
@@ -144,7 +149,7 @@ export class CoingeckoApiService {
     const blockchainId = this.tokenBlockchainId[token.blockchain];
     const requestTimeout = 3_000; // 3 seconds
     return this.httpClient
-      .get(`${this.baseUrl}coins/${blockchainId}/contract/${token.address}`)
+      .get(`${this.baseUrl}coins/${blockchainId}/contract/${token.address.toLowerCase()}`)
       .pipe(
         timeout(requestTimeout),
         map((response: { market_data: { current_price: { usd: number } } }) => {
