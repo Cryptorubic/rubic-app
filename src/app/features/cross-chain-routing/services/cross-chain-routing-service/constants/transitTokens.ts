@@ -21,8 +21,8 @@ export const transitTokensWithMode: TransitTokens = {
     symbol: 'RBC'
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
-    address: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
-    decimals: 18,
-    symbol: 'DAI.e'
+    address: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
+    decimals: 6,
+    symbol: 'USDT.e'
   }
 };
