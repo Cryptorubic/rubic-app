@@ -160,12 +160,14 @@ export class CrossChainRoutingService {
     minAmount: BigNumber;
     maxAmount: BigNumber;
   }> {
+    const firstTransitToken = this.transitTokens[fromBlockchain];
     const secondTransitToken = this.transitTokens[toBlockchain];
     const transitAmountMargin = 0.2; // 20%
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
     const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
-      const secondTransitTokenAmountAbsolute = await web3Public.callContractMethod(
+      const secondTransitTokenAmountAbsolute = await this.web3PublicService[
+        toBlockchain
+      ].callContractMethod(
         this.contractAddresses[toBlockchain],
         this.contractAbi,
         type === 'minAmount' ? 'minTokenAmount' : 'maxTokenAmount'
@@ -175,19 +177,40 @@ export class CrossChainRoutingService {
         secondTransitToken.decimals
       );
 
-      const firstTransitTokenAmount = await this.calculateTransitTokensCourse(
+      // converted from secondTransitTokenAmount
+      let convertedFirstTransitTokenAmount = await this.calculateTransitTokensCourse(
         toBlockchain,
         fromBlockchain,
         secondTransitTokenAmount
       );
-      if (firstTransitTokenAmount.eq(secondTransitTokenAmount)) {
-        return firstTransitTokenAmount;
+      if (!convertedFirstTransitTokenAmount.eq(secondTransitTokenAmount)) {
+        if (type === 'minAmount') {
+          convertedFirstTransitTokenAmount = convertedFirstTransitTokenAmount.multipliedBy(
+            1 + transitAmountMargin
+          );
+        }
+        convertedFirstTransitTokenAmount = convertedFirstTransitTokenAmount.multipliedBy(
+          1 - transitAmountMargin
+        );
       }
 
+      // get from contract in source blockchain
+      const firstTransitTokenAmountAbsolute = await this.web3PublicService[
+        fromBlockchain
+      ].callContractMethod(
+        this.contractAddresses[fromBlockchain],
+        this.contractAbi,
+        type === 'minAmount' ? 'minTokenAmount' : 'maxTokenAmount'
+      );
+      const firstTransitTokenAmount = Web3Public.fromWei(
+        firstTransitTokenAmountAbsolute,
+        firstTransitToken.decimals
+      );
+
       if (type === 'minAmount') {
-        return firstTransitTokenAmount.multipliedBy(1 + transitAmountMargin);
+        return BigNumber.max(convertedFirstTransitTokenAmount, firstTransitTokenAmount);
       }
-      return firstTransitTokenAmount.multipliedBy(1 - transitAmountMargin);
+      return BigNumber.min(convertedFirstTransitTokenAmount, firstTransitTokenAmount);
     };
 
     return Promise.all([getAmount('minAmount'), getAmount('maxAmount')]).then(
