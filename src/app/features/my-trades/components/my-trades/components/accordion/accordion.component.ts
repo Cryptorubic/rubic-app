@@ -70,7 +70,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   }
 
   ngOnInit(): void {
-    this.selectedColumn = this.columns.find(column => column.value === 'Date');
+    this.selectedColumn = this.columns.find(column => column.value === 'Status');
     this.page = 0;
 
     this.tableDataSubscription$ = this.tableData$

@@ -46,7 +46,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     Date: () => 0
   };
 
-  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
+  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Status);
 
   public readonly direction$ = new BehaviorSubject<-1 | 1>(-1);
 
