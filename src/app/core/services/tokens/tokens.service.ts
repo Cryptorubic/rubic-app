@@ -314,34 +314,37 @@ export class TokensService {
     return this.coingeckoApiService
       .getTokenPrice(token)
       .pipe(
-        switchMap(async tokenPrice => {
+        map(tokenPrice => {
+          if (tokenPrice) {
+            return tokenPrice;
+          }
           const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-
-          if (!tokenPrice) {
-            if (foundToken?.price) {
-              tokenPrice = foundToken.price;
-            } else if (searchBackend) {
-              tokenPrice = (
-                await this.fetchQueryTokens(
-                  token.address,
-                  token.blockchain as PAGINATED_BLOCKCHAIN_NAME
-                ).toPromise()
-              ).get(0)?.price;
+          return foundToken?.price;
+        }),
+        switchMap(tokenPrice => {
+          if (!tokenPrice && searchBackend) {
+            return this.fetchQueryTokens(
+              token.address,
+              token.blockchain as PAGINATED_BLOCKCHAIN_NAME
+            ).pipe(map(backendTokens => backendTokens.get(0)?.price));
+          }
+          return of(tokenPrice);
+        }),
+        map(tokenPrice => {
+          if (tokenPrice) {
+            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+            if (foundToken && tokenPrice !== foundToken.price) {
+              const newToken = {
+                ...foundToken,
+                price: tokenPrice
+              };
+              this.tokensSubject.next(
+                this.tokens
+                  .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+                  .push(newToken)
+              );
             }
           }
-
-          if (tokenPrice && foundToken) {
-            const newToken = {
-              ...foundToken,
-              price: tokenPrice
-            };
-            this.tokensSubject.next(
-              this.tokens
-                .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
-                .push(newToken)
-            );
-          }
-
           return tokenPrice;
         })
       )
