@@ -43,17 +43,7 @@ export class WithRoundPipe implements PipeTransform {
         decimalSymbols = decimals;
       }
 
-      let endZeroesAmount = 0;
-      for (let i = startIndex + decimalSymbols - 1; i >= startIndex; i--) {
-        if (value[i] === '0') {
-          endZeroesAmount++;
-        } else {
-          break;
-        }
-      }
-      decimalSymbols -= endZeroesAmount;
-
-      value = value.slice(0, startIndex + decimalSymbols);
+      value = value.slice(0, startIndex + decimalSymbols).replace(/(\.\d*?)0*$/, '$1');
 
       if (value.endsWith('.')) {
         value = value.slice(0, value.length - 1);

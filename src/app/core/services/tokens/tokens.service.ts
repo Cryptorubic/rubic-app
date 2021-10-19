@@ -318,9 +318,9 @@ export class TokensService {
           const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
 
           if (!tokenPrice) {
-            tokenPrice = foundToken?.price;
-
-            if (!tokenPrice && searchBackend) {
+            if (foundToken?.price) {
+              tokenPrice = foundToken?.price;
+            } else if (searchBackend) {
               tokenPrice = (
                 await this.fetchQueryTokens(
                   token.address,
