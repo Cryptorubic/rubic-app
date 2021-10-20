@@ -11,8 +11,16 @@
   border-radius: $border-radius-1;
   backdrop-filter: blur(24px);
 
+  @include b(mobile) {
+    padding: 20px 16px 10px;
+  }
+
   &__header {
     margin-bottom: 44px;
+
+    @include b(mobile) {
+      margin-bottom: 19px;
+    }
   }
 }
 
@@ -49,6 +57,10 @@
   &__item {
     &:not(:last-child) {
       margin-right: 52px;
+
+      @include b(mobile) {
+        margin-right: 16px;
+      }
     }
   }
 }
@@ -60,6 +72,25 @@
   background: rgba(0, 0, 0, 0.5);
 
   border-radius: 20px;
+
+  @include b($tablet) {
+    width: 330px;
+    padding: 25px 30px;
+  }
+
+  @include b(375) {
+    width: 296px;
+    padding: 25px 20px;
+  }
+
+  @include b(desktop) {
+    ::ng-deep app-rubic-button {
+      button {
+        width: auto !important;
+        min-width: 200px;
+      }
+    }
+  }
 
   &__header {
     display: flex;
@@ -131,13 +162,6 @@
       height: 30px;
 
       cursor: pointer;
-    }
-  }
-
-  ::ng-deep app-rubic-button {
-    button {
-      width: auto !important;
-      min-width: 200px;
     }
   }
 }
