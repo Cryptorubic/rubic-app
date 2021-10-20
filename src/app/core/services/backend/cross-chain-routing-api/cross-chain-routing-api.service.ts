@@ -15,7 +15,7 @@ import {
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { environment } from 'src/environments/environment';
 
-export const BASE_URL = `${environment.crossChain.baseApiUrl}/`;
+export const BASE_URL = `${environment.crossChain.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'

@@ -14,15 +14,12 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { PlatformFee } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/PlatformFee';
 
 type CrossChainSwapInfo = {
   maximumSpent: BigNumber;
   minimumReceived: BigNumber;
-  platformFee: {
-    percent: number;
-    amount: BigNumber;
-    amountInUsd: BigNumber;
-  };
+  platformFee: PlatformFee;
 };
 
 @Component({
@@ -78,7 +75,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
         switchMap(form => {
           const { toAmount } = form;
           if (toAmount?.isFinite()) {
-            return this.crossChainRoutingService.getFeeAmountData().pipe(
+            return this.crossChainRoutingService.getPlatformFeeData().pipe(
               map(platformFee => {
                 this.crossChainSwapInfo = {
                   platformFee,

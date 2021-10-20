@@ -335,7 +335,7 @@ export class Web3PrivateService {
           options
         );
       }
-      console.error('Method execution error: ', err);
+      console.error('Method execution error:', err);
       throw Web3PrivateService.parseError(err);
     }
   }
@@ -374,7 +374,7 @@ export class Web3PrivateService {
         .on('transactionHash', options.onTransactionHash || (() => {}))
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
-          console.error(`Method execution error. ${err}`);
+          console.error(`Method execution error:`, err);
           reject(Web3PrivateService.parseError(err));
         });
     });

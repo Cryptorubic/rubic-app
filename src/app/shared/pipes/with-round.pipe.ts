@@ -20,7 +20,7 @@ export class WithRoundPipe implements PipeTransform {
       const startIndex = value.indexOf('.') + 1;
 
       if (startIndex === value.length) {
-        return value;
+        return value.slice(0, value.length - 1);
       }
 
       let decimalSymbols: number;
@@ -28,22 +28,26 @@ export class WithRoundPipe implements PipeTransform {
         if (new BigNumber(value).isGreaterThanOrEqualTo(1)) {
           decimalSymbols = minRound;
         } else {
-          let zerosAmount = 0;
+          let startZeroesAmount = 0;
           for (let i = startIndex; i < value.length; ++i) {
             if (value[i] === '0') {
-              zerosAmount++;
+              startZeroesAmount++;
             } else {
               break;
             }
           }
-          decimalSymbols = zerosAmount + maxRound;
+          decimalSymbols = startZeroesAmount + maxRound;
         }
         decimalSymbols = Math.min(decimalSymbols, decimals);
       } else {
         decimalSymbols = decimals;
       }
 
-      value = value.slice(0, startIndex + decimalSymbols);
+      value = value.slice(0, startIndex + decimalSymbols).replace(/(\.\d*?)0*$/, '$1');
+
+      if (value.endsWith('.')) {
+        value = value.slice(0, value.length - 1);
+      }
     }
 
     return value;
