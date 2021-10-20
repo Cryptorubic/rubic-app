@@ -95,7 +95,7 @@ export class RubicTokensComponent implements OnInit {
 
     this.tokensSelectService
       .showDialog(
-        this.tokensSubject,
+        this.tokensSubject.asObservable(),
         this.formType,
         currentBlockchain,
         this.formService.input,

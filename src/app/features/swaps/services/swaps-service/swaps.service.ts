@@ -12,6 +12,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
 @Injectable()
@@ -58,7 +59,7 @@ export class SwapsService {
 
   private subscribeOnTokens() {
     combineLatest([
-      this.bridgeService.tokens.pipe(filter(tokens => !!tokens.length)),
+      this.bridgeService.tokens$.pipe(filter(tokens => !!tokens.length)),
       this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size))
     ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts]) => {
       const updatedTokenAmounts = tokenAmounts.toArray();
@@ -71,7 +72,7 @@ export class SwapsService {
         const foundTokenAmount = tokenAmounts.find(
           tokenAmount =>
             tokenAmount.blockchain === blockchain &&
-            tokenAmount.address.toLowerCase() === bridgeToken.address.toLowerCase()
+            compareAddresses(tokenAmount.address, bridgeToken.address)
         );
 
         if (
@@ -79,7 +80,7 @@ export class SwapsService {
           !updatedTokenAmounts.find(
             tokenAmount =>
               tokenAmount.blockchain === bridgeToken.blockchain &&
-              tokenAmount.address.toLowerCase() === bridgeToken.address.toLowerCase()
+              compareAddresses(tokenAmount.address, bridgeToken.address)
           )
         ) {
           // don't add bridge specific tokens to widget tokens list
@@ -88,7 +89,7 @@ export class SwapsService {
           }
 
           updatedTokenAmounts.push({
-            ...bridgeTokenPair.tokenByBlockchain[blockchain],
+            ...bridgeToken,
             image: bridgeTokenPair.image,
             rank: 0,
             price: 0,
@@ -100,7 +101,7 @@ export class SwapsService {
 
         return {
           ...foundTokenAmount,
-          ...bridgeTokenPair.tokenByBlockchain[blockchain]
+          ...bridgeToken
         };
       };
 

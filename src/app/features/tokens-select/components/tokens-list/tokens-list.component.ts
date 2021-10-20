@@ -1,24 +1,25 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   Output,
-  EventEmitter,
-  ViewChild,
-  AfterViewInit,
-  ChangeDetectorRef
+  Self,
+  ViewChild
 } from '@angular/core';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { CountPage } from 'src/app/shared/models/tokens/paginated-tokens';
+import { PaginatedPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
-import { StoreService } from 'src/app/core/services/store/store.service';
-import { animate, style, transition, trigger } from '@angular/animations';
+import { animate, style, transition, trigger, state } from '@angular/animations';
+import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
 
 @Component({
   selector: 'app-tokens-list',
@@ -27,79 +28,71 @@ import { animate, style, transition, trigger } from '@angular/animations';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
   animations: [
-    trigger('itemAnimation', [
-      transition(':enter', [
-        style({ opacity: '0.25' }),
-        animate(
-          '0.25s ease',
-          style({
-            opacity: '1'
-          })
-        )
-      ])
+    trigger('listAnimation', [
+      state('hidden', style({ opacity: '0.4' })),
+      state(
+        'shown',
+        style({
+          opacity: '1'
+        })
+      ),
+      transition('hidden => shown', animate('0.28s ease-in-out'))
     ])
   ]
 })
 export class TokensListComponent implements AfterViewInit {
   /**
-   * List type.
+   * Defines whether default or favorite tokens are shown.
    */
-  @Input() public listType: 'default' | 'favorite';
+  @Input() public listType: TokensListType;
 
   /**
-   * Does modal has search query string.
+   * True if search query string isn't empty.
    */
-  @Input() public hasQuery: boolean;
+  @Input() public hasSearchQuery: boolean;
 
   /**
-   * State of count and page for current {@link blockchain}.
+   * Backend-api state of tokens in currently selected blockchain.
    */
-  @Input() public tokensNetworkState: CountPage;
+  @Input() public tokensNetworkState: PaginatedPage;
 
   /**
-   * Current blockchain.
-   */
-  @Input() public blockchain: BLOCKCHAIN_NAME;
-
-  /**
-   * List loading status.
+   * True if new tokens are being loaded.
    */
   @Input() public loading: boolean;
 
-  /**
-   * Previously selected token.
-   */
-  @Input() public prevSelectedToken: TokenAmount;
+  @Input() public currentlySelectedToken: TokenAmount;
 
   /**
-   * Set list of tokens.
-   * @param tokens List of tokens.
+   * Sets list of tokens to show.
    */
   @Input() public set tokens(tokens: AvailableTokenAmount[]) {
-    if (tokens) {
-      this._tokens = tokens;
-      this.setupHints(this._tokens);
-    }
+    this.startAnimation(tokens);
+    this._tokens = tokens;
+    this.hintsShown = Array(this._tokens.length).fill(false);
+  }
+
+  public get tokens(): AvailableTokenAmount[] {
+    return this._tokens;
   }
 
   /**
-   * Emits event when token selected.
+   * Emits event when token is selected.
    */
   @Output() public tokenSelect = new EventEmitter<AvailableTokenAmount>();
 
   /**
-   * Emits event when tokens page updated.
+   * Emits event when new tokens page should be loaded.
    */
   @Output() public pageUpdate = new EventEmitter<number>();
 
   /**
-   * Emits event when tokens list type changed.
+   * Emits event when tokens list type is changed.
    */
-  @Output() public listTypeChangeHandle = new EventEmitter<'default' | 'favorite'>();
+  @Output() public listTypeChange = new EventEmitter<TokensListType>();
 
   /**
-   * Set {@link CdkVirtualScrollViewport}
-   * @param scroll
+   * Sets {@link CdkVirtualScrollViewport}
    */
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     if (scroll) {
@@ -107,41 +100,41 @@ export class TokensListComponent implements AfterViewInit {
     }
   }
 
-  private _tokens: AvailableTokenAmount[] = [];
+  private _tokens: AvailableTokenAmount[];
 
-  public scrollSubject: BehaviorSubject<CdkVirtualScrollViewport>;
+  /**
+   * Defines whether hint is shown or not for each token.
+   */
+  public hintsShown: boolean[];
 
-  public get tokens(): AvailableTokenAmount[] {
-    return this._tokens;
-  }
+  /**
+   * Controls animation of tokens list.
+   */
+  public listAnimationState: 'hidden' | 'shown';
+
+  public readonly scrollSubject: BehaviorSubject<CdkVirtualScrollViewport>;
 
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
   }
 
-  public listScroll: CdkVirtualScrollViewport;
-
-  public hintsShown: boolean[];
-
   constructor(
-    private cdr: ChangeDetectorRef,
+    private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
-    private readonly destroy$: TuiDestroyService,
-    private readonly storeService: StoreService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly iframeService: IframeService
   ) {
-    this.pageUpdate = new EventEmitter<number>();
-    this.scrollSubject = new BehaviorSubject<CdkVirtualScrollViewport>(null);
+    this.loading = false;
+    this.pageUpdate = new EventEmitter();
+    this.scrollSubject = new BehaviorSubject(null);
   }
 
-  /**
-   * Lifecycle hook.
-   */
-  public ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
     this.observeScroll();
   }
 
   /**
-   * Observes tokens scroll and fetch new if needed.
+   * Observes list scroll and fetches new tokens if needed.
    */
   private observeScroll(): void {
     this.scrollSubject
@@ -149,25 +142,19 @@ export class TokensListComponent implements AfterViewInit {
         takeUntil(this.destroy$),
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
-            debounceTime(500),
-            filter(el => {
+            debounceTime(300),
+            filter(renderedRange => {
               if (
                 this.loading ||
-                this.hasQuery ||
+                this.hasSearchQuery ||
                 this.listType === 'favorite' ||
                 !this.tokensNetworkState ||
                 this.tokensNetworkState.maxPage === this.tokensNetworkState.page ||
-                this.storeService.isIframe
+                this.iframeService.isIframe
               ) {
                 return false;
               }
-              const endOfList = el.end > this.tokens.length - 30;
-              const shouldFetch =
-                !this.tokensNetworkState.count ||
-                (!this.tokensNetworkState &&
-                  this.tokensNetworkState.page <= Math.ceil(this.tokensNetworkState.count / 150));
-
-              return endOfList && shouldFetch;
+              return renderedRange.end > this.tokens.length - 30;
             })
           )
         )
@@ -178,12 +165,28 @@ export class TokensListComponent implements AfterViewInit {
   }
 
   /**
-   * Setups hints.
-   * @param tokens Current {@link tokens} value.
+   * Starts smooth animation when tokens list is distinctly changed.
+   * @param tokens New tokens list.
    */
-  private setupHints(tokens: AvailableTokenAmount[]): void {
-    const tokensNumber = tokens.length;
-    this.hintsShown = Array(tokensNumber).fill(false);
+  private startAnimation(tokens: AvailableTokenAmount[]): void {
+    let shouldAnimate = false;
+    if (this._tokens?.length && tokens.length) {
+      const prevToken = this._tokens[0];
+      const newToken = tokens[0];
+      shouldAnimate = prevToken.blockchain !== newToken.blockchain;
+
+      const arePrevTokensFavourite = this._tokens.every(t => t.favorite);
+      const areNewTokensFavourite = tokens.every(t => t.favorite);
+      shouldAnimate ||= arePrevTokensFavourite !== areNewTokensFavourite;
+    }
+
+    if (shouldAnimate) {
+      this.listAnimationState = 'hidden';
+      setTimeout(() => {
+        this.listAnimationState = 'shown';
+        this.cdr.markForCheck();
+      });
+    }
   }
 
   /**

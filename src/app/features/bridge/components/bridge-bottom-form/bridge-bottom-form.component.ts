@@ -174,7 +174,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.setupTradeCalculation();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.bridgeService.tokens.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
+    this.bridgeService.tokens$.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
       this.bridgeTokenPairsByBlockchainsArray = tokens;
     });
 

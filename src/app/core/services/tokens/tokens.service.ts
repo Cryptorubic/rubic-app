@@ -15,11 +15,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
-import {
-  DEFAULT_PAGE_SIZE,
-  TokensRequestOptions
-} from 'src/app/core/services/backend/tokens-api/models/tokens';
-import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
@@ -73,6 +69,13 @@ export class TokensService {
    */
   get favoriteTokens$(): Observable<LocalToken[]> {
     return this.favoriteTokensSubject.asObservable();
+  }
+
+  /**
+   * Get current tokens list.
+   */
+  get favoriteTokens(): LocalToken[] {
+    return this.favoriteTokensSubject.getValue();
   }
 
   /**
@@ -364,42 +367,36 @@ export class TokensService {
         page: oldState[network].page + 1,
         maxPage: next ? oldState[network].maxPage + 1 : oldState[network].maxPage
       }
-    } as TokensNetworkState;
+    };
     this.tokensNetworkStateSubject.next(newState);
   }
 
   /**
    * Fetches tokens for specific network.
    * @param network Requested network.
-   * @param pageSize Requested page size.
-   * @param callback Callback after success fetch.
    */
-  public fetchNetworkTokens(
-    network: PAGINATED_BLOCKCHAIN_NAME,
-    pageSize: number = DEFAULT_PAGE_SIZE,
-    callback?: () => void
-  ): void {
+  public fetchNetworkTokens(network: PAGINATED_BLOCKCHAIN_NAME): void {
     this.tokensApiService
       .fetchSpecificBackendTokens({
         network,
-        page: this.tokensNetworkStateSubject.value[network].page,
-        pageSize
+        page: this.tokensNetworkStateSubject.value[network].page
       })
       .pipe(
-        map((tokens: { total: number; result: List<Token> }) => ({
-          ...tokens,
-          result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
+        tap(tokensResponse => this.updateNetworkPage(network, tokensResponse.next)),
+        map(tokensResponse => ({
+          ...tokensResponse,
+          result: tokensResponse.result.map(token => ({
+            ...token,
+            amount: new BigNumber(NaN),
+            favorite: false
+          }))
         })),
-        tap((tokens: { total: number; result: List<TokenAmount>; next: string }) =>
-          this.updateNetworkPage(network, tokens.next)
-        ),
-        switchMap((tokens: { total: number; result: List<TokenAmount> }) => {
+        switchMap(tokens => {
           return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
         this.tokensSubject.next(this.tokens.concat(tokens));
-        callback();
       });
   }
 
@@ -413,12 +410,12 @@ export class TokensService {
     network: PAGINATED_BLOCKCHAIN_NAME
   ): Observable<List<Token>> {
     const isAddress = query.includes('0x');
-    const params = {
-      network: TO_BACKEND_BLOCKCHAINS[network],
+    const params: TokensRequestQueryOptions = {
+      network,
       ...(!isAddress && { symbol: query }),
       ...(isAddress && { address: query })
-    } as TokensRequestOptions;
-    return this.tokensApiService.fetchQueryToken(params);
+    };
+    return this.tokensApiService.fetchQueryTokens(params);
   }
 
   /**

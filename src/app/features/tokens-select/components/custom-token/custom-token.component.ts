@@ -22,31 +22,31 @@ import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/
 })
 export class CustomTokenComponent {
   /**
-   * Should hints be shown.
-   */
-  public hintsShown: boolean;
-
-  /**
-   * Selected custom token.
+   * Parsed custom token.
    */
   @Input() public token: AvailableTokenAmount;
 
   /**
-   * Custom token selection event.
+   * Events event when custom token is selected.
    */
   @Output() public tokenSelected = new EventEmitter<AvailableTokenAmount>();
+
+  /**
+   * Should hint be shown.
+   */
+  public hintShown: boolean;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
-    private translateService: TranslateService,
+    private readonly translateService: TranslateService,
     private readonly tokensService: TokensService
   ) {}
 
   /**
-   * Open accept import modal and add token to local token collection in case of accept.
+   * Opens 'accept import' modal and adds token to local token collection in case of acceptation.
    */
-  public handleImportClick(): void {
+  public onImportClick(): void {
     this.dialogService
       .open(new PolymorpheusComponent(CustomTokenWarningModalComponent, this.injector), {
         data: { token: this.token },

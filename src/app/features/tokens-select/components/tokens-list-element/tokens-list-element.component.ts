@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
@@ -17,18 +17,14 @@ export class TokensListElementComponent {
    */
   @Input() token: TokenAmount;
 
-  public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
+  public readonly defaultImage = 'assets/images/icons/coins/default-token-ico.svg';
 
   /**
    * Is iframe has horizontal view.
    */
   public readonly isHorizontalFrame$: Observable<boolean>;
 
-  constructor(
-    iframeService: IframeService,
-    private readonly tokensService: TokensService,
-    private readonly cdr: ChangeDetectorRef
-  ) {
+  constructor(iframeService: IframeService, private readonly tokensService: TokensService) {
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
       map(appearance => appearance === 'horizontal')
     );
@@ -45,9 +41,7 @@ export class TokensListElementComponent {
    * Makes token favorite or not favorite in the list.
    */
   public toggleFavorite(): void {
-    this.token.favorite = !this.token.favorite;
-    this.cdr.detectChanges();
-    if (this.token.favorite) {
+    if (!this.token.favorite) {
       this.tokensService.addFavoriteToken(this.token);
     } else {
       this.tokensService.removeFavoriteToken(this.token);
