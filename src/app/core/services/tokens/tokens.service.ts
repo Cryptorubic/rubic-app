@@ -303,7 +303,7 @@ export class TokensService {
   }
 
   /**
-   * Gets token price and updates tokens list.
+   * Gets token price.
    * @param token Token to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
@@ -332,25 +332,39 @@ export class TokensService {
             ).pipe(map(backendTokens => backendTokens.get(0)?.price));
           }
           return of(tokenPrice);
-        }),
-        tap(tokenPrice => {
-          if (tokenPrice) {
-            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-            if (foundToken && tokenPrice !== foundToken.price) {
-              const newToken = {
-                ...foundToken,
-                price: tokenPrice
-              };
-              this.tokensSubject.next(
-                this.tokens
-                  .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
-                  .push(newToken)
-              );
-            }
-          }
         })
       )
       .toPromise();
+  }
+
+  /**
+   * Updates tokens list.
+   * @param token Token to updated price for.
+   * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
+   */
+  public updateTokenPrice(
+    token: {
+      address: string;
+      blockchain: BLOCKCHAIN_NAME;
+    },
+    searchBackend = false
+  ) {
+    this.getTokenPrice(token, searchBackend).then(tokenPrice => {
+      if (tokenPrice) {
+        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+        if (foundToken && tokenPrice !== foundToken.price) {
+          const newToken = {
+            ...foundToken,
+            price: tokenPrice
+          };
+          this.tokensSubject.next(
+            this.tokens
+              .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+              .push(newToken)
+          );
+        }
+      }
+    });
   }
 
   /**
