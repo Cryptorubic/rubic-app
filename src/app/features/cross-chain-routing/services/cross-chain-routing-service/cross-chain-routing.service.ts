@@ -380,10 +380,11 @@ export class CrossChainRoutingService {
           convertedFirstTransitTokenAmount = convertedFirstTransitTokenAmount.multipliedBy(
             1 + transitAmountMargin
           );
+        } else {
+          convertedFirstTransitTokenAmount = convertedFirstTransitTokenAmount.multipliedBy(
+            1 - transitAmountMargin
+          );
         }
-        convertedFirstTransitTokenAmount = convertedFirstTransitTokenAmount.multipliedBy(
-          1 - transitAmountMargin
-        );
       }
 
       // get from contract in source blockchain
