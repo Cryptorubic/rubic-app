@@ -232,15 +232,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.allowTrade) {
-      this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.swapFormService.output.patchValue({
-        toAmount: new BigNumber(NaN)
-      });
-      this.cdr.detectChanges();
-      return;
-    }
-
     const { autoRefresh } = this.settingsService.crossChainRoutingValue;
     this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
   }
@@ -255,6 +246,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         filter(el => el === 'normal'),
         debounceTime(200),
         switchMap(() => {
+          if (!this.allowTrade) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.swapFormService.output.patchValue({
+              toAmount: new BigNumber(NaN)
+            });
+            this.cdr.markForCheck();
+            return of(null);
+          }
+
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
@@ -325,6 +325,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
+          if (!this.allowTrade) {
+            return null;
+          }
+
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount } = this.swapFormService.inputValue;
