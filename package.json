@@ -61,6 +61,7 @@
     "immutable": "^4.0.0-rc.12",
     "latest": "^0.2.0",
     "luxon": "^1.27.0",
+    "merkletreejs": "^0.2.24",
     "moment": "^2.29.1",
     "ng-inline-svg": "^12.1.0",
     "ngx-clipboard": "^12.3.1",

@@ -66,7 +66,7 @@
 
             <app-rubic-button
               *ngLet="isButtonDisabled(promoItem.refundDate) as disabled"
-              (onClick)="onRefundClick()"
+              (onClick)="onRefundClick(promoItem.id)"
               appearance="secondary"
               [disabled]="disabled"
             >

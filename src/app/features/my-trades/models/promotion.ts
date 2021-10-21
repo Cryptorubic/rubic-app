@@ -1,7 +1,7 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface Promotion {
-  id: string;
+  id: number;
   transactions: {
     hash: string;
     blockchain: BLOCKCHAIN_NAME;

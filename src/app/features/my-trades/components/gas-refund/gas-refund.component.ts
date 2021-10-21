@@ -43,5 +43,7 @@ export class GasRefundComponent {
     window.open(link, '_blank').focus();
   }
 
-  public onRefundClick() {}
+  public onRefundClick(promoId: number) {
+    this.gasRefundService.refund(promoId).subscribe();
+  }
 }

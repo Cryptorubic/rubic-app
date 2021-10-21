@@ -420,11 +420,11 @@
       "refund": "Refund"
     },
     "promoActions": {
-      "123": {
+      "1": {
         "label": "CRYPTOLOVE",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id mi venenatis, sodales arcu nec, commodo neque. Donec vel egestas felis. In sodales sagittis mi, a eleifend nulla. Curabitur nec nibh in nibh placerat placerat in ut risus."
       },
-      "124": {
+      "2": {
         "label": "Specific tokens and amount and long label",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id mi venenatis, sodales arcu nec, commodo neque. Donec vel egestas felis. In sodales sagittis mi, a eleifend nulla. Curabitur nec nibh in nibh placerat placerat in ut risus."
       }
