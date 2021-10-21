@@ -46,6 +46,7 @@ import { compareAddresses } from 'src/app/shared/utils/utils';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PlatformFee } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/PlatformFee';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
+import { GasService } from 'src/app/core/services/gas-service/gas.service';
 
 interface PathAndToAmount {
   path: string[];
@@ -97,7 +98,8 @@ export class CrossChainRoutingService {
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly gasService: GasService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
@@ -605,7 +607,9 @@ export class CrossChainRoutingService {
       this.contractAbi,
       'maxGasPrice'
     );
-    const currentGasPrice = await web3Public.getGasPrice();
+    const currentGasPrice = Web3Public.toWei(
+      await this.gasService.getGasPriceInEthUnits(toBlockchain)
+    );
     if (new BigNumber(maxGasPrice).lt(currentGasPrice)) {
       throw new MaxGasPriceOverflowWarning(toBlockchain);
     }
@@ -719,7 +723,8 @@ export class CrossChainRoutingService {
               const includesErrCode = err?.message?.includes('-32000');
               const allowedErrors = [
                 'insufficient funds for transfer',
-                'insufficient funds for gas * price+ value'
+                'insufficient funds for gas * price+ value',
+                'insufficient funds for gas * price + value'
               ];
               const includesPhrase = Boolean(
                 allowedErrors.find(error => err?.message?.includes(error))
