@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export default [
+const SolarBeamContractAbi = [
   {
     type: 'constructor',
     stateMutability: 'nonpayable',
@@ -344,3 +344,5 @@ export default [
   },
   { type: 'receive', stateMutability: 'payable' }
 ] as AbiItem[];
+
+export default SolarBeamContractAbi;

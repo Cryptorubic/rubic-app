@@ -45,8 +45,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
       [BLOCKCHAIN_NAME.XDAI]: 'xdai',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2',
-      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
-      [BLOCKCHAIN_NAME.XDAI]: 'xdai'
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver'
     };
 
     supportedBlockchains.forEach(blockchain => {
