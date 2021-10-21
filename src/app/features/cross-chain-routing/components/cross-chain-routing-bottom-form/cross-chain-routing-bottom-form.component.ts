@@ -9,7 +9,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import {
@@ -260,13 +260,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount } = this.swapFormService.inputValue;
+          const calculateNeedApprove = !!this.authService.userAddress;
 
-          const needApprove$ = this.authService.user?.address
-            ? this.crossChainRoutingService.needApprove()
-            : of(false);
-
-          return forkJoin([this.crossChainRoutingService.calculateTrade(), needApprove$]).pipe(
-            map(([{ toAmount, minAmountError, maxAmountError }, needApprove]) => {
+          return from(this.crossChainRoutingService.calculateTrade(calculateNeedApprove)).pipe(
+            map(({ toAmount, minAmountError, maxAmountError, needApprove }) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
@@ -332,8 +329,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           const { fromAmount } = this.swapFormService.inputValue;
 
-          return forkJoin([this.crossChainRoutingService.calculateTrade()]).pipe(
-            map(([{ toAmount, minAmountError, maxAmountError }]) => {
+          return from(this.crossChainRoutingService.calculateTrade()).pipe(
+            map(({ toAmount, minAmountError, maxAmountError }) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
