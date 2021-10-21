@@ -49,17 +49,15 @@ export class TokensApiService {
   private static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map((token: BackendToken) => {
-          return {
-            ...token,
-            blockchain:
-              FROM_BACKEND_BLOCKCHAINS[
-                token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
-              ],
-            price: token.usd_price,
-            usedInIframe: token.used_in_iframe
-          };
-        })
+        .map((token: BackendToken) => ({
+          ...token,
+          blockchain:
+            FROM_BACKEND_BLOCKCHAINS[
+              token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
+            ],
+          price: token.usd_price,
+          usedInIframe: token.used_in_iframe
+        }))
         .filter(token => token.address && token.blockchain)
     );
   }
