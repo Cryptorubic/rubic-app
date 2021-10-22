@@ -226,8 +226,8 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 .notification-counter {
   position: absolute;
 
-  top: -6px;
-  right: -8px;
+  top: -5px;
+  right: 0;
 
   display: none;
 
@@ -239,7 +239,23 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 
   &_my-trades {
     top: 4px;
-    right: -2px;
+    right: -6px;
+  }
+}
+
+@include b($mobile-md) {
+  .notification-counter {
+    position: absolute;
+
+    top: -7px;
+    right: -8px;
+
+    display: none;
+
+    &_my-trades {
+      top: 4px;
+      right: -2px;
+    }
   }
 }
 

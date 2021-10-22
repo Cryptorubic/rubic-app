@@ -46,7 +46,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     Date: () => 0
   };
 
-  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
+  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Status);
 
   public readonly direction$ = new BehaviorSubject<-1 | 1>(-1);
 
@@ -89,9 +89,9 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
         const waitingForReceivingTrades = visibleTableData.filter(
           el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
         );
-        const otherTrades = visibleTableData.filter(
-          el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
+        const otherTrades = visibleTableData
+          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+          .sort(this.sortBy('Date', this.direction$.getValue()));
         return [...waitingForReceivingTrades, ...otherTrades];
       })
     );

@@ -78,6 +78,15 @@ tui-notification-alert {
   transition: 0.2s ease-in-out;
 }
 
+tui-badge.notification-counter {
+  &[data-tui-host-padding='m'][data-tui-host-size='s'] {
+    padding: 1px 3px 0;
+
+    line-height: 20px;
+    text-align: center;
+  }
+}
+
 @include b($mobile-md-minus) {
   tui-dialog {
     height: 100vh;
@@ -96,14 +105,15 @@ tui-notification-alert {
   }
 }
 
+
+
 @include b($mobile-md) {
   tui-badge.notification-counter {
     &[data-tui-host-padding='m'][data-tui-host-size='s'] {
-      min-width: 15px;
-      height: 15px;
-      padding: 0 3px;
+      min-width: 16px;
+      height: 16px;
 
-      line-height: 15px;
+      line-height: 16px;
     }
   }
 }

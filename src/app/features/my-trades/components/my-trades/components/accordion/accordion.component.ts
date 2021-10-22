@@ -70,7 +70,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   }
 
   ngOnInit(): void {
-    this.selectedColumn = this.columns.find(column => column.value === 'Date');
+    this.selectedColumn = this.columns.find(column => column.value === 'Status');
     this.page = 0;
 
     this.tableDataSubscription$ = this.tableData$
@@ -86,9 +86,9 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
         const waitingForReceivingTrades = this.tableData.filter(
           el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
         );
-        const otherTrades = this.tableData.filter(
-          el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
+        const otherTrades = this.tableData
+          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+          .sort(this.sortBy('Date', this.sortDirection));
         this.tableData = [...waitingForReceivingTrades, ...otherTrades];
       });
   }
