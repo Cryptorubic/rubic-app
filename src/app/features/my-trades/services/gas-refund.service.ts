@@ -10,17 +10,17 @@ import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from 'src/app/features/my-trades/models/root-data';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { REFUND_ABI } from 'src/app/features/my-trades/constants/REFUND_ABI';
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import {
   REFUND_ADDRESS,
   REFUND_ADDRESS_TESTNET
 } from 'src/app/features/my-trades/constants/REFUND_ADDRESS';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 
 @Injectable()
 export class GasRefundService {
