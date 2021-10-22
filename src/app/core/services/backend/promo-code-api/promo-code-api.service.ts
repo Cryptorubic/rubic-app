@@ -22,7 +22,7 @@ import { Cacheable } from 'ts-cacheable';
   providedIn: 'root'
 })
 export class PromoCodeApiService {
-  private static apiUrl = 'promo';
+  private static apiUrl = 'promotion/code';
 
   private static defaultUpdateInterval = 5000;
 

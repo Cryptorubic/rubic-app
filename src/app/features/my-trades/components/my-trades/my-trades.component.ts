@@ -88,9 +88,9 @@ export class MyTradesComponent implements OnInit {
     tableTrades.forEach(trade => {
       tableData.push({
         Status: trade.status,
-        FromTo: trade.fromToken.blockchain + trade.toToken.blockchain,
+        FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
         Provider: trade.provider,
-        Sent: new BigNumber(trade.fromToken.amount),
+        Sent: new BigNumber(trade.fromToken?.amount),
         Expected: new BigNumber(trade.toToken.amount),
         Date: trade.date,
 

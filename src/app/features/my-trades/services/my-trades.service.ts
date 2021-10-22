@@ -16,7 +16,7 @@ import { ProviderConnectorService } from 'src/app/core/services/blockchain/provi
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TableProvider, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -24,6 +24,11 @@ import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectE
 import { HttpClient } from '@angular/common/http';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
+import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS';
+import { compareTokens } from '@shared/utils/utils';
+import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
+import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 
 interface PanamaStatusResponse {
   data: {
@@ -51,7 +56,9 @@ export class MyTradesService {
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
-    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService
+    private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService,
+    private readonly gasRefundApiService: GasRefundApiService,
+    private readonly scannerLinkPipe: ScannerLinkPipe
   ) {}
 
   public updateTableTrades(): Observable<TableTrade[]> {
@@ -74,7 +81,8 @@ export class MyTradesService {
         return forkJoin([
           this.getBridgeTransactions(),
           this.instantTradesApiService.getUserTrades(this.walletAddress),
-          this.getCrossChainTrades()
+          this.getCrossChainTrades(),
+          this.getGasRefundTrades()
         ]).pipe(
           map(data => {
             this._tableTrades$.next(data.flat());
@@ -171,6 +179,40 @@ export class MyTradesService {
           };
         });
       })
+    );
+  }
+
+  private getGasRefundTrades(): Observable<TableTrade[]> {
+    return this.gasRefundApiService.getGasRefundTransactions().pipe(
+      map(transactions =>
+        transactions
+          .map(item => {
+            const toToken = this.tokens.find(token =>
+              compareTokens(token, { address: item.tokenAddress, blockchain: item.network })
+            );
+            if (!toToken) {
+              return null;
+            }
+            const amount = item.value.div(10 ** toToken.decimals).toFixed();
+            return {
+              transactionHash: item.hash,
+              transactionHashScanUrl: this.scannerLinkPipe.transform(
+                item.hash,
+                item.network,
+                ADDRESS_TYPE.TRANSACTION
+              ),
+              status: TRANSACTION_STATUS.COMPLETED,
+              provider: 'GAS_REFUND_PROVIDER' as TableProvider,
+              fromToken: null,
+              toToken: {
+                ...toToken,
+                amount
+              },
+              date: item.date
+            };
+          })
+          .filter(item => !!item)
+      )
     );
   }
 

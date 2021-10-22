@@ -1,5 +1,6 @@
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { TableProvider } from '@shared/models/my-trades/TableTrade';
 
 type Provider = {
   name: string;
@@ -83,11 +84,14 @@ const CROSS_CHAIN_ROUTING_PROVIDER: Provider = {
   image: `${imageBasePath}ccr.svg`
 };
 
-export const TRADES_PROVIDERS: Record<
-  BRIDGE_PROVIDER | INSTANT_TRADES_PROVIDER | 'CROSS_CHAIN_ROUTING_PROVIDER',
-  Provider
-> = {
+const GAS_REFUND_PROVIDER: Provider = {
+  name: 'Gas Refund',
+  image: `${imageBasePath}ccr.svg`
+};
+
+export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDERS,
-  CROSS_CHAIN_ROUTING_PROVIDER
+  CROSS_CHAIN_ROUTING_PROVIDER,
+  GAS_REFUND_PROVIDER
 };

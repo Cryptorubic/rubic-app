@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { map, switchMap } from 'rxjs/operators';
 import { Observable, of, OperatorFunction } from 'rxjs';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+
+interface MinimalToken {
+  address: string;
+  blockchain: BLOCKCHAIN_NAME;
+}
 
 /**
  * Compares two objects for equality.
@@ -26,6 +32,18 @@ export function copyObject<T>(object: T): T {
  */
 export function compareAddresses(address0: string, address1: string): boolean {
   return address0.toLowerCase() === address1.toLowerCase();
+}
+
+/**
+ * Compares two tokens (addresses and blockchains)
+ * @param token0 First token.
+ * @param token1 Second address.
+ */
+export function compareTokens(token0: MinimalToken, token1: MinimalToken): boolean {
+  return (
+    token0.address.toLowerCase() === token1.address.toLowerCase() &&
+    token0.blockchain === token1.blockchain
+  );
 }
 
 /**

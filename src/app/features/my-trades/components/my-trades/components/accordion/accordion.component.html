@@ -91,28 +91,38 @@
 
       <div class="item-header__blockchains-container">
         <div class="blockchains">
-          <div class="blockchains__blockchain">
-            <div class="img-container">
-              <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
+          <ng-container *ngIf="trade.fromToken; else showToTokenChain">
+            <div class="blockchains__blockchain">
+              <div class="img-container">
+                <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
+              </div>
+              {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
             </div>
-            {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
-          </div>
 
-          <img
-            src="assets/images/icons/my-trades/arrow-down.svg"
-            *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
-            alt
-          />
+            <img
+              src="assets/images/icons/my-trades/arrow-down.svg"
+              *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+              alt
+            />
 
-          <div
-            class="blockchains__blockchain"
-            *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
-          >
-            <div class="img-container">
-              <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+            <div
+              class="blockchains__blockchain"
+              *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+            >
+              <div class="img-container">
+                <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+              </div>
+              {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
             </div>
-            {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
-          </div>
+          </ng-container>
+          <ng-template #showToTokenChain>
+            <div class="blockchains__blockchain">
+              <div class="img-container">
+                <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="from blockchain" />
+              </div>
+              {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+            </div>
+          </ng-template>
         </div>
       </div>
 
@@ -153,28 +163,38 @@
 
         <div class="row__data">
           <div class="blockchains">
-            <div class="blockchains__blockchain">
-              <div class="img-container">
-                <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
+            <ng-container *ngIf="trade.fromToken; else showToTokenChain">
+              <div class="blockchains__blockchain">
+                <div class="img-container">
+                  <img [src]="BLOCKCHAINS[trade.fromToken.blockchain].img" alt="from blockchain" />
+                </div>
+                {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
               </div>
-              {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
-            </div>
 
-            <img
-              src="assets/images/icons/my-trades/arrow-down.svg"
-              *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
-              alt
-            />
+              <img
+                src="assets/images/icons/my-trades/arrow-down.svg"
+                *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+                alt
+              />
 
-            <div
-              class="blockchains__blockchain"
-              *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
-            >
-              <div class="img-container">
-                <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+              <div
+                class="blockchains__blockchain"
+                *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
+              >
+                <div class="img-container">
+                  <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+                </div>
+                {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
               </div>
-              {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
-            </div>
+            </ng-container>
+            <ng-template #showToTokenChain>
+              <div class="blockchains__blockchain">
+                <div class="img-container">
+                  <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="from blockchain" />
+                </div>
+                {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>
@@ -196,7 +216,7 @@
         <div class="row__title">{{ 'tradesTable.columns.send' | translate }}</div>
 
         <div class="row__data">
-          <div class="token">
+          <div class="token" *ngIf="trade.fromToken">
             <span>{{
               trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
             }}</span>
