@@ -11,6 +11,9 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@core/errors/errors.service';
 
+/**
+ * Panel with cards intended for gas refund
+ */
 @Component({
   selector: 'app-gas-refund',
   templateUrl: './gas-refund.component.html',

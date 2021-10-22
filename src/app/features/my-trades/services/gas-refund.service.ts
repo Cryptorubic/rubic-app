@@ -56,6 +56,10 @@ export class GasRefundService {
     this.setupTestingMode();
   }
 
+  /**
+   * Specific hash function based on keccak256. Hashes similarly to functions from a merkle contract
+   * @param arg two values to hash. Each value takes 32 byte
+   */
   private static merkleKeccak256(arg: Uint8Array): string {
     const first = `0x${(<Buffer>arg).toString('hex').slice(0, 64)}`;
 
@@ -71,6 +75,9 @@ export class GasRefundService {
     return res.slice(2);
   }
 
+  /**
+   * Changes contract address after enabling the testing mode
+   */
   private setupTestingMode(): void {
     this.testingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -80,6 +87,9 @@ export class GasRefundService {
     });
   }
 
+  /**
+   * Fetches actual user promotions list, updates promotions storage, then emits void and completes stream
+   */
   public updateUserPromotions(): Observable<void> {
     const userPromotions$ = this.gasRefundApiService.getUserPromotions();
     userPromotions$.subscribe(promotions => this._userPromotions$.next(promotions));
@@ -87,11 +97,16 @@ export class GasRefundService {
     return userPromotions$.pipe(mapToVoid());
   }
 
+  /**
+   * Calculates the proof for a refund, sends a refund transaction. If successful, notifies the backend of a successful refund
+   * @param promotionId promotion id to refund
+   * @param onTransactionHash a function to be called after sending a refund transaction
+   * @returns stream that emits the transaction hash once and completes
+   */
   public refund(
     promotionId: number,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
-    this.gasRefundApiService.markPromotionAsUsed(promotionId).subscribe();
     const address = this.authService.userAddress;
     return from(this.checkChain()).pipe(
       filter(success => success),
@@ -112,6 +127,10 @@ export class GasRefundService {
     );
   }
 
+  /**
+   * Checks the network selected in the wallet for compliance with the contract network, and switches the network if necessary
+   * @returns is the correct network selected as a result
+   */
   private checkChain(): Promise<boolean> {
     if (this.providerConnector.networkName !== this.refundBlockchain) {
       return this.providerConnector.switchChain(this.refundBlockchain);
@@ -119,6 +138,14 @@ export class GasRefundService {
     return Promise.resolve(true);
   }
 
+  /**
+   * Safely calls the contract method to refund gas
+   * @param proof merkle tree proof
+   * @param amount BRBC amount to refund in wei
+   * @param rootData root index and root hash
+   * @param onTransactionHash  a function to be called after sending a refund transaction
+   * @returns refund promise resolved by transaction receipt
+   */
   private async sendRefund(
     proof: string[],
     amount: BigNumber,
