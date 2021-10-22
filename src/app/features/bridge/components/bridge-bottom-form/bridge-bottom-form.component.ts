@@ -261,15 +261,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.isBridgeSupported = true;
     this.cdr.detectChanges();
 
-    if (!this.allowTrade) {
-      this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.swapFormService.output.patchValue({
-        toAmount: new BigNumber(NaN)
-      });
-      this.cdr.detectChanges();
-      return;
-    }
-
     this.checkMinMaxAmounts();
     this.onCalculateTrade$.next();
   }
@@ -283,6 +274,15 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         debounceTime(200),
         switchMap(() => {
+          if (!this.allowTrade) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.swapFormService.output.patchValue({
+              toAmount: new BigNumber(NaN)
+            });
+            this.cdr.detectChanges();
+            return of(null);
+          }
+
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
 
