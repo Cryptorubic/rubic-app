@@ -49,4 +49,14 @@ export class GasRefundApiService {
       }))
     );
   }
+
+  public markPromotionAsUsed(promotionId: number): Observable<void> {
+    const endpointUrl = `${GasRefundApiService.baseUrl}/${promotionId}`;
+    const walletAddress = this.authService.userAddress;
+    return this.httpService.patch(
+      endpointUrl,
+      { promoId: promotionId, refunded: true },
+      { walletAddress }
+    );
+  }
 }

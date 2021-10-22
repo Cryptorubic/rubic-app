@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { switchMap } from 'rxjs/operators';
-import { of, OperatorFunction } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, OperatorFunction } from 'rxjs';
 
 /**
  * Compares two objects for equality.
@@ -45,4 +45,13 @@ export function subtractPercent(
  */
 export function mapToVoid(): OperatorFunction<unknown, void> {
   return switchMap(of) as OperatorFunction<unknown, void>;
+}
+
+/**
+ * Await for side-effect action like switchMap, but not modify the stream
+ */
+export function switchTap<T>(handler: (arg: T) => Observable<unknown>): OperatorFunction<T, T> {
+  return switchMap(arg => {
+    return handler(arg).pipe(map(() => arg));
+  });
 }

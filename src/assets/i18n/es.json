@@ -408,6 +408,28 @@
   "myTrades": {
     "title": "Mis Intercambios"
   },
+  "gasRefund": {
+    "title": "Reembolso de gasolina",
+    "body": {
+      "refundAmount": "Cantidad de reembolso",
+      "transactions": "Transacciones",
+      "more": "mas"
+    },
+    "button": {
+      "refundAfter": "Reembolso después de",
+      "refund": "Reembolso"
+    },
+    "promoActions": {
+      "1": {
+        "label": "CRYPTOLOVE",
+        "description": "¡Obtenga un reembolso de gasolina por completar el primer intercambio de cadenas múltiples en nuestra plataforma!"
+      },
+      "2": {
+        "label": "¡Reciba el reembolso de la tarifa de gas por realizar intercambios utilizando tokens de nuestros socios!",
+        "description": "¡Para celebrar el lanzamiento de la ruta Rubic Multi-Chain en la red Avalanche, nuestro proyecto está comenzando una nueva Campaña de Reembolso de Gas! A partir del 19 de octubre al 2 de noviembre, nuestros usuarios podrán completar el intercambio usando sus tokens favoritos. en la red Avalanche usando Rubic Multi-Chain Routing y obtenga un reembolso de GAS."
+      }
+    }
+  },
   "tradesTable": {
     "columns": {
       "status": "Estado",

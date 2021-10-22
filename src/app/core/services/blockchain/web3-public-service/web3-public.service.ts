@@ -82,6 +82,9 @@ export class Web3PublicService {
             this.useTestingModeService,
             this.httpClient
           );
+
+          this[`${connection.blockchainName}_TESTNET` as Web3SupportedBlockchains] =
+            this[connection.blockchainName];
         });
       }
     });

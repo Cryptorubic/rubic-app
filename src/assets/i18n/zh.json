@@ -408,6 +408,28 @@
   "myTrades": {
     "title": "我的行业"
   },
+  "gasRefund": {
+    "title": "天然氣退款",
+    "body": {
+      "refundAmount": "退款金額",
+      "transactions": "交易",
+      "more": "更多"
+    },
+    "button": {
+      "refundAfter": "退款後",
+      "refund": "退款"
+    },
+    "promoActions": {
+      "1": {
+        "label": "CRYPTOLOVE",
+        "description": "在我們的平台上完成第一個多鏈交換可以獲得 gas 返現！"
+      },
+      "2": {
+        "label": "使用我們合作夥伴的代幣進行掉期可以獲得 Gas 費用退款！",
+        "description": "為了慶祝在 Avalanche 網絡上推出 Rubic 多鏈路由，我們的項目正在啟動新的 Gas Refund Campaign！從 10 月 19 日到 11 月 2 日，我們的用戶將能夠使用他們喜歡的代幣完成交換 在 Avalanche 網絡上使用 Rubic 多鏈路由並獲得 GAS 退款"
+      }
+    }
+  },
   "tradesTable": {
     "columns": {
       "status": "状态",

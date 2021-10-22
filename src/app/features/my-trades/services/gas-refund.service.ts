@@ -5,7 +5,7 @@ import { Promotion } from 'src/app/features/my-trades/models/promotion';
 import { tuiPure } from '@taiga-ui/cdk';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { filter, map, mergeMap } from 'rxjs/operators';
-import { mapToVoid } from 'src/app/shared/utils/utils';
+import { mapToVoid, switchTap } from 'src/app/shared/utils/utils';
 import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
@@ -93,6 +93,7 @@ export class GasRefundService {
     promotionId: number,
     onTransactionHash?: (hash: string) => void
   ): Observable<string> {
+    this.gasRefundApiService.markPromotionAsUsed(promotionId).subscribe();
     const address = this.authService.userAddress;
     return from(this.checkChain()).pipe(
       filter(success => success),
@@ -102,13 +103,14 @@ export class GasRefundService {
         const leaf = soliditySha3(address, amount.toFixed(0));
 
         const tree = new MerkleTree(leaves, GasRefundService.merkleKeccak256);
-        const root = tree.getRoot().toString('hex');
+        const root = `0x${tree.getRoot().toString('hex')}`;
         const proof = tree.getHexProof(leaf);
 
         return from(this.sendRefund(proof, amount, { root, rootIndex }, onTransactionHash)).pipe(
           map(receipt => receipt.transactionHash)
         );
-      })
+      }),
+      switchTap(() => this.gasRefundApiService.markPromotionAsUsed(promotionId))
     );
   }
 

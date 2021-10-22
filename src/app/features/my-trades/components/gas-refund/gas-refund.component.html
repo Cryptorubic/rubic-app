@@ -66,9 +66,10 @@
 
             <app-rubic-button
               *ngLet="isButtonDisabled(promoItem.refundDate) as disabled"
-              (onClick)="onRefundClick(promoItem.id)"
               appearance="secondary"
+              [loading]="refundInProgressIds.includes(promoItem.id)"
               [disabled]="disabled"
+              (onClick)="onRefundClick(promoItem.id)"
             >
               <ng-container *ngIf="disabled; else refundText">
                 {{ 'gasRefund.button.refundAfter' | translate }}

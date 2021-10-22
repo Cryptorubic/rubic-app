@@ -117,9 +117,10 @@ export class ScannerLinkPipe implements PipeTransform {
       return '';
     }
 
-    const baseUrl = !this.isTestingMode
-      ? blockchainsScanners[blockchainName].baseUrl
-      : blockchainsScanners[`${blockchainName}_TESTNET` as BLOCKCHAIN_NAME].baseUrl;
+    const baseUrl =
+      !this.isTestingMode || blockchainName.includes('_TESTNET')
+        ? blockchainsScanners[blockchainName].baseUrl
+        : blockchainsScanners[`${blockchainName}_TESTNET` as BLOCKCHAIN_NAME].baseUrl;
 
     if (address === NATIVE_TOKEN_ADDRESS) {
       return baseUrl + blockchainsScanners[blockchainName].nativeCoinUrl;

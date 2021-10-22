@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Promotion } from 'src/app/features/my-trades/models/promotion';
 import { GasRefundService } from 'src/app/features/my-trades/services/gas-refund.service';
 import { watch } from '@taiga-ui/cdk';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { TuiNotification } from '@taiga-ui/core';
+import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ErrorsService } from 'src/app/core/errors/errors.service';
 
 @Component({
   selector: 'app-gas-refund',
@@ -14,14 +18,21 @@ import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GasRefundComponent {
+  private notificationSubscription$: Subscription;
+
   public userPromotions$: Observable<Promotion[]>;
 
   public isLoading = false;
 
+  public refundInProgressIds: number[] = [];
+
   constructor(
-    private gasRefundService: GasRefundService,
-    private cdr: ChangeDetectorRef,
-    private scannerLinkPipe: ScannerLinkPipe
+    private readonly gasRefundService: GasRefundService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly scannerLinkPipe: ScannerLinkPipe,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService,
+    private readonly errorsService: ErrorsService
   ) {
     this.userPromotions$ = gasRefundService.userPromotions$;
   }
@@ -44,6 +55,46 @@ export class GasRefundComponent {
   }
 
   public onRefundClick(promoId: number) {
-    this.gasRefundService.refund(promoId).subscribe();
+    const onTransactionHash = () => {
+      this.notificationSubscription$ = this.notify('progress');
+    };
+    this.gasRefundService.refund(promoId, onTransactionHash).subscribe(
+      () => {
+        this.notificationSubscription$?.unsubscribe();
+        this.notify('complete');
+        this.gasRefundService.updateUserPromotions();
+      },
+      err => {
+        this.errorsService.catchAnyError(err);
+        this.notificationSubscription$?.unsubscribe();
+      },
+      () => {
+        this.refundInProgressIds = this.refundInProgressIds.filter(elem => elem !== promoId);
+      }
+    );
+  }
+
+  private notify(tradeStatus: 'progress' | 'complete'): Subscription {
+    const notificationsData = {
+      progress: {
+        message: '',
+        label: '',
+        tuiStatus: TuiNotification.Info,
+        autoClose: false
+      },
+      complete: {
+        message: '',
+        label: '',
+        tuiStatus: TuiNotification.Success,
+        autoClose: 5000
+      }
+    };
+    const notificationData = notificationsData[tradeStatus];
+
+    return this.notificationsService.show(this.translateService.instant(notificationData.message), {
+      label: this.translateService.instant(notificationData.label),
+      status: notificationData.tuiStatus,
+      autoClose: notificationData.autoClose
+    });
   }
 }
