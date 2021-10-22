@@ -9,7 +9,7 @@ import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instan
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-pol.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
@@ -37,6 +37,7 @@ import { JoeAvalancheService } from 'src/app/features/instant-trade/services/ins
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,7 @@ export class InstantTradeService {
     private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
+    private readonly gtmService: GoogleTagManagerService,
     // Providers end
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -170,17 +172,7 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
-
-          // Inform gtm that tx was signed
-          this.window.dataLayer?.push({
-            event: 'transactionSigned',
-            ecategory: ' transaction',
-            eaction: 'ok',
-            elabel: '',
-            evalue: '',
-            transaction: true,
-            interactionType: false
-          });
+          this.gtmService.notifySignTransaction();
 
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;

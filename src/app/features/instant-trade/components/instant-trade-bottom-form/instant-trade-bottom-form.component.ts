@@ -21,7 +21,7 @@ import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription 
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
@@ -300,17 +300,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
     this.cdr.detectChanges();
 
-    if (!this.allowTrade) {
-      this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.selectedProvider = null;
-      this.autoSelect = true;
-      this.swapFormService.output.patchValue({
-        toAmount: new BigNumber(NaN)
-      });
-      this.cdr.detectChanges();
-      return;
-    }
-
     this.conditionalCalculate('normal');
   }
 
@@ -366,7 +355,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      !this.allowTrade ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
@@ -388,14 +376,25 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         filter(el => el === 'normal'),
         debounceTime(200),
         switchMap(() => {
+          if (!this.allowTrade) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.selectedProvider = null;
+            this.autoSelect = true;
+            this.swapFormService.output.patchValue({
+              toAmount: new BigNumber(NaN)
+            });
+            this.cdr.markForCheck();
+            return of(null);
+          }
+
           this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
             this.selectedProvider = null;
             this.autoSelect = true;
             this.needApprove = false;
             this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-            this.cdr.detectChanges();
-            return of();
+            this.cdr.markForCheck();
+            return of(null);
           }
 
           this.prepareControllers();
@@ -447,6 +446,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
+          if (!this.allowTrade) {
+            return of(null);
+          }
+
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
@@ -472,15 +475,18 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(el => {
-        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-        this.hiddenDataAmounts$.next(el);
-        const hiddenProviderData = el.find(
-          it => it.name === this.selectedProvider.tradeProviderInfo.value
-        );
-        if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
-          this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+        if (el) {
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+          this.hiddenDataAmounts$.next(el);
+          const hiddenProviderData = el.find(
+            (it: { name: INSTANT_TRADES_PROVIDER }) =>
+              it.name === this.selectedProvider.tradeProviderInfo.value
+          );
+          if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
+            this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+          }
+          this.cdr.markForCheck();
         }
-        this.cdr.detectChanges();
       });
   }
 
@@ -588,6 +594,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       const currentSelectedProviderIndex = this.providerControllers.findIndex(
         el => el.tradeProviderInfo.value === this.selectedProvider.tradeProviderInfo.value
       );
+      this.selectedProvider = this.providerControllers[currentSelectedProviderIndex];
       this.providerControllers[currentSelectedProviderIndex].isSelected = true;
     }
   }

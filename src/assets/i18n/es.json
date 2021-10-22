@@ -526,6 +526,10 @@
       "walletAddress": "La dirección de la billetera en la cadena de bloques TRON, en la que se proporcionarán los tokens."
     },
     "crossChainRouting": {
+      "autoRefreshTitle": "Autorefrescar",
+      "autoRefresh": "Actualice los parámetros comerciales cada 15 segundos.",
+      "slippageTitle": "Tolerancia al deslizamiento",
+      "slippage": "Su transacción será cancelada si el precio cambia desfavorablemente en más del porcentaje ingresado. (Un porcentaje más bajo disminuye las posibilidades de que su transacción sea anticipada)",
       "promoCodeTitle": "Código promocional",
       "promoCodeHint": "Ingrese el código de promoción aquí para obtener un reembolso de gasolina por su operación",
       "promoCodeLoginRequired": "Por favor, conecte su billetera para usar el código de promoción",

@@ -9,8 +9,8 @@ import { TokensApiService } from 'src/app/core/services/backend/tokens-api/token
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -300,25 +300,54 @@ export class TokensService {
   }
 
   /**
-   * Updates token's price and emits new tokens' list with updated token.
-   * @param token Token to update.
+   * Gets token price and updates tokens list.
+   * @param token Token to get price for.
+   * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
-  public updateTokenPriceInUsd(token: TokenAmount): void {
-    this.coingeckoApiService.getTokenPrice(token).subscribe(tokenPrice => {
-      if (tokenPrice) {
-        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-        const newToken = {
-          ...token,
-          ...foundToken,
-          price: tokenPrice || token.price
-        };
-        this.tokensSubject.next(
-          this.tokens
-            .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
-            .push(newToken)
-        );
-      }
-    });
+  public getTokenPrice(
+    token: {
+      address: string;
+      blockchain: BLOCKCHAIN_NAME;
+    },
+    searchBackend = false
+  ): Promise<number | undefined> {
+    return this.coingeckoApiService
+      .getTokenPrice(token)
+      .pipe(
+        map(tokenPrice => {
+          if (tokenPrice) {
+            return tokenPrice;
+          }
+          const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+          return foundToken?.price;
+        }),
+        switchMap(tokenPrice => {
+          if (!tokenPrice && searchBackend) {
+            return this.fetchQueryTokens(
+              token.address,
+              token.blockchain as PAGINATED_BLOCKCHAIN_NAME
+            ).pipe(map(backendTokens => backendTokens.get(0)?.price));
+          }
+          return of(tokenPrice);
+        }),
+        tap(tokenPrice => {
+          if (tokenPrice) {
+            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+            if (foundToken && tokenPrice !== foundToken.price) {
+              const newToken = {
+                ...foundToken,
+                price: tokenPrice
+              };
+              this.tokensSubject.next(
+                this.tokens
+                  .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+                  .push(newToken)
+              );
+            }
+          }
+        })
+      )
+      .toPromise();
   }
 
   /**

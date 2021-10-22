@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -9,7 +9,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { List } from 'immutable';
-import { filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap, timeout } from 'rxjs/operators';
 import {
   EVO_ABI,
   EVO_ADDRESSES
@@ -20,11 +20,11 @@ import { EvoBridgeTokenPair } from 'src/app/features/bridge/services/bridge-serv
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AbiItem } from 'web3-utils';
 import { EvoResponseToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoResponseToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import {
   BlockchainsConfig,
@@ -185,14 +185,16 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         return from(this.fetchConfigs(blockchainTokens)).pipe(
           map(config => ({ evoTokens, config }))
         );
+      }),
+      timeout(3000),
+      catchError(err => {
+        console.error(err);
+        return of({ evoTokens: [], config: {} });
       })
     );
 
     return forkJoin([
-      this.tokensService.tokens$.pipe(
-        filter(tokens => !!tokens?.size),
-        first()
-      ),
+      this.tokensService.tokens$.pipe(first(tokens => !!tokens?.size)),
       loadTokensAndConfig$
     ]).pipe(
       map(([swapTokens, { evoTokens, config }]) =>

@@ -12,7 +12,7 @@ import {
 } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';

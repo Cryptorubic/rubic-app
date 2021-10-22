@@ -15,8 +15,8 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Web3PublicService } from '../blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from '../blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 const DEFAULT_PARAMETERS = {
@@ -99,8 +99,6 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
-      } else if (hasParams) {
-        this.initiateCryptoTapParams(queryParams);
       }
     }
   }
@@ -160,10 +158,6 @@ export class QueryParamsService {
           })
         });
       });
-  }
-
-  private initiateCryptoTapParams(_params: QueryParams): void {
-    // TODO: add crypto tap params
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {

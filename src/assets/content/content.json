@@ -60,6 +60,17 @@
       ]
     },
     {
+      "img": "KirillKuzmin.jpg",
+      "name": "Kirill Kuzmin",
+      "role": "Business Development",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/KirKuzmin"
+        }
+      ]
+    },
+    {
       "img": "SergeyAndreev.png",
       "name": "Sergey Andreev",
       "role": "Frontend Developer",
@@ -144,17 +155,6 @@
         {
           "icon": "Telegram.svg",
           "url": "https://t.me/renedsaa"
-        }
-      ]
-    },
-    {
-      "img": "GuilhemDeRooyesteyn.png",
-      "name": "Guilhem de Rooyesteyn",
-      "role": "Marketing",
-      "links": [
-        {
-          "icon": "Telegram.svg",
-          "url": "https://t.me/Guilhemw"
         }
       ]
     },

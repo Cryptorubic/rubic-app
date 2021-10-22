@@ -526,6 +526,10 @@
       "walletAddress": "토큰이 제공되는 TRON 블록 체인의 지갑 주소."
     },
     "crossChainRouting": {
+      "autoRefreshTitle": "자동 새로 고침",
+      "autoRefresh": "15 초마다 거래 매개 변수를 업데이트합니다.",
+      "slippageTitle": "미끄러짐 허용 오차",
+      "slippage": "가격이 입력 된 비율 이상으로 불리하게 변경되면 거래가 취소됩니다. (낮은 비율은 트랜잭션이 전면 실행될 가능성을 줄입니다.)",
       "promoCodeTitle": "프로모션 코드",
       "promoCodeHint": "거래에 대한 가스 환불을 받으려면 여기에 프로모션 코드를 입력하세요.",
       "promoCodeLoginRequired": "프로모션 코드를 사용하려면 지갑을 연결하십시오.",

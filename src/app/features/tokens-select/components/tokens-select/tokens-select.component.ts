@@ -12,8 +12,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -22,7 +22,6 @@ import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, debounceTime, distinctUntilChanged, mapTo, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { transitTokensWithMode } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
@@ -33,6 +32,7 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { supportedCrossChainSwapBlockchains } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -130,17 +130,20 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * Defines if token pair is able to trade through cross-chain.
+   * Checks if tokens pair is allowed to trade through cross-chain.
    * @param fromBlockchain From token blockchain.
    * @param toBlockchain To token blockchain.
-   * @return boolean If token allowed in cross-chain returns true, otherwise false.
+   * @return boolean If token is allowed in cross-chain returns true, otherwise false.
    */
-  static allowInCrossChain(
+  static allowedInCrossChain(
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME
   ): boolean {
-    const availableNetworks = Object.keys(transitTokensWithMode.mainnet);
-    return availableNetworks.includes(fromBlockchain) && availableNetworks.includes(toBlockchain);
+    const availableNetworks = supportedCrossChainSwapBlockchains;
+    return (
+      availableNetworks.some(availableNetwork => availableNetwork === fromBlockchain) &&
+      availableNetworks.some(availableNetwork => availableNetwork === toBlockchain)
+    );
   }
 
   /**
@@ -333,7 +336,7 @@ export class TokensSelectComponent implements OnInit {
           available:
             !oppositeToken ||
             this.blockchain === oppositeToken.blockchain ||
-            TokensSelectComponent.allowInCrossChain(
+            TokensSelectComponent.allowedInCrossChain(
               blockchainToken.blockchain,
               oppositeToken.blockchain
             ),
