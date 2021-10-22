@@ -5,7 +5,7 @@
       <app-rotating-icon [rotating]="isLoading" (iconClick)="refreshRefunds()"></app-rotating-icon>
     </div>
 
-    <div class="body">
+    <tui-loader class="body" [showLoader]="isLoading" [inheritColor]="true" [overlay]="true">
       <tui-scrollbar>
         <ul class="cards">
           <li class="cards__item card" *ngFor="let promoItem of userPromotions">
@@ -25,7 +25,9 @@
             <div class="card__body">
               <div class="card__amount">
                 <div class="card__text_big">${{ promoItem.totalRefundUSD | number: '1.0-2' }}</div>
-                <div class="card__text_label">{{ 'gasRefund.body.refundAmount' | translate }}</div>
+                <div class="card__text_label">
+                  {{ 'gasRefund.body.refundAmount' | translate }}
+                </div>
               </div>
               <div class="card__transactions">
                 <div>
@@ -83,6 +85,6 @@
           </li>
         </ul>
       </tui-scrollbar>
-    </div>
+    </tui-loader>
   </section>
 </ng-container>

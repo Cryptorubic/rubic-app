@@ -26,14 +26,14 @@ export class GasRefundApiService {
       .pipe(
         map(response =>
           response.map(item => ({
-            ...item,
             id: item.promoId,
             transactions: item.transactions.map(transaction => ({
               ...transaction,
               blockchain: FROM_BACKEND_BLOCKCHAINS[transaction.blockchain],
               date: new Date(transaction.date)
             })),
-            refundDate: new Date(item.refundDate)
+            refundDate: new Date(item.refundDate),
+            totalRefundUSD: item.totalRefundUSD
           }))
         )
       );
@@ -53,10 +53,6 @@ export class GasRefundApiService {
   public markPromotionAsUsed(promotionId: number): Observable<void> {
     const endpointUrl = `${GasRefundApiService.baseUrl}/${promotionId}`;
     const walletAddress = this.authService.userAddress;
-    return this.httpService.patch(
-      endpointUrl,
-      { promoId: promotionId, refunded: true },
-      { walletAddress }
-    );
+    return this.httpService.patch(endpointUrl, null, { walletAddress });
   }
 }

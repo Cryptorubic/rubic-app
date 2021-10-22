@@ -428,6 +428,16 @@
         "label": "Get Gas fee Refund for making swaps using tokens of our partners!",
         "description": "To celebrate the launch of Rubic Multi-Chain routing on the Avalanche network our project is starting a new Gas Refund Campaign! Starting from Oct, 19 to Nov,2  our users will be able to complete swap using their favorite tokens on the Avalanche network using Rubic Multi-Chain Routing and get GAS refunded."
       }
+    },
+    "notifications": {
+      "progress": {
+        "label": "Gas refund in progress",
+        "message": "Gas refund transaction in progress. Please wait until it completes."
+      },
+      "complete": {
+        "label": "Gas refund completed!",
+        "message": "Gas refund transaction completed!"
+      }
     }
   },
   "tradesTable": {

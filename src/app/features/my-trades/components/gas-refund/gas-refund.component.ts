@@ -58,33 +58,37 @@ export class GasRefundComponent {
     const onTransactionHash = () => {
       this.notificationSubscription$ = this.notify('progress');
     };
-    this.gasRefundService.refund(promoId, onTransactionHash).subscribe(
-      () => {
-        this.notificationSubscription$?.unsubscribe();
-        this.notify('complete');
-        this.gasRefundService.updateUserPromotions();
-      },
-      err => {
-        this.errorsService.catchAnyError(err);
-        this.notificationSubscription$?.unsubscribe();
-      },
-      () => {
+    this.refundInProgressIds = this.refundInProgressIds.concat(promoId);
+    this.gasRefundService
+      .refund(promoId, onTransactionHash)
+      .subscribe(
+        () => {
+          this.notificationSubscription$?.unsubscribe();
+          this.notify('complete');
+          this.gasRefundService.updateUserPromotions();
+        },
+        err => {
+          this.errorsService.catchAnyError(err);
+          this.notificationSubscription$?.unsubscribe();
+        }
+      )
+      .add(() => {
         this.refundInProgressIds = this.refundInProgressIds.filter(elem => elem !== promoId);
-      }
-    );
+        this.cdr.markForCheck();
+      });
   }
 
   private notify(tradeStatus: 'progress' | 'complete'): Subscription {
     const notificationsData = {
       progress: {
-        message: '',
-        label: '',
+        message: 'gasRefund.notifications.progress.message',
+        label: 'gasRefund.notifications.progress.label',
         tuiStatus: TuiNotification.Info,
         autoClose: false
       },
       complete: {
-        message: '',
-        label: '',
+        message: 'gasRefund.notifications.complete.message',
+        label: 'gasRefund.notifications.complete.label',
         tuiStatus: TuiNotification.Success,
         autoClose: 5000
       }

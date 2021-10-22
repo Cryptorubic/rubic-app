@@ -83,8 +83,12 @@
     padding: 25px 20px;
   }
 
-  @include b(desktop) {
+  @media (min-width: #{$tablet}px) {
     ::ng-deep app-rubic-button {
+      tui-loader {
+        width: fit-content;
+      }
+
       button {
         width: auto !important;
         min-width: 200px;

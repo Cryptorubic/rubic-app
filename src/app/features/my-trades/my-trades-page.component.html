@@ -1,4 +1,4 @@
 <ng-container>
-  <app-gas-refund *ngIf="true"></app-gas-refund>
+  <app-gas-refund *ngIf="walletConnected | async"></app-gas-refund>
   <app-my-trades></app-my-trades>
 </ng-container>

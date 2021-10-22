@@ -53,8 +53,6 @@ export class GasRefundService {
       .getCurrentUser()
       .pipe(filter(user => !!user?.address))
       .subscribe(() => this.updateUserPromotions());
-
-    this.updateUserPromotions();
     this.setupTestingMode();
   }
 
