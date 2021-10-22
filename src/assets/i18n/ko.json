@@ -428,6 +428,16 @@
         "label": "파트너의 토큰을 사용하여 스왑을 하면 가스비 환불을 받으세요!",
         "description": "Avalanche 네트워크에서 Rubic Multi-Chain 라우팅 출시를 축하하기 위해 우리 프로젝트는 새로운 Gas Refund Campaign을 시작합니다! 10월 19일부터 11월 2일까지 사용자는 좋아하는 토큰을 사용하여 스왑을 완료할 수 있습니다. Rubic Multi-Chain Routing을 사용하여 Avalanche 네트워크에서 GAS 환불을 받으세요."
       }
+    },
+    "notifications": {
+      "progress": {
+        "label": "가스 환불 진행 중",
+        "message": "Rubic은 가스 환불을 완료하고 있습니다. 완료될 때까지 기다려주세요"
+      },
+      "complete": {
+        "label": "가스 환불 완료!",
+        "message": "가스 환불이 완료되었습니다! 루빅을 이용해 주셔서 감사합니다!"
+      }
     }
   },
   "tradesTable": {

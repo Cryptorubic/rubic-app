@@ -428,6 +428,16 @@
         "label": "¡Reciba el reembolso de la tarifa de gas por realizar intercambios utilizando tokens de nuestros socios!",
         "description": "¡Para celebrar el lanzamiento de la ruta Rubic Multi-Chain en la red Avalanche, nuestro proyecto está comenzando una nueva Campaña de Reembolso de Gas! A partir del 19 de octubre al 2 de noviembre, nuestros usuarios podrán completar el intercambio usando sus tokens favoritos. en la red Avalanche usando Rubic Multi-Chain Routing y obtenga un reembolso de GAS."
       }
+    },
+    "notifications": {
+      "progress": {
+        "label": "El reembolso de gas está en curso",
+        "message": "Rubic está completando un reembolso de gasolina. Espere hasta que se complete."
+      },
+      "complete": {
+        "label": "¡Se completa el reembolso de gas!!",
+        "message": "¡Su reembolso de gasolina se completó! ¡Gracias por usar Rubic!"
+      }
     }
   },
   "tradesTable": {

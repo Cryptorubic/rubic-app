@@ -431,12 +431,12 @@
     },
     "notifications": {
       "progress": {
-        "label": "Gas refund in progress",
-        "message": "Gas refund transaction in progress. Please wait until it completes."
+        "label": "Gas refund is in progress",
+        "message": "Rubic is completing a gas refund. Please wait until it will be completed."
       },
       "complete": {
-        "label": "Gas refund completed!",
-        "message": "Gas refund transaction completed!"
+        "label": "Gas refund is completed!",
+        "message": "Your Gas refund is completed! Thanks for using Rubic!"
       }
     }
   },

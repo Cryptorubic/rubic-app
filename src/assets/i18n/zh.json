@@ -428,7 +428,18 @@
         "label": "使用我們合作夥伴的代幣進行掉期可以獲得 Gas 費用退款！",
         "description": "為了慶祝在 Avalanche 網絡上推出 Rubic 多鏈路由，我們的項目正在啟動新的 Gas Refund Campaign！從 10 月 19 日到 11 月 2 日，我們的用戶將能夠使用他們喜歡的代幣完成交換 在 Avalanche 網絡上使用 Rubic 多鏈路由並獲得 GAS 退款"
       }
+    },
+    "notifications": {
+      "progress": {
+        "label": "Gas退款正在進行中,",
+        "message": "Rubic 正在完成汽油退款。 請等待它完成"
+      },
+      "complete": {
+        "label": "加油完成！",
+        "message": "您的 Gas 退款已完成！ 感謝您使用 Rubic！"
+      }
     }
+
   },
   "tradesTable": {
     "columns": {
