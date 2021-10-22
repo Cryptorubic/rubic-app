@@ -1,26 +1,26 @@
 import { Injectable } from '@angular/core';
-import { GasRefundApiService } from 'src/app/core/services/backend/gas-refund-api/gas-refund-api.service';
+import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
 import { BehaviorSubject, from, Observable } from 'rxjs';
-import { Promotion } from 'src/app/features/my-trades/models/promotion';
+import { Promotion } from '@features/my-trades/models/promotion';
 import { tuiPure } from '@taiga-ui/cdk';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 import { filter, map, mergeMap } from 'rxjs/operators';
-import { mapToVoid, switchTap } from 'src/app/shared/utils/utils';
+import { mapToVoid, switchTap } from '@shared/utils/utils';
 import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
-import { RootData } from 'src/app/features/my-trades/models/root-data';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { REFUND_ABI } from 'src/app/features/my-trades/constants/REFUND_ABI';
-import { UnknownError } from 'src/app/core/errors/models/unknown.error';
+import { RootData } from '@features/my-trades/models/root-data';
+import { Web3PrivateService } from '@core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { Web3PublicService } from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
+import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import {
   REFUND_ADDRESS,
   REFUND_ADDRESS_TESTNET
-} from 'src/app/features/my-trades/constants/REFUND_ADDRESS';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+} from '@features/my-trades/constants/REFUND_ADDRESS';
+import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 
 @Injectable()
 export class GasRefundService {

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { Promotion } from 'src/app/features/my-trades/models/promotion';
-import { GasRefundService } from 'src/app/features/my-trades/services/gas-refund.service';
+import { Promotion } from '@features/my-trades/models/promotion';
+import { GasRefundService } from '@features/my-trades/services/gas-refund.service';
 import { watch } from '@taiga-ui/cdk';
-import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { TuiNotification } from '@taiga-ui/core';
-import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
+import { ErrorsService } from '@core/errors/errors.service';
 
 @Component({
   selector: 'app-gas-refund',

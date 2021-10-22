@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Promotion } from 'src/app/features/my-trades/models/promotion';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { HttpService } from 'src/app/core/services/http/http.service';
+import { Promotion } from '@features/my-trades/models/promotion';
+import { AuthService } from '@core/services/auth/auth.service';
+import { HttpService } from '@core/services/http/http.service';
 import { map } from 'rxjs/operators';
-import { MerkleData } from 'src/app/features/my-trades/models/merkle-data';
-import { MerkleResponse } from 'src/app/core/services/backend/gas-refund-api/models/merkle-response';
+import { MerkleData } from '@features/my-trades/models/merkle-data';
+import { MerkleResponse } from '@core/services/backend/gas-refund-api/models/merkle-response';
 import BigNumber from 'bignumber.js';
-import { PromotionResponse } from 'src/app/core/services/backend/gas-refund-api/models/promotion-response';
-import { FROM_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { PromotionResponse } from '@core/services/backend/gas-refund-api/models/promotion-response';
+import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 @Injectable({
   providedIn: 'root'
