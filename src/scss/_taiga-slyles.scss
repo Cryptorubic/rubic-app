@@ -96,12 +96,17 @@ tui-notification-alert {
   }
 }
 
-/*:host-context(html:not(.dark).iframe-horizontal) ::ng-deep tui-dialog {
-  &,
-  > .content {
-    background: #f4f4f4 !important;
+@include b($mobile-md) {
+  tui-badge.notification-counter {
+    &[data-tui-host-padding='m'][data-tui-host-size='s'] {
+      min-width: 15px;
+      height: 15px;
+      padding: 0 3px;
+
+      line-height: 15px;
+    }
   }
-}*/
+}
 
 ::ng-deep tui-dialog .content {
   @include iframe {

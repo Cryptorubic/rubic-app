@@ -8,7 +8,7 @@
       </div>
       <tui-badge
         class="notification-counter"
-        *ngIf="($countUnread | async) && ($currentUser | async)"
+        *ngIf="($countUnread | async) && ($currentUser | async) && !isOpened"
         size="s"
         [value]="$countUnread | async"
       ></tui-badge>
@@ -85,11 +85,18 @@
           routerLink="my-trades"
           (click)="closeMenu()"
           routerLinkActive="data-list__link_active"
-          class="data-list__link"
+          class="data-list__link data-list__link_my-trades"
         >
           <button tuiOption class="data-list__option">
             {{ 'navigation.myTrades' | translate }}
           </button>
+
+          <tui-badge
+            class="notification-counter notification-counter_my-trades"
+            *ngIf="($countUnread | async) && ($currentUser | async)"
+            size="s"
+            [value]="$countUnread | async"
+          ></tui-badge>
         </a>
 
         <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">
