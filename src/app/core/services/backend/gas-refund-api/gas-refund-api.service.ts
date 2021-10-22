@@ -33,9 +33,9 @@ export class GasRefundApiService {
             transactions: item.transactions.map(transaction => ({
               ...transaction,
               blockchain: FROM_BACKEND_BLOCKCHAINS[transaction.blockchain],
-              date: new Date(transaction.date)
+              date: new Date(transaction.date * 1000)
             })),
-            refundDate: new Date(item.refundDate),
+            refundDate: new Date(item.refundDate * 1000),
             totalRefundUSD: item.totalRefundUSD
           }))
         )

@@ -7,8 +7,8 @@ export interface PromotionResponseItem {
   transactions: {
     hash: string;
     blockchain: FromBackendBlockchains;
-    date: number;
+    date: number; // in seconds
   }[];
   totalRefundUSD: number;
-  refundDate: number;
+  refundDate: number; // in seconds
 }
