@@ -78,22 +78,9 @@
     padding: 25px 30px;
   }
 
-  @include b(375) {
+  @include b(400) {
     width: 296px;
     padding: 25px 20px;
-  }
-
-  @media (min-width: #{$tablet}px) {
-    ::ng-deep app-rubic-button {
-      tui-loader {
-        width: fit-content;
-      }
-
-      button {
-        width: auto !important;
-        min-width: 200px;
-      }
-    }
   }
 
   &__header {
@@ -152,7 +139,22 @@
   &__table {
     width: 254px;
 
+    @include b(600) {
+
+      position: relative;
+      left: -5px;
+
+      width: 135px;
+    }
+
     td {
+
+      @include b(600) {
+        > span {
+          display: none;
+        }
+      }
+
       > * {
         vertical-align: middle;
       }
@@ -166,6 +168,19 @@
       height: 30px;
 
       cursor: pointer;
+    }
+  }
+
+  @media (min-width: #{$tablet}px) {
+    ::ng-deep app-rubic-button {
+      tui-loader {
+        width: fit-content;
+      }
+
+      button {
+        width: auto !important;
+        min-width: 200px;
+      }
     }
   }
 }
