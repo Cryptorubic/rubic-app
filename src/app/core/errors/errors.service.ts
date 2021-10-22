@@ -31,6 +31,10 @@ export class ErrorsService {
     throw error;
   }
 
+  /**
+   * Catch error, show console message and notification if error is RubicError instance or show default unknown error message
+   * @param error Caught error.
+   */
   public catchAnyError(error: Error): void {
     if (error instanceof RubicError) {
       this.catch(error);

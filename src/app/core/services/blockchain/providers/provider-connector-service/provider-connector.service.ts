@@ -236,6 +236,11 @@ export class ProviderConnectorService {
     await this.provider.addChain(params);
   }
 
+  /**
+   * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet
+   * @param networkName chain to switch to
+   * @returns was the network switch successful
+   */
   public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<boolean> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
     const chainId = `0x${network.id.toString(16)}`;
