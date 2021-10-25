@@ -472,22 +472,26 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const routes: UniswapV2Route[] = [];
-    const responses = await this.getRoutes(routesMethodArguments, uniswapMethodName);
 
-    responses.forEach((response, index) => {
-      if (!response.success) {
-        return;
-      }
-      const { amounts } = response.output;
-      const amount = new BigNumber(
-        uniswapMethodName === 'getAmountsOut' ? amounts[amounts.length - 1] : amounts[0]
-      );
-      const path = routesPaths[index];
-      routes.push({
-        outputAbsoluteAmount: amount,
-        path
+    try {
+      const responses = await this.getRoutes(routesMethodArguments, uniswapMethodName);
+      responses.forEach((response, index) => {
+        if (!response.success) {
+          return;
+        }
+        const { amounts } = response.output;
+        const amount = new BigNumber(
+          uniswapMethodName === 'getAmountsOut' ? amounts[amounts.length - 1] : amounts[0]
+        );
+        const path = routesPaths[index];
+        routes.push({
+          outputAbsoluteAmount: amount,
+          path
+        });
       });
-    });
+    } catch (err) {
+      console.debug(err);
+    }
 
     return routes;
   }
