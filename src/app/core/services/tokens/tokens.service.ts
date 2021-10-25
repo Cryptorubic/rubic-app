@@ -265,7 +265,7 @@ export class TokensService {
    * @param blockchain Token blockchain.
    * @return Observable<TokenAmount> Token with balance.
    */
-  public addToken(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
+  public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
     const web3Public: Web3Public = this.web3PublicService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
       ? from(web3Public.getTokenBalance(this.userAddress, address))
@@ -282,10 +282,20 @@ export class TokensService {
         rank: 1,
         price: null,
         usedInIframe: true,
-        amount
+        amount: amount || new BigNumber(NaN)
       })),
       tap((token: TokenAmount) => this.tokensSubject.next(this.tokens.push(token)))
     );
+  }
+
+  /**
+   * Adds new token to tokens list.
+   * @param token Token to add.
+   */
+  public addToken(token: TokenAmount): void {
+    if (!this.tokens.find(t => TokensService.areTokensEqual(t, token))) {
+      this.tokensSubject.next(this.tokens.push(token));
+    }
   }
 
   /**
@@ -303,11 +313,11 @@ export class TokensService {
   }
 
   /**
-   * Gets token price.
+   * Gets token's price and updates tokens list.
    * @param token Token to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
-  public getTokenPrice(
+  public getAndUpdateTokenPrice(
     token: {
       address: string;
       blockchain: BLOCKCHAIN_NAME;
@@ -332,39 +342,66 @@ export class TokensService {
             ).pipe(map(backendTokens => backendTokens.get(0)?.price));
           }
           return of(tokenPrice);
+        }),
+        tap(tokenPrice => {
+          if (tokenPrice) {
+            const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+            if (foundToken && tokenPrice !== foundToken.price) {
+              const newToken = {
+                ...foundToken,
+                price: tokenPrice
+              };
+              this.tokensSubject.next(
+                this.tokens
+                  .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+                  .push(newToken)
+              );
+            }
+          }
         })
       )
       .toPromise();
   }
 
   /**
-   * Updates tokens list.
-   * @param token Token to updated price for.
-   * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
+   * Gets token's balance and updates tokens list.
+   * @param token Token to get balance for.
    */
-  public updateTokenPrice(
-    token: {
-      address: string;
-      blockchain: BLOCKCHAIN_NAME;
-    },
-    searchBackend = false
-  ) {
-    this.getTokenPrice(token, searchBackend).then(tokenPrice => {
-      if (tokenPrice) {
+  public getAndUpdateTokenBalance(token: {
+    address: string;
+    blockchain: BLOCKCHAIN_NAME;
+  }): Promise<BigNumber> {
+    if (!this.userAddress) {
+      return null;
+    }
+
+    const web3Public = this.web3PublicService[token.blockchain];
+    return web3Public
+      .getTokenOrNativeBalance(this.userAddress, token.address)
+      .then(balanceInWei => {
         const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-        if (foundToken && tokenPrice !== foundToken.price) {
-          const newToken = {
-            ...foundToken,
-            price: tokenPrice
-          };
-          this.tokensSubject.next(
-            this.tokens
-              .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
-              .push(newToken)
-          );
+        if (foundToken) {
+          const balance = Web3Public.fromWei(balanceInWei, foundToken.decimals);
+          if (!foundToken.amount.eq(balance)) {
+            const newToken = {
+              ...foundToken,
+              amount: balance
+            };
+            this.tokensSubject.next(
+              this.tokens
+                .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+                .push(newToken)
+            );
+          }
+          return new BigNumber(balance);
         }
-      }
-    });
+        return new BigNumber(NaN);
+      })
+      .catch(err => {
+        console.debug(err);
+        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+        return foundToken?.amount;
+      });
   }
 
   /**

@@ -391,7 +391,7 @@ export class TokensSelectComponent implements OnInit {
                   return {
                     ...el,
                     available: true,
-                    amount: new BigNumber(0),
+                    amount: new BigNumber(NaN),
                     favorite: false
                   };
                 })
@@ -429,7 +429,7 @@ export class TokensSelectComponent implements OnInit {
           ...blockchainToken,
           image,
           rank: 0,
-          amount: new BigNumber(0),
+          amount: new BigNumber(NaN),
           price: 0,
           usedInIframe: true,
           available:

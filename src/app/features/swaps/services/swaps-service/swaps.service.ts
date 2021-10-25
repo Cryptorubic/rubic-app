@@ -143,10 +143,18 @@ export class SwapsService {
         this.setSwapProviderType(curForm);
 
         if (
-          !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) ||
-          !TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken)
+          (!TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
+            curForm.fromToken) ||
+          (!TokensService.areTokensEqual(prevForm?.toToken, curForm.toToken) && curForm.toToken)
         ) {
           this.updateTokensPrices(curForm);
+        }
+
+        if (
+          !TokensService.areTokensEqual(prevForm?.fromToken, curForm.fromToken) &&
+          curForm.fromToken
+        ) {
+          this.updateTokenBalance(curForm.fromToken);
         }
       });
   }
@@ -172,10 +180,11 @@ export class SwapsService {
             )
             ?.tokenPairs.find(
               tokenPair =>
-                tokenPair.tokenByBlockchain[fromBlockchain].address.toLowerCase() ===
-                  fromToken.address.toLowerCase() &&
-                tokenPair.tokenByBlockchain[toBlockchain].address.toLowerCase() ===
-                  toToken.address.toLowerCase()
+                compareAddresses(
+                  tokenPair.tokenByBlockchain[fromBlockchain].address,
+                  fromToken.address
+                ) &&
+                compareAddresses(tokenPair.tokenByBlockchain[toBlockchain].address, toToken.address)
             );
 
           if (foundBridgeToken) {
@@ -199,14 +208,23 @@ export class SwapsService {
 
     const update = () => {
       if (form?.fromToken) {
-        this.tokensService.updateTokenPrice(form.fromToken);
+        this.tokensService.getAndUpdateTokenPrice(form.fromToken);
       }
       if (form?.toToken) {
-        this.tokensService.updateTokenPrice(form.toToken);
+        this.tokensService.getAndUpdateTokenPrice(form.toToken);
       }
     };
 
     update();
     this.intervalId = setInterval(update, 15_000);
+  }
+
+  /**
+   * Calls functions to update balance, if needed.
+   */
+  private updateTokenBalance(fromToken: TokenAmount) {
+    if (fromToken.amount.isNaN()) {
+      this.tokensService.getAndUpdateTokenBalance(fromToken);
+    }
   }
 }

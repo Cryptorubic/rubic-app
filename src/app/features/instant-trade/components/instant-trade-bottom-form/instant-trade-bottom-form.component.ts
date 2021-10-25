@@ -6,7 +6,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -206,7 +207,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     iframeService: IframeService,
-    private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
@@ -403,14 +404,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
-          const approveDataObservable = this.authService.user?.address
+          const approveData$ = this.authService.user?.address
             ? this.instantTradeService.getAllowance(providersNames)
             : of(new Array(this.providerControllers.length).fill(null));
-          const tradeDataObservable = from(
-            this.instantTradeService.calculateTrades(providersNames)
+          const tradeData$ = from(this.instantTradeService.calculateTrades(providersNames));
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
           );
 
-          return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
+          return forkJoin([approveData$, tradeData$, balance$]).pipe(
             map(([approveData, tradeData]) => {
               this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
 
@@ -453,10 +455,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
+          const tradeData$ = from(this.instantTradeService.calculateTrades(providersNames));
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          return from(this.instantTradeService.calculateTrades(providersNames)).pipe(
-            map((tradeData: CalculationResult[]) => {
+          return forkJoin([tradeData$, balance$]).pipe(
+            map(([tradeData]) => {
               return tradeData.map((trade: CalculationResult, index: number) => {
                 if (trade.status === 'fulfilled') {
                   return {
@@ -648,7 +654,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public getUsdPrice(amount?: BigNumber): BigNumber {
-    if (!amount && !this.selectedProvider?.trade.to.amount) {
+    if ((!amount && !this.selectedProvider?.trade.to.amount) || !this.toToken) {
       return null;
     }
     if (!this.toToken?.price) {

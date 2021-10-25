@@ -23,7 +23,7 @@
   </ng-container>
 
   <ng-container *ngIf="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
-    <ng-container *ngIf="!hasError || loading">
+    <ng-container *ngIf="(errorText | async) === null || loading">
       <!-- with approve button -->
       <ng-container *ngIf="needApprove">
         <ng-container *noFrame>
@@ -105,7 +105,7 @@
     </ng-container>
 
     <ng-container *ngLet="isMobile$ | async as isMobile">
-      <ng-container *ngIf="hasError && !loading">
+      <ng-container *ngIf="(errorText | async) && !loading">
         <!-- switch network button -->
         <ng-container
           *ngIf="errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && allowChangeNetwork && !isMobile"

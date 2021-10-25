@@ -17,6 +17,8 @@ import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareObjects } from 'src/app/shared/utils/utils';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -61,6 +63,7 @@ export class RubicTokensComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensSelectService: TokensSelectService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly tokensService: TokensService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
@@ -102,8 +105,9 @@ export class RubicTokensComponent implements OnInit {
         this.allowedBlockchains,
         idPrefix
       )
-      .subscribe((token: Token) => {
+      .subscribe((token: TokenAmount) => {
         if (token) {
+          this.tokensService.addToken(token);
           this.selectedToken = token;
           if (this.formType === 'from') {
             this.formService.input.patchValue({
