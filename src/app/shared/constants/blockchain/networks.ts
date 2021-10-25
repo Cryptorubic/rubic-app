@@ -90,7 +90,7 @@ export default [
     name: BLOCKCHAIN_NAME.HARMONY,
     scannerUrl: 'https://explorer.harmony.one/#/',
     rpcLink: 'https://api.harmony.one',
-    additionalRpcLink: '',
+    additionalRpcLink: 'https://api.s0.t.hmny.io/',
     imagePath: 'assets/images/icons/coins/harmony.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.HARMONY,
