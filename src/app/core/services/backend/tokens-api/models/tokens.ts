@@ -1,13 +1,13 @@
 import { List } from 'immutable';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
-import { FromBackendBlockchains } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { FromBackendBlockchain } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 export interface BackendToken {
   address: string;
   name: string;
   symbol: string;
-  blockchain_network: FromBackendBlockchains;
+  blockchain_network: FromBackendBlockchain;
   decimals: number;
   rank: number;
   image: string;
