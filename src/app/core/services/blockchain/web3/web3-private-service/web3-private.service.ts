@@ -60,6 +60,10 @@ export class Web3PrivateService {
     return err as unknown as Error;
   }
 
+  /**
+   * Compares current gas price and minimum gas price for blockchain and returns maximum.
+   * @param gasPrice Current gas price.
+   */
   private async calculateGasPrice(gasPrice?: string): Promise<string | undefined> {
     const blockchain = this.providerConnector.networkName;
     const minGasPrice = await this.gasApiService.getMinGasPriceInBlockchain(blockchain).toPromise();
