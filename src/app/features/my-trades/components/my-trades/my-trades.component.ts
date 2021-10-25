@@ -6,7 +6,7 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
@@ -19,8 +19,8 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { first, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { first, mergeMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 
@@ -60,27 +60,31 @@ export class MyTradesComponent implements OnInit {
     this.counterNotificationsService.resetCounter();
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
 
+    this.myTradesService.tableTrades$.pipe(takeUntil(this.destroy$)).subscribe(trades => {
+      if (this.authService.user) {
+        this.updateTableData(trades);
+      }
+    });
+
     this.authService
       .getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        this.walletAddress = user?.address || null;
-        this.loading = true;
+      .pipe(
+        takeUntil(this.destroy$),
+        watch(this.cdr),
+        mergeMap(user => {
+          this.walletAddress = user?.address || null;
+          this.loading = true;
+          this.cdr.detectChanges();
 
-        if (this.walletAddress) {
-          this.myTradesService
-            .updateTableTrades()
-            .pipe(first())
-            .subscribe(trades => {
-              this.updateTableData(trades);
-            });
-        } else {
+          if (this.walletAddress) {
+            return this.myTradesService.updateTableTrades().pipe(first());
+          }
           this.tableData$.next([]);
           this.loading = false;
-        }
-
-        this.cdr.detectChanges();
-      });
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
@@ -108,10 +112,7 @@ export class MyTradesComponent implements OnInit {
 
   public refreshTable(): void {
     this.loading = true;
-    this.myTradesService
-      .updateTableTrades()
-      .pipe(first())
-      .subscribe(trades => this.updateTableData(trades));
+    this.myTradesService.updateTableTrades().pipe(first()).subscribe();
   }
 
   public showConnectWalletModal(): void {

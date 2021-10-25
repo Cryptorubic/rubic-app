@@ -11,7 +11,7 @@ import { Component, ChangeDetectionStrategy, Input, HostBinding } from '@angular
 })
 export class InfoHintComponent {
   /**
-   * Translation key for text showing in the hint.
+   * Translation key for text in the hint.
    */
   @Input() translationKey: string;
 

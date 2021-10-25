@@ -16,7 +16,7 @@ import { RefundTransactionsResponse } from '@core/services/backend/gas-refund-ap
   providedIn: 'root'
 })
 export class GasRefundApiService {
-  private static baseUrl = 'promo';
+  private static readonly baseUrl = 'promo';
 
   constructor(private httpService: HttpService, private authService: AuthService) {}
 

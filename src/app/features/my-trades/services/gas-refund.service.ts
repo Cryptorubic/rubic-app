@@ -23,15 +23,15 @@ import { ProviderConnectorService } from '@core/services/blockchain/providers/pr
 
 @Injectable()
 export class GasRefundService {
-  public userPromotions$: Observable<Promotion[]>;
+  public readonly userPromotions$: Observable<Promotion[]>;
 
   private refundBlockchain = REFUND_ADDRESS.blockchain;
 
-  private refundContractAbi = REFUND_ABI;
+  private readonly refundContractAbi = REFUND_ABI;
 
   private refundContractAddress = REFUND_ADDRESS.address;
 
-  private _userPromotions$ = new BehaviorSubject<Promotion[]>([]);
+  private readonly _userPromotions$ = new BehaviorSubject<Promotion[]>([]);
 
   public get userPromotions(): Promotion[] {
     return this._userPromotions$.getValue();

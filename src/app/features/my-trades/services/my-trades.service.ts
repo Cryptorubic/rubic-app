@@ -29,6 +29,7 @@ import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS
 import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
+import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 
 interface PanamaStatusResponse {
   data: {
@@ -60,6 +61,10 @@ export class MyTradesService {
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly scannerLinkPipe: ScannerLinkPipe
   ) {}
+
+  public test() {
+    this._tableTrades$.next([]);
+  }
 
   public updateTableTrades(): Observable<TableTrade[]> {
     return combineLatest([
@@ -193,7 +198,7 @@ export class MyTradesService {
             if (!toToken) {
               return null;
             }
-            const amount = item.value.div(10 ** toToken.decimals).toFixed();
+            const amount = Web3Public.fromWei(item.value, toToken.decimals).toFixed();
             return {
               transactionHash: item.hash,
               transactionHashScanUrl: this.scannerLinkPipe.transform(

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { EMPTY, forkJoin, Observable, Subscription } from 'rxjs';
 import { Promotion } from '@features/my-trades/models/promotion';
 import { GasRefundService } from '@features/my-trades/services/gas-refund.service';
@@ -13,6 +13,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { MyTradesService } from '@features/my-trades/services/my-trades.service';
 import { catchError } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
+import { WINDOW } from '@ng-web-apis/common';
 
 /**
  * Panel with cards intended for gas refund
@@ -26,7 +27,7 @@ import { switchTap } from '@shared/utils/utils';
 export class GasRefundComponent {
   private notificationSubscription$: Subscription;
 
-  public userPromotions$: Observable<Promotion[]>;
+  public readonly userPromotions$: Observable<Promotion[]>;
 
   public isLoading = false;
 
@@ -39,7 +40,8 @@ export class GasRefundComponent {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly errorsService: ErrorsService,
-    private readonly myTradesService: MyTradesService
+    private readonly myTradesService: MyTradesService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.userPromotions$ = gasRefundService.userPromotions$;
   }
@@ -56,9 +58,9 @@ export class GasRefundComponent {
     return refundDate > new Date();
   }
 
-  public openInExplorer(hash: string, blockchain: BLOCKCHAIN_NAME) {
+  public openInExplorer(hash: string, blockchain: BLOCKCHAIN_NAME): void {
     const link = this.scannerLinkPipe.transform(hash, blockchain, ADDRESS_TYPE.TRANSACTION);
-    window.open(link, '_blank').focus();
+    this.window.open(link, '_blank').focus();
   }
 
   public onRefundClick(promoId: number) {
