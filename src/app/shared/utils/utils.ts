@@ -62,7 +62,7 @@ export function subtractPercent(
  * Maps stream to void: emits, and completes the stream.
  */
 export function mapToVoid(): OperatorFunction<unknown, void> {
-  return switchMap(of) as OperatorFunction<unknown, void>;
+  return switchMap(() => of(undefined));
 }
 
 /**

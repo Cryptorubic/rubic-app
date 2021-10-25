@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
 import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Promotion } from '@features/my-trades/models/promotion';
-import { tuiPure } from '@taiga-ui/cdk';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, map, mergeMap } from 'rxjs/operators';
-import { mapToVoid, switchTap } from '@shared/utils/utils';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { mapToVoid } from '@shared/utils/utils';
 import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
@@ -24,6 +23,8 @@ import { ProviderConnectorService } from '@core/services/blockchain/providers/pr
 
 @Injectable()
 export class GasRefundService {
+  public userPromotions$: Observable<Promotion[]>;
+
   private refundBlockchain = REFUND_ADDRESS.blockchain;
 
   private refundContractAbi = REFUND_ABI;
@@ -31,11 +32,6 @@ export class GasRefundService {
   private refundContractAddress = REFUND_ADDRESS.address;
 
   private _userPromotions$ = new BehaviorSubject<Promotion[]>([]);
-
-  @tuiPure
-  public get userPromotions$(): Observable<Promotion[]> {
-    return this._userPromotions$.asObservable();
-  }
 
   public get userPromotions(): Promotion[] {
     return this._userPromotions$.getValue();
@@ -49,6 +45,8 @@ export class GasRefundService {
     private readonly providerConnector: ProviderConnectorService,
     private readonly testingModeService: UseTestingModeService
   ) {
+    this.userPromotions$ = this._userPromotions$.asObservable();
+
     authService
       .getCurrentUser()
       .pipe(filter(user => !!user?.address))
@@ -110,8 +108,8 @@ export class GasRefundService {
     const address = this.authService.userAddress;
     return from(this.checkChain()).pipe(
       filter(success => success),
-      mergeMap(() => this.gasRefundApiService.getPromotionMerkleData(promotionId)),
-      mergeMap(({ leaves, rootIndex, amount }) => {
+      switchMap(() => this.gasRefundApiService.getPromotionMerkleData(promotionId)),
+      switchMap(({ leaves, rootIndex, amount }) => {
         // leaf is keccak256(abi.encodePacked(address, weiAmount))
         const leaf = soliditySha3(address, amount.toFixed(0));
 
@@ -120,10 +118,12 @@ export class GasRefundService {
         const proof = tree.getHexProof(leaf);
 
         return from(this.sendRefund(proof, amount, { root, rootIndex }, onTransactionHash)).pipe(
-          map(receipt => receipt.transactionHash)
+          map(receipt => ({ txHash: receipt.transactionHash, leaf }))
         );
       }),
-      switchTap(() => this.gasRefundApiService.markPromotionAsUsed(promotionId))
+      switchMap(({ txHash, leaf }) => {
+        return this.gasRefundApiService.markPromotionAsUsed(txHash, leaf).pipe(map(() => txHash));
+      })
     );
   }
 

@@ -17,7 +17,7 @@
     "close": "关闭",
     "send": "发送",
     "left": "离开",
-    "checkOnScanner": "Check on scanner",
+    "checkOnScanner": "检查扫描仪",
     "cancel": "取消",
     "add": "添加",
     "via": "通過",
@@ -31,8 +31,9 @@
     "minutes": "分鐘",
     "swap": "交換",
     "approve": "批准",
-    "switchTo": "Switch to {{ networkName }} network",
-    "tradeVia": "Trade Via "
+    "switchTo": "切换到 {{networkName}} 网络",
+    "tradeVia": "贸易途径 ",
+    "none": "没有"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",

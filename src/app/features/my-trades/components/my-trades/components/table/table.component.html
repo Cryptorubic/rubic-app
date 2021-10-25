@@ -142,7 +142,7 @@
 
           <td *tuiCell="'Sent'" tuiTd class="token">
             <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
-              <ng-container *ngIf="trade.fromToken">
+              <ng-container *ngIf="trade.fromToken; else none">
                 <span>{{
                   trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
                 }}</span>
@@ -156,6 +156,7 @@
                   {{ trade.fromToken.symbol }}
                 </div>
               </ng-container>
+              <ng-template #none>{{ 'common.none' }}</ng-template>
             </a>
           </td>
 

@@ -32,7 +32,8 @@
     "swap": "Intercambio",
     "approve": "Aprobar",
     "switchTo": "Switch to {{ networkName }} network",
-    "tradeVia": "Trade Via "
+    "tradeVia": "Trade Via ",
+    "none": "Nada"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",

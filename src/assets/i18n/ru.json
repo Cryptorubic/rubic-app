@@ -31,8 +31,9 @@
     "minutes": "минут(-ы)",
     "swap": "Обменять",
     "approve": "Утвердить",
-    "switchTo": "Switch to {{ networkName }} network",
-    "tradeVia": "Trade Via "
+    "switchTo": "Переключиться на сеть {{ networkName }}",
+    "tradeVia": "Торговать через ",
+    "none": "Ничего"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",

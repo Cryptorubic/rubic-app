@@ -3,20 +3,20 @@ import { Observable, of } from 'rxjs';
 import { Promotion } from '@features/my-trades/models/promotion';
 import { AuthService } from '@core/services/auth/auth.service';
 import { HttpService } from '@core/services/http/http.service';
-import { map } from 'rxjs/operators';
+import { catchError, map, timeout } from 'rxjs/operators';
 import { MerkleData } from '@features/my-trades/models/merkle-data';
 import { MerkleResponse } from '@core/services/backend/gas-refund-api/models/merkle-response';
 import BigNumber from 'bignumber.js';
 import { PromotionResponse } from '@core/services/backend/gas-refund-api/models/promotion-response';
 import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { RefundTransaction } from '@features/my-trades/models/refund-transaction';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { RefundTransactionsResponse } from '@core/services/backend/gas-refund-api/models/refund-transactions-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GasRefundApiService {
-  private static baseUrl = 'promotion';
+  private static baseUrl = 'promo';
 
   constructor(private httpService: HttpService, private authService: AuthService) {}
 
@@ -24,8 +24,9 @@ export class GasRefundApiService {
    * Fetches actual user promotions list
    */
   public getUserPromotions(): Observable<Promotion[]> {
+    const endpointUrl = `${GasRefundApiService.baseUrl}/promotions`;
     return this.httpService
-      .get<PromotionResponse>(GasRefundApiService.baseUrl, {
+      .get<PromotionResponse>(endpointUrl, {
         walletAddress: this.authService.userAddress
       })
       .pipe(
@@ -47,9 +48,10 @@ export class GasRefundApiService {
   /**
    * Fetches merkle tree leaves list and root index for specific action
    * @param promotionId action id for which data will be loaded
+   * @return merkle tree leaves list and root index
    */
   public getPromotionMerkleData(promotionId: number): Observable<MerkleData> {
-    const endpointUrl = `${GasRefundApiService.baseUrl}/${promotionId}/merkle-tree`;
+    const endpointUrl = `${GasRefundApiService.baseUrl}/promotions/${promotionId}/merkle-tree`;
     const walletAddress = this.authService.userAddress;
     return this.httpService.get<MerkleResponse>(endpointUrl, { walletAddress }).pipe(
       map(response => ({
@@ -61,12 +63,12 @@ export class GasRefundApiService {
 
   /**
    * Sends patch request to mark promotion as spent for current user
-   * @param promotionId action id to be marked as used
+   * @param txHash method execution transaction hash
+   * @param leaf refund merkle tree leaf
    */
-  public markPromotionAsUsed(promotionId: number): Observable<void> {
-    const endpointUrl = `${GasRefundApiService.baseUrl}/${promotionId}`;
-    const walletAddress = this.authService.userAddress;
-    return this.httpService.patch(endpointUrl, null, { walletAddress });
+  public markPromotionAsUsed(txHash: string, leaf: string): Observable<void> {
+    const endpointUrl = `${GasRefundApiService.baseUrl}/refunds`;
+    return this.httpService.post(endpointUrl, { leaf, hash: txHash });
   }
 
   /**
@@ -74,7 +76,7 @@ export class GasRefundApiService {
    * @returns stream that emits once past user refund gas transactions, or empty list if error
    */
   public getGasRefundTransactions(): Observable<RefundTransaction[]> {
-    /* const endpointUrl = `${GasRefundApiService.baseUrl}/refunds`;
+    const endpointUrl = `${GasRefundApiService.baseUrl}/refunds`;
     const walletAddress = this.authService.userAddress;
     return this.httpService.get<RefundTransactionsResponse>(endpointUrl, { walletAddress }).pipe(
       timeout(3000),
@@ -90,16 +92,6 @@ export class GasRefundApiService {
         console.error(e);
         return of([]);
       })
-    ); */
-
-    return of([
-      {
-        hash: '0x5841cf25277b29aeec0f9c4da8d395444c80da40bfa37cce1e52b83482f78ec6',
-        network: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        value: new BigNumber('30000001212'),
-        tokenAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
-        date: new Date(1634744758 * 1000)
-      }
-    ]);
+    );
   }
 }

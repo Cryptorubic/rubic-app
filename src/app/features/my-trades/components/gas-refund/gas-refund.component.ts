@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { EMPTY, forkJoin, Observable, Subscription } from 'rxjs';
 import { Promotion } from '@features/my-trades/models/promotion';
 import { GasRefundService } from '@features/my-trades/services/gas-refund.service';
 import { watch } from '@taiga-ui/cdk';
@@ -10,6 +10,9 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@core/errors/errors.service';
+import { MyTradesService } from '@features/my-trades/services/my-trades.service';
+import { catchError } from 'rxjs/operators';
+import { switchTap } from '@shared/utils/utils';
 
 /**
  * Panel with cards intended for gas refund
@@ -35,7 +38,8 @@ export class GasRefundComponent {
     private readonly scannerLinkPipe: ScannerLinkPipe,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly myTradesService: MyTradesService
   ) {
     this.userPromotions$ = gasRefundService.userPromotions$;
   }
@@ -64,17 +68,23 @@ export class GasRefundComponent {
     this.refundInProgressIds = this.refundInProgressIds.concat(promoId);
     this.gasRefundService
       .refund(promoId, onTransactionHash)
-      .subscribe(
-        () => {
-          this.notificationSubscription$?.unsubscribe();
-          this.notify('complete');
-          this.gasRefundService.updateUserPromotions();
-        },
-        err => {
+      .pipe(
+        catchError(err => {
           this.errorsService.catchAnyError(err);
           this.notificationSubscription$?.unsubscribe();
-        }
+          return EMPTY;
+        }),
+        switchTap(() =>
+          forkJoin([
+            this.gasRefundService.updateUserPromotions(),
+            this.myTradesService.updateTableTrades()
+          ])
+        )
       )
+      .subscribe(() => {
+        this.notificationSubscription$?.unsubscribe();
+        this.notify('complete');
+      })
       .add(() => {
         this.refundInProgressIds = this.refundInProgressIds.filter(elem => elem !== promoId);
         this.cdr.markForCheck();

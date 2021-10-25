@@ -86,7 +86,7 @@ const CROSS_CHAIN_ROUTING_PROVIDER: Provider = {
 
 const GAS_REFUND_PROVIDER: Provider = {
   name: 'Gas Refund',
-  image: `${imageBasePath}ccr.svg`
+  image: `${imageBasePath}gas-refund.svg`
 };
 
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
