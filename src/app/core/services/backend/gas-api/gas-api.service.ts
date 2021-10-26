@@ -9,6 +9,7 @@ import {
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { map } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
+import { FROM_TEST_BLOCKCHAINS } from '@shared/constants/blockchain/TEST_BLOCKCHAINS';
 
 @Injectable({
   providedIn: 'root'
@@ -25,11 +26,12 @@ export class GasApiService {
     maxAge: 15_000
   })
   public getMinGasPriceInBlockchain(blockchain: BLOCKCHAIN_NAME): Observable<BigNumber> {
-    const backendBlockchain = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];
+    const backendBlockchain =
+      TO_BACKEND_BLOCKCHAINS[FROM_TEST_BLOCKCHAINS[blockchain] as ToBackendBlockchain];
     return this.httpService
       .get<{
         [backendBlockchain: string]: number;
-      }>(`min_gas_price?blockchain=${backendBlockchain}`)
+      }>('min_gas_price', { blockchain: backendBlockchain })
       .pipe(
         map(minGasPrice => {
           return new BigNumber(minGasPrice[backendBlockchain]).multipliedBy(10 ** 9);
