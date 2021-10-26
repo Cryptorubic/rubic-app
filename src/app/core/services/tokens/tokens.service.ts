@@ -52,7 +52,7 @@ export class TokensService {
   private readonly tokensNetworkStateSubject: BehaviorSubject<TokensNetworkState>;
 
   /**
-   * Tokens list as observable.
+   * Current tokens list as observable.
    */
   get tokens$(): Observable<List<TokenAmount>> {
     return this.tokensSubject.asObservable();
@@ -66,21 +66,21 @@ export class TokensService {
   }
 
   /**
-   * Get current tokens list.
+   * Current favorite tokens list as observable.
    */
   get favoriteTokens$(): Observable<LocalToken[]> {
     return this.favoriteTokensSubject.asObservable();
   }
 
   /**
-   * Get current tokens list.
+   * Current favorite tokens list.
    */
   get favoriteTokens(): LocalToken[] {
     return this.favoriteTokensSubject.getValue();
   }
 
   /**
-   * Set current tokens request options.
+   * Sets current tokens request options.
    */
   set tokensRequestParameters(parameters: { [p: string]: unknown }) {
     this.tokensRequestParametersSubject.next(parameters);

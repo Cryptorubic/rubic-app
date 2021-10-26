@@ -279,7 +279,6 @@ export class TokensSelectComponent implements OnInit {
    */
   private updateTokensList(): void {
     this.customToken = null;
-    this.cdr.detectChanges();
 
     if (!this.updateTokensByQuerySubscription$) {
       // handles search query requests to APIs
