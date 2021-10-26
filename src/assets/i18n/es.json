@@ -56,7 +56,7 @@
     "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
     "insufficientLiquidityCCR": "Liquidez insuficiente para esta operación",
-    "insufficientLiquidityIT": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
+    "insufficientLiquidityIT": "Liquidez insuficiente para esta operación. Negociación multitienda.",
     "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
     "1inchNotSupportedToken": "1inch no es compatible con uno de los tokens seleccionados.",
     "cancelDeadline": "Su transacción se ha revertido porque la fecha límite de la transacción ha expirado. Intente aumentar el tiempo límite de la transacción o la cantidad de gas.",
