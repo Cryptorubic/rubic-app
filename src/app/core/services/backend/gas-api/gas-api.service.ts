@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Cacheable } from 'ts-cacheable';
 import {
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 
 @Injectable({
@@ -33,6 +33,9 @@ export class GasApiService {
       .pipe(
         map(minGasPrice => {
           return new BigNumber(minGasPrice[backendBlockchain]).multipliedBy(10 ** 9);
+        }),
+        catchError(() => {
+          return of(null);
         })
       );
   }
