@@ -30,12 +30,12 @@ export class RotatingIconComponent implements OnChanges {
   @Input() image = 'assets/images/icons/reload.svg';
 
   /**
-   * Should rotate image
+   * Should rotate image.
    */
   @Input() rotating = false;
 
   /**
-   * Emits when user clicks on the icon-button
+   * Emits when user clicks on the icon-button.
    */
   @Output() iconClick = new EventEmitter<void>();
 
@@ -51,7 +51,7 @@ export class RotatingIconComponent implements OnChanges {
     }
   }
 
-  private animate() {
+  private animate(): void {
     const start = performance.now();
     const roundTime = 1000;
     const degAtMs = 360 / roundTime;

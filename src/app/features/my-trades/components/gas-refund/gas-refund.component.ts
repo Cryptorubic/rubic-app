@@ -12,11 +12,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from '@core/errors/errors.service';
 import { MyTradesService } from '@features/my-trades/services/my-trades.service';
 import { catchError } from 'rxjs/operators';
-import { switchTap } from '@shared/utils/utils';
 import { WINDOW } from '@ng-web-apis/common';
+import { switchTap } from '@shared/utils/utils';
 
 /**
- * Panel with cards intended for gas refund
+ * Panel with cards intended for gas refund.
  */
 @Component({
   selector: 'app-gas-refund',
@@ -63,7 +63,7 @@ export class GasRefundComponent {
     this.window.open(link, '_blank').focus();
   }
 
-  public onRefundClick(promoId: number) {
+  public onRefundClick(promoId: number): void {
     const onTransactionHash = () => {
       this.notificationSubscription$ = this.notify('progress');
     };

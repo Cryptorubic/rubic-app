@@ -4,7 +4,6 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 import { Promotion } from '@features/my-trades/models/promotion';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { mapToVoid } from '@shared/utils/utils';
 import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
@@ -20,6 +19,7 @@ import {
   REFUND_ADDRESS_TESTNET
 } from '@features/my-trades/constants/REFUND_ADDRESS';
 import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { mapToVoid } from '@shared/utils/utils';
 
 @Injectable()
 export class GasRefundService {
@@ -46,17 +46,12 @@ export class GasRefundService {
     private readonly testingModeService: UseTestingModeService
   ) {
     this.userPromotions$ = this._userPromotions$.asObservable();
-
-    authService
-      .getCurrentUser()
-      .pipe(filter(user => !!user?.address))
-      .subscribe(() => this.updateUserPromotions());
-    this.setupTestingMode();
+    this.setUpdatePromotionsSubscription();
   }
 
   /**
-   * Specific hash function based on keccak256. Hashes similarly to functions from a merkle contract
-   * @param arg two values to hash. Each value takes 32 byte
+   * Specific hash function based on keccak256. Hashes similarly to functions from a merkle contract.
+   * @param arg two values to hash. Each value takes 32 byte.
    */
   private static merkleKeccak256(arg: Uint8Array): string {
     const first = `0x${(<Buffer>arg).toString('hex').slice(0, 64)}`;
@@ -74,7 +69,18 @@ export class GasRefundService {
   }
 
   /**
-   * Changes contract address after enabling the testing mode
+   * Subscribes to user changes and updates promotions when it emits.
+   */
+  private setUpdatePromotionsSubscription() {
+    this.authService
+      .getCurrentUser()
+      .pipe(filter(user => !!user?.address))
+      .subscribe(() => this.updateUserPromotions());
+    this.setupTestingMode();
+  }
+
+  /**
+   * Changes contract address after enabling the testing mode.
    */
   private setupTestingMode(): void {
     this.testingModeService.isTestingMode.subscribe(isTestingMode => {
@@ -86,7 +92,7 @@ export class GasRefundService {
   }
 
   /**
-   * Fetches actual user promotions list, updates promotions storage, then emits void and completes stream
+   * Fetches actual user promotions list, updates promotions storage, then emits void and completes stream.
    */
   public updateUserPromotions(): Observable<void> {
     const userPromotions$ = this.gasRefundApiService.getUserPromotions();
@@ -96,10 +102,10 @@ export class GasRefundService {
   }
 
   /**
-   * Calculates the proof for a refund, sends a refund transaction. If successful, notifies the backend of a successful refund
-   * @param promotionId promotion id to refund
-   * @param onTransactionHash a function to be called after sending a refund transaction
-   * @returns stream that emits the transaction hash once and completes
+   * Calculates the proof for a refund, sends a refund transaction. If successful, notifies the backend of a successful refund.
+   * @param promotionId promotion id to refund.
+   * @param onTransactionHash a function to be called after sending a refund transaction.
+   * @returns stream that emits the transaction hash once and completes.
    */
   public refund(
     promotionId: number,
@@ -128,8 +134,8 @@ export class GasRefundService {
   }
 
   /**
-   * Checks the network selected in the wallet for compliance with the contract network, and switches the network if necessary
-   * @returns is the correct network selected as a result
+   * Checks the network selected in the wallet for compliance with the contract network, and switches the network if necessary.
+   * @returns is the correct network selected as a result.
    */
   private checkChain(): Promise<boolean> {
     if (this.providerConnector.networkName !== this.refundBlockchain) {
@@ -139,12 +145,12 @@ export class GasRefundService {
   }
 
   /**
-   * Safely calls the contract method to refund gas
-   * @param proof merkle tree proof
-   * @param amount BRBC amount to refund in wei
-   * @param rootData root index and root hash
-   * @param onTransactionHash  a function to be called after sending a refund transaction
-   * @returns refund promise resolved by transaction receipt
+   * Safely calls the contract method to refund gas.
+   * @param proof merkle tree proof.
+   * @param amount BRBC amount to refund in wei.
+   * @param rootData root index and root hash.
+   * @param onTransactionHash  a function to be called after sending a refund transaction.
+   * @returns refund promise resolved by transaction receipt.
    */
   private async sendRefund(
     proof: string[],

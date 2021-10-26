@@ -94,7 +94,8 @@ export class MyTradesService {
             return data.flat();
           })
         );
-      })
+      }),
+      first()
     );
   }
 

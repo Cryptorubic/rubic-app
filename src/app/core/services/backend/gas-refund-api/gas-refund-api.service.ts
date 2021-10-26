@@ -21,7 +21,7 @@ export class GasRefundApiService {
   constructor(private httpService: HttpService, private authService: AuthService) {}
 
   /**
-   * Fetches actual user promotions list
+   * Fetches actual user promotions list.
    */
   public getUserPromotions(): Observable<Promotion[]> {
     const endpointUrl = `${GasRefundApiService.baseUrl}/promotions`;
@@ -46,9 +46,9 @@ export class GasRefundApiService {
   }
 
   /**
-   * Fetches merkle tree leaves list and root index for specific action
-   * @param promotionId action id for which data will be loaded
-   * @return merkle tree leaves list and root index
+   * Fetches merkle tree leaves list and root index for specific action.
+   * @param promotionId action id for which data will be loaded.
+   * @return merkle tree leaves list and root index.
    */
   public getPromotionMerkleData(promotionId: number): Observable<MerkleData> {
     const endpointUrl = `${GasRefundApiService.baseUrl}/promotions/${promotionId}/merkle-tree`;
@@ -62,9 +62,9 @@ export class GasRefundApiService {
   }
 
   /**
-   * Sends patch request to mark promotion as spent for current user
-   * @param txHash method execution transaction hash
-   * @param leaf refund merkle tree leaf
+   * Sends patch request to mark promotion as spent for current user.
+   * @param txHash method execution transaction hash.
+   * @param leaf refund merkle tree leaf.
    */
   public markPromotionAsUsed(txHash: string, leaf: string): Observable<void> {
     const endpointUrl = `${GasRefundApiService.baseUrl}/refunds`;
@@ -72,8 +72,8 @@ export class GasRefundApiService {
   }
 
   /**
-   * Fetches past user transactions for gas refund
-   * @returns stream that emits once past user refund gas transactions, or empty list if error
+   * Fetches past user transactions for gas refund.
+   * @returns stream that emits once past user refund gas transactions, or empty list if error.
    */
   public getGasRefundTransactions(): Observable<RefundTransaction[]> {
     const endpointUrl = `${GasRefundApiService.baseUrl}/refunds`;
