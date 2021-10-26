@@ -42,6 +42,7 @@ import {
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { supportedCrossChainSwapBlockchains } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
+import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 type ComponentInput = {
   tokens: Observable<AvailableTokenAmount[]>;
@@ -466,9 +467,7 @@ export class TokensSelectComponent implements OnInit {
       .pipe(
         mapTo(image),
         catchError((err: HttpErrorResponse) => {
-          return err.status === 200
-            ? of(image)
-            : of('assets/images/icons/coins/default-token-ico.svg');
+          return err.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
         })
       )
       .toPromise();

@@ -4,6 +4,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -17,7 +18,7 @@ export class TokensListElementComponent {
    */
   @Input() token: TokenAmount;
 
-  public readonly defaultImage = 'assets/images/icons/coins/default-token-ico.svg';
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   /**
    * Is iframe has horizontal view.
@@ -31,15 +32,7 @@ export class TokensListElementComponent {
   }
 
   public onImageError($event: Event) {
-    const target = $event.target as HTMLImageElement;
-    if (target.src !== this.defaultImage) {
-      target.src = this.defaultImage;
-      const newToken = {
-        ...this.token,
-        image: this.defaultImage
-      };
-      this.tokensService.patchToken(newToken);
-    }
+    this.tokensService.onTokenImageError($event, this.token);
   }
 
   /**

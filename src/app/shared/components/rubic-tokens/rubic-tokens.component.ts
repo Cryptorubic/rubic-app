@@ -19,6 +19,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareObjects } from 'src/app/shared/utils/utils';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -32,7 +33,7 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formType: 'from' | 'to';
 
-  public readonly defaultImage = 'assets/images/icons/coins/default-token-ico.svg';
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
     const deepEquality = compareObjects(value, this.tokensSubject.value);
@@ -131,9 +132,6 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public onImageError($event: Event): void {
-    const target = $event.target as HTMLImageElement;
-    if (target.src !== this.defaultImage) {
-      target.src = this.defaultImage;
-    }
+    this.tokensService.onTokenImageError($event);
   }
 }

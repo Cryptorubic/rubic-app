@@ -22,6 +22,7 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
+import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -306,6 +307,27 @@ export class TokensService {
     this.tokensSubject.next(
       this.tokens.filter(t => !TokensService.areTokensEqual(t, token)).push(token)
     );
+  }
+
+  /**
+   * Sets default image to token, in case original image has thrown error.
+   * Patches tokens list, if {@param token} is passed.
+   * @param $event Img error event.
+   * @param token If passed, then tokens list will be patched.
+   */
+  public onTokenImageError($event: Event, token: TokenAmount = null) {
+    const target = $event.target as HTMLImageElement;
+    if (target.src !== DEFAULT_TOKEN_IMAGE) {
+      target.src = DEFAULT_TOKEN_IMAGE;
+
+      if (token) {
+        const newToken = {
+          ...token,
+          image: DEFAULT_TOKEN_IMAGE
+        };
+        this.patchToken(newToken);
+      }
+    }
   }
 
   /**
