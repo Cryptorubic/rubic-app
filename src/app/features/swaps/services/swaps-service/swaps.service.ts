@@ -223,7 +223,7 @@ export class SwapsService {
    * Calls functions to update balance, if needed.
    */
   private updateTokenBalance(fromToken: TokenAmount) {
-    if (fromToken.amount.isNaN()) {
+    if (!fromToken.amount?.isFinite()) {
       this.tokensService.getAndUpdateTokenBalance(fromToken);
     }
   }

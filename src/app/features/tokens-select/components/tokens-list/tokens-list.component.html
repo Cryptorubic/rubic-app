@@ -9,9 +9,9 @@
 
         <ng-template #favoriteTokens>
           {{ 'modals.tokensListModal.noFavoriteData' | translate }}
-          <a class="nothing-to-show-message__link" (click)="listTypeChange.emit('default')">
+          <button class="nothing-to-show-message__link" (click)="listTypeChange.emit('default')">
             {{ 'modals.tokensListModal.backToTokens' | translate }}
-          </a>
+          </button>
         </ng-template>
       </div>
 
