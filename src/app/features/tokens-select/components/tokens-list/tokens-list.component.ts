@@ -17,9 +17,9 @@ import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PaginatedPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject } from 'rxjs';
-import { animate, style, transition, trigger, state } from '@angular/animations';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
+import { listAnimation } from 'src/app/features/tokens-select/components/tokens-list/animations/listAnimation';
 
 @Component({
   selector: 'app-tokens-list',
@@ -27,18 +27,7 @@ import { TokensListType } from 'src/app/features/tokens-select/models/TokensList
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
-  animations: [
-    trigger('listAnimation', [
-      state('hidden', style({ opacity: '0.4' })),
-      state(
-        'shown',
-        style({
-          opacity: '1'
-        })
-      ),
-      transition('hidden => shown', animate('0.28s ease-in-out'))
-    ])
-  ]
+  animations: [listAnimation]
 })
 export class TokensListComponent implements AfterViewInit {
   /**

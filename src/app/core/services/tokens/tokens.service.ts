@@ -315,7 +315,7 @@ export class TokensService {
    * @param $event Img error event.
    * @param token If passed, then tokens list will be patched.
    */
-  public onTokenImageError($event: Event, token: TokenAmount = null) {
+  public onTokenImageError($event: Event, token: TokenAmount = null): void {
     const target = $event.target as HTMLImageElement;
     if (target.src !== DEFAULT_TOKEN_IMAGE) {
       target.src = DEFAULT_TOKEN_IMAGE;
@@ -407,33 +407,35 @@ export class TokensService {
       return null;
     }
 
-    const web3Public = this.web3PublicService[token.blockchain];
-    return web3Public
-      .getTokenOrNativeBalance(this.userAddress, token.address)
-      .then(balanceInWei => {
-        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-        if (foundToken) {
-          const balance = Web3Public.fromWei(balanceInWei, foundToken.decimals);
-          if (!foundToken.amount.eq(balance)) {
-            const newToken = {
-              ...foundToken,
-              amount: balance
-            };
-            this.tokensSubject.next(
-              this.tokens
-                .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
-                .push(newToken)
-            );
-          }
-          return new BigNumber(balance);
+    try {
+      const web3Public = this.web3PublicService[token.blockchain];
+      const balanceInWei = await web3Public.getTokenOrNativeBalance(
+        this.userAddress,
+        token.address
+      );
+
+      const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+      if (foundToken) {
+        const balance = Web3Public.fromWei(balanceInWei, foundToken.decimals);
+        if (!foundToken.amount.eq(balance)) {
+          const newToken = {
+            ...foundToken,
+            amount: balance
+          };
+          this.tokensSubject.next(
+            this.tokens
+              .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+              .push(newToken)
+          );
         }
-        return new BigNumber(NaN);
-      })
-      .catch(err => {
-        console.debug(err);
-        const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
-        return foundToken?.amount;
-      });
+        return new BigNumber(balance);
+      }
+      return new BigNumber(NaN);
+    } catch (err) {
+      console.debug(err);
+      const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+      return foundToken?.amount;
+    }
   }
 
   /**

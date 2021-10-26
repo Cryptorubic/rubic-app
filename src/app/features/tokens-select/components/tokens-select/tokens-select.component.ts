@@ -206,20 +206,7 @@ export class TokensSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    combineLatest([this.tokensService.favoriteTokens$, this.tokens])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.updateTokensList());
-
-    this.searchQuery$
-      .pipe(skip(1), takeUntil(this.destroy$), debounceTime(500))
-      .subscribe(() => this.updateTokensList());
-
-    this.tokensService.tokensNetworkState
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((tokensNetworkState: TokensNetworkState) => {
-        this.tokensNetworkState = tokensNetworkState[this.blockchain as PAGINATED_BLOCKCHAIN_NAME];
-        this.cdr.markForCheck();
-      });
+    this.initSubscriptions();
   }
 
   /**
@@ -235,6 +222,26 @@ export class TokensSelectComponent implements OnInit {
     this.tokens = context.tokens;
     this.currentlySelectedToken =
       this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
+  }
+
+  /**
+   * Inits subscriptions for tokens and searchQuery.
+   */
+  private initSubscriptions(): void {
+    combineLatest([this.tokensService.favoriteTokens$, this.tokens])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.updateTokensList());
+
+    this.searchQuery$
+      .pipe(skip(1), takeUntil(this.destroy$), debounceTime(500))
+      .subscribe(() => this.updateTokensList());
+
+    this.tokensService.tokensNetworkState
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((tokensNetworkState: TokensNetworkState) => {
+        this.tokensNetworkState = tokensNetworkState[this.blockchain as PAGINATED_BLOCKCHAIN_NAME];
+        this.cdr.markForCheck();
+      });
   }
 
   /**
