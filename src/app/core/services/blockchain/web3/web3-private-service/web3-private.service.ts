@@ -67,7 +67,7 @@ export class Web3PrivateService {
   private async calculateGasPrice(gasPrice?: string): Promise<string | undefined> {
     const blockchain = this.providerConnector.networkName;
     const minGasPrice = await this.gasApiService.getMinGasPriceInBlockchain(blockchain).toPromise();
-    if (!minGasPrice) {
+    if (!minGasPrice || minGasPrice.eq(0)) {
       return gasPrice;
     }
     if (!gasPrice) {
