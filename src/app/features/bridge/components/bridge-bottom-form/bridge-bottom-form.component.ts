@@ -8,7 +8,7 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { forkJoin, of, Subject, Subscription } from 'rxjs';
+import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
@@ -174,7 +174,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.setupTradeCalculation();
     this.tradeStatus = TRADE_STATUS.DISABLED;
 
-    this.bridgeService.tokens.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
+    this.bridgeService.tokens$.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
       this.bridgeTokenPairsByBlockchainsArray = tokens;
     });
 
@@ -289,8 +289,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           const needApprove$ = this.authService.user?.address
             ? this.bridgeService.needApprove()
             : of(false);
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
 
-          return forkJoin([this.bridgeService.getFee(), needApprove$]).pipe(
+          return forkJoin([this.bridgeService.getFee(), needApprove$, balance$]).pipe(
             map(([fee, needApprove]) => {
               this.needApprove = needApprove;
 

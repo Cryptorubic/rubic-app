@@ -7,17 +7,14 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
 import BigNumber from 'bignumber.js';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
@@ -29,6 +26,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
+import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
@@ -54,7 +52,7 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Input() status: TRADE_STATUS;
 
-  @Input() formService: FormService;
+  @Input() formService: SwapFormService;
 
   @Input() idPrefix = '';
 
@@ -138,10 +136,6 @@ export class SwapButtonContainerComponent implements OnInit {
 
   public tokensFilled: boolean;
 
-  get hasError(): boolean {
-    return !!Object.values(ERROR_TYPE).find(key => this.errorType[key]);
-  }
-
   get allowChangeNetwork(): boolean {
     const form = this.formService.inputValue;
     if (
@@ -163,7 +157,7 @@ export class SwapButtonContainerComponent implements OnInit {
     });
   }
 
-  get errorText(): Observable<string> {
+  get errorText(): Observable<string | null> {
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
     const { fromToken, fromBlockchain } = this.formService.inputValue;
@@ -188,7 +182,9 @@ export class SwapButtonContainerComponent implements OnInit {
         };
         break;
       case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
-        translateParams = { key: 'errors.InsufficientBalance' };
+        if (this.formService.outputValue.toAmount?.isFinite()) {
+          translateParams = { key: 'errors.InsufficientBalance' };
+        }
         break;
       case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
         translateParams = { key: 'errors.setTronAddress' };
@@ -205,25 +201,21 @@ export class SwapButtonContainerComponent implements OnInit {
         break;
       }
       default:
-        translateParams = {
-          key: 'Unknown Error',
-          interpolateParams: {}
-        };
-        break;
     }
 
+    if (!translateParams) {
+      return of(null);
+    }
     return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
   }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly tokensService: TokensService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,
-    private readonly bridgeService: BridgeService,
     private readonly web3PublicService: Web3PublicService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly iframeService: IframeService,
