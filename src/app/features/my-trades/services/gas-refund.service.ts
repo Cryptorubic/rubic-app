@@ -96,7 +96,12 @@ export class GasRefundService {
    */
   public updateUserPromotions(): Observable<void> {
     const userPromotions$ = this.gasRefundApiService.getUserPromotions();
-    userPromotions$.subscribe(promotions => this._userPromotions$.next(promotions));
+    const comparator = (a: Promotion, b: Promotion) =>
+      a.refundDate.valueOf() - b.refundDate.valueOf();
+
+    userPromotions$
+      .pipe(map(promotions => [...promotions].sort(comparator)))
+      .subscribe(promotions => this._userPromotions$.next(promotions));
 
     return userPromotions$.pipe(mapToVoid());
   }

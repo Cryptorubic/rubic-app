@@ -62,10 +62,6 @@ export class MyTradesService {
     private readonly scannerLinkPipe: ScannerLinkPipe
   ) {}
 
-  public test() {
-    this._tableTrades$.next([]);
-  }
-
   public updateTableTrades(): Observable<TableTrade[]> {
     return combineLatest([
       this.authService.getCurrentUser().pipe(filter(user => user !== undefined)),
