@@ -299,6 +299,16 @@ export class TokensService {
   }
 
   /**
+   * Patches token in tokens list.
+   * @param token Token to patch.
+   */
+  public patchToken(token: TokenAmount): void {
+    this.tokensSubject.next(
+      this.tokens.filter(t => !TokensService.areTokensEqual(t, token)).push(token)
+    );
+  }
+
+  /**
    * Gets price of native token.
    * @param blockchain Blockchain of native token.
    */
@@ -367,7 +377,7 @@ export class TokensService {
    * Gets token's balance and updates tokens list.
    * @param token Token to get balance for.
    */
-  public getAndUpdateTokenBalance(token: {
+  public async getAndUpdateTokenBalance(token: {
     address: string;
     blockchain: BLOCKCHAIN_NAME;
   }): Promise<BigNumber> {

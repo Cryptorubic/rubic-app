@@ -32,7 +32,7 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formType: 'from' | 'to';
 
-  public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
+  public readonly defaultImage = 'assets/images/icons/coins/default-token-ico.svg';
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
     const deepEquality = compareObjects(value, this.tokensSubject.value);

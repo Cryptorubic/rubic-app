@@ -34,6 +34,11 @@ export class TokensListElementComponent {
     const target = $event.target as HTMLImageElement;
     if (target.src !== this.defaultImage) {
       target.src = this.defaultImage;
+      const newToken = {
+        ...this.token,
+        image: this.defaultImage
+      };
+      this.tokensService.patchToken(newToken);
     }
   }
 
