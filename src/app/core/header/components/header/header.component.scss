@@ -244,6 +244,13 @@
     font-size: 13px;
   }
 
+  &__link {
+    &,
+    &:hover {
+      color: #00cab2;
+    }
+  }
+
   a {
     cursor: pointer;
   }

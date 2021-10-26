@@ -1,5 +1,11 @@
 @import 'src/styles';
 
+$algb-1: #b41870;
+$algb-2: #5d32ed;
+$algb-3: #00cab2;
+$algb-hover: #1a2c1b;
+$algb-gradient: linear-gradient(131.68deg, rgba($algb-1, 0.6) -3.31%, rgba($algb-2, 0.6) 46.26%, rgba($algb-3, 0.6) 104.04%);
+
 :host {
   --tui-height-l: 50px;
   --tui-height-s: 35px;
@@ -7,6 +13,64 @@
   --tui-primary-hover: var(--rubic-base-01);
   --tui-focus: transparent;
   --tui-primary-text: #{$rubic-text-color-main};
+
+  // TODO: remove after replace algebra banner
+  &.rubic-header__buy-rbc_algb {
+    position: relative;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+
+      background: $algb-gradient;
+      border-radius: 6.25rem;
+
+      content: '';
+    }
+
+    ::ng-deep [data-tui-host-size='l'] {
+      .wrapper {
+        position: relative;
+
+        color: white;
+
+        background: transparent;
+      }
+    }
+
+    [tuiButton] {
+      &._hovered {
+        border-color: transparent;
+
+        &[data-tui-host-size='l'] {
+          ::ng-deep .wrapper {
+            background: $algb-hover;
+          }
+        }
+      }
+
+      &._focused:not(._pressed) {
+        border-color: transparent !important;
+      }
+
+      &._pressed {
+        background: $algb-hover;
+        border-color: transparent;
+
+        &[data-tui-host-size='l'] {
+          ::ng-deep .wrapper {
+            &[data-state='pressed'] {
+              background: linear-gradient(131.68deg, rgba(180, 24, 112, 0.3) -3.31%, rgba(93, 50, 237, 0.24) 46.26%, rgba(0, 202, 178, 0.3) 104.04%);;
+            }
+          }
+        }
+      }
+    }
+  }
 
   [tuiButton] {
     --tui-link: var(--primary-color);

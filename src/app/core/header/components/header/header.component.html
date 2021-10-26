@@ -1,7 +1,7 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
-  You can buy $ALGB on Rubic! Try it now!
-  <a (click)="buyALGB()"> Try it now!</a>
+  You can buy $ALGB on Rubic!
+  <a class="banner__link" (click)="buyALGB()">Try it now!</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -56,7 +56,10 @@
     >
   </nav>
 
-  <app-rubic-button *noFrame class="rubic-header__buy-rbc" appearance="outline" (click)="buyALGB()"
+  <app-rubic-button
+    *noFrame
+    class="rubic-header__buy-rbc rubic-header__buy-rbc_algb"
+    (click)="buyALGB()"
     >Buy ALGB</app-rubic-button
   >
 
