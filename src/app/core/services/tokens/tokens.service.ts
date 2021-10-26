@@ -38,10 +38,6 @@ export class TokensService {
 
   public readonly tokens$ = this._tokens$.asObservable();
 
-  get tokens(): List<TokenAmount> {
-    return this._tokens$.getValue();
-  }
-
   /**
    * Current favorite tokens list state.
    */
@@ -49,18 +45,10 @@ export class TokensService {
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
-  get favoriteTokens(): LocalToken[] {
-    return this._favoriteTokens$.getValue();
-  }
-
   /**
    * Current tokens request options state.
    */
   private readonly _tokensRequestParameters$ = new Subject<{ [p: string]: unknown }>();
-
-  set tokensRequestParameters(parameters: { [p: string]: unknown }) {
-    this._tokensRequestParameters$.next(parameters);
-  }
 
   /**
    * Current tokens network state.
@@ -85,6 +73,27 @@ export class TokensService {
    * Amount of test tokens.
    */
   private readonly testTokensNumber: number;
+
+  /**
+   * Current tokens list.
+   */
+  get tokens(): List<TokenAmount> {
+    return this._tokens$.getValue();
+  }
+
+  /**
+   * Current favorite tokens list.
+   */
+  get favoriteTokens(): LocalToken[] {
+    return this._favoriteTokens$.getValue();
+  }
+
+  /**
+   * Sets new tokens request options.
+   */
+  set tokensRequestParameters(parameters: { [p: string]: unknown }) {
+    this._tokensRequestParameters$.next(parameters);
+  }
 
   /**
    * Checks if two tokens are equal.
