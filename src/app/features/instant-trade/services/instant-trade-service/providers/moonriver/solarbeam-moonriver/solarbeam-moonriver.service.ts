@@ -17,13 +17,13 @@ export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
    * Makes multi call method of contract.
    * @param routesMethodArguments Arguments for calling method of contract.
    * @param methodName Method of contract.
-   * @param fee Base fee for tx.
+   * @param fee Base fee for tx (25 fixed argument for solarbeam provider).
    * @return Promise<Multicall[]>
    */
   protected getRoutes(
     routesMethodArguments: unknown[],
     methodName: string,
-    fee = '0'
+    fee = '25'
   ): Promise<Multicall[]> {
     const methodParams = routesMethodArguments.map((methodArguments: string[]) => {
       const solarMethodArguments = methodArguments.concat(fee);
