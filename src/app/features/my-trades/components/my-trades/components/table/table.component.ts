@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
@@ -58,8 +58,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public total$: Observable<number>;
 
-  constructor() {
-    super();
+  constructor(injector: Injector) {
+    super(injector);
   }
 
   ngOnInit(): void {
