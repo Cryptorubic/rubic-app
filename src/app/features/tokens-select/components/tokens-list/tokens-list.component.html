@@ -1,33 +1,29 @@
 <ng-container>
   <tui-scrollbar class="tokens-scrollbar tokens-container">
-    <tui-loader [showLoader]="!!loading">
-      <!--standard mode -->
-      <ul class="tokens-list" *noFrame>
+    <!--standard mode -->
+    <tui-loader [showLoader]="loading" [overlay]="true">
+      <div class="nothing-to-show-message" *ngIf="!tokens?.length">
+        <ng-container *ngIf="hasSearchQuery || listType === 'default'; else favoriteTokens">
+          {{ 'modals.tokensListModal.noSearchData' | translate }}
+        </ng-container>
+
+        <ng-template #favoriteTokens>
+          {{ 'modals.tokensListModal.noFavoriteData' | translate }}
+          <button class="nothing-to-show-message__link" (click)="listTypeChange.emit('default')">
+            {{ 'modals.tokensListModal.backToTokens' | translate }}
+          </button>
+        </ng-template>
+      </div>
+
+      <ul class="tokens-list" *noFrame [@listAnimation]="listAnimationState">
         <cdk-virtual-scroll-viewport
           tuiScrollable
           itemSize="63"
           class="tokens-scrollbar tui-zero-scrollbar"
           [style.overflow]="loading ? 'hidden' : 'auto'"
         >
-          <ng-container *ngIf="!tokens.length">
-            <li class="nothing-to-show-message">
-              <ng-container *ngIf="hasQuery || listType === 'default'; else favoriteTokens">
-                {{ 'modals.tokensListModal.noSearchData' | translate }}
-              </ng-container>
-              <ng-template #favoriteTokens>
-                {{ 'modals.tokensListModal.noFavoriteData' | translate }}
-                <a
-                  class="nothing-to-show-message__link"
-                  (click)="listTypeChangeHandle.emit('default')"
-                >
-                  {{ 'modals.tokensListModal.backToTokens' | translate }}
-                </a>
-              </ng-template>
-            </li>
-          </ng-container>
           <li
             *cdkVirtualFor="let token of tokens; let i = index; templateCacheSize: 0"
-            @itemAnimation
             class="tokens-list__item"
             [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
             [tuiManualHint]="disabledTokenHint"
@@ -35,15 +31,15 @@
             tuiHintMode="error"
             tuiHintDirection="bottom-right"
             (click)="onTokenSelect(token)"
-            (mouseenter)="hintsShown[i] = !token.available && true"
+            (mouseenter)="hintsShown[i] = !token.available"
             (mouseleave)="hintsShown[i] = false"
           >
             <app-tokens-list-element [token]="token"></app-tokens-list-element>
           </li>
         </cdk-virtual-scroll-viewport>
       </ul>
-      <!--standard mode -->
     </tui-loader>
+    <!--standard mode -->
 
     <!--horizontal iframe -->
     <ul class="tokens-list-horizontal-iframe" *onlyFrame="'horizontal'">
@@ -52,14 +48,15 @@
         class="tokens-list-horizontal-iframe__item"
         [ngClass]="{
           'tokens-list-horizontal-iframe__item_disabled': !token.available,
-          'tokens-list-horizontal-iframe__item_active': token.address === prevSelectedToken?.address
+          'tokens-list-horizontal-iframe__item_active':
+            token.address === currentlySelectedToken?.address
         }"
         [tuiManualHint]="disabledTokenHint"
         [tuiManualHintShow]="hintsShown[i]"
         tuiHintMode="error"
         tuiHintDirection="bottom-right"
         (click)="onTokenSelect(token)"
-        (mouseenter)="hintsShown[i] = !token.available && true"
+        (mouseenter)="hintsShown[i] = !token.available"
         (mouseleave)="hintsShown[i] = false"
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
@@ -81,7 +78,7 @@
         tuiHintMode="error"
         tuiHintDirection="bottom-right"
         (click)="onTokenSelect(token)"
-        (mouseenter)="hintsShown[i] = !token.available && true"
+        (mouseenter)="hintsShown[i] = !token.available"
         (mouseleave)="hintsShown[i] = false"
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
@@ -92,10 +89,10 @@
     </ul>
     <!--vertical iframe -->
   </tui-scrollbar>
-
-  <ng-template #disabledTokenHint>
-    <div>
-      {{ 'modals.tokensListModal.clearParamsHint' | translate }}
-    </div>
-  </ng-template>
 </ng-container>
+
+<ng-template #disabledTokenHint>
+  <div>
+    {{ 'modals.tokensListModal.clearParamsHint' | translate }}
+  </div>
+</ng-template>

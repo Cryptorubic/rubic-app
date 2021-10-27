@@ -131,8 +131,9 @@
         <div class="token__info">
           <div class="img-container">
             <img
-              [src]="trade.toToken.image || 'assets/images/icons/coins/empty.svg'"
+              [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
               alt="to token"
+              (error)="onTokenImageError($event)"
             />
           </div>
           {{ trade.toToken.symbol }}
@@ -224,8 +225,9 @@
               <div class="token__info">
                 <div class="img-container">
                   <img
-                    [src]="trade.fromToken.image || 'assets/images/icons/coins/empty.svg'"
+                    [src]="trade.fromToken.image || DEFAULT_TOKEN_IMAGE"
                     alt="from token"
+                    (error)="onTokenImageError($event)"
                   />
                 </div>
                 {{ trade.fromToken.symbol }}
@@ -245,8 +247,9 @@
             <div class="token__info">
               <div class="img-container">
                 <img
-                  [src]="trade.toToken.image || 'assets/images/icons/coins/empty.svg'"
+                  [src]="trade.toToken.image || DEFAULT_TOKEN_IMAGE"
                   alt="to token"
+                  (error)="onTokenImageError($event)"
                 />
               </div>
               {{ trade.toToken.symbol }}

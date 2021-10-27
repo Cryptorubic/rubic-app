@@ -8,13 +8,11 @@ import {
 } from '@angular/core';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
-import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import {
   TableRow,
   TableRowKeyValue
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
-import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
@@ -61,12 +59,8 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   private tableDataSubscription$: Subscription;
 
-  constructor(
-    private readonly cdr: ChangeDetectorRef,
-    protected readonly scannerLinkPipe: ScannerLinkPipe,
-    protected readonly myTradesService: MyTradesService
-  ) {
-    super(myTradesService, scannerLinkPipe);
+  constructor(private readonly cdr: ChangeDetectorRef) {
+    super();
   }
 
   ngOnInit(): void {

@@ -9,7 +9,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { BehaviorSubject, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import {
@@ -261,9 +261,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           const { fromAmount } = this.swapFormService.inputValue;
           const calculateNeedApprove = !!this.authService.userAddress;
+          const crossChainTrade$ = from(
+            this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
+          );
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
 
-          return from(this.crossChainRoutingService.calculateTrade(calculateNeedApprove)).pipe(
-            map(({ toAmount, minAmountError, maxAmountError, needApprove }) => {
+          return forkJoin([crossChainTrade$, balance$]).pipe(
+            map(([{ toAmount, minAmountError, maxAmountError, needApprove }]) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
@@ -332,9 +338,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount } = this.swapFormService.inputValue;
+          const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
 
-          return from(this.crossChainRoutingService.calculateTrade()).pipe(
-            map(({ toAmount, minAmountError, maxAmountError }) => {
+          return forkJoin([crossChainTrade$, balance$]).pipe(
+            map(([{ toAmount, minAmountError, maxAmountError }]) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
