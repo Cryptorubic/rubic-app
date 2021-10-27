@@ -8,7 +8,7 @@ import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { Directive, EventEmitter, inject, Output } from '@angular/core';
+import { Directive, EventEmitter, Injector, Output } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
@@ -20,13 +20,17 @@ export abstract class AbstractTableDataComponent {
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   // Injected services
-  private readonly myTradesService = inject(MyTradesService);
+  private readonly myTradesService: MyTradesService;
 
-  private readonly scannerLinkPipe = inject(ScannerLinkPipe);
+  private readonly scannerLinkPipe: ScannerLinkPipe;
 
-  private readonly tokensService = inject(TokensService);
+  private readonly tokensService: TokensService;
 
-  protected constructor() {}
+  protected constructor(injector: Injector) {
+    this.myTradesService = injector.get(MyTradesService);
+    this.scannerLinkPipe = injector.get(ScannerLinkPipe);
+    this.tokensService = injector.get(TokensService);
+  }
 
   protected sortBy(key: TableRowKey, direction: -1 | 1): TuiComparator<TableRow> {
     return (a, b) => {
