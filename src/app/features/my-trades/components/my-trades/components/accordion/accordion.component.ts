@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  Injector,
   Input,
   OnDestroy,
   OnInit
@@ -59,8 +60,8 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   private tableDataSubscription$: Subscription;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {
-    super();
+  constructor(injector: Injector, private readonly cdr: ChangeDetectorRef) {
+    super(injector);
   }
 
   ngOnInit(): void {
