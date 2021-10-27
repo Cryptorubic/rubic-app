@@ -26,6 +26,8 @@ $algb-gradient: linear-gradient(131.68deg, rgba($algb-1, 0.6) -3.31%, rgba($algb
       left: 0;
       z-index: -1;
 
+      margin: -1px;
+
       background: $algb-gradient;
       border-radius: 6.25rem;
 
@@ -43,12 +45,16 @@ $algb-gradient: linear-gradient(131.68deg, rgba($algb-1, 0.6) -3.31%, rgba($algb
     }
 
     [tuiButton] {
+      border: 0;
+
       &._hovered {
-        border-color: transparent;
+        box-shadow: none;
 
         &[data-tui-host-size='l'] {
           ::ng-deep .wrapper {
-            background: $algb-hover;
+            color: var(--form-bright-text-color);
+
+            background: var(--algb-button-hover);
           }
         }
       }
@@ -58,8 +64,9 @@ $algb-gradient: linear-gradient(131.68deg, rgba($algb-1, 0.6) -3.31%, rgba($algb
       }
 
       &._pressed {
-        background: $algb-hover;
+        background: var(--algb-button-hover);
         border-color: transparent;
+        box-shadow: none;
 
         &[data-tui-host-size='l'] {
           ::ng-deep .wrapper {
