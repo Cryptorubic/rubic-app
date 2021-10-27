@@ -22,7 +22,7 @@ import { Cacheable } from 'ts-cacheable';
   providedIn: 'root'
 })
 export class PromoCodeApiService {
-  private static apiUrl = 'promo';
+  private static readonly apiUrl = 'promotion/code';
 
   private static defaultUpdateInterval = 5000;
 
@@ -56,11 +56,11 @@ export class PromoCodeApiService {
   }
 
   /**
-   * Validates text promo code
-   * @param promoCodeText text to validate
-   * @param [autoRevalidateIfAccepted = false] if true and promo code status is accepted, sets interval to refresh promo code data
-   * @param [revalidationTimeout = 5000] promo code data refreshing interval
-   * @returns string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data
+   * Validates text promo code.
+   * @param promoCodeText text to validate.
+   * @param [autoRevalidateIfAccepted = false] if true and promo code status is accepted, sets interval to refresh promo code data.
+   * @param [revalidationTimeout = 5000] promo code data refreshing interval.
+   * @returns string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data.
    */
   public validatePromoCode(
     promoCodeText: string,
@@ -78,8 +78,8 @@ export class PromoCodeApiService {
   }
 
   /**
-   * Sets revalidation interval
-   * @param revalidationTimeout promo code data refreshing interval
+   * Sets revalidation interval.
+   * @param revalidationTimeout promo code data refreshing interval.
    */
   private setInterval(revalidationTimeout: number): void {
     this.interval$ = interval(revalidationTimeout);
@@ -94,15 +94,15 @@ export class PromoCodeApiService {
   }
 
   /**
-   * Clears revalidation interval
+   * Clears revalidation interval.
    */
   private clearInterval(): void {
     this.intervalSubscription$?.unsubscribe();
   }
 
   /**
-   * Fetches from backend promo code by its text
-   * @param promoCodeText text to find promo code by
+   * Fetches from backend promo code by its text.
+   * @param promoCodeText text to find promo code by.
    */
   private getPromoCodeByText(promoCodeText: string): Observable<PromoCode | null> {
     if (!promoCodeText) {
@@ -127,7 +127,7 @@ export class PromoCodeApiService {
   }
 
   /**
-   * Parses promo code api response
+   * Parses promo code api response.
    */
   private parseApiResponse(promoCodeText: string, response: PromoCodeApiResponse): PromoCode {
     const promo: BasicPromoCode = { status: response.status, text: promoCodeText };

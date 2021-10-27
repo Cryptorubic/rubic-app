@@ -1,0 +1,75 @@
+<section class="card">
+  <div class="card__header">
+    <span [tuiHint]="fullNameHint" tuiHintDirection="top" tuiHintMode="onDark">
+      {{ 'gasRefund.promoActions.' + promoItem.id + '.label' | translate }}
+    </span>
+    <ng-template #fullNameHint>
+      {{ 'gasRefund.promoActions.' + promoItem.id + '.label' | translate }}
+    </ng-template>
+    <app-info-hint
+      size="18"
+      [translationKey]="'gasRefund.promoActions.' + promoItem.id + '.description'"
+    ></app-info-hint>
+  </div>
+
+  <div class="card__body">
+    <div class="card__amount">
+      <div class="card__text_big">${{ promoItem.totalRefundUSD | number: '1.0-2' }}</div>
+      <div class="card__text_label">
+        {{ 'gasRefund.body.refundAmount' | translate }}
+      </div>
+    </div>
+    <div class="card__transactions">
+      <div>
+        <span class="card__text_big">{{ promoItem.transactions.length }}</span>
+        <span
+          class="card__text_link more-link"
+          [tuiHint]="moreTransactionsInfo"
+          tuiHintMode="onDark"
+          >{{ 'gasRefund.body.more' | translate }}
+        </span>
+        <ng-template #moreTransactionsInfo>
+          <table class="card__table">
+            <tbody>
+              <tr
+                *ngFor="let transaction of promoItem.transactions"
+                (click)="openInExplorer(transaction.hash, transaction.blockchain)"
+              >
+                <td>{{ transaction.date | date: 'M/d/yy, h:mm a' }}</td>
+                <td>
+                  <span>{{ transaction.hash | shortAddress: 8:4 }}</span>
+                  <img
+                    [src]="'assets/images/icons/scanner.svg'"
+                    width="20"
+                    height="20"
+                    alt="{{ 'common.checkOnScanner' | translate }}"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </div>
+      <span class="card__text_label">
+        {{ 'gasRefund.body.transactions' | translate }}
+      </span>
+    </div>
+  </div>
+
+  <app-rubic-button
+    *ngLet="promoItem.refundDate | tuiMapper: isButtonDisabled as disabled"
+    appearance="secondary"
+    [loading]="loading"
+    [disabled]="disabled"
+    (onClick)="refundClick.emit()"
+  >
+    <ng-container *ngIf="disabled; else refundText">
+      {{ 'gasRefund.button.refundAfter' | translate }}
+      {{ promoItem.refundDate | date: 'mediumDate' }}
+    </ng-container>
+    <ng-template #refundText>
+      {{ 'gasRefund.button.refund' | translate }}
+      ${{ promoItem.totalRefundUSD | number: '1.0-2' }}
+    </ng-template>
+  </app-rubic-button>
+</section>

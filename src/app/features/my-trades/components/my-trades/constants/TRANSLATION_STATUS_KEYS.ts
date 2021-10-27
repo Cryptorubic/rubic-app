@@ -1,4 +1,4 @@
-import { TRANSACTION_STATUS } from '../../../../../shared/models/blockchain/TRANSACTION_STATUS';
+import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 
 export const TRANSLATION_STATUS_KEY = {
   [TRANSACTION_STATUS.COMPLETED]: 'tradesTable.statuses.completed',

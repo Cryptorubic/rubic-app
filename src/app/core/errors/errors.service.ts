@@ -9,6 +9,7 @@ import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
 import { EIP_1193 } from 'src/app/core/errors/models/standard/EIP-1193';
 import { EIP_1474 } from 'src/app/core/errors/models/standard/EIP-1474';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
+import { UnknownError } from 'src/app/core/errors/models/unknown.error';
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +32,29 @@ export class ErrorsService {
   }
 
   /**
+   * Catch error, show console message and notification if error is RubicError instance or show default unknown error message
+   * @param error Caught error.
+   */
+  public catchAnyError(error: Error): void {
+    if (error instanceof RubicError) {
+      this.catch(error);
+    } else {
+      console.debug(error);
+      this.catch(new UnknownError());
+    }
+  }
+
+  /**
    * Catch error, show console message and notification if it needed.
    * @param error Caught error.
    */
   public catch(error: RubicError<ERROR_TYPE>): void {
     console.debug(error);
 
-    if (error.displayError === false || error.message.includes('Attempt to use a destroyed view')) {
+    if (
+      error.displayError === false ||
+      error.message?.includes('Attempt to use a destroyed view')
+    ) {
       return;
     }
 
