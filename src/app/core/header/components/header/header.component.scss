@@ -237,7 +237,7 @@
   line-height: 30px;
   text-align: center;
 
-  background-color: rgba(51, 86, 51, 0.8);
+  background-color: rgba(#5d32ed, 0.8);
   backdrop-filter: blur(10px);
 
   @include b($mobile-md) {

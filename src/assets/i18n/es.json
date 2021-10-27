@@ -550,6 +550,10 @@
       }
     }
   },
+  "banner": {
+    "text": "Puedes comprar $ ALGB en Rubic.",
+    "link": "¡Pruebalo ahora!"
+  },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
     "instantTrades": "Swaps",
