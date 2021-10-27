@@ -190,7 +190,7 @@ export class Web3Public {
    * @return account tokens balance as integer (multiplied to 10 ** decimals)
    */
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
 
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
@@ -271,7 +271,7 @@ export class Web3Public {
     ownerAddress: string,
     spenderAddress: string
   ): Promise<BigNumber> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokenAddress);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
 
     const allowance = await contract.methods
       .allowance(ownerAddress, spenderAddress)
@@ -422,7 +422,7 @@ export class Web3Public {
    * @param tokensAddresses tokens addresses
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
-    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokensAddresses[0]);
+    const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokensAddresses[0]);
     const indexOfNativeCoin = tokensAddresses.findIndex(Web3Public.isNativeAddress);
     const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 

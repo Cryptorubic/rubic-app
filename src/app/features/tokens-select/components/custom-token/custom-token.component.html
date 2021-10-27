@@ -6,20 +6,21 @@
     <app-tokens-list-element
       [token]="token"
       [tuiManualHint]="disabledTokenHint"
-      [tuiManualHintShow]="hintsShown"
+      [tuiManualHintShow]="hintShown"
       tuiHintMode="error"
       tuiHintDirection="bottom-right"
-      (mouseenter)="hintsShown = !token.available && true"
-      (mouseleave)="hintsShown = false"
+      (mouseenter)="hintShown = !token.available && true"
+      (mouseleave)="hintShown = false"
     >
     </app-tokens-list-element>
   </div>
+
   <app-rubic-button
     *ngIf="token.available"
     class="custom-token__button"
     appearance="secondary"
     fullWidth
-    (onClick)="handleImportClick()"
+    (onClick)="onImportClick()"
     [disabled]="!token.available"
   >
     Import {{ token.symbol }}

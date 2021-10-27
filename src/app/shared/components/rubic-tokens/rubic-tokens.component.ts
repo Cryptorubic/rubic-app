@@ -17,6 +17,9 @@ import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareObjects } from 'src/app/shared/utils/utils';
+import { TokensService } from 'src/app/core/services/tokens/tokens.service';
+import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 @Component({
   selector: 'app-rubic-tokens',
@@ -30,7 +33,7 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() formType: 'from' | 'to';
 
-  public readonly defaultImage = 'assets/images/icons/coins/empty.svg';
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
     const deepEquality = compareObjects(value, this.tokensSubject.value);
@@ -61,6 +64,7 @@ export class RubicTokensComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensSelectService: TokensSelectService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly tokensService: TokensService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
@@ -95,15 +99,16 @@ export class RubicTokensComponent implements OnInit {
 
     this.tokensSelectService
       .showDialog(
-        this.tokensSubject,
+        this.tokensSubject.asObservable(),
         this.formType,
         currentBlockchain,
         this.formService.input,
         this.allowedBlockchains,
         idPrefix
       )
-      .subscribe((token: Token) => {
+      .subscribe((token: TokenAmount) => {
         if (token) {
+          this.tokensService.addToken(token);
           this.selectedToken = token;
           if (this.formType === 'from') {
             this.formService.input.patchValue({
@@ -127,9 +132,6 @@ export class RubicTokensComponent implements OnInit {
   }
 
   public onImageError($event: Event): void {
-    const target = $event.target as HTMLImageElement;
-    if (target.src !== this.defaultImage) {
-      target.src = this.defaultImage;
-    }
+    this.tokensService.onTokenImageError($event);
   }
 }

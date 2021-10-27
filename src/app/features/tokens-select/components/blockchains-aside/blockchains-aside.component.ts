@@ -9,7 +9,7 @@ import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-inf
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsAsideComponent {
-  @Input() blockchain = BLOCKCHAIN_NAME.ETHEREUM;
+  @Input() blockchain: BLOCKCHAIN_NAME;
 
   @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
 
@@ -17,7 +17,7 @@ export class BlockchainsAsideComponent {
 
   @Output() blockchainChange = new EventEmitter<BLOCKCHAIN_NAME>();
 
-  public allBlockchains: BLOCKCHAIN_NAME[] = [
+  private readonly allBlockchains: BLOCKCHAIN_NAME[] = [
     BLOCKCHAIN_NAME.ETHEREUM,
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     BLOCKCHAIN_NAME.POLYGON,
@@ -27,19 +27,19 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.XDAI
   ];
 
-  public get blockchains(): BLOCKCHAIN_NAME[] {
-    if (this.allowedBlockchains) {
-      return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
-    }
-    return this.allBlockchains;
-  }
-
   public blockchainImages = Object.fromEntries(
     this.blockchains.map(blockchainName => [
       blockchainName,
       BlockchainsInfo.getBlockchainByName(blockchainName).imagePath
     ])
   );
+
+  get blockchains(): BLOCKCHAIN_NAME[] {
+    if (this.allowedBlockchains) {
+      return this.allBlockchains.filter(el => this.allowedBlockchains.includes(el));
+    }
+    return this.allBlockchains;
+  }
 
   constructor() {}
 

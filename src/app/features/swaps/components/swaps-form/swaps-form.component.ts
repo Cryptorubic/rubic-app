@@ -10,7 +10,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -143,7 +143,7 @@ export class SwapsFormComponent implements OnInit {
       this.swapsService.availableTokens,
       this.swapsService.bridgeTokenPairsByBlockchainsArray
     ])
-      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(0), takeUntil(this.destroy$))
       .subscribe(([supportedTokens, bridgeTokenPairsByBlockchainsArray]) => {
         this.isLoading = true;
         if (!supportedTokens) {
