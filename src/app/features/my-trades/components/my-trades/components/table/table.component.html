@@ -156,7 +156,9 @@
                   {{ trade.fromToken.symbol }}
                 </div>
               </ng-container>
-              <ng-template #none>{{ 'common.none' | translate }}</ng-template>
+              <ng-template #none>
+                <span class="none"> — </span>
+              </ng-template>
             </a>
           </td>
 
