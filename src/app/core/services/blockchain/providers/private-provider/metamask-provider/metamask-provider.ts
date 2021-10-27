@@ -8,12 +8,14 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { CoinbaseExtensionError } from 'src/app/core/errors/models/provider/CoinbaseExtensionError';
 import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 
-export class MetamaskProvider extends PrivateProvider {
+export class MetamaskProvider extends EthereumWalletProvider {
   private isEnabled = false;
 
   /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
@@ -44,16 +46,36 @@ export class MetamaskProvider extends PrivateProvider {
   }
 
   constructor(
+    window: RubicWindow,
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
-    errorsService: ErrorsService
+    errorsService: ErrorsService,
+    private readonly privateAdapter: Web3Private
   ) {
-    super(errorsService);
+    super(errorsService, privateAdapter);
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
+    this.privateAdapter = new Web3Private(
+      web3,
+      accountChange.asObservable(),
+      chainChange.asObservable()
+    );
 
     const { ethereum } = window;
+    this.checkErrors(ethereum);
+
+    web3.setProvider(ethereum);
+    this.core = ethereum;
+    this.setupEvents();
+  }
+
+  /**
+   * Checks ethereum object for possible errors.
+   * @param ethereum Window ethereum.
+   */
+  private checkErrors(ethereum: unknown): void {
+    // @ts-ignore
     if (!ethereum?.isMetaMask) {
       throw new MetamaskError();
     }
@@ -62,14 +84,17 @@ export class MetamaskProvider extends PrivateProvider {
     if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
       throw new CoinbaseExtensionError();
     }
+  }
 
-    web3.setProvider(ethereum);
-    this.core = ethereum;
+  /**
+   * Setups chain and account change events.
+   */
+  private setupEvents(): void {
+    // Chan change event
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        chainChange.next(BlockchainsInfo.getBlockchainById(chain));
-        // tslint:disable-next-line:no-console
+        this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
       }
     });
@@ -77,7 +102,6 @@ export class MetamaskProvider extends PrivateProvider {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges.next(this.selectedAddress);
-        // tslint:disable-next-line:no-console
         console.info('Selected account changed to', accounts[0]);
       }
       if (!this.selectedAddress) {
@@ -87,6 +111,18 @@ export class MetamaskProvider extends PrivateProvider {
     });
   }
 
+  /**
+   * Calculates an Ethereum specific signature.
+   * @param message Data to sign.
+   * @return Promise<string> The signature.
+   */
+  public async signPersonal(message: string): Promise<string> {
+    return new Web3(this.core).eth.personal.sign(message, this.address, undefined);
+  }
+
+  /**
+   * Setups default chain and account values.
+   */
   public async setupDefaultValues(): Promise<void> {
     const chain = await this.core.request({ method: 'eth_chainId' });
     const accounts = await this.core.request({ method: 'eth_accounts' });
@@ -94,6 +130,9 @@ export class MetamaskProvider extends PrivateProvider {
     [this.selectedAddress] = accounts;
   }
 
+  /**
+   * Gets wallet address.
+   */
   public getAddress(): string {
     if (this.isEnabled) {
       return this.selectedAddress;
@@ -101,6 +140,9 @@ export class MetamaskProvider extends PrivateProvider {
     return null;
   }
 
+  /**
+   * Gets wallet network.
+   */
   public getNetwork(): IBlockchain {
     if (this.isEnabled) {
       return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;
@@ -108,6 +150,10 @@ export class MetamaskProvider extends PrivateProvider {
     return null;
   }
 
+  /**
+   * Activates the wallet.
+   * @param params Params for activate request.
+   */
   public async activate(params?: unknown[]): Promise<void> {
     try {
       const accounts = await this.core.request({
@@ -132,7 +178,10 @@ export class MetamaskProvider extends PrivateProvider {
     }
   }
 
-  public async requestPermissions(): Promise<unknown[]> {
+  /**
+   * Requests permissions from the wallet.
+   */
+  public async requestPermissions(): Promise<{ parentCapability: 'eth_accounts' }[]> {
     try {
       return this.core.request({
         method: 'wallet_requestPermissions',
@@ -144,12 +193,19 @@ export class MetamaskProvider extends PrivateProvider {
     return null;
   }
 
+  /**
+   * Deactivates the wallet.
+   */
   public deActivate(): void {
     this.onAddressChanges.next(null);
     this.onNetworkChanges.next(null);
     this.isEnabled = false;
   }
 
+  /**
+   * Adds token to the wallet.
+   * @param token Token to add.
+   */
   public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       throw new MetamaskError();
@@ -172,6 +228,10 @@ export class MetamaskProvider extends PrivateProvider {
     });
   }
 
+  /**
+   * Switches chain in wallet.
+   * @param chainId Chain ID to switch for.
+   */
   public async switchChain(chainId: string): Promise<null | never> {
     return this.core.request({
       method: 'wallet_switchEthereumChain',
@@ -179,6 +239,10 @@ export class MetamaskProvider extends PrivateProvider {
     });
   }
 
+  /**
+   * Adds chain to the wallet.
+   * @param params Add chain params.
+   */
   public async addChain(params: AddEthChainParams): Promise<null | never> {
     return this.core.request({
       method: 'wallet_addEthereumChain',

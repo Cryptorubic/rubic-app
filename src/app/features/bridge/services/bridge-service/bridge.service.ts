@@ -12,9 +12,8 @@ import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/Br
 import { catchError, filter, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -26,6 +25,7 @@ import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
@@ -54,7 +54,7 @@ export class BridgeService {
     private readonly binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
     private readonly binancePolygonProviderService: BinancePolygonBridgeProviderService,
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly bridgeApiService: BridgeApiService,
@@ -276,7 +276,8 @@ export class BridgeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
-    return web3Public.checkBalance(token, amount, this.authService.user.address);
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[fromBlockchain];
+    return blockchainPublicAdapter.checkBalance(token, amount, this.authService.user.address);
   }
 }

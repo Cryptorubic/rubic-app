@@ -1,11 +1,11 @@
 import Web3 from 'web3';
 import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
-import { Transaction, provider as Provider, HttpProvider } from 'web3-core';
+import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem, toChecksumAddress, isAddress, toWei, fromWei } from 'web3-utils';
+import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -14,7 +14,6 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 import { from, Observable, of } from 'rxjs';
 import { HEALTHCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
-import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { HttpClient } from '@angular/common/http';
 import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
 import { RpcResponse } from 'src/app/core/services/blockchain/models/RpcResponse';
@@ -28,6 +27,8 @@ import {
   MULTICALL_ADDRESSES_TESTNET
 } from 'src/app/core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { Web3EthSupportedBlockchains } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 
 interface MulticallResponse {
   success: boolean;
@@ -60,14 +61,6 @@ export class Web3Public {
     return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
   }
 
-  static toWei(amount: BigNumber | string | number, decimals = 18): string {
-    return new BigNumber(amount || 0).times(new BigNumber(10).pow(decimals)).toFixed(0);
-  }
-
-  static fromWei(amountInWei: BigNumber | string | number, decimals = 18): BigNumber {
-    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
-  }
-
   static addressToBytes32(address: string): string {
     if (address.slice(0, 2) !== '0x' || address.length !== 42) {
       console.error('Wrong address format');
@@ -79,14 +72,6 @@ export class Web3Public {
 
   static toChecksumAddress(address: string): string {
     return toChecksumAddress(address);
-  }
-
-  /**
-   * checks if a given address is a valid Ethereum address
-   * @param address the address to check validity
-   */
-  static isAddressCorrect(address: string): boolean {
-    return isAddress(address);
   }
 
   /**
@@ -109,9 +94,17 @@ export class Web3Public {
    * checks if address is Ether native address
    * @param address address to check
    */
-  static isNativeAddress = (address: string): boolean => {
+  public isNativeAddress = (address: string): boolean => {
     return address === NATIVE_TOKEN_ADDRESS;
   };
+
+  /**
+   * checks if a given address is a valid Ethereum address
+   * @param address the address to check validity
+   */
+  public isAddressCorrect(address: string): boolean {
+    return isAddress(address);
+  }
 
   /**
    * set new web3 provider
@@ -127,7 +120,7 @@ export class Web3Public {
    * @return null if healthcheck is not defined for current blockchain, else is node works status
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
-    const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3SupportedBlockchains];
+    const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3EthSupportedBlockchains];
     if (!healthcheckData) {
       return of(null);
     }
@@ -174,12 +167,10 @@ export class Web3Public {
     userAddress: string,
     tokenAddress: string
   ): Promise<BigNumber> {
-    let balance;
-    if (Web3Public.isNativeAddress(tokenAddress)) {
-      balance = await this.web3.eth.getBalance(userAddress);
-    } else {
-      balance = await this.getTokenBalance(userAddress, tokenAddress);
-    }
+    const balance = this.isNativeAddress(tokenAddress)
+      ? await this.web3.eth.getBalance(userAddress)
+      : await this.getTokenBalance(userAddress, tokenAddress);
+
     return new BigNumber(balance);
   }
 
@@ -390,7 +381,7 @@ export class Web3Public {
    * @param tokenAddress address of token
    */
   private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (this.isNativeAddress(tokenAddress)) {
       return {
         ...this.blockchain.nativeCoin,
         blockchain: this.blockchain.name
@@ -423,7 +414,7 @@ export class Web3Public {
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI as AbiItem[], tokensAddresses[0]);
-    const indexOfNativeCoin = tokensAddresses.findIndex(Web3Public.isNativeAddress);
+    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress);
     const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 
     if (indexOfNativeCoin !== -1) {
@@ -469,9 +460,7 @@ export class Web3Public {
       callData: contract.methods[methodName](...methodArguments).encodeABI(),
       target: contractAddress
     }));
-
     const outputs = await this.multicall(calls);
-
     return outputs.map((output, index) => {
       const methodOutputAbi = contractAbi.find(
         funcSignature => funcSignature.name === methodsData[index].methodName
@@ -551,20 +540,18 @@ export class Web3Public {
     amount: BigNumber,
     userAddress: string
   ): Promise<void> {
-    let balance: BigNumber;
-    if (Web3Public.isNativeAddress(token.address)) {
-      balance = await this.getBalance(userAddress, {
-        inWei: true
-      });
-    } else {
-      balance = await this.getTokenBalance(userAddress, token.address);
-    }
+    const balance = this.isNativeAddress(token.address)
+      ? await this.getBalance(userAddress, {
+          inWei: true
+        })
+      : await this.getTokenBalance(userAddress, token.address);
 
-    const amountAbsolute = Web3Public.toWei(amount, token.decimals);
+    const amountAbsolute = BlockchainPublicService.toWei(amount, token.decimals);
     if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = Web3Public.fromWei(balance, token.decimals).toFormat(
-        BIG_NUMBER_FORMAT
-      );
+      const formattedTokensBalance = BlockchainPublicService.fromWei(
+        balance,
+        token.decimals
+      ).toFormat(BIG_NUMBER_FORMAT);
       throw new InsufficientFundsError(
         token.symbol,
         formattedTokensBalance,

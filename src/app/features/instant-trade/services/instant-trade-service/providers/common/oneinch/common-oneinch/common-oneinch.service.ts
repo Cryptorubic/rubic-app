@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { from, Observable, of } from 'rxjs';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import networks from 'src/app/shared/constants/blockchain/networks';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
@@ -31,6 +29,7 @@ import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/ins
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -54,8 +53,7 @@ export class CommonOneinchService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3Private: Web3PrivateService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly settingsService: SettingsService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
@@ -121,12 +119,15 @@ export class CommonOneinchService {
   }
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[blockchain];
+    if (blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return this.loadApproveAddress(BlockchainsInfo.getBlockchainByName(blockchain).id).pipe(
-      switchMap(address => from(web3Public.getAllowance(tokenAddress, this.walletAddress, address)))
+      switchMap(address =>
+        from(blockchainPublicAdapter.getAllowance(tokenAddress, this.walletAddress, address))
+      )
     );
   }
 
@@ -140,7 +141,12 @@ export class CommonOneinchService {
     const approveAddress = await this.loadApproveAddress(
       BlockchainsInfo.getBlockchainByName(blockchain).id
     ).toPromise();
-    await this.web3Private.approveTokens(tokenAddress, approveAddress, 'infinity', options);
+    await this.providerConnectorService.provider.approveTokens(
+      tokenAddress,
+      approveAddress,
+      'infinity',
+      options
+    );
   }
 
   public async calculateTrade(
@@ -163,7 +169,7 @@ export class CommonOneinchService {
       throw new OneinchNotSupportedTokens();
     }
 
-    const amountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    const amountAbsolute = BlockchainPublicService.toWei(fromAmount, fromToken.decimals);
     const { estimatedGas, toTokenAmount } = await this.getEstimatedGasAndToAmount(
       blockchain,
       fromTokenAddress,
@@ -179,16 +185,17 @@ export class CommonOneinchService {
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
+        amount: BlockchainPublicService.fromWei(toTokenAmount, toToken.decimals)
       }
     };
     if (!shouldCalculateGas) {
       return instantTrade;
     }
 
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    const gasPrice = await web3Public.getGasPrice();
-    const gasPriceInEth = Web3Public.fromWei(gasPrice);
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[blockchain];
+    const gasPrice = await blockchainPublicAdapter.getGasPrice();
+    const gasPriceInEth = BlockchainPublicService.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
@@ -264,15 +271,23 @@ export class CommonOneinchService {
     const { blockchain } = trade;
     this.providerConnectorService.checkSettings(blockchain);
 
-    const web3Public: Web3Public = this.web3PublicService[trade.blockchain];
-    await web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[trade.blockchain];
+    await blockchainPublicAdapter.checkBalance(
+      trade.from.token,
+      trade.from.amount,
+      this.walletAddress
+    );
 
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       trade.from.token.address,
       trade.to.token.address
     );
 
-    const fromAmountAbsolute = Web3Public.toWei(trade.from.amount, trade.from.token.decimals);
+    const fromAmountAbsolute = BlockchainPublicService.toWei(
+      trade.from.amount,
+      trade.from.token.decimals
+    );
 
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
     const swapTradeParams: OneinchSwapRequest = {
@@ -301,7 +316,7 @@ export class CommonOneinchService {
       ...(trade.gasPrice && { gasPrice: trade.gasPrice })
     };
 
-    return this.web3Private.trySendTransaction(
+    return this.providerConnectorService.provider.trySendTransaction(
       oneInchTrade.tx.to,
       fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmountAbsolute,
       trxOptions

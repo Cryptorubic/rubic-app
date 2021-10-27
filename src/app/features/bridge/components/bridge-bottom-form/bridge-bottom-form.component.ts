@@ -28,7 +28,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -153,7 +153,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private web3PublicService: Web3PublicService,
+    private blockchainPublicService: BlockchainPublicService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector,

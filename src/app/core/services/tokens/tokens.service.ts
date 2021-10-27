@@ -9,8 +9,7 @@ import { TokensApiService } from 'src/app/core/services/backend/tokens-api/token
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
@@ -26,6 +25,10 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
+import {
+  BlockchainPublicAdapter,
+  Web3EthSupportedBlockchains
+} from 'src/app/core/services/blockchain/blockchain-public/types';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -117,7 +120,7 @@ export class TokensService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly store: StoreService
@@ -223,17 +226,19 @@ export class TokensService {
       BLOCKCHAIN_NAME.HARMONY,
       BLOCKCHAIN_NAME.AVALANCHE
     ];
-    const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
-      const tokensAddresses = tokens
-        .filter(token => token.blockchain === blockchain)
-        .map(token => token.address)
-        .toArray();
+    const balances$: Promise<BigNumber[]>[] = blockchains.map(
+      (blockchain: Web3EthSupportedBlockchains) => {
+        const tokensAddresses = tokens
+          .filter(token => token.blockchain === blockchain)
+          .map(token => token.address)
+          .toArray();
 
-      return this.web3PublicService[blockchain].getTokensBalances(
-        this.userAddress,
-        tokensAddresses
-      );
-    });
+        return this.blockchainPublicService.adapters[blockchain].getTokensBalances(
+          this.userAddress,
+          tokensAddresses
+        );
+      }
+    );
 
     const balancesSettled = await Promise.allSettled(balances$);
 
@@ -246,7 +251,8 @@ export class TokensService {
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
-              amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
+              amount:
+                BlockchainPublicService.fromWei(balances[tokenIndex], token.decimals) || undefined
             }))
             .toArray();
         }
@@ -263,12 +269,13 @@ export class TokensService {
    * @return Observable<TokenAmount> Token with balance.
    */
   public addToken(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
-      ? from(web3Public.getTokenBalance(this.userAddress, address))
+      ? from(blockchainPublicAdapter.getTokenBalance(this.userAddress, address))
       : of(null);
 
-    return forkJoin([web3Public.getTokenInfo(address), balance$]).pipe(
+    return forkJoin([blockchainPublicAdapter.getTokenInfo(address), balance$]).pipe(
       map(([tokenInfo, amount]) => ({
         blockchain,
         address,

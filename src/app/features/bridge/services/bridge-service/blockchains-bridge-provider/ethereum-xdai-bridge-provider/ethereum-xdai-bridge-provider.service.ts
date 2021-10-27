@@ -5,7 +5,6 @@ import { tap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { ethToXDaiDepositWallet } from 'src/app/shared/constants/bridge/deposit-wallets';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -48,7 +47,6 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   ];
 
   constructor(
-    private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly providerConnectorService: ProviderConnectorService
   ) {
@@ -79,7 +77,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     };
 
     return from(
-      this.web3PrivateService.transferTokens(
+      this.providerConnectorService.provider.transferTokens(
         tokenAddress,
         ethToXDaiDepositWallet,
         amountInWei.toFixed(),
@@ -88,8 +86,8 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         }
       )
     ).pipe(
-      tap(receipt => {
-        this.bridgeApiService.notifyBridgeBot(
+      tap(async receipt => {
+        await this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
           receipt.transactionHash,
           this.providerConnectorService.address

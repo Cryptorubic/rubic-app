@@ -11,10 +11,11 @@ import { WalletconnectError } from 'src/app/core/errors/models/provider/Walletco
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
 
-export class WalletConnectProvider extends PrivateProvider {
+export class WalletConnectProvider extends EthereumWalletProvider {
   private isEnabled: boolean;
 
   private readonly core: WalletConnect;
@@ -45,17 +46,33 @@ export class WalletConnectProvider extends PrivateProvider {
     return this.selectedAddress;
   }
 
+  public get name(): WALLET_NAME {
+    return WALLET_NAME.WALLET_CONNECT;
+  }
+
   constructor(
     web3: Web3,
     chainChange: BehaviorSubject<IBlockchain>,
     accountChange: BehaviorSubject<string>,
-    errorsService: ErrorsService
+    errorsService: ErrorsService,
+    private readonly privateAdapter: Web3Private
   ) {
-    super(errorsService);
+    super(errorsService, privateAdapter);
     this.isEnabled = false;
     this.onAddressChanges = accountChange;
     this.onNetworkChanges = chainChange;
 
+    this.core = this.getProvider();
+    // eslint-disable-next-line
+    web3.setProvider(this.core as any);
+    this.setupEvents();
+  }
+
+  /**
+   * Gets wallet provider based on rpc params.
+   * @returns WalletConnect Wallet provider.
+   */
+  private getProvider(): WalletConnect {
     const rpcParams: Record<typeof networks[number]['id'], string> = networks
       .filter(network => isFinite(network.id))
       .reduce((prev, cur) => {
@@ -64,17 +81,21 @@ export class WalletConnectProvider extends PrivateProvider {
           [cur.id]: cur.rpcLink
         };
       }, {});
-    this.core = new WalletConnect({
+    return new WalletConnect({
       rpc: rpcParams,
       bridge: 'https://bridge.walletconnect.org',
       qrcode: true
     });
-    // eslint-disable-next-line
-    web3.setProvider(this.core as any);
+  }
+
+  /**
+   * Setups chain and account change events.
+   */
+  private setupEvents(): void {
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+        this.onNetworkChanges.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
       }
     });
@@ -87,20 +108,35 @@ export class WalletConnectProvider extends PrivateProvider {
     });
   }
 
+  /**
+   * Calculates an Ethereum specific signature.
+   * @param message Data to sign.
+   * @return Promise<string> The signature.
+   */
+  public async signPersonal(message: string): Promise<string> {
+    return this.core.eth.personal.sign(message, this.address, undefined);
+  }
+
+  /**
+   * Gets wallet address.
+   */
   public getAddress(): string {
     return this.isEnabled && this.selectedAddress;
   }
 
+  /**
+   * Gets wallet network.
+   */
   public getNetwork(): IBlockchain {
     return (
       this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain as BLOCKCHAIN_NAME)
     );
   }
 
-  public get name(): WALLET_NAME {
-    return WALLET_NAME.WALLET_CONNECT;
-  }
-
+  /**
+   * Activates the wallet.
+   * @param params Params for activate request.
+   */
   public async activate(): Promise<void> {
     try {
       const [address] = await this.core.enable();
@@ -114,6 +150,9 @@ export class WalletConnectProvider extends PrivateProvider {
     }
   }
 
+  /**
+   * Deactivates the wallet.
+   */
   public async deActivate(): Promise<void> {
     await this.core.close();
     this.onAddressChanges.next(null);
@@ -121,6 +160,10 @@ export class WalletConnectProvider extends PrivateProvider {
     this.isEnabled = false;
   }
 
+  /**
+   * Adds token to the wallet.
+   * @param token Token to add.
+   */
   public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       throw new WalletconnectError();
@@ -143,6 +186,10 @@ export class WalletConnectProvider extends PrivateProvider {
     });
   }
 
+  /**
+   * Switches chain in wallet.
+   * @param chainId Chain ID to switch for.
+   */
   public async switchChain(chainId: string): Promise<null | never> {
     return this.core.request({
       method: 'wallet_switchEthereumChain',
@@ -150,6 +197,10 @@ export class WalletConnectProvider extends PrivateProvider {
     });
   }
 
+  /**
+   * Adds chain to the wallet.
+   * @param params Add chain params.
+   */
   public async addChain(params: AddEthChainParams): Promise<null | never> {
     return this.core.request({
       method: 'wallet_addEthereumChain',

@@ -37,3 +37,7 @@ export function subtractPercent(
 ): BigNumber {
   return new BigNumber(amount).multipliedBy(new BigNumber(1).minus(percent));
 }
+
+export function getBigNumber(num: unknown) {
+  return num === undefined || num === null ? 0 : parseFloat(num.toString());
+}

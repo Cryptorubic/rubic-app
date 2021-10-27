@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
@@ -10,29 +9,29 @@ import CustomError from 'src/app/core/errors/models/custom-error';
 import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
 import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { LowGasError } from 'src/app/core/errors/models/provider/LowGasError';
+import { Observable } from 'rxjs';
+import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 
 type Web3Error = {
   message: string;
   code: number;
 };
 
-@Injectable({
-  providedIn: 'root'
-})
-export class Web3PrivateService {
+export class Web3Private {
   private defaultMockGas: string;
 
-  private readonly web3: Web3;
+  private address: string;
 
-  private get address(): string {
-    return this.providerConnector.address;
-  }
+  private network: IBlockchain;
 
-  constructor(private readonly providerConnector: ProviderConnectorService) {
-    this.web3 = providerConnector.web3;
-    // this.defaultMockGas = '400000';
+  constructor(
+    private readonly web3: Web3,
+    private readonly address$: Observable<string>,
+    private readonly network$: Observable<IBlockchain>
+  ) {
+    this.address$.subscribe(address => (this.address = address));
+    this.network$.subscribe(network => (this.network = network));
   }
 
   private static parseError(err: Web3Error): Error {
@@ -59,9 +58,7 @@ export class Web3PrivateService {
 
   private calculateGasPrice(gasPrice?: string): string | undefined {
     const minGasPrice =
-      minGasPriceInBlockchain[
-        this.providerConnector.networkName as keyof typeof minGasPriceInBlockchain
-      ];
+      minGasPriceInBlockchain[this.network.name as keyof typeof minGasPriceInBlockchain];
     if (!minGasPrice) {
       return gasPrice;
     }
@@ -104,7 +101,7 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3Private.parseError(err));
         });
     });
   }
@@ -130,7 +127,7 @@ export class Web3PrivateService {
         .on('transactionHash', (hash: string) => resolve(hash))
         .on('error', (err: Web3Error) => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3Private.parseError(err));
         });
     });
   }
@@ -168,7 +165,7 @@ export class Web3PrivateService {
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
       console.error('Send transaction error', err);
-      throw Web3PrivateService.parseError(err);
+      throw Web3Private.parseError(err);
     }
   }
 
@@ -209,7 +206,7 @@ export class Web3PrivateService {
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
           console.error('Send transaction error', err);
-          reject(Web3PrivateService.parseError(err as unknown as Web3Error));
+          reject(Web3Private.parseError(err as unknown as Web3Error));
         });
     });
   }
@@ -240,7 +237,7 @@ export class Web3PrivateService {
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(Web3PrivateService.parseError(err as unknown as Web3Error));
+          reject(Web3Private.parseError(err as unknown as Web3Error));
         });
     });
   }
@@ -283,7 +280,7 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Tokens approve error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3Private.parseError(err));
         });
     });
   }
@@ -336,7 +333,7 @@ export class Web3PrivateService {
         );
       }
       console.error('Method execution error: ', err);
-      throw Web3PrivateService.parseError(err);
+      throw Web3Private.parseError(err);
     }
   }
 
@@ -375,7 +372,7 @@ export class Web3PrivateService {
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Method execution error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3Private.parseError(err));
         });
     });
   }
@@ -405,7 +402,7 @@ export class Web3PrivateService {
         .on('transactionHash', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Tokens approve error. ${err}`);
-          reject(Web3PrivateService.parseError(err));
+          reject(Web3Private.parseError(err));
         });
     });
   }

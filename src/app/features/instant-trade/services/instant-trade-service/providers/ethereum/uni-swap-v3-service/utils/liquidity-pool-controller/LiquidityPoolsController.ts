@@ -1,4 +1,3 @@
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import {
   routerLiquidityPoolsWithMode,
   routerTokensNetMode
@@ -18,6 +17,7 @@ import { PCacheable } from 'ts-cacheable';
 import { uniSwapV3ContractData } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -101,7 +101,10 @@ export class LiquidityPoolsController {
     };
   }
 
-  constructor(private readonly web3Public: Web3Public, isTestingMode = false) {
+  constructor(
+    public readonly blockchainPublicAdapter: BlockchainPublicAdapter,
+    isTestingMode = false
+  ) {
     this.feeAmounts = [500, 3000, 10000];
 
     if (!isTestingMode) {
@@ -160,7 +163,7 @@ export class LiquidityPoolsController {
     );
 
     const poolsAddresses = (
-      await this.web3Public.multicallContractMethods<{ 0: string }>(
+      await this.blockchainPublicAdapter.multicallContractMethods<{ 0: string }>(
         factoryContractAddress,
         factoryContractAbi,
         getPoolMethodArguments.map(methodArguments => ({
@@ -210,7 +213,7 @@ export class LiquidityPoolsController {
       .map((_, index) => this.getQuoterMethodsData(options, [], fromTokenAddress, index))
       .flat();
 
-    return this.web3Public
+    return this.blockchainPublicAdapter
       .multicallContractMethods<{ 0: string }>(
         uniSwapV3ContractData.quoter.address,
         uniSwapV3ContractData.quoter.abi,

@@ -29,7 +29,9 @@
       "https": ["./node_modules/https-browserify"],
       "os": ["./node_modules/os-browserify"],
       "http": ["./node_modules/stream-http"],
-      "crypto": ["./node_modules/crypto-browserify"]
+      "crypto": ["./node_modules/crypto-browserify"],
+      "path": ["./node_modules/path-browserify"],
+      "fs": ["./node_modules/browserify-fs"]
     }
   }
 }

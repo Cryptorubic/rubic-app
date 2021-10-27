@@ -12,7 +12,7 @@ import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 
 const WETH_ADDRESSES = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -41,7 +41,12 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
 
   get tokenInfoUrl(): string {
     let tokenAddress: string;
-    if (this.toToken && Web3Public.isAddressCorrect(this.toToken.address)) {
+    if (
+      this.toToken &&
+      this.blockchainPublicService.adapters[this.fromToken.blockchain].isAddressCorrect(
+        this.toToken.address
+      )
+    ) {
       if (this.toToken.address === NATIVE_TOKEN_ADDRESS) {
         tokenAddress = WETH_ADDRESSES[this.toToken.blockchain as WethBlockchains];
       } else {
@@ -57,7 +62,10 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly blockchainPublicService: BlockchainPublicService
+  ) {}
 
   ngOnInit() {
     this.formServiceSub$ = this.formService.inputValueChanges

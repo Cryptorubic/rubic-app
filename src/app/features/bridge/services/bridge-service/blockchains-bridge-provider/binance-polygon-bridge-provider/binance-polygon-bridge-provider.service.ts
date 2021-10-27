@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -20,17 +20,18 @@ import { EvoBridgeTokenPair } from 'src/app/features/bridge/services/bridge-serv
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 import { AbiItem } from 'web3-utils';
 import { EvoResponseToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoResponseToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import {
   BlockchainsConfig,
   TokensIdConfig
 } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/Config';
 import { ConfigResponse } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/ConfigResponse';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 
 // Exclude MATIC token because it is not supported by EVO relayer
 const EXCLUDED_TOKENS = {
@@ -45,8 +46,8 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private evoTokenPairs: EvoBridgeTokenPair[];
 
   constructor(
-    private web3PublicService: Web3PublicService,
-    private web3PrivateService: Web3PrivateService,
+    private blockchainPublicService: BlockchainPublicService,
+    private providerConnectorService: ProviderConnectorService,
     private readonly translateService: TranslateService,
     private tokensService: TokensService,
     private authService: AuthService,
@@ -69,7 +70,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
           console.error('You should check bridge trade allowance before approve');
           return throwError(new UndefinedError());
         }
-        return this.web3PrivateService.approveTokens(
+        return this.providerConnectorService.provider.approveTokens(
           tokenFrom.address,
           EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains],
           'infinity',
@@ -87,7 +88,8 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
   needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (!this.authService?.user?.address) {
@@ -96,7 +98,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     }
 
     return from(
-      web3Public.getAllowance(
+      blockchainPublicAdapter.getAllowance(
         tokenFrom.address,
         this.authService.user.address,
         EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains]
@@ -123,7 +125,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     ).evoInfo[bridgeTrade.fromBlockchain as EvoBridgeBlockchains];
 
     return from(
-      this.web3PrivateService.executeContractMethod(
+      this.providerConnectorService.provider.executeContractMethod(
         EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains],
         EVO_ABI as AbiItem[],
         'create',
@@ -206,7 +208,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private async fetchSupportedTokens(): Promise<EvoContractTokenInBlockchains[]> {
     const blockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
     const tokensListPromises = blockchains.map(blockchain =>
-      this.web3PublicService[blockchain].callContractMethod<string[]>(
+      this.blockchainPublicService.adapters[blockchain].callContractMethod<string[]>(
         EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
         EVO_ABI as AbiItem[],
         'listTokensNames'
@@ -225,7 +227,9 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     }
 
     const tokensInfoPromises = blockchains.map(blockchain =>
-      (this.web3PublicService[blockchain] as Web3Public).multicallContractMethods<EvoResponseToken>(
+      (
+        this.blockchainPublicService.adapters[blockchain] as Web3Public
+      ).multicallContractMethods<EvoResponseToken>(
         EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
         EVO_ABI,
         [
@@ -403,7 +407,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       const tokenIds = blockchainTokenIds[blockchain.name];
       const configResponse = (
         await (
-          this.web3PublicService[blockchain.name] as Web3Public
+          this.blockchainPublicService.adapters[blockchain.name] as Web3Public
         ).multicallContractMethods<ConfigResponse>(
           EVO_ADDRESSES[blockchain.name],
           EVO_ABI,

@@ -6,7 +6,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -51,7 +51,7 @@ export class GasService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly web3PublicService: Web3PublicService
+    private readonly blockchainPublicService: BlockchainPublicService
   ) {
     this.updateInterval = 15_000;
 
@@ -182,8 +182,9 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchAvalancheGas(): Observable<number | null> {
-    const web3Public = this.web3PublicService[BLOCKCHAIN_NAME.AVALANCHE];
-    return from(web3Public.getGasPrice()).pipe(
+    const blockchainPublicAdapter =
+      this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.AVALANCHE];
+    return from(blockchainPublicAdapter.getGasPrice()).pipe(
       map(gasPriceInWei => {
         return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
       })

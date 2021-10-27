@@ -9,7 +9,7 @@ import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instan
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-pol.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
@@ -73,12 +73,12 @@ export class InstantTradeService {
     private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
-    private readonly gtmService: GoogleTagManagerService,
     // Providers end
+    private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
-    private readonly web3Public: Web3PublicService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
@@ -217,8 +217,8 @@ export class InstantTradeService {
   }
 
   private async postTrade(hash: string, provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade) {
-    const web3Public = this.web3Public[trade.blockchain];
-    await web3Public.getTransactionByHash(hash, 0, 60, 1000);
+    const blockchainPublicAdapter = this.blockchainPublicService.adapters[trade.blockchain];
+    await blockchainPublicAdapter.getTransactionByHash(hash, 0, 60, 1000);
     timer(1000)
       .pipe(
         switchMap(() =>

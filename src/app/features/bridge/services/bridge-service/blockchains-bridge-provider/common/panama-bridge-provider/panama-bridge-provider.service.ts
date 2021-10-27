@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, mergeMap, timeout } from 'rxjs/operators';
 import { from, Observable, of, Subject, throwError } from 'rxjs';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { OverQueryLimitError } from 'src/app/core/errors/models/bridge/OverQueryLimitError';
@@ -43,7 +42,6 @@ export class PanamaBridgeProviderService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly errorService: ErrorsService,
     private readonly providerConnectorService: ProviderConnectorService
@@ -162,7 +160,7 @@ export class PanamaBridgeProviderService {
     let receipt;
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && token.symbol === 'ETH') {
-      receipt = await this.web3PrivateService.sendTransaction(
+      receipt = await this.providerConnectorService.provider.sendTransaction(
         depositAddress,
         amountInWei.toFixed(),
         {
@@ -173,7 +171,7 @@ export class PanamaBridgeProviderService {
     } else {
       // tslint:disable-next-line:max-line-length
       const estimatedGas = '120000'; // TODO: хотфикс сломавшегося в метамаске рассчета газа. Estimated gas не подойдет, т.к. в BSC не работает rpc
-      receipt = await this.web3PrivateService.transferTokens(
+      receipt = await this.providerConnectorService.provider.transferTokens(
         tokenAddress,
         depositAddress,
         amountInWei.toFixed(),

@@ -19,12 +19,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -224,7 +223,7 @@ export class SwapButtonContainerComponent implements OnInit {
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,
     private readonly bridgeService: BridgeService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly iframeService: IframeService,
     private readonly headerStore: HeaderStore,
@@ -316,8 +315,8 @@ export class SwapButtonContainerComponent implements OnInit {
 
     let balance = fromToken.amount;
     if (!fromToken.amount.isFinite()) {
-      balance = Web3Public.fromWei(
-        await this.web3PublicService[fromToken.blockchain].getTokenOrNativeBalance(
+      balance = BlockchainPublicService.fromWei(
+        await this.blockchainPublicService.adapters[fromToken.blockchain].getTokenOrNativeBalance(
           this.authService.user.address,
           fromToken.address
         ),

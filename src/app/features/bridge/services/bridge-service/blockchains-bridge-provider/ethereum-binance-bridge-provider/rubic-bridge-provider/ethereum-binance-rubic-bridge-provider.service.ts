@@ -3,12 +3,10 @@ import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { WrongToken } from 'src/app/core/errors/models/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
@@ -24,6 +22,7 @@ import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair'
 import { HttpService } from 'src/app/core/services/http/http.service';
 import rubicBridgeContractAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/constants/rubicBridgeContractAbi';
 
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 
 interface RubicConfig {
@@ -65,8 +64,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly web3PrivateService: Web3PrivateService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
@@ -200,7 +198,8 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
@@ -208,7 +207,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     }
 
     return from(
-      web3Public.getAllowance(
+      blockchainPublicAdapter.getAllowance(
         this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
         this.providerConnectorService.address,
         this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress
@@ -235,9 +234,14 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           return throwError(new UndefinedError());
         }
         return from(
-          this.web3PrivateService.approveTokens(tokenFrom.address, spenderAddress, 'infinity', {
-            onTransactionHash: bridgeTrade.onTransactionHash
-          })
+          this.providerConnectorService.provider.approveTokens(
+            tokenFrom.address,
+            spenderAddress,
+            'infinity',
+            {
+              onTransactionHash: bridgeTrade.onTransactionHash
+            }
+          )
         );
       })
     );
@@ -250,7 +254,8 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       throw new WrongToken();
     }
 
-    const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[bridgeTrade.fromBlockchain];
     const trade: RubicTrade = {
       token: {
         address:
@@ -266,7 +271,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
 
     const onApprove = bridgeTrade.onTransactionHash;
-    await this.provideAllowance(trade, web3Public, onApprove);
+    await this.provideAllowance(trade, blockchainPublicAdapter, onApprove);
 
     const blockchain = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;
 
@@ -282,7 +287,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       );
     };
 
-    return this.web3PrivateService.executeContractMethod(
+    return this.providerConnectorService.provider.executeContractMethod(
       trade.swapContractAddress,
       this.contractAbi,
       'transferToOtherBlockchain',
@@ -295,17 +300,17 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   private async provideAllowance(
     trade: RubicTrade,
-    web3Public: Web3Public,
+    blockchainPublicAdapter: BlockchainPublicAdapter,
     onApprove: (hash: string) => void
   ) {
-    const allowance = await web3Public.getAllowance(
+    const allowance = await blockchainPublicAdapter.getAllowance(
       trade.token.address,
       this.providerConnectorService.address,
       trade.swapContractAddress
     );
     if (trade.amount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
-      await this.web3PrivateService.approveTokens(
+      await this.providerConnectorService.provider.approveTokens(
         trade.token.address,
         trade.swapContractAddress,
         uintInfinity,

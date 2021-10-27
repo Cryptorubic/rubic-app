@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
@@ -17,7 +17,12 @@ import { WalletConnectProvider } from 'src/app/core/services/blockchain/provider
 import { WalletLinkProvider } from 'src/app/core/services/blockchain/providers/private-provider/wallet-link/wallet-link-provider';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
+
+type WalletProvider = EthereumWalletProvider;
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +34,9 @@ export class ProviderConnectorService {
 
   public providerName: WALLET_NAME;
 
-  private privateProvider: PrivateProvider;
+  private privateProvider: WalletProvider;
+
+  private readonly web3Private: Web3Private;
 
   public get address(): string | undefined {
     return this.provider?.address;
@@ -39,24 +46,16 @@ export class ProviderConnectorService {
     return this.provider.network;
   }
 
-  public get networkName(): BLOCKCHAIN_NAME {
-    return this.provider.networkName;
-  }
-
-  public get provider(): PrivateProvider {
+  public get provider(): WalletProvider {
     return this.privateProvider;
   }
 
-  public set provider(value: PrivateProvider) {
+  public set provider(value: WalletProvider) {
     this.privateProvider = value;
   }
 
   public get isProviderActive(): boolean {
     return Boolean(this.provider?.isActive);
-  }
-
-  public get isProviderInstalled(): boolean {
-    return Boolean(this.provider?.isInstalled);
   }
 
   public get $networkChange(): Observable<IBlockchain> {
@@ -72,20 +71,26 @@ export class ProviderConnectorService {
   constructor(
     private readonly storage: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.web3 = new Web3();
     this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
     this.$addressChangeSubject = new BehaviorSubject<string>(null);
+    this.web3Private = new Web3Private(
+      this.web3,
+      this.$addressChangeSubject,
+      this.$networkChangeSubject
+    );
   }
 
   /**
    * Calculates an Ethereum specific signature.
    * @param message Data to sign.
-   * @return The signature.
+   * @return Promise<string> The signature.
    */
-  public async signPersonal(message: string) {
-    return this.web3.eth.personal.sign(message, this.provider.address, undefined);
+  public async signPersonal(message: string): Promise<string> {
+    return this.provider.signPersonal(message);
   }
 
   /**
@@ -111,8 +116,7 @@ export class ProviderConnectorService {
     }
   }
 
-  // eslint-disable-next-line
-  public async requestPermissions(): Promise<any[]> {
+  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     return this.provider.requestPermissions();
   }
 
@@ -134,10 +138,12 @@ export class ProviderConnectorService {
       switch (provider) {
         case WALLET_NAME.WALLET_LINK: {
           this.provider = new WalletLinkProvider(
+            this.window,
             this.web3,
             this.$networkChangeSubject,
             this.$addressChangeSubject,
             this.errorService,
+            this.web3Private,
             chainId
           );
           break;
@@ -147,18 +153,21 @@ export class ProviderConnectorService {
             this.web3,
             this.$networkChangeSubject,
             this.$addressChangeSubject,
-            this.errorService
+            this.errorService,
+            this.web3Private
           );
           break;
         }
         case WALLET_NAME.METAMASK:
         default: {
           this.provider = new MetamaskProvider(
+            this.window,
             this.web3,
             this.$networkChangeSubject,
             this.$addressChangeSubject,
-            this.errorService
-          ) as PrivateProvider;
+            this.errorService,
+            this.web3Private
+          );
           await (this.provider as MetamaskProvider).setupDefaultValues();
         }
       }
@@ -172,11 +181,13 @@ export class ProviderConnectorService {
 
   public async connectDefaultProvider(): Promise<void> {
     this.provider = new MetamaskProvider(
+      this.window,
       this.web3,
       this.$networkChangeSubject,
       this.$addressChangeSubject,
-      this.errorService
-    ) as PrivateProvider;
+      this.errorService,
+      this.web3Private
+    );
     this.providerName = WALLET_NAME.METAMASK;
   }
 
@@ -190,8 +201,8 @@ export class ProviderConnectorService {
 
     const isTestingMode = this.useTestingModeService.isTestingMode.getValue();
     if (
-      this.networkName !== selectedBlockchain &&
-      (!isTestingMode || this.networkName !== `${selectedBlockchain}_TESTNET`)
+      this.network.name !== selectedBlockchain &&
+      (!isTestingMode || this.network.name !== `${selectedBlockchain}_TESTNET`)
     ) {
       if (this.providerName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);

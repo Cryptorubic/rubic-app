@@ -12,8 +12,8 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -33,6 +33,7 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -115,7 +116,7 @@ export class TokensSelectComponent implements OnInit {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: ComponentContext,
     private readonly cdr: ChangeDetectorRef,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly authService: AuthService,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
@@ -301,21 +302,25 @@ export class TokensSelectComponent implements OnInit {
    */
   private async tryParseQueryAsCustomToken(): Promise<void> {
     if (this.query) {
-      const web3Public: Web3Public = this.web3PublicService[this.blockchain];
+      const blockchainPublicAdapter: BlockchainPublicAdapter =
+        this.blockchainPublicService.adapters[this.blockchain];
 
-      if (!Web3Public.isAddressCorrect(this.query)) {
+      if (!blockchainPublicAdapter.isAddressCorrect(this.query)) {
         return;
       }
 
-      const blockchainToken: BlockchainToken = await web3Public
+      const blockchainToken: BlockchainToken = await blockchainPublicAdapter
         .getTokenInfo(this.query)
         .catch(() => null);
 
       if (blockchainToken?.name && blockchainToken?.symbol && blockchainToken?.decimals != null) {
         const amount = this.authService.user?.address
-          ? (await web3Public.getTokenBalance(this.authService.user.address, this.query)).div(
-              10 ** blockchainToken.decimals
-            )
+          ? (
+              await blockchainPublicAdapter.getTokenBalance(
+                this.authService.user.address,
+                this.query
+              )
+            ).div(10 ** blockchainToken.decimals)
           : new BigNumber(0);
 
         const oppositeTokenType = this.formType === 'from' ? 'toToken' : 'fromToken';
@@ -356,21 +361,23 @@ export class TokensSelectComponent implements OnInit {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon'
     };
-    const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
-      blockchains[token.blockchain as keyof typeof blockchains]
-    }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
+    const defaultImage = 'assets/images/icons/coins/default-token-ico.svg';
+    if (BlockchainPublicService.isEthLikeBlockchain(token.blockchain)) {
+      const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
+        blockchains[token.blockchain as keyof typeof blockchains]
+      }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
 
-    return this.httpClient
-      .get(image)
-      .pipe(
-        mapTo(image),
-        catchError((err: HttpErrorResponse) => {
-          return err.status === 200
-            ? of(image)
-            : of('assets/images/icons/coins/default-token-ico.svg');
-        })
-      )
-      .toPromise();
+      return this.httpClient
+        .get(image)
+        .pipe(
+          mapTo(image),
+          catchError((err: HttpErrorResponse) => {
+            return err.status === 200 ? of(image) : of(defaultImage);
+          })
+        )
+        .toPromise();
+    }
+    return of(defaultImage).toPromise();
   }
 
   /**

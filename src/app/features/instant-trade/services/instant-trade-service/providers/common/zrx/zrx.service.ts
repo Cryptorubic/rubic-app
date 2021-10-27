@@ -6,10 +6,9 @@ import {
   ItOptions,
   ItProvider
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   ItSettingsForm,
@@ -33,6 +32,7 @@ import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 
@@ -42,7 +42,7 @@ const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 export class ZrxService implements ItProvider {
   private readonly gasMargin: number;
 
-  private web3Public: Web3Public;
+  private blockchainPublicAdapter: BlockchainPublicAdapter;
 
   private settings: ItSettingsForm;
 
@@ -66,8 +66,7 @@ export class ZrxService implements ItProvider {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
@@ -106,7 +105,7 @@ export class ZrxService implements ItProvider {
    */
   private setZrxParams() {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    this.web3Public = this.web3PublicService[fromBlockchain];
+    this.blockchainPublicAdapter = this.blockchainPublicService.adapters[fromBlockchain];
 
     let blockchain: BLOCKCHAIN_NAME;
     if (this.isTestingMode) {
@@ -121,7 +120,8 @@ export class ZrxService implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
+    if (blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return this.tradeDataIsUpdated.pipe(
@@ -129,7 +129,7 @@ export class ZrxService implements ItProvider {
       first(),
       mergeMap(() => {
         this.tradeDataIsUpdated.next(false);
-        return this.web3Public.getAllowance(
+        return this.blockchainPublicAdapter.getAllowance(
           tokenAddress,
           this.walletAddress,
           this.currentTradeData?.allowanceTarget
@@ -140,7 +140,7 @@ export class ZrxService implements ItProvider {
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
     this.providerConnectorService.checkSettings(this.blockchain);
-    await this.web3PrivateService.approveTokens(
+    await this.providerConnectorService.provider.approveTokens(
       tokenAddress,
       this.currentTradeData.allowanceTarget,
       'infinity',
@@ -156,18 +156,19 @@ export class ZrxService implements ItProvider {
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
+    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
-    if (Web3Public.isNativeAddress(fromToken.address)) {
+    if (blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
       fromTokenClone.address = ZRX_NATIVE_TOKEN;
     }
-    if (Web3Public.isNativeAddress(toToken.address)) {
+    if (blockchainPublicAdapter.isNativeAddress(toToken.address)) {
       toTokenClone.address = ZRX_NATIVE_TOKEN;
     }
 
     const params: ZrxCalculateTradeParams = {
       sellToken: fromTokenClone.address,
       buyToken: toTokenClone.address,
-      sellAmount: Web3Public.toWei(fromAmount, fromToken.decimals),
+      sellAmount: BlockchainPublicService.toWei(fromAmount, fromToken.decimals),
       slippagePercentage: this.settings.slippageTolerance.toString()
     };
     if (AFFILIATE_ADDRESS) {
@@ -180,11 +181,14 @@ export class ZrxService implements ItProvider {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       from: {
         token: fromToken,
-        amount: Web3Public.fromWei(this.currentTradeData.sellAmount, fromToken.decimals)
+        amount: BlockchainPublicService.fromWei(
+          this.currentTradeData.sellAmount,
+          fromToken.decimals
+        )
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
+        amount: BlockchainPublicService.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
       }
     };
     if (!shouldCalculateGas) {
@@ -192,7 +196,7 @@ export class ZrxService implements ItProvider {
     }
 
     const estimatedGas = Web3Public.calculateGasMargin(this.currentTradeData.gas, this.gasMargin);
-    const gasPriceInEth = Web3Public.fromWei(this.currentTradeData.gasPrice);
+    const gasPriceInEth = BlockchainPublicService.fromWei(this.currentTradeData.gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
@@ -213,10 +217,10 @@ export class ZrxService implements ItProvider {
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(trade.blockchain);
 
-    const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
-    await this.web3Public.checkBalance(trade.from.token, amount, this.walletAddress);
+    const amount = BlockchainPublicService.fromWei(trade.from.amount, trade.from.token.decimals);
+    await this.blockchainPublicAdapter.checkBalance(trade.from.token, amount, this.walletAddress);
 
-    return this.web3PrivateService.trySendTransaction(
+    return this.providerConnectorService.provider.trySendTransaction(
       this.currentTradeData.to,
       this.currentTradeData.value,
       {

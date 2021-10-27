@@ -15,8 +15,7 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
-import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 const DEFAULT_PARAMETERS = {
@@ -64,14 +63,14 @@ export class QueryParamsService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly web3Public: Web3PublicService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
     private readonly swapsService: SwapsService,
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly blockchainPublicService: BlockchainPublicService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -237,8 +236,7 @@ export class QueryParamsService {
     if (!token) {
       return of(null);
     }
-
-    return Web3Public.isAddressCorrect(token)
+    return this.blockchainPublicService.adapters[chain].isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : of(this.searchTokenBySymbol(tokens, token, chain));
   }

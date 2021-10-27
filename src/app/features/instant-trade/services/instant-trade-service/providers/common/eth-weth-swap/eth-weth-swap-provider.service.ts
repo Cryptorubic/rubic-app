@@ -5,16 +5,15 @@ import {
   wethContractAddressesNetMode,
   SupportedEthWethSwapBlockchain
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAddressesNetMode';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +24,7 @@ export class EthWethSwapProviderService {
   private contractAddresses: Record<SupportedEthWethSwapBlockchain, string>;
 
   constructor(
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService
@@ -46,7 +44,7 @@ export class EthWethSwapProviderService {
     toTokenAddress: string
   ): boolean {
     const wethAddress =
-      this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain].toLowerCase();
+      this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain]?.toLowerCase?.();
     return (
       (fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress.toLowerCase() === wethAddress) ||
       (toTokenAddress === NATIVE_TOKEN_ADDRESS && fromTokenAddress.toLowerCase() === wethAddress)
@@ -59,11 +57,12 @@ export class EthWethSwapProviderService {
     const fromAmount = trade.from.amount;
 
     this.providerConnectorService.checkSettings(blockchain);
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    await web3Public.checkBalance(fromToken, fromAmount, this.authService.userAddress);
+    const blockchainPublicAdapter: BlockchainPublicAdapter =
+      this.blockchainPublicService.adapters[blockchain];
+    await blockchainPublicAdapter.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
-    const fromAmountAbsolute = Web3Public.toWei(fromAmount);
-    const swapMethod = Web3Public.isNativeAddress(fromToken.address)
+    const fromAmountAbsolute = BlockchainPublicService.toWei(fromAmount);
+    const swapMethod = blockchainPublicAdapter.isNativeAddress(fromToken.address)
       ? this.swapEthToWeth
       : this.swapWethToEth;
     return swapMethod.bind(this)(blockchain, fromAmountAbsolute, options);
@@ -74,7 +73,7 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    return this.web3PrivateService.executeContractMethod(
+    return this.providerConnectorService.provider.executeContractMethod(
       this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain],
       this.abi,
       'deposit',
@@ -91,7 +90,7 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    return this.web3PrivateService.executeContractMethod(
+    return this.providerConnectorService.provider.executeContractMethod(
       this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain],
       this.abi,
       'withdraw',

@@ -3,8 +3,7 @@ import { List } from 'immutable';
 import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { first, tap, timeout } from 'rxjs/operators';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
@@ -16,13 +15,14 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import posRootChainManagerAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAbi';
 import posRootChainManagerAddress from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAddress';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PCacheable } from 'ts-cacheable';
 import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
-import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
+import { Web3Pure } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-pure';
+import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 interface PolygonGraphToken {
@@ -44,21 +44,21 @@ const ERC20_TOKEN_TYPE = '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c
 
 @Injectable()
 export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
-  private readonly web3PublicEth: Web3Public;
+  private readonly web3PublicEth: BlockchainPublicAdapter;
 
-  private readonly web3PublicPolygon: Web3Public;
+  private readonly web3PublicPolygon: BlockchainPublicAdapter;
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly blockchainPublicService: BlockchainPublicService,
+    private readonly providerConnectorService: ProviderConnectorService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
   ) {
     super();
-    this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    this.web3PublicPolygon = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
+    this.web3PublicEth = this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.ETHEREUM];
+    this.web3PublicPolygon = this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.POLYGON];
 
     this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)).subscribe(tokenAmounts => {
       this.getTokensList(tokenAmounts);
@@ -217,7 +217,10 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }
 
     const token = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM];
-    if (Web3Public.isNativeAddress(token.address)) {
+
+    const blockchainPublicAdapter = this.blockchainPublicService.adapters[token.blockchain];
+
+    if (blockchainPublicAdapter.isNativeAddress(token.address)) {
       return of(false);
     }
 
@@ -230,7 +233,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           walletAddress,
           predicateAddress
         );
-        return bridgeTrade.amount.gt(Web3Public.fromWei(allowance, token.decimals));
+        return bridgeTrade.amount.gt(BlockchainPublicService.fromWei(allowance, token.decimals));
       })()
     );
   }
@@ -240,9 +243,14 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       (async () => {
         const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
         const predicateAddress = await this.getPredicateAddress(token.address);
-        return this.web3PrivateService.approveTokens(token.address, predicateAddress, 'infinity', {
-          onTransactionHash: bridgeTrade.onTransactionHash
-        });
+        return this.providerConnectorService.provider.approveTokens(
+          token.address,
+          predicateAddress,
+          'infinity',
+          {
+            onTransactionHash: bridgeTrade.onTransactionHash
+          }
+        );
       })()
     );
   }
@@ -262,7 +270,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   private createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const walletAddress = this.authService.userAddress;
     const fromToken = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
-    const amountAbsolute = Web3Public.toWei(bridgeTrade.amount, fromToken.decimals);
+    const amountAbsolute = BlockchainPublicService.toWei(bridgeTrade.amount, fromToken.decimals);
 
     const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {
@@ -277,9 +285,12 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      if (Web3Public.isNativeAddress(fromToken.address)) {
+      const blockchainPublicAdapter =
+        this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.ETHEREUM];
+
+      if (blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
         return from(
-          this.web3PrivateService.tryExecuteContractMethod(
+          this.providerConnectorService.provider.tryExecuteContractMethod(
             posRootChainManagerAddress,
             posRootChainManagerAbi,
             'depositEtherFor',
@@ -294,7 +305,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
       return from(
         Web3Pure.encodeParameter('uint256', amountAbsolute).then(encodedAmount =>
-          this.web3PrivateService.tryExecuteContractMethod(
+          this.providerConnectorService.provider.tryExecuteContractMethod(
             posRootChainManagerAddress,
             posRootChainManagerAbi,
             'depositFor',
@@ -308,7 +319,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }
 
     return from(
-      this.web3PrivateService.tryExecuteContractMethod(
+      this.providerConnectorService.provider.tryExecuteContractMethod(
         fromToken.address,
         UChild_ERC20_ABI,
         'withdraw',
