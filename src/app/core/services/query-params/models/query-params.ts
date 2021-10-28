@@ -1,6 +1,11 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
-export type AdditionalTokens = 'eth_tokens' | 'bsc_tokens' | 'polygon_tokens' | 'harmony_tokens';
+export type AdditionalTokens =
+  | 'eth_tokens'
+  | 'bsc_tokens'
+  | 'polygon_tokens'
+  | 'harmony_tokens'
+  | 'avalanche_tokens';
 
 interface AllQueryParams {
   from: string;
