@@ -1,8 +1,7 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
-  Rubic Cross-Chain has launched! Swap between 9,000 tokens across Ethereum, BSC, Polygon &
-  Avalanche.
-  <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
+  {{ 'banner.text' | translate }}
+  <a class="banner__link" (click)="buyALGB()">{{ 'banner.link' | translate }}</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -57,8 +56,11 @@
     >
   </nav>
 
-  <app-rubic-button *noFrame class="rubic-header__buy-rbc" appearance="outline" (click)="buyRBC()"
-    >Buy RBC</app-rubic-button
+  <app-rubic-button
+    *noFrame
+    class="rubic-header__buy-rbc rubic-header__buy-rbc_algb"
+    (click)="buyALGB()"
+    >Buy ALGB</app-rubic-button
   >
 
   <div class="rubic-header__profile">

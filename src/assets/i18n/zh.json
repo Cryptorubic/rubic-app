@@ -583,6 +583,10 @@
       }
     }
   },
+  "banner": {
+    "text": "您可以在 Rubic 上購買 $ALGB。",
+    "link": "現在就試試！"
+  },
   "volume": {
     "title": "累計交易量",
     "instantTrades": "Swaps",

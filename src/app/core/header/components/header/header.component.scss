@@ -232,16 +232,23 @@
   width: 100%;
   min-height: 30px;
 
-  color: white;
+  color: var(--form-bright-text-color);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
 
-  background-color: rgba(51, 86, 51, 0.8);
+  background-color: var(--algb-banner);
   backdrop-filter: blur(10px);
 
   @include b($mobile-md) {
     font-size: 13px;
+  }
+
+  &__link {
+    &,
+    &:hover {
+      color: #00cab2;
+    }
   }
 
   a {

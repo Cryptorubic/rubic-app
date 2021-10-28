@@ -582,6 +582,10 @@
       }
     }
   },
+  "banner": {
+    "text": "Rubic에서 $ALGB를 구입할 수 있습니다.",
+    "link": "지금 시도하십시오!"
+  },
   "volume": {
     "title": "누적 거래량",
     "instantTrades": "Swaps",
