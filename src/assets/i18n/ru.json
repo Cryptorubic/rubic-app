@@ -409,15 +409,15 @@
     "title": "Мои Сделки"
   },
   "gasRefund": {
-    "title": "Кэшбэк на Газ",
+    "title": "КэшБэк за газ",
     "body": {
       "refundAmount": "Размер Кэшбэка ",
       "transactions": "Транзакции",
       "more": "Больше"
     },
     "button": {
-      "refundAfter": "Кэшбэк после",
-      "refund": "Кэшбэк"
+      "refundAfter": "Получить после",
+      "refund": "Получить"
     },
     "promoActions": {
       "1": {

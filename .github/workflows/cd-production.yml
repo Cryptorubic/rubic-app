@@ -35,10 +35,3 @@ jobs:
 
       - name: Deploy on prod server
         run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/rubic_exchange/frontend
-
-      - name: Run build stage
-        run: npm run build:stage
-
-      - name: Deploy on stage server
-        run: sshpass -p ${{ secrets.STAGE_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.STAGE_SERVER_USER }}@${{ secrets.STAGE_SERVER_HOST }}:/var/www/stage_rubic_exchange/frontend
-

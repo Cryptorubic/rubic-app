@@ -409,15 +409,15 @@
     "title": "My Trades"
   },
   "gasRefund": {
-    "title": "Gas Refund",
+    "title": "Avalanche gas fee refund",
     "body": {
       "refundAmount": "Refund Amount",
       "transactions": "Transactions",
       "more": "more"
     },
     "button": {
-      "refundAfter": "Refund after",
-      "refund": "Refund"
+      "refundAfter": "Claim after",
+      "refund": "Claim"
     },
     "promoActions": {
       "1": {
