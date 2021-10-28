@@ -78,15 +78,6 @@ tui-notification-alert {
   transition: 0.2s ease-in-out;
 }
 
-tui-badge.notification-counter {
-  &[data-tui-host-padding='m'][data-tui-host-size='s'] {
-    padding: 1px 3px 0;
-
-    line-height: 20px;
-    text-align: center;
-  }
-}
-
 @include b($mobile-md-minus) {
   tui-dialog {
     height: 100vh;

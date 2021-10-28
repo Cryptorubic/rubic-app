@@ -6,12 +6,12 @@
         <div class="burger-menu__line"></div>
         <div class="burger-menu__line"></div>
       </div>
-      <tui-badge
+      <app-notification-badge
         class="notification-counter"
         *ngIf="($countUnread | async) && ($currentUser | async) && !isOpened"
         size="s"
         [value]="$countUnread | async"
-      ></tui-badge>
+      ></app-notification-badge>
     </app-rubic-button-circle>
   </div>
 </tui-hosted-dropdown>
@@ -91,12 +91,12 @@
             {{ 'navigation.myTrades' | translate }}
           </button>
 
-          <tui-badge
+          <app-notification-badge
             class="notification-counter notification-counter_my-trades"
-            *ngIf="($countUnread | async) && ($currentUser | async)"
+            *ngIf="($countUnread | async) && ($currentUser | async) && isOpened"
             size="s"
             [value]="$countUnread | async"
-          ></tui-badge>
+          ></app-notification-badge>
         </a>
 
         <button tuiOption (click)="logout()" class="data-list__option data-list__option_logout">

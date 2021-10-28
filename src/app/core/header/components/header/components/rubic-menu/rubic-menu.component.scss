@@ -231,15 +231,9 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
 
   display: none;
 
-  &[data-tui-host-status='default'] {
-    color: white;
-
-    background-color: var(--main-green);
-  }
-
   &_my-trades {
-    top: 4px;
-    right: -6px;
+    top: 0;
+    right: -10px;
   }
 }
 
@@ -247,14 +241,14 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   .notification-counter {
     position: absolute;
 
-    top: -7px;
-    right: -8px;
+    top: -13px;
+    right: -7px;
 
     display: none;
 
     &_my-trades {
-      top: 4px;
-      right: -2px;
+      top: 0;
+      right: -10px;
     }
   }
 }

@@ -10,7 +10,8 @@ import {
   TuiInputModule,
   TuiTabsModule,
   TuiInputCountModule,
-  TuiDataListWrapperModule
+  TuiDataListWrapperModule,
+  TuiBadgeModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
@@ -59,6 +60,7 @@ import { SuccessTrxNotificationComponent } from './components/success-trx-notifi
 import { PanelErrorContentComponent } from '../features/instant-trade/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '../features/instant-trade/components/provider-panel/panel-content/panel-content.component';
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
+import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +103,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
-    SwapButtonComponent
+    SwapButtonComponent,
+    NotificationBadgeComponent
   ],
   imports: [
     CommonModule,
@@ -127,7 +130,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     TuiTabsModule,
     TuiInputCountModule,
     TuiDataListWrapperModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiBadgeModule
   ],
   exports: [
     SpinnerComponent,
@@ -164,7 +168,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
-    UsdPriceContainerComponent
+    UsdPriceContainerComponent,
+    NotificationBadgeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]

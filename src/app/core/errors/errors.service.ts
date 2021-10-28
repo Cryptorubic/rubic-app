@@ -71,10 +71,16 @@ export class ErrorsService {
     this.notificationsService.show(text, options);
   }
 
+  /**
+   * Checks for an error.
+   * @param rpcError Verifiable error.
+   * @param currentError Current error to check.
+   * @return boolean Error content flag.
+   */
   public findRPCError(
     rpcError: { code?: string; message: string; description?: string },
     currentError: RubicError<ERROR_TYPE>
-  ) {
+  ): boolean {
     return (
       currentError.message.includes(rpcError.code) ||
       currentError.message.includes(rpcError.message) ||
@@ -83,19 +89,15 @@ export class ErrorsService {
   }
 
   /**
-   * Check if error connected to RPC.
+   * Checks if error connected to RPC.
    * @param currentError Error to check.
    * @return boolean Error content flag.
    */
   private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
-    let providerRPCError: boolean;
-
-    providerRPCError = EIP_1193.some(rpcError => this.findRPCError(rpcError, currentError));
-    if (providerRPCError) return true;
-
-    providerRPCError = EIP_1474.some(rpcError => this.findRPCError(rpcError, currentError));
-    if (providerRPCError) return true;
-
-    return customRpcError.some(rpcError => this.findRPCError(rpcError, currentError));
+    return (
+      EIP_1193.some(rpcError => this.findRPCError(rpcError, currentError)) ||
+      EIP_1474.some(rpcError => this.findRPCError(rpcError, currentError)) ||
+      customRpcError.some(rpcError => this.findRPCError(rpcError, currentError))
+    );
   }
 }
