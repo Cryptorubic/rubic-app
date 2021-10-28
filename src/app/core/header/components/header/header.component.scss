@@ -232,12 +232,12 @@
   width: 100%;
   min-height: 30px;
 
-  color: white;
+  color: var(--form-bright-text-color);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
 
-  background-color: rgba(#5d32ed, 0.8);
+  background-color: var(--algb-banner);
   backdrop-filter: blur(10px);
 
   @include b($mobile-md) {
