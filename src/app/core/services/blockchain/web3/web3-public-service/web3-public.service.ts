@@ -109,7 +109,7 @@ export class Web3PublicService {
             this[blockchainName].setProvider(connector.additionalRpcLink);
 
             console.debug(
-              `Broken ${web3Public.blockchain.label} node has been replaced with a spare.`
+              `Broken ${web3Public.blockchain.name} node has been replaced with a spare.`
             );
           }
         })

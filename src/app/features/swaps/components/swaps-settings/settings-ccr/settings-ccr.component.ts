@@ -13,7 +13,7 @@ import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsCcrComponent implements OnInit {
-  public readonly defaultSlippageTolerance = 2;
+  public readonly defaultSlippageTolerance = 5;
 
   public crossChainRoutingForm: FormGroup<CcrSettingsForm>;
 
