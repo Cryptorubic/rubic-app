@@ -28,8 +28,8 @@
     justify-content: space-between;
 
     ::ng-deep tui-wrapper img {
-      max-width: 21px;
-      max-height: 21px;
+      max-width: 20px;
+      max-height: 20px;
     }
   }
 
@@ -79,6 +79,11 @@
         margin-bottom: 10px;
       }
     }
+
+    app-blockchains-aside {
+      position: relative;
+      left: -24px;
+    }
   }
 
 }
@@ -89,7 +94,10 @@ app-tokens-search-bar {
 }
 
 tui-loader {
-  width: 240px;
+  position: relative;
+  left: -6px;
+
+  width: 100%;
 }
 
 app-icon-button {

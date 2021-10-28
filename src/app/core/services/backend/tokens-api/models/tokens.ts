@@ -1,12 +1,13 @@
 import { List } from 'immutable';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
+import { FromBackendBlockchain } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
 export interface BackendToken {
   address: string;
   name: string;
   symbol: string;
-  blockchain_network: string;
+  blockchain_network: FromBackendBlockchain;
   decimals: number;
   rank: number;
   image: string;
@@ -15,24 +16,28 @@ export interface BackendToken {
   used_in_iframe: boolean;
 }
 
-export interface TokensResponse {
+export interface TokensBackendResponse {
   readonly count: number;
   readonly next: string;
   readonly previous: string;
   readonly results: BackendToken[];
 }
 
-export interface TokensRequestOptions {
+export interface TokensRequestQueryOptions {
+  readonly network: PAGINATED_BLOCKCHAIN_NAME;
   readonly address?: string;
-  readonly network?: BLOCKCHAIN_NAME;
-  readonly page: number;
-  readonly pageSize?: number;
   readonly symbol?: string;
 }
 
-export interface TokensBackendResponse {
+export interface TokensRequestNetworkOptions {
+  readonly network: PAGINATED_BLOCKCHAIN_NAME;
+  readonly page: number;
+}
+
+export interface TokensListResponse {
   total: number;
   result: List<Token>;
+  next: string;
 }
 
 export const DEFAULT_PAGE_SIZE = 150;

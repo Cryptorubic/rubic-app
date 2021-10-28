@@ -15,17 +15,14 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
-import {
-  DEFAULT_PAGE_SIZE,
-  TokensRequestOptions
-} from 'src/app/core/services/backend/tokens-api/models/tokens';
-import { TO_BACKEND_BLOCKCHAINS } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
+import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -37,50 +34,30 @@ export class TokensService {
   /**
    * Current tokens list state.
    */
-  private readonly tokensSubject: BehaviorSubject<List<TokenAmount>>;
+  private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(List([]));
+
+  public readonly tokens$ = this._tokens$.asObservable();
 
   /**
    * Current favorite tokens list state.
    */
-  public readonly favoriteTokensSubject: BehaviorSubject<LocalToken[]>;
+  public readonly _favoriteTokens$ = new BehaviorSubject<LocalToken[]>(this.fetchFavoriteTokens());
+
+  public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
   /**
    * Current tokens request options state.
    */
-  private readonly tokensRequestParametersSubject: Subject<{ [p: string]: unknown }>;
+  private readonly _tokensRequestParameters$ = new Subject<{ [p: string]: unknown }>();
 
   /**
    * Current tokens network state.
    */
-  private readonly tokensNetworkStateSubject: BehaviorSubject<TokensNetworkState>;
+  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(
+    TOKENS_PAGINATION
+  );
 
-  /**
-   * Tokens list as observable.
-   */
-  get tokens$(): Observable<List<TokenAmount>> {
-    return this.tokensSubject.asObservable();
-  }
-
-  /**
-   * Current tokens list.
-   */
-  get tokens(): List<TokenAmount> {
-    return this.tokensSubject.getValue();
-  }
-
-  /**
-   * Get current tokens list.
-   */
-  get favoriteTokens$(): Observable<LocalToken[]> {
-    return this.favoriteTokensSubject.asObservable();
-  }
-
-  /**
-   * Set current tokens request options.
-   */
-  set tokensRequestParameters(parameters: { [p: string]: unknown }) {
-    this.tokensRequestParametersSubject.next(parameters);
-  }
+  public readonly tokensNetworkState = this._tokensNetworkState$.asObservable();
 
   /**
    * Current user address.
@@ -98,6 +75,27 @@ export class TokensService {
   private readonly testTokensNumber: number;
 
   /**
+   * Current tokens list.
+   */
+  get tokens(): List<TokenAmount> {
+    return this._tokens$.getValue();
+  }
+
+  /**
+   * Current favorite tokens list.
+   */
+  get favoriteTokens(): LocalToken[] {
+    return this._favoriteTokens$.getValue();
+  }
+
+  /**
+   * Sets new tokens request options.
+   */
+  set tokensRequestParameters(parameters: { [p: string]: unknown }) {
+    this._tokensRequestParameters$.next(parameters);
+  }
+
+  /**
    * Checks if two tokens are equal.
    */
   public static areTokensEqual(
@@ -110,10 +108,6 @@ export class TokensService {
     );
   }
 
-  public get tokensNetworkState(): Observable<TokensNetworkState> {
-    return this.tokensNetworkStateSubject.asObservable();
-  }
-
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
@@ -122,11 +116,6 @@ export class TokensService {
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly store: StoreService
   ) {
-    this.tokensSubject = new BehaviorSubject(List([]));
-    this.favoriteTokensSubject = new BehaviorSubject(this.fetchFavoriteTokens());
-    this.tokensRequestParametersSubject = new Subject<{ [p: string]: unknown }>();
-    this.tokensNetworkStateSubject = new BehaviorSubject<TokensNetworkState>(TOKENS_PAGINATION);
-
     this.testTokensNumber = coingeckoTestTokens.length;
 
     this.setupSubscriptions();
@@ -136,7 +125,7 @@ export class TokensService {
    * Setups service subscriptions.
    */
   private setupSubscriptions(): void {
-    this.tokensRequestParametersSubject
+    this._tokensRequestParameters$
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
         async tokens => {
@@ -156,12 +145,12 @@ export class TokensService {
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this.tokensSubject.next(List(coingeckoTestTokens));
+        this._tokens$.next(List(coingeckoTestTokens));
         await this.calculateUserTokensBalances();
       }
     });
 
-    this.tokensRequestParametersSubject.next();
+    this._tokensRequestParameters$.next();
   }
 
   /**
@@ -169,7 +158,7 @@ export class TokensService {
    * @param tokens Tokens list.
    */
   private setDefaultTokensParams(tokens: List<Token> = this.tokens): void {
-    this.tokensSubject.next(
+    this._tokens$.next(
       tokens.map(token => ({
         ...token,
         amount: new BigNumber(NaN),
@@ -206,7 +195,7 @@ export class TokensService {
           amount: balance
         };
       });
-      this.tokensSubject.next(List(updatedTokens));
+      this._tokens$.next(List(updatedTokens));
     }
   }
 
@@ -262,7 +251,7 @@ export class TokensService {
    * @param blockchain Token blockchain.
    * @return Observable<TokenAmount> Token with balance.
    */
-  public addToken(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
+  public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
     const web3Public: Web3Public = this.web3PublicService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
       ? from(web3Public.getTokenBalance(this.userAddress, address))
@@ -279,10 +268,51 @@ export class TokensService {
         rank: 1,
         price: null,
         usedInIframe: true,
-        amount
+        amount: amount || new BigNumber(NaN)
       })),
-      tap((token: TokenAmount) => this.tokensSubject.next(this.tokens.push(token)))
+      tap((token: TokenAmount) => this._tokens$.next(this.tokens.push(token)))
     );
+  }
+
+  /**
+   * Adds new token to tokens list.
+   * @param token Token to add.
+   */
+  public addToken(token: TokenAmount): void {
+    if (!this.tokens.find(t => TokensService.areTokensEqual(t, token))) {
+      this._tokens$.next(this.tokens.push(token));
+    }
+  }
+
+  /**
+   * Patches token in tokens list.
+   * @param token Token to patch.
+   */
+  public patchToken(token: TokenAmount): void {
+    this._tokens$.next(
+      this.tokens.filter(t => !TokensService.areTokensEqual(t, token)).push(token)
+    );
+  }
+
+  /**
+   * Sets default image to token, in case original image has thrown error.
+   * Patches tokens list, if {@param token} is passed.
+   * @param $event Img error event.
+   * @param token If passed, then tokens list will be patched.
+   */
+  public onTokenImageError($event: Event, token: TokenAmount = null): void {
+    const target = $event.target as HTMLImageElement;
+    if (target.src !== DEFAULT_TOKEN_IMAGE) {
+      target.src = DEFAULT_TOKEN_IMAGE;
+
+      if (token) {
+        const newToken = {
+          ...token,
+          image: DEFAULT_TOKEN_IMAGE
+        };
+        this.patchToken(newToken);
+      }
+    }
   }
 
   /**
@@ -300,11 +330,11 @@ export class TokensService {
   }
 
   /**
-   * Gets token price and updates tokens list.
+   * Gets token's price and updates tokens list.
    * @param token Token to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
-  public getTokenPrice(
+  public getAndUpdateTokenPrice(
     token: {
       address: string;
       blockchain: BLOCKCHAIN_NAME;
@@ -338,7 +368,7 @@ export class TokensService {
                 ...foundToken,
                 price: tokenPrice
               };
-              this.tokensSubject.next(
+              this._tokens$.next(
                 this.tokens
                   .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
                   .push(newToken)
@@ -351,12 +381,55 @@ export class TokensService {
   }
 
   /**
+   * Gets token's balance and updates tokens list.
+   * @param token Token to get balance for.
+   */
+  public async getAndUpdateTokenBalance(token: {
+    address: string;
+    blockchain: BLOCKCHAIN_NAME;
+  }): Promise<BigNumber> {
+    if (!this.userAddress) {
+      return null;
+    }
+
+    try {
+      const web3Public = this.web3PublicService[token.blockchain];
+      const balanceInWei = await web3Public.getTokenOrNativeBalance(
+        this.userAddress,
+        token.address
+      );
+
+      const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+      if (!foundToken) {
+        return new BigNumber(NaN);
+      }
+      const balance = Web3Public.fromWei(balanceInWei, foundToken.decimals);
+      if (!foundToken.amount.eq(balance)) {
+        const newToken = {
+          ...foundToken,
+          amount: balance
+        };
+        this._tokens$.next(
+          this.tokens
+            .filter(tokenAmount => !TokensService.areTokensEqual(tokenAmount, token))
+            .push(newToken)
+        );
+      }
+      return new BigNumber(balance);
+    } catch (err) {
+      console.debug(err);
+      const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+      return foundToken?.amount;
+    }
+  }
+
+  /**
    * Updates pagination state for current network.
    * @param network Blockchain name.
    * @param next Have next page or not.
    */
   private updateNetworkPage(network: PAGINATED_BLOCKCHAIN_NAME, next: string): void {
-    const oldState = this.tokensNetworkStateSubject.value;
+    const oldState = this._tokensNetworkState$.value;
     const newState = {
       ...oldState,
       [network]: {
@@ -364,42 +437,36 @@ export class TokensService {
         page: oldState[network].page + 1,
         maxPage: next ? oldState[network].maxPage + 1 : oldState[network].maxPage
       }
-    } as TokensNetworkState;
-    this.tokensNetworkStateSubject.next(newState);
+    };
+    this._tokensNetworkState$.next(newState);
   }
 
   /**
    * Fetches tokens for specific network.
    * @param network Requested network.
-   * @param pageSize Requested page size.
-   * @param callback Callback after success fetch.
    */
-  public fetchNetworkTokens(
-    network: PAGINATED_BLOCKCHAIN_NAME,
-    pageSize: number = DEFAULT_PAGE_SIZE,
-    callback?: () => void
-  ): void {
+  public fetchNetworkTokens(network: PAGINATED_BLOCKCHAIN_NAME): void {
     this.tokensApiService
       .fetchSpecificBackendTokens({
         network,
-        page: this.tokensNetworkStateSubject.value[network].page,
-        pageSize
+        page: this._tokensNetworkState$.value[network].page
       })
       .pipe(
-        map((tokens: { total: number; result: List<Token> }) => ({
-          ...tokens,
-          result: tokens.result.map(token => ({ ...token, amount: new BigNumber(NaN) }))
+        tap(tokensResponse => this.updateNetworkPage(network, tokensResponse.next)),
+        map(tokensResponse => ({
+          ...tokensResponse,
+          result: tokensResponse.result.map(token => ({
+            ...token,
+            amount: new BigNumber(NaN),
+            favorite: false
+          }))
         })),
-        tap((tokens: { total: number; result: List<TokenAmount>; next: string }) =>
-          this.updateNetworkPage(network, tokens.next)
-        ),
-        switchMap((tokens: { total: number; result: List<TokenAmount> }) => {
+        switchMap(tokens => {
           return this.userAddress ? this.getTokensWithBalance(tokens.result) : of(tokens.result);
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
-        this.tokensSubject.next(this.tokens.concat(tokens));
-        callback();
+        this._tokens$.next(this.tokens.concat(tokens));
       });
   }
 
@@ -413,12 +480,12 @@ export class TokensService {
     network: PAGINATED_BLOCKCHAIN_NAME
   ): Observable<List<Token>> {
     const isAddress = query.includes('0x');
-    const params = {
-      network: TO_BACKEND_BLOCKCHAINS[network],
+    const params: TokensRequestQueryOptions = {
+      network,
       ...(!isAddress && { symbol: query }),
       ...(isAddress && { address: query })
-    } as TokensRequestOptions;
-    return this.tokensApiService.fetchQueryToken(params);
+    };
+    return this.tokensApiService.fetchQueryTokens(params);
   }
 
   /**
@@ -430,9 +497,9 @@ export class TokensService {
       address: favoriteToken.address,
       blockchain: favoriteToken.blockchain
     };
-    const collection = [...this.favoriteTokensSubject.value, localToken];
+    const collection = [...this._favoriteTokens$.value, localToken];
     this.store.setItem('favoriteTokens', collection);
-    this.favoriteTokensSubject.next(collection);
+    this._favoriteTokens$.next(collection);
   }
 
   /**
@@ -440,12 +507,12 @@ export class TokensService {
    * @param token Favorite token to remove.
    */
   public removeFavoriteToken(token: TokenAmount): void {
-    const filteredTokens = this.favoriteTokensSubject.value.filter(
+    const filteredTokens = this._favoriteTokens$.value.filter(
       el => !TokensService.areTokensEqual(el, token)
     );
 
     this.store.setItem('favoriteTokens', filteredTokens);
-    this.favoriteTokensSubject.next(filteredTokens);
+    this._favoriteTokens$.next(filteredTokens);
   }
 
   /**

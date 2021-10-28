@@ -23,7 +23,7 @@ export class StoreService {
   /**
    * Is current app placed in iframe (In iframe localStorage using is not allow)
    */
-  public isIframe: boolean;
+  private isIframe: boolean;
 
   constructor(
     private readonly cookieService: CookieService,

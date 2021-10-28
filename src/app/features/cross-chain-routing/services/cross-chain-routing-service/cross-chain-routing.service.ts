@@ -484,14 +484,14 @@ export class CrossChainRoutingService {
       fromTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
       toTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE
     ) {
-      const firstTransitTokenPrice = await this.tokensService.getTokenPrice(
+      const firstTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
         {
           address: this.transitTokens[fromTransitTokenBlockchain].address,
           blockchain: fromTransitTokenBlockchain
         },
         true
       );
-      const secondTransitTokenPrice = await this.tokensService.getTokenPrice(
+      const secondTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
         {
           address: this.transitTokens[toTransitTokenBlockchain].address,
           blockchain: toTransitTokenBlockchain
