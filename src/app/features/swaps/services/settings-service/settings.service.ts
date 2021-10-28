@@ -91,7 +91,7 @@ export class SettingsService {
     };
     this.defaultCcrSettings = {
       ...this.defaultItSettings,
-      slippageTolerance: 2
+      slippageTolerance: 5
     };
     this.createForm();
     this.setupData();

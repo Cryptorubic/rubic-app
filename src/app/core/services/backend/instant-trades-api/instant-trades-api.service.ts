@@ -4,7 +4,7 @@ import { delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
-  ToBackendBlockchains
+  ToBackendBlockchain
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
@@ -69,7 +69,7 @@ export class InstantTradesApiService {
   ): Observable<InstantTradesResponseApi> {
     const tradeInfo: InstantTradesPostApi = {
       hash,
-      network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains],
+      network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain],
       provider,
       from_token: trade.from.token.address,
       to_token: trade.to.token.address,

@@ -1,4 +1,12 @@
 import BigNumber from 'bignumber.js';
+import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, OperatorFunction } from 'rxjs';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+
+interface MinimalToken {
+  address: string;
+  blockchain: BLOCKCHAIN_NAME;
+}
 
 /**
  * Compares two objects for equality.
@@ -27,6 +35,18 @@ export function compareAddresses(address0: string, address1: string): boolean {
 }
 
 /**
+ * Compares two tokens (addresses and blockchains)
+ * @param token0 First token.
+ * @param token1 Second address.
+ */
+export function compareTokens(token0: MinimalToken, token1: MinimalToken): boolean {
+  return (
+    token0.address.toLowerCase() === token1.address.toLowerCase() &&
+    token0.blockchain === token1.blockchain
+  );
+}
+
+/**
  * Subtracts percent from given amount.
  * @param amount Given amount from which to subtract.
  * @param percent Percent to subtract.
@@ -36,4 +56,20 @@ export function subtractPercent(
   percent: number | BigNumber | string
 ): BigNumber {
   return new BigNumber(amount).multipliedBy(new BigNumber(1).minus(percent));
+}
+
+/**
+ * Maps stream to void: emits, and completes the stream.
+ */
+export function mapToVoid(): OperatorFunction<unknown, void> {
+  return switchMap(() => of(undefined));
+}
+
+/**
+ * Await for side-effect action like switchMap, but not modify the stream
+ */
+export function switchTap<T>(handler: (arg: T) => Observable<unknown>): OperatorFunction<T, T> {
+  return switchMap(arg => {
+    return handler(arg).pipe(map(() => arg));
+  });
 }

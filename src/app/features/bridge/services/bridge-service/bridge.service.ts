@@ -35,10 +35,10 @@ export class BridgeService {
     Record<BLOCKCHAIN_NAME, Partial<Record<BLOCKCHAIN_NAME, BlockchainsBridgeProvider>>>
   >;
 
-  private tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
+  private _tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
 
-  public get tokens(): Observable<BridgeTokenPairsByBlockchains[]> {
-    return this.tokens$.asObservable();
+  public get tokens$(): Observable<BridgeTokenPairsByBlockchains[]> {
+    return this._tokens$.asObservable();
   }
 
   private bridgeProvider: BlockchainsBridgeProvider;
@@ -69,7 +69,7 @@ export class BridgeService {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this.tokens$.next(bridgeTestTokens);
+        this._tokens$.next(bridgeTestTokens);
       }
     });
   }
@@ -131,7 +131,7 @@ export class BridgeService {
       .pipe(first())
       .subscribe(tokens => {
         if (!this.isTestingMode) {
-          this.tokens$.next(tokens);
+          this._tokens$.next(tokens);
         }
       });
   }
@@ -164,7 +164,7 @@ export class BridgeService {
   }
 
   public getCurrentBridgeToken(): Observable<BridgeTokenPair> {
-    return this.tokens.pipe(
+    return this.tokens$.pipe(
       filter(tokens => !!tokens.length),
       first(),
       map(tokens => {

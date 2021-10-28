@@ -75,10 +75,10 @@ export class InstantTradeService {
     private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
-    private readonly gtmService: GoogleTagManagerService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
     // Providers end
+    private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,

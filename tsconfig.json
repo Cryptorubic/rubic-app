@@ -29,7 +29,11 @@
       "https": ["./node_modules/https-browserify"],
       "os": ["./node_modules/os-browserify"],
       "http": ["./node_modules/stream-http"],
-      "crypto": ["./node_modules/crypto-browserify"]
+      "crypto": ["./node_modules/crypto-browserify"],
+      "@app/*": ["./src/app/*"],
+      "@core/*": ["./src/app/core/*"],
+      "@features/*": ["./src/app/features/*"],
+      "@shared/*": ["./src/app/shared/*"]
     }
   }
 }

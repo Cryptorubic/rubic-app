@@ -14,7 +14,8 @@ export interface TableToken {
 export type TableProvider =
   | INSTANT_TRADES_PROVIDER
   | BRIDGE_PROVIDER
-  | 'CROSS_CHAIN_ROUTING_PROVIDER';
+  | 'CROSS_CHAIN_ROUTING_PROVIDER'
+  | 'GAS_REFUND_PROVIDER';
 
 export interface TableTrade {
   transactionHash: string;

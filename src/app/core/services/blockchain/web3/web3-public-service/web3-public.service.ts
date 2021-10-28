@@ -85,6 +85,9 @@ export class Web3PublicService {
             this.useTestingModeService,
             this.httpClient
           );
+
+          this[`${connection.blockchainName}_TESTNET` as Web3SupportedBlockchains] =
+            this[connection.blockchainName];
         });
       }
     });
@@ -112,7 +115,7 @@ export class Web3PublicService {
             this[blockchainName].setProvider(connector.additionalRpcLink);
 
             console.debug(
-              `Broken ${web3Public.blockchain.label} node has been replaced with a spare.`
+              `Broken ${web3Public.blockchain.name} node has been replaced with a spare.`
             );
           }
         })

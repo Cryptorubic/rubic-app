@@ -1,0 +1,22 @@
+<ng-container *ngLet="userPromotions$ | async as userPromotions">
+  <section class="gas-refund" *ngIf="userPromotions?.length">
+    <div class="gas-refund__header header">
+      <div class="header__title">{{ 'gasRefund.title' | translate }}</div>
+      <app-rotating-icon [rotating]="isLoading" (iconClick)="refreshRefunds()"></app-rotating-icon>
+    </div>
+
+    <tui-loader class="body" [showLoader]="isLoading" [inheritColor]="true" [overlay]="true">
+      <tui-scrollbar>
+        <ul class="cards">
+          <li class="cards__item" *ngFor="let promoItem of userPromotions">
+            <app-gas-refund-card
+              [promoItem]="promoItem"
+              [loading]="refundInProgressIds.includes(promoItem.id)"
+              (refundClick)="onRefundClick(promoItem.id)"
+            ></app-gas-refund-card>
+          </li>
+        </ul>
+      </tui-scrollbar>
+    </tui-loader>
+  </section>
+</ng-container>
