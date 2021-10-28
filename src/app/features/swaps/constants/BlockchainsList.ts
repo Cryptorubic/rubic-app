@@ -41,6 +41,12 @@ export const blockchainsList: BlockchainItem[] = [
     id: 1666600000
   },
   {
+    symbol: BLOCKCHAIN_NAME.AVALANCHE,
+    visibleName: 'Avalanche',
+    image: `${imageBaseSrc}avalanche.svg`,
+    id: 43114
+  },
+  {
     symbol: BLOCKCHAIN_NAME.FANTOM,
     visibleName: 'Fantom',
     image: `${imageBaseSrc}fantom.svg`,

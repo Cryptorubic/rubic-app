@@ -1,0 +1,66 @@
+@import 'src/styles';
+
+.gas-refund {
+  max-width: 1240px;
+  margin: 0 auto 22px;
+  padding: 30px 35px 20px;
+
+  font-family: $sf-pro-font;
+
+  background: var(--main-form-background);
+  border-radius: $border-radius-1;
+  backdrop-filter: blur(24px);
+
+  @include b(mobile) {
+    padding: 20px 16px 10px;
+  }
+
+  &__header {
+    margin-bottom: 44px;
+
+    @include b(mobile) {
+      margin-bottom: 19px;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+
+  &__title {
+
+    margin-right: 10px;
+
+    color: var(--form-bright-text-color);
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 29px;
+  }
+}
+
+.body {
+  display: flex;
+
+  ::ng-deep tui-scrollbar {
+    div.content {
+      width: auto;
+    }
+  }
+}
+
+.cards {
+  display: flex;
+
+  margin-bottom: 20px;
+
+  &__item {
+    &:not(:last-child) {
+      margin-right: 52px;
+
+      @include b(mobile) {
+        margin-right: 16px;
+      }
+    }
+  }
+}

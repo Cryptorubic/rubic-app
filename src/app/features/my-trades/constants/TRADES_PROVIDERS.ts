@@ -1,5 +1,6 @@
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { TableProvider } from '@shared/models/my-trades/TableTrade';
 
 type Provider = {
   name: string;
@@ -56,6 +57,18 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
     name: 'Sushiswap',
     image: `${imageBasePath}sushiswap.svg`
   },
+  [INSTANT_TRADES_PROVIDER.PANGOLIN]: {
+    name: 'Pangolin',
+    image: `${imageBasePath}pangolin.svg`
+  },
+  [INSTANT_TRADES_PROVIDER.PANGOLIN]: {
+    name: 'Pangolin',
+    image: `${imageBasePath}pangolin.svg`
+  },
+  [INSTANT_TRADES_PROVIDER.JOE]: {
+    name: 'Joe',
+    image: `${imageBasePath}joe.png`
+  },
   [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: {
     name: 'Spookyswap',
     image: `${imageBasePath}spookyswap.svg`
@@ -79,11 +92,14 @@ const CROSS_CHAIN_ROUTING_PROVIDER: Provider = {
   image: `${imageBasePath}ccr.svg`
 };
 
-export const TRADES_PROVIDERS: Record<
-  BRIDGE_PROVIDER | INSTANT_TRADES_PROVIDER | 'CROSS_CHAIN_ROUTING_PROVIDER',
-  Provider
-> = {
+const GAS_REFUND_PROVIDER: Provider = {
+  name: 'Gas Refund',
+  image: `${imageBasePath}gas-refund.svg`
+};
+
+export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDERS,
-  CROSS_CHAIN_ROUTING_PROVIDER
+  CROSS_CHAIN_ROUTING_PROVIDER,
+  GAS_REFUND_PROVIDER
 };

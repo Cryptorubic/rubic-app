@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from '../models/blockchain/ADDRESS_TYPE';
-import { Web3PublicService } from '../../core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from '../../core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '../../core/services/use-testing-mode/use-testing-mode.service';
 
 const blockchainsScanners = {
@@ -78,8 +78,24 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.AVALANCHE]: {
+    baseUrl: 'https://cchain.explorer.avax.network/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.HARMONY_TESTNET]: {
     baseUrl: 'https://explorer.testnet.harmony.one/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: {
+    baseUrl: 'https://cchain.explorer.avax-test.network',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
@@ -109,9 +125,10 @@ export class ScannerLinkPipe implements PipeTransform {
       return '';
     }
 
-    const baseUrl = !this.isTestingMode
-      ? blockchainsScanners[blockchainName].baseUrl
-      : blockchainsScanners[`${blockchainName}_TESTNET` as BLOCKCHAIN_NAME].baseUrl;
+    const baseUrl =
+      !this.isTestingMode || blockchainName.includes('_TESTNET')
+        ? blockchainsScanners[blockchainName].baseUrl
+        : blockchainsScanners[`${blockchainName}_TESTNET` as BLOCKCHAIN_NAME].baseUrl;
 
     if (address === NATIVE_TOKEN_ADDRESS) {
       return baseUrl + blockchainsScanners[blockchainName].nativeCoinUrl;

@@ -3,9 +3,9 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3-private-service/web3-private.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import {
   ItSettingsForm,
   SettingsService
@@ -13,7 +13,7 @@ import {
 import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/commonUniswapV2Abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
@@ -28,7 +28,10 @@ import { CreateTradeMethod } from 'src/app/features/instant-trade/services/insta
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
 import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
 import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
-import { SWAP_METHOD } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
+import {
+  DEFAULT_SWAP_METHODS,
+  ISwapMethods
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/SWAP_METHOD';
 import {
   UniswapV2CalculatedInfo,
   UniswapV2CalculatedInfoWithProfit
@@ -44,7 +47,9 @@ import { subtractPercent } from 'src/app/shared/utils/utils';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
-  private readonly contractAbi: AbiItem[];
+  protected contractAbi: AbiItem[];
+
+  protected swapsMethod: ISwapMethods;
 
   private readonly defaultEstimateGas: DefaultEstimatedGas;
 
@@ -86,6 +91,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
     this.contractAbi = CommonUniswapV2Abi;
+    this.swapsMethod = DEFAULT_SWAP_METHODS;
     this.defaultEstimateGas = defaultEstimatedGas;
     this.gasMargin = 1.2; // 120%
 
@@ -152,7 +158,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ) => {
     return {
       callData: {
-        contractMethod: SWAP_METHOD.TOKENS_TO_TOKENS,
+        contractMethod: this.swapsMethod.TOKENS_TO_TOKENS,
         params: [amountIn, amountOutMin, path, this.walletAddress, deadline]
       },
       defaultGasLimit: this.defaultEstimateGas.tokensToTokens[path.length - 2]
@@ -167,7 +173,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ) => {
     return {
       callData: {
-        contractMethod: SWAP_METHOD.ETH_TO_TOKENS,
+        contractMethod: this.swapsMethod.ETH_TO_TOKENS,
         params: [amountIn, path, this.walletAddress, deadline],
         value: amountOutMin
       },
@@ -183,7 +189,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ) => {
     return {
       callData: {
-        contractMethod: SWAP_METHOD.TOKENS_TO_ETH,
+        contractMethod: this.swapsMethod.TOKENS_TO_ETH,
         params: [amountIn, amountOutMin, path, this.walletAddress, deadline]
       },
       defaultGasLimit: this.defaultEstimateGas.tokensToEth[path.length - 2]
@@ -199,7 +205,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return this.web3PrivateService.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
-      SWAP_METHOD.ETH_TO_TOKENS,
+      this.swapsMethod.ETH_TO_TOKENS,
       [trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
@@ -219,7 +225,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return this.web3PrivateService.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
-      SWAP_METHOD.TOKENS_TO_ETH,
+      this.swapsMethod.TOKENS_TO_ETH,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,
@@ -238,7 +244,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return this.web3PrivateService.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
-      SWAP_METHOD.TOKENS_TO_TOKENS,
+      this.swapsMethod.TOKENS_TO_TOKENS,
       [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
       {
         onTransactionHash: options.onConfirm,

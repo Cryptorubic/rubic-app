@@ -45,7 +45,7 @@ import { WithRoundPipe } from './pipes/with-round.pipe';
 import { IconButtonComponent } from './components/buttons/icon-button/icon-button.component';
 import { DropdownSelectorComponent } from './components/dropdown-selector/dropdown-selector.component';
 import { TokenAmountDirective } from './directives/token-amount/token-amount.directive';
-import { ProviderPanelComponent } from './components/provider-panel/provider-panel.component';
+import { ProviderPanelComponent } from '../features/instant-trade/components/provider-panel/provider-panel.component';
 import { RubicButtonCircleComponent } from './components/rubic-button-circle/rubic-button-circle.component';
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { RubicSwitcherComponent } from './components/rubic-switcher/rubic-switcher.component';
@@ -56,9 +56,11 @@ import { IframeBlockchainIndicatorComponent } from './components/iframe-blockcha
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from './components/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
-import { PanelErrorContentComponent } from './components/provider-panel/panel-error-content/panel-error-content.component';
-import { PanelContentComponent } from './components/provider-panel/panel-content/panel-content.component';
+import { PanelErrorContentComponent } from '../features/instant-trade/components/provider-panel/panel-error-content/panel-error-content.component';
+import { PanelContentComponent } from '../features/instant-trade/components/provider-panel/panel-content/panel-content.component';
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
+import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
+import { InfoHintComponent } from './components/info-hint/info-hint.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +103,9 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
-    SwapButtonComponent
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent
   ],
   imports: [
     CommonModule,
@@ -164,7 +168,9 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
-    UsdPriceContainerComponent
+    UsdPriceContainerComponent,
+    RotatingIconComponent,
+    InfoHintComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]

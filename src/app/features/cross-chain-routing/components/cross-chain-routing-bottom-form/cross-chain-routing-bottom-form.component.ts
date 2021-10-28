@@ -4,17 +4,17 @@ import {
   Component,
   EventEmitter,
   Inject,
-  Injector,
   Input,
   OnDestroy,
   OnInit,
   Output
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiNotification } from '@taiga-ui/core';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   first,
@@ -44,6 +44,9 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
+import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
+import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 interface BlockchainInfo {
@@ -86,7 +89,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
-  private hiddenTradeData$: BehaviorSubject<{
+  private readonly hiddenTradeData$: BehaviorSubject<{
     toAmount: BigNumber;
   }>;
 
@@ -147,20 +150,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private errorsService: ErrorsService,
-    public swapFormService: SwapFormService,
-    private settingsService: SettingsService,
-    private cdr: ChangeDetectorRef,
-    private authService: AuthService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
+    public readonly swapFormService: SwapFormService,
+    private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly authService: AuthService,
     private readonly translateService: TranslateService,
     private readonly tokensService: TokensService,
     private readonly notificationsService: NotificationsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService,
-    @Inject(WINDOW) private readonly window: Window,
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly successTxModalService: SuccessTxModalService
   ) {
     this.onCalculateTrade$ = new Subject();
@@ -230,15 +232,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.allowTrade) {
-      this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.swapFormService.output.patchValue({
-        toAmount: new BigNumber(NaN)
-      });
-      this.cdr.detectChanges();
-      return;
-    }
-
     const { autoRefresh } = this.settingsService.crossChainRoutingValue;
     this.onCalculateTrade$.next(type || (autoRefresh ? 'normal' : 'hidden'));
   }
@@ -251,19 +244,32 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.calculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
         filter(el => el === 'normal'),
+        debounceTime(200),
         switchMap(() => {
+          if (!this.allowTrade) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.swapFormService.output.patchValue({
+              toAmount: new BigNumber(NaN)
+            });
+            this.cdr.markForCheck();
+            return of(null);
+          }
+
           this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount } = this.swapFormService.inputValue;
+          const calculateNeedApprove = !!this.authService.userAddress;
+          const crossChainTrade$ = from(
+            this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
+          );
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
 
-          const needApprove$ = this.authService.user?.address
-            ? this.crossChainRoutingService.needApprove()
-            : of(false);
-
-          return forkJoin([this.crossChainRoutingService.calculateTrade(), needApprove$]).pipe(
-            map(([{ toAmount, minAmountError, maxAmountError }, needApprove]) => {
+          return forkJoin([crossChainTrade$, balance$]).pipe(
+            map(([{ toAmount, minAmountError, maxAmountError, needApprove }]) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
@@ -325,11 +331,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
+          if (!this.allowTrade) {
+            return null;
+          }
+
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
           const { fromAmount } = this.swapFormService.inputValue;
+          const crossChainTrade$ = from(this.crossChainRoutingService.calculateTrade());
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
 
-          return forkJoin([this.crossChainRoutingService.calculateTrade()]).pipe(
+          return forkJoin([crossChainTrade$, balance$]).pipe(
             map(([{ toAmount, minAmountError, maxAmountError }]) => {
               if (
                 (minAmountError && fromAmount.gte(minAmountError)) ||
@@ -435,11 +449,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async createTrade(): Promise<void> {
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     const onTransactionHash = () => {
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.notifyTradeInProgress();
+      this.gtmService.notifySignTransaction();
     };
 
     this.crossChainRoutingService
@@ -448,13 +465,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       })
       .pipe(first())
       .subscribe(
-        async (_: TransactionReceipt) => {
+        async () => {
           this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
+          this.notificationsService.show<{ type: SuccessTxModalType }>(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),
             {
               status: TuiNotification.Success,
-              autoClose: 15000
+              autoClose: 15000,
+              data: {
+                type: 'cross-chain-routing'
+              }
             }
           );
 
@@ -485,7 +505,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open('cross-chain-routing');
+      this.successTxModalService.open();
     }
   }
 

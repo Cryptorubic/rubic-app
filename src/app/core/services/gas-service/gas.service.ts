@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, timer } from 'rxjs';
-import { catchError, filter, first, map, switchMap, timeout } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of, timer } from 'rxjs';
+import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
+import { Cacheable } from 'ts-cacheable';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  BLOCKCHAIN_NAME.POLYGON
+  BLOCKCHAIN_NAME.POLYGON,
+  BLOCKCHAIN_NAME.AVALANCHE
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -20,6 +23,11 @@ type NetworksGasPrice<T> = Record<SupportedBlockchain, T>;
   providedIn: 'root'
 })
 export class GasService {
+  /**
+   * Gas price request interval in seconds.
+   */
+  private static readonly requestInterval = 15_000;
+
   /**
    * Gas price functions for different networks.
    */
@@ -33,7 +41,7 @@ export class GasService {
   /**
    * Gas price update interval in seconds.
    */
-  private readonly requestInterval: number;
+  private readonly updateInterval: number;
 
   private static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
@@ -41,18 +49,23 @@ export class GasService {
     return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
-  constructor(private readonly httpClient: HttpClient) {
-    this.requestInterval = 15_000;
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly web3PublicService: Web3PublicService
+  ) {
+    this.updateInterval = 15_000;
 
     this.networkGasPrice$ = {
       [BLOCKCHAIN_NAME.ETHEREUM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.AVALANCHE]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
-      [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this)
+      [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this),
+      [BLOCKCHAIN_NAME.AVALANCHE]: this.fetchAvalancheGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -77,21 +90,14 @@ export class GasService {
     if (!GasService.isSupportedBlockchain(blockchain)) {
       throw Error('Not supported blockchain');
     }
-    return new BigNumber(
-      await this.networkGasPrice$[blockchain]
-        .pipe(
-          filter(value => !!value),
-          first()
-        )
-        .toPromise()
-    ).dividedBy(10 ** 9);
+    return new BigNumber(await this.gasPriceFunctions[blockchain]().toPromise()).dividedBy(10 ** 9);
   }
 
   /**
    * Updates gas price in interval.
    */
   private setIntervalOnGasPriceRefreshing(): void {
-    const timer$ = timer(0, this.requestInterval);
+    const timer$ = timer(0, this.updateInterval);
     timer$
       .pipe(
         switchMap(() => {
@@ -107,8 +113,11 @@ export class GasService {
 
   /**
    * Gets ETH gas from different APIs, sorted by priority, in case of errors.
-   * @return Observable<number> Average gas price.
+   * @return Observable<number> Average gas price in Gwei.
    */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
   private fetchEthGas(): Observable<number | null> {
     const requestTimeout = 2000;
     return this.httpClient.get('https://www.gasnow.org/api/v3/gas/price').pipe(
@@ -142,20 +151,42 @@ export class GasService {
 
   /**
    * Gets BSC gas.
-   * @return Observable<number> Average gas price.
+   * @return Observable<number> Average gas price in Gwei.
    */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
   private fetchBscGas(): Observable<number> {
     return of(5);
   }
 
   /**
    * Gets Polygon gas from gas station api.
-   * @return Observable<number> Average gas price.
+   * @return Observable<number> Average gas price in Gwei.
    */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
   private fetchPolygonGas(): Observable<number | null> {
     return this.httpClient.get('https://gasstation-mainnet.matic.network/').pipe(
       map((el: PolygonGasResponse) => Math.floor(el.standard)),
       catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Avalanche gas from gas station api.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchAvalancheGas(): Observable<number | null> {
+    const web3Public = this.web3PublicService[BLOCKCHAIN_NAME.AVALANCHE];
+    return from(web3Public.getGasPrice()).pipe(
+      map(gasPriceInWei => {
+        return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
+      })
     );
   }
 }

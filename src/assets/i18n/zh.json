@@ -17,7 +17,7 @@
     "close": "关闭",
     "send": "发送",
     "left": "离开",
-    "checkOnScanner": "Check on scanner",
+    "checkOnScanner": "检查扫描仪",
     "cancel": "取消",
     "add": "添加",
     "via": "通過",
@@ -31,8 +31,8 @@
     "minutes": "分鐘",
     "swap": "交換",
     "approve": "批准",
-    "switchTo": "Switch to {{ networkName }} network",
-    "tradeVia": "Trade Via "
+    "switchTo": "切换到 {{networkName}} 网络",
+    "tradeVia": "贸易途径 "
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -70,7 +70,8 @@
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again"
+    "unknown": "Oops, something went wrong, please try again",
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
   },
   "navigation": {
     "about": "关于",
@@ -407,6 +408,39 @@
   "myTrades": {
     "title": "我的行业"
   },
+  "gasRefund": {
+    "title": "天然氣退款",
+    "body": {
+      "refundAmount": "退款金額",
+      "transactions": "交易",
+      "more": "更多"
+    },
+    "button": {
+      "refundAfter": "退款後",
+      "refund": "退款"
+    },
+    "promoActions": {
+      "1": {
+        "label": "CRYPTOLOVE",
+        "description": "在我們的平台上完成第一個多鏈交換可以獲得 gas 返現！"
+      },
+      "2": {
+        "label": "使用我們合作夥伴的代幣進行掉期可以獲得 Gas 費用退款！",
+        "description": "為了慶祝在 Avalanche 網絡上推出 Rubic 多鏈路由，我們的項目正在啟動新的 Gas Refund Campaign！從 10 月 19 日到 11 月 2 日，我們的用戶將能夠使用他們喜歡的代幣完成交換 在 Avalanche 網絡上使用 Rubic 多鏈路由並獲得 GAS 退款"
+      }
+    },
+    "notifications": {
+      "progress": {
+        "label": "Gas退款正在進行中,",
+        "message": "Rubic 正在完成汽油退款。 請等待它完成"
+      },
+      "complete": {
+        "label": "加油完成！",
+        "message": "您的 Gas 退款已完成！ 感謝您使用 Rubic！"
+      }
+    }
+
+  },
   "tradesTable": {
     "columns": {
       "status": "状态",
@@ -502,6 +536,34 @@
     "bridge": {
       "walletAddress": "TRON 區塊鏈中的錢包地址，將在其上提供代幣。"
     },
+    "crossChainRouting": {
+      "autoRefreshTitle": "自動刷新",
+      "autoRefresh": "每 15 秒更新一次交易參數。",
+      "slippageTitle": "滑點公差",
+      "slippage": "如果價格的不利變化超過輸入的百分比，您的交易將被取消。 （較低的百分比會降低您的交易被搶先的機會）",
+      "promoCodeTitle": "促銷代碼",
+      "promoCodeHint": "在此處輸入促銷代碼以獲得您交易的 gas 退款",
+      "promoCodeLoginRequired": "請連接您的錢包以使用促銷代碼。",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "左使用",
+          "validUntil": "有效期至"
+        },
+        "rejected": {
+          "text": "您的促銷代碼已被拒絕",
+          "reason": {
+            "4000": "此優惠碼已被使用過，此優惠碼只能使用一次。.",
+            "4001": "已達到促銷代碼的最大使用次數。"
+          }
+        },
+        "outdated": {
+          "text": "此促銷代碼已過期。"
+        },
+        "wrong": {
+          "text": "促銷代碼輸入錯誤或不存在。"
+        }
+      }
+    },
     "header": {
       "switchTheme": {
         "title": "Switch Theme",
@@ -530,6 +592,7 @@
   "notifications": {
     "tradeInProgress": "進行中的交易",
     "successfulTradeTitle": "成功的交易",
+    "successfulCCRTradeTitle": "Successful trade in source network",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",

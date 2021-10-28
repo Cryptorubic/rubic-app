@@ -9,7 +9,7 @@ import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instan
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-pol.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
@@ -31,10 +31,16 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
+import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
+import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { SushiSwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import { SpookySwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { SpiritSwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
+import { Queue } from 'src/app/shared/models/utils/queue';
+import CustomError from 'src/app/core/errors/models/custom-error';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +52,7 @@ export class InstantTradeService {
     Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>
   >;
 
-  private modalShowing: Subscription;
+  private readonly modalSubscriptions: Queue<Subscription>;
 
   public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
@@ -65,12 +71,16 @@ export class InstantTradeService {
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
     private readonly sushiSwapFantomService: SushiSwapFantomService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly zrxService: ZrxService,
+    private readonly pangolinAvalancheService: PangolinAvalancheService,
+    private readonly joeAvalancheService: JoeAvalancheService,
     // Providers end
+    private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
@@ -82,6 +92,7 @@ export class InstantTradeService {
     private readonly successTxModalService: SuccessTxModalService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {
+    this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
   }
 
@@ -106,6 +117,11 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+      },
+      [BLOCKCHAIN_NAME.AVALANCHE]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,
+        [INSTANT_TRADES_PROVIDER.PANGOLIN]: this.pangolinAvalancheService,
+        [INSTANT_TRADES_PROVIDER.JOE]: this.joeAvalancheService
       },
       [BLOCKCHAIN_NAME.FANTOM]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
@@ -167,17 +183,7 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
-
-          // Inform gtm that tx was signed
-          this.window.dataLayer?.push({
-            event: 'transactionSigned',
-            ecategory: ' transaction',
-            eaction: 'ok',
-            elabel: '',
-            evalue: '',
-            transaction: true,
-            interactionType: false
-          });
+          this.gtmService.notifySignTransaction();
 
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
@@ -194,7 +200,7 @@ export class InstantTradeService {
         );
       }
 
-      this.modalShowing.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
@@ -211,7 +217,7 @@ export class InstantTradeService {
         })
         .catch(_err => {});
     } catch (err) {
-      this.modalShowing?.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
 
       if (transactionHash && this.isTransactionCancelled(err)) {
         this.updateTrade(transactionHash, false);
@@ -228,7 +234,8 @@ export class InstantTradeService {
       .pipe(
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
-        )
+        ),
+        catchError(err => of(new CustomError(err.message)))
       )
       .subscribe();
   }
@@ -281,17 +288,19 @@ export class InstantTradeService {
         trade.from.token.address,
         {
           onTransactionHash: () => {
-            this.modalShowing = this.notificationsService.show(
-              this.translateService.instant('notifications.approveInProgress'),
-              {
-                status: TuiNotification.Info,
-                autoClose: false
-              }
+            this.modalSubscriptions.push(
+              this.notificationsService.show(
+                this.translateService.instant('notifications.approveInProgress'),
+                {
+                  status: TuiNotification.Info,
+                  autoClose: false
+                }
+              )
             );
           }
         }
       );
-      this.modalShowing.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
       this.notificationsService.show(
         this.translateService.instant('notifications.successApprove'),
         {
@@ -300,18 +309,20 @@ export class InstantTradeService {
         }
       );
     } catch (err) {
-      this.modalShowing?.unsubscribe();
+      this.modalSubscriptions.pop()?.unsubscribe();
       throw err;
     }
   }
 
   private notifyTradeInProgress() {
-    this.modalShowing = this.notificationsService.show(
-      this.translateService.instant('notifications.tradeInProgress'),
-      {
-        status: TuiNotification.Info,
-        autoClose: false
-      }
+    this.modalSubscriptions.push(
+      this.notificationsService.show(
+        this.translateService.instant('notifications.tradeInProgress'),
+        {
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      )
     );
 
     if (this.window.location.pathname === '/') {

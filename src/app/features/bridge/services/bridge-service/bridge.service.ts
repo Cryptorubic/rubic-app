@@ -12,10 +12,10 @@ import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/Br
 import { catchError, filter, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3-public-service/Web3Public';
+import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3-public-service/web3-public.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/provider-connector/provider-connector.service';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -35,10 +35,10 @@ export class BridgeService {
     Record<BLOCKCHAIN_NAME, Partial<Record<BLOCKCHAIN_NAME, BlockchainsBridgeProvider>>>
   >;
 
-  private tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
+  private _tokens$ = new BehaviorSubject<BridgeTokenPairsByBlockchains[]>([]);
 
-  public get tokens(): Observable<BridgeTokenPairsByBlockchains[]> {
-    return this.tokens$.asObservable();
+  public get tokens$(): Observable<BridgeTokenPairsByBlockchains[]> {
+    return this._tokens$.asObservable();
   }
 
   private bridgeProvider: BlockchainsBridgeProvider;
@@ -69,7 +69,7 @@ export class BridgeService {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this.tokens$.next(bridgeTestTokens);
+        this._tokens$.next(bridgeTestTokens);
       }
     });
   }
@@ -131,7 +131,7 @@ export class BridgeService {
       .pipe(first())
       .subscribe(tokens => {
         if (!this.isTestingMode) {
-          this.tokens$.next(tokens);
+          this._tokens$.next(tokens);
         }
       });
   }
@@ -164,7 +164,7 @@ export class BridgeService {
   }
 
   public getCurrentBridgeToken(): Observable<BridgeTokenPair> {
-    return this.tokens.pipe(
+    return this.tokens$.pipe(
       filter(tokens => !!tokens.length),
       first(),
       map(tokens => {

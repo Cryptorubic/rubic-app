@@ -1,17 +1,22 @@
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import BigNumber from 'bignumber.js';
-import { SupportedCrossChainSwapBlockchain } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
+import { SupportedCrossChainSwapBlockchain } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 
 export interface CrossChainRoutingTrade {
+  // from blockchain data
   fromBlockchain: SupportedCrossChainSwapBlockchain;
-  toBlockchain: SupportedCrossChainSwapBlockchain;
+  fromContractIndex: number;
   tokenIn: BlockchainToken;
-  firstPath: string[];
   tokenInAmount: BigNumber;
   firstTransitTokenAmount: BigNumber;
   rbcTokenOutAmountAbsolute: string;
+  firstPath: string[];
+
+  // to blockchain data
+  toBlockchain: SupportedCrossChainSwapBlockchain;
+  toContractIndex: number;
   secondTransitTokenAmount: BigNumber;
   tokenOut: BlockchainToken;
-  secondPath: string[];
   tokenOutAmount: BigNumber;
+  secondPath: string[];
 }

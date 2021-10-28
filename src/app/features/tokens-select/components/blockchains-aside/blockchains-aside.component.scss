@@ -1,12 +1,9 @@
 @import 'src/styles';
 
 .blockchain-aside {
-  position: relative;
-  left: -24px;
-
   width: 85px;
   height: calc(100% + 33px);
-  padding-top: 14px;
+  padding: 14px 0;
 
   background: rgba(170, 170, 170, 0.13);
   border-radius: 0 10px 0 15px;

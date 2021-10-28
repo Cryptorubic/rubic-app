@@ -24,7 +24,13 @@ export const HEALTHCHECK = {
     contractAddress: '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f',
     contractAbi: ERC20_ABI,
     method: 'symbol',
-    expected: '1USDT'
+    expected: 'USDT'
+  },
+  [BLOCKCHAIN_NAME.AVALANCHE]: {
+    contractAddress: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
+    contractAbi: ERC20_ABI,
+    method: 'symbol',
+    expected: 'USDT'
   },
   [BLOCKCHAIN_NAME.FANTOM]: {
     contractAddress: '0x049d68029688eabf473097a2fc38ef61633a3c7a',
