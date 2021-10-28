@@ -33,7 +33,6 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 type ComponentInput = {
   tokens: BehaviorSubject<AvailableTokenAmount[]>;
@@ -302,14 +301,13 @@ export class TokensSelectComponent implements OnInit {
    */
   private async tryParseQueryAsCustomToken(): Promise<void> {
     if (this.query) {
-      const blockchainPublicAdapter: BlockchainPublicAdapter =
-        this.blockchainPublicService.adapters[this.blockchain];
+      const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
       if (!blockchainPublicAdapter.isAddressCorrect(this.query)) {
         return;
       }
 
-      const blockchainToken: BlockchainToken = await blockchainPublicAdapter
+      const blockchainToken = await blockchainPublicAdapter
         .getTokenInfo(this.query)
         .catch(() => null);
 

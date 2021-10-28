@@ -27,7 +27,11 @@ import {
   MULTICALL_ADDRESSES_TESTNET
 } from 'src/app/core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { Web3EthSupportedBlockchains } from 'src/app/core/services/blockchain/blockchain-public/types';
+import {
+  GetEthTrxByHashParams,
+  PublicBlockchainAdapter,
+  Web3EthSupportedBlockchains
+} from 'src/app/core/services/blockchain/blockchain-public/types';
 import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 
 interface MulticallResponse {
@@ -35,7 +39,7 @@ interface MulticallResponse {
   returnData: string;
 }
 
-export class Web3Public {
+export class Web3Public extends PublicBlockchainAdapter {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
 
   constructor(
@@ -44,6 +48,7 @@ export class Web3Public {
     useTestingModeService: UseTestingModeService,
     private readonly httpClient: HttpClient
   ) {
+    super();
     this.multicallAddresses = MULTICALL_ADDRESSES;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
@@ -281,7 +286,9 @@ export class Web3Public {
     hash: string,
     options: { inWei?: boolean } = {}
   ): Promise<BigNumber> {
-    const transaction = await this.getTransactionByHash(hash);
+    const transaction = await this.waitForTransaction({
+      hash
+    });
     const receipt = await this.web3.eth.getTransactionReceipt(hash);
 
     if (!transaction || !receipt) {
@@ -297,30 +304,31 @@ export class Web3Public {
   }
 
   /**
-   * get a transaction by hash in several attempts
-   * @param hash hash of the target transaction
-   * @param attempt current attempt number
-   * @param attemptsLimit maximum allowed number of attempts
-   * @param delay ms delay before next attempt
+   * Gets a transaction by hash in several attempts.
+   * @param params Object with hash, attempts,and delay params.
    */
-  public async getTransactionByHash(
-    hash: string,
-    attempt?: number,
-    attemptsLimit?: number,
-    delay?: number
-  ): Promise<Transaction> {
-    attempt = attempt || 0;
-    const limit = attemptsLimit || 10;
-    const timeoutMs = delay || 500;
+  public async waitForTransaction(params: GetEthTrxByHashParams): Promise<Transaction> {
+    params.attempt = params.attempt || 0;
+    const limit = params.attemptLimit || 10;
+    const timeoutMs = params.delay || 500;
 
-    if (attempt >= limit) {
+    if (params.attempt >= limit) {
       return null;
     }
 
-    const transaction = await this.web3.eth.getTransaction(hash);
+    const transaction = await this.web3.eth.getTransaction(params.hash);
     if (transaction === null) {
       return new Promise(resolve =>
-        setTimeout(() => resolve(this.getTransactionByHash(hash, attempt + 1)), timeoutMs)
+        setTimeout(
+          () =>
+            resolve(
+              this.waitForTransaction({
+                hash: params.hash,
+                attempt: params.attempt + 1
+              })
+            ),
+          timeoutMs
+        )
       );
     }
     return transaction;

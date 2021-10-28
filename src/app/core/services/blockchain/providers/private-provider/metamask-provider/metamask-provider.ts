@@ -12,8 +12,8 @@ import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectE
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
-import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
-import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { Web3Private } from 'src/app/core/services/blockchain/providers/private-provider/common/web3-private';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/ethereum-wallet-provider';
 
 export class MetamaskProvider extends EthereumWalletProvider {
   private isEnabled = false;

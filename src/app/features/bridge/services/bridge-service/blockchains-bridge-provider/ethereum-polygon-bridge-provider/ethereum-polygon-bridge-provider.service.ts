@@ -21,8 +21,8 @@ import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PCacheable } from 'ts-cacheable';
 import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
 import { Web3Pure } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-pure';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 interface PolygonGraphToken {
@@ -44,21 +44,20 @@ const ERC20_TOKEN_TYPE = '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c
 
 @Injectable()
 export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
-  private readonly web3PublicEth: BlockchainPublicAdapter;
+  private readonly web3PublicEth: Web3Public;
 
-  private readonly web3PublicPolygon: BlockchainPublicAdapter;
+  private readonly web3PublicPolygon: Web3Public;
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
   ) {
     super();
-    this.web3PublicEth = this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.ETHEREUM];
-    this.web3PublicPolygon = this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.POLYGON];
+    this.web3PublicEth = this.getEthereumBlockchainProvider(BLOCKCHAIN_NAME.ETHEREUM);
+    this.web3PublicPolygon = this.getEthereumBlockchainProvider(BLOCKCHAIN_NAME.POLYGON);
 
     this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)).subscribe(tokenAmounts => {
       this.getTokensList(tokenAmounts);
@@ -218,9 +217,9 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
     const token = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM];
 
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[token.blockchain];
-
-    if (blockchainPublicAdapter.isNativeAddress(token.address)) {
+    if (
+      this.getEthereumBlockchainProvider(BLOCKCHAIN_NAME.ETHEREUM).isNativeAddress(token.address)
+    ) {
       return of(false);
     }
 
@@ -285,8 +284,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      const blockchainPublicAdapter =
-        this.blockchainPublicService.adapters[BLOCKCHAIN_NAME.ETHEREUM];
+      const blockchainPublicAdapter = this.getEthereumBlockchainProvider(BLOCKCHAIN_NAME.ETHEREUM);
 
       if (blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
         return from(

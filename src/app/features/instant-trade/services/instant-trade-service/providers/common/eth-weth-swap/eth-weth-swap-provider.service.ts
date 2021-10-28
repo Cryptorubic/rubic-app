@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 
 @Injectable({
   providedIn: 'root'
@@ -57,8 +57,8 @@ export class EthWethSwapProviderService {
     const fromAmount = trade.from.amount;
 
     this.providerConnectorService.checkSettings(blockchain);
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[blockchain];
+    const blockchainPublicAdapter = this.getEthereumBlockchainAdapter(blockchain);
+
     await blockchainPublicAdapter.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
     const fromAmountAbsolute = BlockchainPublicService.toWei(fromAmount);
@@ -99,5 +99,13 @@ export class EthWethSwapProviderService {
         onTransactionHash: options.onConfirm
       }
     );
+  }
+
+  private getEthereumBlockchainAdapter(blockchain: BLOCKCHAIN_NAME): Web3Public | null {
+    const adapter = this.blockchainPublicService.adapters[blockchain];
+    if (adapter instanceof Web3Public) {
+      return adapter;
+    }
+    return null;
   }
 }

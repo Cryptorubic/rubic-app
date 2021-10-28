@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { TransactionReceipt } from 'web3-eth';
 import { AbiItem } from 'web3-utils';
-import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
+import { Web3Private } from 'src/app/core/services/blockchain/providers/private-provider/common/web3-private';
 
 export abstract class EthereumWalletProvider {
   /**

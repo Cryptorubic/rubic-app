@@ -14,7 +14,6 @@ import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
 import BigNumber from 'bignumber.js';
-import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
@@ -92,8 +91,6 @@ export class SwapButtonComponent implements OnInit {
     let fromAmount: BigNumber;
     if (SwapButtonComponent.isSwapForm(inputForm)) {
       fromAmount = inputForm.fromAmount;
-    } else {
-      fromAmount = (outputForm as CryptoTapFormOutput).fromAmount;
     }
     const { toAmount } = outputForm;
     if (!fromToken?.price || !toToken?.price || !fromAmount?.isFinite() || !toAmount?.isFinite()) {

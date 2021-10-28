@@ -44,7 +44,6 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
 import { subtractPercent } from 'src/app/shared/utils/utils';
 import { Web3Pure } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-pure';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 /**
  * Shows whether Eth is used as from or to token.
@@ -67,7 +66,7 @@ export class UniSwapV3Service implements ItProvider {
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  private blockchainPublicAdapter: BlockchainPublicAdapter;
+  private blockchainPublicAdapter: Web3Public;
 
   private liquidityPoolsController: LiquidityPoolsController;
 
@@ -89,7 +88,7 @@ export class UniSwapV3Service implements ItProvider {
     this.gasMargin = 1.2;
 
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    this.blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
+    this.blockchainPublicAdapter = this.getEthereumBlockchainAdapter(this.blockchain);
     this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainPublicAdapter);
     this.wethAddress = wethAddressNetMode.mainnet;
 
@@ -108,7 +107,7 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
+        this.blockchainPublicAdapter = this.getEthereumBlockchainAdapter(this.blockchain);
         this.liquidityPoolsController = new LiquidityPoolsController(
           this.blockchainPublicAdapter,
           true
@@ -119,9 +118,7 @@ export class UniSwapV3Service implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
-
-    if (blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
+    if (this.blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
@@ -215,13 +212,12 @@ export class UniSwapV3Service implements ItProvider {
     const fromTokenWrapped = { ...fromToken };
     const toTokenWrapped = { ...toToken };
     const isEth: IsEthFromOrTo = {} as IsEthFromOrTo;
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
-    if (blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
+    if (this.blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
       fromTokenWrapped.address = this.wethAddress;
       isEth.from = true;
     }
-    if (blockchainPublicAdapter.isNativeAddress(toToken.address)) {
+    if (this.blockchainPublicAdapter.isNativeAddress(toToken.address)) {
       toTokenWrapped.address = this.wethAddress;
       isEth.to = true;
     }
@@ -517,5 +513,13 @@ export class UniSwapV3Service implements ItProvider {
         gasPrice: trade.gasPrice
       }
     );
+  }
+
+  private getEthereumBlockchainAdapter(blockchain: BLOCKCHAIN_NAME): Web3Public | null {
+    const adapter = this.blockchainPublicService.adapters[blockchain];
+    if (adapter instanceof Web3Public) {
+      return adapter;
+    }
+    return null;
   }
 }

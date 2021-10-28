@@ -29,7 +29,7 @@ import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/ins
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -119,8 +119,7 @@ export class CommonOneinchService {
   }
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[blockchain];
+    const blockchainPublicAdapter = this.getEthereumBlockchainPublicAdapter(blockchain);
     if (blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
@@ -192,8 +191,8 @@ export class CommonOneinchService {
       return instantTrade;
     }
 
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[blockchain];
+    const blockchainPublicAdapter = this.getEthereumBlockchainPublicAdapter(blockchain);
+
     const gasPrice = await blockchainPublicAdapter.getGasPrice();
     const gasPriceInEth = BlockchainPublicService.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
@@ -271,8 +270,8 @@ export class CommonOneinchService {
     const { blockchain } = trade;
     this.providerConnectorService.checkSettings(blockchain);
 
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[trade.blockchain];
+    const blockchainPublicAdapter = this.getEthereumBlockchainPublicAdapter(trade.blockchain);
+
     await blockchainPublicAdapter.checkBalance(
       trade.from.token,
       trade.from.amount,
@@ -330,5 +329,13 @@ export class CommonOneinchService {
       throw new CustomError(message);
     }
     throw new CustomError(err.error.message);
+  }
+
+  private getEthereumBlockchainPublicAdapter(blockchain: BLOCKCHAIN_NAME): Web3Public | null {
+    const adapter = this.blockchainPublicService.adapters[blockchain];
+    if (adapter instanceof Web3Public) {
+      return adapter;
+    }
+    return null;
   }
 }

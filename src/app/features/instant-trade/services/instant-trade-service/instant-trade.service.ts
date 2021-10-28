@@ -38,6 +38,7 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { GetEthTrxByHashParams } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 @Injectable({
   providedIn: 'root'
@@ -218,7 +219,9 @@ export class InstantTradeService {
 
   private async postTrade(hash: string, provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade) {
     const blockchainPublicAdapter = this.blockchainPublicService.adapters[trade.blockchain];
-    await blockchainPublicAdapter.getTransactionByHash(hash, 0, 60, 1000);
+    const trxParams: GetEthTrxByHashParams = { hash, attempt: 0, attemptLimit: 60, delay: 1000 };
+
+    await blockchainPublicAdapter.waitForTransaction(trxParams);
     timer(1000)
       .pipe(
         switchMap(() =>

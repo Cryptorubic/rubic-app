@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -22,7 +21,7 @@ import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair'
 import { HttpService } from 'src/app/core/services/http/http.service';
 import rubicBridgeContractAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/constants/rubicBridgeContractAbi';
 
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 
 interface RubicConfig {
@@ -64,7 +63,6 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly blockchainPublicService: BlockchainPublicService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly providerConnectorService: ProviderConnectorService,
@@ -198,8 +196,6 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
@@ -207,7 +203,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     }
 
     return from(
-      blockchainPublicAdapter.getAllowance(
+      this.getEthereumBlockchainProvider(bridgeTrade.fromBlockchain).getAllowance(
         this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
         this.providerConnectorService.address,
         this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress
@@ -254,8 +250,8 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       throw new WrongToken();
     }
 
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[bridgeTrade.fromBlockchain];
+    const blockchainPublicAdapter = this.getEthereumBlockchainProvider(bridgeTrade.fromBlockchain);
+
     const trade: RubicTrade = {
       token: {
         address:
@@ -300,7 +296,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   private async provideAllowance(
     trade: RubicTrade,
-    blockchainPublicAdapter: BlockchainPublicAdapter,
+    blockchainPublicAdapter: Web3Public,
     onApprove: (hash: string) => void
   ) {
     const allowance = await blockchainPublicAdapter.getAllowance(

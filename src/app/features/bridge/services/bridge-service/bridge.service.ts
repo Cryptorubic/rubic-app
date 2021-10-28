@@ -26,6 +26,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
@@ -278,6 +279,9 @@ export class BridgeService {
   ): Promise<void> {
     const blockchainPublicAdapter: BlockchainPublicAdapter =
       this.blockchainPublicService.adapters[fromBlockchain];
-    return blockchainPublicAdapter.checkBalance(token, amount, this.authService.user.address);
+    if (blockchainPublicAdapter instanceof Web3Public) {
+      return blockchainPublicAdapter.checkBalance(token, amount, this.authService.user.address);
+    }
+    return null;
   }
 }

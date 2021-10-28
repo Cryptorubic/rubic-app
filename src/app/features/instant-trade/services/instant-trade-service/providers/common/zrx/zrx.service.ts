@@ -32,7 +32,6 @@ import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { environment } from 'src/environments/environment';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 
@@ -42,7 +41,7 @@ const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 export class ZrxService implements ItProvider {
   private readonly gasMargin: number;
 
-  private blockchainPublicAdapter: BlockchainPublicAdapter;
+  private blockchainPublicAdapter: Web3Public;
 
   private settings: ItSettingsForm;
 
@@ -105,14 +104,12 @@ export class ZrxService implements ItProvider {
    */
   private setZrxParams() {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    this.blockchainPublicAdapter = this.blockchainPublicService.adapters[fromBlockchain];
+    this.blockchainPublicAdapter = this.getEthereumBlockchainAdapter(fromBlockchain);
 
-    let blockchain: BLOCKCHAIN_NAME;
-    if (this.isTestingMode) {
-      blockchain = `${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME;
-    } else {
-      blockchain = fromBlockchain;
-    }
+    const blockchain = this.isTestingMode
+      ? (`${fromBlockchain}_TESTNET` as BLOCKCHAIN_NAME)
+      : fromBlockchain;
+
     if (ZrxService.isSupportedBlockchain(blockchain)) {
       this.blockchain = blockchain;
       this.apiAddress = ZRX_API_ADDRESS[blockchain];
@@ -120,8 +117,7 @@ export class ZrxService implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
-    if (blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
+    if (this.blockchainPublicAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return this.tradeDataIsUpdated.pipe(
@@ -156,12 +152,11 @@ export class ZrxService implements ItProvider {
   ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
-    if (blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
+    if (this.blockchainPublicAdapter.isNativeAddress(fromToken.address)) {
       fromTokenClone.address = ZRX_NATIVE_TOKEN;
     }
-    if (blockchainPublicAdapter.isNativeAddress(toToken.address)) {
+    if (this.blockchainPublicAdapter.isNativeAddress(toToken.address)) {
       toTokenClone.address = ZRX_NATIVE_TOKEN;
     }
 
@@ -241,5 +236,13 @@ export class ZrxService implements ItProvider {
     return this.httpService
       .get<ZrxApiResponse>('swap/v1/quote', params, this.apiAddress)
       .toPromise();
+  }
+
+  private getEthereumBlockchainAdapter(blockchain: BLOCKCHAIN_NAME): Web3Public | null {
+    const adapter = this.blockchainPublicService.adapters[blockchain];
+    if (adapter instanceof Web3Public) {
+      return adapter;
+    }
+    return null;
   }
 }

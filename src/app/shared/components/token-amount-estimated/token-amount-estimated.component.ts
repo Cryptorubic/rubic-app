@@ -8,7 +8,6 @@ import {
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
-import { CryptoTapFormOutput } from 'src/app/features/crypto-tap/models/CryptoTapForm';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
@@ -75,8 +74,6 @@ export class AmountEstimatedComponent implements OnInit {
       const toAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
       this.tokensAmount = toAmount.toFixed();
       this.usd = toToken?.price ? toAmount.multipliedBy(toToken.price) : new BigNumber(NaN);
-
-      this.fee = (form as CryptoTapFormOutput).fee;
 
       this.cdr.detectChanges();
     });

@@ -43,7 +43,6 @@ import { UniswapV2Constants } from 'src/app/features/instant-trade/services/inst
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { subtractPercent } from 'src/app/shared/utils/utils';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
@@ -59,7 +58,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  private blockchainPublicProvider: BlockchainPublicAdapter;
+  private blockchainPublicProvider: Web3Public;
 
   // Uniswap constants
   private blockchain: BLOCKCHAIN_NAME;
@@ -111,7 +110,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private setUniswapConstants(uniswapConstants: UniswapV2Constants) {
     this.blockchain = uniswapConstants.blockchain;
-    this.blockchainPublicProvider = this.blockchainPublicService.adapters[this.blockchain];
+    this.blockchainPublicProvider = this.getEthereumBlockchainAdapter(this.blockchain);
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
 
     this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
@@ -120,7 +119,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.blockchainPublicProvider = this.blockchainPublicService.adapters[this.blockchain];
+        this.blockchainPublicProvider = this.getEthereumBlockchainAdapter(this.blockchain);
 
         this.contractAddress = uniswapConstants.contractAddressNetMode.testnet;
         this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
@@ -130,8 +129,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    const blockchainAdapter = this.blockchainPublicService.adapters[this.blockchain];
-    if (blockchainAdapter.isNativeAddress(tokenAddress)) {
+    if (this.blockchainPublicProvider.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
@@ -265,15 +263,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   ): Promise<UniswapV2InstantTrade> {
     let fromTokenAddress = fromToken.address;
     const toTokenClone = { ...toToken };
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
     let estimatedGasPredictionMethod = this.calculateTokensToTokensGasLimit;
 
-    if (blockchainPublicAdapter.isNativeAddress(fromTokenAddress)) {
+    if (this.blockchainPublicProvider.isNativeAddress(fromTokenAddress)) {
       fromTokenAddress = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateEthToTokensGasLimit;
     }
-    if (blockchainPublicAdapter.isNativeAddress(toTokenClone.address)) {
+    if (this.blockchainPublicProvider.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
     }
@@ -492,12 +489,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     toAmount: BigNumber
   ): Promise<BigNumber> {
     const toTokenClone = { ...toToken };
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
-    if (blockchainPublicAdapter.isNativeAddress(fromTokenAddress)) {
+    if (this.blockchainPublicProvider.isNativeAddress(fromTokenAddress)) {
       fromTokenAddress = this.wethAddress;
     }
-    if (blockchainPublicAdapter.isNativeAddress(toTokenClone.address)) {
+    if (this.blockchainPublicProvider.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.wethAddress;
     }
 
@@ -512,14 +508,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: UniswapV2InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
+    const blockchainPublicAdapter = this.getEthereumBlockchainAdapter(this.blockchain);
+
     this.providerConnectorService.checkSettings(trade.blockchain);
-    await this.blockchainPublicProvider.checkBalance(
+    await blockchainPublicAdapter.checkBalance(
       trade.from.token,
       trade.from.amount,
       this.walletAddress
     );
-
-    const blockchainPublicAdapter = this.blockchainPublicService.adapters[this.blockchain];
 
     const uniswapV2Trade: UniswapV2Trade = {
       amountIn: BlockchainPublicService.toWei(trade.from.amount, trade.from.token.decimals),
@@ -541,5 +537,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     return createTradeMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
+  }
+
+  private getEthereumBlockchainAdapter(blockchain: BLOCKCHAIN_NAME): Web3Public | null {
+    const adapter = this.blockchainPublicService.adapters[blockchain];
+    if (adapter instanceof Web3Public) {
+      return adapter;
+    }
+    return null;
   }
 }

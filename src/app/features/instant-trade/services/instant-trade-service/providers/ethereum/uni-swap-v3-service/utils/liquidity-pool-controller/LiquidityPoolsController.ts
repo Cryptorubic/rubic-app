@@ -17,7 +17,7 @@ import { PCacheable } from 'ts-cacheable';
 import { uniSwapV3ContractData } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -101,10 +101,7 @@ export class LiquidityPoolsController {
     };
   }
 
-  constructor(
-    public readonly blockchainPublicAdapter: BlockchainPublicAdapter,
-    isTestingMode = false
-  ) {
+  constructor(public readonly blockchainPublicAdapter: Web3Public, isTestingMode = false) {
     this.feeAmounts = [500, 3000, 10000];
 
     if (!isTestingMode) {

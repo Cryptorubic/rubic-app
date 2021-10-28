@@ -313,16 +313,15 @@ export class SwapButtonContainerComponent implements OnInit {
       return;
     }
 
-    let balance = fromToken.amount;
-    if (!fromToken.amount.isFinite()) {
-      balance = BlockchainPublicService.fromWei(
-        await this.blockchainPublicService.adapters[fromToken.blockchain].getTokenOrNativeBalance(
-          this.authService.user.address,
-          fromToken.address
-        ),
-        fromToken.decimals
-      );
-    }
+    const balance = fromToken.amount.isFinite()
+      ? fromToken.amount
+      : BlockchainPublicService.fromWei(
+          await this.blockchainPublicService.adapters[fromToken.blockchain].getTokenOrNativeBalance(
+            this.authService.user.address,
+            fromToken.address
+          ),
+          fromToken.decimals
+        );
 
     this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
     this.cdr.detectChanges();

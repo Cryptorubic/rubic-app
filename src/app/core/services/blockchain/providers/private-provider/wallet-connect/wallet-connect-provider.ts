@@ -11,9 +11,9 @@ import { WalletconnectError } from 'src/app/core/errors/models/provider/Walletco
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/ethereum-wallet-provider';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
+import { Web3Private } from 'src/app/core/services/blockchain/providers/private-provider/common/web3-private';
 
 export class WalletConnectProvider extends EthereumWalletProvider {
   private isEnabled: boolean;

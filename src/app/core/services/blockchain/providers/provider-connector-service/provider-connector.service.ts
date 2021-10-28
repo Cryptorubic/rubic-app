@@ -19,8 +19,8 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
-import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
-import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/ethereum-wallet-provider';
+import { Web3Private } from 'src/app/core/services/blockchain/providers/private-provider/common/web3-private';
 
 type WalletProvider = EthereumWalletProvider;
 
@@ -221,7 +221,7 @@ export class ProviderConnectorService {
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
         name: 'Matic(Polygon) Mainnet',
-        rpc: 'https://rpc-mainnet.matic.network'
+        rpc: 'https://matic-mainnet.chainstacklabs.com'
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',

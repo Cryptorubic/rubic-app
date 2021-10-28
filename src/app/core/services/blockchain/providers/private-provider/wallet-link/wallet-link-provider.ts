@@ -13,10 +13,10 @@ import BigNumber from 'bignumber.js';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { WalletlinkWrongNetwork } from 'src/app/core/errors/models/provider/WalletlinkWrongNetwork';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { EthereumWalletProvider } from 'src/app/core/services/blockchain/providers/private-provider/ethereum-wallet-provider';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
-import { Web3Private } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-private';
+import { Web3Private } from 'src/app/core/services/blockchain/providers/private-provider/common/web3-private';
 
 export class WalletLinkProvider extends EthereumWalletProvider {
   private isMobileMode = false;

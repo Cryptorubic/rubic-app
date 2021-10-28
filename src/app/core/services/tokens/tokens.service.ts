@@ -25,10 +25,7 @@ import {
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
-import {
-  BlockchainPublicAdapter,
-  Web3EthSupportedBlockchains
-} from 'src/app/core/services/blockchain/blockchain-public/types';
+import { Web3EthSupportedBlockchains } from 'src/app/core/services/blockchain/blockchain-public/types';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -269,8 +266,7 @@ export class TokensService {
    * @return Observable<TokenAmount> Token with balance.
    */
   public addToken(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[blockchain];
+    const blockchainPublicAdapter = this.blockchainPublicService.adapters[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
       ? from(blockchainPublicAdapter.getTokenBalance(this.userAddress, address))
       : of(null);

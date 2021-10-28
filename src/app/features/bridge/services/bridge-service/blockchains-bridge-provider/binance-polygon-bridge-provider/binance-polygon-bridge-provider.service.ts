@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
-import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -30,7 +29,6 @@ import {
   TokensIdConfig
 } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/Config';
 import { ConfigResponse } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/ConfigResponse';
-import { BlockchainPublicAdapter } from 'src/app/core/services/blockchain/blockchain-public/types';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 
 // Exclude MATIC token because it is not supported by EVO relayer
@@ -46,7 +44,6 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private evoTokenPairs: EvoBridgeTokenPair[];
 
   constructor(
-    private blockchainPublicService: BlockchainPublicService,
     private providerConnectorService: ProviderConnectorService,
     private readonly translateService: TranslateService,
     private tokensService: TokensService,
@@ -88,8 +85,6 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
   needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const blockchainPublicAdapter: BlockchainPublicAdapter =
-      this.blockchainPublicService.adapters[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (!this.authService?.user?.address) {
@@ -98,7 +93,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     }
 
     return from(
-      blockchainPublicAdapter.getAllowance(
+      this.getEthereumBlockchainProvider(bridgeTrade.fromBlockchain).getAllowance(
         tokenFrom.address,
         this.authService.user.address,
         EVO_ADDRESSES[bridgeTrade.fromBlockchain as EvoBridgeBlockchains]
@@ -208,7 +203,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private async fetchSupportedTokens(): Promise<EvoContractTokenInBlockchains[]> {
     const blockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
     const tokensListPromises = blockchains.map(blockchain =>
-      this.blockchainPublicService.adapters[blockchain].callContractMethod<string[]>(
+      this.getEthereumBlockchainProvider(blockchain).callContractMethod<string[]>(
         EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
         EVO_ABI as AbiItem[],
         'listTokensNames'

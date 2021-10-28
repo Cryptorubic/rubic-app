@@ -127,7 +127,7 @@ export class BlockchainPublicService {
         const blockchainName = web3Public.blockchain.name as Web3EthSupportedBlockchains;
         const connector = this.connectionLinks.find(item => item.blockchainName === blockchainName);
         if (!isNodeWorks && connector?.additionalRpcLink) {
-          this.adapters[blockchainName].setProvider(connector.additionalRpcLink);
+          (this.adapters[blockchainName] as Web3Public).setProvider(connector.additionalRpcLink);
 
           console.debug(
             `Broken ${web3Public.blockchain.label} node has been replaced with a spare.`

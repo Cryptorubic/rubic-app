@@ -6,9 +6,14 @@ import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair'
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import BigNumber from 'bignumber.js';
+import { Web3Public } from 'src/app/core/services/blockchain/blockchain-adapters/web3/web3-public';
+import { inject } from '@angular/core';
+import { BlockchainPublicService } from 'src/app/core/services/blockchain/blockchain-public/blockchain-public.service';
 
 export abstract class BlockchainsBridgeProvider {
   protected tokenPairs$ = new Subject<List<BridgeTokenPair>>();
+
+  protected blockchainPublicService = inject(BlockchainPublicService);
 
   /**
    * list of tokens that can be used in a bridge
@@ -55,4 +60,12 @@ export abstract class BlockchainsBridgeProvider {
    * @return observable transaction receipt object
    */
   public abstract approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt>;
+
+  public getEthereumBlockchainProvider(blockchain: BLOCKCHAIN_NAME): Web3Public | null {
+    const adapter = this.blockchainPublicService.adapters[blockchain];
+    if (adapter instanceof Web3Public) {
+      return adapter;
+    }
+    return null;
+  }
 }
