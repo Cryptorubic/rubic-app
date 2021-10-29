@@ -191,7 +191,7 @@ export class HeaderComponent implements AfterViewInit {
   /**
    * Navigate to IT Ethereum and fill swap form from ETH to ALGB.
    */
-  public buyALGB() {
+  public buyRBC() {
     this.router.navigate(['/']).then(() => {
       this.swapsService.availableTokens
         .pipe(
@@ -199,20 +199,20 @@ export class HeaderComponent implements AfterViewInit {
           first()
         )
         .subscribe(tokens => {
-          const MATIC = tokens.find(
-            token => token.symbol === 'MATIC' && token.blockchain === BLOCKCHAIN_NAME.POLYGON
+          const ETH = tokens.find(
+            token => token.symbol === 'ETH' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
           );
 
-          const ALGB = tokens.find(
-            token => token.symbol === 'ALGB' && token.blockchain === BLOCKCHAIN_NAME.POLYGON
+          const RBC = tokens.find(
+            token => token.symbol === 'RBC' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
           );
 
           this.swapFormService.input.patchValue({
-            fromToken: MATIC,
-            toToken: ALGB,
-            fromBlockchain: BLOCKCHAIN_NAME.POLYGON,
-            toBlockchain: BLOCKCHAIN_NAME.POLYGON,
-            fromAmount: new BigNumber(1000)
+            fromToken: ETH,
+            toToken: RBC,
+            fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+            toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
+            fromAmount: new BigNumber(1)
           });
         });
     });

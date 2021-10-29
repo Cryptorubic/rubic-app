@@ -583,8 +583,8 @@
     }
   },
   "banner": {
-    "text": "Вы можете купить $ALGB используя Rubic.",
-    "link": "Попробуйте прямо сейчас!"
+    "text": "Rubic Cross-Chain has launched! Swap between 9,000 tokens across Ethereum, BSC, Polygon & Avalanche.",
+    "link": "Try it now!"
   },
   "volume": {
     "title": "Накопленный Объем Операций",
