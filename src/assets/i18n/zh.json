@@ -409,15 +409,15 @@
     "title": "我的行业"
   },
   "gasRefund": {
-    "title": "天然氣退款",
+    "title": "Avalanche gas費退款",
     "body": {
       "refundAmount": "退款金額",
       "transactions": "交易",
       "more": "更多"
     },
     "button": {
-      "refundAfter": "退款後",
-      "refund": "退款"
+      "refundAfter": "索賠後",
+      "refund": "索賠"
     },
     "promoActions": {
       "1": {

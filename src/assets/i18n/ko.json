@@ -409,15 +409,15 @@
     "title": "내 거래"
   },
   "gasRefund": {
-    "title": "가스 환불",
+    "title": "Avalanche 가스 요금 환불",
     "body": {
       "refundAmount": "환불 금액",
       "transactions": "거래",
       "more": "더"
     },
     "button": {
-      "refundAfter": "환불 후",
-      "refund": "환불"
+      "refundAfter": "클레임 후",
+      "refund": "클레임"
     },
     "promoActions": {
       "1": {
