@@ -133,8 +133,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   /**
-   * Makes multi call method of contract.
-   * @param routesMethodArguments Arguments for calling method of contract.
+   * Makes multi call of contract's methods.
+   * @param routesMethodArguments Arguments for calling uni-swap contract method.
    * @param methodName Method of contract.
    * @return Promise<Multicall[]>
    */
