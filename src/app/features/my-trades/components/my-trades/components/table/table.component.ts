@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
@@ -7,8 +7,6 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
-import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
-import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
@@ -60,11 +58,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public total$: Observable<number>;
 
-  constructor(
-    protected readonly myTradesService: MyTradesService,
-    protected readonly scannerLinkPipe: ScannerLinkPipe
-  ) {
-    super(myTradesService, scannerLinkPipe);
+  constructor(injector: Injector) {
+    super(injector);
   }
 
   ngOnInit(): void {

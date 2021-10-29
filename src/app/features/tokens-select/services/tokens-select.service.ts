@@ -1,7 +1,7 @@
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -28,8 +28,7 @@ export class TokensSelectService {
    * @param idPrefix Id prefix for GA.
    */
   public showDialog(
-    // @TODO Get rid of subjects in polymorpheus context.
-    tokens: BehaviorSubject<AvailableTokenAmount[]>,
+    tokens: Observable<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
     form: FormGroup<ISwapFormInput>,

@@ -6,7 +6,7 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
@@ -17,11 +17,10 @@ import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
-import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { first, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { first, mergeMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 
@@ -38,8 +37,6 @@ export class MyTradesComponent implements OnInit {
   public readonly tableData$ = new BehaviorSubject<TableRow[]>(undefined);
 
   public loading = true;
-
-  public loadingStatus: REFRESH_BUTTON_STATUS;
 
   public isDesktop: boolean;
 
@@ -62,31 +59,32 @@ export class MyTradesComponent implements OnInit {
   ngOnInit(): void {
     this.counterNotificationsService.resetCounter();
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
-    this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+
+    this.myTradesService.tableTrades$.pipe(takeUntil(this.destroy$)).subscribe(trades => {
+      if (this.authService.user) {
+        this.updateTableData(trades);
+      }
+    });
 
     this.authService
       .getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        this.walletAddress = user?.address || null;
-        this.loading = true;
-        this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
+      .pipe(
+        takeUntil(this.destroy$),
+        watch(this.cdr),
+        mergeMap(user => {
+          this.walletAddress = user?.address || null;
+          this.loading = true;
+          this.cdr.detectChanges();
 
-        if (this.walletAddress) {
-          this.myTradesService
-            .updateTableTrades()
-            .pipe(first())
-            .subscribe(trades => {
-              this.updateTableData(trades);
-            });
-        } else {
+          if (this.walletAddress) {
+            return this.myTradesService.updateTableTrades().pipe(first());
+          }
           this.tableData$.next([]);
           this.loading = false;
-          this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
-        }
-
-        this.cdr.detectChanges();
-      });
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
@@ -94,9 +92,9 @@ export class MyTradesComponent implements OnInit {
     tableTrades.forEach(trade => {
       tableData.push({
         Status: trade.status,
-        FromTo: trade.fromToken.blockchain + trade.toToken.blockchain,
+        FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
         Provider: trade.provider,
-        Sent: new BigNumber(trade.fromToken.amount),
+        Sent: new BigNumber(trade.fromToken?.amount),
         Expected: new BigNumber(trade.toToken.amount),
         Date: trade.date,
 
@@ -108,18 +106,13 @@ export class MyTradesComponent implements OnInit {
 
     setTimeout(() => {
       this.loading = false;
-      this.loadingStatus = REFRESH_BUTTON_STATUS.STOPPED;
       this.cdr.detectChanges();
     });
   }
 
   public refreshTable(): void {
     this.loading = true;
-    this.loadingStatus = REFRESH_BUTTON_STATUS.REFRESHING;
-    this.myTradesService
-      .updateTableTrades()
-      .pipe(first())
-      .subscribe(trades => this.updateTableData(trades));
+    this.myTradesService.updateTableTrades().pipe(first()).subscribe();
   }
 
   public showConnectWalletModal(): void {

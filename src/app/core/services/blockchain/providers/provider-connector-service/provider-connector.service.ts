@@ -236,21 +236,30 @@ export class ProviderConnectorService {
     await this.provider.addChain(params);
   }
 
-  public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<void> {
+  /**
+   * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet
+   * @param networkName chain to switch to
+   * @returns was the network switch successful
+   */
+  public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<boolean> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);
     const chainId = `0x${network.id.toString(16)}`;
     try {
       await this.provider.switchChain(chainId);
+      return true;
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
           await this.addChain(networkName);
           await this.provider.switchChain(chainId);
+          return true;
         } catch (err) {
           this.errorService.catch(err);
+          return false;
         }
       } else {
         this.errorService.catch(switchError);
+        return false;
       }
     }
   }

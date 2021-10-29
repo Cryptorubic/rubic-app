@@ -60,4 +60,18 @@ export const BRBC: TokenAmount = {
   favorite: true
 };
 
-export const bscTestTokens = [BNB, USDT, ETH, BRBC];
+export const FAKE_BRBC: TokenAmount = {
+  name: 'Fake Rubic',
+  symbol: 'BRBC',
+  blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  address: '0x8e3bcc334657560253b83f08331d85267316e08a',
+  decimals: 18,
+  image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
+  rank: TOKEN_RANK.LOW,
+  price: 0.2,
+  usedInIframe: true,
+  amount: new BigNumber(0),
+  favorite: true
+};
+
+export const bscTestTokens = [BNB, USDT, ETH, BRBC, FAKE_BRBC];

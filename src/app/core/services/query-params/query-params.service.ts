@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { filter, first, map, mergeMap } from 'rxjs/operators';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -15,6 +15,7 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
+import { compareAddresses } from 'src/app/shared/utils/utils';
 import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
@@ -99,8 +100,6 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
-      } else if (hasParams) {
-        this.initiateCryptoTapParams(queryParams);
       }
     }
   }
@@ -116,8 +115,7 @@ export class QueryParamsService {
   private initiateTradesParams(params: QueryParams): void {
     this.swapsService.availableTokens
       .pipe(
-        filter(tokens => tokens?.size > 0),
-        first(),
+        first(tokens => tokens?.size > 0),
         mergeMap(tokens =>
           this.getProtectedSwapParams(params).pipe(
             map(protectedParams => ({ tokens, protectedParams }))
@@ -162,14 +160,9 @@ export class QueryParamsService {
       });
   }
 
-  private initiateCryptoTapParams(_params: QueryParams): void {
-    // TODO: add crypto tap params
-  }
-
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
     return this.swapsService.bridgeTokenPairsByBlockchainsArray.pipe(
-      filter(pairsArray => !!pairsArray?.size),
-      first(),
+      first(pairsArray => !!pairsArray?.size),
       map(pairsArray => {
         const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
           queryParams?.fromChain as BLOCKCHAIN_NAME
@@ -267,12 +260,12 @@ export class QueryParamsService {
     chain: BLOCKCHAIN_NAME
   ): Observable<TokenAmount> {
     const searchingToken = tokens.find(
-      token => token.address.toLowerCase() === address.toLowerCase() && token.blockchain === chain
+      token => compareAddresses(token.address, address) && token.blockchain === chain
     );
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.addToken(address, chain).pipe(first());
+      : this.tokensService.addTokenByAddress(address, chain).pipe(first());
   }
 
   private navigate(): void {
@@ -333,7 +326,8 @@ export class QueryParamsService {
       'eth_tokens',
       'bsc_tokens',
       'polygon_tokens',
-      'harmony_tokens'
+      'harmony_tokens',
+      'avalanche_tokens'
     ] as const;
     const tokensQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([key]) =>

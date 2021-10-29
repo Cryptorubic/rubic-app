@@ -6,7 +6,8 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -206,7 +207,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     iframeService: IframeService,
-    private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
@@ -300,17 +301,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
     this.cdr.detectChanges();
 
-    if (!this.allowTrade) {
-      this.tradeStatus = TRADE_STATUS.DISABLED;
-      this.selectedProvider = null;
-      this.autoSelect = true;
-      this.swapFormService.output.patchValue({
-        toAmount: new BigNumber(NaN)
-      });
-      this.cdr.detectChanges();
-      return;
-    }
-
     this.conditionalCalculate('normal');
   }
 
@@ -366,7 +356,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      !this.allowTrade ||
       this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
       this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
@@ -388,14 +377,25 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         filter(el => el === 'normal'),
         debounceTime(200),
         switchMap(() => {
+          if (!this.allowTrade) {
+            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.selectedProvider = null;
+            this.autoSelect = true;
+            this.swapFormService.output.patchValue({
+              toAmount: new BigNumber(NaN)
+            });
+            this.cdr.markForCheck();
+            return of(null);
+          }
+
           this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
             this.selectedProvider = null;
             this.autoSelect = true;
             this.needApprove = false;
             this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-            this.cdr.detectChanges();
-            return of();
+            this.cdr.markForCheck();
+            return of(null);
           }
 
           this.prepareControllers();
@@ -404,14 +404,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
-          const approveDataObservable = this.authService.user?.address
+          const approveData$ = this.authService.user?.address
             ? this.instantTradeService.getAllowance(providersNames)
             : of(new Array(this.providerControllers.length).fill(null));
-          const tradeDataObservable = from(
-            this.instantTradeService.calculateTrades(providersNames)
+          const tradeData$ = from(this.instantTradeService.calculateTrades(providersNames));
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
           );
 
-          return forkJoin([approveDataObservable, tradeDataObservable]).pipe(
+          return forkJoin([approveData$, tradeData$, balance$]).pipe(
             map(([approveData, tradeData]) => {
               this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
 
@@ -447,13 +448,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         filter(el => el === 'hidden'),
         switchMap(() => {
+          if (!this.allowTrade) {
+            return of(null);
+          }
+
           const providersNames = this.providerControllers.map(
             provider => provider.tradeProviderInfo.value
           );
+          const tradeData$ = from(this.instantTradeService.calculateTrades(providersNames));
+          const balance$ = from(
+            this.tokensService.getAndUpdateTokenBalance(this.swapFormService.inputValue.fromToken)
+          );
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          return from(this.instantTradeService.calculateTrades(providersNames)).pipe(
-            map((tradeData: CalculationResult[]) => {
+          return forkJoin([tradeData$, balance$]).pipe(
+            map(([tradeData]) => {
               return tradeData.map((trade: CalculationResult, index: number) => {
                 if (trade.status === 'fulfilled') {
                   return {
@@ -472,15 +481,18 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(el => {
-        this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
-        this.hiddenDataAmounts$.next(el);
-        const hiddenProviderData = el.find(
-          it => it.name === this.selectedProvider.tradeProviderInfo.value
-        );
-        if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
-          this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+        if (el) {
+          this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+          this.hiddenDataAmounts$.next(el);
+          const hiddenProviderData = el.find(
+            (it: { name: INSTANT_TRADES_PROVIDER }) =>
+              it.name === this.selectedProvider.tradeProviderInfo.value
+          );
+          if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
+            this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+          }
+          this.cdr.markForCheck();
         }
-        this.cdr.detectChanges();
       });
   }
 
@@ -642,7 +654,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public getUsdPrice(amount?: BigNumber): BigNumber {
-    if (!amount && !this.selectedProvider?.trade.to.amount) {
+    if ((!amount && !this.selectedProvider?.trade.to.amount) || !this.toToken) {
       return null;
     }
     if (!this.toToken?.price) {

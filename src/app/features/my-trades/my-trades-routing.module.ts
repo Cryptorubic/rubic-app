@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MyTradesComponent } from 'src/app/features/my-trades/components/my-trades/my-trades.component';
+import { MyTradesPageComponent } from 'src/app/features/my-trades/my-trades-page.component';
 
-const routes: Routes = [{ path: '', component: MyTradesComponent }];
+const routes: Routes = [{ path: '', component: MyTradesPageComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)]

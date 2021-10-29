@@ -5,7 +5,7 @@ import { catchError, map, mapTo } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
-  ToBackendBlockchains
+  ToBackendBlockchain
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import {
@@ -15,7 +15,7 @@ import {
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { environment } from 'src/environments/environment';
 
-export const BASE_URL = `${environment.crossChain.baseApiUrl}/`;
+export const BASE_URL = `${environment.crossChain.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +76,7 @@ export class CrossChainRoutingApiService {
     blockchain: BLOCKCHAIN_NAME,
     promoCodeText?: string
   ): Promise<void> {
-    const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchains];
+    const network = TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain];
     return this.httpService
       .patch('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
       .pipe(
