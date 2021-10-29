@@ -413,11 +413,11 @@
     "body": {
       "refundAmount": "Cantidad de reembolso",
       "transactions": "Transacciones",
-      "More”: “mas"
+      "more": "mas"
     },
     "button": {
-      "refundAfter": "Reembolso después de",
-      "refund": "Reembolso"
+      "refundAfter": "Reclamar después de",
+      "refund": "Reclamar"
     },
     "promoActions": {
       "1": {

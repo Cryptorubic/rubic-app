@@ -416,8 +416,8 @@
       "more": "더"
     },
     "button": {
-      "refundAfter": "환불 후",
-      "refund": "환불"
+      "refundAfter": "클레임 후",
+      "refund": "클레임"
     },
     "promoActions": {
       "1": {
