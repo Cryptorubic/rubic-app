@@ -409,15 +409,15 @@
     "title": "My Trades"
   },
   "gasRefund": {
-    "title": "Avalanche gas fee refund",
+    "title": "Gas Refund",
     "body": {
       "refundAmount": "Refund Amount",
       "transactions": "Transactions",
       "more": "more"
     },
     "button": {
-      "refundAfter": "Claim after",
-      "refund": "Claim"
+      "refundAfter": "Refund after",
+      "refund": "Refund"
     },
     "promoActions": {
       "1": {
@@ -425,7 +425,7 @@
         "description": "Get gas cashback for completing the first Multi-Chain swap on our platform!"
       },
       "2": {
-        "label": "Get Gas fee Refund for making swaps using tokens of our partners!",
+        "label": "Avalanche gas refund",
         "description": "To celebrate the launch of Rubic Multi-Chain routing on the Avalanche network our project is starting a new Gas Refund Campaign! Starting from Oct, 19 to Nov,2  our users will be able to complete swap using their favorite tokens on the Avalanche network using Rubic Multi-Chain Routing and get GAS refunded."
       }
     },
