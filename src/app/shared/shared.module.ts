@@ -61,6 +61,7 @@ import { PanelContentComponent } from '../features/instant-trade/components/prov
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
+import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 
 @NgModule({
   declarations: [
@@ -89,23 +90,24 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
     PanelErrorContentComponent,
     PanelContentComponent,
     UsdPriceContainerComponent,
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
+    BuyTokenComponent,
+    IframeBlockchainIndicatorComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
     WithRoundPipe,
     ShortenAmountPipe,
+    ThemedIconPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent,
-    ThemedIconPipe,
-    SwapButtonComponent,
-    RotatingIconComponent,
-    InfoHintComponent
+    OnlyFrameDirective
   ],
   imports: [
     CommonModule,
@@ -170,7 +172,9 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,
-    InfoHintComponent
+    InfoHintComponent,
+    UsdPriceContainerComponent,
+    BuyTokenComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]
