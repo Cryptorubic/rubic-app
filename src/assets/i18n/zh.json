@@ -56,7 +56,7 @@
     "notSupportedItNetwork": "即時交易不支持所選網絡",
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
     "insufficientLiquidityCCR": "這筆交易的流動性不足",
-    "insufficientLiquidityIT": "這筆交易的流動性不足。用多跳交易。",
+    "insufficientLiquidityIT": "這筆交易的流動性不足。",
     "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
     "1inchNotSupportedToken": "1inch 不支持所選代幣之一。",
     "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
