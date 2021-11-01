@@ -761,11 +761,18 @@ export class CrossChainRoutingService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
-    if (this.iframeService.isIframe || this.settings.promoCode?.status === 'accepted') {
+    if (this.settings.promoCode?.status === 'accepted') {
       await this.crossChainRoutingApiService.postTrade(
         transactionHash,
         this.currentCrossChainTrade.fromBlockchain,
-        this.settings.promoCode?.text
+        this.settings.promoCode.text
+      );
+      return;
+    }
+    if (this.iframeService.isIframe) {
+      await this.crossChainRoutingApiService.postTrade(
+        transactionHash,
+        this.currentCrossChainTrade.fromBlockchain
       );
     }
   }

@@ -36,7 +36,11 @@ export abstract class AbstractTableDataComponent {
     return (a, b) => {
       let sort;
       if (key === 'Sent' || key === 'Expected') {
-        sort = (x: BigNumber, y: BigNumber) => x.comparedTo(y);
+        sort = (x: BigNumber, y: BigNumber) => {
+          x = x.isFinite() ? x : new BigNumber(0);
+          y = y.isFinite() ? y : new BigNumber(0);
+          return x.comparedTo(y);
+        };
       } else {
         sort = defaultSort;
       }
