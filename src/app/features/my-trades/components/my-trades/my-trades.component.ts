@@ -101,7 +101,7 @@ export class MyTradesComponent implements OnInit {
         inProgress: false
       });
     });
-    tableData = tableData.sort((a, b) => defaultSort(a.Status, b.Status) * -1);
+    tableData = tableData.sort((a, b) => defaultSort(a.Date, b.Date) * -1);
     this.tableData$.next(tableData);
 
     setTimeout(() => {
