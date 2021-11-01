@@ -43,6 +43,7 @@
     "userReject": "Вы отказались от исполнения сделки. Пожалуйста, сначала подтвердите сделку, чтобы её завершить.",
     "rubicError": "Пожалуйста, повторите попытку позже или попробуйте использовать другое устройство. Если у вас все равно вознинет ошибка обратитесь в нашу",
     "insufficientFunds": "У вас недостаточно {{ tokenSymbol }}. Ваш баланс {{balance}} {{tokenSymbol}}, но требуется {{requiredBalance}} {{tokenSymbol}}.",
+    "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "noQrCode": "Убедитесь, что вы отсканировали QR код.",
     "walletlinkWrongNetwork": "Убедитесь, что сеть {{networkToChoose}} выбрана в приложении Coinbase. Чтобы изменить сеть в приложении Coinbase, зайдите в настройки в нижней панели и выберите вкладку \"Active Network\".",
     "noWallet": "Вы не подключили кошелек",

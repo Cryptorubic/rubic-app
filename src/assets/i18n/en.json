@@ -43,6 +43,7 @@
     "userReject": "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
     "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
+    "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
     "walletlinkWrongNetwork": "Please make sure that the {{ networkToChoose }} network is selected in the Coinbase application. To change the network in the coinbase application, go to the settings in the bottom panel and select the \"Active Network\" tab.",
     "noWallet": "You have not connected any wallet",
