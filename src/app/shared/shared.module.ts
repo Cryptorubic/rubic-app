@@ -59,6 +59,8 @@ import { SuccessTrxNotificationComponent } from './components/success-trx-notifi
 import { PanelErrorContentComponent } from '../features/instant-trade/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '../features/instant-trade/components/provider-panel/panel-content/panel-content.component';
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
+import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
+import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 
 @NgModule({
@@ -88,22 +90,24 @@ import { BuyTokenComponent } from './components/buy-token/buy-token.component';
     PanelErrorContentComponent,
     PanelContentComponent,
     UsdPriceContainerComponent,
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
+    BuyTokenComponent,
+    IframeBlockchainIndicatorComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
     WithRoundPipe,
     ShortenAmountPipe,
+    ThemedIconPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent,
-    ThemedIconPipe,
-    SwapButtonComponent,
-    BuyTokenComponent
+    OnlyFrameDirective
   ],
   imports: [
     CommonModule,
@@ -166,6 +170,9 @@ import { BuyTokenComponent } from './components/buy-token/buy-token.component';
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
+    UsdPriceContainerComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
     UsdPriceContainerComponent,
     BuyTokenComponent
   ],

@@ -7,7 +7,7 @@ export default [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://patient-bold-night.quiknode.pro/e9d9c6fc165de5266e008da316e7b5220b1e1775/',
+    rpcLink: 'https://damp-misty-hill.quiknode.pro/',
     additionalRpcLink:
       'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
