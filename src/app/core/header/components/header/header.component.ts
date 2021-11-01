@@ -27,7 +27,7 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
-import { filter, first, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { HeaderStore } from '../../services/header.store';
@@ -185,36 +185,6 @@ export class HeaderComponent implements AfterViewInit {
         to: undefined
       },
       queryParamsHandling: 'merge'
-    });
-  }
-
-  /**
-   * Navigate to IT Ethereum and fill swap form from ETH to ALGB.
-   */
-  public buyALGB() {
-    this.router.navigate(['/']).then(() => {
-      this.swapsService.availableTokens
-        .pipe(
-          filter(tokens => tokens?.size > 0),
-          first()
-        )
-        .subscribe(tokens => {
-          const MATIC = tokens.find(
-            token => token.symbol === 'MATIC' && token.blockchain === BLOCKCHAIN_NAME.POLYGON
-          );
-
-          const ALGB = tokens.find(
-            token => token.symbol === 'ALGB' && token.blockchain === BLOCKCHAIN_NAME.POLYGON
-          );
-
-          this.swapFormService.input.patchValue({
-            fromToken: MATIC,
-            toToken: ALGB,
-            fromBlockchain: BLOCKCHAIN_NAME.POLYGON,
-            toBlockchain: BLOCKCHAIN_NAME.POLYGON,
-            fromAmount: new BigNumber(1000)
-          });
-        });
     });
   }
 }

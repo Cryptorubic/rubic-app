@@ -62,6 +62,7 @@ import { PanelContentComponent } from '../features/instant-trade/components/prov
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
+import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 
 @NgModule({
@@ -91,12 +92,18 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
     PanelErrorContentComponent,
     PanelContentComponent,
     UsdPriceContainerComponent,
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
+    BuyTokenComponent,
+    IframeBlockchainIndicatorComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
     WithRoundPipe,
     ShortenAmountPipe,
+    ThemedIconPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
@@ -176,7 +183,7 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
     UsdPriceContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
-    UsdPriceContainerComponent,
+    BuyTokenComponent,
     NotificationBadgeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],

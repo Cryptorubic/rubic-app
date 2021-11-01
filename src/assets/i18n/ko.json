@@ -410,7 +410,7 @@
     "title": "내 거래"
   },
   "gasRefund": {
-    "title": "Avalanche 가스 요금 환불",
+    "title": "가스 환불",
     "body": {
       "refundAmount": "환불 금액",
       "transactions": "거래",
@@ -426,7 +426,7 @@
         "description": "저희 플랫폼에서 첫 번째 멀티체인 스왑을 완료하고 가스 캐쉬백을 받으세요!"
       },
       "2": {
-        "label": "파트너의 토큰을 사용하여 스왑을 하면 가스비 환불을 받으세요!",
+        "label": "Avalanche 가스 요금 환불",
         "description": "Avalanche 네트워크에서 Rubic Multi-Chain 라우팅 출시를 축하하기 위해 우리 프로젝트는 새로운 Gas Refund Campaign을 시작합니다! 10월 19일부터 11월 2일까지 사용자는 좋아하는 토큰을 사용하여 스왑을 완료할 수 있습니다. Rubic Multi-Chain Routing을 사용하여 Avalanche 네트워크에서 GAS 환불을 받으세요."
       }
     },
@@ -584,7 +584,7 @@
     }
   },
   "banner": {
-    "text": "Rubic에서 $ALGB를 구입할 수 있습니다.",
+    "text": "Rubic Multi-Chain이 출시되었습니다! Ethereum, BSC, Polygon 및 Avalanche에서 9,500개의 토큰을 교환하십시오.",
     "link": "지금 시도하십시오!"
   },
   "volume": {
