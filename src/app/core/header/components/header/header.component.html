@@ -1,7 +1,9 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
   {{ 'banner.text' | translate }}
-  <a class="banner__link" (click)="buyALGB()">{{ 'banner.link' | translate }}</a>
+  <a class="banner__link" (click)="navigateToBridgeOrCrossChain('cross-chain')">{{
+    'banner.link' | translate
+  }}</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -56,11 +58,8 @@
     >
   </nav>
 
-  <app-rubic-button
-    *noFrame
-    class="rubic-header__buy-rbc rubic-header__buy-rbc_algb"
-    (click)="buyALGB()"
-    >Buy ALGB</app-rubic-button
+  <app-rubic-button *noFrame appearance="outline" class="rubic-header__buy-rbc" (click)="buyRBC()"
+    >Buy RBC</app-rubic-button
   >
 
   <div class="rubic-header__profile">
