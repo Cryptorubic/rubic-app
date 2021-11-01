@@ -604,6 +604,10 @@ export class CrossChainRoutingService {
   private async checkGasPrice(trade: CrossChainRoutingTrade): Promise<void | never> {
     const { toBlockchain, toContractIndex } = trade;
 
+    if (toBlockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
+      return;
+    }
+
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
