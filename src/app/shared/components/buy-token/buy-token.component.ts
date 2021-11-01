@@ -7,8 +7,15 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+
+interface TokenInfo {
+  blockchain: BLOCKCHAIN_NAME;
+  address: string;
+  symbol: string;
+  amount?: BigNumber;
+}
 
 @Component({
   selector: 'app-buy-token',
@@ -19,13 +26,18 @@ import BigNumber from 'bignumber.js';
 export class BuyTokenComponent {
   @Input() appereance: TuiAppearance = TuiAppearance.Outline;
 
-  private fromBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
+  private fromToken: TokenInfo = {
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+    amount: new BigNumber(1)
+  };
 
-  private toBlockchain = BLOCKCHAIN_NAME.ETHEREUM;
-
-  private fromTokenAddress = '0x0000000000000000000000000000000000000000';
-
-  private toTokenAddress = '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3';
+  private toToken: TokenInfo = {
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+    symbol: 'RBC'
+  };
 
   constructor(
     private readonly router: Router,
@@ -37,57 +49,37 @@ export class BuyTokenComponent {
    * Finds tokens by address.
    * @return Observable from and to tokens.
    */
-  private findTokensByAddress() {
+  private findTokensByAddress(): Observable<{ fromToken: TokenAmount; toToken: TokenAmount }> {
     return this.swapsService.availableTokens.pipe(
       first(tokens => tokens?.size > 0),
       map((tokens: List<TokenAmount>) => ({
         fromToken: tokens.find(
           token =>
-            token.address === this.fromTokenAddress && token.blockchain === this.fromBlockchain
+            token.address === this.fromToken.address &&
+            token.blockchain === this.fromToken.blockchain
         ),
         toToken: tokens.find(
-          token => token.address === this.toTokenAddress && token.blockchain === this.toBlockchain
+          token =>
+            token.address === this.toToken.address && token.blockchain === this.toToken.blockchain
         )
       }))
     );
   }
 
   /**
-   * Navigate to IT Ethereum and fill swap form from ETH to ALGB.
+   * Navigates to swap page and fill form by tokens.
    */
-  public buyToken() {
+  public buyToken(): void {
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress()))
       .subscribe(({ fromToken, toToken }) => {
         this.swapFormService.input.patchValue({
           fromToken,
           toToken,
-          fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-          toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-          fromAmount: new BigNumber(1)
+          fromBlockchain: fromToken.blockchain,
+          toBlockchain: toToken.blockchain,
+          fromAmount: this.fromToken.amount
         });
       });
   }
-
-  // this.router.navigate(['/']).then(() => {
-  //   this.swapsService.availableTokens
-  //     .pipe(first(tokens => tokens?.size > 0))
-  //     .subscribe(tokens => {
-  //       const ETH = tokens.find(
-  //         token => token.symbol === 'ETH' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-  //       );
-  //
-  //       const RBC = tokens.find(
-  //         token => token.symbol === 'RBC' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-  //       );
-  //
-  //       this.swapFormService.input.patchValue({
-  //         fromToken: ETH,
-  //         toToken: RBC,
-  //         fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-  //         toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-  //         fromAmount: new BigNumber(1)
-  //       });
-  //     });
-  // });
 }
