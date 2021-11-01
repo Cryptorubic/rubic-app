@@ -409,7 +409,7 @@
     "title": "Mis Intercambios"
   },
   "gasRefund": {
-    "title": "Avalanche reembolso de la tarifa del gas",
+    "title": "Reembolso de gasolina",
     "body": {
       "refundAmount": "Cantidad de reembolso",
       "transactions": "Transacciones",
@@ -425,7 +425,7 @@
         "description": "¡Obtenga un reembolso de gasolina por completar el primer intercambio de cadenas múltiples en nuestra plataforma!"
       },
       "2": {
-        "label": "¡Reciba el reembolso de la tarifa de gas por realizar intercambios utilizando tokens de nuestros socios!",
+        "label": "Avalanche reembolso de la tarifa del gas",
         "description": "¡Para celebrar el lanzamiento de la ruta Rubic Multi-Chain en la red Avalanche, nuestro proyecto está comenzando una nueva Campaña de Reembolso de Gas! A partir del 19 de octubre al 2 de noviembre, nuestros usuarios podrán completar el intercambio usando sus tokens favoritos. en la red Avalanche usando Rubic Multi-Chain Routing y obtenga un reembolso de GAS."
       }
     },
