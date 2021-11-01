@@ -59,6 +59,7 @@ import { SuccessTrxNotificationComponent } from './components/success-trx-notifi
 import { PanelErrorContentComponent } from '../features/instant-trade/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '../features/instant-trade/components/provider-panel/panel-content/panel-content.component';
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
+import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
-    SwapButtonComponent
+    SwapButtonComponent,
+    BuyTokenComponent
   ],
   imports: [
     CommonModule,
@@ -164,7 +166,8 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
     OnlyFrameDirective,
     IframeBlockchainIndicatorComponent,
     ThemedIconPipe,
-    UsdPriceContainerComponent
+    UsdPriceContainerComponent,
+    BuyTokenComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]
