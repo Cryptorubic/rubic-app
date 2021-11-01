@@ -24,13 +24,13 @@ export const HEALTHCHECK = {
     contractAddress: '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f',
     contractAbi: ERC20_ABI,
     method: 'symbol',
-    expected: 'USDT'
+    expected: '1USDT'
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
     contractAddress: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
     contractAbi: ERC20_ABI,
     method: 'symbol',
-    expected: 'USDT'
+    expected: 'USDT.e'
   },
   [BLOCKCHAIN_NAME.MOONRIVER]: {
     contractAddress: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C',
