@@ -26,7 +26,7 @@ interface TokenInfo {
 export class BuyTokenComponent {
   @Input() appereance: TuiAppearance = TuiAppearance.Outline;
 
-  private fromToken: TokenInfo = {
+  private fromToken: Required<TokenInfo> = {
     blockchain: BLOCKCHAIN_NAME.ETHEREUM,
     address: '0x0000000000000000000000000000000000000000',
     symbol: 'ETH',
@@ -67,7 +67,7 @@ export class BuyTokenComponent {
   }
 
   /**
-   * Navigates to swap page and fill form by tokens.
+   * Navigates to swap page and fill in tokens form.
    */
   public buyToken(): void {
     from(this.router.navigate(['/']))
