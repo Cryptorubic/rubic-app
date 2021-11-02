@@ -43,7 +43,7 @@
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
     "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
-    "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less amount or top up your {{ nativeToken }} balance.",
+    "insufficientFunds1inch": "No tienes suficiente cantidad de {{{ nativeToken }} para la transferencia y la tarifa de gas. Para la transacción, ingrese una cantidad menor o recargue su saldo de {{ nativeToken }}.",
     "noQrCode": "Asegúrese de haber escaneado qrCode",
     "walletlinkWrongNetwork": "Asegúrese de que la red {{networkToChoose}} esté seleccionada en la aplicación Coinbase. Para cambiar la red en la aplicación coinbase, vaya a la configuración en el panel inferior y seleccione la pestaña \"Active Network\".",
     "noWallet": "No has conectado ninguna billetera",
