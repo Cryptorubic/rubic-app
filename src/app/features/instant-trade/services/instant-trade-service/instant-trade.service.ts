@@ -224,7 +224,7 @@ export class InstantTradeService {
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
         ),
-        catchError(err => of(new CustomError(err.message)))
+        catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
       .subscribe();
   }
@@ -257,7 +257,7 @@ export class InstantTradeService {
     );
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
-        catchError(err => {
+        catchError((err: unknown) => {
           console.debug(err, provider);
           return of(null);
         })

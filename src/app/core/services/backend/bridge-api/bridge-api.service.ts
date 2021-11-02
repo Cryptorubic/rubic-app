@@ -89,7 +89,7 @@ export class BridgeApiService {
         () => {
           resolve();
         },
-        error => {
+        (error: unknown) => {
           console.error(error);
           reject(error);
         }
@@ -116,7 +116,7 @@ export class BridgeApiService {
         () => {
           resolve();
         },
-        error => {
+        (error: unknown) => {
           console.error(error);
           reject(error);
         }
@@ -151,7 +151,7 @@ export class BridgeApiService {
         () => {
           resolve();
         },
-        error => {
+        (error: unknown) => {
           console.error(error);
           reject(error);
         }
@@ -176,7 +176,7 @@ export class BridgeApiService {
             transaction_id: burnTransactionHash
           }
         )
-        .subscribe(resolve, error => {
+        .subscribe(resolve, (error: unknown) => {
           console.error(error);
           reject(error);
         });
@@ -195,7 +195,7 @@ export class BridgeApiService {
         () => {
           resolve();
         },
-        error => {
+        (error: unknown) => {
           console.error(error);
           reject(error);
         }
@@ -219,7 +219,7 @@ export class BridgeApiService {
         () => {
           resolve();
         },
-        error => {
+        (error: unknown) => {
           console.error(error);
           reject(error);
         }

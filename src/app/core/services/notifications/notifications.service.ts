@@ -2,11 +2,11 @@ import { Inject, Injectable, NgZone } from '@angular/core';
 import {
   TuiNotificationContentContext,
   TuiNotificationOptions,
+  TuiNotificationOptionsWithData,
   TuiNotificationsService
 } from '@taiga-ui/core';
 import { Subscription } from 'rxjs';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
-import { TuiNotificationOptionsWithData } from '@taiga-ui/core/modules/notifications/notification-options';
 
 @Injectable({
   providedIn: 'root'

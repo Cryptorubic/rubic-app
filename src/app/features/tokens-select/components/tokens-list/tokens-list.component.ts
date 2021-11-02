@@ -131,7 +131,6 @@ export class TokensListComponent implements AfterViewInit {
   private observeScroll(): void {
     this.scrollSubject
       .pipe(
-        takeUntil(this.destroy$),
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
             debounceTime(300),
@@ -149,7 +148,8 @@ export class TokensListComponent implements AfterViewInit {
               return renderedRange.end > this.tokens.length - 30;
             })
           )
-        )
+        ),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.pageUpdate.emit();

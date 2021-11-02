@@ -223,7 +223,7 @@ export class BridgeService {
         }),
         mergeMap((bridgeTrade: BridgeTrade) => {
           return this.bridgeProvider.createTrade(bridgeTrade).pipe(
-            catchError(err => {
+            catchError((err: unknown) => {
               console.debug(err);
               const error = err instanceof RubicError ? err : new UndefinedError();
               return throwError(error);
@@ -238,7 +238,7 @@ export class BridgeService {
     return this.getBridgeTrade().pipe(
       switchMap(bridgeTrade =>
         this.bridgeProvider.needApprove(bridgeTrade).pipe(
-          catchError(err => {
+          catchError((err: unknown) => {
             console.error(err);
             const error = err instanceof RubicError ? err : new UndefinedError();
             return throwError(error);
@@ -261,7 +261,7 @@ export class BridgeService {
       }),
       mergeMap((bridgeTrade: BridgeTrade) => {
         return this.bridgeProvider.approve(bridgeTrade).pipe(
-          catchError(err => {
+          catchError((err: unknown) => {
             console.debug(err);
             const error = err instanceof RubicError ? err : new UndefinedError();
             return throwError(error);

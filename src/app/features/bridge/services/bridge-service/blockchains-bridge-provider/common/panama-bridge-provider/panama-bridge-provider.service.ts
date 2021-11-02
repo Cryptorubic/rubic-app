@@ -67,7 +67,7 @@ export class PanamaBridgeProviderService {
             )
           );
         }),
-        catchError(e => {
+        catchError((e: unknown) => {
           console.error(e);
           return of(List([]));
         })
@@ -93,7 +93,7 @@ export class PanamaBridgeProviderService {
         }
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),
-      catchError(err => {
+      catchError((err: unknown) => {
         return throwError(err);
       })
     );
@@ -121,7 +121,7 @@ export class PanamaBridgeProviderService {
         const { data } = res;
         return from(this.sendDeposit(data.id, bridgeTrade, data.depositAddress));
       }),
-      catchError(err => {
+      catchError((err: unknown) => {
         return throwError(err);
       })
     );

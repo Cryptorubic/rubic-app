@@ -19,7 +19,8 @@ import {
   map,
   startWith,
   switchMap,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
@@ -47,6 +48,8 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { RubicError } from '@core/errors/models/RubicError';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -354,6 +357,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .approve(bridgeTradeRequest)
       .pipe(first())
       .subscribe(
+        // TODO: fix eslint
+        // eslint-disable-next-line rxjs/no-async-subscribe
         async (_: TransactionReceipt) => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
@@ -370,10 +375,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
         },
-        err => {
+        (err: unknown) => {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch(err);
+          this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
         }
       );
@@ -392,8 +397,24 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.bridgeService
       .createTrade(bridgeTradeRequest)
-      .pipe(first())
+      .pipe(
+        first(),
+        tap(() => {
+          this.tradeInProgressSubscription$.unsubscribe();
+          this.notificationsService.show(
+            new PolymorpheusComponent(SuccessTrxNotificationComponent),
+            {
+              status: TuiNotification.Success,
+              autoClose: 15000
+            }
+          );
+
+          this.counterNotificationsService.updateUnread();
+        })
+      )
       .subscribe(
+        // TODO: fix eslint
+        // eslint-disable-next-line rxjs/no-async-subscribe
         async (_: TransactionReceipt) => {
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
@@ -410,10 +431,10 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           await this.conditionalCalculate();
         },
-        err => {
+        (err: unknown) => {
           this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.errorsService.catch(err);
+          this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
         }
       );

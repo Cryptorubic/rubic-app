@@ -233,7 +233,7 @@ export class TokensSelectComponent implements OnInit {
       .subscribe(() => this.updateTokensList());
 
     this.searchQuery$
-      .pipe(skip(1), takeUntil(this.destroy$), debounceTime(500))
+      .pipe(skip(1), debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
     this.tokensService.tokensNetworkState
@@ -316,6 +316,8 @@ export class TokensSelectComponent implements OnInit {
         });
     }
 
+    // TODO fix eslint
+    // eslint-disable-next-line rxjs/no-async-subscribe
     this.tokens.pipe(first()).subscribe(async tokens => {
       const { favoriteTokens } = this.tokensService;
 
@@ -472,8 +474,8 @@ export class TokensSelectComponent implements OnInit {
       .get(image)
       .pipe(
         mapTo(image),
-        catchError((err: HttpErrorResponse) => {
-          return err.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
+        catchError((err: unknown) => {
+          return (err as HttpErrorResponse)?.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
         })
       )
       .toPromise();

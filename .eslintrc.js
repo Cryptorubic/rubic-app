@@ -3,7 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts'],
-      plugins: ['unused-imports'],
+      plugins: ['unused-imports', 'rxjs'],
       parserOptions: {
         project: ['tsconfig.*?.json', 'e2e/tsconfig.e2e.json'],
         tsconfigRootDir: __dirname,
@@ -12,7 +12,8 @@ module.exports = {
       extends: [
         'plugin:@angular-eslint/recommended',
         'airbnb-typescript/base',
-        'plugin:prettier/recommended'
+        'plugin:prettier/recommended',
+        'plugin:rxjs/recommended'
       ],
       rules: {
         'import/prefer-default-export': 'off',
@@ -75,10 +76,7 @@ module.exports = {
     },
     {
       files: ['*.component.html'],
-      extends: [
-        'plugin:@angular-eslint/template/recommended',
-        'plugin:prettier/recommended'
-      ],
+      extends: ['plugin:@angular-eslint/template/recommended', 'plugin:prettier/recommended'],
       rules: {
         'max-len': ['warn', { code: 200 }]
       }

@@ -84,7 +84,6 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
     this.promoCodesExists = this.promoCodeApiService.promoCodesExists();
     this.debouncePromoCodeInput$
       .pipe(
-        takeUntil(this.destroy$),
         tap(() => {
           this.validationInProcess = true;
           this.cdr.markForCheck();
@@ -93,7 +92,8 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
           return promoCodeText
             ? this.promoCodeApiService.validatePromoCode(promoCodeText, true)
             : of(null);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe(promoCode => {
         this.validationInProcess = false;

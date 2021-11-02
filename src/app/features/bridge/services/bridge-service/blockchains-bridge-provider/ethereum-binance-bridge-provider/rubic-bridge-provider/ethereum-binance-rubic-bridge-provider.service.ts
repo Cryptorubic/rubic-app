@@ -120,7 +120,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       .get('networks/', {}, this.apiUrl)
       .pipe(
         timeout(3000),
-        catchError(e => {
+        catchError((e: unknown) => {
           console.error(e);
           this.tokenPairs$.next(List([]));
           return EMPTY;

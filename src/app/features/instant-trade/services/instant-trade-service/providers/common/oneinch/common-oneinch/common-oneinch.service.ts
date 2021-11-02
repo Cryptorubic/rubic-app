@@ -290,7 +290,7 @@ export class CommonOneinchService {
 
     const oneInchTrade = (await this.httpClient
       .get(`${this.apiBaseUrl}${blockchainId}/swap`, swapTradeParams)
-      .pipe(catchError(err => this.specifyError(err, blockchain)))
+      .pipe(catchError((err: unknown) => this.specifyError(err as HttpErrorResponse, blockchain)))
       .toPromise()) as OneinchSwapResponse;
 
     const trxOptions = {

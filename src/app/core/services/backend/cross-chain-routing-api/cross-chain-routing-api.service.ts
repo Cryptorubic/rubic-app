@@ -80,7 +80,7 @@ export class CrossChainRoutingApiService {
     return this.httpService
       .patch('trades/', { transactionHash, network, promoCode: promoCodeText }, {}, BASE_URL)
       .pipe(
-        catchError(err => {
+        catchError((err: unknown) => {
           console.error(err);
           return undefined;
         }),

@@ -128,13 +128,15 @@ export class TokensService {
     this._tokensRequestParameters$
       .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
       .subscribe(
+        // TODO: fix eslint
+        // eslint-disable-next-line rxjs/no-async-subscribe
         async tokens => {
           if (!this.isTestingMode) {
             this.setDefaultTokensParams(tokens);
             await this.calculateUserTokensBalances();
           }
         },
-        err => console.error('Error retrieving tokens', err)
+        (err: unknown) => console.error('Error retrieving tokens', err)
       );
 
     this.authService.getCurrentUser().subscribe(async user => {
@@ -150,7 +152,7 @@ export class TokensService {
       }
     });
 
-    this._tokensRequestParameters$.next();
+    this._tokensRequestParameters$.next(undefined);
   }
 
   /**

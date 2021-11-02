@@ -187,7 +187,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         );
       }),
       timeout(3000),
-      catchError(err => {
+      catchError((err: unknown) => {
         console.error(err);
         return of({ evoTokens: [], config: {} });
       })

@@ -86,35 +86,32 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       })
       .pipe(timeout(3000))
       .subscribe(
-        async (response: PolygonGraphResponse) => {
+        (response: PolygonGraphResponse) => {
           if (!response.data) {
             this.tokenPairs$.next(List([]));
             return;
           }
 
           const posTokens = response.data.tokenMappings;
-          const promisesTokens: Promise<BridgeTokenPair>[] = [];
-
-          posTokens.forEach(token =>
-            promisesTokens.push(this.parsePolygonTokens(token, tokenAmounts))
+          const bridgeTokenPairs = posTokens.map(token =>
+            this.parsePolygonTokens(token, tokenAmounts)
           );
-          const bridgeTokenPairs = await Promise.all(promisesTokens);
 
           this.tokenPairs$.next(
             List(bridgeTokenPairs.filter(bridgeTokenPair => bridgeTokenPair !== null))
           );
         },
-        err => {
+        (err: unknown) => {
           console.debug('Error retrieving polygon tokens: ', err);
           this.tokenPairs$.next(List([]));
         }
       );
   }
 
-  private async parsePolygonTokens(
+  private parsePolygonTokens(
     token: PolygonGraphToken,
     tokenAmounts: List<TokenAmount>
-  ): Promise<BridgeTokenPair> {
+  ): BridgeTokenPair {
     const ethAddress = token.rootToken;
     let polygonAddress = token.childToken;
 
