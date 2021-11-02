@@ -106,7 +106,6 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   }
 
   private sortTableData(): void {
-    console.log('work');
     this.sortedTableData = this.tableData?.sort(
       this.sortBy(this.selectedColumn.value, this.sortDirection)
     );
