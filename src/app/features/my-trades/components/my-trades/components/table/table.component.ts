@@ -44,7 +44,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     Date: () => 0
   };
 
-  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Status);
+  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
 
   public readonly direction$ = new BehaviorSubject<-1 | 1>(-1);
 
@@ -53,6 +53,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   public readonly size$ = new Subject<number>();
 
   private request$: Observable<readonly TableRow[]>;
+
+  private isPrimarySort = true;
 
   public visibleData$: Observable<readonly TableRow[]>;
 
@@ -65,7 +67,12 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   ngOnInit(): void {
     this.request$ = combineLatest([
       this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
-      this.direction$,
+      this.direction$.pipe(
+        map((dir, index) => {
+          this.isPrimarySort = Boolean(index);
+          return dir;
+        })
+      ),
       this.page$.pipe(startWith(0)),
       this.size$.pipe(startWith(10)),
       this.tableData$.pipe(filter(isPresent))
@@ -79,18 +86,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     this.visibleData$ = this.request$.pipe(
       filter(isPresent),
       map(visibleTableData => visibleTableData.filter(isPresent)),
-      startWith([]),
-      map(visibleTableData => {
-        const waitingForReceivingTrades = visibleTableData.filter(
-          el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
-        const otherTrades = visibleTableData
-          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
-          .sort(this.sortBy('Date', this.direction$.getValue()));
-        return [...waitingForReceivingTrades, ...otherTrades];
-      })
+      startWith([])
     );
-
     this.total$ = this.request$.pipe(
       filter(isPresent),
       map(({ length }) => length),
@@ -117,6 +114,20 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   ): ReadonlyArray<TableRow | null> {
     const start = page * size;
     const end = start + size;
+
+    if (!this.isPrimarySort) {
+      this.isPrimarySort = false;
+      const waitingForReceivingTrades = tableData.filter(
+        el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+      );
+      const otherTrades = tableData
+        .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+        .sort(this.sortBy('Date', this.direction$.getValue()));
+
+      return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>
+        index >= start && index < end ? user : null
+      );
+    }
 
     return [...tableData]
       .sort(this.sortBy(key, direction))

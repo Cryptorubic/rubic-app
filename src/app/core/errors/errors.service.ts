@@ -100,7 +100,7 @@ export class ErrorsService {
   ): boolean {
     return (
       currentError.message.includes(rpcError.code) ||
-      currentError.message.includes(rpcError.message) ||
+      currentError.message.toLocaleLowerCase().includes(rpcError.message.toLocaleLowerCase()) ||
       (currentError?.code && String(currentError.code) === rpcError.code)
     );
   }

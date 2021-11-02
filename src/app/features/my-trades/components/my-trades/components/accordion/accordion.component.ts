@@ -65,7 +65,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   }
 
   ngOnInit(): void {
-    this.selectedColumn = this.columns.find(column => column.value === 'Status');
+    this.selectedColumn = this.columns.find(column => column.value === 'Date');
     this.page = 0;
 
     this.tableDataSubscription$ = this.tableData$
@@ -85,8 +85,8 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
           .sort(this.sortBy('Date', -1));
 
         this.tableData = [...waitingForReceivingTrades, ...otherTrades];
-
-        this.sortTableData();
+        this.sortedTableData = this.tableData;
+        this.goToPage(this.page);
       });
   }
 
@@ -106,6 +106,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   }
 
   private sortTableData(): void {
+    console.log('work');
     this.sortedTableData = this.tableData?.sort(
       this.sortBy(this.selectedColumn.value, this.sortDirection)
     );
