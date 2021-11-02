@@ -96,19 +96,6 @@ tui-notification-alert {
   }
 }
 
-
-
-@include b($mobile-md) {
-  tui-badge.notification-counter {
-    &[data-tui-host-padding='m'][data-tui-host-size='s'] {
-      min-width: 16px;
-      height: 16px;
-
-      line-height: 16px;
-    }
-  }
-}
-
 ::ng-deep tui-dialog .content {
   @include iframe {
     padding: 0 !important;

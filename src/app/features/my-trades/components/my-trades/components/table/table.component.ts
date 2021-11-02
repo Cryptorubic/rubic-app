@@ -54,7 +54,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   private request$: Observable<readonly TableRow[]>;
 
-  private isPrimarySort = true;
+  private isFirstView = true;
 
   public visibleData$: Observable<readonly TableRow[]>;
 
@@ -69,7 +69,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
       this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
       this.direction$.pipe(
         map((dir, index) => {
-          this.isPrimarySort = Boolean(index);
+          this.isFirstView = Boolean(index);
           return dir;
         })
       ),
@@ -115,8 +115,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     const start = page * size;
     const end = start + size;
 
-    if (!this.isPrimarySort) {
-      this.isPrimarySort = false;
+    if (!this.isFirstView) {
+      this.isFirstView = false;
       const waitingForReceivingTrades = tableData.filter(
         el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
       );
