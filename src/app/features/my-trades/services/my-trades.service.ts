@@ -103,11 +103,11 @@ export class MyTradesService {
           .filter(trade => !!trade);
         const sources: Observable<string>[] = filteredTrades.map(trade => {
           if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
-            return trade.transactionHash
-              ? of(trade.transactionHash)
-              : this.loadPanamaTxHash(trade.transactionHash);
+            return trade.fromTransactionHash
+              ? of(trade.fromTransactionHash)
+              : this.loadPanamaTxHash(trade.fromTransactionHash);
           }
-          return of(trade.transactionHash);
+          return of(trade.fromTransactionHash);
         });
         return forkJoin(sources).pipe(
           map(txHashes =>
@@ -200,7 +200,7 @@ export class MyTradesService {
             }
             const amount = Web3Public.fromWei(item.value, toToken.decimals).toFixed();
             return {
-              transactionHash: item.hash,
+              fromTransactionHash: item.hash,
               transactionHashScanUrl: this.scannerLinkPipe.transform(
                 item.hash,
                 item.network,

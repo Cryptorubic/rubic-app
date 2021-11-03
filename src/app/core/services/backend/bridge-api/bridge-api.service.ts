@@ -64,7 +64,8 @@ export class BridgeApiService {
     }
 
     return {
-      transactionHash: trade.fromTransactionHash,
+      fromTransactionHash: trade.fromTransactionHash,
+      toTransactionHash: trade.toTransactionHash,
       transactionId: trade.transaction_id,
       status,
       provider: trade.type,
@@ -173,18 +174,18 @@ export class BridgeApiService {
     status: TRANSACTION_STATUS
   ): Promise<void> {
     return this.httpService
-      .patch(
+      .patch<void>(
         'bridges/transactions',
         {
           type: 'polygon',
-          second_transaction_id: newTransactionHash,
+          to_transaction_hash: newTransactionHash,
           status
         },
         {
           transaction_id: burnTransactionHash
         }
       )
-      .toPromise() as Promise<void>;
+      .toPromise();
   }
 
   /**
@@ -217,7 +218,7 @@ export class BridgeApiService {
       transaction_id: transactionHash
     };
 
-    return this.httpService.post('bridges/transactions', body).toPromise() as Promise<void>;
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**

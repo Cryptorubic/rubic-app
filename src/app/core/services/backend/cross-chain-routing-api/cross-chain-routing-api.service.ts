@@ -13,7 +13,7 @@ import {
   CrossChainTradesResponseApi
 } from 'src/app/core/services/backend/cross-chain-routing-api/models/CrossChainTradesResponseApi';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.dev2';
 
 export const BASE_URL = `${environment.crossChain.apiBaseUrl}/`;
 
@@ -36,11 +36,11 @@ export class CrossChainRoutingApiService {
   }
 
   static parseTradeApiToTableTrade(tradeApi: CrossChainTradesResponseApi): TableTrade {
-    const transactionHash = tradeApi.toTransactionHash || tradeApi.fromTransactionHash;
     const transactionHashScanUrl = tradeApi.toTransactionScanURL || tradeApi.fromTransactionScanURL;
 
     return {
-      transactionHash,
+      fromTransactionHash: tradeApi.fromTransactionHash,
+      toTransactionHash: tradeApi.toTransactionHash,
       transactionHashScanUrl,
       status: tradeApi.status,
       provider: 'CROSS_CHAIN_ROUTING_PROVIDER',

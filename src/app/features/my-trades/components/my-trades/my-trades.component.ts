@@ -154,7 +154,7 @@ export class MyTradesComponent implements OnInit {
     };
 
     this.myTradesService
-      .depositPolygonBridgeTradeAfterCheckpoint(trade.transactionHash, onTransactionHash)
+      .depositPolygonBridgeTradeAfterCheckpoint(trade.fromTransactionHash, onTransactionHash)
       .subscribe(
         async _receipt => {
           tradeInProgressSubscription$.unsubscribe();
