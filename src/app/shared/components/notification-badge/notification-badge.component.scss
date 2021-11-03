@@ -1,0 +1,14 @@
+tui-badge {
+  &[data-tui-host-status='default'] {
+    color: white;
+
+    background-color: var(--main-green);
+  }
+
+  &[data-tui-host-padding='m'][data-tui-host-size='s'] {
+    padding: 2px 3px 0 2px;
+
+    line-height: 20px;
+    text-align: center;
+  }
+}

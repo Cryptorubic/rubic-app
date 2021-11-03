@@ -13,6 +13,7 @@ import { TotalSupplyOverflowErrorComponent } from './components/total-supply-ove
 import { OverQueryLimitErrorComponent } from './components/over-query-limit-error/over-query-limit-error.component';
 import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-overflow-error/max-gas-price-overflow-error.component';
 import { InsufficientFundsCcrErrorComponent } from './components/insufficient-funds-ccr-error/insufficient-funds-ccr-error.component';
+import { InsufficientFundsOneinchErrorComponent } from './components/insufficient-funds-oneinch-error/insufficient-funds-oneinch-error.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { InsufficientFundsCcrErrorComponent } from './components/insufficient-fu
     OverQueryLimitErrorComponent,
     MaxGasPriceOverflowErrorComponent,
     UnknownErrorComponent,
-    InsufficientFundsCcrErrorComponent
+    InsufficientFundsCcrErrorComponent,
+    InsufficientFundsOneinchErrorComponent
   ],
   imports: [CommonModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
   entryComponents: [

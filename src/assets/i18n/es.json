@@ -43,6 +43,7 @@
     "userReject": "Has cancelado la ejecución de la transacción. Por favor confírmala antes de completar la transacción.",
     "rubicError": "Por favor intente nuevamente más tarde o pruebe de usar otro dispositivo. Si todavía tienes problemas, no dudes en contactar al",
     "insufficientFunds": "No tienes suficiente {{ tokenSymbol }}. Su balance es {{balance}} {{tokenSymbol}}, pero {{requiredBalance}} {{tokenSymbol}} se requiere.",
+    "insufficientFunds1inch": "No tienes suficiente cantidad de {{{ nativeToken }} para la transferencia y la tarifa de gas. Para la transacción, ingrese una cantidad menor o recargue su saldo de {{ nativeToken }}.",
     "noQrCode": "Asegúrese de haber escaneado qrCode",
     "walletlinkWrongNetwork": "Asegúrese de que la red {{networkToChoose}} esté seleccionada en la aplicación Coinbase. Para cambiar la red en la aplicación coinbase, vaya a la configuración en el panel inferior y seleccione la pestaña \"Active Network\".",
     "noWallet": "No has conectado ninguna billetera",
@@ -56,7 +57,7 @@
     "notSupportedItNetwork": "La red elegida no es compatible con intercambios instantáneos",
     "notSupportedBridge": "El puente elegido no es compatible. Por favor, cambie el orden o elija otras redes.",
     "insufficientLiquidityCCR": "Liquidez insuficiente para esta operación",
-    "insufficientLiquidityIT": "Liquidez insuficiente para esta operación. Intente habilitar el comercio multitienda.",
+    "insufficientLiquidityIT": "Liquidez insuficiente para esta operación.",
     "1inchRefreshError":  "1inch no está disponible. Intente actualizar el comercio.",
     "1inchNotSupportedToken": "1inch no es compatible con uno de los tokens seleccionados.",
     "cancelDeadline": "Su transacción se ha revertido porque la fecha límite de la transacción ha expirado. Intente aumentar el tiempo límite de la transacción o la cantidad de gas.",
@@ -583,7 +584,7 @@
     }
   },
   "banner": {
-    "text": "Puedes comprar $ALGB en Rubic.",
+    "text": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 9.500 tokens en Ethereum, BSC, Polygon y Avalanche",
     "link": "¡Pruebalo ahora!"
   },
   "volume": {

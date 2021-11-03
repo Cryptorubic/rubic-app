@@ -10,7 +10,8 @@ import {
   TuiInputModule,
   TuiTabsModule,
   TuiInputCountModule,
-  TuiDataListWrapperModule
+  TuiDataListWrapperModule,
+  TuiBadgeModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
@@ -61,6 +62,8 @@ import { PanelContentComponent } from '../features/instant-trade/components/prov
 import { SwapButtonComponent } from './components/buttons/swap-button-container/components/swap-button/swap-button.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
+import { BuyTokenComponent } from './components/buy-token/buy-token.component';
+import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 
 @NgModule({
   declarations: [
@@ -89,12 +92,18 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
     PanelErrorContentComponent,
     PanelContentComponent,
     UsdPriceContainerComponent,
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
+    BuyTokenComponent,
+    IframeBlockchainIndicatorComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
     WithRoundPipe,
     ShortenAmountPipe,
+    ThemedIconPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
@@ -105,7 +114,9 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
     ThemedIconPipe,
     SwapButtonComponent,
     RotatingIconComponent,
-    InfoHintComponent
+    InfoHintComponent,
+    SwapButtonComponent,
+    NotificationBadgeComponent
   ],
   imports: [
     CommonModule,
@@ -131,7 +142,8 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
     TuiTabsModule,
     TuiInputCountModule,
     TuiDataListWrapperModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiBadgeModule
   ],
   exports: [
     SpinnerComponent,
@@ -170,7 +182,9 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,
-    InfoHintComponent
+    InfoHintComponent,
+    BuyTokenComponent,
+    NotificationBadgeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe],
   entryComponents: [SuccessTrxNotificationComponent]
