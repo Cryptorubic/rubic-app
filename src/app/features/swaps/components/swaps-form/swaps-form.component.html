@@ -87,6 +87,7 @@
           *ngIf="isBridge"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          (tradeStatusChange)="tradeStatus = $event"
         ></app-bridge-bottom-form>
 
         <app-cross-chain-routing-bottom-form

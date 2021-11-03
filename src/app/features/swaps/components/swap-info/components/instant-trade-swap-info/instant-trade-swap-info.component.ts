@@ -4,9 +4,7 @@ import {
   ChangeDetectorRef,
   Self,
   OnInit,
-  Input,
-  Output,
-  EventEmitter
+  Input
 } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
@@ -20,6 +18,7 @@ import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { InstantTradeService } from '@features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
 import { PRICE_IMPACT_RANGE } from '@shared/utils/price-impact/models/PRICE_IMPACT_RANGE';
+import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -36,8 +35,6 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       this.path = [];
     }
   }
-
-  @Output() infoCalculated = new EventEmitter<void>();
 
   public readonly PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
 
@@ -81,6 +78,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
+    private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
@@ -110,7 +108,9 @@ export class InstantTradeSwapInfoComponent implements OnInit {
           toAmount
         );
 
-        this.infoCalculated.emit();
+        this.swapInfoService.setInfoCalculated();
+
+        this.cdr.markForCheck();
       });
 
     this.settingsService.instantTrade.controls.slippageTolerance.valueChanges

@@ -9,16 +9,14 @@ import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/servi
 import { BinanceTronBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-tron-bridge-provider/binance-tron-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
-import { catchError, filter, first, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
-import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
@@ -26,6 +24,7 @@ import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
+import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
 
@@ -46,6 +45,7 @@ export class BridgeService {
   private isTestingMode = false;
 
   constructor(
+    // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
     private readonly rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
     private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
@@ -53,12 +53,11 @@ export class BridgeService {
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private readonly binanceTronBridgeProviderService: BinanceTronBridgeProviderService,
     private readonly binancePolygonProviderService: BinancePolygonBridgeProviderService,
+    // bridge providers end
     private readonly authService: AuthService,
     private readonly web3PublicService: Web3PublicService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly bridgeApiService: BridgeApiService,
-    private readonly tokensService: TokensService,
     private readonly swapFormService: SwapFormService
   ) {
     this.setupBlockchainsProviders();
@@ -163,10 +162,9 @@ export class BridgeService {
     );
   }
 
-  public getCurrentBridgeToken(): Observable<BridgeTokenPair> {
+  private getCurrentBridgeToken(): Observable<BridgeTokenPair> {
     return this.tokens$.pipe(
-      filter(tokens => !!tokens.length),
-      first(),
+      first(tokens => !!tokens.length),
       map(tokens => {
         const { fromBlockchain, toBlockchain, fromToken, toToken } =
           this.swapFormService.inputValue;
@@ -177,34 +175,31 @@ export class BridgeService {
         const bridgeTokensList = tokens.find(
           item => item.fromBlockchain === fromBlockchain && item.toBlockchain === toBlockchain
         );
-
         const bridgeToken = bridgeTokensList?.tokenPairs?.find(
           item =>
-            item.tokenByBlockchain[fromBlockchain].address.toLowerCase() ===
-              fromToken.address.toLowerCase() &&
-            item.tokenByBlockchain[toBlockchain].address.toLowerCase() ===
-              toToken.address.toLowerCase()
+            compareAddresses(item.tokenByBlockchain[fromBlockchain].address, fromToken.address) &&
+            compareAddresses(item.tokenByBlockchain[toBlockchain].address, toToken.address)
         );
 
         if (!bridgeToken) {
           return null;
         }
-
         return bridgeToken;
       })
     );
   }
 
-  private getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
+  public getBridgeTrade(bridgeTradeRequest?: BridgeTradeRequest): Observable<BridgeTrade> {
     const { fromBlockchain, toBlockchain, fromAmount } = this.swapFormService.inputValue;
 
     return this.getCurrentBridgeToken().pipe(
       map(bridgeToken => ({
+        provider: this.bridgeProvider.getProviderType(bridgeToken),
         fromBlockchain,
         toBlockchain,
         token: bridgeToken,
         amount: fromAmount,
-        toAddress: bridgeTradeRequest?.toAddress || this.authService.user.address,
+        toAddress: bridgeTradeRequest?.toAddress || this.authService.user?.address,
         onTransactionHash: bridgeTradeRequest?.onTransactionHash || (() => {})
       }))
     );

@@ -81,8 +81,7 @@ export class SwapsFormComponent implements OnInit {
   public get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(
-      form.fromAmount &&
-        form.fromAmount.gt(0) &&
+      form.fromAmount?.gt(0) &&
         form.fromBlockchain &&
         form.toBlockchain &&
         form.fromToken &&
