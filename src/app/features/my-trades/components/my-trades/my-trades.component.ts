@@ -63,12 +63,11 @@ export class MyTradesComponent implements OnInit {
 
     this.myTradesService.tableTrades$
       .pipe(
-        takeUntil(this.destroy$),
-        catchError(e => {
-          console.error(e);
+        catchError(() => {
           this.errorsService.catch(new NoDataMyTradesError());
           return of([]);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe(trades => {
         if (this.authService.user) {

@@ -85,7 +85,7 @@ export class BridgeApiService {
   }
 
   /**
-   * Makes POST request for add transaction to database.
+   * Makes POST request to add transaction to database.
    * @param binanceTransactionId ID of transaction in BSC.
    * @param ethSymbol From token symbol.
    * @param bscSymbol To token symbol.
@@ -106,7 +106,7 @@ export class BridgeApiService {
   }
 
   /**
-   * Makes POST request for add transaction to database.
+   * Makes POST request to add transaction to database.
    * @param fromBlockchain From blockchain name.
    * @param transactionHash Hash of transaction.
    * @param fromAmount Amount of tokens sent.
@@ -130,7 +130,7 @@ export class BridgeApiService {
   }
 
   /**
-   * Makes POST request for add transaction to database.
+   * Makes POST request to add transaction to database.
    * @param bridgeTrade Trade data object.
    * @param status Trade transaction status.
    * @param transactionHash Hash of transaction.
@@ -188,7 +188,7 @@ export class BridgeApiService {
   }
 
   /**
-   * Makes POST request for add transaction to database.
+   * Makes POST request to add transaction to database.
    * @param transactionHash Transaction hash.
    */
   public postXDaiTransaction(transactionHash: string): Promise<void> {
@@ -202,7 +202,7 @@ export class BridgeApiService {
   }
 
   /**
-   * Makes POST request for add transaction to database.
+   * Makes POST request to add transaction to database.
    * @param transactionHash Transaction hash.
    * @param fromBlockchain From blockchain name.
    */

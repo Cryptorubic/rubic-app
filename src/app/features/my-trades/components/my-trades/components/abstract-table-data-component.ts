@@ -58,7 +58,6 @@ export abstract class AbstractTableDataComponent {
     }
 
     const transactionHash = trade.toTransactionHash || trade.fromTransactionHash;
-
     const blockchain = trade.toTransactionHash
       ? trade.toToken.blockchain
       : trade.fromToken.blockchain;
