@@ -45,7 +45,7 @@
         [currentlySelectedToken]="
           currentlySelectedToken?.blockchain === blockchain ? currentlySelectedToken : null
         "
-        [tokensNetworkState]="tokensNetworkState"
+        [tokensNetworkState]="tokensNetworkState[blockchain]"
         [loading]="tokensListUpdating"
         (tokenSelect)="selectToken($event)"
         (pageUpdate)="fetchNewPageTokens()"
