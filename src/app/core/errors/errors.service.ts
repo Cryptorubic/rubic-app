@@ -10,6 +10,7 @@ import { EIP_1193 } from 'src/app/core/errors/models/standard/EIP-1193';
 import { EIP_1474 } from 'src/app/core/errors/models/standard/EIP-1474';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
+import { customRpcError } from 'src/app/core/errors/models/standard/custom-rpc-error';
 
 @Injectable({
   providedIn: 'root'
@@ -88,17 +89,32 @@ export class ErrorsService {
   }
 
   /**
-   * Check if error connected to RPC.
+   * Checks for an error.
+   * @param rpcError Verifiable error.
+   * @param currentError Current error to check.
+   * @return boolean Error content flag.
+   */
+  public findRPCError(
+    rpcError: { code?: string; message: string; description?: string },
+    currentError: RubicError<ERROR_TYPE>
+  ): boolean {
+    return (
+      currentError.message.includes(rpcError.code) ||
+      currentError.message.toLocaleLowerCase().includes(rpcError.message.toLocaleLowerCase()) ||
+      (currentError?.code && String(currentError.code) === rpcError.code)
+    );
+  }
+
+  /**
+   * Checks if error connected to RPC.
    * @param currentError Error to check.
+   * @return boolean Error content flag.
    */
   private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
-    const findRPCError = (rpcError: { code: string; message: string; description: string }) =>
-      currentError.message.includes(rpcError.code) ||
-      (currentError?.code && String(currentError.code) === rpcError.code);
-    const providerRPCError = EIP_1193.some(findRPCError);
-    if (providerRPCError) {
-      return true;
-    }
-    return EIP_1474.some(findRPCError);
+    return (
+      EIP_1193.some(rpcError => this.findRPCError(rpcError, currentError)) ||
+      EIP_1474.some(rpcError => this.findRPCError(rpcError, currentError)) ||
+      customRpcError.some(rpcError => this.findRPCError(rpcError, currentError))
+    );
   }
 }

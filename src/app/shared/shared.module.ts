@@ -10,7 +10,8 @@ import {
   TuiInputModule,
   TuiTabsModule,
   TuiInputCountModule,
-  TuiDataListWrapperModule
+  TuiDataListWrapperModule,
+  TuiBadgeModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
@@ -61,6 +62,7 @@ import { SwapButtonComponent } from './components/buttons/swap-button-container/
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
+import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +107,14 @@ import { BuyTokenComponent } from './components/buy-token/buy-token.component';
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective
+    OnlyFrameDirective,
+    IframeBlockchainIndicatorComponent,
+    ThemedIconPipe,
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
+    SwapButtonComponent,
+    NotificationBadgeComponent
   ],
   imports: [
     CommonModule,
@@ -131,7 +140,8 @@ import { BuyTokenComponent } from './components/buy-token/buy-token.component';
     TuiTabsModule,
     TuiInputCountModule,
     TuiDataListWrapperModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiBadgeModule
   ],
   exports: [
     SpinnerComponent,
@@ -170,8 +180,8 @@ import { BuyTokenComponent } from './components/buy-token/buy-token.component';
     UsdPriceContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
-    UsdPriceContainerComponent,
-    BuyTokenComponent
+    BuyTokenComponent,
+    NotificationBadgeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]

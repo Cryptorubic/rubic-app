@@ -76,15 +76,17 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
         if (this.pagesLength <= this.page) {
           this.page = 0;
         }
-        this.sortTableData();
 
         const waitingForReceivingTrades = this.tableData.filter(
           el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
         );
-        const otherTrades = this.tableData.filter(
-          el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
+        const otherTrades = this.tableData
+          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+          .sort(this.sortBy('Date', -1));
+
         this.tableData = [...waitingForReceivingTrades, ...otherTrades];
+        this.sortedTableData = this.tableData;
+        this.goToPage(this.page);
       });
   }
 
