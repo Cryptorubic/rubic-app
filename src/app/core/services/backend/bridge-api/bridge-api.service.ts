@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { EMPTY, Observable, of } from 'rxjs';
-import { catchError, first, map, mergeMap, switchMap, timeout } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { first, map, mergeMap, switchMap, timeout } from 'rxjs/operators';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import {
   BridgeBlockchainApi,
@@ -42,11 +42,7 @@ export class BridgeApiService {
         timeout(3000),
         map((tradesApi: BridgeTableTradeApi[]) =>
           tradesApi.map(trade => this.parseTradeApiToTableTrade(trade))
-        ),
-        catchError(e => {
-          console.error(e);
-          return of([]);
-        })
+        )
       );
   }
 
@@ -106,7 +102,7 @@ export class BridgeApiService {
       bscSymbol
     };
 
-    return this.httpService.post('bridges/transactions', body).toPromise() as Promise<void>;
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**
@@ -130,7 +126,7 @@ export class BridgeApiService {
       walletFromAddress
     };
 
-    return this.httpService.post('bridges/transactions', body).toPromise() as Promise<void>;
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**
@@ -162,7 +158,7 @@ export class BridgeApiService {
       walletDepositAddress: '0xBbD7cBFA79faee899Eaf900F13C9065bF03B1A74'
     };
 
-    return this.httpService.post('bridges/transactions', body).toPromise() as Promise<void>;
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**
@@ -202,7 +198,7 @@ export class BridgeApiService {
       transaction_id: transactionHash
     };
 
-    return this.httpService.post('bridges/transactions', body).toPromise() as Promise<void>;
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**
