@@ -35,7 +35,6 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 import {
-  PaginatedPage,
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
@@ -117,9 +116,9 @@ export class TokensSelectComponent implements OnInit {
   public currentlySelectedToken: TokenAmount;
 
   /**
-   * Backend-api state of tokens in currently selected blockchain.
+   * Backend-api state of tokens in blockchains.
    */
-  public tokensNetworkState: PaginatedPage;
+  public tokensNetworkState: TokensNetworkState;
 
   /**
    * True when new tokens are being loaded from backend.
@@ -239,7 +238,7 @@ export class TokensSelectComponent implements OnInit {
     this.tokensService.tokensNetworkState
       .pipe(takeUntil(this.destroy$))
       .subscribe((tokensNetworkState: TokensNetworkState) => {
-        this.tokensNetworkState = tokensNetworkState[this.blockchain as PAGINATED_BLOCKCHAIN_NAME];
+        this.tokensNetworkState = tokensNetworkState;
         this.cdr.markForCheck();
       });
   }

@@ -157,6 +157,7 @@ export class SwapsFormComponent implements OnInit {
         this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
 
         this.isLoading = false;
+        this.cdr.detectChanges();
       });
   }
 
