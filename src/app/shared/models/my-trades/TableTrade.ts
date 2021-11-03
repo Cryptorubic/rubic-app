@@ -18,6 +18,7 @@ export type TableProvider =
   | 'GAS_REFUND_PROVIDER';
 
 export interface TableTrade {
+  transactionId?: string;
   transactionHash: string;
   transactionHashScanUrl?: string;
   status: TRANSACTION_STATUS;

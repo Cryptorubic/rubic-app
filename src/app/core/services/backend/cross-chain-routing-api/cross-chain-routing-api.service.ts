@@ -13,7 +13,7 @@ import {
   CrossChainTradesResponseApi
 } from 'src/app/core/services/backend/cross-chain-routing-api/models/CrossChainTradesResponseApi';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.dev2';
 
 export const BASE_URL = `${environment.crossChain.apiBaseUrl}/`;
 

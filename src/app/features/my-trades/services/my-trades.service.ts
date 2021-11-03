@@ -101,11 +101,14 @@ export class MyTradesService {
         const filteredTrades = trades
           .map(trade => this.prepareBridgeData(trade))
           .filter(trade => !!trade);
-        const sources: Observable<string>[] = filteredTrades.map(trade =>
-          trade.provider === BRIDGE_PROVIDER.PANAMA
-            ? this.loadPanamaTxHash(trade.transactionHash)
-            : of(trade.transactionHash)
-        );
+        const sources: Observable<string>[] = filteredTrades.map(trade => {
+          if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
+            return trade.transactionHash
+              ? of(trade.transactionHash)
+              : this.loadPanamaTxHash(trade.transactionHash);
+          }
+          return of(trade.transactionHash);
+        });
         return forkJoin(sources).pipe(
           map(txHashes =>
             txHashes.map((hash, index) => ({
