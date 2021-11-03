@@ -73,7 +73,7 @@
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Oops, something went wrong, please try to reload the page. Contact our support if you still have this issue after reloading"
+    "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки."
   },
   "navigation": {
     "about": "О компании",
