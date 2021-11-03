@@ -2,11 +2,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
@@ -64,6 +66,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
+
   public readonly TRADE_STATUS = TRADE_STATUS;
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
@@ -94,11 +98,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
-  public tradeStatus: TRADE_STATUS;
+  private _tradeStatus: TRADE_STATUS;
 
   private calculateTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
+
+  public get tradeStatus(): TRADE_STATUS {
+    return this._tradeStatus;
+  }
+
+  public set tradeStatus(value: TRADE_STATUS) {
+    this._tradeStatus = value;
+    this.tradeStatusChange.emit(value);
+  }
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =

@@ -4,7 +4,9 @@ import {
   ChangeDetectorRef,
   Self,
   OnInit,
-  Input
+  Input,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
@@ -34,6 +36,8 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       this.path = [];
     }
   }
+
+  @Output() infoCalculated = new EventEmitter<void>();
 
   public readonly PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
 
@@ -106,7 +110,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
           toAmount
         );
 
-        this.cdr.markForCheck();
+        this.infoCalculated.emit();
       });
 
     this.settingsService.instantTrade.controls.slippageTolerance.valueChanges

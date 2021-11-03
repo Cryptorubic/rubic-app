@@ -57,7 +57,7 @@ export class InstantTradeService {
   }
 
   public static isUniswapV2Trade(trade: InstantTrade): trade is UniswapV2InstantTrade {
-    return 'path' in trade;
+    return trade && 'path' in trade;
   }
 
   constructor(

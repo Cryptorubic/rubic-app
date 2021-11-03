@@ -80,6 +80,7 @@
           [tokens]="availableTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
           (currentInstantTradeChange)="currentInstantTrade = $event"
+          (tradeStatusChange)="tradeStatus = $event"
         ></app-instant-trade-bottom-form>
 
         <app-bridge-bottom-form
@@ -92,9 +93,9 @@
           *ngIf="isCrossChainRouting"
           [onRefreshTrade]="onRefreshTrade"
           (onRefreshStatusChange)="loadingStatus = $event"
-          (tradeStatusChange)="tradeStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          (tradeStatusChange)="tradeStatus = $event"
         ></app-cross-chain-routing-bottom-form>
       </div>
     </main>
@@ -102,8 +103,10 @@
 
   <ng-container *noFrame>
     <app-swap-info-container
+      *ngIf="allowTrade"
       [swapType]="swapType"
       [currentInstantTrade]="currentInstantTrade"
+      [tradeStatus]="tradeStatus"
     ></app-swap-info-container>
   </ng-container>
 

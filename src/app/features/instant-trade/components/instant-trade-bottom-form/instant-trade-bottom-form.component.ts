@@ -78,6 +78,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() currentInstantTradeChange = new EventEmitter<InstantTrade>();
 
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
+
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
@@ -105,7 +107,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     to: boolean;
   };
 
-  public tradeStatus: TRADE_STATUS;
+  private _tradeStatus: TRADE_STATUS;
 
   public needApprove: boolean;
 
@@ -128,6 +130,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public set selectedProvider(selectedProvider: ProviderControllerData) {
     this._selectedProvider = selectedProvider;
     this.currentInstantTradeChange.emit(selectedProvider?.trade);
+  }
+
+  public get tradeStatus(): TRADE_STATUS {
+    return this._tradeStatus;
+  }
+
+  public set tradeStatus(value: TRADE_STATUS) {
+    this._tradeStatus = value;
+    this.tradeStatusChange.emit(value);
   }
 
   get allowTrade(): boolean {
