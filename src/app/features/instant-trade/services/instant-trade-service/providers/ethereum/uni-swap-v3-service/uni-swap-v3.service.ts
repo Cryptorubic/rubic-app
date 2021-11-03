@@ -28,7 +28,7 @@ import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UniswapV3Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Trade';
+import { UniswapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3InstantTrade';
 import { startWith } from 'rxjs/operators';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
@@ -144,7 +144,7 @@ export class UniSwapV3Service implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean
-  ): Promise<UniswapV3Trade> {
+  ): Promise<UniswapV3InstantTrade> {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
@@ -166,7 +166,7 @@ export class UniSwapV3Service implements ItProvider {
       gasPriceInUsd
     );
 
-    const trade: UniswapV3Trade = {
+    const trade: UniswapV3InstantTrade = {
       blockchain: this.blockchain,
       from: {
         token: fromToken,
@@ -419,7 +419,7 @@ export class UniSwapV3Service implements ItProvider {
   }
 
   public async createTrade(
-    trade: UniswapV3Trade,
+    trade: UniswapV3InstantTrade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(this.blockchain);
@@ -442,7 +442,7 @@ export class UniSwapV3Service implements ItProvider {
    * @param options Instant trade options.
    */
   private async swapTokens(
-    trade: UniswapV3Trade,
+    trade: UniswapV3InstantTrade,
     fromAmountAbsolute: string,
     toTokenAddress: string,
     isEth: IsEthFromOrTo,

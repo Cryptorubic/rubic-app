@@ -31,13 +31,14 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
+import { SushiSwapAvalancheService } from '@features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { UniswapV2InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2InstantTrade';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,10 @@ export class InstantTradeService {
 
   public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
+  }
+
+  public static isUniswapV2Trade(trade: InstantTrade): trade is UniswapV2InstantTrade {
+    return 'path' in trade;
   }
 
   constructor(

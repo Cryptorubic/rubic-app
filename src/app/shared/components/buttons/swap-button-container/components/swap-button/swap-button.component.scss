@@ -2,18 +2,18 @@
 
 :host-context(html.dark) {
   .price-impact {
-    &_low {
+    &_yellow {
       color: #d8ba22fa;
     }
 
-    &_high {
+    &_red {
       color: #f54e4f;
     }
   }
 }
 
 .button-swap {
-  &_warning-low {
+  &_warning-yellow {
     ::ng-deep {
       [tuiButton] {
         &._pressed {
@@ -31,7 +31,7 @@
     }
   }
 
-  &_warning-high {
+  &_warning-red {
     ::ng-deep {
       [tuiButton] {
         &._pressed {
@@ -73,11 +73,11 @@
 }
 
 .price-impact {
-  &_low {
+  &_yellow {
     color: rgba(203, 174, 20);
   }
 
-  &_high {
+  &_red {
     color: #ff4c4d;
   }
 }

@@ -79,7 +79,7 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
-          (maxGasLimit)="maxGasFee = $event"
+          (currentInstantTradeChange)="currentInstantTrade = $event"
         ></app-instant-trade-bottom-form>
 
         <app-bridge-bottom-form
@@ -101,7 +101,10 @@
   </div>
 
   <ng-container *noFrame>
-    <app-swap-info-container [swapType]="swapType"></app-swap-info-container>
+    <app-swap-info-container
+      [swapType]="swapType"
+      [currentInstantTrade]="currentInstantTrade"
+    ></app-swap-info-container>
   </ng-container>
 
   <app-analytics-link *noFrame [formService]="swapFormService"></app-analytics-link>

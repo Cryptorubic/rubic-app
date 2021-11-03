@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
 
 @Component({
   selector: 'app-swap-info-container',
@@ -9,6 +10,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
 })
 export class SwapInfoContainerComponent {
   @Input() public swapType: SWAP_PROVIDER_TYPE;
+
+  @Input() public currentInstantTrade: InstantTrade;
 
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 

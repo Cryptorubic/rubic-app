@@ -1,20 +1,21 @@
 <app-rubic-button
   [class]="idPrefix + 'button-swap'"
   [ngClass]="{
-    'button-swap_warning-low': priceImpact >= PRICE_IMPACT.LOW && priceImpact < PRICE_IMPACT.HIGH,
-    'button-swap_warning-high': priceImpact >= PRICE_IMPACT.HIGH
+    'button-swap_warning-yellow':
+      priceImpact >= PRICE_IMPACT_RANGE.MEDIUM && priceImpact < PRICE_IMPACT_RANGE.HIGH,
+    'button-swap_warning-red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
   }"
   [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading"
   [disabled]="disabled"
-  [tuiHint]="disabled && priceImpact >= PRICE_IMPACT.LOW ? priceImpactTemplate : null"
+  [tuiHint]="disabled && priceImpact >= PRICE_IMPACT_RANGE.MEDIUM ? priceImpactTemplate : null"
   [tuiHintDirection]="'top-right'"
   [tuiHintId]="'tui-hint_price-impact'"
   (onClick)="onClick.emit()"
   appearance="secondary"
 >
-  {{ priceImpact < PRICE_IMPACT.LOW ? buttonText : 'Swap Anyway' }}
+  {{ priceImpact < PRICE_IMPACT_RANGE.MEDIUM ? buttonText : 'Swap Anyway' }}
   <div
-    *ngIf="priceImpact >= PRICE_IMPACT.LOW"
+    *ngIf="priceImpact >= PRICE_IMPACT_RANGE.MEDIUM"
     class="button-swap__hint"
     [inlineSVG]="'/assets/images/icons/hint-question.svg'"
     [tuiHint]="priceImpactTemplate"
@@ -28,10 +29,10 @@
     Price impact is
     <span
       [ngClass]="{
-        'price-impact_low': priceImpact < PRICE_IMPACT.HIGH,
-        'price-impact_high': priceImpact >= PRICE_IMPACT.HIGH
+        'price-impact_yellow': priceImpact < PRICE_IMPACT_RANGE.HIGH,
+        'price-impact_red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
       }"
-      >-{{ priceImpact | number: '.0-2' }}%</span
+      >-{{ priceImpact }}%</span
     >
   </div>
 </ng-template>

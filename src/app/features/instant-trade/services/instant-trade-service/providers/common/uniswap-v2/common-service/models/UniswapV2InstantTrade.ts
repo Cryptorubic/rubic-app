@@ -1,8 +1,9 @@
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 export interface UniswapV2InstantTrade extends InstantTrade {
   /**
-   * tokens' addresses in a swap route
+   * Tokens in a swap route.
    */
-  path: string[];
+  path: SymbolToken[];
 }

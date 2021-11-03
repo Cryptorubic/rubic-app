@@ -47,9 +47,10 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PlatformFee } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/PlatformFee';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 interface PathAndToAmount {
-  path: string[];
+  path: SymbolToken[];
   toAmount: BigNumber;
 }
 
@@ -294,7 +295,15 @@ export class CrossChainRoutingService {
         throw err;
       }
     }
-    return { path: [fromToken.address], toAmount: fromAmount };
+    return {
+      path: [
+        {
+          address: fromToken.address,
+          symbol: fromToken.symbol
+        }
+      ],
+      toAmount: fromAmount
+    };
   }
 
   /**
@@ -440,7 +449,7 @@ export class CrossChainRoutingService {
 
     const amountAbsolute = transitTokenAmount.gt(0)
       ? await this.uniswapV2Providers[fromToken.blockchain][contractIndex].getFromAmount(
-          fromToken.address,
+          fromToken,
           transitToken,
           transitTokenAmount
         )
@@ -689,8 +698,8 @@ export class CrossChainRoutingService {
           [
             toBlockchainInContract,
             tokenInAmountAbsolute,
-            trade.firstPath,
-            trade.secondPath,
+            trade.firstPath.map(token => token.address),
+            trade.secondPath.map(token => token.address),
             trade.rbcTokenOutAmountAbsolute,
             tokenOutMinAbsolute,
             walletAddress,

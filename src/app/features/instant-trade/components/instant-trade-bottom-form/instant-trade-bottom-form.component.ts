@@ -76,7 +76,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
-  @Output() maxGasLimit = new EventEmitter<BigNumber>();
+  @Output() currentInstantTradeChange = new EventEmitter<InstantTrade>();
 
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
@@ -86,7 +86,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private providerControllers: ProviderControllerData[];
 
-  public selectedProvider: ProviderControllerData;
+  private _selectedProvider: ProviderControllerData;
 
   private providersOrderCache: INSTANT_TRADES_PROVIDER[];
 
@@ -120,6 +120,15 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public TRADE_STATUS = TRADE_STATUS;
 
   private autoSelect: boolean;
+
+  public get selectedProvider(): ProviderControllerData {
+    return this._selectedProvider;
+  }
+
+  public set selectedProvider(selectedProvider: ProviderControllerData) {
+    this._selectedProvider = selectedProvider;
+    this.currentInstantTradeChange.emit(selectedProvider?.trade);
+  }
 
   get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
@@ -414,8 +423,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
           return forkJoin([approveData$, tradeData$, balance$]).pipe(
             map(([approveData, tradeData]) => {
-              this.maxGasLimit.emit(this.getMaxGasLimit(tradeData));
-
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
                 (tradeData as CalculationResult[]).map((trade, index) => {
@@ -661,16 +668,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return new BigNumber(NaN);
     }
     return (amount || this.selectedProvider?.trade.to.amount).multipliedBy(this.toToken.price);
-  }
-
-  public getMaxGasLimit(tradeData: CalculationResult[]): BigNumber {
-    return tradeData.reduce((maxGas, trade) => {
-      if (trade.status === 'fulfilled') {
-        const providerGas = new BigNumber(trade.value.gasFeeInEth);
-        return providerGas.gt(maxGas) ? providerGas : maxGas;
-      }
-      return maxGas;
-    }, new BigNumber(0));
   }
 
   private setProviderState(

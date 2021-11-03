@@ -1,6 +1,10 @@
 @import '../../common/styles';
 
-.route {
+.rate-value {
+  grid-gap: 8px;
+}
+
+.route-value {
   grid-gap: 0;
 
   &__arrow {

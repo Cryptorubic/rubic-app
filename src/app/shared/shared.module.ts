@@ -173,7 +173,7 @@ import { BuyTokenComponent } from './components/buy-token/buy-token.component';
     UsdPriceContainerComponent,
     BuyTokenComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe],
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]
 })
 export class SharedModule {}

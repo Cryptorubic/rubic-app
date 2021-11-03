@@ -5,11 +5,15 @@
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
       [tuiHint]="
-        'Output is estimated. You will receive at least value TOKEN or the transaction will revert.'
+        'Output is estimated. You will receive at least ' +
+        minimumReceivedFormatted +
+        ' or the transaction will revert.'
       "
     />
   </div>
-  <div class="info-line__value">0.0003718 PBNB</div>
+  <div class="info-line__value">
+    {{ minimumReceivedFormatted }}
+  </div>
 </div>
 
 <div class="info-line">
@@ -23,7 +27,17 @@
       "
     />
   </div>
-  <div class="info-line__value">-4.5%</div>
+  <div
+    class="info-line__value"
+    [ngClass]="{
+      'info-line__value_green': priceImpact < PRICE_IMPACT_RANGE.LOW,
+      'info-line__value_yellow':
+        priceImpact >= PRICE_IMPACT_RANGE.MEDIUM && priceImpact < PRICE_IMPACT_RANGE.HIGH,
+      'info-line__value_red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
+    }"
+  >
+    {{ priceImpact < PRICE_IMPACT_RANGE.LOW ? '<0.01' : -priceImpact }}%
+  </div>
 </div>
 
 <div class="info-line">
@@ -37,20 +51,34 @@
       "
     />
   </div>
-  <div class="info-line__value">2%</div>
+  <div class="info-line__value">{{ slippage }}%</div>
 </div>
 
 <div class="info-line">
   <div class="info-line__title title"><span class="title__text">Rate</span></div>
-  <div class="info-line__value">1 PBNB = 321.083 MATIC</div>
-</div>
-
-<hr class="delimiter" />
-
-<div class="info-line">
-  <div class="info-line__title title"><span class="title__text">Route</span></div>
-  <div class="info-line__value route">
-    WMATIC
-    <img class="route__arrow" src="assets/images/swaps/swaps-info/arrow-icon.svg" alt="" /> USDC
+  <div class="info-line__value rate-value">
+    {{ rate }}
+    <button (click)="switchRateType()">
+      <img src="assets/images/swaps/swaps-info/arrows-on-change-icon.svg" alt="change rate order" />
+    </button>
   </div>
 </div>
+
+<ng-container *ngIf="path?.length">
+  <hr class="delimiter" />
+
+  <div class="info-line">
+    <div class="info-line__title title"><span class="title__text">Route</span></div>
+    <div class="info-line__value route-value">
+      <ng-container *ngFor="let tokenSymbol of path; index as index">
+        {{ tokenSymbol }}
+        <img
+          *ngIf="index !== path.length - 1"
+          class="route-value__arrow"
+          src="assets/images/swaps/swaps-info/arrow-icon.svg"
+          alt=""
+        />
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

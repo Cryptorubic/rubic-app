@@ -4,6 +4,7 @@
 
   <app-instant-trade-swap-info
     *ngIf="swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE; else crossChainSwapInfo"
+    [currentInstantTrade]="currentInstantTrade"
   ></app-instant-trade-swap-info>
 
   <ng-template #crossChainSwapInfo>

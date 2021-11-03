@@ -17,7 +17,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import BigNumber from 'bignumber.js';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
 
 type TokenType = 'from' | 'to';
 
@@ -44,8 +44,6 @@ export class SwapsFormComponent implements OnInit {
 
   public allowRefresh: boolean = true;
 
-  public maxGasFee: BigNumber;
-
   public onRefreshTrade = new Subject<void>();
 
   private _supportedTokens: List<TokenAmount>;
@@ -65,6 +63,8 @@ export class SwapsFormComponent implements OnInit {
   public swapType: SWAP_PROVIDER_TYPE;
 
   public isMobile$: Observable<boolean>;
+
+  public currentInstantTrade: InstantTrade;
 
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;

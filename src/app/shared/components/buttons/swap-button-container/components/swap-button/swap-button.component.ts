@@ -7,14 +7,14 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { PRICE_IMPACT } from 'src/app/shared/components/buttons/swap-button-container/models/PRICE_IMPACT';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
+import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
+import { PRICE_IMPACT_RANGE } from '@shared/utils/price-impact/models/PRICE_IMPACT_RANGE';
 
 @Component({
   selector: 'app-swap-button',
@@ -42,7 +42,7 @@ export class SwapButtonComponent implements OnInit {
 
   @Output() onClick = new EventEmitter<void>();
 
-  public PRICE_IMPACT = PRICE_IMPACT;
+  public PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -73,28 +73,18 @@ export class SwapButtonComponent implements OnInit {
   }
 
   private setPriceImpact() {
-    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
-      this.priceImpact = 0;
+    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+      const { fromToken, toToken, fromAmount } = this.formService.inputValue;
+      const { toAmount } = this.formService.outputValue;
+      this.priceImpact = PriceImpactCalculator.calculateItPriceImpact(
+        fromToken,
+        toToken,
+        fromAmount,
+        toAmount
+      );
       return;
     }
 
-    const inputForm = this.formService.inputValue;
-    const outputForm = this.formService.outputValue;
-
-    const { fromToken, toToken, fromAmount } = inputForm;
-    const { toAmount } = outputForm;
-    if (!fromToken?.price || !toToken?.price || !fromAmount?.isFinite() || !toAmount?.isFinite()) {
-      this.priceImpact = 0;
-      return;
-    }
-
-    const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
-    const toTokenCost = toAmount.multipliedBy(toToken.price);
-    this.priceImpact = fromTokenCost
-      .minus(toTokenCost)
-      .dividedBy(fromTokenCost)
-      .multipliedBy(100)
-      .dp(2, BigNumber.ROUND_HALF_UP)
-      .toNumber();
+    this.priceImpact = 0;
   }
 }
