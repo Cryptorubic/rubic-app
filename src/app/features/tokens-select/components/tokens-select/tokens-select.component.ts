@@ -1,3 +1,4 @@
+/* eslint-disable rxjs/no-exposed-subjects */
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -45,6 +46,7 @@ import { TokensListType } from 'src/app/features/tokens-select/models/TokensList
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 type ComponentInput = {
+  // eslint-disable-next-line rxjs/finnish
   tokens: Observable<AvailableTokenAmount[]>;
   formType: 'from' | 'to';
   currentBlockchain: BLOCKCHAIN_NAME;
@@ -94,7 +96,7 @@ export class TokensSelectComponent implements OnInit {
   /**
    * List of all available tokens.
    */
-  private tokens: Observable<AvailableTokenAmount[]>;
+  private tokens$: Observable<AvailableTokenAmount[]>;
 
   /**
    * Contains default tokens to display.
@@ -150,8 +152,8 @@ export class TokensSelectComponent implements OnInit {
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
-      if (this.tokensList?.scrollSubject?.value) {
-        this.tokensList.scrollSubject.value.scrollToIndex(0);
+      if (this.tokensList?.scrollSubject$?.value) {
+        this.tokensList.scrollSubject$.value.scrollToIndex(0);
       }
     }
   }
@@ -219,7 +221,7 @@ export class TokensSelectComponent implements OnInit {
     this.formType = context.formType;
     this.allowedBlockchains = context.allowedBlockchains;
     this._blockchain = context.currentBlockchain;
-    this.tokens = context.tokens;
+    this.tokens$ = context.tokens;
     this.currentlySelectedToken =
       this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
   }
@@ -228,7 +230,7 @@ export class TokensSelectComponent implements OnInit {
    * Inits subscriptions for tokens and searchQuery.
    */
   private initSubscriptions(): void {
-    combineLatest([this.tokensService.favoriteTokens$, this.tokens])
+    combineLatest([this.tokensService.favoriteTokens$, this.tokens$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
@@ -236,7 +238,7 @@ export class TokensSelectComponent implements OnInit {
       .pipe(skip(1), debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
-    this.tokensService.tokensNetworkState
+    this.tokensService.tokensNetworkState$
       .pipe(takeUntil(this.destroy$))
       .subscribe((tokensNetworkState: TokensNetworkState) => {
         this.tokensNetworkState = tokensNetworkState[this.blockchain as PAGINATED_BLOCKCHAIN_NAME];
@@ -318,7 +320,7 @@ export class TokensSelectComponent implements OnInit {
 
     // TODO fix eslint
     // eslint-disable-next-line rxjs/no-async-subscribe
-    this.tokens.pipe(first()).subscribe(async tokens => {
+    this.tokens$.pipe(first()).subscribe(async tokens => {
       const { favoriteTokens } = this.tokensService;
 
       const currentBlockchainTokens = tokens.filter(

@@ -21,7 +21,7 @@ interface Roadmap {
   styleUrls: ['./about.component.scss']
 })
 export class AboutPageComponent {
-  public $isMobile: Observable<boolean>;
+  public isMobile$: Observable<boolean>;
 
   public benefits: TitleDescription[];
 
@@ -33,7 +33,7 @@ export class AboutPageComponent {
     private readonly translateService: TranslateService,
     private readonly headerStore: HeaderStore
   ) {
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
+    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     const benefitsTranslateKey = 'aboutPage.benefits';
     const featuresTranslateKey = 'aboutPage.features.data';
     const roadmapTranslateKey = 'aboutPage.roadmap.data';

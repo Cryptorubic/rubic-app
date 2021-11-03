@@ -1,3 +1,4 @@
+/* eslint-disable rxjs/finnish */
 import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';

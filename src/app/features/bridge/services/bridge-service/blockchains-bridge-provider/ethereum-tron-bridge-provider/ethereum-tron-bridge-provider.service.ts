@@ -15,8 +15,8 @@ export class EthereumTronBridgeProviderService extends BlockchainsBridgeProvider
   constructor(private readonly commonPanamaBridgeProviderService: PanamaBridgeProviderService) {
     super();
 
-    this.commonPanamaBridgeProviderService.tokens.pipe(first()).subscribe(tokens => {
-      this.tokenPairs$.next(
+    this.commonPanamaBridgeProviderService.tokens$.pipe(first()).subscribe(tokens => {
+      this._tokenPairs$.next(
         tokens
           .filter(token => token.symbol === 'USDT')
           .map(EthereumTronBridgeProviderService.parseUSDTPanamaToken)

@@ -34,10 +34,11 @@ export class SettingsComponent implements OnInit {
 
   public isDefaultComponent: boolean = true;
 
-  public readonly $isMobile: Observable<boolean>;
+  public readonly isMobile$: Observable<boolean>;
 
   public template: TemplateRef<unknown>;
 
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   public currentComponent$: BehaviorSubject<SettingsComponentData>;
 
   public defaultComponent: SettingsComponentData;
@@ -61,7 +62,7 @@ export class SettingsComponent implements OnInit {
       component: new PolymorpheusComponent(SettingsListComponent)
     };
     this.currentComponent$ = new BehaviorSubject(this.defaultComponent);
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
+    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
   }
 
   public ngOnInit(): void {

@@ -11,7 +11,7 @@ import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal
   styleUrls: ['./login-button.component.scss']
 })
 export class LoginButtonComponent {
-  public $currentUser: Observable<UserInterface>;
+  public currentUser$: Observable<UserInterface>;
 
   @Input() appearance: TuiAppearance | string = 'primary';
 
@@ -19,7 +19,7 @@ export class LoginButtonComponent {
     private readonly authService: AuthService,
     private readonly walletsModalService: WalletsModalService
   ) {
-    this.$currentUser = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.getCurrentUser();
   }
 
   public showModal(): void {

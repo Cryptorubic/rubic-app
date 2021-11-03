@@ -75,6 +75,7 @@ type CalculateTradeType = 'normal' | 'hidden';
   providers: [TuiDestroyService]
 })
 export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
+  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
   @Input() loading: boolean;

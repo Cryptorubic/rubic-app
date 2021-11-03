@@ -19,7 +19,7 @@ export class PanelContentComponent implements OnInit {
 
   public blockchains = BLOCKCHAIN_NAME;
 
-  public swapFormData: Observable<SwapFormInput>;
+  public swapFormData$: Observable<SwapFormInput>;
 
   public displayGas: boolean;
 

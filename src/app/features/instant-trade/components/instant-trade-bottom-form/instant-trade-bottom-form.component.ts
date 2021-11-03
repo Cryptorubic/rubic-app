@@ -66,6 +66,7 @@ export interface CalculationResult {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
+  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
   @Input() loading: boolean;
@@ -78,6 +79,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() maxGasLimit = new EventEmitter<BigNumber>();
 
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
@@ -248,7 +250,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
         if (
           TokensService.areTokensEqual(this.toToken, toToken) &&
-          this.toToken?.price !== toToken?.price
+          this.toToken?.price !== toToken?.price$
         ) {
           this.updateControllers();
         }

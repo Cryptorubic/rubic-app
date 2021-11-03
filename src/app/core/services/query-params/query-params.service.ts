@@ -113,7 +113,7 @@ export class QueryParamsService {
   }
 
   private initiateTradesParams(params: QueryParams): void {
-    this.swapsService.availableTokens
+    this.swapsService.availableTokens$
       .pipe(
         first(tokens => tokens?.size > 0),
         mergeMap(tokens =>
@@ -161,7 +161,7 @@ export class QueryParamsService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    return this.swapsService.bridgeTokenPairsByBlockchainsArray.pipe(
+    return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
       first(pairsArray => !!pairsArray?.size),
       map(pairsArray => {
         const fromChain = Object.values(BLOCKCHAIN_NAME).includes(

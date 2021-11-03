@@ -35,10 +35,10 @@ export class PanamaBridgeProviderService {
 
   private readonly PANAMA_SUCCESS_CODE = 20000;
 
-  private tokens$ = new Subject<List<PanamaToken>>();
+  private _tokens$ = new Subject<List<PanamaToken>>();
 
-  public get tokens(): Observable<List<PanamaToken>> {
-    return this.tokens$.asObservable();
+  public get tokens$(): Observable<List<PanamaToken>> {
+    return this._tokens$.asObservable();
   }
 
   constructor(
@@ -72,7 +72,7 @@ export class PanamaBridgeProviderService {
           return of(List([]));
         })
       )
-      .subscribe(tokens => this.tokens$.next(tokens));
+      .subscribe(tokens => this._tokens$.next(tokens));
   }
 
   public getProviderType(): BRIDGE_PROVIDER {

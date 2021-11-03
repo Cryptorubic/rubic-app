@@ -49,7 +49,7 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
 
   public isLoggedIn$: Observable<boolean>;
 
-  public promoCodesExists: Observable<boolean>;
+  public promoCodesExists$: Observable<boolean>;
 
   private debouncePromoCodeInput$ = new Subject<string>();
 
@@ -81,7 +81,7 @@ export class CcrPromocodeComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.promoCodesExists = this.promoCodeApiService.promoCodesExists();
+    this.promoCodesExists$ = this.promoCodeApiService.promoCodesExists();
     this.debouncePromoCodeInput$
       .pipe(
         tap(() => {

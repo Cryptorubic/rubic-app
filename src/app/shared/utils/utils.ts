@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { map, switchMap } from 'rxjs/operators';
-import { iif, Observable, of, OperatorFunction } from 'rxjs';
+import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface MinimalToken {
@@ -86,6 +86,10 @@ export function switchIif<A = void, T = never, F = never>(
   falseResultFn: (args: A) => Observable<F>
 ): OperatorFunction<A, T | F> {
   return switchMap((args: A) =>
-    iif(() => condition(args), trueResultFn(args), falseResultFn(args))
+    iif(
+      () => condition(args),
+      defer(() => trueResultFn(args)),
+      defer(() => falseResultFn(args))
+    )
   );
 }

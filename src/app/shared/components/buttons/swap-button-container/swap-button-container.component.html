@@ -23,7 +23,7 @@
   </ng-container>
 
   <ng-container *ngIf="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
-    <ng-container *ngLet="errorText | async as errorText">
+    <ng-container *ngLet="errorText$ | async as errorText">
       <ng-container *ngIf="errorText === null || loading">
         <!-- with approve button -->
         <ng-container *ngIf="needApprove">

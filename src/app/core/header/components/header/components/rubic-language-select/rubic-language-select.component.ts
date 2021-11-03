@@ -34,7 +34,7 @@ export class RubicLanguageSelectComponent {
     private readonly cookieService: CookieService,
     private readonly cdr: ChangeDetectorRef,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: BehaviorSubject<SettingsComponentData>
+    private readonly context$: BehaviorSubject<SettingsComponentData>
   ) {
     this.languagesList = languagesList;
     translateService.onLangChange.subscribe((event: LangChangeEvent) => {
@@ -68,7 +68,7 @@ export class RubicLanguageSelectComponent {
    * @param lng new current language.
    */
   public setLanguage(lng: string): void {
-    this.context.next({
+    this.context$.next({
       titleKey: 'Settings',
       component: new PolymorpheusComponent(SettingsListComponent)
     });

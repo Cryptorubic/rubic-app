@@ -122,13 +122,13 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         timeout(3000),
         catchError((e: unknown) => {
           console.error(e);
-          this.tokenPairs$.next(List([]));
+          this._tokenPairs$.next(List([]));
           return EMPTY;
         })
       )
       .subscribe((response: RubicApiResponse[]) => {
         if (!response) {
-          this.tokenPairs$.next(List([]));
+          this._tokenPairs$.next(List([]));
           return;
         }
         const ethContractData = response.find(data => data.network === 'Ethereum');
@@ -163,7 +163,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           fromEthFee: parseFloat(bscContractData.fee),
           toEthFee: parseFloat(ethContractData.fee)
         };
-        this.tokenPairs$.next(List([bridgeTokenPair]));
+        this._tokenPairs$.next(List([bridgeTokenPair]));
       });
   }
 

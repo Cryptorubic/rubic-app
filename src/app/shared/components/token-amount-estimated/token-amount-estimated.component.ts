@@ -76,8 +76,8 @@ export class AmountEstimatedComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(toToken => {
         if (this.tokensAmount) {
-          this.usd = toToken?.price
-            ? new BigNumber(this.tokensAmount).multipliedBy(toToken.price)
+          this.usd = toToken?.price$
+            ? new BigNumber(this.tokensAmount).multipliedBy(toToken.price$)
             : new BigNumber(NaN);
           this.cdr.detectChanges();
         }

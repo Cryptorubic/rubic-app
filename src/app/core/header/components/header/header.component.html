@@ -70,14 +70,14 @@
       {{ 'navigation.myTrades' | translate }}
       <tui-badge
         class="notification-counter"
-        *ngIf="(countNotifications$ | async) && ($currentUser | async)"
+        *ngIf="(countNotifications$ | async) && (currentUser$ | async)"
         size="s"
         [value]="countNotifications$ | async"
       ></tui-badge>
     </a>
 
     <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
-    <ng-container *ngIf="!($currentUser | async)?.address; else loggedIn">
+    <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
       <app-login-button class="rubic-header__login" *noFrame></app-login-button>
     </ng-container>
     <ng-template #loggedIn>

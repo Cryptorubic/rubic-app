@@ -71,7 +71,27 @@ module.exports = {
         ],
         'no-empty': ['error', { allowEmptyCatch: true }],
         '@typescript-eslint/return-await': 'off',
-        'no-continue': 'off'
+        'no-continue': 'off',
+        /* RxJs */
+        'rxjs/finnish': [
+          'error',
+          {
+            functions: false,
+            methods: false,
+            names: {
+              '^(canActivate|canActivateChild|canDeactivate|canLoad|intercept|resolve|validate)$': false
+            },
+            parameters: true,
+            properties: true,
+            strict: false,
+            types: {
+              '^EventEmitter$': false,
+              '^TuiDialogService$': false
+            },
+            variables: true
+          }
+        ],
+        'rxjs/no-exposed-subjects': ['error', { allowProtected: true }]
       }
     },
     {

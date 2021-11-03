@@ -20,7 +20,7 @@ type NativeCoinsData = Record<
   SupportedBlockchain,
   {
     coingeckoId: string;
-    price: BehaviorSubject<number>;
+    price$: BehaviorSubject<number>;
     lastResponseTime: number;
     isRequestInProgress: boolean;
   }
@@ -51,7 +51,7 @@ export class CoingeckoApiService {
         ...this.nativeCoinsData,
         [blockchain]: {
           coingeckoId: coingeckoIds[blockchain],
-          price: new BehaviorSubject<number>(undefined),
+          price$: new BehaviorSubject<number>(undefined),
           lastResponseTime: -Infinity,
           isRequestInProgress: false
         }
@@ -85,12 +85,12 @@ export class CoingeckoApiService {
 
     const nativeCoinData = this.nativeCoinsData[blockchain];
     if (nativeCoinData.isRequestInProgress) {
-      return nativeCoinData.price.pipe(skip(1), first());
+      return nativeCoinData.price$.pipe(skip(1), first());
     }
 
     const requestDebounce = 13_000; // 13 seconds
     if (Date.now() - nativeCoinData.lastResponseTime <= requestDebounce) {
-      return nativeCoinData.price.pipe(first());
+      return nativeCoinData.price$.pipe(first());
     }
 
     this.nativeCoinsData = {
@@ -125,7 +125,7 @@ export class CoingeckoApiService {
               isRequestInProgress: false
             }
           };
-          nativeCoinData.price.next(price);
+          nativeCoinData.price$.next(price);
         })
       );
   }

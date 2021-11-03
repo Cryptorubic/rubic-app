@@ -88,7 +88,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       .subscribe(
         (response: PolygonGraphResponse) => {
           if (!response.data) {
-            this.tokenPairs$.next(List([]));
+            this._tokenPairs$.next(List([]));
             return;
           }
 
@@ -97,13 +97,13 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
             this.parsePolygonTokens(token, tokenAmounts)
           );
 
-          this.tokenPairs$.next(
+          this._tokenPairs$.next(
             List(bridgeTokenPairs.filter(bridgeTokenPair => bridgeTokenPair !== null))
           );
         },
         (err: unknown) => {
           console.debug('Error retrieving polygon tokens: ', err);
-          this.tokenPairs$.next(List([]));
+          this._tokenPairs$.next(List([]));
         }
       );
   }

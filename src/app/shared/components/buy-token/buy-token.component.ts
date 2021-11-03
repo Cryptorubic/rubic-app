@@ -50,7 +50,7 @@ export class BuyTokenComponent {
    * @return Observable from and to tokens.
    */
   private findTokensByAddress(): Observable<{ fromToken: TokenAmount; toToken: TokenAmount }> {
-    return this.swapsService.availableTokens.pipe(
+    return this.swapsService.availableTokens$.pipe(
       first(tokens => tokens?.size > 0),
       map((tokens: List<TokenAmount>) => ({
         fromToken: tokens.find(

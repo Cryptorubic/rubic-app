@@ -29,7 +29,7 @@ export class AuthService {
   /**
    * Current user data.
    */
-  private readonly $currentUser: BehaviorSubject<UserInterface>;
+  private readonly currentUser$: BehaviorSubject<UserInterface>;
 
   /**
    * Code when user session is still active.
@@ -37,7 +37,7 @@ export class AuthService {
   private readonly USER_IS_IN_SESSION_CODE = '1000';
 
   get user(): UserInterface {
-    return this.$currentUser.getValue();
+    return this.currentUser$.getValue();
   }
 
   get userAddress(): string {
@@ -53,7 +53,7 @@ export class AuthService {
     private readonly iframeService: IframeService
   ) {
     this.isAuthProcess = false;
-    this.$currentUser = new BehaviorSubject<UserInterface>(undefined);
+    this.currentUser$ = new BehaviorSubject<UserInterface>(undefined);
     this.initSubscription();
   }
 
@@ -62,7 +62,7 @@ export class AuthService {
    * @returns Observable<UserInterface> User.
    */
   public getCurrentUser(): Observable<UserInterface> {
-    return this.$currentUser.asObservable();
+    return this.currentUser$.asObservable();
   }
 
   /**
@@ -106,7 +106,7 @@ export class AuthService {
       try {
         const success = await this.providerConnectorService.installProvider();
         if (!success) {
-          this.$currentUser.next(null);
+          this.currentUser$.next(null);
           this.isAuthProcess = false;
           return;
         }
@@ -136,7 +136,7 @@ export class AuthService {
     return from(this.providerConnectorService.activate()).pipe(
       switchMap(() => {
         if (address.toLowerCase() === this.providerConnectorService.address.toLowerCase()) {
-          this.$currentUser.next({ address });
+          this.currentUser$.next({ address });
           return of() as Observable<void>;
         }
         return this.signOut().pipe(
@@ -148,7 +148,7 @@ export class AuthService {
   }
 
   private setNullAsUser(): Observable<void> {
-    this.$currentUser.next(null);
+    this.currentUser$.next(null);
     return of();
   }
 
@@ -168,7 +168,7 @@ export class AuthService {
       const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
       if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
         const { address } = walletLoginBody.payload.user;
-        this.$currentUser.next({ address });
+        this.currentUser$.next({ address });
         this.isAuthProcess = false;
         return;
       }
@@ -181,7 +181,7 @@ export class AuthService {
         this.providerConnectorService.provider.name
       );
 
-      this.$currentUser.next({ address: this.providerConnectorService.address });
+      this.currentUser$.next({ address: this.providerConnectorService.address });
       this.isAuthProcess = false;
     } catch (err) {
       this.catchSignIn(err);
@@ -205,7 +205,7 @@ export class AuthService {
         const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
         if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
           const { address } = walletLoginBody.payload.user;
-          this.$currentUser.next({ address });
+          this.currentUser$.next({ address });
           this.isAuthProcess = false;
           return;
         }
@@ -218,9 +218,9 @@ export class AuthService {
           this.providerConnectorService.provider.name
         );
 
-        this.$currentUser.next({ address: this.providerConnectorService.address });
+        this.currentUser$.next({ address: this.providerConnectorService.address });
       } else {
-        this.$currentUser.next(null);
+        this.currentUser$.next(null);
       }
       this.isAuthProcess = false;
     } catch (err) {
@@ -241,9 +241,9 @@ export class AuthService {
       if (accountsPermission) {
         await this.providerConnectorService.activate();
         const { address } = this.providerConnectorService;
-        this.$currentUser.next({ address } || null);
+        this.currentUser$.next({ address } || null);
       } else {
-        this.$currentUser.next(null);
+        this.currentUser$.next(null);
       }
       this.isAuthProcess = false;
     } catch (err) {
@@ -258,7 +258,7 @@ export class AuthService {
     return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
       finalize(() => {
         this.providerConnectorService.deActivate();
-        this.$currentUser.next(null);
+        this.currentUser$.next(null);
         this.store.clearStorage();
       })
     );
@@ -269,7 +269,7 @@ export class AuthService {
    */
   public serverlessSignOut(): void {
     this.providerConnectorService.deActivate();
-    this.$currentUser.next(null);
+    this.currentUser$.next(null);
     this.store.clearStorage();
   }
 
@@ -278,7 +278,7 @@ export class AuthService {
    * @param err Login error.
    */
   private catchSignIn(err: Error & { code: number }): void {
-    this.$currentUser.next(null);
+    this.currentUser$.next(null);
     this.isAuthProcess = false;
     this.providerConnectorService.deActivate();
 
@@ -294,7 +294,7 @@ export class AuthService {
     }
     this.headerStore.setWalletsLoadingStatus(false);
     this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
-    this.$currentUser.next(null);
+    this.currentUser$.next(null);
     this.isAuthProcess = false;
   }
 
@@ -302,11 +302,11 @@ export class AuthService {
    * Init service subscription.
    */
   private initSubscription(): void {
-    this.providerConnectorService.$addressChange
+    this.providerConnectorService.addressChange$
       .pipe(
         filter(() => !this.isAuthProcess),
         mergeMap(address => {
-          const user = this.$currentUser.getValue();
+          const user = this.currentUser$.getValue();
           if (
             user !== undefined &&
             user !== null &&

@@ -54,7 +54,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   ) {
     super();
     this.loadTokens().subscribe(tokens => {
-      this.tokenPairs$.next(tokens);
+      this._tokenPairs$.next(tokens);
       this.evoTokenPairs = tokens.toArray();
     });
   }

@@ -41,6 +41,7 @@ export class TokensService {
   /**
    * Current favorite tokens list state.
    */
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly _favoriteTokens$ = new BehaviorSubject<LocalToken[]>(this.fetchFavoriteTokens());
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
@@ -57,7 +58,7 @@ export class TokensService {
     TOKENS_PAGINATION
   );
 
-  public readonly tokensNetworkState = this._tokensNetworkState$.asObservable();
+  public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
 
   /**
    * Current user address.

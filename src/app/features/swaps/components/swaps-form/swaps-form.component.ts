@@ -46,7 +46,8 @@ export class SwapsFormComponent implements OnInit {
 
   public maxGasFee: BigNumber;
 
-  public onRefreshTrade = new Subject<void>();
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public onRefreshTrade$ = new Subject<void>();
 
   private _supportedTokens: List<TokenAmount>;
 
@@ -140,8 +141,8 @@ export class SwapsFormComponent implements OnInit {
 
   private subscribeOnTokens(): void {
     combineLatest([
-      this.swapsService.availableTokens,
-      this.swapsService.bridgeTokenPairsByBlockchainsArray
+      this.swapsService.availableTokens$,
+      this.swapsService.bridgeTokenPairsByBlockchainsArray$
     ])
       .pipe(debounceTime(0), takeUntil(this.destroy$))
       .subscribe(([supportedTokens, bridgeTokenPairsByBlockchainsArray]) => {

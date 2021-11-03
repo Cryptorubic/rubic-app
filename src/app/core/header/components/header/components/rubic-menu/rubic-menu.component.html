@@ -8,9 +8,9 @@
       </div>
       <tui-badge
         class="notification-counter"
-        *ngIf="($countUnread | async) && ($currentUser | async)"
+        *ngIf="(countUnread$ | async) && (currentUser$ | async)"
         size="s"
-        [value]="$countUnread | async"
+        [value]="countUnread$ | async"
       ></tui-badge>
     </app-rubic-button-circle>
   </div>
@@ -68,7 +68,7 @@
         </a>
       </tui-opt-group>
 
-      <tui-opt-group *ngIf="($currentUser | async)?.address" class="rubic-menu__mobile">
+      <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">
         <button tuiOption class="data-list__address">
           <img
             *ngIf="currentBlockchain?.imagePath"
@@ -78,7 +78,7 @@
             width="25"
             height="25"
           />
-          {{ ($currentUser | async)?.address | shortAddress: 5:3 }}
+          {{ (currentUser$ | async)?.address | shortAddress: 5:3 }}
         </button>
 
         <a
@@ -99,7 +99,7 @@
     </tui-data-list>
 
     <div class="rubic-menu__mobile">
-      <div class="rubic-menu__bottom" *ngIf="!($currentUser | async)?.address">
+      <div class="rubic-menu__bottom" *ngIf="!(currentUser$ | async)?.address">
         <app-login-button class="rubic-menu__login" appearance="outline"></app-login-button>
       </div>
     </div>

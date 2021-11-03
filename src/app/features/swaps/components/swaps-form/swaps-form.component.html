@@ -11,7 +11,7 @@
         class="swaps-form__refresh"
         *ngIf="(isInstantTrade || isCrossChainRouting) && allowTrade && allowRefresh"
         type="autoRefresh"
-        (onRefresh)="onRefreshTrade.next()"
+        (onRefresh)="onRefreshTrade$.next()"
         [loadingStatus]="loadingStatus"
         [autoUpdate]="autoRefresh"
         [swapType]="swapType"
@@ -29,7 +29,7 @@
         *ngIf="isInstantTrade && allowTrade && allowRefresh"
         style="display: none;"
         type="autoRefresh"
-        (onRefresh)="onRefreshTrade.next()"
+        (onRefresh)="onRefreshTrade$.next()"
         [loadingStatus]="loadingStatus"
         [autoUpdate]="autoRefresh"
       ></app-rubic-refresh-button>
@@ -74,7 +74,7 @@
 
         <app-instant-trade-bottom-form
           *ngIf="isInstantTrade"
-          [onRefreshTrade]="onRefreshTrade"
+          [onRefreshTrade]="onRefreshTrade$"
           (onRefreshStatusChange)="loadingStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
@@ -90,7 +90,7 @@
 
         <app-cross-chain-routing-bottom-form
           *ngIf="isCrossChainRouting"
-          [onRefreshTrade]="onRefreshTrade"
+          [onRefreshTrade]="onRefreshTrade$"
           (onRefreshStatusChange)="loadingStatus = $event"
           (tradeStatusChange)="tradeStatus = $event"
           [loading]="isLoading"

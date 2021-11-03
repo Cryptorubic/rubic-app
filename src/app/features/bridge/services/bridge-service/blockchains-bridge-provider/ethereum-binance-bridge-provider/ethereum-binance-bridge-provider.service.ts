@@ -18,10 +18,10 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
   ) {
     super();
 
-    zip(this.rubicBridgeProvider.tokenPairs, this.panamaBridgeProvider.tokenPairs)
+    zip(this.rubicBridgeProvider.tokenPairs$, this.panamaBridgeProvider.tokenPairs$)
       .pipe(first())
       .subscribe(([rubicToken, panamaTokens]) =>
-        this.tokenPairs$.next(rubicToken.concat(panamaTokens))
+        this._tokenPairs$.next(rubicToken.concat(panamaTokens))
       );
   }
 
