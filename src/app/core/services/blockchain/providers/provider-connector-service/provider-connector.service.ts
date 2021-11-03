@@ -209,8 +209,8 @@ export class ProviderConnectorService {
         rpc: 'https://bsc-dataseed1.binance.org'
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        name: 'Matic(Polygon) Mainnet',
-        rpc: 'https://rpc-mainnet.matic.network'
+        name: 'Polygon Mainnet',
+        rpc: 'https://polygon-rpc.com/'
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',

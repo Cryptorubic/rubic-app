@@ -55,6 +55,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   private request$: Observable<readonly TableRow[]>;
 
+  private isFirstView = true;
+
   public visibleData$: Observable<readonly TableRow[]>;
 
   public total$: Observable<number>;
@@ -66,7 +68,12 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   ngOnInit(): void {
     this.request$ = combineLatest([
       this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
-      this.direction$,
+      this.direction$.pipe(
+        map((dir, index) => {
+          this.isFirstView = Boolean(index);
+          return dir;
+        })
+      ),
       this.page$.pipe(startWith(0)),
       this.size$.pipe(startWith(10)),
       this.tableData$.pipe(filter(isPresent))
@@ -80,18 +87,8 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     this.visibleData$ = this.request$.pipe(
       filter(isPresent),
       map(visibleTableData => visibleTableData.filter(isPresent)),
-      startWith([]),
-      map(visibleTableData => {
-        const waitingForReceivingTrades = visibleTableData.filter(
-          el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
-        const otherTrades = visibleTableData.filter(
-          el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
-        return [...waitingForReceivingTrades, ...otherTrades];
-      })
+      startWith([])
     );
-
     this.total$ = this.request$.pipe(
       filter(isPresent),
       map(({ length }) => length),
@@ -118,6 +115,20 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   ): ReadonlyArray<TableRow | null> {
     const start = page * size;
     const end = start + size;
+
+    if (!this.isFirstView) {
+      this.isFirstView = false;
+      const waitingForReceivingTrades = tableData.filter(
+        el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+      );
+      const otherTrades = tableData
+        .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+        .sort(this.sortBy('Date', this.direction$.getValue()));
+
+      return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>
+        index >= start && index < end ? user : null
+      );
+    }
 
     return [...tableData]
       .sort(this.sortBy(key, direction))

@@ -96,13 +96,6 @@ tui-notification-alert {
   }
 }
 
-/*:host-context(html:not(.dark).iframe-horizontal) ::ng-deep tui-dialog {
-  &,
-  > .content {
-    background: #f4f4f4 !important;
-  }
-}*/
-
 ::ng-deep tui-dialog .content {
   @include iframe {
     padding: 0 !important;

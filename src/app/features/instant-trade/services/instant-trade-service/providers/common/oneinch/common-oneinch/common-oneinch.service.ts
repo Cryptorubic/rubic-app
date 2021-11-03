@@ -31,6 +31,7 @@ import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/ins
 import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
+import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/InsufficientFundsOneinchError';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -313,6 +314,10 @@ export class CommonOneinchService {
       const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
       const message = `1inch sets increased costs on gas fee. For transaction enter less ${nativeToken} amount or top up your ${nativeToken} balance.`;
       throw new CustomError(message);
+    }
+    if (err.error.message.includes('insufficient funds for transfer')) {
+      const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+      throw new InsufficientFundsOneinchError(nativeToken);
     }
     throw new CustomError(err.error.message);
   }
