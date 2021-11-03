@@ -30,12 +30,17 @@ import { TokenAmountInputComponent } from 'src/app/features/swaps/components/amo
 import { UserBalanceContainerComponent } from 'src/app/features/swaps/components/amount-input/components/user-balance-container/user-balance-container.component';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
-import { CrossChainSwapInfoComponent } from 'src/app/features/swaps/components/swap-info/cross-chain-swap-info/cross-chain-swap-info.component';
+import { CcrSwapInfoComponent } from '@features/swaps/components/swap-info/components/cross-chain-swap-info/components/ccr-swap-info/ccr-swap-info.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
 import { IframeSettingsComponent } from './components/swaps-settings/iframe-settings/iframe-settings.component';
 import { CcrPromocodeComponent } from './components/swaps-settings/settings-ccr/ccr-promocode/ccr-promocode.component';
+import { SwapInfoContainerComponent } from './components/swap-info/swap-info-container/swap-info-container.component';
+import { InstantTradeSwapInfoComponent } from './components/swap-info/components/instant-trade-swap-info/instant-trade-swap-info.component';
+import { BridgeSwapInfoComponent } from './components/swap-info/components/cross-chain-swap-info/components/bridge-swap-info/bridge-swap-info.component';
+import { CrossChainSwapInfoComponent } from './components/swap-info/components/cross-chain-swap-info/cross-chain-swap-info.component';
 
 @NgModule({
   declarations: [
@@ -46,10 +51,14 @@ import { CcrPromocodeComponent } from './components/swaps-settings/settings-ccr/
     SettingsCcrComponent,
     TokenAmountInputComponent,
     UserBalanceContainerComponent,
-    CrossChainSwapInfoComponent,
+    CcrSwapInfoComponent,
     IframeSettingsComponent,
     VerticalIframeTokenAmountInputComponent,
-    CcrPromocodeComponent
+    CcrPromocodeComponent,
+    SwapInfoContainerComponent,
+    InstantTradeSwapInfoComponent,
+    BridgeSwapInfoComponent,
+    CrossChainSwapInfoComponent
   ],
   exports: [],
   imports: [
@@ -73,7 +82,8 @@ import { CcrPromocodeComponent } from './components/swaps-settings/settings-ccr/
     TuiHintModule,
     TokensSelectModule,
     FormsModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    ClipboardModule
   ],
   entryComponents: [
     SettingsItComponent,

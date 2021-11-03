@@ -151,7 +151,7 @@ export class BridgeService {
 
     return this.getCurrentBridgeToken().pipe(
       mergeMap(bridgeToken => {
-        const { toBlockchain, fromAmount } = this.swapFormService.commonTrade.controls.input.value;
+        const { toBlockchain, fromAmount } = this.swapFormService.inputValue;
 
         if (!bridgeToken || !fromAmount) {
           return of(null);

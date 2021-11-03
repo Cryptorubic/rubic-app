@@ -1,0 +1,10 @@
+@import '../../common/styles';
+
+.route {
+  grid-gap: 0;
+
+  &__arrow {
+    width: 17px;
+    margin: 0 9px 0 10px;
+  }
+}

@@ -49,22 +49,6 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
-interface BlockchainInfo {
-  name: string;
-  href: string;
-}
-
-const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-    name: 'Binance Smart Chain',
-    href: 'https://www.binance.org/'
-  },
-  [BLOCKCHAIN_NAME.POLYGON]: {
-    name: 'Polygon',
-    href: 'https://polygon.technology/'
-  }
-};
-
 type CalculateTradeType = 'normal' | 'hidden';
 
 @Component({
@@ -140,13 +124,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       !fromAmount.isNaN() &&
       fromAmount.gt(0)
     );
-  }
-
-  get whatIsBlockchain(): BlockchainInfo {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    const nonEthBlockchain =
-      toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
-    return BLOCKCHAINS_INFO[nonEthBlockchain];
   }
 
   constructor(

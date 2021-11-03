@@ -1,0 +1,19 @@
+@import '../common/styles';
+
+.swaps-info {
+  padding: 29px 30px;
+
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 16px;
+
+  &__title {
+    margin: 0;
+
+    font-weight: bold;
+    font-size: 21px;
+    font-family: $montserrat-font;
+    line-height: 125%;
+  }
+}
+
+

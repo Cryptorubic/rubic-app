@@ -1,0 +1,49 @@
+@import 'src/styles';
+
+.delimiter {
+  margin: 15px 0;
+
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.info-line {
+  display: flex;
+  justify-content: space-between;
+
+  min-height: 21px;
+
+  font-weight: 500;
+  font-size: 16px;
+
+  img {
+    height: 19px;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  &__value {
+    display: flex;
+    grid-gap: 13px;
+    align-items: center;
+
+    a {
+      height: 19px;
+    }
+
+    button {
+      display: flex;
+      justify-content: center;
+
+      width: 19px;
+      height: 19px;
+    }
+  }
+}
+
+.title {
+  display: flex;
+  grid-gap: 13px;
+  align-items: center;
+}

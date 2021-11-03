@@ -1,0 +1,12 @@
+<div class="swaps-info">
+  <h1 class="swaps-info__title">Transaction Info</h1>
+  <hr class="delimiter" />
+
+  <app-instant-trade-swap-info
+    *ngIf="swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE; else crossChainSwapInfo"
+  ></app-instant-trade-swap-info>
+
+  <ng-template #crossChainSwapInfo>
+    <app-cross-chain-swap-info [swapType]="swapType"></app-cross-chain-swap-info>
+  </ng-template>
+</div>
