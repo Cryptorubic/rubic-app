@@ -3,7 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts'],
-      plugins: ['unused-imports', 'rxjs'],
+      plugins: ['unused-imports', 'rxjs', 'rxjs-angular'],
       parserOptions: {
         project: ['tsconfig.*?.json', 'e2e/tsconfig.e2e.json'],
         tsconfigRootDir: __dirname,
@@ -91,7 +91,16 @@ module.exports = {
             variables: true
           }
         ],
-        'rxjs/no-exposed-subjects': ['error', { allowProtected: true }]
+        'rxjs/no-exposed-subjects': ['error', { allowProtected: true }],
+        'rxjs-angular/prefer-async-pipe': 'warn',
+        'rxjs-angular/prefer-takeuntil': [
+          'warn',
+          {
+            checkComplete: false,
+            checkDecorators: ['Component'],
+            checkDestroy: false
+          }
+        ]
       }
     },
     {
