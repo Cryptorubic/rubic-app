@@ -324,7 +324,7 @@ export class TokensService {
       TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
     );
     return this.coingeckoApiService
-      .getNativeCoinPriceInUsdByCoingecko(blockchain)
+      .getNativeCoinPrice(blockchain)
       .pipe(map(price => price || nativeCoin?.price))
       .toPromise();
   }
@@ -342,7 +342,7 @@ export class TokensService {
     searchBackend = false
   ): Promise<number | undefined> {
     return this.coingeckoApiService
-      .getTokenPrice(token)
+      .getCommonTokenOrNativeCoinPrice(token)
       .pipe(
         map(tokenPrice => {
           if (tokenPrice) {
