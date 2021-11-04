@@ -10,7 +10,9 @@
       ></app-instant-trade-swap-info>
 
       <ng-template #crossChainSwapInfo>
-        <app-cross-chain-swap-info [swapType]="swapType"></app-cross-chain-swap-info>
+        <app-cross-chain-swap-info-container
+          [swapType]="swapType"
+        ></app-cross-chain-swap-info-container>
       </ng-template>
     </div>
   </tui-loader>
