@@ -79,7 +79,7 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
-          (currentInstantTradeChange)="currentInstantTrade = $event"
+          (instantTradeInfoChange)="currentInstantTradeInfo = $event"
           (tradeStatusChange)="tradeStatus = $event"
         ></app-instant-trade-bottom-form>
 
@@ -106,7 +106,7 @@
     <app-swap-info-container
       *ngIf="allowTrade"
       [swapType]="swapType"
-      [currentInstantTrade]="currentInstantTrade"
+      [currentInstantTradeInfo]="currentInstantTradeInfo"
       [tradeStatus]="tradeStatus"
     ></app-swap-info-container>
   </ng-container>

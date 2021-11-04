@@ -51,6 +51,7 @@ import { ProviderControllerData } from 'src/app/shared/models/instant-trade/prov
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -76,7 +77,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
-  @Output() currentInstantTradeChange = new EventEmitter<InstantTrade>();
+  @Output() instantTradeInfoChange = new EventEmitter<InstantTradeInfo>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
@@ -94,7 +95,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
-  public fromToken: TokenAmount;
+  private fromToken: TokenAmount;
 
   public toToken: TokenAmount;
 
@@ -129,7 +130,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public set selectedProvider(selectedProvider: ProviderControllerData) {
     this._selectedProvider = selectedProvider;
-    this.currentInstantTradeChange.emit(selectedProvider?.trade);
+    this.instantTradeInfoChange.emit({
+      trade: selectedProvider?.trade,
+      isWrappedType: !!this.ethAndWethTrade
+    });
   }
 
   public get tradeStatus(): TRADE_STATUS {

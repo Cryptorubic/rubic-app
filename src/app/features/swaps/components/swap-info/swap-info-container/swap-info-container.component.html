@@ -1,15 +1,17 @@
-<tui-loader [showLoader]="loading" [overlay]="true">
-  <div class="swaps-info">
-    <h1 class="swaps-info__title">Transaction Info</h1>
-    <hr class="delimiter" />
+<ng-container *ngIf="showTransactionInfo">
+  <tui-loader [showLoader]="loading" [overlay]="true">
+    <div class="swaps-info">
+      <h1 class="swaps-info__title">Transaction Info</h1>
+      <hr class="delimiter" />
 
-    <app-instant-trade-swap-info
-      *ngIf="swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE; else crossChainSwapInfo"
-      [currentInstantTrade]="currentInstantTrade"
-    ></app-instant-trade-swap-info>
+      <app-instant-trade-swap-info
+        *ngIf="isInstantTrade; else crossChainSwapInfo"
+        [currentInstantTrade]="currentInstantTradeInfo.trade"
+      ></app-instant-trade-swap-info>
 
-    <ng-template #crossChainSwapInfo>
-      <app-cross-chain-swap-info [swapType]="swapType"></app-cross-chain-swap-info>
-    </ng-template>
-  </div>
-</tui-loader>
+      <ng-template #crossChainSwapInfo>
+        <app-cross-chain-swap-info [swapType]="swapType"></app-cross-chain-swap-info>
+      </ng-template>
+    </div>
+  </tui-loader>
+</ng-container>
