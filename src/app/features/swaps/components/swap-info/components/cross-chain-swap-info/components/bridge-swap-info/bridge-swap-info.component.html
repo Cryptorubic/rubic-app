@@ -29,7 +29,7 @@
         [tuiHint]="'Provider\'s commission charged in RBC token'"
       />
     </div>
-    <div class="info-line__value">{{ providerFee }} {{ toTokenSymbol }}</div>
+    <div class="info-line__value">{{ providerFee }} {{ fromTokenSymbol }}</div>
   </div>
 
   <div class="info-line">
@@ -50,13 +50,13 @@
     <div class="info-line__title title">
       <span class="title__text">Minimum amount for transfer</span>
     </div>
-    <div class="info-line__value">{{ minAmount }} {{ toTokenSymbol }}</div>
+    <div class="info-line__value">{{ minAmount }} {{ fromTokenSymbol }}</div>
   </div>
 
   <div class="info-line" *ngIf="maxAmount < Infinity">
     <div class="info-line__title title">
       <span class="title__text">Maximum amount for transfer</span>
     </div>
-    <div class="info-line__value">{{ maxAmount }} {{ toTokenSymbol }}</div>
+    <div class="info-line__value">{{ maxAmount }} {{ fromTokenSymbol }}</div>
   </div>
 </ng-container>

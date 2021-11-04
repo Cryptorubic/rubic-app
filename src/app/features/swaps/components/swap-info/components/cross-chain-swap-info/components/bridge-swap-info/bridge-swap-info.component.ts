@@ -26,7 +26,7 @@ export class BridgeSwapInfoComponent implements OnInit {
 
   private bridgeProvider: BRIDGE_PROVIDER;
 
-  public toTokenSymbol: string;
+  public fromTokenSymbol: string;
 
   public providerFee: number;
 
@@ -82,7 +82,7 @@ export class BridgeSwapInfoComponent implements OnInit {
         this.isFromPolygonToEth =
           inputForm.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
           inputForm.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-        this.toTokenSymbol = inputForm.toToken.symbol;
+        this.fromTokenSymbol = inputForm.fromToken.symbol;
 
         this.cdr.markForCheck();
       });
