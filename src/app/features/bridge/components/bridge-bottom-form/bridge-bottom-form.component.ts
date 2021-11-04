@@ -29,8 +29,6 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -52,7 +50,6 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
-import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -128,14 +125,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private bridgeService: BridgeService,
-    private errorsService: ErrorsService,
-    public swapFormService: SwapFormService,
-    private swapService: SwapsService,
-    private settingsService: SettingsService,
-    private cdr: ChangeDetectorRef,
-    private authService: AuthService,
-    private web3PublicService: Web3PublicService,
+    private readonly bridgeService: BridgeService,
+    private readonly errorsService: ErrorsService,
+    public readonly swapFormService: SwapFormService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly authService: AuthService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector,
@@ -176,13 +170,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsService.bridgeValueChanges
-      .pipe(startWith(this.settingsService.bridgeValue), takeUntil(this.destroy$))
-      .subscribe(settings => {
-        this.tronAddress = settings.tronAddress;
-        this.setToWalletAddress();
-      });
-
     this.authService
       .getCurrentUser()
       .pipe(
@@ -190,7 +177,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.setToWalletAddress();
         this.conditionalCalculate();
       });
   }
@@ -207,19 +193,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
 
-    this.setToWalletAddress();
-
     this.conditionalCalculate();
-  }
-
-  private setToWalletAddress(): void {
-    const { toBlockchain } = this.swapFormService.inputValue;
-    if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
-      this.toWalletAddress = this.tronAddress;
-    } else {
-      this.toWalletAddress = this.authService.user?.address;
-    }
-    this.cdr.detectChanges();
   }
 
   private async conditionalCalculate(): Promise<void> {
