@@ -91,14 +91,17 @@ export class BridgeSwapInfoComponent implements OnInit {
       .pipe(startWith(this.swapFormService.outputValue), takeUntil(this.destroy$))
       .subscribe(outputForm => {
         const { toAmount } = outputForm;
-        if (toAmount?.isFinite()) {
-          const { fromAmount } = this.swapFormService.inputValue;
-          this.providerFee = fromAmount.minus(toAmount).toNumber();
-
-          this.swapInfoService.setInfoCalculated();
-
-          this.cdr.markForCheck();
+        if (!toAmount?.isFinite()) {
+          this.swapInfoService.emitInfoCalculated();
+          return;
         }
+
+        const { fromAmount } = this.swapFormService.inputValue;
+        this.providerFee = fromAmount.minus(toAmount).toNumber();
+
+        this.swapInfoService.emitInfoCalculated();
+
+        this.cdr.markForCheck();
       });
   }
 }

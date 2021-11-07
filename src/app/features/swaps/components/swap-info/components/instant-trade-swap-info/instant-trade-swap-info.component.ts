@@ -96,19 +96,24 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     this.swapFormService.outputValueChanges
       .pipe(startWith(this.swapFormService.outputValue), takeUntil(this.destroy$))
       .subscribe(() => {
+        const { toAmount } = this.swapFormService.outputValue;
+        if (!toAmount?.isFinite()) {
+          this.swapInfoService.emitInfoCalculated();
+          return;
+        }
+
         this.slippage = this.settingsService.instantTradeValue.slippageTolerance;
         this.setSlippageAndMinimumReceived();
 
         const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-        const { toAmount } = this.swapFormService.outputValue;
-        this.priceImpact = PriceImpactCalculator.calculateItPriceImpact(
-          fromToken,
-          toToken,
+        this.priceImpact = PriceImpactCalculator.calculatePriceImpact(
+          fromToken?.price,
+          toToken?.price,
           fromAmount,
           toAmount
         );
 
-        this.swapInfoService.setInfoCalculated();
+        this.swapInfoService.emitInfoCalculated();
 
         this.cdr.markForCheck();
       });

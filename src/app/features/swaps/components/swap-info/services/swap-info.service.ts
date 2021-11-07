@@ -11,7 +11,7 @@ export class SwapInfoService {
 
   constructor() {}
 
-  public setInfoCalculated(): void {
+  public emitInfoCalculated(): void {
     this._onInfoCalculated$.next();
   }
 }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="showTransactionInfo">
+<ng-container *ngIf="showTransactionInfo || loading">
   <tui-loader [showLoader]="loading" [overlay]="true">
     <div class="swaps-info">
       <h1 class="swaps-info__title">Transaction Info</h1>

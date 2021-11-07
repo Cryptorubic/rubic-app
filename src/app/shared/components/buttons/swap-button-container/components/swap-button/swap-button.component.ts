@@ -76,9 +76,9 @@ export class SwapButtonComponent implements OnInit {
     if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
       const { fromToken, toToken, fromAmount } = this.formService.inputValue;
       const { toAmount } = this.formService.outputValue;
-      this.priceImpact = PriceImpactCalculator.calculateItPriceImpact(
-        fromToken,
-        toToken,
+      this.priceImpact = PriceImpactCalculator.calculatePriceImpact(
+        fromToken?.price,
+        toToken?.price,
         fromAmount,
         toAmount
       );

@@ -1,19 +1,18 @@
 import BigNumber from 'bignumber.js';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 
 export class PriceImpactCalculator {
-  public static calculateItPriceImpact(
-    fromToken: TokenAmount,
-    toToken: TokenAmount,
+  public static calculatePriceImpact(
+    fromTokenPrice: number,
+    toTokenPrice: number,
     fromAmount: BigNumber,
     toAmount: BigNumber
   ): number {
-    if (!fromToken?.price || !toToken?.price || !fromAmount?.isFinite() || !toAmount?.isFinite()) {
+    if (!fromTokenPrice || !toTokenPrice || !fromAmount?.isFinite() || !toAmount?.isFinite()) {
       return 0;
     }
 
-    const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
-    const toTokenCost = toAmount.multipliedBy(toToken.price);
+    const fromTokenCost = fromAmount.multipliedBy(fromTokenPrice);
+    const toTokenCost = toAmount.multipliedBy(toTokenPrice);
     return fromTokenCost
       .minus(toTokenCost)
       .dividedBy(fromTokenCost)

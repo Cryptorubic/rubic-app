@@ -87,7 +87,8 @@ export class CoingeckoApiService {
    * @param tokenAddress Address of token to get price for.
    */
   @Cacheable({
-    maxAge: 13_000
+    maxAge: 13_000,
+    maxCacheCount: 4
   })
   public getCommonTokenPrice(
     blockchain: BLOCKCHAIN_NAME,

@@ -1,4 +1,4 @@
-<div class="info-line">
+<div class="info-line" *ngIf="estimateGasInEth?.isFinite()">
   <div class="info-line__title title">
     <span class="title__text">Estimated gas fee</span>
     <img
@@ -7,7 +7,11 @@
       [tuiHint]="'Estimated gas fee in source network'"
     />
   </div>
-  <div class="info-line__value">0.15 ETH ≈ $5.46</div>
+  <div class="info-line__value">
+    {{ estimateGasInEth }} {{ nativeCoinSymbol }} ≈ ${{
+      estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
+    }}
+  </div>
 </div>
 
 <div class="info-line">
@@ -19,7 +23,11 @@
       [tuiHint]="'Gas fee in target network taken in native token of source network'"
     />
   </div>
-  <div class="info-line__value">0.15 ETH ≈ $5.46</div>
+  <div class="info-line__value">
+    {{ cryptoFeeInEth }} {{ nativeCoinSymbol }} ≈ ${{
+      cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
+    }}
+  </div>
 </div>
 
 <div class="info-line">
@@ -31,12 +39,15 @@
       [tuiHint]="'Platforms\'s commission charges in RBC token'"
     />
   </div>
-  <div class="info-line__value">0.3% ≈ 3 RBC</div>
+  <div class="info-line__value">
+    {{ feePercent }}% ≈ {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
+    {{ feeTokenSymbol }}
+  </div>
 </div>
 
 <hr class="delimiter" />
 
-<div class="info-line">
+<div class="info-line" *ngIf="priceImpactFrom > 0">
   <div class="info-line__title title">
     <span class="title__text">Price impact in source network</span>
     <img
@@ -47,10 +58,10 @@
       "
     />
   </div>
-  <div class="info-line__value"><0.01%</div>
+  <app-price-impact-value [priceImpact]="priceImpactFrom"></app-price-impact-value>
 </div>
 
-<div class="info-line">
+<div class="info-line" *ngIf="priceImpactTo > 0">
   <div class="info-line__title title">
     <span class="title__text">Price impact in target network</span>
     <img
@@ -61,7 +72,7 @@
       "
     />
   </div>
-  <div class="info-line__value">-4.5%</div>
+  <app-price-impact-value [priceImpact]="priceImpactTo"></app-price-impact-value>
 </div>
 
 <div class="info-line">
@@ -73,7 +84,10 @@
       [tuiHint]="'crossChainPage.swapInfo.minimumReceivedHint' | translate"
     />
   </div>
-  <div class="info-line__value">25.653 RBC</div>
+  <div class="info-line__value">
+    {{ minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals }}
+    {{ toToken.symbol }}
+  </div>
 </div>
 
 <div class="info-line">
@@ -85,5 +99,8 @@
       [tuiHint]="'crossChainPage.swapInfo.maximumSentHint' | translate"
     />
   </div>
-  <div class="info-line__value">12.24 MONS</div>
+  <div class="info-line__value">
+    {{ maximumSent | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals }}
+    {{ fromToken.symbol }}
+  </div>
 </div>
