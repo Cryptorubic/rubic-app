@@ -3,7 +3,9 @@
 .swaps-info {
   padding: 29px 30px;
 
-  background: rgba(0, 0, 0, 0.6);
+  color: var(--form-bright-text-color);
+
+  background: var(--main-form-background);
   border-radius: 16px;
 
   &__title {
@@ -11,7 +13,7 @@
 
     font-weight: bold;
     font-size: 21px;
-    font-family: $montserrat-font;
+    font-family: $sf-pro-font;
     line-height: 125%;
   }
 }
