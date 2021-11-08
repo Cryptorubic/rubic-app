@@ -1,21 +1,22 @@
 import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/models/LiquidityPool';
 import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 /**
  * Most popular tokens in uni v3 to use in a route.
  */
-export const routerTokensNetMode: Record<NetMode, Record<string, string>> = {
+export const routerTokensNetMode: Record<NetMode, Record<string, SymbolToken>> = {
   mainnet: {
-    WETH: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-    USDC: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    WBTC: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-    DAI: '0x6b175474e89094c44da98b954eedeac495271d0f'
+    WETH: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', symbol: 'WETH' },
+    USDT: { address: '0xdac17f958d2ee523a2206206994597c13d831ec7', symbol: 'USDT' },
+    USDC: { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', symbol: 'USDC' },
+    WBTC: { address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', symbol: 'WBTC' },
+    DAI: { address: '0x6b175474e89094c44da98b954eedeac495271d0f', symbol: 'DAI' }
   },
   testnet: {
-    WETH: '0xd0a1e359811322d97991e03f863a0c30c2cf029c',
-    WEENUS: '0xaFF4481D10270F50f203E0763e2597776068CBc5',
-    XEENUS: '0x022e292b44b5a146f2e8ee36ff44d3dd863c915c'
+    WETH: { address: '0xd0a1e359811322d97991e03f863a0c30c2cf029c', symbol: 'WETH' },
+    WEENUS: { address: '0xaFF4481D10270F50f203E0763e2597776068CBc5', symbol: 'WEENUS' },
+    XEENUS: { address: '0x022e292b44b5a146f2e8ee36ff44d3dd863c915c', symbol: 'XEENUS' }
   }
 };
 

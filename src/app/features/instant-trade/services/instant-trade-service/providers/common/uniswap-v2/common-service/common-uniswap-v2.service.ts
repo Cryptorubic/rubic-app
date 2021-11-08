@@ -37,7 +37,6 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UniswapV2InstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2InstantTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
@@ -45,6 +44,7 @@ import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
@@ -260,7 +260,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean
-  ): Promise<UniswapV2InstantTrade> {
+  ): Promise<InstantTrade> {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
 
@@ -294,7 +294,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       gasPriceInUsd
     );
 
-    const instantTrade: UniswapV2InstantTrade = {
+    const instantTrade: InstantTrade = {
       blockchain: this.blockchain,
       from: {
         token: fromToken,
@@ -513,7 +513,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   public async createTrade(
-    trade: UniswapV2InstantTrade,
+    trade: InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(trade.blockchain);

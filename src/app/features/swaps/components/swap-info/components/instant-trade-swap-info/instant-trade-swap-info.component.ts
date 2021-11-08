@@ -15,7 +15,6 @@ import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { InstantTradeService } from '@features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 
@@ -28,11 +27,7 @@ import { SwapInfoService } from '@features/swaps/components/swap-info/services/s
 })
 export class InstantTradeSwapInfoComponent implements OnInit {
   @Input() set currentInstantTrade(instantTrade: InstantTrade) {
-    if (InstantTradeService.isUniswapV2Trade(instantTrade)) {
-      this.path = instantTrade.path.map(token => token.symbol);
-    } else {
-      this.path = [];
-    }
+    this.path = instantTrade?.path?.map(token => token.symbol);
   }
 
   public minimumReceived: BigNumber;

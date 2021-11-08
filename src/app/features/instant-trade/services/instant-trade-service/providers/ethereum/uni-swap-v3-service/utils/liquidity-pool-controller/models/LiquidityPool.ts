@@ -1,4 +1,5 @@
 import { compareAddresses } from 'src/app/shared/utils/utils';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 export type FeeAmount = 500 | 3000 | 10000;
 
@@ -8,8 +9,8 @@ export type FeeAmount = 500 | 3000 | 10000;
 export class LiquidityPool {
   constructor(
     public readonly address: string,
-    public readonly token0: string,
-    public readonly token1: string,
+    public readonly token0: SymbolToken,
+    public readonly token1: SymbolToken,
     public readonly fee: FeeAmount
   ) {}
 
@@ -20,8 +21,10 @@ export class LiquidityPool {
    */
   public isPoolWithTokens(tokenA: string, tokenB: string): boolean {
     return (
-      (compareAddresses(this.token0, tokenA) && compareAddresses(this.token1, tokenB)) ||
-      (compareAddresses(this.token1, tokenA) && compareAddresses(this.token0, tokenB))
+      (compareAddresses(this.token0.address, tokenA) &&
+        compareAddresses(this.token1.address, tokenB)) ||
+      (compareAddresses(this.token1.address, tokenA) &&
+        compareAddresses(this.token0.address, tokenB))
     );
   }
 }

@@ -38,7 +38,6 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { UniswapV2InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2InstantTrade';
 
 @Injectable({
   providedIn: 'root'
@@ -54,10 +53,6 @@ export class InstantTradeService {
 
   public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
-  }
-
-  public static isUniswapV2Trade(trade: InstantTrade): trade is UniswapV2InstantTrade {
-    return trade && 'path' in trade;
   }
 
   constructor(
