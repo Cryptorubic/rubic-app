@@ -47,6 +47,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PlatformFee } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/PlatformFee';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
+import { SolarBeamMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 
 interface PathAndToAmount {
   path: string[];
@@ -90,6 +91,7 @@ export class CrossChainRoutingService {
     private readonly quickSwapService: QuickSwapService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
+    private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
@@ -120,7 +122,8 @@ export class CrossChainRoutingService {
       [BLOCKCHAIN_NAME.ETHEREUM]: [this.uniSwapV2Service],
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [this.pancakeSwapService],
       [BLOCKCHAIN_NAME.POLYGON]: [this.quickSwapService],
-      [BLOCKCHAIN_NAME.AVALANCHE]: [this.pangolinAvalancheService, this.joeAvalancheService]
+      [BLOCKCHAIN_NAME.AVALANCHE]: [this.pangolinAvalancheService, this.joeAvalancheService],
+      [BLOCKCHAIN_NAME.MOONRIVER]: [this.solarBeamMoonRiverService]
     };
   }
 
@@ -129,7 +132,8 @@ export class CrossChainRoutingService {
       [BLOCKCHAIN_NAME.ETHEREUM]: [2],
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [1],
       [BLOCKCHAIN_NAME.POLYGON]: [3],
-      [BLOCKCHAIN_NAME.AVALANCHE]: [4, 5]
+      [BLOCKCHAIN_NAME.AVALANCHE]: [4, 5],
+      [BLOCKCHAIN_NAME.MOONRIVER]: [6]
     };
   }
 
@@ -480,9 +484,10 @@ export class CrossChainRoutingService {
     toTransitTokenBlockchain: SupportedCrossChainSwapBlockchain,
     fromTransitTokenAmount: BigNumber
   ): Promise<BigNumber> {
+    const nonRbcTransitBlockchains = [BLOCKCHAIN_NAME.AVALANCHE, BLOCKCHAIN_NAME.MOONRIVER];
     if (
-      fromTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
-      toTransitTokenBlockchain === BLOCKCHAIN_NAME.AVALANCHE
+      nonRbcTransitBlockchains.includes(fromTransitTokenBlockchain) ||
+      nonRbcTransitBlockchains.includes(toTransitTokenBlockchain)
     ) {
       const firstTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
         {
@@ -598,6 +603,10 @@ export class CrossChainRoutingService {
    */
   private async checkGasPrice(trade: CrossChainRoutingTrade): Promise<void | never> {
     const { toBlockchain, toContractIndex } = trade;
+
+    if (toBlockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
+      return;
+    }
 
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];

@@ -115,6 +115,21 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 1285,
+    name: BLOCKCHAIN_NAME.MOONRIVER,
+    scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
+    rpcLink: 'https://rpc.moonriver.moonbeam.network',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/moonriver.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.MOONRIVER,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'MOVR',
+      symbol: 'MOVR',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,
