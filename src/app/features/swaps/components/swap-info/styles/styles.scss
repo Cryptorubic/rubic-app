@@ -8,6 +8,7 @@
 
 .info-line {
   display: flex;
+  grid-gap: 20px;
   justify-content: space-between;
 
   min-height: 21px;
@@ -66,5 +67,26 @@ app-price-impact-info-line {
 
   &:not(:last-child) {
     margin-bottom: 10px;
+  }
+}
+
+@include b(490) {
+  .info-line {
+    flex-direction: column;
+    grid-gap: 8px;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+
+  .title {
+    grid-gap: 9px;
+  }
+
+  app-price-impact-info-line {
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
   }
 }
