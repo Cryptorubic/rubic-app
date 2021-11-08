@@ -7,7 +7,7 @@
       [tuiHint]="'Estimated gas fee in source network'"
     />
   </div>
-  <div class="info-line__value">
+  <div class="info-line__value" *ngIf="estimateGasInEth && estimateGasInUsd">
     {{ estimateGasInEth }} {{ nativeCoinSymbol }} ≈ ${{
       estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
     }}
@@ -23,7 +23,7 @@
       [tuiHint]="'Gas fee in target network taken in native token of source network'"
     />
   </div>
-  <div class="info-line__value">
+  <div class="info-line__value" *ngIf="cryptoFeeInEth && cryptoFeeInUsd">
     {{ cryptoFeeInEth }} {{ nativeCoinSymbol }} ≈ ${{
       cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
     }}
@@ -39,7 +39,7 @@
       [tuiHint]="'Platforms\'s commission charges in RBC token'"
     />
   </div>
-  <div class="info-line__value">
+  <div class="info-line__value" *ngIf="feePercent && feeAmount">
     {{ feePercent }}% ≈ {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
     {{ feeTokenSymbol }}
   </div>
@@ -72,7 +72,7 @@
       [tuiHint]="'crossChainPage.swapInfo.minimumReceivedHint' | translate"
     />
   </div>
-  <div class="info-line__value">
+  <div class="info-line__value" *ngIf="minimumReceived">
     {{ minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals }}
     {{ toToken.symbol }}
   </div>
@@ -87,7 +87,7 @@
       [tuiHint]="'crossChainPage.swapInfo.maximumSentHint' | translate"
     />
   </div>
-  <div class="info-line__value">
+  <div class="info-line__value" *ngIf="maximumSent">
     {{ maximumSent | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals }}
     {{ fromToken.symbol }}
   </div>

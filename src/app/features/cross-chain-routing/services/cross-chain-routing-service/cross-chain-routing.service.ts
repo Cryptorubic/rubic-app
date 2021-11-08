@@ -840,7 +840,7 @@ export class CrossChainRoutingService {
       trade.tokenOut.decimals
     );
 
-    const firstTransitTokenAmountAbsolute = Web3Public.fromWei(
+    const firstTransitTokenAmountAbsolute = Web3Public.toWei(
       trade.firstTransitTokenAmount,
       this.transitTokens[trade.fromBlockchain].decimals
     );

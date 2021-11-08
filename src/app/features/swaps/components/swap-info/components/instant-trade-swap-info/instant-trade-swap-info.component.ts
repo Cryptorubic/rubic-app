@@ -10,7 +10,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
-import { takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
@@ -46,13 +46,17 @@ export class InstantTradeSwapInfoComponent implements OnInit {
   public path: string[];
 
   public get minimumReceivedFormatted(): string {
+    if (!this.minimumReceived?.isFinite()) {
+      return '';
+    }
+
     const { toToken } = this.swapFormService.inputValue;
-    const minimumReceivedString = this.bigNumberFormatPipe.transform(this.minimumReceived);
-    return `${this.withRoundPipe.transform(
-      minimumReceivedString,
+    const minimumReceivedFormatter = this.withRoundPipe.transform(
+      this.bigNumberFormatPipe.transform(this.minimumReceived),
       'toClosestValue',
       toToken.decimals
-    )} ${toToken.symbol}`;
+    );
+    return `${minimumReceivedFormatter} ${toToken.symbol}`;
   }
 
   public get rate(): string {
@@ -63,14 +67,20 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     }
 
     if (this.rateType === 'fromTokenRate') {
-      const rateString = this.bigNumberFormatPipe.transform(toAmount.dividedBy(fromAmount));
-      const rate = this.withRoundPipe.transform(rateString, 'toClosestValue', toToken.decimals);
-      return `1 ${fromToken.symbol} = ${rate} ${toToken.symbol}`;
+      const rateFormatted = this.withRoundPipe.transform(
+        this.bigNumberFormatPipe.transform(toAmount.dividedBy(fromAmount)),
+        'toClosestValue',
+        toToken.decimals
+      );
+      return `1 ${fromToken.symbol} = ${rateFormatted} ${toToken.symbol}`;
     }
 
-    const rateString = this.bigNumberFormatPipe.transform(fromAmount.dividedBy(toAmount));
-    const rate = this.withRoundPipe.transform(rateString, 'toClosestValue', fromToken.decimals);
-    return `${rate} ${fromToken.symbol} = 1 ${toToken.symbol}`;
+    const rateFormatted = this.withRoundPipe.transform(
+      this.bigNumberFormatPipe.transform(fromAmount.dividedBy(toAmount)),
+      'toClosestValue',
+      fromToken.decimals
+    );
+    return `${rateFormatted} ${fromToken.symbol} = 1 ${toToken.symbol}`;
   }
 
   constructor(
@@ -117,7 +127,10 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     });
 
     this.settingsService.instantTrade.controls.slippageTolerance.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.settingsService.instantTradeValue.slippageTolerance),
+        takeUntil(this.destroy$)
+      )
       .subscribe(slippage => {
         this.slippage = slippage;
         this.setSlippageAndMinimumReceived();

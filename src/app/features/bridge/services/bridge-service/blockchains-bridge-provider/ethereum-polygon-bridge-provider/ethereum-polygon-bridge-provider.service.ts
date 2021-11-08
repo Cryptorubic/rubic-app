@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { List } from 'immutable';
 import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { first, tap } from 'rxjs/operators';
+import { first, tap, timeout } from 'rxjs/operators';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -84,6 +84,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       .post(POLYGON_GRAPH_API_URL, {
         query
       })
+      .pipe(timeout(3000))
       .subscribe(
         async (response: PolygonGraphResponse) => {
           if (!response.data) {
