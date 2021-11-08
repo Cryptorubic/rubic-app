@@ -39,7 +39,7 @@ import { SettingsBridgeComponent } from './components/swaps-settings/settings-br
 import { SettingsCcrComponent } from './components/swaps-settings/settings-ccr/settings-ccr.component';
 import { IframeSettingsComponent } from './components/swaps-settings/iframe-settings/iframe-settings.component';
 import { CcrPromocodeComponent } from './components/swaps-settings/settings-ccr/ccr-promocode/ccr-promocode.component';
-import { SwapInfoContainerComponent } from './components/swap-info/swap-info-container/swap-info-container.component';
+import { SwapInfoContainerComponent } from './components/swap-info/components/swap-info-container/swap-info-container.component';
 import { InstantTradeSwapInfoComponent } from './components/swap-info/components/instant-trade-swap-info/instant-trade-swap-info.component';
 import { BridgeSwapInfoComponent } from './components/swap-info/components/cross-chain-swap-info/components/bridge-swap-info/bridge-swap-info.component';
 
