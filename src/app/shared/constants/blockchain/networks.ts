@@ -103,7 +103,7 @@ export default [
   {
     id: 43114,
     name: BLOCKCHAIN_NAME.AVALANCHE,
-    scannerUrl: 'https://cchain.explorer.avax.network/',
+    scannerUrl: 'https://snowtrace.io/',
     rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
     additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/avalanche.svg',
