@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Log
+        run: echo ${GITHUB_REF##*/}
+
       - name: Read .nvmrc
         run: echo ::set-output name=NVMRC::$(cat .nvmrc)
         id: nvm
@@ -44,3 +47,22 @@ jobs:
 
       - name: Deploy on stage server
         run: sshpass -p ${{ secrets.STAGE_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.STAGE_SERVER_USER }}@${{ secrets.STAGE_SERVER_HOST }}:/var/www/stage_rubic_exchange/frontend
+
+  deploy-stage:
+    needs: lint
+    name: Deploy to stage server
+    runs-on: ubuntu-latest
+    if: ${GITHUB_REF##*/}==develop
+
+    steps:
+      - name: Run build
+        run: npm run build:stage
+
+      - name: Set up sshpass and npm
+        run: |
+          sudo apt-get install sshpass
+          npm install
+
+      - name: Deploy on stage server
+        run: sshpass -p ${{ secrets.STAGE_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.STAGE_SERVER_USER }}@${{ secrets.STAGE_SERVER_HOST }}:/var/www/stage_rubic_exchange/frontend
+
