@@ -10,14 +10,13 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { InstantTradeService } from '@features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
-import { PRICE_IMPACT_RANGE } from '@shared/utils/price-impact/models/PRICE_IMPACT_RANGE';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 
 @Component({
@@ -35,8 +34,6 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       this.path = [];
     }
   }
-
-  public readonly PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
 
   public minimumReceived: BigNumber;
 
@@ -93,30 +90,31 @@ export class InstantTradeSwapInfoComponent implements OnInit {
   }
 
   private initSubscriptions(): void {
-    this.swapFormService.outputValueChanges
-      .pipe(startWith(this.swapFormService.outputValue), takeUntil(this.destroy$))
-      .subscribe(() => {
-        const { toAmount } = this.swapFormService.outputValue;
-        if (!toAmount?.isFinite()) {
-          this.swapInfoService.emitInfoCalculated();
-          return;
-        }
-
-        this.slippage = this.settingsService.instantTradeValue.slippageTolerance;
-        this.setSlippageAndMinimumReceived();
-
-        const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-        this.priceImpact = PriceImpactCalculator.calculatePriceImpact(
-          fromToken?.price,
-          toToken?.price,
-          fromAmount,
-          toAmount
-        );
-
+    this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const { toAmount } = this.swapFormService.outputValue;
+      if (!toAmount?.isFinite()) {
         this.swapInfoService.emitInfoCalculated();
+        return;
+      }
 
-        this.cdr.markForCheck();
-      });
+      this.slippage = this.settingsService.instantTradeValue.slippageTolerance;
+      this.setSlippageAndMinimumReceived();
+
+      const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+      this.priceImpact = PriceImpactCalculator.calculatePriceImpact(
+        fromToken?.price,
+        toToken?.price,
+        fromAmount,
+        toAmount
+      );
+      if (this.priceImpact < 0) {
+        this.priceImpact = null;
+      }
+
+      this.swapInfoService.emitInfoCalculated();
+
+      this.cdr.markForCheck();
+    });
 
     this.settingsService.instantTrade.controls.slippageTolerance.valueChanges
       .pipe(takeUntil(this.destroy$))

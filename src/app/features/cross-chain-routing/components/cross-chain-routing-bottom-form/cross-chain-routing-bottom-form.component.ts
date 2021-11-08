@@ -115,15 +115,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.inputValue;
-    return (
-      fromBlockchain &&
-      toBlockchain &&
-      fromToken &&
-      toToken &&
-      fromAmount &&
-      !fromAmount.isNaN() &&
-      fromAmount.gt(0)
-    );
+    return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
   constructor(

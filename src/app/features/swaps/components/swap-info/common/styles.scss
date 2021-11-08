@@ -16,6 +16,7 @@
   font-size: 16px;
 
   img {
+    width: 19px;
     height: 19px;
   }
 
@@ -25,7 +26,7 @@
 
   &__value {
     display: flex;
-    grid-gap: 13px;
+    grid-gap: 8px;
     align-items: center;
 
     a {
@@ -58,4 +59,12 @@
   display: flex;
   grid-gap: 13px;
   align-items: center;
+}
+
+app-price-impact-info-line {
+  display: block;
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
 }

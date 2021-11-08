@@ -6,10 +6,7 @@
       [tokens]="tokens"
       [formService]="swapFormService"
     ></app-rubic-tokens>
-    <app-amount-estimated
-      [formService]="swapFormService"
-      [loading]="tradeStatus === TRADE_STATUS.LOADING"
-    ></app-amount-estimated>
+    <app-amount-estimated [loading]="tradeStatus === TRADE_STATUS.LOADING"></app-amount-estimated>
   </div>
 
   <div class="bridge-bottom-form__footer">

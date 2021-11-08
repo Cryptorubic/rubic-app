@@ -152,8 +152,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         form.fromToken &&
         form.toBlockchain &&
         form.toToken &&
-        form.fromAmount &&
-        form.fromAmount.gt(0)
+        form.fromAmount?.gt(0)
     );
   }
 
@@ -268,13 +267,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.swapFormService.input.controls.toToken.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(toToken => {
-        this.toToken = toToken;
-        this.cdr.detectChanges();
         if (
           TokensService.areTokensEqual(this.toToken, toToken) &&
           this.toToken?.price !== toToken?.price
         ) {
+          this.toToken = toToken;
           this.updateControllers();
+          this.cdr.markForCheck();
         }
       });
 
@@ -589,6 +588,20 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const bestProviderIndex = InstantTradeBottomFormComponent.calculateBestRate(
       this.providerControllers.map(el => el.trade)
     );
+
+    if (!!this.toToken.price && bestProviderIndex !== -1) {
+      const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken.price);
+
+      const bestProvider = this.providerControllers[bestProviderIndex];
+      const bestProviderCost = bestProvider.trade.to.amount.multipliedBy(this.toToken.price);
+
+      if (bestProviderCost.gt(fromTokenCost)) {
+        this.toToken.price = null;
+        this.updateControllers();
+        return;
+      }
+    }
+
     if (bestProviderIndex !== -1) {
       this.providerControllers[bestProviderIndex].isBestRate = true;
 

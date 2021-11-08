@@ -77,7 +77,6 @@ export class CcrSwapInfoComponent implements OnInit {
   private subscribeOnOutputValue(): void {
     this.swapFormService.outputValueChanges
       .pipe(
-        startWith(this.swapFormService.outputValue),
         switchMap(form => {
           const { toAmount } = form;
           if (!toAmount?.isFinite()) {

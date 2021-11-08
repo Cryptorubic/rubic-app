@@ -8,7 +8,7 @@ export class PriceImpactCalculator {
     toAmount: BigNumber
   ): number {
     if (!fromTokenPrice || !toTokenPrice || !fromAmount?.isFinite() || !toAmount?.isFinite()) {
-      return 0;
+      return null;
     }
 
     const fromTokenCost = fromAmount.multipliedBy(fromTokenPrice);
