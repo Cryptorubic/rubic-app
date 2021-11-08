@@ -10,14 +10,14 @@
 
   &.button_buy-token {
     [tuiButton][data-appearance='outline'] {
-      border: 1px solid $button-buy-token;
+      border: 1px solid $buy-token-button-color;
 
       &._pressed,
       &._hovered,
       &._focused:not(&._pressed) {
-        background: rgba($button-buy-token, 0.3);
+        background: rgba($buy-token-button-color, 0.3);
 
-        border: 1px solid $button-buy-token;
+        border: 1px solid $buy-token-button-color;
       }
 
       &._pressed {
@@ -176,5 +176,3 @@
     }
   }
 }
-
-

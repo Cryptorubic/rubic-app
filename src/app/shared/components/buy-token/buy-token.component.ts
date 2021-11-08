@@ -9,6 +9,7 @@ import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 interface TokenInfo {
   blockchain: BLOCKCHAIN_NAME;
@@ -28,14 +29,14 @@ export class BuyTokenComponent {
 
   private fromToken: Required<TokenInfo> = {
     blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    address: '0x0000000000000000000000000000000000000000',
+    address: NATIVE_TOKEN_ADDRESS,
     symbol: 'ETH',
     amount: new BigNumber(1)
   };
 
   private toToken: TokenInfo = {
     blockchain: BLOCKCHAIN_NAME.MOONRIVER,
-    address: '0x0000000000000000000000000000000000000000',
+    address: NATIVE_TOKEN_ADDRESS,
     symbol: 'MOVR'
   };
 
