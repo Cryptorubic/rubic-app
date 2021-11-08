@@ -8,8 +8,6 @@ import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
   providedIn: 'root'
 })
 export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
-  private readonly fee = '25';
-
   constructor() {
     super(solarBeamMoonRiverConstants);
     this.contractAbi = solarBeamContractAbi;
@@ -24,7 +22,8 @@ export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
    */
   protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
     const methodParams = routesMethodArguments.map((methodArguments: string[]) => {
-      const solarMethodArguments = methodArguments.concat(this.fee);
+      // Solarbeam router requires additional parameter 'fee'
+      const solarMethodArguments = methodArguments.concat('25');
       return {
         methodName,
         methodArguments: solarMethodArguments
