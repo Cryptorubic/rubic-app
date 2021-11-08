@@ -12,8 +12,18 @@
     [tuiButton][data-appearance='outline'] {
       border: 1px solid $button-buy-token;
 
-      &._hovered {
+      &._pressed,
+      &._hovered,
+      &._focused:not(&._pressed) {
         background: rgba($button-buy-token, 0.3);
+
+        border: 1px solid $button-buy-token;
+      }
+
+      &._pressed {
+        ::ng-deep tui-wrapper[data-appearance='outline'] {
+          color: white;
+        }
       }
     }
   }
