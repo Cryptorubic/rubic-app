@@ -45,7 +45,7 @@ export const BLOCKCHAINS: Blockchains = {
   [BLOCKCHAIN_NAME.MOONRIVER]: {
     key: BLOCKCHAIN_NAME.MOONRIVER,
     name: 'Moonriver',
-    img: `${imageBaseSrc}moonriver.svg`
+    img: `${imageBaseSrc}moonriver.webp`
   },
   [BLOCKCHAIN_NAME.TRON]: {
     key: BLOCKCHAIN_NAME.TRON,

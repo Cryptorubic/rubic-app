@@ -121,7 +121,7 @@ export default [
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
     rpcLink: 'https://rpc.moonriver.moonbeam.network',
     additionalRpcLink: '',
-    imagePath: 'assets/images/icons/coins/moonriver.svg',
+    imagePath: 'assets/images/icons/coins/moonriver.webp',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.MOONRIVER,
       address: NATIVE_TOKEN_ADDRESS,
