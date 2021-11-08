@@ -8,6 +8,16 @@
   --tui-focus: transparent;
   --tui-primary-text: #{$rubic-text-color-main};
 
+  &.button_buy-token {
+    [tuiButton][data-appearance='outline'] {
+      border: 1px solid $button-buy-token;
+
+      &._hovered {
+        background: rgba($button-buy-token, 0.3);
+      }
+    }
+  }
+
   [tuiButton] {
     --tui-link: var(--primary-color);
     font-weight: 500;
@@ -156,3 +166,5 @@
     }
   }
 }
+
+
