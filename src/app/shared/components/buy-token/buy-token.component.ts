@@ -9,6 +9,7 @@ import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 interface TokenInfo {
   blockchain: BLOCKCHAIN_NAME;
@@ -27,16 +28,16 @@ export class BuyTokenComponent {
   @Input() appereance: TuiAppearance = TuiAppearance.Outline;
 
   private fromToken: Required<TokenInfo> = {
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0x0000000000000000000000000000000000000000',
+    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    address: NATIVE_TOKEN_ADDRESS,
     symbol: 'ETH',
     amount: new BigNumber(1)
   };
 
   private toToken: TokenInfo = {
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-    address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
-    symbol: 'RBC'
+    blockchain: BLOCKCHAIN_NAME.MOONRIVER,
+    address: NATIVE_TOKEN_ADDRESS,
+    symbol: 'MOVR'
   };
 
   constructor(
