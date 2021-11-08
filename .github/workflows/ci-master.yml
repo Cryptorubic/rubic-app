@@ -1,4 +1,4 @@
-name: Check code quality
+name: Check code quality before merge to master
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint:
-    name: Check code base
+    name: Check code base before merge to master
     runs-on: ubuntu-latest
 
     steps:
@@ -36,17 +36,6 @@ jobs:
 
       - name: Run compile
         run: npm run compile
-
-      - name: Run build
-        run: npm run build:stage
-
-      - name: Set up sshpass and npm
-        run: |
-          sudo apt-get install sshpass
-          npm install
-
-      - name: Deploy on stage server
-        run: sshpass -p ${{ secrets.STAGE_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.STAGE_SERVER_USER }}@${{ secrets.STAGE_SERVER_HOST }}:/var/www/stage_rubic_exchange/frontend
 
   deploy-stage:
     needs: lint
