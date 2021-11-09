@@ -593,16 +593,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
    * @param bestProviderIndex Best provider index.
    */
   private selectController(bestProviderIndex: number): void {
-    if (this.autoSelect) {
-      this.selectedProvider = this.providerControllers[bestProviderIndex];
-      this.providerControllers[bestProviderIndex].isSelected = true;
-    } else {
-      const currentSelectedProviderIndex = this.providerControllers.findIndex(
-        el => el.tradeProviderInfo.value === this.selectedProvider.tradeProviderInfo.value
-      );
-      this.selectedProvider = this.providerControllers[currentSelectedProviderIndex];
-      this.providerControllers[currentSelectedProviderIndex].isSelected = true;
-    }
+    const currentSelectedProviderIndex = this.providerControllers.findIndex(
+      el => el?.tradeProviderInfo.value === this.selectedProvider?.tradeProviderInfo.value
+    );
+    const controller =
+      this.autoSelect || this.providerControllers[currentSelectedProviderIndex].error
+        ? this.providerControllers[bestProviderIndex]
+        : this.providerControllers[currentSelectedProviderIndex];
+
+    this.selectedProvider = controller;
+    controller.isSelected = true;
   }
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
