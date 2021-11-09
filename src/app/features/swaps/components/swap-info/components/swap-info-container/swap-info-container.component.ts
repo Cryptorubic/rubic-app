@@ -41,7 +41,8 @@ export class SwapInfoContainerComponent implements OnInit {
   public get showTransactionInfo(): boolean {
     const { toAmount } = this.swapFormService.outputValue;
     return (
-      (!this.isInstantTrade || !this.currentInstantTradeInfo.isWrappedType) && toAmount?.isFinite()
+      (!this.isInstantTrade || this.currentInstantTradeInfo?.isWrappedType === false) &&
+      toAmount?.isFinite()
     );
   }
 
