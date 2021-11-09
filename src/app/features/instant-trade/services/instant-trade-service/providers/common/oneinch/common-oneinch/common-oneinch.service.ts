@@ -275,11 +275,7 @@ export class CommonOneinchService {
     oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse
   ): Promise<SymbolToken[]> {
     const addressesPath = [fromTokenAddress];
-    oneInchTrade.protocols[0].forEach(protocol => {
-      protocol.forEach(tradePart => {
-        addressesPath.push(tradePart.toTokenAddress);
-      });
-    });
+    addressesPath.push(...oneInchTrade.protocols[0].map(protocol => protocol[0].toTokenAddress));
     addressesPath.pop();
     addressesPath.push(toTokenAddress);
 
