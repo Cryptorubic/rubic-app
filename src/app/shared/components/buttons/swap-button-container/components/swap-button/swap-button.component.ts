@@ -52,7 +52,10 @@ export class SwapButtonComponent implements OnInit {
   public priceImpact: number;
 
   get disabled() {
-    return this.status !== TRADE_STATUS.READY_TO_SWAP;
+    return (
+      this.status !== TRADE_STATUS.READY_TO_SWAP ||
+      this.priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED
+    );
   }
 
   constructor(

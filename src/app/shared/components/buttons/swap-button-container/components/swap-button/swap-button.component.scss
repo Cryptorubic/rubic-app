@@ -25,6 +25,15 @@
         &._pressed {
           background-color: #f5474a;
         }
+
+        &._disabled {
+          tui-wrapper {
+            color: white;
+
+            background-color: #f5474a;
+            opacity: 0.5 !important;
+          }
+        }
       }
 
       tui-wrapper[data-appearance='secondary'] {

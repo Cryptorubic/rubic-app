@@ -10,5 +10,11 @@
   (onClick)="onSwapClick()"
   appearance="secondary"
 >
-  {{ priceImpact < PRICE_IMPACT_RANGE.MEDIUM ? buttonText : 'Swap Anyway' }}
+  {{
+    priceImpact < PRICE_IMPACT_RANGE.MEDIUM
+      ? buttonText
+      : priceImpact < PRICE_IMPACT_RANGE.HIGH_DISABLED
+      ? 'Swap Anyway'
+      : 'Price impact too high'
+  }}
 </app-rubic-button>
