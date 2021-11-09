@@ -109,20 +109,20 @@ export class BridgeApiService {
    * Makes POST request to add transaction to database.
    * @param fromBlockchain From blockchain name.
    * @param transactionHash Hash of transaction.
-   * @param fromAmount Amount of tokens sent.
+   * @param actualFromAmount Amount of tokens sent.
    * @param walletFromAddress User's wallet address.
    */
   public postRubicTransaction(
     fromBlockchain: BLOCKCHAIN_NAME,
     transactionHash: string,
-    fromAmount: string,
+    actualFromAmount: string,
     walletFromAddress: string
   ): Promise<void> {
     const body = {
       type: 'swap_rbc',
       fromNetwork: fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
       transaction_id: transactionHash,
-      fromAmount,
+      actualFromAmount,
       walletFromAddress
     };
 

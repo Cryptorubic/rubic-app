@@ -34,7 +34,13 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 interface PanamaStatusResponse {
   data: {
     depositTxId: string;
+    swapTxId: string;
   };
+}
+
+interface HashPair {
+  fromTransactionHash: string;
+  toTransactionHash: string;
 }
 
 @Injectable({
@@ -101,24 +107,31 @@ export class MyTradesService {
         const filteredTrades = trades
           .map(trade => this.prepareBridgeData(trade))
           .filter(trade => !!trade);
-        const sources: Observable<string>[] = filteredTrades.map(trade => {
+        const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
           if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
             return trade.fromTransactionHash &&
               trade.toTransactionHash &&
               trade.status !== TRANSACTION_STATUS.CANCELLED
-              ? of(trade.fromTransactionHash)
+              ? of({
+                  fromTransactionHash: trade.toTransactionHash,
+                  toTransactionHash: trade.fromTransactionHash
+                })
               : this.loadPanamaTxHash(trade.transactionId);
           }
-          return of(trade.fromTransactionHash);
+          return of({
+            fromTransactionHash: trade.fromTransactionHash,
+            toTransactionHash: trade.toTransactionHash
+          });
         });
         return forkJoin(sources).pipe(
-          map(txHashes =>
-            txHashes.map((hash, index) => ({
-              ...filteredTrades[index],
-              transactionHash: hash
+          map((txHashes: HashPair[]) =>
+            txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
+              fromTransactionHash,
+              toTransactionHash,
+              ...filteredTrades[index]
             }))
           ),
-          defaultIfEmpty([])
+          defaultIfEmpty<TableTrade[]>([])
         );
       })
     );
@@ -249,9 +262,12 @@ export class MyTradesService {
       );
   }
 
-  public loadPanamaTxHash(panamaId: string): Observable<string> {
-    return this.httpClient
-      .get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`)
-      .pipe(map((response: PanamaStatusResponse) => response.data.depositTxId));
+  public loadPanamaTxHash(panamaId: string): Observable<HashPair> {
+    return this.httpClient.get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`).pipe(
+      map((response: PanamaStatusResponse) => ({
+        fromTransactionHash: response.data.depositTxId,
+        toTransactionHash: response.data.swapTxId
+      }))
+    );
   }
 }
