@@ -64,6 +64,7 @@ export class BridgeApiService {
     }
 
     return {
+      transactionId: trade.transaction_id,
       fromTransactionHash: trade.fromTransactionHash,
       toTransactionHash: trade.toTransactionHash,
       status,

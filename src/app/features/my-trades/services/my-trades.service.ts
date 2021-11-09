@@ -29,6 +29,13 @@ import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+
+interface PanamaStatusResponse {
+  data: {
+    depositTxId: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -94,9 +101,14 @@ export class MyTradesService {
         const filteredTrades = trades
           .map(trade => this.prepareBridgeData(trade))
           .filter(trade => !!trade);
-        const sources: Observable<string>[] = filteredTrades.map(trade =>
-          of(trade.fromTransactionHash)
-        );
+        const sources: Observable<string>[] = filteredTrades.map(trade => {
+          if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
+            return trade.fromTransactionHash
+              ? of(trade.fromTransactionHash)
+              : this.loadPanamaTxHash(trade.transactionId);
+          }
+          return of(trade.fromTransactionHash);
+        });
         return forkJoin(sources).pipe(
           map(txHashes =>
             txHashes.map((hash, index) => ({
@@ -233,5 +245,11 @@ export class MyTradesService {
           return throwError(err);
         })
       );
+  }
+
+  public loadPanamaTxHash(panamaId: string): Observable<string> {
+    return this.httpClient
+      .get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`)
+      .pipe(map((response: PanamaStatusResponse) => response.data.depositTxId));
   }
 }
