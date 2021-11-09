@@ -4,7 +4,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { EMPTY, Observable } from 'rxjs';
-import { first, map, mergeMap, switchMap, timeout } from 'rxjs/operators';
+import { first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import {
   BridgeBlockchainApi,
@@ -39,7 +39,6 @@ export class BridgeApiService {
     return this.httpService
       .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
       .pipe(
-        timeout(3000),
         map((tradesApi: BridgeTableTradeApi[]) =>
           tradesApi.map(trade => this.parseTradeApiToTableTrade(trade))
         )
