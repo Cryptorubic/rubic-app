@@ -103,7 +103,9 @@ export class MyTradesService {
           .filter(trade => !!trade);
         const sources: Observable<string>[] = filteredTrades.map(trade => {
           if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
-            return trade.fromTransactionHash
+            return trade.fromTransactionHash &&
+              trade.toTransactionHash &&
+              trade.status !== TRANSACTION_STATUS.CANCELLED
               ? of(trade.fromTransactionHash)
               : this.loadPanamaTxHash(trade.transactionId);
           }
