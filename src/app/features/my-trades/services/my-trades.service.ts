@@ -109,9 +109,7 @@ export class MyTradesService {
           .filter(trade => !!trade);
         const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
           if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
-            return trade.fromTransactionHash &&
-              trade.toTransactionHash &&
-              trade.status !== TRANSACTION_STATUS.CANCELLED
+            return trade.fromTransactionHash && trade.status !== TRANSACTION_STATUS.CANCELLED
               ? of({
                   fromTransactionHash: trade.toTransactionHash,
                   toTransactionHash: trade.fromTransactionHash
@@ -126,9 +124,9 @@ export class MyTradesService {
         return forkJoin(sources).pipe(
           map((txHashes: HashPair[]) =>
             txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
+              ...filteredTrades[index],
               fromTransactionHash,
-              toTransactionHash,
-              ...filteredTrades[index]
+              toTransactionHash
             }))
           ),
           defaultIfEmpty<TableTrade[]>([])

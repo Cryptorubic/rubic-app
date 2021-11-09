@@ -59,10 +59,9 @@ export abstract class AbstractTableDataComponent {
 
     const transactionHash = trade.toTransactionHash || trade.fromTransactionHash;
 
-    const blockchain =
-      trade.toTransactionHash && trade.fromToken
-        ? trade.toToken.blockchain
-        : trade.fromToken?.blockchain;
+    const blockchain = trade.toTransactionHash
+      ? trade.toToken.blockchain
+      : trade.fromToken?.blockchain;
 
     return (
       trade.transactionHashScanUrl ||
