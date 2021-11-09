@@ -17,6 +17,8 @@ export class PanelContentComponent implements OnInit {
 
   @Input() public providerData: ProviderData;
 
+  @Input() public isBestRate: boolean;
+
   public blockchains = BLOCKCHAIN_NAME;
 
   public swapFormData: Observable<SwapFormInput>;

@@ -10,14 +10,18 @@
   <ng-container *ngIf="allProvidersShown">
     <div class="providers__item" *ngFor="let provider of providers.slice(3); let i = index">
       <app-provider-panel
-        [providerIndex]="i"
+        [providerIndex]="i + 3"
         [providerControllerData]="provider"
         (selectProvider)="onSelectProvider.emit(provider)"
       ></app-provider-panel>
     </div>
   </ng-container>
 
-  <button class="providers__toggler" (click)="allProvidersShown = !allProvidersShown">
+  <button
+    *ngIf="providers.length > 3"
+    class="providers__toggler"
+    (click)="allProvidersShown = !allProvidersShown"
+  >
     <img
       [class.reverted]="allProvidersShown"
       src="assets/images/swaps/icons/show-more-arrow.svg"

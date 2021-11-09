@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { ProviderControllerData } from '@shared/models/instant-trade/providers-controller-data';
+import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
 import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
 import { RubicError } from '@core/errors/models/RubicError';
@@ -43,6 +43,10 @@ export class ProviderPanelComponent {
    */
   public errorTranslateKey: string;
 
+  public get isBestRate(): boolean {
+    return this.providerIndex === 0;
+  }
+
   constructor() {
     this.selectProvider = new EventEmitter<void>();
   }
@@ -64,7 +68,6 @@ export class ProviderPanelComponent {
     const hasError = data.tradeState === INSTANT_TRADES_STATUS.ERROR;
     this.providerData = {
       name: data.tradeProviderInfo.label,
-      isBestRate: data.isBestRate,
       isActive: data.isSelected,
       hasError,
       loading: this.calculateLoadingStatus(data.tradeState),

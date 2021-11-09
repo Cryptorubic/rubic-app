@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { ProviderControllerData } from '@shared/models/instant-trade/providers-controller-data';
+import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 
 @Component({
   selector: 'app-providers-panels-container',

@@ -47,7 +47,7 @@ import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-b
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { ProviderControllerData } from 'src/app/shared/models/instant-trade/providers-controller-data';
+import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -87,11 +87,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
   >;
 
-  private providerControllers: ProviderControllerData[];
+  public providerControllers: ProviderControllerData[];
 
   private _selectedProvider: ProviderControllerData;
-
-  private providersOrderCache: INSTANT_TRADES_PROVIDER[];
 
   private currentBlockchain: BLOCKCHAIN_NAME;
 
@@ -156,69 +154,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  get orderedProviders(): ProviderControllerData[] {
-    if (
-      !this.providersOrderCache?.length ||
-      this.providerControllers.some(item => item.isBestRate)
-    ) {
-      const bestProviders: INSTANT_TRADES_PROVIDER[] = [];
-      const errorProviders: INSTANT_TRADES_PROVIDER[] = [];
-      const restProviders: INSTANT_TRADES_PROVIDER[] = [];
-
-      this.providerControllers.forEach(el => {
-        if (el.isBestRate) {
-          bestProviders.push(el.tradeProviderInfo.value);
-        } else if (el.error) {
-          errorProviders.push(el.tradeProviderInfo.value);
-        } else {
-          restProviders.push(el.tradeProviderInfo.value);
-        }
-      });
-
-      this.providersOrderCache = [...bestProviders, ...restProviders, ...errorProviders];
-    }
-    return this.providersOrderCache.map(providerName =>
-      this.providerControllers.find(provider => provider.tradeProviderInfo.value === providerName)
-    );
-  }
-
-  /**
-   * Returns the most profitable provider based on usd$ price.
-   * @param tradeData Providers' trade data.
-   * @return number Index of the most profitable provider.
-   */
-  private static calculateBestRate(tradeData: InstantTrade[]): number {
-    const { index: providerIndex } = tradeData.reduce(
-      (bestRate, trade, i: number) => {
-        if (!trade) {
-          return bestRate;
-        }
-
-        const { gasFeeInUsd, to } = trade;
-        let profit;
-        if (!to.token.price) {
-          profit = to.amount;
-        } else {
-          const amountInUsd = to.amount?.multipliedBy(to.token.price);
-          profit = gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
-        }
-
-        return profit?.gt(bestRate.profit)
-          ? {
-              index: i,
-              profit
-            }
-          : bestRate;
-      },
-      {
-        index: -1,
-        profit: new BigNumber(-Infinity)
-      }
-    );
-
-    return providerIndex;
-  }
-
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
@@ -234,10 +169,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
-    this.onCalculateTrade$ = new Subject<'normal' | 'hidden'>();
-    this.hiddenDataAmounts$ = new BehaviorSubject<
-      { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
-    >([]);
+    this.onCalculateTrade$ = new Subject();
+    this.hiddenDataAmounts$ = new BehaviorSubject([]);
   }
 
   public ngOnInit(): void {
@@ -328,7 +261,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
-    this.providersOrderCache = null;
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
       this.errorService.catch(new NotSupportedItNetwork());
       return;
@@ -521,8 +453,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatus = TRADE_STATUS.LOADING;
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
-      tradeState: INSTANT_TRADES_STATUS.CALCULATION,
-      isBestRate: false
+      tradeState: INSTANT_TRADES_STATUS.CALCULATION
     }));
     this.cdr.detectChanges();
   }
@@ -541,14 +472,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return {
         ...controller,
         isSelected: false,
-        trade: {
+        trade: trade && {
           ...trade,
           to: {
             ...trade?.to,
             token: this.toToken
           }
         },
-        isBestRate: false,
         needApprove: approveData[index],
         tradeState:
           tradeData[index]?.status === 'fulfilled' && trade
@@ -568,11 +498,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
       isSelected: false,
-      isBestRate: false,
-      trade: {
-        ...controller?.trade,
+      trade: controller?.trade && {
+        ...controller.trade,
         to: {
-          ...controller?.trade?.to,
+          ...controller.trade?.to,
           token: this.toToken
         }
       }
@@ -585,14 +514,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
    * Selects best provider controller and updates trade status.
    */
   private chooseBestController() {
-    const bestProviderIndex = InstantTradeBottomFormComponent.calculateBestRate(
-      this.providerControllers.map(el => el.trade)
-    );
+    this.sortProviders();
+    const bestProvider = this.providerControllers[0];
 
-    if (!!this.toToken.price && bestProviderIndex !== -1) {
+    if (!!this.toToken.price && bestProvider.trade) {
       const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken.price);
-
-      const bestProvider = this.providerControllers[bestProviderIndex];
       const bestProviderCost = bestProvider.trade.to.amount.multipliedBy(this.toToken.price);
 
       if (bestProviderCost.gt(fromTokenCost)) {
@@ -602,10 +528,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (bestProviderIndex !== -1) {
-      this.providerControllers[bestProviderIndex].isBestRate = true;
-
-      this.selectController(bestProviderIndex);
+    if (bestProvider.trade) {
+      this.selectController(0);
 
       this.tradeStatus = this.selectedProvider.needApprove
         ? TRADE_STATUS.READY_TO_APPROVE
@@ -624,13 +548,47 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Focuses some of providers. If user have selected provider, keep old index.
-   * @param bestProviderIndex Best provider index.
+   * Returns the most profitable provider based on usd$ price.
    */
-  private selectController(bestProviderIndex: number): void {
+  private sortProviders(): void {
+    const calculateProfit = (trade: InstantTrade): BigNumber => {
+      const { gasFeeInUsd, to } = trade;
+      if (!to.token.price) {
+        return to.amount;
+      }
+      const amountInUsd = to.amount?.multipliedBy(to.token.price);
+      return gasFeeInUsd ? amountInUsd.minus(gasFeeInUsd) : amountInUsd;
+    };
+
+    this.providerControllers.sort((providerA, providerB) => {
+      const tradeA = providerA.trade;
+      const tradeB = providerB.trade;
+
+      if (!tradeA || !tradeB) {
+        if (!tradeA) {
+          if (!tradeB) {
+            return 0;
+          }
+          return 1;
+        }
+        return -1;
+      }
+
+      const profitA = calculateProfit(tradeA);
+      const profitB = calculateProfit(tradeB);
+
+      return profitB.comparedTo(profitA);
+    });
+  }
+
+  /**
+   * Focuses some of providers. If user have selected provider, keeps old index.
+   * @param providerIndex Provider's index to select.
+   */
+  private selectController(providerIndex: number): void {
     if (this.autoSelect) {
-      this.selectedProvider = this.providerControllers[bestProviderIndex];
-      this.providerControllers[bestProviderIndex].isSelected = true;
+      this.selectedProvider = this.providerControllers[providerIndex];
+      this.providerControllers[providerIndex].isSelected = true;
     } else {
       const currentSelectedProviderIndex = this.providerControllers.findIndex(
         el => el.tradeProviderInfo.value === this.selectedProvider.tradeProviderInfo.value
@@ -669,7 +627,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.swapFormService.output.patchValue({
       toAmount: this.selectedProvider.trade.to.amount
     });
-    this.cdr.detectChanges();
 
     this.setSlippageTolerance(this.selectedProvider);
   }
