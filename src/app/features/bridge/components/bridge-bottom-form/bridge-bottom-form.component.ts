@@ -12,6 +12,7 @@ import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -22,7 +23,6 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
-import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -43,7 +43,7 @@ import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
@@ -355,11 +355,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.bridgeService
       .approve(bridgeTradeRequest)
-      .pipe(first())
-      .subscribe(
-        // TODO: fix eslint
-        // eslint-disable-next-line rxjs/no-async-subscribe
-        async (_: TransactionReceipt) => {
+      .pipe(
+        first(),
+        tap(() => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('bridgePage.approveSuccessMessage'),
@@ -369,19 +367,19 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
               autoClose: 15000
             }
           );
-
-          await this.tokensService.calculateUserTokensBalances();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
-        },
-        (err: unknown) => {
+        }),
+        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
+        watch(this.cdr),
+        catchError((err: unknown) => {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
           this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
-        }
-      );
+          return of();
+        })
+      )
+      .subscribe();
   }
 
   public createTrade(): void {
@@ -410,34 +408,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           );
 
           this.counterNotificationsService.updateUnread();
-        })
-      )
-      .subscribe(
-        // TODO: fix eslint
-        // eslint-disable-next-line rxjs/no-async-subscribe
-        async (_: TransactionReceipt) => {
-          this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
-            new PolymorpheusComponent(SuccessTrxNotificationComponent),
-            {
-              status: TuiNotification.Success,
-              autoClose: 15000
-            }
-          );
-
-          this.counterNotificationsService.updateUnread();
-          await this.tokensService.calculateUserTokensBalances();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          await this.conditionalCalculate();
-        },
-        (err: unknown) => {
+        }),
+        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
+        watch(this.cdr),
+        switchMap(() => this.conditionalCalculate()),
+        catchError((err: unknown) => {
           this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
-        }
-      );
+          return of();
+        })
+      )
+      .subscribe();
   }
 
   private checkMinMaxAmounts(): void {

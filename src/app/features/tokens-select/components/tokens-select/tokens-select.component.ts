@@ -317,9 +317,7 @@ export class TokensSelectComponent implements OnInit {
         });
     }
 
-    // TODO fix eslint
-    // eslint-disable-next-line rxjs/no-async-subscribe
-    this.tokens$.pipe(first()).subscribe(async tokens => {
+    this.tokens$.pipe(first()).subscribe(tokens => {
       const { favoriteTokens } = this.tokensService;
 
       const currentBlockchainTokens = tokens.filter(
