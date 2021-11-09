@@ -7,7 +7,7 @@
       [tuiHint]="'Estimated gas fee in source network'"
     />
   </div>
-  <div class="info-line__value" *ngIf="estimateGasInEth && estimateGasInUsd">
+  <div class="info-line__value" *ngIf="estimateGasInEth">
     {{ estimateGasInEth }} {{ nativeCoinSymbol }} ≈ ${{
       estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
     }}
@@ -23,7 +23,7 @@
       [tuiHint]="'Gas fee in target network taken in native token of source network'"
     />
   </div>
-  <div class="info-line__value" *ngIf="cryptoFeeInEth && cryptoFeeInUsd">
+  <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
     {{ cryptoFeeInEth }} {{ nativeCoinSymbol }} ≈ ${{
       cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
     }}
@@ -39,7 +39,7 @@
       [tuiHint]="'Platforms\'s commission charges in RBC token'"
     />
   </div>
-  <div class="info-line__value" *ngIf="feePercent && feeAmount">
+  <div class="info-line__value" *ngIf="feePercent !== undefined">
     {{ feePercent }}% ≈ {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
     {{ feeTokenSymbol }}
   </div>
