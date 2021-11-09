@@ -1,11 +1,11 @@
 import Web3 from 'web3';
 import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
-import { Transaction, provider as Provider, HttpProvider } from 'web3-core';
+import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem, toChecksumAddress, isAddress, toWei, fromWei } from 'web3-utils';
+import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -33,6 +33,14 @@ interface MulticallResponse {
   success: boolean;
   returnData: string;
 }
+
+const tokenFields = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
+
+type TokenField = typeof tokenFields[number];
+
+type TokenFields = {
+  [field in TokenField]: string;
+};
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -362,9 +370,31 @@ export class Web3Public {
   }
 
   /**
+   * Gets token's symbol through ERC-20 token contract.
+   * @param tokenAddress address of the smart-contract corresponding to the token
+   * @return string token's symbol or a error, if there's no such token
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public getTokenSymbol: (tokenAddress: string) => Promise<string> =
+    this.getTokenSymbolCachingDecorator();
+
+  private getTokenSymbolCachingDecorator(): (tokenAddress: string) => Promise<string> {
+    const tokensSymbolsCache: { [address: string]: string } = {};
+
+    return async (tokenAddress: string): Promise<string> => {
+      if (!tokensSymbolsCache[tokenAddress]) {
+        tokensSymbolsCache[tokenAddress] = (
+          await this.callForTokenInfo(tokenAddress, ['symbol'])
+        ).symbol;
+      }
+
+      return tokensSymbolsCache[tokenAddress];
+    };
+  }
+
+  /**
    * Gets information about token through ERC-20 token contract.
    * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param blockchain platform of the token
    * @return object, with written token fields, or a error, if there's no such token
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -378,7 +408,20 @@ export class Web3Public {
 
     return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
       if (!tokensCache[tokenAddress]) {
-        tokensCache[tokenAddress] = await this.callForTokenInfo(tokenAddress);
+        if (Web3Public.isNativeAddress(tokenAddress)) {
+          return {
+            ...this.blockchain.nativeCoin,
+            blockchain: this.blockchain.name
+          };
+        }
+
+        const tokenInfo = await this.callForTokenInfo(tokenAddress);
+        tokensCache[tokenAddress] = {
+          blockchain: this.blockchain.name,
+          address: tokenAddress,
+          ...tokenInfo,
+          decimals: Number(tokenInfo.decimals)
+        };
       }
 
       return tokensCache[tokenAddress];
@@ -388,32 +431,21 @@ export class Web3Public {
   /**
    * get ERC-20 token info by address
    * @param tokenAddress address of token
+   * @param tokenMethods token's fields to get
    */
-  private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
-      return {
-        ...this.blockchain.nativeCoin,
-        blockchain: this.blockchain.name
-      };
-    }
-
-    const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
+  private async callForTokenInfo(
+    tokenAddress: string,
+    tokenMethods: TokenField[] = ['decimals', 'symbol', 'name', 'totalSupply']
+  ): Promise<TokenFields> {
     const tokenFieldsPromises = tokenMethods.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
-    const token: BlockchainTokenExtended = {
-      blockchain: this.blockchain.name,
-      address: tokenAddress
-    } as BlockchainTokenExtended;
-
+    const tokenInfo = {} as TokenFields;
     (await Promise.all(tokenFieldsPromises)).forEach(
-      // @ts-ignore
-      (elem, index) => (token[tokenMethods[index]] = elem)
+      (elem, index) => (tokenInfo[tokenMethods[index]] = elem)
     );
 
-    token.decimals = Number(token.decimals);
-
-    return token;
+    return tokenInfo;
   }
 
   /**

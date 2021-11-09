@@ -23,6 +23,7 @@ import {
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { compareAddresses } from '@shared/utils/utils';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -520,5 +521,16 @@ export class TokensService {
    */
   private fetchFavoriteTokens(): LocalToken[] {
     return this.store.getItem('favoriteTokens') || [];
+  }
+
+  public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
+    const foundToken = this.tokens.find(
+      token => token.blockchain === blockchain && compareAddresses(token.address, tokenAddress)
+    );
+    if (foundToken) {
+      return foundToken?.symbol;
+    }
+    const web3Public = this.web3PublicService[blockchain];
+    return web3Public.getTokenSymbol(tokenAddress);
   }
 }
