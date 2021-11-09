@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export default [
+const defaultUniswapV2Abi = [
   {
     inputs: [
       {
@@ -973,3 +973,5 @@ export default [
     type: 'receive'
   }
 ] as AbiItem[];
+
+export default defaultUniswapV2Abi;

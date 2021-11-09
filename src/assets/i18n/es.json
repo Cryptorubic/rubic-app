@@ -585,9 +585,10 @@
     }
   },
   "banner": {
-    "text": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 9.500 tokens en Ethereum, BSC, Polygon y Avalanche",
-    "link": "¡Pruebalo ahora!"
+    "text": "Moonriver ahora está disponible para intercambios multicadena y en cadena.",
+    "link": "Pruébalo hoy!"
   },
+  "buyToken": "Comprar MOVR",
   "volume": {
     "title": "Volumen de transacciones acumuladas",
     "instantTrades": "Swaps",

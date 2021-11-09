@@ -95,7 +95,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY,
-      BLOCKCHAIN_NAME.AVALANCHE
+      BLOCKCHAIN_NAME.AVALANCHE,
+      BLOCKCHAIN_NAME.MOONRIVER
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
     const requests$ = blockchainsToFetch.map(network =>
