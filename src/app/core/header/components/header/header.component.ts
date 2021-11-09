@@ -30,6 +30,7 @@ import BigNumber from 'bignumber.js';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
+import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -40,6 +41,8 @@ import { HeaderStore } from '../../services/header.store';
 })
 export class HeaderComponent implements AfterViewInit {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
+
+  @ViewChild(BuyTokenComponent) public buyTokenComponent: BuyTokenComponent;
 
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 

@@ -219,6 +219,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.AVALANCHE]: {
         name: 'Avalanche Mainnet',
         rpc: 'https://api.avax.network/ext/bc/C/rpc'
+      },
+      [BLOCKCHAIN_NAME.MOONRIVER]: {
+        name: 'Moonriver',
+        rpc: 'https://rpc.moonriver.moonbeam.network'
       }
     };
     const params = {

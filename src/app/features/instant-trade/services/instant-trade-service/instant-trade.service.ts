@@ -31,6 +31,8 @@ import { EthWethSwapProviderService } from 'src/app/features/instant-trade/servi
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
+import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
@@ -73,6 +75,8 @@ export class InstantTradeService {
     private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
+    private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
+    private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
     // Providers end
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -116,6 +120,10 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,
         [INSTANT_TRADES_PROVIDER.PANGOLIN]: this.pangolinAvalancheService,
         [INSTANT_TRADES_PROVIDER.JOE]: this.joeAvalancheService
+      },
+      [BLOCKCHAIN_NAME.MOONRIVER]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapMoonRiverService,
+        [INSTANT_TRADES_PROVIDER.SOLARBEAM]: this.solarBeamMoonriverService
       }
     };
   }
@@ -255,6 +263,7 @@ export class InstantTradeService {
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
+
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
         catchError((err: unknown) => {

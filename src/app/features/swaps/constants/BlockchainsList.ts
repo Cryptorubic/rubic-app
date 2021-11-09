@@ -45,5 +45,11 @@ export const blockchainsList: BlockchainItem[] = [
     visibleName: 'Avalanche',
     image: `${imageBaseSrc}avalanche.svg`,
     id: 43114
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.MOONRIVER,
+    visibleName: 'Moonriver',
+    image: `${imageBaseSrc}moonriver.webp`,
+    id: 1285
   }
 ];

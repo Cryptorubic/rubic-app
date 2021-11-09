@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export default [
+const SolarBeamContractAbi = [
   {
     type: 'function',
     stateMutability: 'view',
@@ -8,7 +8,8 @@ export default [
     name: 'getAmountsIn',
     inputs: [
       { type: 'uint256', name: 'amountOut', internalType: 'uint256' },
-      { type: 'address[]', name: 'path', internalType: 'address[]' }
+      { type: 'address[]', name: 'path', internalType: 'address[]' },
+      { type: 'uint256', name: 'fee', internalType: 'uint256' }
     ]
   },
   {
@@ -18,14 +19,15 @@ export default [
     name: 'getAmountsOut',
     inputs: [
       { type: 'uint256', name: 'amountIn', internalType: 'uint256' },
-      { type: 'address[]', name: 'path', internalType: 'address[]' }
+      { type: 'address[]', name: 'path', internalType: 'address[]' },
+      { type: 'uint256', name: 'fee', internalType: 'uint256' }
     ]
   },
   {
     type: 'function',
     stateMutability: 'payable',
     outputs: [{ type: 'uint256[]', name: 'amounts', internalType: 'uint256[]' }],
-    name: 'swapExactAVAXForTokens',
+    name: 'swapExactETHForTokens',
     inputs: [
       { type: 'uint256', name: 'amountOutMin', internalType: 'uint256' },
       { type: 'address[]', name: 'path', internalType: 'address[]' },
@@ -37,7 +39,7 @@ export default [
     type: 'function',
     stateMutability: 'payable',
     outputs: [],
-    name: 'swapExactAVAXForTokensSupportingFeeOnTransferTokens',
+    name: 'swapExactETHForTokensSupportingFeeOnTransferTokens',
     inputs: [
       { type: 'uint256', name: 'amountOutMin', internalType: 'uint256' },
       { type: 'address[]', name: 'path', internalType: 'address[]' },
@@ -49,7 +51,7 @@ export default [
     type: 'function',
     stateMutability: 'nonpayable',
     outputs: [{ type: 'uint256[]', name: 'amounts', internalType: 'uint256[]' }],
-    name: 'swapExactTokensForAVAX',
+    name: 'swapExactTokensForETH',
     inputs: [
       { type: 'uint256', name: 'amountIn', internalType: 'uint256' },
       { type: 'uint256', name: 'amountOutMin', internalType: 'uint256' },
@@ -62,7 +64,7 @@ export default [
     type: 'function',
     stateMutability: 'nonpayable',
     outputs: [],
-    name: 'swapExactTokensForAVAXSupportingFeeOnTransferTokens',
+    name: 'swapExactTokensForETHSupportingFeeOnTransferTokens',
     inputs: [
       { type: 'uint256', name: 'amountIn', internalType: 'uint256' },
       { type: 'uint256', name: 'amountOutMin', internalType: 'uint256' },
@@ -98,3 +100,5 @@ export default [
     ]
   }
 ] as AbiItem[];
+
+export default SolarBeamContractAbi;

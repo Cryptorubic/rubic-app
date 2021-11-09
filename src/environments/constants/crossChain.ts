@@ -1,6 +1,12 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 
-export const crossChainDev = {
+type CrossChainConstants = {
+  apiBaseUrl: string;
+  contractAddresses: Record<SupportedCrossChainSwapBlockchain, string[]>;
+};
+
+export const crossChainDev: CrossChainConstants = {
   apiBaseUrl: 'https://dev-crosschain.rubic.exchange/api',
   contractAddresses: {
     [BLOCKCHAIN_NAME.ETHEREUM]: ['0xb9a94be803eC1197A234406eF5c0113f503d3178'],
@@ -9,11 +15,12 @@ export const crossChainDev = {
     [BLOCKCHAIN_NAME.AVALANCHE]: [
       '0x3df5f6165fe8429744F9488a9C18259E9a93B4C0',
       '0x792f2C5862b17624dE606A7d822DddC0BA91A0bC'
-    ]
+    ],
+    [BLOCKCHAIN_NAME.MOONRIVER]: ['0x3645Dca27D9f5Cf5ee0d6f52EE53ae366e4ceAc2']
   }
 };
 
-export const crossChainProd = {
+export const crossChainProd: CrossChainConstants = {
   apiBaseUrl: 'https://crosschain.rubic.exchange/api',
   contractAddresses: {
     [BLOCKCHAIN_NAME.ETHEREUM]: ['0xb9a94be803eC1197A234406eF5c0113f503d3178'],
@@ -22,6 +29,7 @@ export const crossChainProd = {
     [BLOCKCHAIN_NAME.AVALANCHE]: [
       '0x3df5f6165fe8429744F9488a9C18259E9a93B4C0',
       '0x792f2C5862b17624dE606A7d822DddC0BA91A0bC'
-    ]
+    ],
+    [BLOCKCHAIN_NAME.MOONRIVER]: ['0x3645Dca27D9f5Cf5ee0d6f52EE53ae366e4ceAc2']
   }
 };

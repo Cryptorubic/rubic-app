@@ -4,7 +4,8 @@ export const supportedCrossChainSwapBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
-  BLOCKCHAIN_NAME.AVALANCHE
+  BLOCKCHAIN_NAME.AVALANCHE,
+  BLOCKCHAIN_NAME.MOONRIVER
 ] as const;
 
 export type SupportedCrossChainSwapBlockchain = typeof supportedCrossChainSwapBlockchains[number];
