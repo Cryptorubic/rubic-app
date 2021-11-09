@@ -1,17 +1,5 @@
 @import 'src/styles';
 
-:host-context(html.dark) {
-  .price-impact {
-    &_yellow {
-      color: #d8ba22fa;
-    }
-
-    &_red {
-      color: #f54e4f;
-    }
-  }
-}
-
 .button-swap {
   &_warning-yellow {
     ::ng-deep {
@@ -47,38 +35,6 @@
         }
       }
     }
-  }
-
-  &__hint {
-    position: relative;
-    top: -3px;
-
-    height: 15px;
-    margin-left: 6px;
-
-    ::ng-deep {
-      svg {
-        path:not(:last-child),
-        circle {
-          fill: white;
-          stroke: white;
-        }
-
-        path:last-child {
-          stroke: white;
-        }
-      }
-    }
-  }
-}
-
-.price-impact {
-  &_yellow {
-    color: rgba(203, 174, 20);
-  }
-
-  &_red {
-    color: #ff4c4d;
   }
 }
 

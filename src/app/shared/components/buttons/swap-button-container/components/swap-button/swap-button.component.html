@@ -7,32 +7,8 @@
   }"
   [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading"
   [disabled]="disabled"
-  [tuiHint]="disabled && priceImpact >= PRICE_IMPACT_RANGE.MEDIUM ? priceImpactTemplate : null"
-  [tuiHintDirection]="'top-right'"
-  [tuiHintId]="'tui-hint_price-impact'"
   (onClick)="onClick.emit()"
   appearance="secondary"
 >
   {{ priceImpact < PRICE_IMPACT_RANGE.MEDIUM ? buttonText : 'Swap Anyway' }}
-  <div
-    *ngIf="priceImpact >= PRICE_IMPACT_RANGE.MEDIUM"
-    class="button-swap__hint"
-    [inlineSVG]="'/assets/images/icons/hint-question.svg'"
-    [tuiHint]="priceImpactTemplate"
-    [tuiHintDirection]="'top-right'"
-    [tuiHintId]="'tui-hint_price-impact'"
-  ></div>
 </app-rubic-button>
-
-<ng-template #priceImpactTemplate>
-  <div class="price-impact">
-    Price impact is
-    <span
-      [ngClass]="{
-        'price-impact_yellow': priceImpact < PRICE_IMPACT_RANGE.HIGH,
-        'price-impact_red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
-      }"
-      >-{{ priceImpact }}%</span
-    >
-  </div>
-</ng-template>
