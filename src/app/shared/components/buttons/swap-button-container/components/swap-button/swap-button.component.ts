@@ -40,7 +40,7 @@ export class SwapButtonComponent implements OnInit {
    */
   @Input() formService: SwapFormService;
 
-  @Output() onClick = new EventEmitter<void>();
+  @Output() private onClick = new EventEmitter<void>();
 
   public PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
 
@@ -86,5 +86,19 @@ export class SwapButtonComponent implements OnInit {
     }
 
     this.priceImpact = 0;
+  }
+
+  public onSwapClick(): void {
+    if (this.priceImpact >= PRICE_IMPACT_RANGE.HIGH) {
+      if (
+        // eslint-disable-next-line no-alert
+        prompt(
+          `This swap has a price impact of ${PRICE_IMPACT_RANGE.HIGH}% or more. Please type the word "confirm" to continue with this swap.\n\nPlease, take into account, that a non-refundable loss may happen. You’ll possibly loose the major part of the assets you are transferring.`
+        ) !== 'confirm'
+      ) {
+        return;
+      }
+    }
+    this.onClick.emit();
   }
 }

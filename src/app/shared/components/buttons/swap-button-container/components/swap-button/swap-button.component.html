@@ -7,7 +7,7 @@
   }"
   [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading"
   [disabled]="disabled"
-  (onClick)="onClick.emit()"
+  (onClick)="onSwapClick()"
   appearance="secondary"
 >
   {{ priceImpact < PRICE_IMPACT_RANGE.MEDIUM ? buttonText : 'Swap Anyway' }}
