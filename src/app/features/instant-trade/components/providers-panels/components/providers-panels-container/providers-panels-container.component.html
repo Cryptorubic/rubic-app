@@ -1,0 +1,28 @@
+<div class="providers">
+  <div class="providers__item" *ngFor="let provider of providers.slice(0, 3); let i = index">
+    <app-provider-panel
+      [providerIndex]="i"
+      [providerControllerData]="provider"
+      (selectProvider)="onSelectProvider.emit(provider)"
+    ></app-provider-panel>
+  </div>
+
+  <ng-container *ngIf="allProvidersShown">
+    <div class="providers__item" *ngFor="let provider of providers.slice(3); let i = index">
+      <app-provider-panel
+        [providerIndex]="i"
+        [providerControllerData]="provider"
+        (selectProvider)="onSelectProvider.emit(provider)"
+      ></app-provider-panel>
+    </div>
+  </ng-container>
+
+  <button class="providers__toggler" (click)="allProvidersShown = !allProvidersShown">
+    <img
+      [class.reverted]="allProvidersShown"
+      src="assets/images/swaps/icons/show-more-arrow.svg"
+      alt="arrow"
+    />
+    {{ !allProvidersShown ? 'Show more providers' : 'Hide providers' }}
+  </button>
+</div>

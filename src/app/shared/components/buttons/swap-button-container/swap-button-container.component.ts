@@ -27,7 +27,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
+import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',

@@ -36,9 +36,8 @@ import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.dir
 import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { SwapButtonContainerComponent } from 'src/app/shared/components/buttons/swap-button-container/swap-button-container.component';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
-import { ProviderPanelComponent } from '@features/instant-trade/components/provider-panel/provider-panel.component';
-import { PanelErrorContentComponent } from '@features/instant-trade/components/provider-panel/panel-error-content/panel-error-content.component';
-import { PanelContentComponent } from '@features/instant-trade/components/provider-panel/panel-content/panel-content.component';
+import { PanelErrorContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
+import { PanelContentComponent } from '@features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
@@ -68,7 +67,6 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
   declarations: [
     // Components.
     SpinnerComponent,
-    ProviderPanelComponent,
     DropdownSelectorComponent,
     AmountEstimatedComponent,
     RubicButtonCircleComponent,
@@ -150,7 +148,6 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
     TranslateModule,
     ShortAddressPipe,
     RubicButtonCircleComponent,
-    ProviderPanelComponent,
     AmountEstimatedComponent,
     DropdownSelectorComponent,
     RubicButtonCircleComponent,

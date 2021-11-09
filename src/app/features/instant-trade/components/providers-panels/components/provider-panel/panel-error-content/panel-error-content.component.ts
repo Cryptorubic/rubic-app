@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ProviderData } from 'src/app/features/instant-trade/components/provider-panel/models/provider-data';
+import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
 
 @Component({
   selector: 'app-panel-error-content',

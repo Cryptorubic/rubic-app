@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { TradeData } from 'src/app/features/instant-trade/components/provider-panel/models/trade-data';
-import { ProviderData } from 'src/app/features/instant-trade/components/provider-panel/models/provider-data';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
+import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Observable } from 'rxjs';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { shouldDisplayGas } from 'src/app/features/instant-trade/constants/shouldDisplayGas';
+import { SwapFormInput } from '@features/swaps/models/SwapForm';
+import { shouldDisplayGas } from '@features/instant-trade/constants/shouldDisplayGas';
 
 @Component({
   selector: 'app-panel-content',
