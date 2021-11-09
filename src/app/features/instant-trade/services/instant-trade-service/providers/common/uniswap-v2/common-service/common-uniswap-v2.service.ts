@@ -13,8 +13,6 @@ import {
 import { from, Observable, of } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import CommonUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/commonUniswapV2Abi';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
   ItOptions,
@@ -23,7 +21,7 @@ import {
 import {
   DefaultEstimatedGas,
   defaultEstimatedGas
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/defaultEstimatedGas';
+} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
 import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
 import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
@@ -45,6 +43,9 @@ import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
+import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
@@ -60,14 +61,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  private web3Public: Web3Public;
+  protected web3Public: Web3Public;
 
   // Uniswap constants
   private blockchain: BLOCKCHAIN_NAME;
 
   private wethAddress: string;
 
-  private contractAddress: string;
+  protected contractAddress: string;
 
   private routingProviders: SymbolToken[];
 
@@ -91,7 +92,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly gasService = inject(GasService);
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    this.contractAbi = CommonUniswapV2Abi;
+    this.contractAbi = defaultUniswapV2Abi;
     this.swapsMethod = DEFAULT_SWAP_METHODS;
     this.defaultEstimateGas = defaultEstimatedGas;
     this.gasMargin = 1.2; // 120%
@@ -130,6 +131,23 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         this.routingProviders = uniswapConstants.routingProvidersNetMode.testnet;
       }
     });
+  }
+
+  /**
+   * Makes multi call of contract's methods.
+   * @param routesMethodArguments Arguments for calling uni-swap contract method.
+   * @param methodName Method of contract.
+   * @return Promise<Multicall[]>
+   */
+  protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
+    return this.web3Public.multicallContractMethods<{ amounts: string[] }>(
+      this.contractAddress,
+      this.contractAbi,
+      routesMethodArguments.map((methodArguments: string[]) => ({
+        methodName,
+        methodArguments
+      }))
+    );
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
@@ -458,34 +476,26 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const routes: UniswapV2Route[] = [];
-    await this.web3Public
-      .multicallContractMethods<{ amounts: string[] }>(
-        this.contractAddress,
-        this.contractAbi,
-        routesMethodArguments.map(methodArguments => ({
-          methodName: uniswapMethodName,
-          methodArguments
-        }))
-      )
-      .then(responses => {
-        responses.forEach((response, index) => {
-          if (!response.success) {
-            return;
-          }
-          const { amounts } = response.output;
-          const amount = new BigNumber(
-            uniswapMethodName === 'getAmountsOut' ? amounts[amounts.length - 1] : amounts[0]
-          );
-          const path = routesPaths[index];
-          routes.push({
-            outputAbsoluteAmount: amount,
-            path
-          });
+
+    try {
+      const responses = await this.getRoutes(routesMethodArguments, uniswapMethodName);
+      responses.forEach((response, index) => {
+        if (!response.success) {
+          return;
+        }
+        const { amounts } = response.output;
+        const amount = new BigNumber(
+          uniswapMethodName === 'getAmountsOut' ? amounts[amounts.length - 1] : amounts[0]
+        );
+        const path = routesPaths[index];
+        routes.push({
+          outputAbsoluteAmount: amount,
+          path
         });
-      })
-      .catch(err => {
-        console.debug(err);
       });
+    } catch (err) {
+      console.debug(err);
+    }
 
     return routes;
   }

@@ -12,7 +12,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.XDAI,
-  BLOCKCHAIN_NAME.AVALANCHE
+  BLOCKCHAIN_NAME.AVALANCHE,
+  BLOCKCHAIN_NAME.MOONRIVER
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -34,7 +35,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.POLYGON]: 'matic-network',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
       [BLOCKCHAIN_NAME.XDAI]: 'xdai',
-      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2'
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2',
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver'
     };
 
     this.tokenBlockchainId = {
@@ -43,7 +45,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon-pos',
       [BLOCKCHAIN_NAME.HARMONY]: 'harmony-shard-0',
       [BLOCKCHAIN_NAME.XDAI]: 'xdai',
-      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche'
+      [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver'
     };
   }
 

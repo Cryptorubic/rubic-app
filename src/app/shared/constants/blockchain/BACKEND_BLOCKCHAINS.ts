@@ -8,6 +8,7 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   avalanche: BLOCKCHAIN_NAME.AVALANCHE,
   'tron-mainnet': BLOCKCHAIN_NAME.TRON,
   xdai: BLOCKCHAIN_NAME.XDAI,
+  moonriver: BLOCKCHAIN_NAME.MOONRIVER,
   'ethereum-test': BLOCKCHAIN_NAME.ETHEREUM_TESTNET
 };
 
@@ -17,6 +18,7 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
   [BLOCKCHAIN_NAME.HARMONY]: 'harmony',
   [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
+  [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
   [BLOCKCHAIN_NAME.TRON]: 'tron-mainnet',
   [BLOCKCHAIN_NAME.XDAI]: 'xdai',
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: 'ethereum-test'
