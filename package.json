@@ -41,6 +41,7 @@
     "@ethersproject/providers": "^5.2.0",
     "@ethersproject/solidity": "^5.2.0",
     "@ng-web-apis/common": "^1.11.0",
+    "@ng-web-apis/mutation-observer": "^1.1.0",
     "@ngneat/reactive-forms": "^1.7.3",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
