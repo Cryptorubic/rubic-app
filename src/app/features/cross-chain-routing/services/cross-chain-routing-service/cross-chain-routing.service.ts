@@ -667,17 +667,14 @@ export class CrossChainRoutingService {
     ) => {
       if (!compareAddresses(token.address, transitToken.address)) {
         const transitTokenPrice = await this.tokensService.getAndUpdateTokenPrice({
-          address: firstTransitToken.address,
-          blockchain: fromBlockchain
+          address: transitToken.address,
+          blockchain: token.blockchain
         });
-        return (
-          PriceImpactCalculator.calculatePriceImpact(
-            token.price,
-            transitTokenPrice,
-            tokenAmount,
-            transitTokenAmount
-          ) * (type === 'from' ? 1 : -1)
-        );
+        const priceImpactArguments: [number, number, BigNumber, BigNumber] =
+          type === 'from'
+            ? [token.price, transitTokenPrice, tokenAmount, transitTokenAmount]
+            : [transitTokenPrice, token.price, transitTokenAmount, tokenAmount];
+        return PriceImpactCalculator.calculatePriceImpact(...priceImpactArguments);
       }
       return 0;
     };

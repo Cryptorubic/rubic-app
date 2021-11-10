@@ -85,8 +85,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public maxError: false | BigNumber;
 
-  public toWalletAddress: string;
-
   public needApprove: boolean;
 
   private _tradeStatus: TRADE_STATUS;
@@ -163,13 +161,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
       .subscribe(settings => {
         this.slippageTolerance = settings.slippageTolerance;
-      });
-
-    this.authService
-      .getCurrentUser()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        this.toWalletAddress = user?.address;
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
@@ -257,14 +248,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 toAmount
               });
 
-              if (
-                this.minError ||
-                this.maxError ||
-                !toAmount ||
-                toAmount.isNaN() ||
-                toAmount.eq(0) ||
-                !this.toWalletAddress
-              ) {
+              if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove

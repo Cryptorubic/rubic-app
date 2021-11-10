@@ -47,6 +47,7 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
@@ -125,10 +126,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private readonly bridgeService: BridgeService,
-    private readonly errorsService: ErrorsService,
     public readonly swapFormService: SwapFormService,
     private readonly cdr: ChangeDetectorRef,
+    private readonly bridgeService: BridgeService,
+    private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService,
     private readonly authService: AuthService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
@@ -170,6 +172,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => this.setFormValues(form));
 
+    this.settingsService.bridgeValueChanges
+      .pipe(startWith(this.settingsService.bridgeValue), takeUntil(this.destroy$))
+      .subscribe(settings => {
+        this.tronAddress = settings.tronAddress;
+        this.setToWalletAddress();
+      });
+
     this.authService
       .getCurrentUser()
       .pipe(
@@ -177,6 +186,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        this.setToWalletAddress();
         this.conditionalCalculate();
       });
   }
@@ -191,9 +201,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
+    this.setToWalletAddress();
+
     this.cdr.detectChanges();
 
     this.conditionalCalculate();
+  }
+
+  private setToWalletAddress(): void {
+    const { toBlockchain } = this.swapFormService.inputValue;
+    if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
+      this.toWalletAddress = this.tronAddress;
+    } else {
+      this.toWalletAddress = this.authService.userAddress;
+    }
   }
 
   private async conditionalCalculate(): Promise<void> {
@@ -266,14 +287,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
                 toAmount
               });
 
-              if (
-                this.minError ||
-                this.maxError ||
-                !toAmount ||
-                toAmount.isNaN() ||
-                toAmount.eq(0) ||
-                !this.toWalletAddress
-              ) {
+              if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
