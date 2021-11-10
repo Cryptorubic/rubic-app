@@ -270,6 +270,7 @@ export class CommonOneinchService {
 
   /**
    * Extracts tokens path from oneInch api response.
+   * @return Promise<SymbolToken[]> Tokens array, used in the route.
    */
   private async extractPath(
     blockchain: BLOCKCHAIN_NAME,
@@ -298,14 +299,15 @@ export class CommonOneinchService {
       return symbol;
     });
 
-    return Promise.all(promises)
-      .then(symbols =>
-        symbols.map((symbol, index) => ({
-          address: addressesPath[index],
-          symbol
-        }))
-      )
-      .catch(_err => []);
+    try {
+      const symbols = await Promise.all(promises);
+      return symbols.map((symbol, index) => ({
+        address: addressesPath[index],
+        symbol
+      }));
+    } catch (_err) {
+      return [];
+    }
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {

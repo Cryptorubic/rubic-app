@@ -20,6 +20,7 @@ export class PriceImpactService {
 
   /**
    * Calculates price impact using usd prices of tokens.
+   * @return number Price impact in percents.
    */
   public static calculatePriceImpact(
     fromTokenPrice: number,

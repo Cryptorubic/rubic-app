@@ -1,12 +1,8 @@
 <app-rubic-button
   [class]="idPrefix + 'button-swap'"
   [ngClass]="{
-    'button-swap_warning-yellow':
-      status !== TRADE_STATUS.DISABLED &&
-      ((PRICE_IMPACT_RANGE.MEDIUM <= priceImpact && priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
-        priceImpact === null),
-    'button-swap_warning-red':
-      status !== TRADE_STATUS.DISABLED && priceImpact >= PRICE_IMPACT_RANGE.HIGH
+    'button-swap_warning-medium': warningMedium,
+    'button-swap_warning-high': warningHigh
   }"
   appearance="secondary"
   [loading]="showLoader"

@@ -1,7 +1,7 @@
 @import 'src/styles';
 
 .button-swap {
-  &_warning-yellow {
+  &_warning-medium {
     ::ng-deep {
       [tuiButton] {
         &._pressed {
@@ -19,7 +19,7 @@
     }
   }
 
-  &_warning-red {
+  &_warning-high {
     ::ng-deep {
       [tuiButton] {
         &._pressed {

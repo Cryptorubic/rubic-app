@@ -102,22 +102,7 @@ export class CcrSwapInfoComponent implements OnInit {
                 token =>
                   token.blockchain === fromBlockchain && Web3Public.isNativeAddress(token.address)
               ).symbol;
-
-              this.estimateGasInEth = tradeInfo.estimatedGas;
-              this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
-
-              this.cryptoFeeInEth = tradeInfo.cryptoFee;
-              this.cryptoFeeInUsd = new BigNumber(this.cryptoFeeInEth).multipliedBy(
-                nativeCoinPrice
-              );
-
-              this.feePercent = tradeInfo.feePercent;
-              this.feeAmount = tradeInfo.feeAmount;
-              this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
-
-              this.setPriceImpact(tradeInfo);
-
-              this.calculateMaxSentAndMinReceived();
+              this.setTradeInfoParameters(tradeInfo, nativeCoinPrice);
 
               this.swapInfoService.emitInfoCalculated();
             })
@@ -128,6 +113,25 @@ export class CcrSwapInfoComponent implements OnInit {
       .subscribe(() => {
         this.cdr.markForCheck();
       });
+  }
+
+  /**
+   * Sets parameters of currently selected ccr trade.
+   */
+  private setTradeInfoParameters(tradeInfo: CcrTradeInfo, nativeCoinPrice: number) {
+    this.estimateGasInEth = tradeInfo.estimatedGas;
+    this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
+
+    this.cryptoFeeInEth = tradeInfo.cryptoFee;
+    this.cryptoFeeInUsd = new BigNumber(this.cryptoFeeInEth).multipliedBy(nativeCoinPrice);
+
+    this.feePercent = tradeInfo.feePercent;
+    this.feeAmount = tradeInfo.feeAmount;
+    this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
+
+    this.setPriceImpact(tradeInfo);
+
+    this.calculateMaxSentAndMinReceived();
   }
 
   /**

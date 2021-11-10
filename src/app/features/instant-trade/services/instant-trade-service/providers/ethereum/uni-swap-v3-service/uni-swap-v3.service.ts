@@ -167,21 +167,19 @@ export class UniSwapV3Service implements ItProvider {
       gasPriceInUsd
     );
 
-    const path: SymbolToken[] = [];
-    route.poolsPath.forEach(pool => {
-      if (!path.length) {
-        path.push(
-          compareAddresses(pool.token0.address, route.initialTokenAddress)
-            ? pool.token0
-            : pool.token1
-        );
-      }
-      path.push(
-        !compareAddresses(pool.token0.address, path[path.length - 1].address)
+    const initialPool = route.poolsPath[0];
+    const path: SymbolToken[] = [
+      compareAddresses(initialPool.token0.address, route.initialTokenAddress)
+        ? initialPool.token0
+        : initialPool.token1
+    ];
+    path.push(
+      ...route.poolsPath.map(pool => {
+        return !compareAddresses(pool.token0.address, path[path.length - 1].address)
           ? pool.token0
-          : pool.token1
-      );
-    });
+          : pool.token1;
+      })
+    );
 
     const trade: UniswapV3InstantTrade = {
       blockchain: this.blockchain,

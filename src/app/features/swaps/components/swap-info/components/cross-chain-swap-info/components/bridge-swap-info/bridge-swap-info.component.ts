@@ -62,8 +62,8 @@ export class BridgeSwapInfoComponent implements OnInit {
     this.swapFormService.inputValueChanges
       .pipe(
         startWith(this.swapFormService.inputValue),
-        switchMap(inputForm => {
-          return this.bridgeService.getBridgeTrade().pipe(
+        switchMap(inputForm =>
+          this.bridgeService.getBridgeTrade().pipe(
             first(),
             map(bridgeTrade => {
               this.bridgeProvider = bridgeTrade.provider;
@@ -74,8 +74,8 @@ export class BridgeSwapInfoComponent implements OnInit {
 
               return inputForm;
             })
-          );
-        }),
+          )
+        ),
         takeUntil(this.destroy$)
       )
       .subscribe(inputForm => {

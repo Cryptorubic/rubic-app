@@ -120,7 +120,10 @@ export class CoingeckoApiService {
    * Gets price of common token or native coin in usd from coingecko.
    * @param token Token to get price for.
    */
-  public getCommonTokenOrNativeCoinPrice(token: { address: string; blockchain: BLOCKCHAIN_NAME }) {
+  public getCommonTokenOrNativeCoinPrice(token: {
+    address: string;
+    blockchain: BLOCKCHAIN_NAME;
+  }): Observable<number | undefined> {
     if (Web3Public.isNativeAddress(token.address)) {
       return this.getNativeCoinPrice(token.blockchain);
     }

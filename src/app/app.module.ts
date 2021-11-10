@@ -31,10 +31,19 @@ import { AppComponent } from './app.component';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(router: Router, viewportScroller: ViewportScroller) {
-    // defines scroll strategy, when page url is changed.
-    // doesn't scroll if only query parameters are changed.
-    router.events
+  constructor(
+    private readonly router: Router,
+    private readonly viewportScroller: ViewportScroller
+  ) {
+    this.setScrollStrategy();
+  }
+
+  /**
+   * Defines scroll strategy, when page url is changed.
+   * Doesn't scroll if only query parameters are changed.
+   */
+  private setScrollStrategy(): void {
+    this.router.events
       .pipe(
         filter((e: Event): e is Scroll => e instanceof Scroll),
         pairwise()
@@ -42,16 +51,16 @@ export class AppModule {
       .subscribe(([prevEvent, event]) => {
         if (event.position) {
           // backward navigation
-          viewportScroller.scrollToPosition(event.position);
+          this.viewportScroller.scrollToPosition(event.position);
         } else if (event.anchor) {
           // anchor navigation
-          viewportScroller.scrollToAnchor(event.anchor);
+          this.viewportScroller.scrollToAnchor(event.anchor);
         } else if (
           prevEvent.routerEvent.urlAfterRedirects.split('?')[0] !==
           event.routerEvent.urlAfterRedirects.split('?')[0]
         ) {
           // forward navigation
-          viewportScroller.scrollToPosition([0, 0]);
+          this.viewportScroller.scrollToPosition([0, 0]);
         }
       });
   }

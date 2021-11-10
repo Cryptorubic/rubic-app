@@ -38,9 +38,7 @@ const supportedTokenFields = ['decimals', 'symbol', 'name', 'totalSupply'] as co
 
 type TokenField = typeof supportedTokenFields[number];
 
-type TokenFields = {
-  [field in TokenField]: string;
-};
+type TokenFields = Partial<Record<TokenField, string>>;
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -415,7 +413,7 @@ export class Web3Public {
           };
         }
 
-        const tokenInfo = await this.callForTokenInfo(tokenAddress);
+        const tokenInfo = (await this.callForTokenInfo(tokenAddress)) as Record<TokenField, string>;
         tokensCache[tokenAddress] = {
           blockchain: this.blockchain.name,
           address: tokenAddress,
@@ -437,14 +435,13 @@ export class Web3Public {
     tokenAddress: string,
     tokenFields: TokenField[] = ['decimals', 'symbol', 'name', 'totalSupply']
   ): Promise<TokenFields> {
-    const tokenFieldsPromises = tokenFields.map((method: string) =>
+    const tokenFieldsPromises = tokenFields.map(method =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
-    const tokenInfo = {} as TokenFields;
-    (await Promise.all(tokenFieldsPromises)).forEach(
-      (elem, index) => (tokenInfo[tokenFields[index]] = elem)
+    const tokenFieldsResults = await Promise.all(tokenFieldsPromises);
+    return Object.fromEntries(
+      tokenFieldsResults.map((field, index) => [tokenFields[index], field])
     );
-    return tokenInfo;
   }
 
   /**
@@ -610,7 +607,7 @@ export class Web3Public {
    * @param contractAddress contract address
    * @param fromAddress sender address
    * @param callsData transactions parameters
-   * @returns list of contract execution estimated gases.
+   * @return list of contract execution estimated gases.
    * if the execution of the method in the real blockchain would not be reverted,
    * then the list item would be equal to the predicted gas limit.
    * Else (if you have not enough balance, allowance ...) then the list item would be equal to null
@@ -653,7 +650,7 @@ export class Web3Public {
    * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
    * @param calls Web3 method calls
    * @param callsParams ethereum method transaction parameters
-   * @returns batch request call result sorted in order of input parameters
+   * @return batch request call result sorted in order of input parameters
    */
   private web3BatchRequest<T extends string | string[]>(
     calls: { request: (...params: unknown[]) => Method }[],
@@ -680,7 +677,7 @@ export class Web3Public {
    * Sends batch request to rpc provider directly.
    * @see {@link https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false|EthereumJSON-RPC}
    * @param rpcCallsData rpc methods and parameters list
-   * @returns rpc batch request call result sorted in order of input parameters
+   * @return rpc batch request call result sorted in order of input parameters
    */
   private async rpcBatchRequest<T extends string | string[]>(
     rpcCallsData: {

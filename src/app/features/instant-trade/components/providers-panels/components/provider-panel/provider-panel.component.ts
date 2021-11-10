@@ -84,7 +84,7 @@ export class ProviderPanelComponent {
   /**
    * Calculates loading state.
    * @param tradeState Instant trade status.
-   * @returns isLoading Is instant trade currently loading.
+   * @return isLoading Is instant trade currently loading.
    */
   private calculateLoadingStatus(tradeState: INSTANT_TRADES_STATUS): boolean {
     switch (tradeState) {

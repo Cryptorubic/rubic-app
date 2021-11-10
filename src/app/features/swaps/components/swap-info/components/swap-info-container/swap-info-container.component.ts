@@ -56,7 +56,7 @@ export class SwapInfoContainerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.swapFormService.outputValueChanges.subscribe(() => {
+    this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.cdr.markForCheck();
     });
 

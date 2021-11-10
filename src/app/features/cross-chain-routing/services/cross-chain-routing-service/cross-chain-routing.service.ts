@@ -493,7 +493,7 @@ export class CrossChainRoutingService {
    * @param fromTransitTokenBlockchain First transit token's blockchain.
    * @param toTransitTokenBlockchain Second transit token's blockchain.
    * @param fromTransitTokenAmount First transit token's amount.
-   * @returns Promise<BigNumber> Second transit token's amount.
+   * @return Promise<BigNumber> Second transit token's amount.
    */
   private async calculateTransitTokensCourse(
     fromTransitTokenBlockchain: SupportedCrossChainSwapBlockchain,
@@ -553,7 +553,7 @@ export class CrossChainRoutingService {
    * Gets fee amount in crypto in source blockchain.
    * @param fromBlockchain Source blockchain.
    * @param toBlockchain Targeted blockchain.
-   * @returns Promise<number> Crypto fee in Wei.
+   * @return Promise<number> Crypto fee in Wei.
    */
   private async getCryptoFee(
     fromBlockchain: SupportedCrossChainSwapBlockchain,
@@ -639,36 +639,15 @@ export class CrossChainRoutingService {
 
     const estimatedGas = trade.gasLimit?.multipliedBy(Web3Public.fromWei(trade.gasPrice));
 
-    const calculatePriceImpact = async (
-      token: TokenAmount,
-      transitToken: InstantTradeToken,
-      tokenAmount: BigNumber,
-      transitTokenAmount: BigNumber,
-      type: 'from' | 'to'
-    ) => {
-      if (!compareAddresses(token.address, transitToken.address)) {
-        const transitTokenPrice = await this.tokensService.getAndUpdateTokenPrice({
-          address: transitToken.address,
-          blockchain: token.blockchain
-        });
-        const priceImpactArguments: [number, number, BigNumber, BigNumber] =
-          type === 'from'
-            ? [token.price, transitTokenPrice, tokenAmount, transitTokenAmount]
-            : [transitTokenPrice, token.price, transitTokenAmount, tokenAmount];
-        return PriceImpactService.calculatePriceImpact(...priceImpactArguments);
-      }
-      return 0;
-    };
-
     const [priceImpactFrom, priceImpactTo] = await Promise.all([
-      calculatePriceImpact(
+      this.calculatePriceImpact(
         tokenIn,
         firstTransitToken,
         tokenInAmount,
         firstTransitTokenAmount,
         'from'
       ),
-      calculatePriceImpact(
+      this.calculatePriceImpact(
         tokenOut,
         secondTransitToken,
         tokenOutAmount,
@@ -686,6 +665,36 @@ export class CrossChainRoutingService {
       priceImpactFrom,
       priceImpactTo
     };
+  }
+
+  /**
+   * Calculates price impact of token to 'transit token', or vice versa, trade.
+   * @param token Token, selected in form.
+   * @param transitToken Transit token.
+   * @param tokenAmount Amount of token, selected in form.
+   * @param transitTokenAmount Amount of transit token.
+   * @param type 'From' or 'to' type of token in form.
+   * @return number Price impact in percents.
+   */
+  private async calculatePriceImpact(
+    token: TokenAmount,
+    transitToken: InstantTradeToken,
+    tokenAmount: BigNumber,
+    transitTokenAmount: BigNumber,
+    type: 'from' | 'to'
+  ): Promise<number> {
+    if (!compareAddresses(token.address, transitToken.address)) {
+      const transitTokenPrice = await this.tokensService.getAndUpdateTokenPrice({
+        address: transitToken.address,
+        blockchain: token.blockchain
+      });
+      const priceImpactArguments: [number, number, BigNumber, BigNumber] =
+        type === 'from'
+          ? [token.price, transitTokenPrice, tokenAmount, transitTokenAmount]
+          : [transitTokenPrice, token.price, transitTokenAmount, tokenAmount];
+      return PriceImpactService.calculatePriceImpact(...priceImpactArguments);
+    }
+    return 0;
   }
 
   /**
@@ -794,6 +803,14 @@ export class CrossChainRoutingService {
    * Returns contract's method's data to execute trade.
    * @param trade Cross chain trade.
    * @param walletAddress Wallet address.
+   * @return string contractAddress
+   * Contract address in source network.
+   * @return string methodName
+   * Method's name to call in contract.
+   * @return unknown[] methodArguments
+   * Method's arguments to call method with.
+   * @return string value
+   * Value in Wei to send with transaction.
    */
   public async getContractData(
     trade: CrossChainRoutingTrade,

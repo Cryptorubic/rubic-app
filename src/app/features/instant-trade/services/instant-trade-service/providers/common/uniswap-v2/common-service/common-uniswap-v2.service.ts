@@ -47,6 +47,16 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-pu
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 
+interface RecGraphVisitorOptions {
+  toToken: InstantTradeToken;
+  amountAbsolute: string;
+  vertexes: SymbolToken[];
+  path: SymbolToken[];
+  mxTransitTokens: number;
+  routesPaths: SymbolToken[][];
+  routesMethodArguments: [string, string[]][];
+}
+
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
   protected contractAbi: AbiItem[];
@@ -451,28 +461,17 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const routesPaths: SymbolToken[][] = [];
     const routesMethodArguments: [string, string[]][] = [];
 
-    const recGraphVisitor = (path: SymbolToken[], mxTransitTokens: number): void => {
-      if (path.length === mxTransitTokens + 1) {
-        const finalPath = path.concat({
-          address: toToken.address,
-          symbol: toToken.symbol
-        });
-        routesPaths.push(finalPath);
-        routesMethodArguments.push([amountAbsolute, finalPath.map(token => token.address)]);
-        return;
-      }
-
-      vertexes
-        .filter(vertex => !path.includes(vertex))
-        .forEach(vertex => {
-          const extendedPath = path.concat(vertex);
-          recGraphVisitor(extendedPath, mxTransitTokens);
-        });
-    };
-
     const maxTransitTokens = this.settings.disableMultihops ? 0 : this.maxTransitTokens;
     for (let i = 0; i <= maxTransitTokens; i++) {
-      recGraphVisitor(initialPath, i);
+      this.recGraphVisitor({
+        toToken,
+        amountAbsolute,
+        vertexes,
+        path: initialPath,
+        mxTransitTokens: i,
+        routesPaths,
+        routesMethodArguments
+      });
     }
 
     const routes: UniswapV2Route[] = [];
@@ -498,6 +497,38 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     return routes;
+  }
+
+  private recGraphVisitor(options: RecGraphVisitorOptions): void {
+    const {
+      toToken,
+      amountAbsolute,
+      vertexes,
+      path,
+      mxTransitTokens,
+      routesPaths,
+      routesMethodArguments
+    } = options;
+
+    if (path.length === mxTransitTokens + 1) {
+      const finalPath = path.concat({
+        address: toToken.address,
+        symbol: toToken.symbol
+      });
+      routesPaths.push(finalPath);
+      routesMethodArguments.push([amountAbsolute, finalPath.map(token => token.address)]);
+      return;
+    }
+
+    vertexes
+      .filter(vertex => !path.includes(vertex))
+      .forEach(vertex => {
+        const extendedPath = path.concat(vertex);
+        this.recGraphVisitor({
+          ...options,
+          path: extendedPath
+        });
+      });
   }
 
   public async getFromAmount(

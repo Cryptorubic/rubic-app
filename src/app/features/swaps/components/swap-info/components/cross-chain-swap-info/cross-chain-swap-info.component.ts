@@ -54,16 +54,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
     return this.blockchainLabels[this.toBlockchain];
   }
 
-  public get shortenedToWalletAddress(): string {
-    if (!this.toWalletAddress) {
-      return '';
-    }
-    return `${this.toWalletAddress.substr(0, 5)}...${this.toWalletAddress.substr(
-      this.toWalletAddress.length - 5,
-      5
-    )}`;
-  }
-
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapFormService: SwapFormService,

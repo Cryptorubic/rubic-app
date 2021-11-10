@@ -70,12 +70,31 @@ export class SwapButtonComponent implements OnInit {
     );
   }
 
-  get disabled(): boolean {
+  public get disabled(): boolean {
     return (
       this.status !== TRADE_STATUS.READY_TO_SWAP ||
       this.priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED ||
       this.showLoader
     );
+  }
+
+  /**
+   * Returns true, if button should be warned medium.
+   */
+  public get warningMedium(): boolean {
+    return (
+      this.status !== TRADE_STATUS.DISABLED &&
+      ((PRICE_IMPACT_RANGE.MEDIUM <= this.priceImpact &&
+        this.priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
+        this.priceImpact === null)
+    );
+  }
+
+  /**
+   * Returns true, if button should be warned high.
+   */
+  public get warningHigh(): boolean {
+    return this.status !== TRADE_STATUS.DISABLED && this.priceImpact >= PRICE_IMPACT_RANGE.HIGH;
   }
 
   constructor(

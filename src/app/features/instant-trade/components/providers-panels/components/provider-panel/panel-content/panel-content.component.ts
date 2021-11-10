@@ -9,8 +9,6 @@ import {
 import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
 import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Observable } from 'rxjs';
-import { SwapFormInput } from '@features/swaps/models/SwapForm';
 import { shouldDisplayGas } from '@features/instant-trade/constants/shouldDisplayGas';
 import BigNumber from 'bignumber.js';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
@@ -34,8 +32,6 @@ export class PanelContentComponent implements OnInit {
   @Input() public isBestRate: boolean;
 
   public blockchains = BLOCKCHAIN_NAME;
-
-  public swapFormData: Observable<SwapFormInput>;
 
   public displayGas: boolean;
 

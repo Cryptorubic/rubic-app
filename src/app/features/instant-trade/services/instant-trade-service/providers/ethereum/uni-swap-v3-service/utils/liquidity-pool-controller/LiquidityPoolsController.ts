@@ -120,6 +120,7 @@ export class LiquidityPoolsController {
    * @param secondTokenAddress Second token address.
    * @param firstTokenSymbol First token symbol.
    * @param secondTokenSymbol Second token symbol.
+   * @return Promise<LiquidityPool[]> All liquidity pools between route and given tokens.
    */
   @PCacheable({
     maxAge: 1000 * 60 * 10,

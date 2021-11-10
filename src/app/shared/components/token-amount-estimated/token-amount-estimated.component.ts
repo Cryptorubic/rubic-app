@@ -53,6 +53,14 @@ export class AmountEstimatedComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.subscribeOnOutputChange();
+    this.subscribeOnToTokenChange();
+  }
+
+  /**
+   * Subscribes on output form change, and after change updates token amount parameters.
+   */
+  private subscribeOnOutputChange(): void {
     this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
       if (!form?.toAmount.isFinite()) {
         this.hidden = true;
@@ -70,7 +78,12 @@ export class AmountEstimatedComponent implements OnInit {
 
       this.cdr.markForCheck();
     });
+  }
 
+  /**
+   * Subscribes on to token change, and after change updates usd price.
+   */
+  private subscribeOnToTokenChange(): void {
     this.swapFormService.input.controls.toToken.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -81,7 +94,7 @@ export class AmountEstimatedComponent implements OnInit {
       });
   }
 
-  private getUsdPrice() {
+  private getUsdPrice(): BigNumber {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
     const fromTokenCost = fromAmount.multipliedBy(fromToken?.price);
     const toTokenCost = this.tokenAmount?.multipliedBy(toToken?.price);
