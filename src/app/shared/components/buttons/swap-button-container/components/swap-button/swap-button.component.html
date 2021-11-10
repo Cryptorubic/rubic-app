@@ -2,9 +2,11 @@
   [class]="idPrefix + 'button-swap'"
   [ngClass]="{
     'button-swap_warning-yellow':
-      (priceImpact >= PRICE_IMPACT_RANGE.MEDIUM && priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
-      priceImpact === null,
-    'button-swap_warning-red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
+      status !== TRADE_STATUS.DISABLED &&
+      ((PRICE_IMPACT_RANGE.MEDIUM <= priceImpact && priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
+        priceImpact === null),
+    'button-swap_warning-red':
+      status !== TRADE_STATUS.DISABLED && priceImpact >= PRICE_IMPACT_RANGE.HIGH
   }"
   appearance="secondary"
   [loading]="showLoader"
@@ -12,7 +14,7 @@
   (onClick)="onSwapClick()"
 >
   {{
-    !priceImpact || priceImpact < PRICE_IMPACT_RANGE.MEDIUM
+    status === TRADE_STATUS.DISABLED || !priceImpact || priceImpact < PRICE_IMPACT_RANGE.MEDIUM
       ? buttonText
       : priceImpact < PRICE_IMPACT_RANGE.HIGH_DISABLED
       ? 'Swap Anyway'

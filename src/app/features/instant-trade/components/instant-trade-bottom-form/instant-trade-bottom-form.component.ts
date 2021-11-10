@@ -620,7 +620,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return new BigNumber(NaN);
     }
 
-    const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken.price);
+    const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken?.price);
     const toAmount = amount || this.selectedProvider?.trade.to.amount;
     const toTokenCost = toAmount.multipliedBy(this.toToken.price);
     if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {

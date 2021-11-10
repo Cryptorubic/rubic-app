@@ -28,7 +28,10 @@ export class SwapButtonComponent implements OnInit {
   @Input() idPrefix: string;
 
   @Input() set status(status: TRADE_STATUS) {
-    if (status === TRADE_STATUS.LOADING) {
+    if (
+      status === TRADE_STATUS.LOADING &&
+      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.BRIDGE
+    ) {
       this.priceImpact = undefined;
     }
     this._status = status;
@@ -47,7 +50,9 @@ export class SwapButtonComponent implements OnInit {
 
   @Output() onClick = new EventEmitter<void>();
 
-  public PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
+  public readonly PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
+
+  public readonly TRADE_STATUS = TRADE_STATUS;
 
   private _status: TRADE_STATUS;
 

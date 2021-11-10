@@ -62,21 +62,21 @@ export class BridgeSwapInfoComponent implements OnInit {
     this.swapFormService.inputValueChanges
       .pipe(
         startWith(this.swapFormService.inputValue),
-        takeUntil(this.destroy$),
         switchMap(inputForm => {
           return this.bridgeService.getBridgeTrade().pipe(
             first(),
             map(bridgeTrade => {
               this.bridgeProvider = bridgeTrade.provider;
 
-              const token = bridgeTrade.token.tokenByBlockchain[inputForm.fromBlockchain];
-              this.minAmount = token.minAmount;
-              this.maxAmount = token.maxAmount;
+              const token = bridgeTrade.token?.tokenByBlockchain[inputForm.fromBlockchain];
+              this.minAmount = token?.minAmount;
+              this.maxAmount = token?.maxAmount;
 
               return inputForm;
             })
           );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe(inputForm => {
         this.isFromPolygonToEth =
