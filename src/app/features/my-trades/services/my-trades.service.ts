@@ -111,8 +111,8 @@ export class MyTradesService {
           if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
             return trade.fromTransactionHash && trade.status !== TRANSACTION_STATUS.CANCELLED
               ? of({
-                  fromTransactionHash: trade.toTransactionHash,
-                  toTransactionHash: trade.fromTransactionHash
+                  fromTransactionHash: trade.fromTransactionHash,
+                  toTransactionHash: trade.toTransactionHash
                 })
               : this.loadPanamaTxHash(trade.transactionId);
           }
