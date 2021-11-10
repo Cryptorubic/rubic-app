@@ -11,6 +11,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 
 @Component({
   selector: 'app-amount-estimated',
@@ -39,7 +40,7 @@ export class AmountEstimatedComponent implements OnInit {
 
   public usdPrice: BigNumber;
 
-  public tokenAmount: string;
+  public tokenAmount: BigNumber;
 
   public blockchain: BLOCKCHAIN_NAME;
 
@@ -64,8 +65,7 @@ export class AmountEstimatedComponent implements OnInit {
       this.hidden = false;
 
       this.blockchain = this.swapFormService.inputValue.toBlockchain;
-      const toAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
-      this.tokenAmount = toAmount.toFixed();
+      this.tokenAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
       this.usdPrice = this.getUsdPrice();
 
       this.cdr.markForCheck();
@@ -83,11 +83,10 @@ export class AmountEstimatedComponent implements OnInit {
 
   private getUsdPrice() {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-    const { toAmount } = this.swapFormService.outputValue;
     const fromTokenCost = fromAmount.multipliedBy(fromToken?.price);
-    const toTokenCost = toAmount.multipliedBy(toToken?.price);
-    if (toTokenCost.gt(fromTokenCost)) {
-      return null;
+    const toTokenCost = this.tokenAmount?.multipliedBy(toToken?.price);
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
+      return new BigNumber(NaN);
     }
     return toTokenCost;
   }

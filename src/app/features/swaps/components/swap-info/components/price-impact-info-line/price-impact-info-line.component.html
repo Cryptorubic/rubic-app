@@ -23,7 +23,7 @@
         'info-line__value_red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
       }"
     >
-      {{ priceImpact < PRICE_IMPACT_RANGE.LOW ? '<0.01' : -priceImpact }}%
+      {{ priceImpact < PRICE_IMPACT_RANGE.LOW ? '<0.01' : priceImpact }}%
     </div>
 
     <div *ngIf="priceImpact === null" class="info-line__value info-line__value_yellow">

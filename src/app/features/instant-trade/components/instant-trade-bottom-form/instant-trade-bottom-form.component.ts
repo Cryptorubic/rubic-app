@@ -52,6 +52,7 @@ import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -205,7 +206,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.toToken?.price !== toToken?.price
         ) {
           this.toToken = toToken;
-          this.updateControllers();
           this.cdr.markForCheck();
         }
       });
@@ -434,7 +434,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(el => {
-        if (el) {
+        if (el && this.selectedProvider) {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
           this.hiddenDataAmounts$.next(el);
           const hiddenProviderData = el.find(
@@ -472,13 +472,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return {
         ...controller,
         isSelected: false,
-        trade: trade && {
-          ...trade,
-          to: {
-            ...trade?.to,
-            token: this.toToken
-          }
-        },
+        trade,
         needApprove: approveData[index],
         tradeState:
           tradeData[index]?.status === 'fulfilled' && trade
@@ -492,41 +486,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates controllers data related to toToken's price.
-   */
-  private updateControllers() {
-    this.providerControllers = this.providerControllers.map(controller => ({
-      ...controller,
-      isSelected: false,
-      trade: controller?.trade && {
-        ...controller.trade,
-        to: {
-          ...controller.trade?.to,
-          token: this.toToken
-        }
-      }
-    }));
-
-    this.chooseBestController();
-  }
-
-  /**
    * Selects best provider controller and updates trade status.
    */
   private chooseBestController() {
     this.sortProviders();
     const bestProvider = this.providerControllers[0];
-
-    if (!!this.toToken.price && bestProvider.trade) {
-      const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken.price);
-      const bestProviderCost = bestProvider.trade.to.amount.multipliedBy(this.toToken.price);
-
-      if (bestProviderCost.gt(fromTokenCost)) {
-        this.toToken.price = null;
-        this.updateControllers();
-        return;
-      }
-    }
 
     if (bestProvider.trade) {
       this.selectController(0);
@@ -652,7 +616,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     if (!this.toToken?.price) {
       return new BigNumber(NaN);
     }
-    return (amount || this.selectedProvider?.trade.to.amount).multipliedBy(this.toToken.price);
+
+    const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken.price);
+    const toAmount = amount || this.selectedProvider?.trade.to.amount;
+    const toTokenCost = toAmount.multipliedBy(this.toToken.price);
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
+      return new BigNumber(NaN);
+    }
+    return toTokenCost;
   }
 
   private setProviderState(

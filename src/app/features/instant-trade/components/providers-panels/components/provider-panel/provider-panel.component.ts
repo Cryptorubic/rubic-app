@@ -108,9 +108,7 @@ export class ProviderPanelComponent {
       amount: data?.trade?.to?.amount,
       gasLimit: data?.trade?.gasLimit,
       gasFeeInUsd: data?.trade?.gasFeeInUsd,
-      gasFeeInEth: data?.trade?.gasFeeInEth,
-      usdPrice: data?.trade?.to?.amount?.multipliedBy(data?.trade?.to?.token?.price),
-      toTokenDecimals: data?.trade?.to?.token?.decimals
+      gasFeeInEth: data?.trade?.gasFeeInEth
     };
   }
 

@@ -10,6 +10,7 @@ import { SwapInfoService } from '@features/swaps/components/swap-info/services/s
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 
 @Component({
   selector: 'app-ccr-swap-info',
@@ -108,7 +109,13 @@ export class CcrSwapInfoComponent implements OnInit {
               this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
 
               this.priceImpactFrom = tradeInfo.priceImpactFrom;
+              if (this.priceImpactFrom < -PERMITTED_PRICE_DIFFERENCE * 100) {
+                this.priceImpactFrom = null;
+              }
               this.priceImpactTo = tradeInfo.priceImpactTo;
+              if (this.priceImpactTo < -PERMITTED_PRICE_DIFFERENCE * 100) {
+                this.priceImpactTo = null;
+              }
 
               this.calculateMaxSentAndMinReceived();
 

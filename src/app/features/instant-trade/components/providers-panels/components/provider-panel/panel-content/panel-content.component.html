@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="provider-panel__right" *ngLet="tradeData?.usdPrice as price">
+  <div class="provider-panel__right" *ngLet="usdPrice as price">
     <div
       *ngIf="price?.isFinite() && price.gt(0)"
       class="provider-panel__token-usd-price"

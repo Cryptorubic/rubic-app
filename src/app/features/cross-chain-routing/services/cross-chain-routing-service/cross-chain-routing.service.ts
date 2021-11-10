@@ -682,9 +682,6 @@ export class CrossChainRoutingService {
       return 0;
     };
 
-    const tokenInCost = tokenInAmount.multipliedBy(tokenIn.price);
-    const tokenOutCost = tokenOutAmount.multipliedBy(tokenOut.price);
-    const calculatePriceImpactTo = !tokenOutCost.gt(tokenInCost);
     const [priceImpactFrom, priceImpactTo] = await Promise.all([
       calculatePriceImpact(
         tokenIn,
@@ -693,15 +690,13 @@ export class CrossChainRoutingService {
         firstTransitTokenAmount,
         'from'
       ),
-      calculatePriceImpactTo
-        ? calculatePriceImpact(
-            tokenOut,
-            secondTransitToken,
-            tokenOutAmount,
-            secondTransitTokenAmount,
-            'to'
-          )
-        : null
+      calculatePriceImpact(
+        tokenOut,
+        secondTransitToken,
+        tokenOutAmount,
+        secondTransitTokenAmount,
+        'to'
+      )
     ]);
 
     return {

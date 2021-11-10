@@ -26,11 +26,4 @@ export interface TradeData {
    * Amount of predicted gas fee in Ether.
    */
   gasFeeInEth: BigNumber;
-
-  /**
-   * Output token usd price.
-   */
-  usdPrice: BigNumber;
-
-  toTokenDecimals: number;
 }

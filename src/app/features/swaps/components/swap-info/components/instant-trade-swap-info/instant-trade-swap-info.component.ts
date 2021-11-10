@@ -17,6 +17,7 @@ import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -112,7 +113,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
         fromAmount,
         toAmount
       );
-      if (this.priceImpact < 0) {
+      if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
         this.priceImpact = null;
       }
 
