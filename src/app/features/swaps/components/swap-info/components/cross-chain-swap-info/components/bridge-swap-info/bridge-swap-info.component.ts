@@ -82,7 +82,7 @@ export class BridgeSwapInfoComponent implements OnInit {
         this.isFromPolygonToEth =
           inputForm.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
           inputForm.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-        this.fromTokenSymbol = inputForm.fromToken.symbol;
+        this.fromTokenSymbol = inputForm.fromToken?.symbol;
 
         this.cdr.markForCheck();
       });

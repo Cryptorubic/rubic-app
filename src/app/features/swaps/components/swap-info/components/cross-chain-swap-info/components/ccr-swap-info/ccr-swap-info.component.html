@@ -63,32 +63,50 @@
   [priceImpact]="priceImpactTo"
 ></app-price-impact-info-line>
 
-<div class="info-line">
+<div
+  class="info-line"
+  *ngLet="
+    (minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals) +
+    ' ' +
+    toToken.symbol as minimumReceivedFormatted
+  "
+>
   <div class="info-line__title title">
     <span class="title__text"> {{ 'crossChainPage.swapInfo.minimumReceived' | translate }}</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
-      [tuiHint]="'crossChainPage.swapInfo.minimumReceivedHint' | translate"
+      [tuiHint]="
+        'Output is estimated. You will receive at least ' +
+        minimumReceivedFormatted +
+        ' or the transaction will revert.'
+      "
     />
   </div>
-  <div class="info-line__value" *ngIf="minimumReceived">
-    {{ minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals }}
-    {{ toToken.symbol }}
+  <div class="info-line__value" *ngIf="minimumReceived?.isFinite()">
+    {{ minimumReceivedFormatted }}
   </div>
 </div>
 
-<div class="info-line">
+<div
+  class="info-line"
+  *ngLet="
+    (maximumSent | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals) +
+    ' ' +
+    fromToken.symbol as maximumSentFormatted
+  "
+>
   <div class="info-line__title title">
     <span class="title__text"> {{ 'crossChainPage.swapInfo.maximumSent' | translate }}</span>
     <img
       src="assets/images/swaps/swaps-info/question-icon.svg"
       alt="question"
-      [tuiHint]="'crossChainPage.swapInfo.maximumSentHint' | translate"
+      [tuiHint]="
+        'Maximum amount of assets for the transaction taking into account the slippage. If some amount will not be used for the transaction, they will be returned to your wallet in the first transaction.'
+      "
     />
   </div>
-  <div class="info-line__value" *ngIf="maximumSent">
-    {{ maximumSent | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals }}
-    {{ fromToken.symbol }}
+  <div class="info-line__value" *ngIf="maximumSent?.isFinite()">
+    {{ maximumSentFormatted }}
   </div>
 </div>

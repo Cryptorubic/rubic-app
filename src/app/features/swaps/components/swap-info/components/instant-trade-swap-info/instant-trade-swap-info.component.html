@@ -1,4 +1,11 @@
-<div class="info-line" *ngLet="minimumReceivedFormatted as minimumReceived">
+<div
+  class="info-line"
+  *ngLet="
+    (minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals) +
+    ' ' +
+    toToken.symbol as minimumReceivedFormatted
+  "
+>
   <div class="info-line__title title">
     <span class="title__text">Minimum received</span>
     <img
@@ -6,13 +13,13 @@
       alt="question"
       [tuiHint]="
         'Output is estimated. You will receive at least ' +
-        minimumReceived +
+        minimumReceivedFormatted +
         ' or the transaction will revert.'
       "
     />
   </div>
-  <div class="info-line__value">
-    {{ minimumReceived }}
+  <div class="info-line__value" *ngIf="minimumReceived?.isFinite()">
+    {{ minimumReceivedFormatted }}
   </div>
 </div>
 

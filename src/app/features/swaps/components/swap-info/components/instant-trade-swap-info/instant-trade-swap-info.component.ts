@@ -18,6 +18,7 @@ import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -30,6 +31,8 @@ export class InstantTradeSwapInfoComponent implements OnInit {
   @Input() set currentInstantTrade(instantTrade: InstantTrade) {
     this.path = instantTrade?.path?.map(token => token.symbol);
   }
+
+  public toToken: TokenAmount;
 
   public minimumReceived: BigNumber;
 
@@ -97,6 +100,13 @@ export class InstantTradeSwapInfoComponent implements OnInit {
   }
 
   private initSubscriptions(): void {
+    this.swapFormService.inputValueChanges
+      .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
+      .subscribe(form => {
+        this.toToken = form.toToken;
+        this.cdr.markForCheck();
+      });
+
     this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       const { toAmount } = this.swapFormService.outputValue;
       if (!toAmount?.isFinite()) {
