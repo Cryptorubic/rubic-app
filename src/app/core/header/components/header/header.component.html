@@ -1,8 +1,7 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
-  Rubic Cross-Chain has launched! Swap between 9,000 tokens across Ethereum, BSC, Polygon &
-  Avalanche.
-  <a (click)="navigateToBridgeOrCrossChain('cross-chain')"> Try it now!</a>
+  {{ 'banner.text' | translate }}
+  <a class="banner__link" (click)="buyTokenComponent.buyToken()">{{ 'banner.link' | translate }}</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -57,9 +56,7 @@
     >
   </nav>
 
-  <app-rubic-button *noFrame class="rubic-header__buy-rbc" appearance="outline" (click)="buyRBC()"
-    >Buy RBC</app-rubic-button
-  >
+  <app-buy-token *noFrame appearance="outline" class="rubic-header__buy-token"></app-buy-token>
 
   <div class="rubic-header__profile">
     <a
@@ -69,12 +66,12 @@
       routerLinkActive="button-link_active"
     >
       {{ 'navigation.myTrades' | translate }}
-      <tui-badge
+      <app-notification-badge
         class="notification-counter"
         *ngIf="(countNotifications$ | async) && ($currentUser | async)"
         size="s"
         [value]="countNotifications$ | async"
-      ></tui-badge>
+      ></app-notification-badge>
     </a>
 
     <app-iframe-settings-button *onlyFrame></app-iframe-settings-button>

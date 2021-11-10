@@ -16,6 +16,7 @@ export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.AVALANCHE,
+  BLOCKCHAIN_NAME.MOONRIVER,
   BLOCKCHAIN_NAME.FANTOM
 ] as const;
 
@@ -38,6 +39,8 @@ export class Web3PublicService {
   public [BLOCKCHAIN_NAME.HARMONY]: Web3Public;
 
   public [BLOCKCHAIN_NAME.AVALANCHE]: Web3Public;
+
+  public [BLOCKCHAIN_NAME.MOONRIVER]: Web3Public;
 
   public [BLOCKCHAIN_NAME.FANTOM]: Web3Public;
 
@@ -115,7 +118,7 @@ export class Web3PublicService {
             this[blockchainName].setProvider(connector.additionalRpcLink);
 
             console.debug(
-              `Broken ${web3Public.blockchain.label} node has been replaced with a spare.`
+              `Broken ${web3Public.blockchain.name} node has been replaced with a spare.`
             );
           }
         })

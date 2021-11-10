@@ -43,6 +43,7 @@
     "userReject": "You rejected the execution of the transaction. Please confirm it first in order to complete the trade.",
     "rubicError": "Please try again later or try using another device. If you’re still having problems, please reach out to our",
     "insufficientFunds": "You have not enough {{ tokenSymbol }}. Your balance is {{balance}} {{tokenSymbol}}, but {{requiredBalance}} {{tokenSymbol}} is required.",
+    "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less amount or top up your {{ nativeToken }} balance.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
     "walletlinkWrongNetwork": "Please make sure that the {{ networkToChoose }} network is selected in the Coinbase application. To change the network in the coinbase application, go to the settings in the bottom panel and select the \"Active Network\" tab.",
     "noWallet": "You have not connected any wallet",
@@ -56,7 +57,7 @@
     "notSupportedItNetwork": "Chosen network is not supported for instant trades",
     "notSupportedBridge": "This bridge is currently unavailable. Please select a supported bridge.",
     "insufficientLiquidityCCR": "Insufficient liquidity for this trade",
-    "insufficientLiquidityIT": "Insufficient liquidity for this trade. Try to enable multihops trading.",
+    "insufficientLiquidityIT": "Insufficient liquidity for this trade.",
     "oneinchRefreshError":  "1inch is currently unavailable. Please try to refresh the trade.",
     "1inchNotSupportedToken": "1inch doesn’t support one of the selected tokens.",
     "cancelDeadline": "Your transaction has been reverted because the transaction deadline has expired. Please try to increase transaction deadline time or gas amount.",
@@ -416,8 +417,8 @@
       "more": "more"
     },
     "button": {
-      "refundAfter": "Refund after",
-      "refund": "Refund"
+      "refundAfter": "Claim after",
+      "refund": "Claim"
     },
     "promoActions": {
       "1": {
@@ -425,7 +426,7 @@
         "description": "Get gas cashback for completing the first Multi-Chain swap on our platform!"
       },
       "2": {
-        "label": "Get Gas fee Refund for making swaps using tokens of our partners!",
+        "label": "Avalanche gas refund",
         "description": "To celebrate the launch of Rubic Multi-Chain routing on the Avalanche network our project is starting a new Gas Refund Campaign! Starting from Oct, 19 to Nov,2  our users will be able to complete swap using their favorite tokens on the Avalanche network using Rubic Multi-Chain Routing and get GAS refunded."
       }
     },
@@ -582,6 +583,11 @@
       }
     }
   },
+  "banner": {
+    "text": "Moonriver is now available for Multi-Chain and On-Chain Swaps.",
+    "link": "Try it today!"
+  },
+  "buyToken": "Buy MOVR",
   "volume": {
     "title": "Accumulated Transaction Volume",
     "instantTrades": "Swaps",

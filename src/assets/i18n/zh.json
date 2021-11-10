@@ -43,6 +43,7 @@
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
     "rubicError": "请稍后再试，或尝试使用其他设备。如果您仍有问题",
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
+    "insufficientFunds1inch": "您沒有足夠的 {{ nativeToken }} 用於轉賬和 gas 費用。 對於交易，輸入較少的金額或充值您的 {{ nativeToken }}餘額。",
     "noQrCode": "請確保您有掃描二維碼",
     "walletlinkWrongNetwork": "请确保在 Coinbase 应用程序中选择了 {{ networkToChoose }} 网络。 要更改 coinbase 应用程序中的网络，请转到底部面板中的设置并选择“Active Network”选项卡。",
     "noWallet": "您尚未連接任何錢包",
@@ -56,7 +57,7 @@
     "notSupportedItNetwork": "即時交易不支持所選網絡",
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
     "insufficientLiquidityCCR": "這筆交易的流動性不足",
-    "insufficientLiquidityIT": "這筆交易的流動性不足。 嘗試啟用多跳交易。",
+    "insufficientLiquidityIT": "這筆交易的流動性不足。",
     "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
     "1inchNotSupportedToken": "1inch 不支持所選代幣之一。",
     "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
@@ -416,8 +417,8 @@
       "more": "更多"
     },
     "button": {
-      "refundAfter": "退款後",
-      "refund": "退款"
+      "refundAfter": "索賠後",
+      "refund": "索賠"
     },
     "promoActions": {
       "1": {
@@ -425,8 +426,8 @@
         "description": "在我們的平台上完成第一個多鏈交換可以獲得 gas 返現！"
       },
       "2": {
-        "label": "使用我們合作夥伴的代幣進行掉期可以獲得 Gas 費用退款！",
-        "description": "為了慶祝在 Avalanche 網絡上推出 Rubic 多鏈路由，我們的項目正在啟動新的 Gas Refund Campaign！從 10 月 19 日到 11 月 2 日，我們的用戶將能夠使用他們喜歡的代幣完成交換 在 Avalanche 網絡上使用 Rubic 多鏈路由並獲得 GAS 退款"
+        "label": "Avalanche gas費退款！",
+        "description": "為了慶祝在 Avalanche 網絡上推出 Rubic 多鏈路由，我們的項目正在啟動新的 Gas Refund Campaign！從 10 月 19 日到 11 月 2 日，我們的用戶將能夠使用他們喜歡的代幣完成交換 在 Avalanche 網絡上使用 Rubic 多鏈路由並獲得 GAS 退款。"
       }
     },
     "notifications": {
@@ -583,6 +584,11 @@
       }
     }
   },
+  "banner": {
+    "text": "Moonriver 現在可用於多鍊和鏈上交換。",
+    "link": "今天試試!"
+  },
+  "buyToken": "購買 MOVR",
   "volume": {
     "title": "累計交易量",
     "instantTrades": "Swaps",

@@ -27,9 +27,10 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import BigNumber from 'bignumber.js';
-import { filter, first, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
+import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -40,6 +41,8 @@ import { HeaderStore } from '../../services/header.store';
 })
 export class HeaderComponent implements AfterViewInit {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
+
+  @ViewChild(BuyTokenComponent) public buyTokenComponent: BuyTokenComponent;
 
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
@@ -185,37 +188,6 @@ export class HeaderComponent implements AfterViewInit {
         to: undefined
       },
       queryParamsHandling: 'merge'
-    });
-  }
-
-  /**
-   * navigate to IT Ethereum and fill swap form from ETH to RBC
-   * @return void
-   */
-  public buyRBC() {
-    this.router.navigate(['/']).then(() => {
-      this.swapsService.availableTokens
-        .pipe(
-          filter(tokens => tokens?.size > 0),
-          first()
-        )
-        .subscribe(tokens => {
-          const ETH = tokens.find(
-            token => token.symbol === 'ETH' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-          );
-
-          const RBC = tokens.find(
-            token => token.symbol === 'RBC' && token.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-          );
-
-          this.swapFormService.input.patchValue({
-            fromToken: ETH,
-            toToken: RBC,
-            fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-            toBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
-            fromAmount: new BigNumber(1)
-          });
-        });
     });
   }
 }

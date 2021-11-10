@@ -43,6 +43,7 @@
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "rubicError": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우",
     "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
+    "insufficientFunds1inch": "이체 및 가스 수수료에 대한 {{ nativeToken }} 의 양이 충분하지 않습니다. 거래의 경우 더 적은 금액을 입력하거나 {{ nativeToken }} 잔액을 충전하십시오.",
     "noQrCode": "qrCode를 스캔했는지 확인하십시오",
     "walletlinkWrongNetwork": "Coinbase 애플리케이션에서 {{ networkToChoose }} 네트워크가 선택되어 있는지 확인하십시오. 코인베이스 애플리케이션에서 네트워크를 변경하려면 하단 패널의 설정으로 이동하여 \"Active Network\" 탭을 선택합니다.",
     "noWallet": "연결된 지갑이 없습니다.",
@@ -56,7 +57,7 @@
     "notSupportedItNetwork": "선택한 네트워크는 즉시 거래에 지원되지 않습니다.",
     "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
     "insufficientLiquidityCCR": "이 거래에 대한 유동성이 충분하지 않습니다",
-    "insufficientLiquidityIT": "이 거래에 대한 유동성이 충분하지 않습니다. 멀티 홉 거래를 활성화하십시오.",
+    "insufficientLiquidityIT": "이 거래에 대한 유동성이 충분하지 않습니다.",
     "1inchRefreshError":  "1inch는 현재 사용할 수 없습니다. 거래를 새로 고치세요.",
     "1inchNotSupportedToken": "1INCH는 선택한 토큰 중 하나를 지원하지 않습니다.",
     "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",
@@ -416,8 +417,8 @@
       "more": "더"
     },
     "button": {
-      "refundAfter": "환불 후",
-      "refund": "환불"
+      "refundAfter": "클레임 후",
+      "refund": "클레임"
     },
     "promoActions": {
       "1": {
@@ -425,7 +426,7 @@
         "description": "저희 플랫폼에서 첫 번째 멀티체인 스왑을 완료하고 가스 캐쉬백을 받으세요!"
       },
       "2": {
-        "label": "파트너의 토큰을 사용하여 스왑을 하면 가스비 환불을 받으세요!",
+        "label": "Avalanche 가스 요금 환불",
         "description": "Avalanche 네트워크에서 Rubic Multi-Chain 라우팅 출시를 축하하기 위해 우리 프로젝트는 새로운 Gas Refund Campaign을 시작합니다! 10월 19일부터 11월 2일까지 사용자는 좋아하는 토큰을 사용하여 스왑을 완료할 수 있습니다. Rubic Multi-Chain Routing을 사용하여 Avalanche 네트워크에서 GAS 환불을 받으세요."
       }
     },
@@ -582,6 +583,11 @@
       }
     }
   },
+  "banner": {
+    "text": "Moonriver는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
+    "link": "오늘 시도!"
+  },
+  "buyToken": "MOVR 구매",
   "volume": {
     "title": "누적 거래량",
     "instantTrades": "Swaps",

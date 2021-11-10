@@ -7,7 +7,7 @@ export default [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://patient-bold-night.quiknode.pro/e9d9c6fc165de5266e008da316e7b5220b1e1775/',
+    rpcLink: 'https://damp-misty-hill.quiknode.pro/',
     additionalRpcLink:
       'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
@@ -103,7 +103,7 @@ export default [
   {
     id: 43114,
     name: BLOCKCHAIN_NAME.AVALANCHE,
-    scannerUrl: 'https://cchain.explorer.avax.network/',
+    scannerUrl: 'https://snowtrace.io/',
     rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
     additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/avalanche.svg',
@@ -112,6 +112,21 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'AVAX',
       symbol: 'AVAX',
+      decimals: 18
+    }
+  },
+  {
+    id: 1285,
+    name: BLOCKCHAIN_NAME.MOONRIVER,
+    scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
+    rpcLink: 'https://rpc.moonriver.moonbeam.network',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/moonriver.webp',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.MOONRIVER,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'MOVR',
+      symbol: 'MOVR',
       decimals: 18
     }
   },

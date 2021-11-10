@@ -47,6 +47,12 @@ export const blockchainsList: BlockchainItem[] = [
     id: 43114
   },
   {
+    symbol: BLOCKCHAIN_NAME.MOONRIVER,
+    visibleName: 'Moonriver',
+    image: `${imageBaseSrc}moonriver.webp`,
+    id: 1285
+  },
+  {
     symbol: BLOCKCHAIN_NAME.FANTOM,
     visibleName: 'Fantom',
     image: `${imageBaseSrc}fantom.svg`,

@@ -209,8 +209,8 @@ export class ProviderConnectorService {
         rpc: 'https://bsc-dataseed1.binance.org'
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        name: 'Matic(Polygon) Mainnet',
-        rpc: 'https://rpc-mainnet.matic.network'
+        name: 'Polygon Mainnet',
+        rpc: 'https://polygon-rpc.com/'
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         name: 'Harmony Mainnet Shard 0',
@@ -219,6 +219,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.AVALANCHE]: {
         name: 'Avalanche Mainnet',
         rpc: 'https://api.avax.network/ext/bc/C/rpc'
+      },
+      [BLOCKCHAIN_NAME.MOONRIVER]: {
+        name: 'Moonriver',
+        rpc: 'https://rpc.moonriver.moonbeam.network'
       },
       [BLOCKCHAIN_NAME.FANTOM]: {
         name: 'Fantom Opera',
@@ -241,9 +245,9 @@ export class ProviderConnectorService {
   }
 
   /**
-   * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet
-   * @param networkName chain to switch to
-   * @returns was the network switch successful
+   * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
+   * @param networkName chain to switch to.
+   * @returns was the network switch successful.
    */
   public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<boolean> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);

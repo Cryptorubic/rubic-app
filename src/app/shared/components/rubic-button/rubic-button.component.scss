@@ -8,6 +8,26 @@
   --tui-focus: transparent;
   --tui-primary-text: #{$rubic-text-color-main};
 
+  &.button_buy-token {
+    [tuiButton][data-appearance='outline'] {
+      border: 1px solid $buy-token-button-color;
+
+      &._pressed,
+      &._hovered,
+      &._focused:not(&._pressed) {
+        background: rgba($buy-token-button-color, 0.3);
+
+        border: 1px solid $buy-token-button-color;
+      }
+
+      &._pressed {
+        ::ng-deep tui-wrapper[data-appearance='outline'] {
+          color: white;
+        }
+      }
+    }
+  }
+
   [tuiButton] {
     --tui-link: var(--primary-color);
     font-weight: 500;

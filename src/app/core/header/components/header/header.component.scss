@@ -138,7 +138,7 @@
     position: relative;
   }
 
-  &__buy-rbc {
+  &__buy-token {
     flex-shrink: 0;
     margin-right: 25px;
   }
@@ -203,7 +203,7 @@
       }
     }
 
-    ::ng-deep &__buy-rbc {
+    ::ng-deep &__buy-token {
       button[tuiButton][data-tui-host-size=l] {
         height: 40px;
 
@@ -232,12 +232,12 @@
   width: 100%;
   min-height: 30px;
 
-  color: white;
+  color: var(--form-bright-text-color);
   font-size: 16px;
   line-height: 30px;
   text-align: center;
 
-  background-color: rgba(51, 86, 51, 0.8);
+  background-color: var(--bg-banner);
   backdrop-filter: blur(10px);
 
   @include b($mobile-md) {

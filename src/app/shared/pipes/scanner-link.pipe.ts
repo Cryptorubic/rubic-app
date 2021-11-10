@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { Web3PublicService } from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from '../models/blockchain/ADDRESS_TYPE';
-import { Web3PublicService } from '../../core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { UseTestingModeService } from '../../core/services/use-testing-mode/use-testing-mode.service';
 
 const blockchainsScanners = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -79,7 +79,15 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
-    baseUrl: 'https://cchain.explorer.avax.network/',
+    baseUrl: 'https://snowtrace.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.MOONRIVER]: {
+    baseUrl: 'https://moonriver.moonscan.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',

@@ -131,6 +131,22 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
       }
     }
   ],
+  [BLOCKCHAIN_NAME.MOONRIVER]: [
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Sushiswap',
+        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
+      }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Solarbeam',
+        value: INSTANT_TRADES_PROVIDER.SOLARBEAM
+      }
+    }
+  ],
   [BLOCKCHAIN_NAME.FANTOM]: [
     {
       ...defaultState,

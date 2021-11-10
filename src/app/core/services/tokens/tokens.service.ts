@@ -211,6 +211,7 @@ export class TokensService {
       BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.HARMONY,
       BLOCKCHAIN_NAME.AVALANCHE,
+      BLOCKCHAIN_NAME.MOONRIVER,
       BLOCKCHAIN_NAME.FANTOM
     ];
     const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
