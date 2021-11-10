@@ -78,6 +78,9 @@ export class CcrSwapInfoComponent implements OnInit {
       });
   }
 
+  /**
+   * Subscribes on output form value, and after change gets info from cross chain service to update trade info.
+   */
   private subscribeOnOutputValue(): void {
     this.swapFormService.outputValueChanges
       .pipe(
@@ -95,8 +98,9 @@ export class CcrSwapInfoComponent implements OnInit {
             this.crossChainRoutingService.getTradeInfo()
           ]).pipe(
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
-              this.nativeCoinSymbol = tokens.find(token =>
-                Web3Public.isNativeAddress(token.address)
+              this.nativeCoinSymbol = tokens.find(
+                token =>
+                  token.blockchain === fromBlockchain && Web3Public.isNativeAddress(token.address)
               ).symbol;
 
               this.estimateGasInEth = tradeInfo.estimatedGas;
@@ -126,6 +130,9 @@ export class CcrSwapInfoComponent implements OnInit {
       });
   }
 
+  /**
+   * Sets from and to price impacts and sets maximum as current price impact.
+   */
   private setPriceImpact(tradeInfo: CcrTradeInfo): void {
     this.priceImpactFrom = tradeInfo.priceImpactFrom;
     if (this.priceImpactFrom < -PERMITTED_PRICE_DIFFERENCE * 100) {

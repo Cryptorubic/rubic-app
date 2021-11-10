@@ -59,9 +59,9 @@ export class SwapButtonComponent implements OnInit {
   public get showLoader(): boolean {
     return (
       this.checkingOnErrors ||
-      status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-      status === TRADE_STATUS.LOADING ||
-      (status === TRADE_STATUS.READY_TO_SWAP && this.priceImpact === undefined)
+      this.status === TRADE_STATUS.SWAP_IN_PROGRESS ||
+      this.status === TRADE_STATUS.LOADING ||
+      (this.status === TRADE_STATUS.READY_TO_SWAP && this.priceImpact === undefined)
     );
   }
 

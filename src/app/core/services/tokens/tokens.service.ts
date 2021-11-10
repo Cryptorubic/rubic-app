@@ -524,6 +524,9 @@ export class TokensService {
     return this.store.getItem('favoriteTokens') || [];
   }
 
+  /**
+   * Gets symbol of token, using currently stored tokens or web3 request.
+   */
   public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
     const foundToken = this.tokens.find(
       token => token.blockchain === blockchain && compareAddresses(token.address, tokenAddress)

@@ -46,14 +46,13 @@ import { compareAddresses } from 'src/app/shared/utils/utils';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { SolarBeamMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { CcrTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CcrTradeInfo';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 
 interface PathAndToAmount {
-  path: SymbolToken[];
+  path: string[];
   toAmount: BigNumber;
 }
 
@@ -227,26 +226,20 @@ export class CrossChainRoutingService {
       cryptoFee
     };
 
-    const [, minMaxErrors, needApprove] = await Promise.all([
-      (async () => {
-        const gasData = await this.getGasData(this.currentCrossChainTrade);
-        this.currentCrossChainTrade = {
-          ...this.currentCrossChainTrade,
-          ...gasData
-        };
-      })(),
-      (() => {
-        return this.checkMinMaxErrors(this.currentCrossChainTrade);
-      })(),
-      (() => {
-        return calculateNeedApprove
-          ? this.needApprove(fromBlockchain, fromContractIndex, fromToken)
-          : undefined;
-      })()
+    const [gasData, minMaxErrors, needApprove] = await Promise.all([
+      this.getGasData(this.currentCrossChainTrade),
+      this.checkMinMaxErrors(this.currentCrossChainTrade),
+      calculateNeedApprove
+        ? this.needApprove(fromBlockchain, fromContractIndex, fromToken)
+        : undefined
     ]);
+    this.currentCrossChainTrade = {
+      ...this.currentCrossChainTrade,
+      ...gasData
+    };
 
     return {
-      toAmount: this.currentCrossChainTrade.tokenOutAmount,
+      toAmount,
       ...minMaxErrors,
       needApprove
     };
@@ -305,7 +298,7 @@ export class CrossChainRoutingService {
           contractIndex
         ].calculateTrade(fromToken, fromAmount, toToken, false);
         return {
-          path: instantTrade.path,
+          path: instantTrade.path.map(token => token.address),
           toAmount: instantTrade.to.amount
         };
       } catch (err) {
@@ -316,12 +309,7 @@ export class CrossChainRoutingService {
       }
     }
     return {
-      path: [
-        {
-          address: fromToken.address,
-          symbol: fromToken.symbol
-        }
-      ],
+      path: [fromToken.address],
       toAmount: fromAmount
     };
   }
@@ -583,7 +571,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Calculates gas limit and gas price in source network, if possible.
+   * Calculates gas limit and gas price in source network, if possible to calculate.
    */
   private async getGasData(trade: CrossChainRoutingTrade): Promise<{
     gasLimit: BigNumber;
@@ -843,8 +831,8 @@ export class CrossChainRoutingService {
       [
         toBlockchainInContract,
         tokenInAmountAbsolute,
-        trade.firstPath.map(token => token.address),
-        trade.secondPath.map(token => token.address),
+        trade.firstPath,
+        trade.secondPath,
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         walletAddress,

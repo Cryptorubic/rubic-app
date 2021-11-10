@@ -34,9 +34,9 @@ interface MulticallResponse {
   returnData: string;
 }
 
-const tokenFields = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
+const supportedTokenFields = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
 
-type TokenField = typeof tokenFields[number];
+type TokenField = typeof supportedTokenFields[number];
 
 type TokenFields = {
   [field in TokenField]: string;
@@ -371,8 +371,8 @@ export class Web3Public {
 
   /**
    * Gets token's symbol through ERC-20 token contract.
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @return string token's symbol or a error, if there's no such token
+   * @param tokenAddress Address of the smart-contract corresponding to the token.
+   * @return string Token's symbol or a error, if there's no such token.
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenSymbol: (tokenAddress: string) => Promise<string> =
@@ -394,8 +394,8 @@ export class Web3Public {
 
   /**
    * Gets information about token through ERC-20 token contract.
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @return object, with written token fields, or a error, if there's no such token
+   * @param tokenAddress Address of the smart-contract corresponding to the token.
+   * @return object Object, with written token fields, or a error, if there's no such token
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
@@ -429,22 +429,21 @@ export class Web3Public {
   }
 
   /**
-   * get ERC-20 token info by address
-   * @param tokenAddress address of token
-   * @param tokenMethods token's fields to get
+   * Gets ERC-20 token info by address.
+   * @param tokenAddress Address of token.
+   * @param tokenFields Token's fields to get.
    */
   private async callForTokenInfo(
     tokenAddress: string,
-    tokenMethods: TokenField[] = ['decimals', 'symbol', 'name', 'totalSupply']
+    tokenFields: TokenField[] = ['decimals', 'symbol', 'name', 'totalSupply']
   ): Promise<TokenFields> {
-    const tokenFieldsPromises = tokenMethods.map((method: string) =>
+    const tokenFieldsPromises = tokenFields.map((method: string) =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
     const tokenInfo = {} as TokenFields;
     (await Promise.all(tokenFieldsPromises)).forEach(
-      (elem, index) => (tokenInfo[tokenMethods[index]] = elem)
+      (elem, index) => (tokenInfo[tokenFields[index]] = elem)
     );
-
     return tokenInfo;
   }
 

@@ -78,6 +78,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
 
+  /**
+   * Emits info of currently selected trade.
+   */
   @Output() instantTradeInfoChange = new EventEmitter<InstantTradeInfo>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
@@ -512,7 +515,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Returns the most profitable provider based on usd$ price.
+   * Sorts providers based on usd$ price.
    */
   private sortProviders(): void {
     const calculateProfit = (trade: InstantTrade): BigNumber => {

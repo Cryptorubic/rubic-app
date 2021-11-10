@@ -268,6 +268,9 @@ export class CommonOneinchService {
     return { estimatedGas, toTokenAmount, path };
   }
 
+  /**
+   * Extracts tokens path from oneInch api response.
+   */
   private async extractPath(
     blockchain: BLOCKCHAIN_NAME,
     fromTokenAddress: string,

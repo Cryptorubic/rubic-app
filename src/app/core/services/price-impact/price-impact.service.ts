@@ -6,6 +6,10 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class PriceImpactService {
+  /**
+   * Stores price impact in currently selected trade.
+   * Equals `null` in case price impact cannot be calculated.
+   */
   private _priceImpact$ = new BehaviorSubject<number | null>(undefined);
 
   public priceImpact$ = this._priceImpact$.asObservable();
@@ -14,6 +18,9 @@ export class PriceImpactService {
     return this._priceImpact$.getValue();
   }
 
+  /**
+   * Calculates price impact using usd prices of tokens.
+   */
   public static calculatePriceImpact(
     fromTokenPrice: number,
     toTokenPrice: number,
@@ -36,6 +43,9 @@ export class PriceImpactService {
 
   constructor() {}
 
+  /**
+   * Updates current price impact.
+   */
   public setPriceImpact(priceImpact: number | null): void {
     this._priceImpact$.next(priceImpact);
   }

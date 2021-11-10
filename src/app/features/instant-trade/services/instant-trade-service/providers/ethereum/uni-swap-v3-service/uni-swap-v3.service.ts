@@ -158,7 +158,7 @@ export class UniSwapV3Service implements ItProvider {
       gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     }
 
-    const { route, estimatedGas } = await this.getToAmountAndPath(
+    const { route, estimatedGas } = await this.getRoute(
       fromAmountAbsolute,
       fromTokenWrapped,
       toTokenWrapped,
@@ -253,7 +253,7 @@ export class UniSwapV3Service implements ItProvider {
    * @param shouldCalculateGas Flag whether gas should be estimated or not.
    * @param gasPriceInUsd Gas price in usd.
    */
-  private async getToAmountAndPath(
+  private async getRoute(
     fromAmountAbsolute: string,
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,

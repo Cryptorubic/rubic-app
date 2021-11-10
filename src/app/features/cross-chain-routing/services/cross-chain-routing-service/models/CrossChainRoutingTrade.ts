@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { SupportedCrossChainSwapBlockchain } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 
 export interface CrossChainRoutingTrade {
@@ -10,7 +9,7 @@ export interface CrossChainRoutingTrade {
   tokenIn: TokenAmount;
   tokenInAmount: BigNumber;
   firstTransitTokenAmount: BigNumber;
-  firstPath: SymbolToken[];
+  firstPath: string[];
 
   // to blockchain data
   toBlockchain: SupportedCrossChainSwapBlockchain;
@@ -18,7 +17,7 @@ export interface CrossChainRoutingTrade {
   secondTransitTokenAmount: BigNumber;
   tokenOut: TokenAmount;
   tokenOutAmount: BigNumber;
-  secondPath: SymbolToken[];
+  secondPath: string[];
 
   // fee data
   transitTokenFee: number; // in percents
