@@ -47,9 +47,10 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
-import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { SolarBeamMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
+import { CcrTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CcrTradeInfo';
+import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 
 interface PathAndToAmount {
   path: SymbolToken[];
@@ -625,15 +626,7 @@ export class CrossChainRoutingService {
   /**
    * Gets trade info to show in transaction info panel.
    */
-  public async getTradeInfo(): Promise<{
-    feePercent: number;
-    feeAmount: BigNumber;
-    feeTokenSymbol: string;
-    cryptoFee: number;
-    estimatedGas: BigNumber; // in Eth units
-    priceImpactFrom: number;
-    priceImpactTo: number;
-  }> {
+  public async getTradeInfo(): Promise<CcrTradeInfo> {
     if (!this.currentCrossChainTrade) {
       return null;
     }
@@ -674,7 +667,7 @@ export class CrossChainRoutingService {
           type === 'from'
             ? [token.price, transitTokenPrice, tokenAmount, transitTokenAmount]
             : [transitTokenPrice, token.price, transitTokenAmount, tokenAmount];
-        return PriceImpactCalculator.calculatePriceImpact(...priceImpactArguments);
+        return PriceImpactService.calculatePriceImpact(...priceImpactArguments);
       }
       return 0;
     };

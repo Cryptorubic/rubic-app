@@ -5,16 +5,18 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
-import { PRICE_IMPACT_RANGE } from '@shared/utils/price-impact/models/PRICE_IMPACT_RANGE';
+import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/PRICE_IMPACT_RANGE';
+import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-swap-button',
@@ -28,7 +30,13 @@ export class SwapButtonComponent implements OnInit {
 
   @Input() status: TRADE_STATUS;
 
-  @Input() loading: boolean;
+  @Input() set loading(value: boolean) {
+    if (value) {
+      this.showLoader = true;
+    } else if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
+      this.showLoader = false;
+    }
+  }
 
   /**
    * Text inside button.
@@ -46,6 +54,8 @@ export class SwapButtonComponent implements OnInit {
 
   public TRADE_STATUS = TRADE_STATUS;
 
+  public showLoader: boolean;
+
   /**
    * Price impact of trade in percents.
    */
@@ -54,41 +64,36 @@ export class SwapButtonComponent implements OnInit {
   get disabled() {
     return (
       this.status !== TRADE_STATUS.READY_TO_SWAP ||
-      this.priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED
+      this.priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED ||
+      this.showLoader
     );
   }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapsService: SwapsService,
-    private readonly destroy$: TuiDestroyService
+    private readonly priceImpactService: PriceImpactService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.priceImpact = 0;
   }
 
   ngOnInit(): void {
-    this.formService.outputValueChanges
-      .pipe(startWith(this.formService.outputValue), takeUntil(this.destroy$))
+    combineLatest([this.swapsService.swapMode$, this.priceImpactService.priceImpact$])
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.setPriceImpact();
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
   }
 
   private setPriceImpact() {
-    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-      const { fromToken, toToken, fromAmount } = this.formService.inputValue;
-      const { toAmount } = this.formService.outputValue;
-      this.priceImpact = PriceImpactCalculator.calculatePriceImpact(
-        fromToken?.price,
-        toToken?.price,
-        fromAmount,
-        toAmount
-      );
+    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
+      this.priceImpact = 0;
       return;
     }
-
-    this.priceImpact = 0;
+    this.priceImpact = this.priceImpactService.priceImpact;
+    this.showLoader = false;
   }
 
   public onSwapClick(): void {

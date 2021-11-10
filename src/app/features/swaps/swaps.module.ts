@@ -32,7 +32,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { VerticalIframeTokenAmountInputComponent } from 'src/app/features/swaps/components/amount-input/components/vertical-iframe-token-amount-input/vertical-iframe-token-amount-input.component';
 import { CcrSwapInfoComponent } from '@features/swaps/components/swap-info/components/cross-chain-swap-info/components/ccr-swap-info/ccr-swap-info.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { CrossChainSwapInfoContainerComponent } from 'src/app/features/swaps/components/swap-info/components/cross-chain-swap-info/cross-chain-swap-info-container/cross-chain-swap-info-container.component';
+import { CrossChainSwapInfoComponent } from '@features/swaps/components/swap-info/components/cross-chain-swap-info/cross-chain-swap-info.component';
 import { PriceImpactInfoLineComponent } from 'src/app/features/swaps/components/swap-info/components/price-impact-info-line/price-impact-info-line.component';
 import { SwapsFormComponent } from './components/swaps-form/swaps-form.component';
 import { SettingsBridgeComponent } from './components/swaps-settings/settings-bridge/settings-bridge.component';
@@ -59,7 +59,7 @@ import { BridgeSwapInfoComponent } from './components/swap-info/components/cross
     SwapInfoContainerComponent,
     InstantTradeSwapInfoComponent,
     BridgeSwapInfoComponent,
-    CrossChainSwapInfoContainerComponent,
+    CrossChainSwapInfoComponent,
     PriceImpactInfoLineComponent
   ],
   exports: [],

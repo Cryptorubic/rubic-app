@@ -15,9 +15,9 @@ import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { PriceImpactCalculator } from '@shared/utils/price-impact/price-impact-calculator';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 
 @Component({
   selector: 'app-instant-trade-swap-info',
@@ -84,6 +84,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
+    private readonly priceImpactService: PriceImpactService,
     private readonly bigNumberFormatPipe: BigNumberFormatPipe,
     private readonly withRoundPipe: WithRoundPipe,
     @Self() private readonly destroy$: TuiDestroyService
@@ -107,7 +108,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       this.setSlippageAndMinimumReceived();
 
       const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-      this.priceImpact = PriceImpactCalculator.calculatePriceImpact(
+      this.priceImpact = PriceImpactService.calculatePriceImpact(
         fromToken?.price,
         toToken?.price,
         fromAmount,
@@ -116,6 +117,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
         this.priceImpact = null;
       }
+      this.priceImpactService.setPriceImpact(this.priceImpact);
 
       this.swapInfoService.emitInfoCalculated();
 

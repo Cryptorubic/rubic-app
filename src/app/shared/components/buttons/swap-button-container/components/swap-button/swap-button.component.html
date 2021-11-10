@@ -6,13 +6,15 @@
       priceImpact === null,
     'button-swap_warning-red': priceImpact >= PRICE_IMPACT_RANGE.HIGH
   }"
-  [loading]="status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || loading"
+  [loading]="
+    status === TRADE_STATUS.SWAP_IN_PROGRESS || status === TRADE_STATUS.LOADING || showLoader
+  "
   [disabled]="disabled"
   (onClick)="onSwapClick()"
   appearance="secondary"
 >
   {{
-    priceImpact < PRICE_IMPACT_RANGE.MEDIUM
+    !priceImpact || priceImpact < PRICE_IMPACT_RANGE.MEDIUM
       ? buttonText
       : priceImpact < PRICE_IMPACT_RANGE.HIGH_DISABLED
       ? 'Swap Anyway'
