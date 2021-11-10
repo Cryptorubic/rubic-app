@@ -163,6 +163,13 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         this.slippageTolerance = settings.slippageTolerance;
       });
 
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.conditionalCalculate();
+      });
+
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
   }
 
