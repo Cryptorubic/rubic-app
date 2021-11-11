@@ -17,16 +17,14 @@ const wethAddressNetMode: ContractAddressNetMode = {
 
 const routingProvidersNetMode: RoutingProvidersNetMode = {
   mainnet: [
-    '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', // wFTM
-    '0x841fad6eae12c286d1fd18d1d525dffa75c7effe', // BOO
-    '0x04068da6c83afcfa0e13ba15a6696662335d5b75', // USDC
-    '0x74b23882a30290451a17c44f4f05243b6b58c76d', // wETH
-    '0x321162Cd933E2Be498Cd2267a90534A804051b11', // wBTC
-    '0x049d68029688eAbF473097a2fC38ef61633A3C7A' // fUSDT
+    { address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', symbol: 'wFTM' },
+    { address: '0x841fad6eae12c286d1fd18d1d525dffa75c7effe', symbol: 'BOO' },
+    { address: '0x04068da6c83afcfa0e13ba15a6696662335d5b75', symbol: 'USDC' },
+    { address: '0x74b23882a30290451a17c44f4f05243b6b58c76d', symbol: 'wETH' },
+    { address: '0x321162Cd933E2Be498Cd2267a90534A804051b11', symbol: 'wBTC' },
+    { address: '0x049d68029688eAbF473097a2fC38ef61633A3C7A', symbol: 'fUSDT' }
   ],
-  testnet: [
-    '0x1957d5e8496628d755a4b2151bca03ecc379bdd6' // wFTM
-  ]
+  testnet: [{ address: '0x1957d5e8496628d755a4b2151bca03ecc379bdd6', symbol: 'wFTM' }]
 };
 
 export const spookySwapFantomConstants: UniswapV2Constants = {
