@@ -35,16 +35,27 @@ import {
   UniswapV2CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2CalculatedInfo';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UniswapV2InstantTrade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2InstantTrade';
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { UniswapV2Constants } from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
 import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
-import { subtractPercent } from 'src/app/shared/utils/utils';
+import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
+
+interface RecGraphVisitorOptions {
+  toToken: InstantTradeToken;
+  amountAbsolute: string;
+  vertexes: SymbolToken[];
+  path: SymbolToken[];
+  mxTransitTokens: number;
+  routesPaths: SymbolToken[][];
+  routesMethodArguments: [string, string[]][];
+}
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
@@ -69,7 +80,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   protected contractAddress: string;
 
-  private routingProviders: string[];
+  private routingProviders: SymbolToken[];
 
   private maxTransitTokens: number;
 
@@ -277,14 +288,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean
-  ): Promise<UniswapV2InstantTrade> {
-    let fromTokenAddress = fromToken.address;
+  ): Promise<InstantTrade> {
+    const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
 
     let estimatedGasPredictionMethod = this.calculateTokensToTokensGasLimit;
 
-    if (Web3Public.isNativeAddress(fromTokenAddress)) {
-      fromTokenAddress = this.wethAddress;
+    if (Web3Public.isNativeAddress(fromTokenClone.address)) {
+      fromTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateEthToTokensGasLimit;
     }
     if (Web3Public.isNativeAddress(toTokenClone.address)) {
@@ -303,7 +314,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }
 
     const { route, estimatedGas } = await this.getToAmountAndPath(
-      fromTokenAddress,
+      fromTokenClone,
       fromAmountAbsolute,
       toTokenClone,
       shouldCalculateGas,
@@ -311,7 +322,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       gasPriceInUsd
     );
 
-    const instantTrade: UniswapV2InstantTrade = {
+    const instantTrade: InstantTrade = {
       blockchain: this.blockchain,
       from: {
         token: fromToken,
@@ -342,7 +353,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   private async getToAmountAndPath(
-    fromTokenAddress: string,
+    fromToken: InstantTradeToken,
     fromAmountAbsolute: string,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
@@ -350,12 +361,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     gasPriceInUsd?: BigNumber
   ): Promise<UniswapV2CalculatedInfo> {
     const routes = (
-      await this.getAllRoutes(
-        fromTokenAddress,
-        toToken.address,
-        fromAmountAbsolute,
-        'getAmountsOut'
-      )
+      await this.getAllRoutes(fromToken, toToken, fromAmountAbsolute, 'getAmountsOut')
     ).sort((a, b) => (b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1));
     if (routes.length === 0) {
       throw new InsufficientLiquidityError();
@@ -375,7 +381,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         gasCalculationMethodName(
           fromAmountAbsolute,
           subtractPercent(route.outputAbsoluteAmount, slippageTolerance).toFixed(0),
-          route.path,
+          route.path.map(token => token.address),
           deadline
         )
       );
@@ -416,7 +422,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const estimateGasParams = gasCalculationMethodName(
       fromAmountAbsolute,
       subtractPercent(route.outputAbsoluteAmount, slippageTolerance).toFixed(0),
-      route.path,
+      route.path.map(token => token.address),
       deadline
     );
     const estimatedGas = await this.web3Public
@@ -436,39 +442,36 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   private async getAllRoutes(
-    fromTokenAddress: string,
-    toTokenAddress: string,
+    fromToken: InstantTradeToken,
+    toToken: InstantTradeToken,
     amountAbsolute: string,
     uniswapMethodName: 'getAmountsOut' | 'getAmountsIn'
   ): Promise<UniswapV2Route[]> {
-    const vertexes: string[] = this.routingProviders
-      .map(elem => elem.toLowerCase())
-      .filter(
-        elem => elem !== toTokenAddress.toLowerCase() && elem !== fromTokenAddress.toLowerCase()
-      );
-    const initialPath = [fromTokenAddress];
-    const routesPaths: string[][] = [];
-    const routesMethodArguments: [string, string[]][] = [];
-
-    const recGraphVisitor = (path: string[], mxTransitTokens: number): void => {
-      if (path.length === mxTransitTokens + 1) {
-        const finalPath = path.concat(toTokenAddress);
-        routesPaths.push(finalPath);
-        routesMethodArguments.push([amountAbsolute, finalPath]);
-        return;
+    const vertexes: SymbolToken[] = this.routingProviders.filter(
+      elem =>
+        !compareAddresses(elem.address, toToken.address) &&
+        !compareAddresses(elem.address, fromToken.address)
+    );
+    const initialPath: SymbolToken[] = [
+      {
+        address: fromToken.address,
+        symbol: fromToken.symbol
       }
-
-      vertexes
-        .filter(vertex => !path.includes(vertex))
-        .forEach(vertex => {
-          const extendedPath = path.concat(vertex);
-          recGraphVisitor(extendedPath, mxTransitTokens);
-        });
-    };
+    ];
+    const routesPaths: SymbolToken[][] = [];
+    const routesMethodArguments: [string, string[]][] = [];
 
     const maxTransitTokens = this.settings.disableMultihops ? 0 : this.maxTransitTokens;
     for (let i = 0; i <= maxTransitTokens; i++) {
-      recGraphVisitor(initialPath, i);
+      this.recGraphVisitor({
+        toToken,
+        amountAbsolute,
+        vertexes,
+        path: initialPath,
+        mxTransitTokens: i,
+        routesPaths,
+        routesMethodArguments
+      });
     }
 
     const routes: UniswapV2Route[] = [];
@@ -496,15 +499,48 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return routes;
   }
 
+  private recGraphVisitor(options: RecGraphVisitorOptions): void {
+    const {
+      toToken,
+      amountAbsolute,
+      vertexes,
+      path,
+      mxTransitTokens,
+      routesPaths,
+      routesMethodArguments
+    } = options;
+
+    if (path.length === mxTransitTokens + 1) {
+      const finalPath = path.concat({
+        address: toToken.address,
+        symbol: toToken.symbol
+      });
+      routesPaths.push(finalPath);
+      routesMethodArguments.push([amountAbsolute, finalPath.map(token => token.address)]);
+      return;
+    }
+
+    vertexes
+      .filter(vertex => !path.includes(vertex))
+      .forEach(vertex => {
+        const extendedPath = path.concat(vertex);
+        this.recGraphVisitor({
+          ...options,
+          path: extendedPath
+        });
+      });
+  }
+
   public async getFromAmount(
-    fromTokenAddress: string,
+    fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
     toAmount: BigNumber
   ): Promise<BigNumber> {
+    const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
 
-    if (Web3Public.isNativeAddress(fromTokenAddress)) {
-      fromTokenAddress = this.wethAddress;
+    if (Web3Public.isNativeAddress(fromTokenClone.address)) {
+      fromTokenClone.address = this.wethAddress;
     }
     if (Web3Public.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.wethAddress;
@@ -512,13 +548,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     const toAmountAbsolute = Web3Public.toWei(toAmount, toToken.decimals);
     const routes = (
-      await this.getAllRoutes(fromTokenAddress, toToken.address, toAmountAbsolute, 'getAmountsIn')
+      await this.getAllRoutes(fromTokenClone, toTokenClone, toAmountAbsolute, 'getAmountsIn')
     ).sort((a, b) => a.outputAbsoluteAmount.comparedTo(b.outputAbsoluteAmount));
     return routes[0]?.outputAbsoluteAmount;
   }
 
   public async createTrade(
-    trade: UniswapV2InstantTrade,
+    trade: InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(trade.blockchain);
@@ -530,7 +566,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         subtractPercent(trade.to.amount, this.settings.slippageTolerance),
         trade.to.token.decimals
       ),
-      path: trade.path,
+      path: trade.path.map(token => token.address),
       to: this.walletAddress,
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
     };
