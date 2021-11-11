@@ -32,14 +32,14 @@ export class SafetyLinkDirective implements OnInit {
   }
 
   @HostListener('click', ['$event'])
-  private linkClick(event: MouseEvent) {
+  private linkClick(event: MouseEvent): void {
     if (!this.isLinkExternal()) {
       event.preventDefault();
       this.router.navigate([this.link]);
     }
   }
 
-  private isLinkExternal() {
+  private isLinkExternal(): boolean {
     return this.link.includes(location.protocol);
   }
 }

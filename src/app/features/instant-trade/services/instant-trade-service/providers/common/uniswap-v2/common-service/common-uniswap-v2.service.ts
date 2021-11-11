@@ -112,7 +112,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       });
   }
 
-  private setUniswapConstants(uniswapConstants: UniswapV2Constants) {
+  private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
     this.blockchain = uniswapConstants.blockchain;
     this.web3Public = this.web3PublicService[this.blockchain];
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;

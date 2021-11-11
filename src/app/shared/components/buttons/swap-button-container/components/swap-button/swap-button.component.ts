@@ -51,7 +51,7 @@ export class SwapButtonComponent implements OnInit {
    */
   public priceImpact: number;
 
-  get disabled() {
+  get disabled(): boolean {
     return this.status !== TRADE_STATUS.READY_TO_SWAP;
   }
 
@@ -72,7 +72,7 @@ export class SwapButtonComponent implements OnInit {
       });
   }
 
-  private setPriceImpact() {
+  private setPriceImpact(): void {
     if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
       this.priceImpact = 0;
       return;

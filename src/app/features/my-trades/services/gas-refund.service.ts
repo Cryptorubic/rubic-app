@@ -71,7 +71,7 @@ export class GasRefundService {
   /**
    * Subscribes to user changes and updates promotions when it emits.
    */
-  private setUpdatePromotionsSubscription() {
+  private setUpdatePromotionsSubscription(): void {
     this.authService
       .getCurrentUser()
       .pipe(filter(user => !!user?.address))

@@ -57,7 +57,7 @@ export class SwapsService {
     this.subscribeOnForm();
   }
 
-  private subscribeOnTokens() {
+  private subscribeOnTokens(): void {
     combineLatest([
       this.bridgeService.tokens$.pipe(filter(tokens => !!tokens.length)),
       this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size))
@@ -136,7 +136,7 @@ export class SwapsService {
     });
   }
 
-  private subscribeOnForm() {
+  private subscribeOnForm(): void {
     this.swapFormService.inputValueChanges
       .pipe(startWith(null, this.swapFormService.inputValue), pairwise())
       .subscribe(([prevForm, curForm]) => {
@@ -201,7 +201,7 @@ export class SwapsService {
    * Sets interval to update prices.
    * @param form Input form, which contains selected tokens.
    */
-  private updateTokensPrices(form: SwapFormInput) {
+  private updateTokensPrices(form: SwapFormInput): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -222,7 +222,7 @@ export class SwapsService {
   /**
    * Calls functions to update balance, if needed.
    */
-  private updateTokenBalance(fromToken: TokenAmount) {
+  private updateTokenBalance(fromToken: TokenAmount): void {
     if (!fromToken.amount?.isFinite()) {
       this.tokensService.getAndUpdateTokenBalance(fromToken);
     }

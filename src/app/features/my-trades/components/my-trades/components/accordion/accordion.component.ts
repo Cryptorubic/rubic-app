@@ -117,7 +117,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
     this.onReceivePolygonBridgeTrade.emit(trade);
   }
 
-  public goToPage(page: number) {
+  public goToPage(page: number): void {
     this.page = page;
     const start = this.page * this.PAGE_SIZE;
     this.visibleData = this.sortedTableData.slice(start, start + this.PAGE_SIZE);

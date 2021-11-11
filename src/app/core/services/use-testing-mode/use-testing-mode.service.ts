@@ -69,27 +69,27 @@ export class UseTestingModeService {
     }
   }
 
-  private setAliases() {
+  private setAliases(): void {
     Object.defineProperty(this.window, 'tu', {
-      get() {
+      get(): void {
         this.window.testingMode.use();
       }
     });
 
     Object.defineProperty(this.window, 'ts', {
-      get() {
+      get(): void {
         this.window.testingMode.set();
       }
     });
 
     Object.defineProperty(this.window, 'tc', {
-      get() {
+      get(): void {
         this.window.testingMode.clear();
       }
     });
   }
 
-  private useTestingMode() {
+  private useTestingMode(): void {
     if (!this.isTestingMode.getValue()) {
       this.isTestingMode.next(true);
     }

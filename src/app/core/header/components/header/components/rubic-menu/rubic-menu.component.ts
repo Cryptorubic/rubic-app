@@ -102,11 +102,11 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this._onAddressChanges$.unsubscribe();
   }
 
-  public getDropdownStatus(opened: boolean) {
+  public getDropdownStatus(opened: boolean): void {
     this.isOpened = opened;
   }
 
-  public closeMenu() {
+  public closeMenu(): void {
     this.isOpened = false;
   }
 
@@ -125,7 +125,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.authService.signOut().subscribe();
   }
 
-  isLinkActive(url: string) {
+  isLinkActive(url: string): boolean {
     return this.window.location.pathname === url;
   }
 }

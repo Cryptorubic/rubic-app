@@ -87,7 +87,7 @@ export class SettingsComponent implements OnInit {
   /**
    * Close dropdown with settings.
    */
-  public closeSettings() {
+  public closeSettings(): void {
     this.isSettingsOpened = false;
   }
 }

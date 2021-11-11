@@ -297,7 +297,7 @@ export class SwapsFormComponent implements OnInit {
     }
   }
 
-  public async revert() {
+  public async revert(): Promise<void> {
     const formControls = this.swapFormService.commonTrade.controls;
     const { fromBlockchain, toBlockchain, fromToken, toToken } = formControls.input.value;
     const { toAmount } = formControls.output.value;

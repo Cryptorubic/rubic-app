@@ -445,7 +445,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )?.tokenByBlockchain[fromBlockchain][amountType];
   }
 
-  public handleClick(clickType: 'swap' | 'approve') {
+  public handleClick(clickType: 'swap' | 'approve'): void {
     const isPolygonEthBridge =
       this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
       this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
@@ -470,7 +470,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyTradeInProgress() {
+  private notifyTradeInProgress(): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('bridgePage.progressMessage'),
       {

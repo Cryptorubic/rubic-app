@@ -380,7 +380,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  public setHiddenData() {
+  public setHiddenData(): void {
     const data = this.hiddenTradeData$.getValue();
     this.toAmount = data.toAmount;
 
@@ -495,7 +495,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  private notifyTradeInProgress() {
+  private notifyTradeInProgress(): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {

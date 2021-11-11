@@ -304,7 +304,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
+  private initiateProviders(blockchain: BLOCKCHAIN_NAME): void {
     this.providersOrderCache = null;
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
       this.errorService.catch(new NotSupportedItNetwork());
@@ -543,7 +543,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   /**
    * Updates controllers data related to toToken's price.
    */
-  private updateControllers() {
+  private updateControllers(): void {
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
       isSelected: false,
@@ -563,7 +563,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   /**
    * Selects best provider controller and updates trade status.
    */
-  private chooseBestController() {
+  private chooseBestController(): void {
     const bestProviderIndex = InstantTradeBottomFormComponent.calculateBestRate(
       this.providerControllers.map(el => el.trade)
     );
@@ -639,7 +639,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.setSlippageTolerance(this.selectedProvider);
   }
 
-  private setSlippageTolerance(provider: ProviderControllerData) {
+  private setSlippageTolerance(provider: ProviderControllerData): void {
     const providerName = provider.tradeProviderInfo.value;
     if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
       const currentBlockchainDefaultSlippage =

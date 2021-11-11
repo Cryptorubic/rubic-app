@@ -218,7 +218,7 @@ export class WalletsModalComponent implements OnInit {
     this.context.completeWith();
   }
 
-  private openIframeWarning() {
+  private openIframeWarning(): void {
     this.dialogService
       .open<boolean>(new PolymorpheusComponent(IframeWalletsWarningComponent, this.injector), {
         size: 'fullscreen'

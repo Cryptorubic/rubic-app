@@ -91,7 +91,7 @@ export class TokenAmountInputComponent implements OnInit {
       });
   }
 
-  private checkMaxAmountInCrossChainRouting() {
+  private checkMaxAmountInCrossChainRouting(): void {
     const maxAmount = this.getMaxAmountInCrossChainRouting();
     if (
       maxAmount &&

@@ -276,7 +276,7 @@ export class QueryParamsService {
     });
   }
 
-  private setIframeInfo(queryParams: QueryParams) {
+  private setIframeInfo(queryParams: QueryParams): void {
     if (!queryParams.hasOwnProperty('iframe')) {
       return;
     }
@@ -285,7 +285,7 @@ export class QueryParamsService {
     this.iframeService.setIframeDevice(queryParams.device);
   }
 
-  private setBackgroundStatus(queryParams: QueryParams) {
+  private setBackgroundStatus(queryParams: QueryParams): void {
     if (this.iframeService.isIframe) {
       const { background } = queryParams;
       if (this.isBackgroundValid(background)) {
@@ -296,7 +296,7 @@ export class QueryParamsService {
     }
   }
 
-  private setHideSelectionStatus(queryParams: QueryParams) {
+  private setHideSelectionStatus(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
@@ -311,14 +311,14 @@ export class QueryParamsService {
     }
   }
 
-  private setThemeStatus(queryParams: QueryParams) {
+  private setThemeStatus(queryParams: QueryParams): void {
     const { theme } = queryParams;
     if (theme && (theme === 'dark' || theme === 'light')) {
       this.themeService.setTheme(theme);
     }
   }
 
-  private setAdditionalIframeTokens(queryParams: QueryParams) {
+  private setAdditionalIframeTokens(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
@@ -341,7 +341,7 @@ export class QueryParamsService {
     }
   }
 
-  private setLanguage(queryParams: QueryParams) {
+  private setLanguage(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
@@ -353,7 +353,7 @@ export class QueryParamsService {
     this.translateService.use(language);
   }
 
-  private isBackgroundValid(stringToTest: string) {
+  private isBackgroundValid(stringToTest: string): boolean {
     if (stringToTest === '') {
       return false;
     }
