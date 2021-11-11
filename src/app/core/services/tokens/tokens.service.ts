@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { finalize, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
@@ -540,35 +540,40 @@ export class TokensService {
   /**
    * Adds token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
+   * @param callback Callback after HTTP request.
    */
-  public addFavoriteToken(favoriteToken: TokenAmount): void {
-    this.tokensApiService.addFavoriteToken(favoriteToken).subscribe(
-      () => {
-        this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
-      },
-      () => {
-        this.errorsService.catch(new WalletError());
-      }
-    );
+  public addFavoriteToken(favoriteToken: TokenAmount, callback: () => void): void {
+    if (this.authService.userAddress) {
+      this.tokensApiService
+        .addFavoriteToken(favoriteToken)
+        .pipe(finalize(() => callback()))
+        .subscribe(() => {
+          this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+        });
+    } else {
+      this.errorsService.catch(new WalletError());
+    }
   }
 
   /**
    * Removes token from list of favorite tokens.
    * @param token Favorite token to remove.
+   * @param callback Callback after HTTP request.
    */
-  public removeFavoriteToken(token: TokenAmount): void {
-    const filteredTokens = this._favoriteTokens$.value.filter(
-      el => !TokensService.areTokensEqual(el, token)
-    );
-
-    this.tokensApiService.deleteFavoriteToken(token).subscribe(
-      () => {
-        this._favoriteTokens$.next(filteredTokens);
-      },
-      () => {
-        this.errorsService.catch(new WalletError());
-      }
-    );
+  public removeFavoriteToken(token: TokenAmount, callback: () => void): void {
+    if (this.authService.userAddress) {
+      const filteredTokens = this._favoriteTokens$.value.filter(
+        el => !TokensService.areTokensEqual(el, token)
+      );
+      this.tokensApiService
+        .deleteFavoriteToken(token)
+        .pipe(finalize(() => callback()))
+        .subscribe(() => {
+          this._favoriteTokens$.next(filteredTokens);
+        });
+    } else {
+      this.errorsService.catch(new WalletError());
+    }
   }
 
   /**

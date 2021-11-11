@@ -13,6 +13,8 @@ import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOK
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
+  public loadingFavoriteToken: boolean;
+
   /**
    * Token element.
    */
@@ -26,6 +28,7 @@ export class TokensListElementComponent {
   public readonly isHorizontalFrame$: Observable<boolean>;
 
   constructor(iframeService: IframeService, private readonly tokensService: TokensService) {
+    this.loadingFavoriteToken = false;
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
       map(appearance => appearance === 'horizontal')
     );
@@ -39,10 +42,15 @@ export class TokensListElementComponent {
    * Makes token favorite or not favorite in the list.
    */
   public toggleFavorite(): void {
+    if (this.loadingFavoriteToken) {
+      return;
+    }
+    this.loadingFavoriteToken = true;
+    const callback = () => (this.loadingFavoriteToken = false);
     if (!this.token.favorite) {
-      this.tokensService.addFavoriteToken(this.token);
+      this.tokensService.addFavoriteToken(this.token, callback);
     } else {
-      this.tokensService.removeFavoriteToken(this.token);
+      this.tokensService.removeFavoriteToken(this.token, callback);
     }
   }
 }

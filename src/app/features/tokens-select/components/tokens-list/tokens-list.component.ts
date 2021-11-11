@@ -130,6 +130,16 @@ export class TokensListComponent implements AfterViewInit {
   }
 
   /**
+   * Function to track list element by unique key: token blockchain and address.
+   * @param _index Index of list element.
+   * @param tokenListElement List element.
+   * @return string Unique key for element.
+   */
+  public trackByFn(_index: number, tokenListElement: AvailableTokenAmount): string {
+    return `${tokenListElement.blockchain}_${tokenListElement.address}`;
+  }
+
+  /**
    * Observes list scroll and fetches new tokens if needed.
    */
   private observeScroll(): void {
