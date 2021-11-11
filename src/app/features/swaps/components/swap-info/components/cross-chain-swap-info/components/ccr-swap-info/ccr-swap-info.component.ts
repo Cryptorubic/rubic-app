@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } from '@angular/core';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
@@ -108,11 +108,10 @@ export class CcrSwapInfoComponent implements OnInit {
             })
           );
         }),
+        watch(this.cdr),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.cdr.markForCheck();
-      });
+      .subscribe();
   }
 
   /**

@@ -9,7 +9,7 @@ import {
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
 import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
@@ -56,9 +56,9 @@ export class SwapInfoContainerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.cdr.markForCheck();
-    });
+    this.swapFormService.outputValueChanges
+      .pipe(watch(this.cdr), takeUntil(this.destroy$))
+      .subscribe();
 
     this.swapInfoService.onInfoCalculated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.loading = false;
