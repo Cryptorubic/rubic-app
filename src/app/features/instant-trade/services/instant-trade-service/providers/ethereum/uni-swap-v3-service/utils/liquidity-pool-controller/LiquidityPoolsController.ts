@@ -18,6 +18,7 @@ import { PCacheable } from 'ts-cacheable';
 import { uniSwapV3ContractData } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -30,7 +31,7 @@ interface RecGraphVisitorOptions {
  * Works with requests, related to Uniswap v3 liquidity pools.
  */
 export class LiquidityPoolsController {
-  private readonly routerTokens: Record<string, string>;
+  private readonly routerTokens: Record<string, SymbolToken>;
 
   private readonly routerLiquidityPools: LiquidityPool[];
 
@@ -49,11 +50,11 @@ export class LiquidityPoolsController {
     let lastTokenAddress = initialTokenAddress;
     pools.forEach(pool => {
       contractPath += pool.fee.toString(16).padStart(6, '0');
-      const newTokenAddress = compareAddresses(pool.token0, lastTokenAddress)
+      const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
         ? pool.token1
         : pool.token0;
-      contractPath += newTokenAddress.slice(2).toLowerCase();
-      lastTokenAddress = newTokenAddress;
+      contractPath += newToken.address.slice(2).toLowerCase();
+      lastTokenAddress = newToken.address;
     });
     return `0x${contractPath}`;
   }
@@ -117,27 +118,42 @@ export class LiquidityPoolsController {
    * Returns all liquidity pools, containing passed tokens addresses, and concatenates with most popular pools.
    * @param firstTokenAddress First token address.
    * @param secondTokenAddress Second token address.
+   * @param firstTokenSymbol First token symbol.
+   * @param secondTokenSymbol Second token symbol.
+   * @return Promise<LiquidityPool[]> All liquidity pools between route and given tokens.
    */
   @PCacheable({
-    maxAge: 1000 * 60 * 10
+    maxAge: 1000 * 60 * 10,
+    maxCacheCount: 10
   })
   private async getAllLiquidityPools(
     firstTokenAddress: string,
-    secondTokenAddress: string
+    secondTokenAddress: string,
+    firstTokenSymbol: string,
+    secondTokenSymbol: string
   ): Promise<LiquidityPool[]> {
-    let getPoolMethodArguments: { tokenA: string; tokenB: string; fee: FeeAmount }[] = [];
+    const firstToken: SymbolToken = {
+      address: firstTokenAddress,
+      symbol: firstTokenSymbol
+    };
+    const secondToken: SymbolToken = {
+      address: secondTokenAddress,
+      symbol: secondTokenSymbol
+    };
+
+    let getPoolMethodArguments: { tokenA: SymbolToken; tokenB: SymbolToken; fee: FeeAmount }[] = [];
     getPoolMethodArguments.push(
       ...Object.values(this.routerTokens)
         .filter(
-          routerTokenAddress =>
-            !compareAddresses(firstTokenAddress, routerTokenAddress) &&
-            !compareAddresses(secondTokenAddress, routerTokenAddress)
+          routerToken =>
+            !compareAddresses(firstTokenAddress, routerToken.address) &&
+            !compareAddresses(secondTokenAddress, routerToken.address)
         )
-        .map(routerTokenAddress =>
+        .map(routerToken =>
           this.feeAmounts
             .map(fee => [
-              { tokenA: firstTokenAddress, tokenB: routerTokenAddress, fee },
-              { tokenA: secondTokenAddress, tokenB: routerTokenAddress, fee }
+              { tokenA: firstToken, tokenB: routerToken, fee },
+              { tokenA: secondToken, tokenB: routerToken, fee }
             ])
             .flat()
         )
@@ -145,8 +161,8 @@ export class LiquidityPoolsController {
     );
     getPoolMethodArguments.push(
       ...this.feeAmounts.map(fee => ({
-        tokenA: firstTokenAddress,
-        tokenB: secondTokenAddress,
+        tokenA: firstToken,
+        tokenB: secondToken,
         fee
       }))
     );
@@ -154,7 +170,7 @@ export class LiquidityPoolsController {
       methodArguments =>
         !this.routerLiquidityPools.find(
           pool =>
-            pool.isPoolWithTokens(methodArguments.tokenA, methodArguments.tokenB) &&
+            pool.isPoolWithTokens(methodArguments.tokenA.address, methodArguments.tokenB.address) &&
             pool.fee === methodArguments.fee
         )
     );
@@ -165,7 +181,11 @@ export class LiquidityPoolsController {
         factoryContractAbi,
         getPoolMethodArguments.map(methodArguments => ({
           methodName: 'getPool',
-          methodArguments: [methodArguments.tokenA, methodArguments.tokenB, methodArguments.fee]
+          methodArguments: [
+            methodArguments.tokenA.address,
+            methodArguments.tokenB.address,
+            methodArguments.fee
+          ]
         }))
       )
     ).map(result => result.output[0]);
@@ -189,25 +209,30 @@ export class LiquidityPoolsController {
   /**
    * Returns all routes between given tokens with output amount.
    * @param fromAmountAbsolute From token amount in Wei.
-   * @param fromTokenAddress From token address.
-   * @param toTokenAddress To token address.
+   * @param fromToken From token.
+   * @param toToken To token.
    * @param routeMaxTransitPools Max amount of transit pools.
    */
   public async getAllRoutes(
     fromAmountAbsolute: string,
-    fromTokenAddress: string,
-    toTokenAddress: string,
+    fromToken: SymbolToken,
+    toToken: SymbolToken,
     routeMaxTransitPools: number
   ): Promise<UniswapV3Route[]> {
-    const routesLiquidityPools = await this.getAllLiquidityPools(fromTokenAddress, toTokenAddress);
+    const routesLiquidityPools = await this.getAllLiquidityPools(
+      fromToken.address,
+      toToken.address,
+      fromToken.symbol,
+      toToken.symbol
+    );
     const options: RecGraphVisitorOptions = {
       routesLiquidityPools,
-      fromTokenAddress,
+      fromTokenAddress: fromToken.address,
       fromAmountAbsolute,
-      toTokenAddress
+      toTokenAddress: toToken.address
     };
     const quoterMethodsData = [...Array(routeMaxTransitPools + 1)]
-      .map((_, index) => this.getQuoterMethodsData(options, [], fromTokenAddress, index))
+      .map((_, index) => this.getQuoterMethodsData(options, [], fromToken.address, index))
       .flat();
 
     return this.web3Public
@@ -223,7 +248,7 @@ export class LiquidityPoolsController {
               return {
                 outputAbsoluteAmount: new BigNumber(result.output[0]),
                 poolsPath: quoterMethodsData[index].poolsPath,
-                initialTokenAddress: fromTokenAddress
+                initialTokenAddress: fromToken.address
               };
             }
             return null;
@@ -266,16 +291,26 @@ export class LiquidityPoolsController {
       .filter(pool => !path.includes(pool))
       .map(pool => {
         const methodsData: { poolsPath: LiquidityPool[]; methodData: MethodData }[] = [];
-        if (compareAddresses(pool.token0, lastTokenAddress)) {
+        if (compareAddresses(pool.token0.address, lastTokenAddress)) {
           const extendedPath = path.concat(pool);
           methodsData.push(
-            ...this.getQuoterMethodsData(options, extendedPath, pool.token1, maxTransitPools)
+            ...this.getQuoterMethodsData(
+              options,
+              extendedPath,
+              pool.token1.address,
+              maxTransitPools
+            )
           );
         }
-        if (compareAddresses(pool.token1, lastTokenAddress)) {
+        if (compareAddresses(pool.token1.address, lastTokenAddress)) {
           const extendedPath = path.concat(pool);
           methodsData.push(
-            ...this.getQuoterMethodsData(options, extendedPath, pool.token0, maxTransitPools)
+            ...this.getQuoterMethodsData(
+              options,
+              extendedPath,
+              pool.token0.address,
+              maxTransitPools
+            )
           );
         }
         return methodsData;

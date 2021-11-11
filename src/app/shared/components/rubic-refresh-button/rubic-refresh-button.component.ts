@@ -149,13 +149,14 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
       this._autoUpdate = !this._autoUpdate;
       this.updateImageOnEnter();
 
-      const form =
-        this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-          ? this.settingsService.instantTrade
-          : this.settingsService.crossChainRouting;
-      form.patchValue({
+      const formNewValue = {
         autoRefresh: this._autoUpdate
-      });
+      };
+      if (this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+        this.settingsService.instantTrade.patchValue(formNewValue);
+      } else {
+        this.settingsService.crossChainRouting.patchValue(formNewValue);
+      }
     }
     this.onRefresh.emit();
   }

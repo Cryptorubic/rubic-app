@@ -1,19 +1,7 @@
 @import 'src/styles';
 
-:host-context(html.dark) {
-  .price-impact {
-    &_low {
-      color: #d8ba22fa;
-    }
-
-    &_high {
-      color: #f54e4f;
-    }
-  }
-}
-
 .button-swap {
-  &_warning-low {
+  &_warning-medium {
     ::ng-deep {
       [tuiButton] {
         &._pressed {
@@ -37,6 +25,15 @@
         &._pressed {
           background-color: #f5474a;
         }
+
+        &._disabled {
+          tui-wrapper {
+            color: white;
+
+            background-color: #f5474a;
+            opacity: 0.5 !important;
+          }
+        }
       }
 
       tui-wrapper[data-appearance='secondary'] {
@@ -47,38 +44,6 @@
         }
       }
     }
-  }
-
-  &__hint {
-    position: relative;
-    top: -3px;
-
-    height: 15px;
-    margin-left: 6px;
-
-    ::ng-deep {
-      svg {
-        path:not(:last-child),
-        circle {
-          fill: white;
-          stroke: white;
-        }
-
-        path:last-child {
-          stroke: white;
-        }
-      }
-    }
-  }
-}
-
-.price-impact {
-  &_low {
-    color: rgba(203, 174, 20);
-  }
-
-  &_high {
-    color: #ff4c4d;
   }
 }
 

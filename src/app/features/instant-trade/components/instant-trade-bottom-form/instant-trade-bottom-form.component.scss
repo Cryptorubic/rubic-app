@@ -9,7 +9,7 @@
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  padding: 15px 20px 30px;
+  padding: 15px 20px 21px;
 
   background-color: var(--main-background);
   border-radius: 0 0 14px 14px;
@@ -33,30 +33,6 @@ $green: rgb(74, 169, 86);
     padding: 0 !important;
 
     background-color: transparent;
-  }
-
-  &__provider-item:first-child {
-    width: 100%;
-  }
-
-  &__provider-item:not(:first-child) {
-    width: calc(50% - 10px);
-
-    @include b($mobile-md) {
-      width: 100%;
-    }
-
-    &::ng-deep .provider-panel__amount {
-      width: 100%;
-    }
-  }
-
-  &__provider-item:not(:nth-child(2n+1)):last-child {
-    width: 100%;
-
-    ::ng-deep .provider-panel__body {
-      flex-direction: row;
-    }
   }
 
   &__left-part {
@@ -89,9 +65,7 @@ $green: rgb(74, 169, 86);
   }
 
   &__providers {
-    display: flex;
-    flex-wrap: wrap;
-    grid-gap: 20px;
+    display: block;
     margin-top: 30px;
   }
 

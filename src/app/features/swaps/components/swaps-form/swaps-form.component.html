@@ -79,32 +79,36 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
-          (maxGasLimit)="maxGasFee = $event"
+          (instantTradeInfoChange)="currentInstantTradeInfo = $event"
+          (tradeStatusChange)="tradeStatus = $event"
         ></app-instant-trade-bottom-form>
 
         <app-bridge-bottom-form
           *ngIf="isBridge"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          (tradeStatusChange)="tradeStatus = $event"
         ></app-bridge-bottom-form>
 
         <app-cross-chain-routing-bottom-form
           *ngIf="isCrossChainRouting"
           [onRefreshTrade]="onRefreshTrade"
           (onRefreshStatusChange)="loadingStatus = $event"
-          (tradeStatusChange)="tradeStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          (tradeStatusChange)="tradeStatus = $event"
         ></app-cross-chain-routing-bottom-form>
       </div>
     </main>
   </div>
 
   <ng-container *noFrame>
-    <app-cross-chain-swap-info
-      *ngIf="isCrossChainRouting"
+    <app-swap-info-container
+      *ngIf="allowTrade"
+      [swapType]="swapType"
+      [currentInstantTradeInfo]="currentInstantTradeInfo"
       [tradeStatus]="tradeStatus"
-    ></app-cross-chain-swap-info>
+    ></app-swap-info-container>
   </ng-container>
 
   <app-analytics-link *noFrame [formService]="swapFormService"></app-analytics-link>
