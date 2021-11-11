@@ -8,7 +8,8 @@
     />
   </div>
   <div class="info-line__value" *ngIf="estimateGasInEth">
-    {{ estimateGasInEth }} {{ nativeCoinSymbol }} ≈ ${{
+    {{ estimateGasInEth | bigNumberFormat | withRound: 'toClosestValue':18 }}
+    {{ nativeCoinSymbol }} ≈ ${{
       estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
     }}
   </div>
@@ -24,9 +25,8 @@
     />
   </div>
   <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
-    {{ cryptoFeeInEth }} {{ nativeCoinSymbol }} ≈ ${{
-      cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
-    }}
+    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue':18 }} {{ nativeCoinSymbol }} ≈
+    ${{ cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
   </div>
 </div>
 
