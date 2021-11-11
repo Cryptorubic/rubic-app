@@ -7,7 +7,6 @@
       [formService]="swapFormService"
     ></app-rubic-tokens>
     <app-amount-estimated
-      [formService]="swapFormService"
       [loading]="tradeStatus === TRADE_STATUS.LOADING"
       [errorText]="errorText"
     ></app-amount-estimated>
@@ -27,10 +26,5 @@
         (updateRatesClick)="setHiddenData()"
       ></app-swap-button-container>
     </div>
-    <app-terms-n-conditions-container
-      [whatIsBlockchain]="whatIsBlockchain"
-      [toWalletAddress]="toWalletAddress"
-      [toBlockchain]="toBlockchain"
-    ></app-terms-n-conditions-container>
   </div>
 </section>

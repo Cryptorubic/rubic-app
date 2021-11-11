@@ -78,7 +78,6 @@ export class MyTradesComponent implements OnInit {
     this.authService
       .getCurrentUser()
       .pipe(
-        takeUntil(this.destroy$),
         watch(this.cdr),
         mergeMap(user => {
           this.walletAddress = user?.address || null;
@@ -91,7 +90,8 @@ export class MyTradesComponent implements OnInit {
           this.tableData$.next([]);
           this.loading = false;
           return of(undefined);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }

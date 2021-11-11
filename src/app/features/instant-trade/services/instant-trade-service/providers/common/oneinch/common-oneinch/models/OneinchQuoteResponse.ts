@@ -3,6 +3,6 @@ export interface OneinchQuoteResponse {
   toToken: object;
   toTokenAmount: string;
   fromTokenAmount: string;
-  protocols: unknown[];
+  protocols: [{ fromTokenAddress: string; toTokenAddress: string }[][]];
   estimatedGas: string;
 }
