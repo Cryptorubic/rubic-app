@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { first, map, mergeMap } from 'rxjs/operators';
+import { first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -16,6 +16,9 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses } from 'src/app/shared/utils/utils';
+import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
+import { Token } from '@shared/models/tokens/Token';
+import { fromPromise } from 'rxjs/internal-compatibility';
 import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
@@ -233,27 +236,50 @@ export class QueryParamsService {
 
     return Web3Public.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
-      : of(this.searchTokenBySymbol(tokens, token, chain));
+      : this.searchTokenBySymbol(tokens, token, chain);
   }
 
+  /**
+   * Searches token by symbol.
+   * @param tokens List of local tokens.
+   * @param symbol Symbol to search.
+   * @param chain Chain to search.
+   * @return Observable<TokenAmount> Searched token.
+   */
   private searchTokenBySymbol(
     tokens: List<TokenAmount>,
     symbol: string,
     chain: string
-  ): TokenAmount {
+  ): Observable<TokenAmount> {
     const similarTokens = tokens.filter(
       token => token.symbol === symbol && token.blockchain === chain
     );
 
     if (!similarTokens.size) {
-      return null;
+      return this.tokensService.fetchQueryTokens(symbol, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+        map(foundedTokens =>
+          foundedTokens?.size > 1
+            ? foundedTokens.find(el => el.symbol === symbol)
+            : foundedTokens.first()
+        ),
+        switchMap(fetchedToken => this.getTokenWithBalance(fetchedToken))
+      );
     }
 
-    return similarTokens.size > 1
-      ? similarTokens.find(token => token.usedInIframe) || similarTokens.first()
-      : similarTokens.first();
+    return of(
+      similarTokens.size > 1
+        ? similarTokens.find(token => token.usedInIframe)
+        : similarTokens.first()
+    );
   }
 
+  /**
+   * Searches token by address.
+   * @param tokens List of local tokens.
+   * @param address Address to search.
+   * @param chain Chain to search.
+   * @return Observable<TokenAmount> Searched token.
+   */
   private searchTokenByAddress(
     tokens: List<TokenAmount>,
     address: string,
@@ -265,7 +291,31 @@ export class QueryParamsService {
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.addTokenByAddress(address, chain).pipe(first());
+      : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+          map(fetchedToken => fetchedToken.first()),
+          switchMap(fetchedToken => this.getTokenWithBalance(fetchedToken))
+        );
+  }
+
+  /**
+   * Gets token with balance.
+   * @param fetchedToken Token to search balance.
+   * @return Observable<TokenAmount> Token with balance.
+   */
+  private getTokenWithBalance(fetchedToken: Token): Observable<TokenAmount> {
+    const token = {
+      ...fetchedToken,
+      amount: new BigNumber(NaN),
+      favorite: false
+    } as TokenAmount;
+    return fromPromise(this.tokensService.getTokensWithBalance(List([token]))).pipe(
+      map(tokensWithBalance => {
+        if (tokensWithBalance?.length) {
+          return tokensWithBalance.pop();
+        }
+        return token;
+      })
+    );
   }
 
   private navigate(): void {
@@ -275,7 +325,7 @@ export class QueryParamsService {
     });
   }
 
-  private setIframeInfo(queryParams: QueryParams) {
+  private setIframeInfo(queryParams: QueryParams): void {
     if (!queryParams.hasOwnProperty('iframe')) {
       return;
     }
@@ -284,7 +334,7 @@ export class QueryParamsService {
     this.iframeService.setIframeDevice(queryParams.device);
   }
 
-  private setBackgroundStatus(queryParams: QueryParams) {
+  private setBackgroundStatus(queryParams: QueryParams): void {
     if (this.iframeService.isIframe) {
       const { background } = queryParams;
       if (this.isBackgroundValid(background)) {
@@ -295,7 +345,7 @@ export class QueryParamsService {
     }
   }
 
-  private setHideSelectionStatus(queryParams: QueryParams) {
+  private setHideSelectionStatus(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
@@ -310,14 +360,14 @@ export class QueryParamsService {
     }
   }
 
-  private setThemeStatus(queryParams: QueryParams) {
+  private setThemeStatus(queryParams: QueryParams): void {
     const { theme } = queryParams;
     if (theme && (theme === 'dark' || theme === 'light')) {
       this.themeService.setTheme(theme);
     }
   }
 
-  private setAdditionalIframeTokens(queryParams: QueryParams) {
+  private setAdditionalIframeTokens(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
@@ -340,7 +390,7 @@ export class QueryParamsService {
     }
   }
 
-  private setLanguage(queryParams: QueryParams) {
+  private setLanguage(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
@@ -352,7 +402,7 @@ export class QueryParamsService {
     this.translateService.use(language);
   }
 
-  private isBackgroundValid(stringToTest: string) {
+  private isBackgroundValid(stringToTest: string): boolean {
     if (stringToTest === '') {
       return false;
     }

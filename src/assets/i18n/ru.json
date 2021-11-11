@@ -502,7 +502,8 @@
       "searchPlaceholder": "Найдите по названию или вставьте адрес",
       "noSearchData": "Нет подходящих данных",
       "noFavoriteData": "Нет избранных токенов в выбранной сети, ",
-      "backToTokens": "вернутся к списку всех токенов"
+      "backToTokens": "вернутся к списку всех токенов",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Подключить кошелёк",

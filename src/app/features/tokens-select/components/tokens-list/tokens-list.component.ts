@@ -20,6 +20,8 @@ import { BehaviorSubject } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
 import { listAnimation } from 'src/app/features/tokens-select/components/tokens-list/animations/listAnimation';
+import { AuthService } from '@core/services/auth/auth.service';
+import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -114,7 +116,9 @@ export class TokensListComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    public readonly authService: AuthService,
+    private readonly walletsModalService: WalletsModalService
   ) {
     this.loading = false;
     this.pageUpdate = new EventEmitter();
@@ -189,5 +193,9 @@ export class TokensListComponent implements AfterViewInit {
     if (token.available) {
       this.tokenSelect.emit(token);
     }
+  }
+
+  public openAuthModal(): void {
+    this.walletsModalService.open$();
   }
 }

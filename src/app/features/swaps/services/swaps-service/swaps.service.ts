@@ -12,7 +12,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { compareAddresses } from 'src/app/shared/utils/utils';
+import { compareAddresses, compareTokens } from 'src/app/shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
 @Injectable()
@@ -21,7 +21,13 @@ export class SwapsService {
 
   private _availableTokens = new BehaviorSubject<List<TokenAmount>>(undefined);
 
+  private _availableFavoriteTokens = new BehaviorSubject<List<TokenAmount>>(undefined);
+
   private _bridgeTokenPairsByBlockchainsArray = new BehaviorSubject<
+    List<BridgeTokenPairsByBlockchains>
+  >(undefined);
+
+  private _bridgeTokenPairsByBlockchainsFavoriteArray = new BehaviorSubject<
     List<BridgeTokenPairsByBlockchains>
   >(undefined);
 
@@ -31,8 +37,18 @@ export class SwapsService {
     return this._availableTokens.asObservable();
   }
 
+  get availableFavoriteTokens(): Observable<List<TokenAmount>> {
+    return this._availableFavoriteTokens.asObservable();
+  }
+
   get bridgeTokenPairsByBlockchainsArray(): Observable<List<BridgeTokenPairsByBlockchains>> {
     return this._bridgeTokenPairsByBlockchainsArray.asObservable();
+  }
+
+  get bridgeTokenPairsByBlockchainsFavoriteArray(): Observable<
+    List<BridgeTokenPairsByBlockchains>
+  > {
+    return this._bridgeTokenPairsByBlockchainsFavoriteArray.asObservable();
   }
 
   get swapMode$(): Observable<SWAP_PROVIDER_TYPE | null> {
@@ -57,53 +73,14 @@ export class SwapsService {
     this.subscribeOnForm();
   }
 
-  private subscribeOnTokens() {
+  private subscribeOnTokens(): void {
     combineLatest([
       this.bridgeService.tokens$.pipe(filter(tokens => !!tokens.length)),
-      this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size))
-    ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts]) => {
+      this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size)),
+      this.tokensService.favoriteTokens$
+    ]).subscribe(([bridgeTokenPairsByBlockchainsArray, tokenAmounts, tokenFavoriteAmounts]) => {
       const updatedTokenAmounts = tokenAmounts.toArray();
-
-      const getUpdatedBridgeToken = (
-        blockchain: BLOCKCHAIN_NAME,
-        bridgeTokenPair: BridgeTokenPair
-      ): BridgeToken => {
-        const bridgeToken = bridgeTokenPair.tokenByBlockchain[blockchain];
-        const foundTokenAmount = tokenAmounts.find(
-          tokenAmount =>
-            tokenAmount.blockchain === blockchain &&
-            compareAddresses(tokenAmount.address, bridgeToken.address)
-        );
-
-        if (
-          !foundTokenAmount &&
-          !updatedTokenAmounts.find(
-            tokenAmount =>
-              tokenAmount.blockchain === bridgeToken.blockchain &&
-              compareAddresses(tokenAmount.address, bridgeToken.address)
-          )
-        ) {
-          // don't add bridge specific tokens to widget tokens list
-          if (this.iframeService.isIframe) {
-            return null;
-          }
-
-          updatedTokenAmounts.push({
-            ...bridgeToken,
-            image: bridgeTokenPair.image,
-            rank: 0,
-            price: 0,
-            usedInIframe: false,
-            amount: new BigNumber(0),
-            favorite: false
-          });
-        }
-
-        return {
-          ...foundTokenAmount,
-          ...bridgeToken
-        };
-      };
+      const updatedTokenFavoriteAmounts = tokenFavoriteAmounts.toArray();
 
       const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray.map(
         tokenPairsByBlockchains => {
@@ -113,13 +90,48 @@ export class SwapsService {
             tokenPairs: tokenPairsByBlockchains.tokenPairs.map(tokenPair => ({
               ...tokenPair,
               tokenByBlockchain: {
-                [fromBlockchain]: getUpdatedBridgeToken(fromBlockchain, tokenPair),
-                [toBlockchain]: getUpdatedBridgeToken(toBlockchain, tokenPair)
+                [fromBlockchain]: this.getUpdatedBridgeToken(
+                  fromBlockchain,
+                  tokenPair,
+                  tokenAmounts,
+                  updatedTokenAmounts
+                ),
+                [toBlockchain]: this.getUpdatedBridgeToken(
+                  toBlockchain,
+                  tokenPair,
+                  tokenAmounts,
+                  updatedTokenAmounts
+                )
               }
             }))
           };
         }
       );
+
+      const updatedBridgeTokenFavoritePairsByBlockchainsArray =
+        bridgeTokenPairsByBlockchainsArray.map(tokenPairsByBlockchains => {
+          const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
+          return {
+            ...tokenPairsByBlockchains,
+            tokenPairs: tokenPairsByBlockchains.tokenPairs.map(tokenPair => ({
+              ...tokenPair,
+              tokenByBlockchain: {
+                [fromBlockchain]: this.getUpdatedBridgeToken(
+                  fromBlockchain,
+                  tokenPair,
+                  tokenFavoriteAmounts,
+                  updatedTokenFavoriteAmounts
+                ),
+                [toBlockchain]: this.getUpdatedBridgeToken(
+                  toBlockchain,
+                  tokenPair,
+                  tokenFavoriteAmounts,
+                  updatedTokenFavoriteAmounts
+                )
+              }
+            }))
+          };
+        });
 
       // filter and remove bridge specific tokens in widget
       updatedBridgeTokenPairsByBlockchainsArray.forEach(
@@ -129,14 +141,74 @@ export class SwapsService {
           ))
       );
 
+      updatedBridgeTokenFavoritePairsByBlockchainsArray.forEach(
+        item =>
+          (item.tokenPairs = item.tokenPairs.filter(pair =>
+            Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
+          ))
+      );
+
       this._bridgeTokenPairsByBlockchainsArray.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)
       );
+      this._bridgeTokenPairsByBlockchainsFavoriteArray.next(
+        List(updatedBridgeTokenPairsByBlockchainsArray)
+      );
       this._availableTokens.next(List(updatedTokenAmounts));
+      this._availableFavoriteTokens.next(
+        List(
+          updatedTokenFavoriteAmounts.filter(el =>
+            tokenFavoriteAmounts.some(el2 => compareTokens(el, el2))
+          )
+        )
+      );
     });
   }
 
-  private subscribeOnForm() {
+  private getUpdatedBridgeToken(
+    blockchain: BLOCKCHAIN_NAME,
+    bridgeTokenPair: BridgeTokenPair,
+    tokenAmounts: List<TokenAmount>,
+    updatedTokenAmounts: TokenAmount[]
+  ): BridgeToken {
+    const bridgeToken = bridgeTokenPair.tokenByBlockchain[blockchain];
+    const foundTokenAmount = tokenAmounts.find(
+      tokenAmount =>
+        tokenAmount.blockchain === blockchain &&
+        compareAddresses(tokenAmount.address, bridgeToken.address)
+    );
+
+    if (
+      !foundTokenAmount &&
+      !updatedTokenAmounts.find(
+        tokenAmount =>
+          tokenAmount.blockchain === bridgeToken.blockchain &&
+          compareAddresses(tokenAmount.address, bridgeToken.address)
+      )
+    ) {
+      // don't add bridge specific tokens to widget tokens list
+      if (this.iframeService.isIframe) {
+        return null;
+      }
+
+      updatedTokenAmounts.push({
+        ...bridgeToken,
+        image: bridgeTokenPair.image,
+        rank: 0,
+        price: 0,
+        usedInIframe: false,
+        amount: new BigNumber(0),
+        favorite: false
+      });
+    }
+
+    return {
+      ...foundTokenAmount,
+      ...bridgeToken
+    };
+  }
+
+  private subscribeOnForm(): void {
     this.swapFormService.inputValueChanges
       .pipe(startWith(null, this.swapFormService.inputValue), pairwise())
       .subscribe(([prevForm, curForm]) => {
@@ -201,7 +273,7 @@ export class SwapsService {
    * Sets interval to update prices.
    * @param form Input form, which contains selected tokens.
    */
-  private updateTokensPrices(form: SwapFormInput) {
+  private updateTokensPrices(form: SwapFormInput): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -222,7 +294,7 @@ export class SwapsService {
   /**
    * Calls functions to update balance, if needed.
    */
-  private updateTokenBalance(fromToken: TokenAmount) {
+  private updateTokenBalance(fromToken: TokenAmount): void {
     if (!fromToken.amount?.isFinite()) {
       this.tokensService.getAndUpdateTokenBalance(fromToken);
     }

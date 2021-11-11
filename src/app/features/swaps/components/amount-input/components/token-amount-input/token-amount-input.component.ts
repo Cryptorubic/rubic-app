@@ -28,6 +28,8 @@ export class TokenAmountInputComponent implements OnInit {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Input() placeholder = '0.0';
 
   private get formattedAmount(): string {
@@ -91,7 +93,7 @@ export class TokenAmountInputComponent implements OnInit {
       });
   }
 
-  private checkMaxAmountInCrossChainRouting() {
+  private checkMaxAmountInCrossChainRouting(): void {
     const maxAmount = this.getMaxAmountInCrossChainRouting();
     if (
       maxAmount &&

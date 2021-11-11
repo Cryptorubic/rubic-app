@@ -502,7 +502,8 @@
       "searchPlaceholder": "Buscar nombre o pegar dirección",
       "noSearchData": "Nada que mostrar",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list"
+      "backToTokens": "back to whole tokens list",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Conectar billetera",

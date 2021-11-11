@@ -9,7 +9,15 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  Subscription
+} from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
@@ -35,7 +43,6 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 import {
-  PaginatedPage,
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
@@ -46,6 +53,7 @@ import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOK
 
 type ComponentInput = {
   tokens: Observable<AvailableTokenAmount[]>;
+  favoriteTokens: Observable<AvailableTokenAmount[]>;
   formType: 'from' | 'to';
   currentBlockchain: BLOCKCHAIN_NAME;
   form: FormGroup<ISwapFormInput>;
@@ -97,6 +105,11 @@ export class TokensSelectComponent implements OnInit {
   private tokens: Observable<AvailableTokenAmount[]>;
 
   /**
+   * List of available favorite tokens.
+   */
+  private favoriteTokens: Observable<AvailableTokenAmount[]>;
+
+  /**
    * Contains default tokens to display.
    */
   public tokensToShow$: BehaviorSubject<AvailableTokenAmount[]>;
@@ -117,9 +130,9 @@ export class TokensSelectComponent implements OnInit {
   public currentlySelectedToken: TokenAmount;
 
   /**
-   * Backend-api state of tokens in currently selected blockchain.
+   * Backend-api state of tokens in blockchains.
    */
-  public tokensNetworkState: PaginatedPage;
+  public tokensNetworkState: TokensNetworkState;
 
   /**
    * True when new tokens are being loaded from backend.
@@ -220,6 +233,7 @@ export class TokensSelectComponent implements OnInit {
     this.allowedBlockchains = context.allowedBlockchains;
     this._blockchain = context.currentBlockchain;
     this.tokens = context.tokens;
+    this.favoriteTokens = context.favoriteTokens;
     this.currentlySelectedToken =
       this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
   }
@@ -228,7 +242,7 @@ export class TokensSelectComponent implements OnInit {
    * Inits subscriptions for tokens and searchQuery.
    */
   private initSubscriptions(): void {
-    combineLatest([this.tokensService.favoriteTokens$, this.tokens])
+    combineLatest([this.favoriteTokens, this.tokens])
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
@@ -239,7 +253,7 @@ export class TokensSelectComponent implements OnInit {
     this.tokensService.tokensNetworkState
       .pipe(takeUntil(this.destroy$))
       .subscribe((tokensNetworkState: TokensNetworkState) => {
-        this.tokensNetworkState = tokensNetworkState[this.blockchain as PAGINATED_BLOCKCHAIN_NAME];
+        this.tokensNetworkState = tokensNetworkState;
         this.cdr.markForCheck();
       });
   }
@@ -316,29 +330,46 @@ export class TokensSelectComponent implements OnInit {
         });
     }
 
-    this.tokens.pipe(first()).subscribe(async tokens => {
-      const { favoriteTokens } = this.tokensService;
+    forkJoin([this.tokens.pipe(first()), this.favoriteTokens.pipe(first())]).subscribe(
+      async ([tokens, favoriteTokens]) => {
+        const currentBlockchainTokens = tokens.filter(
+          (token: AvailableTokenAmount) => token.blockchain === this.blockchain
+        );
+        const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
+        const tokensWithFavorite = sortedAndFilteredTokens.map(token => ({
+          ...token,
+          favorite: favoriteTokens.some(favoriteToken =>
+            TokensService.areTokensEqual(favoriteToken, token)
+          )
+        }));
 
-      const currentBlockchainTokens = tokens.filter(
+        this.tokensToShow$.next(tokensWithFavorite);
+        this.tokensListUpdating = false;
+        this.cdr.detectChanges();
+
+        const shouldSearch = this.listType === 'default' && !sortedAndFilteredTokens.length;
+
+        if (shouldSearch && this.searchQuery) {
+          this.updateTokensByQuery$.next();
+        }
+      }
+    );
+
+    this.favoriteTokens.pipe(first()).subscribe(tokens => {
+      const currentBlockchainFavoriteTokens = tokens.filter(
         (token: AvailableTokenAmount) => token.blockchain === this.blockchain
       );
-      const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
-      const tokensWithFavorite = sortedAndFilteredTokens.map(token => ({
-        ...token,
-        favorite: favoriteTokens.some(favoriteToken =>
-          TokensService.areTokensEqual(favoriteToken, token)
-        )
-      }));
-      const availableFavoriteTokens = tokensWithFavorite.filter(token => token.favorite);
+      const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
+        currentBlockchainFavoriteTokens
+      );
 
-      this.tokensToShow$.next(tokensWithFavorite);
-      this.favoriteTokensToShow$?.next(availableFavoriteTokens);
+      this.favoriteTokensToShow$.next(
+        sortedAndFilteredFavoriteTokens.map(el => ({ ...el, favorite: true }))
+      );
       this.tokensListUpdating = false;
       this.cdr.detectChanges();
 
-      const shouldSearch =
-        (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
-        (this.listType === 'favorite' && !availableFavoriteTokens.length);
+      const shouldSearch = this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length;
 
       if (shouldSearch && this.searchQuery) {
         this.updateTokensByQuery$.next();

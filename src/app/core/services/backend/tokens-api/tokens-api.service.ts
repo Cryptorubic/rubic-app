@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS
+  TO_BACKEND_BLOCKCHAINS,
+  ToBackendBlockchain
 } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { Token } from 'src/app/shared/models/tokens/Token';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
@@ -14,10 +15,13 @@ import {
   TokensListResponse,
   TokensBackendResponse,
   TokensRequestQueryOptions,
-  TokensRequestNetworkOptions
+  TokensRequestNetworkOptions,
+  ENDPOINTS,
+  FavoriteTokenRequestParams
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -27,16 +31,6 @@ import { HttpService } from '../../http/http.service';
   providedIn: 'root'
 })
 export class TokensApiService {
-  /**
-   * API path to backend token list.
-   */
-  private readonly getTokensUrl: string = 'tokens/';
-
-  /**
-   * API path to iframe backend token list.
-   */
-  private readonly iframeTokensUrl: string = 'tokens/iframe/';
-
   constructor(
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService
@@ -75,13 +69,48 @@ export class TokensApiService {
   }
 
   /**
+   * Fetches favorite tokens from backend.
+   * @return Observable<BackendToken[]> Favorite Tokens.
+   */
+  public fetchFavoriteTokens(): Observable<List<Token>> {
+    return this.httpService.get<BackendToken[]>(ENDPOINTS.FAVORITE_TOKENS).pipe(
+      map(tokens => TokensApiService.prepareTokens(tokens)),
+      catchError(() => of(List([])))
+    );
+  }
+
+  /**
+   * Adds favorite token on backend.
+   * @param token Token to add.
+   */
+  public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
+    const body: FavoriteTokenRequestParams = {
+      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain as ToBackendBlockchain],
+      address: token.address
+    };
+    return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body);
+  }
+
+  /**
+   * Deletes favorite token on backend.
+   * @param token Token to delete.
+   */
+  public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
+    const body: FavoriteTokenRequestParams = {
+      blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain as ToBackendBlockchain],
+      address: token.address
+    };
+    return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body });
+  }
+
+  /**
    * Fetches iframe tokens from backend.
    * @param params Request params.
    * @return Observable<List<Token>> Tokens list.
    */
   private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
     return this.httpService
-      .get(this.iframeTokensUrl, params)
+      .get(ENDPOINTS.IFRAME_TOKENS, params)
       .pipe(map((backendTokens: BackendToken[]) => TokensApiService.prepareTokens(backendTokens)));
   }
 
@@ -99,7 +128,7 @@ export class TokensApiService {
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
     const requests$ = blockchainsToFetch.map(network =>
-      this.httpService.get<TokensBackendResponse>(this.getTokensUrl, { ...options, network })
+      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
     );
     return forkJoin(requests$).pipe(
       map(results => {
@@ -120,7 +149,7 @@ export class TokensApiService {
       ...(requestOptions.address && { address: requestOptions.address })
     };
     return this.httpService
-      .get(this.getTokensUrl, options)
+      .get(ENDPOINTS.TOKKENS, options)
       .pipe(
         map((tokensResponse: BackendToken[]) =>
           tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List()
@@ -141,7 +170,7 @@ export class TokensApiService {
       page: requestOptions.page,
       page_size: DEFAULT_PAGE_SIZE
     };
-    return this.httpService.get<TokensBackendResponse>(this.getTokensUrl, options).pipe(
+    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, options).pipe(
       map(tokensResponse => {
         return {
           total: tokensResponse.count,

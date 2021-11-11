@@ -21,7 +21,6 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 /**
@@ -41,7 +40,7 @@ export class TokensService {
   /**
    * Current favorite tokens list state.
    */
-  public readonly _favoriteTokens$ = new BehaviorSubject<LocalToken[]>(this.fetchFavoriteTokens());
+  public readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List([]));
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
@@ -84,7 +83,7 @@ export class TokensService {
   /**
    * Current favorite tokens list.
    */
-  get favoriteTokens(): LocalToken[] {
+  get favoriteTokens(): List<TokenAmount> {
     return this._favoriteTokens$.getValue();
   }
 
@@ -140,6 +139,11 @@ export class TokensService {
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
       await this.calculateUserTokensBalances();
+      if (this.userAddress) {
+        this.fetchFavoriteTokens();
+      } else {
+        this._favoriteTokens$.next(List([]));
+      }
     });
 
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
@@ -151,6 +155,12 @@ export class TokensService {
     });
 
     this._tokensRequestParameters$.next();
+  }
+
+  public fetchFavoriteTokens(): void {
+    this.tokensApiService
+      .fetchFavoriteTokens()
+      .subscribe(async tokens => this.calculateFavoriteTokensBalances(tokens));
   }
 
   /**
@@ -165,6 +175,42 @@ export class TokensService {
         favorite: false
       }))
     );
+  }
+
+  /**
+   * Calculates balance for favorite token list.
+   * @param tokensWithoutBalance Favorite token list.
+   */
+  public async calculateFavoriteTokensBalances(
+    tokensWithoutBalance: List<TokenAmount | Token> = this.favoriteTokens
+  ): Promise<void> {
+    if (!tokensWithoutBalance.size || !this.userAddress) {
+      this._favoriteTokens$.next(List([]));
+      return;
+    }
+
+    const tokens = tokensWithoutBalance.map(token => ({
+      ...token,
+      amount: new BigNumber(NaN),
+      favorite: true
+    }));
+
+    const tokensWithBalance = await this.getTokensWithBalance(tokens);
+
+    if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
+      const updatedTokens = tokens.map(token => {
+        const currentToken = this.tokens.find(t => TokensService.areTokensEqual(token, t));
+        const balance = tokensWithBalance.find(tWithBalance =>
+          TokensService.areTokensEqual(token, tWithBalance)
+        )?.amount;
+        return {
+          ...token,
+          ...currentToken,
+          amount: balance
+        };
+      });
+      this._favoriteTokens$.next(List(updatedTokens));
+    }
   }
 
   /**
@@ -204,7 +250,7 @@ export class TokensService {
    * @param tokens List of tokens.
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
-  private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
+  public async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
     const blockchains: BLOCKCHAIN_NAME[] = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -493,13 +539,9 @@ export class TokensService {
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: TokenAmount): void {
-    const localToken: LocalToken = {
-      address: favoriteToken.address,
-      blockchain: favoriteToken.blockchain
-    };
-    const collection = [...this._favoriteTokens$.value, localToken];
-    this.store.setItem('favoriteTokens', collection);
-    this._favoriteTokens$.next(collection);
+    this.tokensApiService.addFavoriteToken(favoriteToken).subscribe(() => {
+      this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+    });
   }
 
   /**
@@ -511,14 +553,8 @@ export class TokensService {
       el => !TokensService.areTokensEqual(el, token)
     );
 
-    this.store.setItem('favoriteTokens', filteredTokens);
-    this._favoriteTokens$.next(filteredTokens);
-  }
-
-  /**
-   * Fetches favorite tokens from local storage.
-   */
-  private fetchFavoriteTokens(): LocalToken[] {
-    return this.store.getItem('favoriteTokens') || [];
+    this.tokensApiService.deleteFavoriteToken(token).subscribe(() => {
+      this._favoriteTokens$.next(filteredTokens);
+    });
   }
 }

@@ -42,6 +42,13 @@ export class RubicTokensComponent implements OnInit {
     }
   }
 
+  @Input() set favoriteTokens(value: AvailableTokenAmount[]) {
+    const deepEquality = compareObjects(value, this.favoriteTokensSubject.value);
+    if (!deepEquality) {
+      this.favoriteTokensSubject.next(value);
+    }
+  }
+
   @Input() formService: FormService;
 
   @Input() allowedBlockchains: BLOCKCHAIN_NAME[] | undefined;
@@ -60,6 +67,8 @@ export class RubicTokensComponent implements OnInit {
 
   public tokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
 
+  public favoriteTokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly tokensSelectService: TokensSelectService,
@@ -68,6 +77,7 @@ export class RubicTokensComponent implements OnInit {
     private readonly destroy$: TuiDestroyService
   ) {
     this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
+    this.favoriteTokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
   }
 
   public ngOnInit(): void {
@@ -100,6 +110,7 @@ export class RubicTokensComponent implements OnInit {
     this.tokensSelectService
       .showDialog(
         this.tokensSubject.asObservable(),
+        this.favoriteTokensSubject.asObservable(),
         this.formType,
         currentBlockchain,
         this.formService.input,

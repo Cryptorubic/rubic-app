@@ -81,6 +81,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
@@ -380,7 +382,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  public setHiddenData() {
+  public setHiddenData(): void {
     const data = this.hiddenTradeData$.getValue();
     this.toAmount = data.toAmount;
 
@@ -495,7 +497,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  private notifyTradeInProgress() {
+  private notifyTradeInProgress(): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {
