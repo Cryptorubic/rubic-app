@@ -11,12 +11,12 @@
           'tui-skeleton': loading,
           'tui-skeleton_text': loading,
           'bottom-amount__tokens-container_error': errorText,
-          'bottom-amount__tokens-container_placeholder': !errorText && !tokensAmount
+          'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
         }"
       >
         <div class="bottom-amount__output">
           {{
-            (tokensAmount | bigNumberFormat | withRound: 'toClosestValue') ||
+            (tokenAmount | bigNumberFormat | withRound: 'toClosestValue') ||
               (errorText && 'tradePage.tradingNotAvailable' | translate)
           }}
         </div>
@@ -30,6 +30,6 @@
       </div>
     </div>
 
-    <app-usd-price-container [usdPrice]="usd" [loading]="loading"></app-usd-price-container>
+    <app-usd-price-container [usdPrice]="usdPrice" [loading]="loading"></app-usd-price-container>
   </ng-container>
 </div>

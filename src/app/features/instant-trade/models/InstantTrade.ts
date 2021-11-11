@@ -3,6 +3,7 @@ import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTrad
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 interface InstantTrade {
   blockchain: BLOCKCHAIN_NAME;
@@ -24,6 +25,11 @@ interface InstantTrade {
      */
     amount: BigNumber;
   };
+
+  /**
+   * Tokens in a swap route.
+   */
+  path?: SymbolToken[];
 
   /**
    * Amount of predicted gas limit in absolute gas units.

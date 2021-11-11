@@ -3,13 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
+import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 
 @Component({
   selector: 'app-amount-estimated',
@@ -32,15 +34,13 @@ export class AmountEstimatedComponent implements OnInit {
 
   @Input() disabled: boolean;
 
-  @Input() formService: FormService;
-
   @Input() errorText = '';
 
   private _loading: boolean;
 
-  public usd: BigNumber;
+  public usdPrice: BigNumber;
 
-  public tokensAmount: string;
+  public tokenAmount: BigNumber;
 
   public blockchain: BLOCKCHAIN_NAME;
 
@@ -48,39 +48,59 @@ export class AmountEstimatedComponent implements OnInit {
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly destroy$: TuiDestroyService
+    private readonly swapFormService: SwapFormService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit() {
-    this.formService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
-      if (!form.toAmount || form.toAmount.isNaN()) {
+    this.subscribeOnOutputChange();
+    this.subscribeOnToTokenChange();
+  }
+
+  /**
+   * Subscribes on output form change, and after change updates token amount parameters.
+   */
+  private subscribeOnOutputChange(): void {
+    this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
+      if (!form?.toAmount.isFinite()) {
         this.hidden = true;
-        this.tokensAmount = null;
-        this.usd = null;
-        this.cdr.detectChanges();
+        this.tokenAmount = null;
+        this.usdPrice = null;
+        this.cdr.markForCheck();
         return;
       }
 
       this.hidden = false;
 
-      const { toToken } = this.formService.inputValue;
-      this.blockchain = this.formService.inputValue.toBlockchain;
-      const toAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
-      this.tokensAmount = toAmount.toFixed();
-      this.usd = toToken?.price ? toAmount.multipliedBy(toToken.price) : new BigNumber(NaN);
+      this.blockchain = this.swapFormService.inputValue.toBlockchain;
+      this.tokenAmount = form.toAmount.lte(0) ? new BigNumber(0) : form.toAmount;
+      this.usdPrice = this.getUsdPrice();
 
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
+  }
 
-    this.formService.input.controls.toToken.valueChanges
+  /**
+   * Subscribes on to token change, and after change updates usd price.
+   */
+  private subscribeOnToTokenChange(): void {
+    this.swapFormService.input.controls.toToken.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(toToken => {
-        if (this.tokensAmount) {
-          this.usd = toToken?.price
-            ? new BigNumber(this.tokensAmount).multipliedBy(toToken.price)
-            : new BigNumber(NaN);
-          this.cdr.detectChanges();
+      .subscribe(() => {
+        if (this.tokenAmount) {
+          this.usdPrice = this.getUsdPrice();
+          this.cdr.markForCheck();
         }
       });
+  }
+
+  private getUsdPrice(): BigNumber {
+    const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+    const fromTokenCost = fromAmount.multipliedBy(fromToken?.price);
+    const toTokenCost = this.tokenAmount?.multipliedBy(toToken?.price);
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
+      return new BigNumber(NaN);
+    }
+    return toTokenCost;
   }
 }
