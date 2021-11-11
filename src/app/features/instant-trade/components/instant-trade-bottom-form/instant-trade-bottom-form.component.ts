@@ -560,8 +560,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       const currentSelectedProviderIndex = this.providerControllers.findIndex(
         el => el.tradeProviderInfo.value === this.selectedProvider.tradeProviderInfo.value
       );
+
       this.selectedProvider = this.providerControllers[currentSelectedProviderIndex];
-      this.providerControllers[currentSelectedProviderIndex].isSelected = true;
+      if (!this.selectedProvider.trade) {
+        this.selectedProvider = this.providerControllers[providerIndex];
+        this.providerControllers[providerIndex].isSelected = true;
+      } else {
+        this.providerControllers[currentSelectedProviderIndex].isSelected = true;
+      }
     }
   }
 
