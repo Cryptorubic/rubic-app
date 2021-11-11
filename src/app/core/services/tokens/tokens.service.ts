@@ -20,9 +20,10 @@ import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
-import { StoreService } from 'src/app/core/services/store/store.service';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { compareAddresses } from '@shared/utils/utils';
+import { ErrorsService } from '@core/errors/errors.service';
+import { WalletError } from '@core/errors/models/provider/WalletError';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -114,7 +115,7 @@ export class TokensService {
     private readonly web3PublicService: Web3PublicService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly store: StoreService
+    private readonly errorsService: ErrorsService
   ) {
     this.testTokensNumber = coingeckoTestTokens.length;
 
@@ -541,9 +542,14 @@ export class TokensService {
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: TokenAmount): void {
-    this.tokensApiService.addFavoriteToken(favoriteToken).subscribe(() => {
-      this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
-    });
+    this.tokensApiService.addFavoriteToken(favoriteToken).subscribe(
+      () => {
+        this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+      },
+      () => {
+        this.errorsService.catch(new WalletError());
+      }
+    );
   }
 
   /**
@@ -555,9 +561,14 @@ export class TokensService {
       el => !TokensService.areTokensEqual(el, token)
     );
 
-    this.tokensApiService.deleteFavoriteToken(token).subscribe(() => {
-      this._favoriteTokens$.next(filteredTokens);
-    });
+    this.tokensApiService.deleteFavoriteToken(token).subscribe(
+      () => {
+        this._favoriteTokens$.next(filteredTokens);
+      },
+      () => {
+        this.errorsService.catch(new WalletError());
+      }
+    );
   }
 
   /**
