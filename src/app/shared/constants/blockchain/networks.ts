@@ -103,7 +103,7 @@ export default [
   {
     id: 43114,
     name: BLOCKCHAIN_NAME.AVALANCHE,
-    scannerUrl: 'https://cchain.explorer.avax.network/',
+    scannerUrl: 'https://snowtrace.io/',
     rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
     additionalRpcLink: '',
     imagePath: 'assets/images/icons/coins/avalanche.svg',
@@ -112,6 +112,21 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'AVAX',
       symbol: 'AVAX',
+      decimals: 18
+    }
+  },
+  {
+    id: 1285,
+    name: BLOCKCHAIN_NAME.MOONRIVER,
+    scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
+    rpcLink: 'https://rpc.moonriver.moonbeam.network',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/moonriver.webp',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.MOONRIVER,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'MOVR',
+      symbol: 'MOVR',
       decimals: 18
     }
   },

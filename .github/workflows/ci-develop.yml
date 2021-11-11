@@ -1,4 +1,4 @@
-name: Check code quality
+name: Check code quality before merge to develop
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint:
-    name: Check code base
+    name:  Check code base before merge to develop
     runs-on: ubuntu-latest
 
     steps:

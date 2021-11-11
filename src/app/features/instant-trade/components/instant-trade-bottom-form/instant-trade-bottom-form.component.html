@@ -64,18 +64,13 @@
       </div>
     </div>
     <ng-container *noFrame>
-      <div *ngIf="allowTrade && !ethAndWethTrade" class="instant-trade-bottom-form__providers">
-        <div
-          class="instant-trade-bottom-form__provider-item"
-          *ngFor="let provider of orderedProviders; let i = index"
-        >
-          <app-provider-panel
-            [providerIndex]="i"
-            [providerControllerData]="provider"
-            (selectProvider)="selectProvider(provider)"
-          ></app-provider-panel>
-        </div>
-      </div>
+      <app-providers-panels-container
+        *ngIf="allowTrade && !ethAndWethTrade"
+        class="instant-trade-bottom-form__providers"
+        [providers]="providerControllers"
+        (onSelectProvider)="selectProvider($event)"
+      >
+      </app-providers-panels-container>
     </ng-container>
   </main>
   <footer class="instant-trade-bottom-form__footer"></footer>

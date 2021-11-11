@@ -24,5 +24,10 @@ export const transitTokensWithMode: TransitTokens = {
     address: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
     decimals: 6,
     symbol: 'USDT.e'
+  },
+  [BLOCKCHAIN_NAME.MOONRIVER]: {
+    address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+    decimals: 6,
+    symbol: 'USDC'
   }
 };

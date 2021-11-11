@@ -26,6 +26,7 @@ html.dark {
   --rubic-base-15: white;
   --rubic-base-16: white;
   --plate-invert: rgb(41, 41, 41, 0.6);
+  --bg-banner: rgba(51, 86, 51, 0.8);
 
   --tui-base-01: rgba(0, 0, 0, 0.8);
   --tui-base-02: init;
@@ -42,6 +43,8 @@ html.dark {
   --rubic-shadow-button-hover-dim: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
   --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
   --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
+
+  --hr-color: rgba(255, 255, 255, 0.1);
 
   --rubic-filter-brightness: brightness(10);
   --rubic-filter-invert: invert(0);

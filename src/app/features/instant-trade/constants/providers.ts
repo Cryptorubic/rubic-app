@@ -1,21 +1,17 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { InstantTradeProviderController } from 'src/app/features/instant-trade/models/instant-trades-provider-controller';
+import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 
-const defaultState: InstantTradeProviderController = {
+const defaultState: ProviderControllerData = {
   trade: null,
   tradeState: INSTANT_TRADES_STATUS.CALCULATION,
   tradeProviderInfo: null,
-  isBestRate: false,
   isSelected: false,
-  isCollapsed: false,
   needApprove: null
 };
 
-export const INSTANT_TRADE_PROVIDERS: Partial<
-  Record<BLOCKCHAIN_NAME, InstantTradeProviderController[]>
-> = {
+export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderControllerData[]>> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     {
       ...defaultState,
@@ -128,6 +124,22 @@ export const INSTANT_TRADE_PROVIDERS: Partial<
       tradeProviderInfo: {
         label: 'Joe',
         value: INSTANT_TRADES_PROVIDER.JOE
+      }
+    }
+  ],
+  [BLOCKCHAIN_NAME.MOONRIVER]: [
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Sushiswap',
+        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
+      }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Solarbeam',
+        value: INSTANT_TRADES_PROVIDER.SOLARBEAM
       }
     }
   ]

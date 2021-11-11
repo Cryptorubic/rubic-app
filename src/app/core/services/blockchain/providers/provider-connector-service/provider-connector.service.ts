@@ -219,6 +219,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.AVALANCHE]: {
         name: 'Avalanche Mainnet',
         rpc: 'https://api.avax.network/ext/bc/C/rpc'
+      },
+      [BLOCKCHAIN_NAME.MOONRIVER]: {
+        name: 'Moonriver',
+        rpc: 'https://rpc.moonriver.moonbeam.network'
       }
     };
     const params = {
@@ -239,7 +243,7 @@ export class ProviderConnectorService {
   /**
    * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
    * @param networkName chain to switch to.
-   * @returns was the network switch successful.
+   * @return was the network switch successful.
    */
   public async switchChain(networkName: BLOCKCHAIN_NAME): Promise<boolean> {
     const network = BlockchainsInfo.getBlockchainByName(networkName);

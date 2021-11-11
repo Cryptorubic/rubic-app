@@ -1,0 +1,62 @@
+@import 'src/styles';
+
+.providers {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 20px;
+
+  &__item {
+    &:first-child {
+      width: 100%;
+    }
+
+    &:not(:first-child) {
+      width: calc(50% - 10px);
+
+      @include b($mobile-md) {
+        width: 100%;
+      }
+
+      &::ng-deep .provider-panel__amount {
+        width: 100%;
+      }
+    }
+
+    &:not(:nth-child(2n+1)):last-child {
+      width: 100%;
+
+      ::ng-deep .provider-panel__body {
+        flex-direction: row;
+      }
+    }
+  }
+
+  &__toggler {
+    display: flex;
+    grid-gap: 8px;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    color: var(--form-rubic-text-color);
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+
+    img {
+      position: relative;
+      top: -1px;
+
+      width: 13px;
+
+      &.reverted {
+        transform: rotate(180deg);
+      }
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

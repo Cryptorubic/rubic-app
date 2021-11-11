@@ -17,7 +17,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import BigNumber from 'bignumber.js';
+import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 
 type TokenType = 'from' | 'to';
 
@@ -43,8 +43,6 @@ export class SwapsFormComponent implements OnInit {
   public autoRefresh: boolean;
 
   public allowRefresh: boolean = true;
-
-  public maxGasFee: BigNumber;
 
   public onRefreshTrade = new Subject<void>();
 
@@ -72,6 +70,8 @@ export class SwapsFormComponent implements OnInit {
 
   public isMobile$: Observable<boolean>;
 
+  public currentInstantTradeInfo: InstantTradeInfo;
+
   public get isInstantTrade(): boolean {
     return this.swapsService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
@@ -87,8 +87,7 @@ export class SwapsFormComponent implements OnInit {
   public get allowTrade(): boolean {
     const form = this.swapFormService.inputValue;
     return Boolean(
-      form.fromAmount &&
-        form.fromAmount.gt(0) &&
+      form.fromAmount?.gt(0) &&
         form.fromBlockchain &&
         form.toBlockchain &&
         form.fromToken &&
@@ -393,7 +392,7 @@ export class SwapsFormComponent implements OnInit {
     }
   }
 
-  public async revert(): Promise<void> {
+  public async revert() {
     const formControls = this.swapFormService.commonTrade.controls;
     const { fromBlockchain, toBlockchain, fromToken, toToken } = formControls.input.value;
     const { toAmount } = formControls.output.value;
