@@ -60,7 +60,7 @@ export class PromoCodeApiService {
    * @param promoCodeText text to validate.
    * @param [autoRevalidateIfAccepted = false] if true and promo code status is accepted, sets interval to refresh promo code data.
    * @param [revalidationTimeout = 5000] promo code data refreshing interval.
-   * @returns string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data.
+   * @return string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data.
    */
   public validatePromoCode(
     promoCodeText: string,

@@ -110,7 +110,7 @@ export class GasRefundService {
    * Calculates the proof for a refund, sends a refund transaction. If successful, notifies the backend of a successful refund.
    * @param promotionId promotion id to refund.
    * @param onTransactionHash a function to be called after sending a refund transaction.
-   * @returns stream that emits the transaction hash once and completes.
+   * @return stream that emits the transaction hash once and completes.
    */
   public refund(
     promotionId: number,
@@ -140,7 +140,7 @@ export class GasRefundService {
 
   /**
    * Checks the network selected in the wallet for compliance with the contract network, and switches the network if necessary.
-   * @returns is the correct network selected as a result.
+   * @return is the correct network selected as a result.
    */
   private checkChain(): Promise<boolean> {
     if (this.providerConnector.networkName !== this.refundBlockchain) {
@@ -155,7 +155,7 @@ export class GasRefundService {
    * @param amount BRBC amount to refund in wei.
    * @param rootData root index and root hash.
    * @param onTransactionHash  a function to be called after sending a refund transaction.
-   * @returns refund promise resolved by transaction receipt.
+   * @return refund promise resolved by transaction receipt.
    */
   private async sendRefund(
     proof: string[],

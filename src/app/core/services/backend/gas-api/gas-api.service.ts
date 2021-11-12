@@ -20,7 +20,7 @@ export class GasApiService {
   /**
    * Gets minimum gas price for blockchain to use it in transactions.
    * @param blockchain Blockchain to get minimum gas price for.
-   * @returns Observable<BigNumber> Minimum gas price in Wei.
+   * @return Observable<BigNumber> Minimum gas price in Wei.
    */
   @Cacheable({
     maxAge: 15_000

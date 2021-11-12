@@ -20,9 +20,10 @@ import { defaultSort } from '@taiga-ui/addon-table';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { first, mergeMap, takeUntil } from 'rxjs/operators';
+import { catchError, first, mergeMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { NoDataMyTradesError } from '@core/errors/models/my-trades/no-data-my-trades-error';
 
 const DESKTOP_WIDTH = 1240;
 
@@ -61,16 +62,23 @@ export class MyTradesComponent implements OnInit {
     this.counterNotificationsService.resetCounter();
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
 
-    this.myTradesService.tableTrades$.pipe(takeUntil(this.destroy$)).subscribe(trades => {
-      if (this.authService.user) {
-        this.updateTableData(trades);
-      }
-    });
+    this.myTradesService.tableTrades$
+      .pipe(
+        catchError(() => {
+          this.errorsService.catch(new NoDataMyTradesError());
+          return of([]);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(trades => {
+        if (this.authService.user) {
+          this.updateTableData(trades);
+        }
+      });
 
     this.authService
       .getCurrentUser()
       .pipe(
-        takeUntil(this.destroy$),
         watch(this.cdr),
         mergeMap(user => {
           this.walletAddress = user?.address || null;
@@ -83,7 +91,8 @@ export class MyTradesComponent implements OnInit {
           this.tableData$.next([]);
           this.loading = false;
           return of(undefined);
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -145,7 +154,7 @@ export class MyTradesComponent implements OnInit {
     };
 
     this.myTradesService
-      .depositPolygonBridgeTradeAfterCheckpoint(trade.transactionHash, onTransactionHash)
+      .depositPolygonBridgeTradeAfterCheckpoint(trade.fromTransactionHash, onTransactionHash)
       .subscribe(
         async _receipt => {
           tradeInProgressSubscription$.unsubscribe();

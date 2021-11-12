@@ -59,7 +59,7 @@ export class AuthService {
 
   /**
    * Ger current user as observable.
-   * @returns Observable<UserInterface> User.
+   * @return Observable<UserInterface> User.
    */
   public getCurrentUser(): Observable<UserInterface> {
     return this.currentUser$.asObservable();

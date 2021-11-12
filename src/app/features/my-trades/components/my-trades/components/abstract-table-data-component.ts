@@ -56,13 +56,16 @@ export abstract class AbstractTableDataComponent {
     if (!trade) {
       return '';
     }
+
+    const transactionHash = trade.toTransactionHash || trade.fromTransactionHash;
+
+    const blockchain = trade.toTransactionHash
+      ? trade.toToken.blockchain
+      : trade.fromToken?.blockchain;
+
     return (
       trade.transactionHashScanUrl ||
-      this.scannerLinkPipe.transform(
-        trade.transactionHash,
-        trade.fromToken.blockchain,
-        ADDRESS_TYPE.TRANSACTION
-      )
+      this.scannerLinkPipe.transform(transactionHash, blockchain, ADDRESS_TYPE.TRANSACTION)
     );
   }
 

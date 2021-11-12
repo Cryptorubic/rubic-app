@@ -30,6 +30,11 @@ export class BridgeApiService {
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
 
+  /**
+   * Gets user's bridges transactions.
+   * @param walletAddress User's wallet address.
+   * @return Observable Trade object.
+   */
   public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
     return this.httpService
       .get('bridges/transactions', { walletAddress: walletAddress.toLowerCase(), t: Date.now() })
@@ -40,6 +45,11 @@ export class BridgeApiService {
       );
   }
 
+  /**
+   * Parses bridge trade api response.
+   * @param trade Trade from bridge api response.
+   * @return TableTrade Parsed trade object.
+   */
   private parseTradeApiToTableTrade(trade: BridgeTableTradeApi): TableTrade {
     const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
@@ -53,7 +63,9 @@ export class BridgeApiService {
     }
 
     return {
-      transactionHash: trade.transaction_id,
+      transactionId: trade.transaction_id,
+      fromTransactionHash: trade.fromTransactionHash,
+      toTransactionHash: trade.toTransactionHash,
       status,
       provider: trade.type,
       fromToken: {
@@ -72,6 +84,12 @@ export class BridgeApiService {
     };
   }
 
+  /**
+   * Makes POST request to add transaction to database.
+   * @param binanceTransactionId ID of transaction in BSC.
+   * @param ethSymbol From token symbol.
+   * @param bscSymbol To token symbol.
+   */
   public postPanamaTransaction(
     binanceTransactionId: string,
     ethSymbol: string,
@@ -84,46 +102,40 @@ export class BridgeApiService {
       bscSymbol
     };
 
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions', body).subscribe(
-        () => {
-          resolve();
-        },
-        (error: unknown) => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
+  /**
+   * Makes POST request to add transaction to database.
+   * @param fromBlockchain From blockchain name.
+   * @param transactionHash Hash of transaction.
+   * @param actualFromAmount Amount of tokens sent.
+   * @param walletFromAddress User's wallet address.
+   */
   public postRubicTransaction(
     fromBlockchain: BLOCKCHAIN_NAME,
     transactionHash: string,
-    fromAmount: string,
+    actualFromAmount: string,
     walletFromAddress: string
   ): Promise<void> {
     const body = {
       type: 'swap_rbc',
       fromNetwork: fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 1 : 2,
       transaction_id: transactionHash,
-      fromAmount,
+      actualFromAmount,
       walletFromAddress
     };
 
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions', body).subscribe(
-        () => {
-          resolve();
-        },
-        (error: unknown) => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
+  /**
+   * Makes POST request to add transaction to database.
+   * @param bridgeTrade Trade data object.
+   * @param status Trade transaction status.
+   * @param transactionHash Hash of transaction.
+   * @param userAddress User's wallet address.
+   */
   public postPolygonTransaction(
     bridgeTrade: BridgeTrade,
     status: TRANSACTION_STATUS,
@@ -146,43 +158,39 @@ export class BridgeApiService {
       walletDepositAddress: '0xBbD7cBFA79faee899Eaf900F13C9065bF03B1A74'
     };
 
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions', body).subscribe(
-        () => {
-          resolve();
-        },
-        (error: unknown) => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
+  /**
+   * Makes PATCH request for update polygon bridge transaction in database.
+   * @param burnTransactionHash Transaction hash for burn.
+   * @param newTransactionHash New Transaction hash.
+   * @param status Trade transaction status.
+   */
   public patchPolygonTransaction(
     burnTransactionHash: string,
     newTransactionHash: string,
     status: TRANSACTION_STATUS
   ): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.httpService
-        .patch(
-          'bridges/transactions',
-          {
-            second_transaction_id: newTransactionHash,
-            status
-          },
-          {
-            transaction_id: burnTransactionHash
-          }
-        )
-        .subscribe(resolve, (error: unknown) => {
-          console.error(error);
-          reject(error);
-        });
-    });
+    return this.httpService
+      .patch<void>(
+        'bridges/transactions',
+        {
+          type: 'polygon',
+          to_transaction_hash: newTransactionHash,
+          status
+        },
+        {
+          transaction_id: burnTransactionHash
+        }
+      )
+      .toPromise();
   }
 
+  /**
+   * Makes POST request to add transaction to database.
+   * @param transactionHash Transaction hash.
+   */
   public postXDaiTransaction(transactionHash: string): Promise<void> {
     const body = {
       type: 'xdai',
@@ -190,19 +198,14 @@ export class BridgeApiService {
       transaction_id: transactionHash
     };
 
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions', body).subscribe(
-        () => {
-          resolve();
-        },
-        (error: unknown) => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
+  /**
+   * Makes POST request to add transaction to database.
+   * @param transactionHash Transaction hash.
+   * @param fromBlockchain From blockchain name.
+   */
   public postEvoTransaction(
     transactionHash: string,
     fromBlockchain: BLOCKCHAIN_NAME
@@ -214,19 +217,15 @@ export class BridgeApiService {
       transaction_id: transactionHash
     };
 
-    return new Promise<void>((resolve, reject) => {
-      this.httpService.post('bridges/transactions', body).subscribe(
-        () => {
-          resolve();
-        },
-        (error: unknown) => {
-          console.error(error);
-          reject(error);
-        }
-      );
-    });
+    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
+  /**
+   * Makes POST request for notify bridge bot.
+   * @param bridgeTrade Trade data object.
+   * @param transactionHash Hash of transaction.
+   * @param walletAddress User's wallet address.
+   */
   public notifyBridgeBot(
     bridgeTrade: BridgeTrade,
     transactionHash: string,
@@ -250,6 +249,11 @@ export class BridgeApiService {
       .toPromise();
   }
 
+  /**
+   * Gets tokens price.
+   * @param bridgeTokenPair Object with info about pair of tokens.
+   * @return number Token price.
+   */
   private getTokenPrice(bridgeTokenPair: BridgeTokenPair): Observable<number> {
     return this.tokensService.tokens$.pipe(
       first(),

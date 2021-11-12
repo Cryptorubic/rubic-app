@@ -23,6 +23,7 @@ import {
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { compareAddresses } from '@shared/utils/utils';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -331,7 +332,7 @@ export class TokensService {
       TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
     );
     return this.coingeckoApiService
-      .getNativeCoinPriceInUsdByCoingecko(blockchain)
+      .getNativeCoinPrice(blockchain)
       .pipe(map(price => price || nativeCoin?.price))
       .toPromise();
   }
@@ -349,7 +350,7 @@ export class TokensService {
     searchBackend = false
   ): Promise<number | undefined> {
     return this.coingeckoApiService
-      .getTokenPrice(token)
+      .getCommonTokenOrNativeCoinPrice(token)
       .pipe(
         map(tokenPrice => {
           if (tokenPrice) {
@@ -527,5 +528,19 @@ export class TokensService {
    */
   private fetchFavoriteTokens(): LocalToken[] {
     return this.store.getItem('favoriteTokens') || [];
+  }
+
+  /**
+   * Gets symbol of token, using currently stored tokens or web3 request.
+   */
+  public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
+    const foundToken = this.tokens.find(
+      token => token.blockchain === blockchain && compareAddresses(token.address, tokenAddress)
+    );
+    if (foundToken) {
+      return foundToken?.symbol;
+    }
+    const web3Public = this.web3PublicService[blockchain];
+    return web3Public.getTokenSymbol(tokenAddress);
   }
 }

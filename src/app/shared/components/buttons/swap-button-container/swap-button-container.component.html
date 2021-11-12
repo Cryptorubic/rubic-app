@@ -24,21 +24,21 @@
 
   <ng-container *ngIf="!needLogin && status !== TRADE_STATUS.OLD_TRADE_DATA">
     <ng-container *ngLet="errorText$ | async as errorText">
-      <ng-container *ngIf="errorText === null || loading">
+      <ng-container *ngIf="errorText === null || checkingOnErrors">
         <!-- with approve button -->
         <ng-container *ngIf="needApprove">
           <ng-container *noFrame>
             <div class="buttons">
               <app-rubic-button
                 [id]="idPrefix + 'approve'"
+                appearance="secondary"
                 [loading]="
                   status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
                   status === TRADE_STATUS.LOADING ||
-                  loading
+                  checkingOnErrors
                 "
                 [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
                 (onClick)="approveClick.emit()"
-                appearance="secondary"
               >
                 Approve
               </app-rubic-button>
@@ -46,9 +46,8 @@
               <app-swap-button
                 [idPrefix]="idPrefix"
                 [status]="status"
-                [loading]="loading"
+                [checkingOnErrors]="checkingOnErrors"
                 [buttonText]="buttonText"
-                [formService]="formService"
                 (onClick)="swapClick.emit()"
               ></app-swap-button>
 
@@ -80,11 +79,12 @@
 
           <ng-container *onlyFrame>
             <app-rubic-button
+              [id]="idPrefix + 'approve'"
               appearance="secondary"
               [loading]="
                 status === TRADE_STATUS.APPROVE_IN_PROGRESS ||
                 status === TRADE_STATUS.LOADING ||
-                loading
+                checkingOnErrors
               "
               [disabled]="status !== TRADE_STATUS.READY_TO_APPROVE"
               (onClick)="approveClick.emit()"
@@ -98,15 +98,14 @@
           *ngIf="!needApprove"
           [idPrefix]="idPrefix"
           [status]="status"
-          [loading]="loading"
+          [checkingOnErrors]="checkingOnErrors"
           [buttonText]="buttonText"
-          [formService]="formService"
           (onClick)="swapClick.emit()"
         ></app-swap-button>
       </ng-container>
 
       <ng-container *ngLet="isMobile$ | async as isMobile">
-        <ng-container *ngIf="errorText && !loading">
+        <ng-container *ngIf="errorText && !checkingOnErrors">
           <!-- switch network button -->
           <ng-container
             *ngIf="errorType[ERROR_TYPE.WRONG_BLOCKCHAIN] && allowChangeNetwork && !isMobile"

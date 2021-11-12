@@ -1,0 +1,14 @@
+@import '../../styles/styles';
+
+.rate-value {
+  grid-gap: 8px;
+}
+
+.route-value {
+  grid-gap: 0;
+
+  &__arrow {
+    width: 17px;
+    margin: 0 9px 0 10px;
+  }
+}

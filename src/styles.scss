@@ -62,21 +62,26 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-  /* stylelint-disable */
+  /* stylelint-disable-next-line */
   -moz-appearance: textfield;
 }
 
 button {
-  cursor: pointer;
+  padding: 0;
+
+  background: none;
   border: none;
+  cursor: pointer;
+
 }
 
 mainiframeSettingsFormcontent {
+  display: flex;
+  justify-content: center;
+
   width: 100%;
   max-width: 1440px;
   padding: 0 20px 60px;
-  display: flex;
-  justify-content: center;
 }
 
 .noscroll {
@@ -131,10 +136,6 @@ tui-dropdown-box {
   position: absolute;
   top: 54px;
   right: 54px;
-  @include b(1240) {
-    top: 45px;
-    right: 109px;
-  }
   z-index: -100;
 
   display: block;
@@ -146,15 +147,23 @@ tui-dropdown-box {
 
   transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
+  @include b(1240) {
+    top: 45px;
+    right: 109px;
+  }
+
   &::after {
     position: absolute;
-    content: '';
+
     width: 2px;
     height: 2px;
+
     background-color: #ebf1ec;
 
-    transition-property: background-color;
     transition-delay: 0.3s;
+    transition-property: background-color;
+
+    content: '';
   }
 
   &_active {
@@ -179,23 +188,24 @@ body.default-iframe-background {
 #loader {
   position: fixed;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
+  left: 0;
+  z-index: 2147483001; /* cover carrot chat */
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   background-color: $backgrond-black;
-  z-index: 2147483001; /* cover carrot chat */
   opacity: 1;
 
   transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
 
   &.disabled {
-    opacity: 0;
     z-index: -10000;
+
+    opacity: 0;
   }
 
   &:not(.disabled) ~ * {
@@ -213,9 +223,17 @@ body.default-iframe-background {
 }
 
 @keyframes loader-icon-fadein {
-  0%   { opacity:1; }
-  50%  { opacity:0.3; }
-  100% { opacity:1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @include b($mobile-md) {
@@ -226,6 +244,7 @@ body.default-iframe-background {
 
 [id^='tui-hint_price-impact'] {
   color: var(--tui-text-01) !important;
+
   background: rgb(238, 238, 238) !important;
 }
 

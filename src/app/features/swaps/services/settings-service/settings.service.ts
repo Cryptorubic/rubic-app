@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { AbstractControlOf, ControlsValue } from '@ngneat/reactive-forms/lib/types';
+import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
@@ -30,9 +30,9 @@ export interface CcrSettingsForm {
 }
 
 export interface SettingsForm {
-  [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: ItSettingsForm;
-  [SWAP_PROVIDER_TYPE.BRIDGE]: BridgeSettingsForm;
-  [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: CcrSettingsForm;
+  [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: FormGroup<ItSettingsForm>;
+  [SWAP_PROVIDER_TYPE.BRIDGE]: FormGroup<BridgeSettingsForm>;
+  [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormGroup<CcrSettingsForm>;
 }
 
 @Injectable({
@@ -45,7 +45,7 @@ export class SettingsService {
 
   public settingsForm: FormGroup<SettingsForm>;
 
-  public get instantTrade(): AbstractControlOf<ItSettingsForm> {
+  public get instantTrade(): FormGroup<ItSettingsForm> {
     return this.settingsForm.controls.INSTANT_TRADE;
   }
 
@@ -57,7 +57,7 @@ export class SettingsService {
     return this.instantTrade.valueChanges;
   }
 
-  public get bridge(): AbstractControlOf<BridgeSettingsForm> {
+  public get bridge(): FormGroup<BridgeSettingsForm> {
     return this.settingsForm.controls.BRIDGE;
   }
 
@@ -69,7 +69,7 @@ export class SettingsService {
     return this.bridge.valueChanges;
   }
 
-  public get crossChainRouting(): AbstractControlOf<CcrSettingsForm> {
+  public get crossChainRouting(): FormGroup<CcrSettingsForm> {
     return this.settingsForm.controls.CROSS_CHAIN_ROUTING;
   }
 
@@ -131,10 +131,10 @@ export class SettingsService {
         rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
         autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh)
       }),
-      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup({
+      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({
         tronAddress: new FormControl<string>('')
       }),
-      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup({
+      [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsForm>({
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance
         ),
