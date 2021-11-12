@@ -551,6 +551,7 @@ export class TokensService {
           this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
         });
     } else {
+      callback();
       this.errorsService.catch(new WalletError());
     }
   }
@@ -572,6 +573,7 @@ export class TokensService {
           this._favoriteTokens$.next(filteredTokens);
         });
     } else {
+      callback();
       this.errorsService.catch(new WalletError());
     }
   }
