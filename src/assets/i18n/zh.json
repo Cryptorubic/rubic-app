@@ -72,7 +72,8 @@
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
-    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance."
+    "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
+    "NoDataMyTradesError": "糟糕，出了點問題，請嘗試重新加載頁面。 如果您在重新加載後仍然遇到此問題，請聯繫我們的支持。"
   },
   "navigation": {
     "about": "关于",

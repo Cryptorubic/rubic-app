@@ -135,7 +135,7 @@ export class InstantTradesApiService {
     }
 
     return {
-      transactionHash: tradeApi.hash,
+      fromTransactionHash: tradeApi.hash,
       status: tradeApi.status,
       provider,
       fromToken: getTableToken('from'),
