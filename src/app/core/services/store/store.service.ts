@@ -37,24 +37,6 @@ export class StoreService {
   }
 
   /**
-   * Set whole store data.
-   * @param data Store data.
-   */
-  public setData(data: Partial<Store>): void {
-    const newData = {
-      ...this.storageSubject$.value,
-      ...data
-    };
-    const jsonData = JSON.stringify(newData);
-    if (!this.isIframe) {
-      this.localStorage?.setItem(this.storageKey, jsonData);
-    } else {
-      this.document.cookie = `${this.storageKey}=${jsonData}`;
-    }
-    this.storageSubject$.next(newData);
-  }
-
-  /**
    * Set some store data by key.
    * @param key Store object key.
    * @param value Value to store.
@@ -64,15 +46,19 @@ export class StoreService {
       ...this.storageSubject$.value,
       [key]: value
     };
+    try {
+      const jsonData = JSON.stringify(newData);
 
-    const jsonData = JSON.stringify(newData);
-
-    if (!this.isIframe) {
-      this.localStorage?.setItem(this.storageKey, jsonData);
-    } else {
-      this.document.cookie = `${this.storageKey}=${jsonData}`;
+      if (!this.isIframe) {
+        this.localStorage?.setItem(this.storageKey, jsonData);
+      } else {
+        this.document.cookie = `${this.storageKey}=${jsonData}`;
+      }
+    } catch (err: unknown) {
+      console.debug(err);
+    } finally {
+      this.storageSubject$.next(newData);
     }
-    this.storageSubject$.next(newData);
   }
 
   /**
@@ -88,24 +74,34 @@ export class StoreService {
    * @param isIframe Fetch data from cookies if its the iframe.
    */
   public fetchData(isIframe: boolean): Store {
-    this.isIframe = isIframe;
-    const cookie = this.cookieService.get(this.storageKey);
-    const data = JSON.parse(
-      this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
-    );
-    return (data || {}) as Store;
+    try {
+      this.isIframe = isIframe;
+      const cookie = this.cookieService.get(this.storageKey);
+      const data = JSON.parse(
+        this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
+      );
+      return (data || {}) as Store;
+    } catch (err: unknown) {
+      console.debug(err);
+      return {} as Store;
+    }
   }
 
   /**
    * Delete stored data.
    */
   public deleteData(): void {
-    if (!this.isIframe) {
-      this.localStorage?.removeItem(this.storageKey);
-    } else {
-      this.cookieService.delete(this.storageKey);
+    try {
+      if (!this.isIframe) {
+        this.localStorage?.removeItem(this.storageKey);
+      } else {
+        this.cookieService.delete(this.storageKey);
+      }
+    } catch (err: unknown) {
+      console.debug(err);
+    } finally {
+      this.storageSubject$.next(null);
     }
-    this.storageSubject$.next(null);
   }
 
   /**
@@ -117,22 +113,32 @@ export class StoreService {
       ...this.storageSubject$.value,
       [key]: undefined
     };
-    const jsonData = JSON.stringify(newData);
-    if (!this.isIframe) {
-      this.localStorage?.setItem(this.storageKey, jsonData);
-    } else {
-      this.cookieService.set(this.storageKey, jsonData);
+    try {
+      const jsonData = JSON.stringify(newData);
+      if (!this.isIframe) {
+        this.localStorage?.setItem(this.storageKey, jsonData);
+      } else {
+        this.cookieService.set(this.storageKey, jsonData);
+      }
+    } catch (err: unknown) {
+      console.debug(err);
+    } finally {
+      this.storageSubject$.next(newData);
     }
-    this.storageSubject$.next(newData);
   }
 
   /**
    * Clear all data in user storage.
    */
   public clearStorage(): void {
-    if (!this.isIframe) {
-      this.localStorage?.clear();
+    try {
+      if (!this.isIframe) {
+        this.localStorage?.clear();
+      }
+    } catch (err: unknown) {
+      console.debug(err);
+    } finally {
+      this.storageSubject$.next(null);
     }
-    this.storageSubject$.next(null);
   }
 }
