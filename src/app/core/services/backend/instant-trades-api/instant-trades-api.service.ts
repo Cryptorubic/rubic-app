@@ -77,8 +77,6 @@ export class InstantTradesApiService {
       to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
     };
 
-    console.log(tradeInfo);
-
     if (this.isTestingMode) {
       tradeInfo.network = 'ethereum-test';
     }
