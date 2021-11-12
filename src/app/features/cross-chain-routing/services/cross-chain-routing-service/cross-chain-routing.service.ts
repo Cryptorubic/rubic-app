@@ -504,32 +504,24 @@ export class CrossChainRoutingService {
     toTransitTokenBlockchain: SupportedCrossChainSwapBlockchain,
     fromTransitTokenAmount: BigNumber
   ): Promise<BigNumber> {
-    const nonRbcTransitBlockchains = [BLOCKCHAIN_NAME.AVALANCHE, BLOCKCHAIN_NAME.MOONRIVER];
-    if (
-      nonRbcTransitBlockchains.includes(fromTransitTokenBlockchain) ||
-      nonRbcTransitBlockchains.includes(toTransitTokenBlockchain)
-    ) {
-      const firstTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
-        {
-          address: this.transitTokens[fromTransitTokenBlockchain].address,
-          blockchain: fromTransitTokenBlockchain
-        },
-        true
-      );
-      const secondTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
-        {
-          address: this.transitTokens[toTransitTokenBlockchain].address,
-          blockchain: toTransitTokenBlockchain
-        },
-        true
-      );
+    const firstTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
+      {
+        address: this.transitTokens[fromTransitTokenBlockchain].address,
+        blockchain: fromTransitTokenBlockchain
+      },
+      true
+    );
+    const secondTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
+      {
+        address: this.transitTokens[toTransitTokenBlockchain].address,
+        blockchain: toTransitTokenBlockchain
+      },
+      true
+    );
 
-      return fromTransitTokenAmount
-        .multipliedBy(firstTransitTokenPrice)
-        .dividedBy(secondTransitTokenPrice);
-    }
-
-    return fromTransitTokenAmount;
+    return fromTransitTokenAmount
+      .multipliedBy(firstTransitTokenPrice)
+      .dividedBy(secondTransitTokenPrice);
   }
 
   /**
