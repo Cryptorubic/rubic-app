@@ -73,7 +73,8 @@
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
-    "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요."
+    "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요.",
+    "tradingIsNotAvailable": "거래 불가"
   },
   "navigation": {
     "about": "소개",

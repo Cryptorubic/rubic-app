@@ -19,20 +19,20 @@ import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 export class SwapsService {
   private _swapProviderType$ = new BehaviorSubject<SWAP_PROVIDER_TYPE>(undefined);
 
-  private _availableTokens = new BehaviorSubject<List<TokenAmount>>(undefined);
+  private _availableTokens$ = new BehaviorSubject<List<TokenAmount>>(undefined);
 
-  private _bridgeTokenPairsByBlockchainsArray = new BehaviorSubject<
+  private _bridgeTokenPairsByBlockchainsArray$ = new BehaviorSubject<
     List<BridgeTokenPairsByBlockchains>
   >(undefined);
 
   private intervalId: NodeJS.Timeout;
 
-  get availableTokens(): Observable<List<TokenAmount>> {
-    return this._availableTokens.asObservable();
+  get availableTokens$(): Observable<List<TokenAmount>> {
+    return this._availableTokens$.asObservable();
   }
 
-  get bridgeTokenPairsByBlockchainsArray(): Observable<List<BridgeTokenPairsByBlockchains>> {
-    return this._bridgeTokenPairsByBlockchainsArray.asObservable();
+  get bridgeTokenPairsByBlockchainsArray$(): Observable<List<BridgeTokenPairsByBlockchains>> {
+    return this._bridgeTokenPairsByBlockchainsArray$.asObservable();
   }
 
   get swapMode$(): Observable<SWAP_PROVIDER_TYPE | null> {
@@ -129,10 +129,10 @@ export class SwapsService {
           ))
       );
 
-      this._bridgeTokenPairsByBlockchainsArray.next(
+      this._bridgeTokenPairsByBlockchainsArray$.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)
       );
-      this._availableTokens.next(List(updatedTokenAmounts));
+      this._availableTokens$.next(List(updatedTokenAmounts));
     });
   }
 
@@ -169,7 +169,7 @@ export class SwapsService {
         this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
       }
     } else {
-      this.bridgeTokenPairsByBlockchainsArray
+      this.bridgeTokenPairsByBlockchainsArray$
         .pipe(first())
         .subscribe(bridgeTokenPairsByBlockchainsArray => {
           const foundBridgeToken = bridgeTokenPairsByBlockchainsArray

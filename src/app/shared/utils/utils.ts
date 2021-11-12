@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { map, switchMap } from 'rxjs/operators';
-import { Observable, of, OperatorFunction } from 'rxjs';
+import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface MinimalToken {
@@ -72,4 +72,24 @@ export function switchTap<T>(handler: (arg: T) => Observable<unknown>): Operator
   return switchMap(arg => {
     return handler(arg).pipe(map(() => arg));
   });
+}
+
+/**
+ * Combination of switchMap and iif.
+ * @param condition Condition which Observable should be chosen.
+ * @param trueResultFn An Observable that will be subscribed if condition is true.
+ * @param falseResultFn An Observable that will be subscribed if condition is false.
+ */
+export function switchIif<A = void, T = never, F = never>(
+  condition: (args: A) => boolean,
+  trueResultFn: (args: A) => Observable<T>,
+  falseResultFn: (args: A) => Observable<F>
+): OperatorFunction<A, T | F> {
+  return switchMap((args: A) =>
+    iif(
+      () => condition(args),
+      defer(() => trueResultFn(args)),
+      defer(() => falseResultFn(args))
+    )
+  );
 }

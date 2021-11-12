@@ -155,7 +155,7 @@ export class SwapButtonContainerComponent implements OnInit {
     });
   }
 
-  get errorText(): Observable<string | null> {
+  get errorText$(): Observable<string | null> {
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
     const { fromToken, fromBlockchain } = this.formService.inputValue;
@@ -276,7 +276,7 @@ export class SwapButtonContainerComponent implements OnInit {
         this.cdr.markForCheck();
       });
 
-    this.providerConnectorService.$networkChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.providerConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.checkWrongBlockchainError();
     });
   }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="(promoCodesExists | async) === true">
+<ng-container *ngIf="(promoCodesExists$ | async) === true">
   <div
     *ngLet="isLoggedIn$ | async as isLoggedIn"
     class="promo-code-wrapper"

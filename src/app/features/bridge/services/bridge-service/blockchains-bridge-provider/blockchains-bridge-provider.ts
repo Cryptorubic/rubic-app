@@ -8,13 +8,13 @@ import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import BigNumber from 'bignumber.js';
 
 export abstract class BlockchainsBridgeProvider {
-  protected tokenPairs$ = new Subject<List<BridgeTokenPair>>();
+  protected _tokenPairs$ = new Subject<List<BridgeTokenPair>>();
 
   /**
    * list of tokens that can be used in a bridge
    */
-  public get tokenPairs(): Observable<List<BridgeTokenPair>> {
-    return this.tokenPairs$.asObservable();
+  public get tokenPairs$(): Observable<List<BridgeTokenPair>> {
+    return this._tokenPairs$.asObservable();
   }
 
   /**

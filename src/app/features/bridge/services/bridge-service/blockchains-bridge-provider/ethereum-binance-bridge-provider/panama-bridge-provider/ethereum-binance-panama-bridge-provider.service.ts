@@ -16,10 +16,10 @@ export class EthereumBinancePanamaBridgeProviderService extends BlockchainsBridg
   constructor(private readonly panamaBridgeProvider: PanamaBridgeProviderService) {
     super();
 
-    this.panamaBridgeProvider.tokens
+    this.panamaBridgeProvider.tokens$
       .pipe(first())
       .subscribe(tokens =>
-        this.tokenPairs$.next(
+        this._tokenPairs$.next(
           tokens.map(EthereumBinancePanamaBridgeProviderService.parsePanamaToken)
         )
       );

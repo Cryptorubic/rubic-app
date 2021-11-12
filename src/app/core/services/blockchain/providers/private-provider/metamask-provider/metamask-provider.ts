@@ -23,9 +23,11 @@ export class MetamaskProvider extends PrivateProvider {
 
   private selectedChain: string;
 
-  public readonly onAddressChanges: BehaviorSubject<string>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly onAddressChanges$: BehaviorSubject<string>;
 
-  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
 
   public get isMultiChainWallet(): boolean {
     return false;
@@ -45,13 +47,13 @@ export class MetamaskProvider extends PrivateProvider {
 
   constructor(
     web3: Web3,
-    chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>,
+    chainChange$: BehaviorSubject<IBlockchain>,
+    accountChange$: BehaviorSubject<string>,
     errorsService: ErrorsService
   ) {
     super(errorsService);
-    this.onAddressChanges = accountChange;
-    this.onNetworkChanges = chainChange;
+    this.onAddressChanges$ = accountChange$;
+    this.onNetworkChanges$ = chainChange$;
 
     const { ethereum } = window;
     if (!ethereum?.isMetaMask) {
@@ -68,7 +70,7 @@ export class MetamaskProvider extends PrivateProvider {
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+        chainChange$.next(BlockchainsInfo.getBlockchainById(chain));
         // tslint:disable-next-line:no-console
         console.info('Chain changed', chain);
       }
@@ -76,7 +78,7 @@ export class MetamaskProvider extends PrivateProvider {
     this.core.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
-        this.onAddressChanges.next(this.selectedAddress);
+        this.onAddressChanges$.next(this.selectedAddress);
         // tslint:disable-next-line:no-console
         console.info('Selected account changed to', accounts[0]);
       }
@@ -118,8 +120,8 @@ export class MetamaskProvider extends PrivateProvider {
       this.isEnabled = true;
       this.selectedChain = String(chain);
       [this.selectedAddress] = accounts;
-      this.onNetworkChanges.next(this.getNetwork());
-      this.onAddressChanges.next(this.selectedAddress);
+      this.onNetworkChanges$.next(this.getNetwork());
+      this.onAddressChanges$.next(this.selectedAddress);
     } catch (error) {
       if (
         error.code === 4001 ||
@@ -145,8 +147,8 @@ export class MetamaskProvider extends PrivateProvider {
   }
 
   public deActivate(): void {
-    this.onAddressChanges.next(null);
-    this.onNetworkChanges.next(null);
+    this.onAddressChanges$.next(null);
+    this.onNetworkChanges$.next(null);
     this.isEnabled = false;
   }
 

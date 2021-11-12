@@ -29,6 +29,8 @@ import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { RubicError } from '@core/errors/models/RubicError';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 
 interface PanamaStatusResponse {
@@ -251,8 +253,8 @@ export class MyTradesService {
     return this.ethereumPolygonBridgeService
       .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
       .pipe(
-        catchError(err => {
-          if (err.code === 4001) {
+        catchError((err: unknown) => {
+          if ((err as RubicError<ERROR_TYPE>)?.code === 4001) {
             return throwError(new UserRejectError());
           }
           return throwError(err);
