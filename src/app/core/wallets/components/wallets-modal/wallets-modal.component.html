@@ -8,7 +8,7 @@
         <ng-container *ngIf="provider.display">
           <button
             *ngIf="!shouldRenderAsLink(provider.value); else deepLink"
-            [disabled]="($walletsLoading | async) ? 'disabled' : false"
+            [disabled]="(walletsLoading$ | async) ? 'disabled' : false"
             class="modal__provider-button"
             (click)="connectProvider(provider.value)"
           >

@@ -10,9 +10,9 @@ import { map } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MyTradesPageComponent {
-  public readonly walletConnected: Observable<boolean>;
+  public readonly walletConnected$: Observable<boolean>;
 
   constructor(authService: AuthService) {
-    this.walletConnected = authService.getCurrentUser().pipe(map(user => !!user?.address));
+    this.walletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
   }
 }

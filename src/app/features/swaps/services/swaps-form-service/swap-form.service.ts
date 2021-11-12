@@ -1,3 +1,4 @@
+/* eslint-disable rxjs/finnish */
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import BigNumber from 'bignumber.js';

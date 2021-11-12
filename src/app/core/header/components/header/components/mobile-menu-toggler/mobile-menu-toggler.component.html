@@ -2,7 +2,7 @@
   class="navbar-toggler"
   type="button"
   (click)="toggleMenu()"
-  [ngClass]="{ 'navbar-toggler_opened': $isMobileMenuOpened | async }"
+  [ngClass]="{ 'navbar-toggler_opened': isMobileMenuOpened$ | async }"
   aria-label="Open menu"
 >
   <span class="navbar-toggler__icon-bar"></span>

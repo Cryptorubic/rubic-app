@@ -54,7 +54,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   ) {
     super();
     this.loadTokens().subscribe(tokens => {
-      this.tokenPairs$.next(tokens);
+      this._tokenPairs$.next(tokens);
       this.evoTokenPairs = tokens.toArray();
     });
   }
@@ -187,7 +187,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
         );
       }),
       timeout(3000),
-      catchError(err => {
+      catchError((err: unknown) => {
         console.error(err);
         return of({ evoTokens: [], config: {} });
       })

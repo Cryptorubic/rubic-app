@@ -23,9 +23,11 @@ export class WalletConnectProvider extends PrivateProvider {
 
   private selectedChain: string;
 
-  public readonly onAddressChanges: BehaviorSubject<string>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly onAddressChanges$: BehaviorSubject<string>;
 
-  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
     return !!this.core;
@@ -47,14 +49,14 @@ export class WalletConnectProvider extends PrivateProvider {
 
   constructor(
     web3: Web3,
-    chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>,
+    chainChange$: BehaviorSubject<IBlockchain>,
+    accountChange$: BehaviorSubject<string>,
     errorsService: ErrorsService
   ) {
     super(errorsService);
     this.isEnabled = false;
-    this.onAddressChanges = accountChange;
-    this.onNetworkChanges = chainChange;
+    this.onAddressChanges$ = accountChange$;
+    this.onNetworkChanges$ = chainChange$;
 
     const rpcParams: Record<typeof networks[number]['id'], string> = networks
       .filter(network => isFinite(network.id))
@@ -74,14 +76,14 @@ export class WalletConnectProvider extends PrivateProvider {
     this.core.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        chainChange.next(BlockchainsInfo.getBlockchainById(chain));
+        chainChange$.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
       }
     });
     this.core.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
-        this.onAddressChanges.next(this.selectedAddress);
+        this.onAddressChanges$.next(this.selectedAddress);
         console.info('Selected account changed to', accounts[0]);
       }
     });
@@ -107,8 +109,8 @@ export class WalletConnectProvider extends PrivateProvider {
       this.isEnabled = true;
       this.selectedAddress = address;
       this.selectedChain = String(this.core.chainId);
-      this.onNetworkChanges.next(this.getNetwork());
-      this.onAddressChanges.next(address);
+      this.onNetworkChanges$.next(this.getNetwork());
+      this.onAddressChanges$.next(address);
     } catch (error) {
       throw new WalletlinkError();
     }
@@ -116,8 +118,8 @@ export class WalletConnectProvider extends PrivateProvider {
 
   public async deActivate(): Promise<void> {
     await this.core.close();
-    this.onAddressChanges.next(null);
-    this.onNetworkChanges.next(null);
+    this.onAddressChanges$.next(null);
+    this.onNetworkChanges$.next(null);
     this.isEnabled = false;
   }
 
