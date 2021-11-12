@@ -584,10 +584,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver теперь доступна для Multi-Chain и On-Chain свапов.",
+    "text": "Rubic Multi-Chain запустился! Совершайте обмены между 9,500 токенами между Ethereum, BSC, Polygon и  Avalanche.",
     "link": "Попробуйте уже сейчас!"
   },
-  "buyToken": "Купить MOVR",
+  "buyToken": "Купить RBC",
   "volume": {
     "title": "Накопленный Объем Операций",
     "instantTrades": "Swaps",

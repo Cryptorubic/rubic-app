@@ -584,10 +584,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver is now available for Multi-Chain and On-Chain Swaps.",
-    "link": "Try it today!"
+    "text": "Rubic Cross-Chain has launched! Swap between 9,500 tokens across Ethereum, BSC, Polygon & Avalanche.",
+    "link": "Try it now!"
   },
-  "buyToken": "Buy MOVR",
+  "buyToken": "Buy RBC",
   "volume": {
     "title": "Accumulated Transaction Volume",
     "instantTrades": "Swaps",
