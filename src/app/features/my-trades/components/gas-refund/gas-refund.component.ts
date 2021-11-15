@@ -71,8 +71,8 @@ export class GasRefundComponent {
     this.gasRefundService
       .refund(promoId, onTransactionHash)
       .pipe(
-        catchError(err => {
-          this.errorsService.catchAnyError(err);
+        catchError((err: unknown) => {
+          this.errorsService.catchAnyError(err as Error);
           this.notificationSubscription$?.unsubscribe();
           return EMPTY;
         }),

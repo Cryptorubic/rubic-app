@@ -48,7 +48,7 @@ export class PromoCodeApiService {
       .get<PromoCodesCheckExistenceResponse>(`${PromoCodeApiService.apiUrl}/${endpoint}`)
       .pipe(
         map(response => response.exists),
-        catchError(e => {
+        catchError((e: unknown) => {
           console.error(e);
           return of(false);
         })
@@ -116,7 +116,7 @@ export class PromoCodeApiService {
       })
       .pipe(
         map(response => this.parseApiResponse(promoCodeText, response)),
-        catchError(err => {
+        catchError((err: unknown) => {
           console.error(err);
           return of({
             status: 'wrong' as const,

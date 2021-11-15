@@ -34,12 +34,12 @@
     <div class="container">
       <span class="span-title-section">{{ 'aboutPage.contract.title' | translate }}</span>
       <div
-        *ngIf="($isMobile | async) === false"
+        *ngIf="(isMobile$ | async) === false"
         class="instruction-image"
         [inlineSVG]="'assets/images/about/desktop-instruction.svg'"
       ></div>
       <div
-        *ngIf="$isMobile | async"
+        *ngIf="isMobile$ | async"
         class="instruction-image"
         [inlineSVG]="'assets/images/about/mobile-instruction.svg'"
       ></div>

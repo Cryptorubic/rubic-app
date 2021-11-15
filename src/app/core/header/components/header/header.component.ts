@@ -46,11 +46,11 @@ export class HeaderComponent implements AfterViewInit {
 
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
-  public readonly $isMobileMenuOpened: Observable<boolean>;
+  public readonly isMobileMenuOpened$: Observable<boolean>;
 
-  public readonly $isMobile: Observable<boolean>;
+  public readonly isMobile$: Observable<boolean>;
 
-  public $currentUser: Observable<UserInterface>;
+  public currentUser$: Observable<UserInterface>;
 
   public countNotifications$: Observable<number>;
 
@@ -87,9 +87,9 @@ export class HeaderComponent implements AfterViewInit {
     this.loadUser();
     // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();
-    this.$currentUser = this.authService.getCurrentUser();
-    this.$isMobileMenuOpened = this.headerStore.getMobileMenuOpeningStatus();
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
+    this.currentUser$ = this.authService.getCurrentUser();
+    this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
+    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
       this.setNotificationPosition();

@@ -39,26 +39,26 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     @Inject(Injector) private injector: Injector,
     @Inject(WINDOW) private readonly window: Window
   ) {
-    this.$isMobile = this.headerStore.getMobileDisplayStatus();
-    this.$isConfirmModalOpened = this.headerStore.getConfirmModalOpeningStatus();
+    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
+    this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
         this.headerStore.setMobileMenuOpeningStatus(false);
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.$currentUser = this.authService.getCurrentUser();
+    this.currentUser$ = this.authService.getCurrentUser();
   }
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
   private clicks = 0;
 
-  public readonly $isConfirmModalOpened: Observable<boolean>;
+  public readonly isConfirmModalOpened$: Observable<boolean>;
 
-  public readonly $isMobile: Observable<boolean>;
+  public readonly isMobile$: Observable<boolean>;
 
-  public readonly $currentUser: Observable<UserInterface>;
+  public readonly currentUser$: Observable<UserInterface>;
 
   public currentBlockchain: IBlockchain;
 
@@ -72,11 +72,11 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
-    this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(network => {
+    this._onNetworkChanges$ = this.providerConnectorService.networkChange$.subscribe(network => {
       this.currentBlockchain = network;
       this.cdr.detectChanges();
     });
-    this._onAddressChanges$ = this.providerConnectorService.$addressChange.subscribe(() =>
+    this._onAddressChanges$ = this.providerConnectorService.addressChange$.subscribe(() =>
       this.cdr.detectChanges()
     );
   }

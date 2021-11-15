@@ -18,6 +18,7 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
+import BigNumber from 'bignumber.js';
 
 type TokenType = 'from' | 'to';
 
@@ -44,7 +45,10 @@ export class SwapsFormComponent implements OnInit {
 
   public allowRefresh: boolean = true;
 
-  public onRefreshTrade = new Subject<void>();
+  public maxGasFee: BigNumber;
+
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public onRefreshTrade$ = new Subject<void>();
 
   private _supportedTokens: List<TokenAmount>;
 
@@ -139,8 +143,8 @@ export class SwapsFormComponent implements OnInit {
 
   private subscribeOnTokens(): void {
     combineLatest([
-      this.swapsService.availableTokens,
-      this.swapsService.bridgeTokenPairsByBlockchainsArray
+      this.swapsService.availableTokens$,
+      this.swapsService.bridgeTokenPairsByBlockchainsArray$
     ])
       .pipe(debounceTime(0), takeUntil(this.destroy$))
       .subscribe(([supportedTokens, bridgeTokenPairsByBlockchainsArray]) => {

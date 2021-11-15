@@ -88,7 +88,7 @@ export class TokensListComponent implements AfterViewInit {
    */
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     if (scroll) {
-      this.scrollSubject.next(scroll);
+      this.scrollSubject$.next(scroll);
     }
   }
 
@@ -104,7 +104,8 @@ export class TokensListComponent implements AfterViewInit {
    */
   public listAnimationState: 'hidden' | 'shown';
 
-  public readonly scrollSubject: BehaviorSubject<CdkVirtualScrollViewport>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport>;
 
   public get noFrameLink(): string {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
@@ -118,7 +119,7 @@ export class TokensListComponent implements AfterViewInit {
   ) {
     this.loading = false;
     this.pageUpdate = new EventEmitter();
-    this.scrollSubject = new BehaviorSubject(null);
+    this.scrollSubject$ = new BehaviorSubject(null);
   }
 
   ngAfterViewInit(): void {
@@ -129,9 +130,8 @@ export class TokensListComponent implements AfterViewInit {
    * Observes list scroll and fetches new tokens if needed.
    */
   private observeScroll(): void {
-    this.scrollSubject
+    this.scrollSubject$
       .pipe(
-        takeUntil(this.destroy$),
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
             debounceTime(300),
@@ -149,7 +149,8 @@ export class TokensListComponent implements AfterViewInit {
               return renderedRange.end > this.tokens.length - 30;
             })
           )
-        )
+        ),
+        takeUntil(this.destroy$)
       )
       .subscribe(() => {
         this.pageUpdate.emit();

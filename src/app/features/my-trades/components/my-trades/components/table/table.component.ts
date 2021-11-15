@@ -1,3 +1,4 @@
+/* eslint-disable rxjs/no-exposed-subjects */
 import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {

@@ -68,6 +68,7 @@ export interface CalculationResult {
   providers: [TuiDestroyService]
 })
 export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
+  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
   @Input() loading: boolean;
@@ -85,6 +86,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
@@ -206,7 +208,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       .subscribe(toToken => {
         if (
           TokensService.areTokensEqual(this.toToken, toToken) &&
-          this.toToken?.price !== toToken?.price
+          this.toToken?.price !== toToken?.price$
         ) {
           this.toToken = toToken;
           this.cdr.markForCheck();

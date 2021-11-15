@@ -16,6 +16,7 @@ import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderTy
 import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/PRICE_IMPACT_RANGE';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { combineLatest } from 'rxjs';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Component({
   selector: 'app-swap-button',
@@ -30,7 +31,8 @@ export class SwapButtonComponent implements OnInit {
   @Input() set status(status: TRADE_STATUS) {
     if (
       status === TRADE_STATUS.LOADING &&
-      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.BRIDGE
+      this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.BRIDGE &&
+      !this.iframeService.isIframe
     ) {
       this.priceImpact = undefined;
     }
@@ -101,6 +103,7 @@ export class SwapButtonComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly swapsService: SwapsService,
     private readonly priceImpactService: PriceImpactService,
+    private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.priceImpact = 0;
@@ -116,7 +119,7 @@ export class SwapButtonComponent implements OnInit {
   }
 
   private setPriceImpact(): void {
-    if (this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
+    if (this.iframeService.isIframe || this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
       this.priceImpact = 0;
       return;
     }

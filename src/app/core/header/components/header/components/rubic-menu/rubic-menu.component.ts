@@ -52,9 +52,9 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public isOpened = false;
 
-  public $currentUser: Observable<UserInterface>;
+  public currentUser$: Observable<UserInterface>;
 
-  public $countUnread: Observable<number>;
+  public countUnread$: Observable<number>;
 
   public currentBlockchain: IBlockchain;
 
@@ -78,8 +78,8 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     @Inject(Injector) private injector: Injector,
     @Inject(WINDOW) private window: Window
   ) {
-    this.$currentUser = this.authService.getCurrentUser();
-    this.$countUnread = this.counterNotificationsService.unread$;
+    this.currentUser$ = this.authService.getCurrentUser();
+    this.countUnread$ = this.counterNotificationsService.unread$;
     this.navigationList = NAVIGATION_LIST;
     this.bridgeClick = new EventEmitter<void>();
     this.swapClick = new EventEmitter<void>();
@@ -88,11 +88,11 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this.cdr.detectChanges();
-    this._onNetworkChanges$ = this.providerConnectorService.$networkChange.subscribe(network => {
+    this._onNetworkChanges$ = this.providerConnectorService.networkChange$.subscribe(network => {
       this.currentBlockchain = network;
       this.cdr.detectChanges();
     });
-    this._onAddressChanges$ = this.providerConnectorService.$addressChange.subscribe(() =>
+    this._onAddressChanges$ = this.providerConnectorService.addressChange$.subscribe(() =>
       this.cdr.detectChanges()
     );
   }

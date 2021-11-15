@@ -15,8 +15,8 @@ export default () => {
 
   return {
     web3,
-    onAddressChanges: new BehaviorSubject<string>(undefined),
-    onNetworkChanges: new BehaviorSubject<IBlockchain>(undefined),
+    onAddressChanges$: new BehaviorSubject<string>(undefined),
+    onNetworkChanges$: new BehaviorSubject<IBlockchain>(undefined),
     get address(): string {
       return config.testWallet.address;
     },

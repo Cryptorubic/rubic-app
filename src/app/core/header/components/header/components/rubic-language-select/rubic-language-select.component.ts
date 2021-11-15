@@ -4,6 +4,7 @@ import {
   Component,
   Inject,
   QueryList,
+  Self,
   TemplateRef,
   ViewChildren
 } from '@angular/core';
@@ -15,12 +16,15 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { BehaviorSubject } from 'rxjs';
 import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
 import { SettingsListComponent } from 'src/app/core/header/components/header/components/settings-list/settings-list.component';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rubic-language-select',
   templateUrl: './rubic-language-select.component.html',
   styleUrls: ['./rubic-language-select.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class RubicLanguageSelectComponent {
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
@@ -34,10 +38,11 @@ export class RubicLanguageSelectComponent {
     private readonly cookieService: CookieService,
     private readonly cdr: ChangeDetectorRef,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: BehaviorSubject<SettingsComponentData>
+    private readonly context$: BehaviorSubject<SettingsComponentData>,
+    @Self() destroy$: TuiDestroyService
   ) {
     this.languagesList = languagesList;
-    translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+    translateService.onLangChange.pipe(takeUntil(destroy$)).subscribe((event: LangChangeEvent) => {
       this.setActiveLanguage(event);
     });
     this.setActiveLanguage({
@@ -47,7 +52,7 @@ export class RubicLanguageSelectComponent {
 
   /**
    * Setup new active site language.
-   * @param Event language what need set.
+   * @param event language what need set.
    */
   private setActiveLanguage(event: Partial<LangChangeEvent>): void {
     this.cdr.markForCheck();
@@ -68,7 +73,7 @@ export class RubicLanguageSelectComponent {
    * @param lng new current language.
    */
   public setLanguage(lng: string): void {
-    this.context.next({
+    this.context$.next({
       titleKey: 'Settings',
       component: new PolymorpheusComponent(SettingsListComponent)
     });

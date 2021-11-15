@@ -88,7 +88,7 @@ export class GasRefundApiService {
           date: new Date(item.date * 1000)
         }))
       ),
-      catchError(e => {
+      catchError((e: unknown) => {
         console.error(e);
         return of([]);
       })
