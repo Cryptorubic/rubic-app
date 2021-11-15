@@ -47,6 +47,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-pu
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
+import InstantTradeTokensWithFeeError from '@core/errors/models/instant-trade/InstantTradeTokensWithFeeError';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -282,6 +283,18 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         gasPrice
       }
     );
+  };
+
+  public getEthToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
+    trade: UniswapV2Trade
+  ) => {
+    return {
+      contractAddress: this.contractAddress,
+      contractAbi: this.contractAbi,
+      methodName: this.swapsMethod.ETH_TO_TOKENS_SUPPORTING_FEE,
+      methodArguments: [trade.amountOutMin, trade.path, trade.to, trade.deadline],
+      value: trade.amountIn
+    };
   };
 
   public getTokensToEthTradeSupportingFeeData: GetTradeSupportingFeeData = (
@@ -595,13 +608,41 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     };
 
     let createTradeMethod = this.createTokensToTokensTrade;
+    let getTradeSupportingFeeDataMethod = this.getTokensToTokensTradeSupportingFeeData;
     if (Web3Public.isNativeAddress(trade.from.token.address)) {
       createTradeMethod = this.createEthToTokensTrade;
+      getTradeSupportingFeeDataMethod = this.getEthToTokensTradeSupportingFeeData;
     }
     if (Web3Public.isNativeAddress(trade.to.token.address)) {
       createTradeMethod = this.createTokensToEthTrade;
+      getTradeSupportingFeeDataMethod = this.getTokensToEthTradeSupportingFeeData;
     }
 
+    await this.tryExecuteTradeSupportingFee(uniswapV2Trade, getTradeSupportingFeeDataMethod);
     return createTradeMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
+  }
+
+  private async tryExecuteTradeSupportingFee(
+    uniswapV2Trade: UniswapV2Trade,
+    getTradeSupportingFeeDataMethod: GetTradeSupportingFeeData
+  ) {
+    const { contractAddress, contractAbi, methodName, methodArguments, value } =
+      getTradeSupportingFeeDataMethod(uniswapV2Trade);
+
+    try {
+      await this.web3Public.tryExecuteContractMethod(
+        contractAddress,
+        contractAbi,
+        methodName,
+        methodArguments,
+        this.walletAddress,
+        {
+          value
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      throw new InstantTradeTokensWithFeeError();
+    }
   }
 }

@@ -6,4 +6,5 @@ export type GetTradeSupportingFeeData = (trade: UniswapV2Trade) => {
   contractAbi: AbiItem[];
   methodName: string;
   methodArguments: unknown[];
+  value?: string;
 };

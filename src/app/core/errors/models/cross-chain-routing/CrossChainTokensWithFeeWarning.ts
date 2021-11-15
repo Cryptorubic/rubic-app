@@ -3,7 +3,7 @@ import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
 
 class CrossChainTokensWithFeeWarning extends RubicWarning<ERROR_TYPE.TEXT> {
   constructor() {
-    super('errors.crossChainTokensWithFee');
+    super('errors.tokensWithFee');
     Object.setPrototypeOf(this, CrossChainTokensWithFeeWarning.prototype);
   }
 }
