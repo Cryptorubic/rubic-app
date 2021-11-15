@@ -28,16 +28,16 @@ export class BuyTokenComponent {
   @Input() appereance: TuiAppearance = TuiAppearance.Outline;
 
   private fromToken: Required<TokenInfo> = {
-    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
     address: NATIVE_TOKEN_ADDRESS,
     symbol: 'ETH',
     amount: new BigNumber(1)
   };
 
   private toToken: TokenInfo = {
-    blockchain: BLOCKCHAIN_NAME.MOONRIVER,
-    address: NATIVE_TOKEN_ADDRESS,
-    symbol: 'MOVR'
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+    address: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',
+    symbol: 'RBC'
   };
 
   constructor(
