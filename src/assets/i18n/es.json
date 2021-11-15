@@ -74,6 +74,7 @@
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Vaya, algo salió mal, intente volver a cargar la página. Póngase en contacto con nuestro soporte si aún tiene este problema después de la recarga.",
+    "rubicOptimisation": "Insufficient liquidity for this trade. Try to disable rubic optimisation.",
     "tradingIsNotAvailable": "El comercio no está disponible"
   },
   "navigation": {

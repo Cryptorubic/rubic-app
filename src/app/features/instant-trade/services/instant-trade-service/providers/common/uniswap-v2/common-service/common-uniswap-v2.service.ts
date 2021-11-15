@@ -46,6 +46,7 @@ import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
+import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation.error';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -415,7 +416,17 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         };
       });
 
-      return routesWithProfit.sort((a, b) => b.profit.comparedTo(a.profit))[0];
+      const sortedRoutes = routesWithProfit
+        .filter(el => el.route.outputAbsoluteAmount.gt(0))
+        .sort(
+          (a, b) => b.profit.comparedTo(a.profit) && b.route.outputAbsoluteAmount.comparedTo(0)
+        );
+
+      if (!sortedRoutes.length) {
+        throw new InsufficientLiquidityRubicOptimisation();
+      }
+
+      return sortedRoutes[0];
     }
 
     const route = routes[0];
