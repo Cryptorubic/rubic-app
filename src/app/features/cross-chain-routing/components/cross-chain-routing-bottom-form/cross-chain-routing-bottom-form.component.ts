@@ -49,22 +49,6 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
-interface BlockchainInfo {
-  name: string;
-  href: string;
-}
-
-const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-    name: 'Binance Smart Chain',
-    href: 'https://www.binance.org/'
-  },
-  [BLOCKCHAIN_NAME.POLYGON]: {
-    name: 'Polygon',
-    href: 'https://polygon.technology/'
-  }
-};
-
 type CalculateTradeType = 'normal' | 'hidden';
 
 @Component({
@@ -75,6 +59,7 @@ type CalculateTradeType = 'normal' | 'hidden';
   providers: [TuiDestroyService]
 })
 export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
+  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
   @Input() loading: boolean;
@@ -100,8 +85,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   public minError: false | BigNumber;
 
   public maxError: false | BigNumber;
-
-  public toWalletAddress: string;
 
   public needApprove: boolean;
 
@@ -131,22 +114,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.inputValue;
-    return (
-      fromBlockchain &&
-      toBlockchain &&
-      fromToken &&
-      toToken &&
-      fromAmount &&
-      !fromAmount.isNaN() &&
-      fromAmount.gt(0)
-    );
-  }
-
-  get whatIsBlockchain(): BlockchainInfo {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    const nonEthBlockchain =
-      toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
-    return BLOCKCHAINS_INFO[nonEthBlockchain];
+    return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
   constructor(
@@ -199,8 +167,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.authService
       .getCurrentUser()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        this.toWalletAddress = user?.address;
+      .subscribe(() => {
+        this.conditionalCalculate();
       });
 
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
@@ -288,14 +256,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 toAmount
               });
 
-              if (
-                this.minError ||
-                this.maxError ||
-                !toAmount ||
-                toAmount.isNaN() ||
-                toAmount.eq(0) ||
-                !this.toWalletAddress
-              ) {
+              if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
@@ -305,6 +266,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
+            // eslint-disable-next-line rxjs/no-implicit-any-catch
             catchError((err: RubicError<ERROR_TYPE>) => {
               this.errorText = err.translateKey || err.message;
               this.swapFormService.output.patchValue({
@@ -363,6 +325,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
+            // eslint-disable-next-line rxjs/no-implicit-any-catch
             catchError((err: RubicError<ERROR_TYPE>) => {
               this.errorText = err.translateKey || err.message;
               this.swapFormService.output.patchValue({

@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
@@ -23,6 +23,7 @@ import {
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { compareAddresses } from '@shared/utils/utils';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -41,6 +42,7 @@ export class TokensService {
   /**
    * Current favorite tokens list state.
    */
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly _favoriteTokens$ = new BehaviorSubject<LocalToken[]>(this.fetchFavoriteTokens());
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
@@ -57,7 +59,7 @@ export class TokensService {
     TOKENS_PAGINATION
   );
 
-  public readonly tokensNetworkState = this._tokensNetworkState$.asObservable();
+  public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
 
   /**
    * Current user address.
@@ -126,16 +128,21 @@ export class TokensService {
    */
   private setupSubscriptions(): void {
     this._tokensRequestParameters$
-      .pipe(switchMap(params => this.tokensApiService.getTokensList(params)))
-      .subscribe(
-        async tokens => {
+      .pipe(
+        switchMap(params => this.tokensApiService.getTokensList(params)),
+        switchMap(tokens => {
           if (!this.isTestingMode) {
             this.setDefaultTokensParams(tokens);
-            await this.calculateUserTokensBalances();
+            return this.calculateUserTokensBalances();
           }
-        },
-        err => console.error('Error retrieving tokens', err)
-      );
+          return of();
+        }),
+        catchError((err: unknown) => {
+          console.error('Error retrieving tokens', err);
+          return of();
+        })
+      )
+      .subscribe();
 
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
@@ -150,7 +157,7 @@ export class TokensService {
       }
     });
 
-    this._tokensRequestParameters$.next();
+    this._tokensRequestParameters$.next(undefined);
   }
 
   /**
@@ -325,7 +332,7 @@ export class TokensService {
       TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
     );
     return this.coingeckoApiService
-      .getNativeCoinPriceInUsdByCoingecko(blockchain)
+      .getNativeCoinPrice(blockchain)
       .pipe(map(price => price || nativeCoin?.price))
       .toPromise();
   }
@@ -343,7 +350,7 @@ export class TokensService {
     searchBackend = false
   ): Promise<number | undefined> {
     return this.coingeckoApiService
-      .getTokenPrice(token)
+      .getCommonTokenOrNativeCoinPrice(token)
       .pipe(
         map(tokenPrice => {
           if (tokenPrice) {
@@ -521,5 +528,19 @@ export class TokensService {
    */
   private fetchFavoriteTokens(): LocalToken[] {
     return this.store.getItem('favoriteTokens') || [];
+  }
+
+  /**
+   * Gets symbol of token, using currently stored tokens or web3 request.
+   */
+  public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
+    const foundToken = this.tokens.find(
+      token => token.blockchain === blockchain && compareAddresses(token.address, tokenAddress)
+    );
+    if (foundToken) {
+      return foundToken?.symbol;
+    }
+    const web3Public = this.web3PublicService[blockchain];
+    return web3Public.getTokenSymbol(tokenAddress);
   }
 }

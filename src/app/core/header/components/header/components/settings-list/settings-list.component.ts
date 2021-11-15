@@ -37,7 +37,7 @@ export class SettingsListComponent {
     private readonly cdr: ChangeDetectorRef,
     private readonly translateService: TranslateService,
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: BehaviorSubject<SettingsComponentData>
+    private readonly context$: BehaviorSubject<SettingsComponentData>
   ) {
     this.settingsList = [
       {
@@ -88,7 +88,7 @@ export class SettingsListComponent {
    * Switch component to LanguageSettings.
    */
   public switchToLanguageSettings(): void {
-    this.context.next({
+    this.context$.next({
       titleKey: 'Languages',
       component: new PolymorpheusComponent(RubicLanguageSelectComponent)
     });

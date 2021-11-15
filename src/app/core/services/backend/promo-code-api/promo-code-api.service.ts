@@ -48,7 +48,7 @@ export class PromoCodeApiService {
       .get<PromoCodesCheckExistenceResponse>(`${PromoCodeApiService.apiUrl}/${endpoint}`)
       .pipe(
         map(response => response.exists),
-        catchError(e => {
+        catchError((e: unknown) => {
           console.error(e);
           return of(false);
         })
@@ -60,7 +60,7 @@ export class PromoCodeApiService {
    * @param promoCodeText text to validate.
    * @param [autoRevalidateIfAccepted = false] if true and promo code status is accepted, sets interval to refresh promo code data.
    * @param [revalidationTimeout = 5000] promo code data refreshing interval.
-   * @returns string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data.
+   * @return string promo code with status ('accepted' | 'outdated' | 'wrong' | 'rejected') and additional promo code data.
    */
   public validatePromoCode(
     promoCodeText: string,
@@ -116,7 +116,7 @@ export class PromoCodeApiService {
       })
       .pipe(
         map(response => this.parseApiResponse(promoCodeText, response)),
-        catchError(err => {
+        catchError((err: unknown) => {
           console.error(err);
           return of({
             status: 'wrong' as const,

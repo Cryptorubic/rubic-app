@@ -73,7 +73,7 @@ export class GasRefundApiService {
 
   /**
    * Fetches past user transactions for gas refund.
-   * @returns stream that emits once past user refund gas transactions, or empty list if error.
+   * @return stream that emits once past user refund gas transactions, or empty list if error.
    */
   public getGasRefundTransactions(): Observable<RefundTransaction[]> {
     const endpointUrl = `${GasRefundApiService.baseUrl}/refunds`;
@@ -88,7 +88,7 @@ export class GasRefundApiService {
           date: new Date(item.date * 1000)
         }))
       ),
-      catchError(e => {
+      catchError((e: unknown) => {
         console.error(e);
         return of([]);
       })

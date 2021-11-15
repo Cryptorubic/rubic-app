@@ -2,16 +2,19 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Inject,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -19,16 +22,14 @@ import {
   map,
   startWith,
   switchMap,
-  takeUntil
+  takeUntil,
+  tap
 } from 'rxjs/operators';
-import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -42,39 +43,17 @@ import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components
 import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
+import { RubicError } from '@core/errors/models/RubicError';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
-import { SwapsService } from '../../../swaps/services/swaps-service/swaps.service';
-
-interface BlockchainInfo {
-  name: string;
-  href: string;
-}
-
-const BLOCKCHAINS_INFO: { [key in BLOCKCHAIN_NAME]?: BlockchainInfo } = {
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-    name: 'Binance Smart Chain',
-    href: 'https://www.binance.org/'
-  },
-  [BLOCKCHAIN_NAME.POLYGON]: {
-    name: 'Polygon',
-    href: 'https://polygon.technology/'
-  },
-  [BLOCKCHAIN_NAME.XDAI]: {
-    name: 'xDai',
-    href: 'https://www.xdaichain.com/'
-  },
-  [BLOCKCHAIN_NAME.TRON]: {
-    name: 'Tron',
-    href: 'https://tron.network/'
-  }
-};
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -87,6 +66,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
+
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
@@ -118,11 +99,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
-  public tradeStatus: TRADE_STATUS;
+  private _tradeStatus: TRADE_STATUS;
 
   private calculateTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
+
+  public get tradeStatus(): TRADE_STATUS {
+    return this._tradeStatus;
+  }
+
+  public set tradeStatus(value: TRADE_STATUS) {
+    this._tradeStatus = value;
+    this.tradeStatusChange.emit(value);
+  }
 
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
@@ -138,22 +128,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
-  get whatIsBlockchain(): BlockchainInfo {
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    const nonEthBlockchain =
-      toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? fromBlockchain : toBlockchain;
-    return BLOCKCHAINS_INFO[nonEthBlockchain];
-  }
-
   constructor(
-    private bridgeService: BridgeService,
-    private errorsService: ErrorsService,
-    public swapFormService: SwapFormService,
-    private swapService: SwapsService,
-    private settingsService: SettingsService,
-    private cdr: ChangeDetectorRef,
-    private authService: AuthService,
-    private web3PublicService: Web3PublicService,
+    public readonly swapFormService: SwapFormService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly bridgeService: BridgeService,
+    private readonly errorsService: ErrorsService,
+    private readonly settingsService: SettingsService,
+    private readonly authService: AuthService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     private readonly destroy$: TuiDestroyService,
     @Inject(Injector) private readonly injector: Injector,
@@ -223,9 +204,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
-    this.cdr.detectChanges();
-
     this.setToWalletAddress();
+
+    this.cdr.detectChanges();
 
     this.conditionalCalculate();
   }
@@ -235,9 +216,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
       this.toWalletAddress = this.tronAddress;
     } else {
-      this.toWalletAddress = this.authService.user?.address;
+      this.toWalletAddress = this.authService.userAddress;
     }
-    this.cdr.detectChanges();
   }
 
   private async conditionalCalculate(): Promise<void> {
@@ -310,14 +290,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
                 toAmount
               });
 
-              if (
-                this.minError ||
-                this.maxError ||
-                !toAmount ||
-                toAmount.isNaN() ||
-                toAmount.eq(0) ||
-                !this.toWalletAddress
-              ) {
+              if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
                 this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
@@ -352,9 +325,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.bridgeService
       .approve(bridgeTradeRequest)
-      .pipe(first())
-      .subscribe(
-        async (_: TransactionReceipt) => {
+      .pipe(
+        first(),
+        tap(() => {
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('bridgePage.approveSuccessMessage'),
@@ -364,19 +337,19 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
               autoClose: 15000
             }
           );
-
-          await this.tokensService.calculateUserTokensBalances();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
-        },
-        err => {
+        }),
+        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
+        watch(this.cdr),
+        catchError((err: unknown) => {
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.errorsService.catch(err);
+          this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
-        }
-      );
+          return of();
+        })
+      )
+      .subscribe();
   }
 
   public createTrade(): void {
@@ -392,9 +365,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
     this.bridgeService
       .createTrade(bridgeTradeRequest)
-      .pipe(first())
-      .subscribe(
-        async (_: TransactionReceipt) => {
+      .pipe(
+        first(),
+        tap(() => {
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),
@@ -405,18 +378,20 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           );
 
           this.counterNotificationsService.updateUnread();
-          await this.tokensService.calculateUserTokensBalances();
-
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          await this.conditionalCalculate();
-        },
-        err => {
+        }),
+        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
+        watch(this.cdr),
+        switchMap(() => this.conditionalCalculate()),
+        catchError((err: unknown) => {
           this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.errorsService.catch(err);
+          this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
-        }
-      );
+          return of();
+        })
+      )
+      .subscribe();
   }
 
   private checkMinMaxAmounts(): void {

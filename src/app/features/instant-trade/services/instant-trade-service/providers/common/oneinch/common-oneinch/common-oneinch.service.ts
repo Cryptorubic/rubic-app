@@ -32,6 +32,7 @@ import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/inst
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/InsufficientFundsOneinchError';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -165,7 +166,7 @@ export class CommonOneinchService {
     }
 
     const amountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
-    const { estimatedGas, toTokenAmount } = await this.getEstimatedGasAndToAmount(
+    const { estimatedGas, toTokenAmount, path } = await this.getTradeInfo(
       blockchain,
       fromTokenAddress,
       toTokenAddress,
@@ -181,7 +182,8 @@ export class CommonOneinchService {
       to: {
         token: toToken,
         amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
-      }
+      },
+      path
     };
     if (!shouldCalculateGas) {
       return instantTrade;
@@ -203,12 +205,12 @@ export class CommonOneinchService {
     };
   }
 
-  private async getEstimatedGasAndToAmount(
+  private async getTradeInfo(
     blockchain: BLOCKCHAIN_NAME,
     fromTokenAddress: string,
     toTokenAddress: string,
     amountAbsolute: string
-  ): Promise<{ estimatedGas: BigNumber; toTokenAmount: string }> {
+  ): Promise<{ estimatedGas: BigNumber; toTokenAmount: string; path: SymbolToken[] }> {
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
     const quoteTradeParams: OneinchQuoteRequest = {
       params: {
@@ -221,6 +223,7 @@ export class CommonOneinchService {
       quoteTradeParams.params.mainRouteParts = '1';
     }
 
+    let oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse;
     let estimatedGas: BigNumber;
     let toTokenAmount: string;
     try {
@@ -228,9 +231,11 @@ export class CommonOneinchService {
         throw new Error('User has not connected');
       }
 
-      const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
-      if (new BigNumber(amountAbsolute).gt(allowance)) {
-        throw new Error('User have no allowance');
+      if (fromTokenAddress !== this.oneInchNativeAddress) {
+        const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
+        if (new BigNumber(amountAbsolute).gt(allowance)) {
+          throw new Error('User have no allowance');
+        }
       }
 
       const swapTradeParams: OneinchSwapRequest = {
@@ -240,16 +245,16 @@ export class CommonOneinchService {
           fromAddress: this.walletAddress
         }
       };
-      const oneInchTrade: OneinchSwapResponse = (await this.httpClient
-        .get(`${this.apiBaseUrl}${blockchainId}/swap`, swapTradeParams)
-        .toPromise()) as OneinchSwapResponse;
+      oneInchTrade = await this.httpClient
+        .get<OneinchSwapResponse>(`${this.apiBaseUrl}${blockchainId}/swap`, swapTradeParams)
+        .toPromise();
 
       estimatedGas = new BigNumber(oneInchTrade.tx.gas);
       toTokenAmount = oneInchTrade.toTokenAmount;
     } catch (_err) {
-      const oneInchTrade: OneinchQuoteResponse = (await this.httpClient
-        .get(`${this.apiBaseUrl}${blockchainId}/quote`, quoteTradeParams)
-        .toPromise()) as OneinchQuoteResponse;
+      oneInchTrade = await this.httpClient
+        .get<OneinchQuoteResponse>(`${this.apiBaseUrl}${blockchainId}/quote`, quoteTradeParams)
+        .toPromise();
       if (oneInchTrade.hasOwnProperty('errors') || !oneInchTrade.toTokenAmount) {
         throw new OneinchQuoteError();
       }
@@ -258,7 +263,51 @@ export class CommonOneinchService {
       toTokenAmount = oneInchTrade.toTokenAmount;
     }
 
-    return { estimatedGas, toTokenAmount };
+    const path = await this.extractPath(blockchain, fromTokenAddress, toTokenAddress, oneInchTrade);
+
+    return { estimatedGas, toTokenAmount, path };
+  }
+
+  /**
+   * Extracts tokens path from oneInch api response.
+   * @return Promise<SymbolToken[]> Tokens array, used in the route.
+   */
+  private async extractPath(
+    blockchain: BLOCKCHAIN_NAME,
+    fromTokenAddress: string,
+    toTokenAddress: string,
+    oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse
+  ): Promise<SymbolToken[]> {
+    const addressesPath = [fromTokenAddress];
+    addressesPath.push(...oneInchTrade.protocols[0].map(protocol => protocol[0].toTokenAddress));
+    addressesPath.pop();
+    addressesPath.push(toTokenAddress);
+
+    const promises = addressesPath.map(async (wrappedTokenAddress, index) => {
+      const tokenAddress =
+        wrappedTokenAddress === this.oneInchNativeAddress
+          ? NATIVE_TOKEN_ADDRESS
+          : wrappedTokenAddress;
+      let symbol = await this.tokensService.getTokenSymbol(blockchain, tokenAddress);
+      if (
+        index !== 0 &&
+        index !== addressesPath.length - 1 &&
+        tokenAddress === NATIVE_TOKEN_ADDRESS
+      ) {
+        symbol = `W${symbol}`;
+      }
+      return symbol;
+    });
+
+    try {
+      const symbols = await Promise.all(promises);
+      return symbols.map((symbol, index) => ({
+        address: addressesPath[index],
+        symbol
+      }));
+    } catch (_err) {
+      return [];
+    }
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
@@ -291,7 +340,7 @@ export class CommonOneinchService {
 
     const oneInchTrade = (await this.httpClient
       .get(`${this.apiBaseUrl}${blockchainId}/swap`, swapTradeParams)
-      .pipe(catchError(err => this.specifyError(err, blockchain)))
+      .pipe(catchError((err: unknown) => this.specifyError(err as HttpErrorResponse, blockchain)))
       .toPromise()) as OneinchSwapResponse;
 
     const trxOptions = {

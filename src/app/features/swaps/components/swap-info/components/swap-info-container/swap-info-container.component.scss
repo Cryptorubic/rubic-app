@@ -1,0 +1,19 @@
+@import '../../styles/styles';
+
+.swaps-info {
+  padding: 29px 30px;
+
+  color: var(--form-bright-text-color);
+
+  background: var(--main-form-background);
+  border-radius: 16px;
+
+  &__title {
+    margin: 0;
+
+    font-weight: bold;
+    font-size: 21px;
+    font-family: $sf-pro-font;
+    line-height: 125%;
+  }
+}

@@ -1,11 +1,11 @@
 import Web3 from 'web3';
 import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
-import { Transaction, provider as Provider, HttpProvider } from 'web3-core';
+import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem, toChecksumAddress, isAddress, toWei, fromWei } from 'web3-utils';
+import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -33,6 +33,12 @@ interface MulticallResponse {
   success: boolean;
   returnData: string;
 }
+
+const supportedTokenFields = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
+
+type TokenField = typeof supportedTokenFields[number];
+
+type TokenFields = Partial<Record<TokenField, string>>;
 
 export class Web3Public {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
@@ -140,8 +146,8 @@ export class Web3Public {
     return from(contract.methods[healthcheckData.method]().call()).pipe(
       timeout(timeoutMs),
       map(result => result === healthcheckData.expected),
-      catchError(err => {
-        if (err?.name === 'TimeoutError') {
+      catchError((err: unknown) => {
+        if ((err as Error)?.name === 'TimeoutError') {
           console.debug(
             `${this.blockchain.label} node healthcheck timeout (${timeoutMs}ms) has occurred.`
           );
@@ -362,10 +368,32 @@ export class Web3Public {
   }
 
   /**
+   * Gets token's symbol through ERC-20 token contract.
+   * @param tokenAddress Address of the smart-contract corresponding to the token.
+   * @return string Token's symbol or a error, if there's no such token.
+   */
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public getTokenSymbol: (tokenAddress: string) => Promise<string> =
+    this.getTokenSymbolCachingDecorator();
+
+  private getTokenSymbolCachingDecorator(): (tokenAddress: string) => Promise<string> {
+    const tokensSymbolsCache: { [address: string]: string } = {};
+
+    return async (tokenAddress: string): Promise<string> => {
+      if (!tokensSymbolsCache[tokenAddress]) {
+        tokensSymbolsCache[tokenAddress] = (
+          await this.callForTokenInfo(tokenAddress, ['symbol'])
+        ).symbol;
+      }
+
+      return tokensSymbolsCache[tokenAddress];
+    };
+  }
+
+  /**
    * Gets information about token through ERC-20 token contract.
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param blockchain platform of the token
-   * @return object, with written token fields, or a error, if there's no such token
+   * @param tokenAddress Address of the smart-contract corresponding to the token.
+   * @return object Object, with written token fields, or a error, if there's no such token
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenInfo: (tokenAddress: string) => Promise<BlockchainTokenExtended> =
@@ -378,7 +406,20 @@ export class Web3Public {
 
     return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
       if (!tokensCache[tokenAddress]) {
-        tokensCache[tokenAddress] = await this.callForTokenInfo(tokenAddress);
+        if (Web3Public.isNativeAddress(tokenAddress)) {
+          return {
+            ...this.blockchain.nativeCoin,
+            blockchain: this.blockchain.name
+          };
+        }
+
+        const tokenInfo = (await this.callForTokenInfo(tokenAddress)) as Record<TokenField, string>;
+        tokensCache[tokenAddress] = {
+          blockchain: this.blockchain.name,
+          address: tokenAddress,
+          ...tokenInfo,
+          decimals: Number(tokenInfo.decimals)
+        };
       }
 
       return tokensCache[tokenAddress];
@@ -386,34 +427,21 @@ export class Web3Public {
   }
 
   /**
-   * get ERC-20 token info by address
-   * @param tokenAddress address of token
+   * Gets ERC-20 token info by address.
+   * @param tokenAddress Address of token.
+   * @param tokenFields Token's fields to get.
    */
-  private async callForTokenInfo(tokenAddress: string): Promise<BlockchainTokenExtended> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
-      return {
-        ...this.blockchain.nativeCoin,
-        blockchain: this.blockchain.name
-      };
-    }
-
-    const tokenMethods = ['decimals', 'symbol', 'name', 'totalSupply'] as const;
-    const tokenFieldsPromises = tokenMethods.map((method: string) =>
+  private async callForTokenInfo(
+    tokenAddress: string,
+    tokenFields: TokenField[] = ['decimals', 'symbol', 'name', 'totalSupply']
+  ): Promise<TokenFields> {
+    const tokenFieldsPromises = tokenFields.map(method =>
       this.callContractMethod(tokenAddress, ERC20_TOKEN_ABI, method)
     );
-    const token: BlockchainTokenExtended = {
-      blockchain: this.blockchain.name,
-      address: tokenAddress
-    } as BlockchainTokenExtended;
-
-    (await Promise.all(tokenFieldsPromises)).forEach(
-      // @ts-ignore
-      (elem, index) => (token[tokenMethods[index]] = elem)
+    const tokenFieldsResults = await Promise.all(tokenFieldsPromises);
+    return Object.fromEntries(
+      tokenFieldsResults.map((field, index) => [tokenFields[index], field])
     );
-
-    token.decimals = Number(token.decimals);
-
-    return token;
   }
 
   /**
@@ -579,7 +607,7 @@ export class Web3Public {
    * @param contractAddress contract address
    * @param fromAddress sender address
    * @param callsData transactions parameters
-   * @returns list of contract execution estimated gases.
+   * @return list of contract execution estimated gases.
    * if the execution of the method in the real blockchain would not be reverted,
    * then the list item would be equal to the predicted gas limit.
    * Else (if you have not enough balance, allowance ...) then the list item would be equal to null
@@ -622,7 +650,7 @@ export class Web3Public {
    * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
    * @param calls Web3 method calls
    * @param callsParams ethereum method transaction parameters
-   * @returns batch request call result sorted in order of input parameters
+   * @return batch request call result sorted in order of input parameters
    */
   private web3BatchRequest<T extends string | string[]>(
     calls: { request: (...params: unknown[]) => Method }[],
@@ -649,7 +677,7 @@ export class Web3Public {
    * Sends batch request to rpc provider directly.
    * @see {@link https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/eth1.0-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false|EthereumJSON-RPC}
    * @param rpcCallsData rpc methods and parameters list
-   * @returns rpc batch request call result sorted in order of input parameters
+   * @return rpc batch request call result sorted in order of input parameters
    */
   private async rpcBatchRequest<T extends string | string[]>(
     rpcCallsData: {

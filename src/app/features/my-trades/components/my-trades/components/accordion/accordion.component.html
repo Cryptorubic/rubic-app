@@ -263,7 +263,7 @@
 
         <div class="row__data row__data_explorer-link">
           <a class="explorer-link" safetyLink [link]="getTransactionLink(trade)">{{
-            trade.transactionHash
+            trade.toTransactionHash || trade.fromTransactionHash
           }}</a>
         </div>
       </div>

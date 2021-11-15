@@ -9,4 +9,5 @@ export interface OneinchSwapResponse {
   };
   toTokenAmount: string;
   error?: number;
+  protocols: [{ fromTokenAddress: string; toTokenAddress: string }[][]];
 }

@@ -27,7 +27,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { TRADE_STATUS } from '../../../models/swaps/TRADE_STATUS';
+import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -106,15 +106,13 @@ export class SwapButtonContainerComponent implements OnInit {
     this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
-  @Input() buttonText? = 'Swap';
+  @Input() buttonText = 'Swap';
 
   @Output() approveClick = new EventEmitter<void>();
 
   @Output() swapClick = new EventEmitter<void>();
 
   @Output() updateRatesClick = new EventEmitter<void>();
-
-  @Output() loginEvent = new EventEmitter<void>();
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -124,7 +122,7 @@ export class SwapButtonContainerComponent implements OnInit {
 
   public needLoginLoading: boolean;
 
-  public loading: boolean;
+  public checkingOnErrors: boolean;
 
   public errorType: Record<ERROR_TYPE, boolean>;
 
@@ -157,7 +155,7 @@ export class SwapButtonContainerComponent implements OnInit {
     });
   }
 
-  get errorText(): Observable<string | null> {
+  get errorText$(): Observable<string | null> {
     let translateParams: { key: string; interpolateParams?: object };
     const err = this.errorType;
     const { fromToken, fromBlockchain } = this.formService.inputValue;
@@ -275,21 +273,21 @@ export class SwapButtonContainerComponent implements OnInit {
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
         this.setFormValues(form);
+        this.cdr.markForCheck();
       });
 
-    this.providerConnectorService.$networkChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.providerConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.checkWrongBlockchainError();
     });
   }
 
   private setFormValues(form: ISwapFormInput): void {
-    this.loading = true;
-    this.cdr.detectChanges();
+    this.checkingOnErrors = true;
 
     this.tokensFilled = Boolean(form.fromToken && form.toToken);
     this.checkErrors().then(() => {
-      this.loading = false;
-      this.cdr.detectChanges();
+      this.checkingOnErrors = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -340,7 +338,7 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   public onLogin() {
-    this.walletsModalService.open().subscribe(() => this.loginEvent.emit());
+    this.walletsModalService.open().subscribe();
   }
 
   public async changeNetwork(): Promise<void> {

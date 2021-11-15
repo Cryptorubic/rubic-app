@@ -33,7 +33,7 @@ import { ZrxService } from 'src/app/features/instant-trade/services/instant-trad
 import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
 import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
-import { SushiSwapAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche-service.service';
+import { SushiSwapAvalancheService } from '@features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
@@ -232,7 +232,7 @@ export class InstantTradeService {
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
         ),
-        catchError(err => of(new CustomError(err.message)))
+        catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
       .subscribe();
   }
@@ -266,7 +266,7 @@ export class InstantTradeService {
 
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
-        catchError(err => {
+        catchError((err: unknown) => {
           console.debug(err, provider);
           return of(null);
         })

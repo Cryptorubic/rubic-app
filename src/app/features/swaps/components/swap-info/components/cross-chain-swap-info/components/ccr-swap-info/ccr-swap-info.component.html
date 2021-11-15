@@ -1,0 +1,112 @@
+<div class="info-line" *ngIf="estimateGasInEth?.isFinite()">
+  <div class="info-line__title title">
+    <span class="title__text">Estimated gas fee</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="'Estimated gas fee in source network'"
+    />
+  </div>
+  <div class="info-line__value" *ngIf="estimateGasInEth">
+    {{ estimateGasInEth | bigNumberFormat | withRound: 'toClosestValue':18 }}
+    {{ nativeCoinSymbol }} ≈ ${{
+      estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
+    }}
+  </div>
+</div>
+
+<div class="info-line">
+  <div class="info-line__title title">
+    <span class="title__text">Network fee</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="'Gas fee in target network taken in native token of source network'"
+    />
+  </div>
+  <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
+    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue':18 }} {{ nativeCoinSymbol }} ≈
+    ${{ cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
+  </div>
+</div>
+
+<div class="info-line">
+  <div class="info-line__title title">
+    <span class="title__text">Protocol fee</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="'Platforms\'s commission charges in ' + feeTokenSymbol + ' token'"
+    />
+  </div>
+  <div class="info-line__value" *ngIf="feePercent !== undefined">
+    {{ feePercent }}% ≈ {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
+    {{ feeTokenSymbol }}
+  </div>
+</div>
+
+<hr class="delimiter" />
+
+<app-price-impact-info-line
+  title="Price impact in source network"
+  [hint]="
+    'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
+  "
+  [priceImpact]="priceImpactFrom"
+></app-price-impact-info-line>
+
+<app-price-impact-info-line
+  title="Price impact in target network"
+  [hint]="
+    'Correlation between an incoming order and the change in the price of the asset involved caused by the trade. Cross-chain consists of two transactions and each has its\' own price impact.'
+  "
+  [priceImpact]="priceImpactTo"
+></app-price-impact-info-line>
+
+<div
+  class="info-line"
+  *ngLet="
+    (minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals) +
+    ' ' +
+    toToken.symbol as minimumReceivedFormatted
+  "
+>
+  <div class="info-line__title title">
+    <span class="title__text"> {{ 'crossChainPage.swapInfo.minimumReceived' | translate }}</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="
+        'Output is estimated. You will receive at least ' +
+        minimumReceivedFormatted +
+        ' or the transaction will revert.'
+      "
+    />
+  </div>
+  <div class="info-line__value" *ngIf="minimumReceived?.isFinite()">
+    {{ minimumReceivedFormatted }}
+  </div>
+</div>
+
+<div
+  class="info-line"
+  *ngLet="
+    (maximumSent | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals) +
+    ' ' +
+    fromToken.symbol as maximumSentFormatted
+  "
+>
+  <div class="info-line__title title">
+    <span class="title__text"> {{ 'crossChainPage.swapInfo.maximumSent' | translate }}</span>
+    <img
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      alt="question"
+      [tuiHint]="
+        'Maximum amount of assets for the transaction taking into account the slippage. If some amount will not be used for the transaction, they will be returned to your wallet in the first transaction.'
+      "
+    />
+  </div>
+  <div class="info-line__value" *ngIf="maximumSent?.isFinite()">
+    {{ maximumSentFormatted }}
+  </div>
+</div>
