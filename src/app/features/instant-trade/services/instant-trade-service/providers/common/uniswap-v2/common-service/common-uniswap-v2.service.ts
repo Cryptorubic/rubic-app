@@ -46,6 +46,7 @@ import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
+import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -203,8 +204,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return {
       callData: {
         contractMethod: this.swapsMethod.ETH_TO_TOKENS,
-        params: [amountIn, path, this.walletAddress, deadline],
-        value: amountOutMin
+        params: [amountOutMin, path, this.walletAddress, deadline],
+        value: amountIn
       },
       defaultGasLimit: this.defaultEstimateGas.ethToTokens[path.length - 2]
     };
@@ -281,6 +282,28 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         gasPrice
       }
     );
+  };
+
+  public getTokensToEthTradeSupportingFeeData: GetTradeSupportingFeeData = (
+    trade: UniswapV2Trade
+  ) => {
+    return {
+      contractAddress: this.contractAddress,
+      contractAbi: this.contractAbi,
+      methodName: this.swapsMethod.TOKENS_TO_ETH_SUPPORTING_FEE,
+      methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline]
+    };
+  };
+
+  public getTokensToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
+    trade: UniswapV2Trade
+  ) => {
+    return {
+      contractAddress: this.contractAddress,
+      contractAbi: this.contractAbi,
+      methodName: this.swapsMethod.TOKENS_TO_TOKENS_SUPPORTING_FEE,
+      methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline]
+    };
   };
 
   public async calculateTrade(
