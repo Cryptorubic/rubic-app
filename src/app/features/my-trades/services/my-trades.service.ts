@@ -22,7 +22,6 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import { HttpClient } from '@angular/common/http';
-import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS';
@@ -30,11 +29,20 @@ import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { RubicError } from '@core/errors/models/RubicError';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 
 interface PanamaStatusResponse {
   data: {
     depositTxId: string;
+    swapTxId: string;
   };
+}
+
+interface HashPair {
+  fromTransactionHash: string;
+  toTransactionHash: string;
 }
 
 @Injectable({
@@ -101,19 +109,29 @@ export class MyTradesService {
         const filteredTrades = trades
           .map(trade => this.prepareBridgeData(trade))
           .filter(trade => !!trade);
-        const sources: Observable<string>[] = filteredTrades.map(trade =>
-          trade.provider === BRIDGE_PROVIDER.PANAMA
-            ? this.loadPanamaTxHash(trade.transactionHash)
-            : of(trade.transactionHash)
-        );
+        const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
+          if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
+            return trade.fromTransactionHash && trade.status !== TRANSACTION_STATUS.CANCELLED
+              ? of({
+                  fromTransactionHash: trade.fromTransactionHash,
+                  toTransactionHash: trade.toTransactionHash
+                })
+              : this.loadPanamaTxHash(trade.transactionId);
+          }
+          return of({
+            fromTransactionHash: trade.fromTransactionHash,
+            toTransactionHash: trade.toTransactionHash
+          });
+        });
         return forkJoin(sources).pipe(
-          map(txHashes =>
-            txHashes.map((hash, index) => ({
+          map((txHashes: HashPair[]) =>
+            txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
               ...filteredTrades[index],
-              transactionHash: hash
+              fromTransactionHash,
+              toTransactionHash
             }))
           ),
-          defaultIfEmpty([])
+          defaultIfEmpty<TableTrade[]>([])
         );
       })
     );
@@ -197,7 +215,7 @@ export class MyTradesService {
             }
             const amount = Web3Public.fromWei(item.value, toToken.decimals).toFixed();
             return {
-              transactionHash: item.hash,
+              fromTransactionHash: item.hash,
               transactionHashScanUrl: this.scannerLinkPipe.transform(
                 item.hash,
                 item.network,
@@ -235,8 +253,8 @@ export class MyTradesService {
     return this.ethereumPolygonBridgeService
       .depositTradeAfterCheckpoint(burnTransactionHash, onTransactionHash)
       .pipe(
-        catchError(err => {
-          if (err.code === 4001) {
+        catchError((err: unknown) => {
+          if ((err as RubicError<ERROR_TYPE>)?.code === 4001) {
             return throwError(new UserRejectError());
           }
           return throwError(err);
@@ -244,9 +262,12 @@ export class MyTradesService {
       );
   }
 
-  public loadPanamaTxHash(panamaId: string): Observable<string> {
-    return this.httpClient
-      .get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`)
-      .pipe(map((response: PanamaStatusResponse) => response.data.depositTxId));
+  public loadPanamaTxHash(panamaId: string): Observable<HashPair> {
+    return this.httpClient.get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`).pipe(
+      map((response: PanamaStatusResponse) => ({
+        fromTransactionHash: response.data.depositTxId,
+        toTransactionHash: response.data.swapTxId
+      }))
+    );
   }
 }

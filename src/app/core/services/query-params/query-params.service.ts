@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -18,7 +18,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { Token } from '@shared/models/tokens/Token';
-import { fromPromise } from 'rxjs/internal-compatibility';
 import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
@@ -117,7 +116,7 @@ export class QueryParamsService {
   }
 
   private initiateTradesParams(params: QueryParams): void {
-    this.swapsService.availableTokens
+    this.swapsService.availableTokens$
       .pipe(
         first(tokens => tokens?.size > 0),
         mergeMap(tokens =>
@@ -165,7 +164,7 @@ export class QueryParamsService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): Observable<QueryParams> {
-    return this.swapsService.bridgeTokenPairsByBlockchainsArray.pipe(
+    return this.swapsService.bridgeTokenPairsByBlockchainsArray$.pipe(
       first(pairsArray => !!pairsArray?.size),
       map(pairsArray => {
         const fromChain = Object.values(BLOCKCHAIN_NAME).includes(
@@ -309,7 +308,7 @@ export class QueryParamsService {
       amount: new BigNumber(NaN),
       favorite: false
     } as TokenAmount;
-    return fromPromise(this.tokensService.getTokensWithBalance(List([token]))).pipe(
+    return from(this.tokensService.getTokensWithBalance(List([token]))).pipe(
       map(tokensWithBalance => {
         if (tokensWithBalance?.length) {
           return tokensWithBalance.pop();

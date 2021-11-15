@@ -18,6 +18,7 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
+import BigNumber from 'bignumber.js';
 
 type TokenType = 'from' | 'to';
 
@@ -44,7 +45,10 @@ export class SwapsFormComponent implements OnInit {
 
   public allowRefresh: boolean = true;
 
-  public onRefreshTrade = new Subject<void>();
+  public maxGasFee: BigNumber;
+
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public onRefreshTrade$ = new Subject<void>();
 
   private _supportedTokens: List<TokenAmount>;
 
@@ -52,7 +56,7 @@ export class SwapsFormComponent implements OnInit {
 
   private _bridgeTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
 
-  private _bridgeTokenPairsByBlockchainsFavoriteArray: List<BridgeTokenPairsByBlockchains>;
+  private _bridgeFavoriteTokenPairsByBlockchainsArray: List<BridgeTokenPairsByBlockchains>;
 
   public availableTokens: AvailableTokens;
 
@@ -149,10 +153,10 @@ export class SwapsFormComponent implements OnInit {
 
   private subscribeOnTokens(): void {
     combineLatest([
-      this.swapsService.availableTokens,
-      this.swapsService.availableFavoriteTokens,
-      this.swapsService.bridgeTokenPairsByBlockchainsArray,
-      this.swapsService.bridgeTokenPairsByBlockchainsFavoriteArray
+      this.swapsService.availableTokens$,
+      this.swapsService.availableFavoriteTokens$,
+      this.swapsService.bridgeTokenPairsByBlockchainsArray$,
+      this.swapsService.bridgeTokenPairsByBlockchainsFavoriteArray$
     ])
       .pipe(debounceTime(0), takeUntil(this.destroy$))
       .subscribe(
@@ -160,7 +164,7 @@ export class SwapsFormComponent implements OnInit {
           supportedTokens,
           supportedFavoriteTokens,
           bridgeTokenPairsByBlockchainsArray,
-          bridgeTokenPairsByBlockchainsFavoriteArray
+          bridgeFavoriteTokenPairsByBlockchainsArray
         ]) => {
           this.isLoading = true;
           if (!supportedTokens) {
@@ -171,12 +175,11 @@ export class SwapsFormComponent implements OnInit {
           this._supportedFavoriteTokens = supportedFavoriteTokens;
 
           this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
-          this._bridgeTokenPairsByBlockchainsFavoriteArray =
-            bridgeTokenPairsByBlockchainsFavoriteArray;
+          this._bridgeFavoriteTokenPairsByBlockchainsArray =
+            bridgeFavoriteTokenPairsByBlockchainsArray;
 
           this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
           this.callFunctionWithTokenTypes(this.setAvailableFavoriteTokens.bind(this));
-
           this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
 
           this.isLoading = false;
@@ -320,7 +323,7 @@ export class SwapsFormComponent implements OnInit {
       };
 
       const checkIsBridgeTokenPairAndPush = (supportedToken: TokenAmount): void => {
-        const isAvailable = !!this._bridgeTokenPairsByBlockchainsFavoriteArray
+        const isAvailable = !!this._bridgeFavoriteTokenPairsByBlockchainsArray
           .find(
             pairsByBlockchains =>
               pairsByBlockchains[oppositeBlockchainKey] === oppositeToken.blockchain &&

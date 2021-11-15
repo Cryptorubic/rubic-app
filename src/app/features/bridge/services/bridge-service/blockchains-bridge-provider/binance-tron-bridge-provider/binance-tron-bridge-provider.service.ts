@@ -15,10 +15,10 @@ export class BinanceTronBridgeProviderService extends BlockchainsBridgeProvider 
   constructor(private readonly commonPanamaBridgeProviderService: PanamaBridgeProviderService) {
     super();
 
-    this.commonPanamaBridgeProviderService.tokens
+    this.commonPanamaBridgeProviderService.tokens$
       .pipe(first())
       .subscribe(tokens =>
-        this.tokenPairs$.next(
+        this._tokenPairs$.next(
           tokens
             .filter(token => token.symbol === 'USDT')
             .map(BinanceTronBridgeProviderService.parseUSDTPanamaToken)

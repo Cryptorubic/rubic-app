@@ -36,16 +36,16 @@ export class RubicTokensComponent implements OnInit {
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
-    const deepEquality = compareObjects(value, this.tokensSubject.value);
+    const deepEquality = compareObjects(value, this.tokensSubject$.value);
     if (!deepEquality) {
-      this.tokensSubject.next(value);
+      this.tokensSubject$.next(value);
     }
   }
 
   @Input() set favoriteTokens(value: AvailableTokenAmount[]) {
-    const deepEquality = compareObjects(value, this.favoriteTokensSubject.value);
+    const deepEquality = compareObjects(value, this.favoriteTokensSubject$.value);
     if (!deepEquality) {
-      this.favoriteTokensSubject.next(value);
+      this.favoriteTokensSubject$.next(value);
     }
   }
 
@@ -65,9 +65,11 @@ export class RubicTokensComponent implements OnInit {
 
   public iframeForceDisabled = false;
 
-  public tokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public tokensSubject$: BehaviorSubject<AvailableTokenAmount[]>;
 
-  public favoriteTokensSubject: BehaviorSubject<AvailableTokenAmount[]>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public favoriteTokensSubject$: BehaviorSubject<AvailableTokenAmount[]>;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -76,8 +78,8 @@ export class RubicTokensComponent implements OnInit {
     private readonly tokensService: TokensService,
     private readonly destroy$: TuiDestroyService
   ) {
-    this.tokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
-    this.favoriteTokensSubject = new BehaviorSubject<AvailableTokenAmount[]>([]);
+    this.tokensSubject$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
+    this.favoriteTokensSubject$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
   }
 
   public ngOnInit(): void {
@@ -109,8 +111,8 @@ export class RubicTokensComponent implements OnInit {
 
     this.tokensSelectService
       .showDialog(
-        this.tokensSubject.asObservable(),
-        this.favoriteTokensSubject.asObservable(),
+        this.tokensSubject$.asObservable(),
+        this.favoriteTokensSubject$.asObservable(),
         this.formType,
         currentBlockchain,
         this.formService.input,

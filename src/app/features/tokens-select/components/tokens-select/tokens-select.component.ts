@@ -1,3 +1,4 @@
+/* eslint-disable rxjs/no-exposed-subjects */
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -52,7 +53,9 @@ import { TokensListType } from 'src/app/features/tokens-select/models/TokensList
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 
 type ComponentInput = {
+  // eslint-disable-next-line rxjs/finnish
   tokens: Observable<AvailableTokenAmount[]>;
+  // eslint-disable-next-line rxjs/finnish
   favoriteTokens: Observable<AvailableTokenAmount[]>;
   formType: 'from' | 'to';
   currentBlockchain: BLOCKCHAIN_NAME;
@@ -102,12 +105,12 @@ export class TokensSelectComponent implements OnInit {
   /**
    * List of all available tokens.
    */
-  private tokens: Observable<AvailableTokenAmount[]>;
+  private tokens$: Observable<AvailableTokenAmount[]>;
 
   /**
    * List of available favorite tokens.
    */
-  private favoriteTokens: Observable<AvailableTokenAmount[]>;
+  private favoriteTokens$: Observable<AvailableTokenAmount[]>;
 
   /**
    * Contains default tokens to display.
@@ -163,8 +166,8 @@ export class TokensSelectComponent implements OnInit {
   set blockchain(value: BLOCKCHAIN_NAME) {
     if (value && value !== this.blockchain) {
       this.setNewBlockchain(value);
-      if (this.tokensList?.scrollSubject?.value) {
-        this.tokensList.scrollSubject.value.scrollToIndex(0);
+      if (this.tokensList?.scrollSubject$?.value) {
+        this.tokensList.scrollSubject$.value.scrollToIndex(0);
       }
     }
   }
@@ -232,8 +235,8 @@ export class TokensSelectComponent implements OnInit {
     this.formType = context.formType;
     this.allowedBlockchains = context.allowedBlockchains;
     this._blockchain = context.currentBlockchain;
-    this.tokens = context.tokens;
-    this.favoriteTokens = context.favoriteTokens;
+    this.tokens$ = context.tokens;
+    this.favoriteTokens$ = context.favoriteTokens;
     this.currentlySelectedToken =
       this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
   }
@@ -242,15 +245,15 @@ export class TokensSelectComponent implements OnInit {
    * Inits subscriptions for tokens and searchQuery.
    */
   private initSubscriptions(): void {
-    combineLatest([this.favoriteTokens, this.tokens])
+    combineLatest([this.favoriteTokens$, this.tokens$])
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
     this.searchQuery$
-      .pipe(skip(1), takeUntil(this.destroy$), debounceTime(500))
+      .pipe(skip(1), debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
-    this.tokensService.tokensNetworkState
+    this.tokensService.tokensNetworkState$
       .pipe(takeUntil(this.destroy$))
       .subscribe((tokensNetworkState: TokensNetworkState) => {
         this.tokensNetworkState = tokensNetworkState;
@@ -331,8 +334,8 @@ export class TokensSelectComponent implements OnInit {
         });
     }
 
-    forkJoin([this.tokens.pipe(first()), this.favoriteTokens.pipe(first())]).subscribe(
-      async ([tokens, favoriteTokens]) => {
+    forkJoin([this.tokens$.pipe(first()), this.favoriteTokens$.pipe(first())]).subscribe(
+      ([tokens, favoriteTokens]) => {
         const currentBlockchainTokens = tokens.filter(
           (token: AvailableTokenAmount) => token.blockchain === this.blockchain
         );
@@ -344,38 +347,29 @@ export class TokensSelectComponent implements OnInit {
           )
         }));
 
+        const currentBlockchainFavoriteTokens = favoriteTokens.filter(
+          (token: AvailableTokenAmount) => token.blockchain === this.blockchain
+        );
+        const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
+          currentBlockchainFavoriteTokens
+        );
+
         this.tokensToShow$.next(tokensWithFavorite);
+        this.favoriteTokensToShow$.next(
+          sortedAndFilteredFavoriteTokens.map(el => ({ ...el, favorite: true }))
+        );
         this.tokensListUpdating = false;
         this.cdr.detectChanges();
 
-        const shouldSearch = this.listType === 'default' && !sortedAndFilteredTokens.length;
+        const shouldSearch =
+          (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
+          (this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length);
 
         if (shouldSearch && this.searchQuery) {
           this.updateTokensByQuery$.next();
         }
       }
     );
-
-    this.favoriteTokens.pipe(first()).subscribe(tokens => {
-      const currentBlockchainFavoriteTokens = tokens.filter(
-        (token: AvailableTokenAmount) => token.blockchain === this.blockchain
-      );
-      const sortedAndFilteredFavoriteTokens = this.filterAndSortTokens(
-        currentBlockchainFavoriteTokens
-      );
-
-      this.favoriteTokensToShow$.next(
-        sortedAndFilteredFavoriteTokens.map(el => ({ ...el, favorite: true }))
-      );
-      this.tokensListUpdating = false;
-      this.cdr.detectChanges();
-
-      const shouldSearch = this.listType === 'favorite' && !sortedAndFilteredFavoriteTokens.length;
-
-      if (shouldSearch && this.searchQuery) {
-        this.updateTokensByQuery$.next();
-      }
-    });
   }
 
   /**
@@ -505,8 +499,8 @@ export class TokensSelectComponent implements OnInit {
       .get(image)
       .pipe(
         mapTo(image),
-        catchError((err: HttpErrorResponse) => {
-          return err.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
+        catchError((err: unknown) => {
+          return (err as HttpErrorResponse)?.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
         })
       )
       .toPromise();
