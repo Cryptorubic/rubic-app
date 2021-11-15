@@ -418,9 +418,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
       const sortedRoutes = routesWithProfit
         .filter(el => el.route.outputAbsoluteAmount.gt(0))
-        .sort(
-          (a, b) => b.profit.comparedTo(a.profit) && b.route.outputAbsoluteAmount.comparedTo(0)
-        );
+        .sort((a, b) => b.profit.comparedTo(a.profit));
 
       if (!sortedRoutes.length) {
         throw new InsufficientLiquidityRubicOptimisation();
