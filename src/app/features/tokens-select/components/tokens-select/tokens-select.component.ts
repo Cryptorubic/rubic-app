@@ -262,6 +262,7 @@ export class TokensSelectComponent implements OnInit {
    * Switches tokens display mode (default or favorite).
    */
   public switchMode(): void {
+    this.searchQuery = '';
     if (this.listType === 'default') {
       this.listType = 'favorite';
     } else {
