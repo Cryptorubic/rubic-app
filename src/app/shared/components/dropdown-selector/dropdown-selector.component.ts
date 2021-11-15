@@ -32,7 +32,7 @@ export class DropdownSelectorComponent {
     this.optionChange.emit(optionIndex);
   }
 
-  public openChange(opened: boolean) {
+  public openChange(opened: boolean): void {
     this.opened.emit(opened);
   }
 }

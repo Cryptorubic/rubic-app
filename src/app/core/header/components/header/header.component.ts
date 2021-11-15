@@ -133,7 +133,7 @@ export class HeaderComponent implements AfterViewInit {
    * Triggering redefining status of using mobile.
    */
   @HostListener('window:resize', ['$event'])
-  public onResize() {
+  public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 

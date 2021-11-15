@@ -18,9 +18,9 @@ export class ContentLoaderService {
 
   constructor(private httpClient: HttpClient) {}
 
-  public async fetchContent() {
-    this.content = (await this.httpClient
-      .get(`assets/content/content.json?v=${Date.now()}`)
-      .toPromise()) as Content;
+  public async fetchContent(): Promise<void> {
+    this.content = await this.httpClient
+      .get<Content>(`assets/content/content.json?v=${Date.now()}`)
+      .toPromise();
   }
 }

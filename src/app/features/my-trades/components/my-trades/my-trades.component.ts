@@ -183,7 +183,7 @@ export class MyTradesComponent implements OnInit {
   }
 
   @HostListener('window:resize')
-  private onResize() {
+  private onResize(): void {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
   }
 }
