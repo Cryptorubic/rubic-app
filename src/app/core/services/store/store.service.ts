@@ -23,7 +23,9 @@ export class StoreService {
   /**
    * Is current app placed in iframe (In iframe localStorage using is not allow)
    */
-  private isIframe: boolean;
+  private get isIframe(): boolean {
+    return this.iframeService.isIframe;
+  }
 
   constructor(
     private readonly cookieService: CookieService,
@@ -31,8 +33,7 @@ export class StoreService {
     @Inject(LOCAL_STORAGE) private localStorage: Storage,
     private readonly iframeService: IframeService
   ) {
-    this.isIframe = iframeService.isIframe;
-    const store = this.fetchData(iframeService.isIframe);
+    const store = this.fetchData();
     this.storageSubject$ = new BehaviorSubject<Store>(store);
   }
 
@@ -71,11 +72,9 @@ export class StoreService {
 
   /**
    * Fetch stored data from local storage or cookies.
-   * @param isIframe Fetch data from cookies if its the iframe.
    */
-  public fetchData(isIframe: boolean): Store {
+  public fetchData(): Store {
     try {
-      this.isIframe = isIframe;
       const cookie = this.cookieService.get(this.storageKey);
       const data = JSON.parse(
         this.isIframe && cookie ? cookie : this.localStorage?.getItem(this.storageKey)
