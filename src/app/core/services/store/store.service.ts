@@ -13,7 +13,7 @@ export class StoreService {
   /**
    * Data stored.
    */
-  private readonly storageSubject: BehaviorSubject<Store>;
+  private readonly storageSubject$: BehaviorSubject<Store>;
 
   /**
    * Key to store data.
@@ -33,7 +33,7 @@ export class StoreService {
   ) {
     this.isIframe = iframeService.isIframe;
     const store = this.fetchData(iframeService.isIframe);
-    this.storageSubject = new BehaviorSubject<Store>(store);
+    this.storageSubject$ = new BehaviorSubject<Store>(store);
   }
 
   /**
@@ -42,7 +42,7 @@ export class StoreService {
    */
   public setData(data: Partial<Store>): void {
     const newData = {
-      ...this.storageSubject.value,
+      ...this.storageSubject$.value,
       ...data
     };
     const jsonData = JSON.stringify(newData);
@@ -51,7 +51,7 @@ export class StoreService {
     } else {
       this.document.cookie = `${this.storageKey}=${jsonData}`;
     }
-    this.storageSubject.next(newData);
+    this.storageSubject$.next(newData);
   }
 
   /**
@@ -61,7 +61,7 @@ export class StoreService {
    */
   public setItem<T extends keyof Store>(key: T, value: Store[T]): void {
     const newData = {
-      ...this.storageSubject.value,
+      ...this.storageSubject$.value,
       [key]: value
     };
 
@@ -72,7 +72,7 @@ export class StoreService {
     } else {
       this.document.cookie = `${this.storageKey}=${jsonData}`;
     }
-    this.storageSubject.next(newData);
+    this.storageSubject$.next(newData);
   }
 
   /**
@@ -80,7 +80,7 @@ export class StoreService {
    * @param key Store key.
    */
   public getItem<T extends keyof Store>(key: T): Store[T] {
-    return this.storageSubject.value?.[key];
+    return this.storageSubject$.value?.[key];
   }
 
   /**
@@ -105,7 +105,7 @@ export class StoreService {
     } else {
       this.cookieService.delete(this.storageKey);
     }
-    this.storageSubject.next(null);
+    this.storageSubject$.next(null);
   }
 
   /**
@@ -114,7 +114,7 @@ export class StoreService {
    */
   public deleteItem(key: keyof Store): void {
     const newData: Store = {
-      ...this.storageSubject.value,
+      ...this.storageSubject$.value,
       [key]: undefined
     };
     const jsonData = JSON.stringify(newData);
@@ -123,7 +123,7 @@ export class StoreService {
     } else {
       this.cookieService.set(this.storageKey, jsonData);
     }
-    this.storageSubject.next(newData);
+    this.storageSubject$.next(newData);
   }
 
   /**
@@ -133,6 +133,6 @@ export class StoreService {
     if (!this.isIframe) {
       this.localStorage?.clear();
     }
-    this.storageSubject.next(null);
+    this.storageSubject$.next(null);
   }
 }

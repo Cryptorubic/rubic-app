@@ -80,7 +80,7 @@ export class CoingeckoApiService {
         map((response: { [key: string]: { usd: string } }) => {
           return +response[coingeckoId].usd;
         }),
-        catchError(_err => {
+        catchError((_err: unknown) => {
           console.debug('Coingecko is not alive');
           return of(undefined);
         })
@@ -112,7 +112,7 @@ export class CoingeckoApiService {
         map((response: { market_data: { current_price: { usd: number } } }) => {
           return response?.market_data?.current_price?.usd;
         }),
-        catchError(err => {
+        catchError((err: unknown) => {
           console.debug('Coingecko cannot retrieve token price', err);
           return of(undefined);
         })

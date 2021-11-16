@@ -26,14 +26,14 @@ export class SafetyLinkDirective {
   constructor(@Inject(PLATFORM_ID) private platformId: string, private router: Router) {}
 
   @HostListener('click', ['$event'])
-  private linkClick(event: MouseEvent) {
+  private linkClick(event: MouseEvent): void {
     if (!this.isLinkExternal()) {
       event.preventDefault();
       this.router.navigate([this._link]);
     }
   }
 
-  private isLinkExternal() {
+  private isLinkExternal(): boolean {
     return this._link.includes(location.protocol);
   }
 }

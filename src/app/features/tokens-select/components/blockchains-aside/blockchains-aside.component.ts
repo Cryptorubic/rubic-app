@@ -45,7 +45,7 @@ export class BlockchainsAsideComponent {
 
   constructor() {}
 
-  onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME) {
+  onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME): void {
     this.blockchain = blockchainName;
     this.blockchainChange.emit(blockchainName);
   }

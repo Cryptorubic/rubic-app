@@ -34,11 +34,11 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WalletsModalComponent implements OnInit {
-  public readonly $walletsLoading: Observable<boolean>;
+  public readonly walletsLoading$: Observable<boolean>;
 
   private readonly allProviders: WalletProvider[];
 
-  private readonly $mobileDisplayStatus: Observable<boolean>;
+  private readonly mobileDisplayStatus$: Observable<boolean>;
 
   public get providers(): WalletProvider[] {
     const deviceFiltered = this.isMobile
@@ -51,7 +51,7 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public get isMobile(): boolean {
-    return new AsyncPipe(this.cdr).transform(this.$mobileDisplayStatus);
+    return new AsyncPipe(this.cdr).transform(this.mobileDisplayStatus$);
   }
 
   private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
@@ -102,8 +102,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly browserService: BrowserService,
     private readonly iframeService: IframeService
   ) {
-    this.$walletsLoading = this.headerStore.getWalletsLoadingStatus();
-    this.$mobileDisplayStatus = this.headerStore.getMobileDisplayStatus();
+    this.walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
+    this.mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
     this.allProviders = [
       {
         name: 'MetaMask',
@@ -218,7 +218,7 @@ export class WalletsModalComponent implements OnInit {
     this.context.completeWith();
   }
 
-  private openIframeWarning() {
+  private openIframeWarning(): void {
     this.dialogService
       .open<boolean>(new PolymorpheusComponent(IframeWalletsWarningComponent, this.injector), {
         size: 'fullscreen'

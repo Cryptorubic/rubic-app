@@ -35,10 +35,10 @@ export class PanamaBridgeProviderService {
 
   private readonly PANAMA_SUCCESS_CODE = 20000;
 
-  private tokens$ = new Subject<List<PanamaToken>>();
+  private _tokens$ = new Subject<List<PanamaToken>>();
 
-  public get tokens(): Observable<List<PanamaToken>> {
-    return this.tokens$.asObservable();
+  public get tokens$(): Observable<List<PanamaToken>> {
+    return this._tokens$.asObservable();
   }
 
   constructor(
@@ -67,12 +67,12 @@ export class PanamaBridgeProviderService {
             )
           );
         }),
-        catchError(e => {
+        catchError((e: unknown) => {
           console.error(e);
           return of(List([]));
         })
       )
-      .subscribe(tokens => this.tokens$.next(tokens));
+      .subscribe(tokens => this._tokens$.next(tokens));
   }
 
   public getProviderType(): BRIDGE_PROVIDER {
@@ -93,7 +93,7 @@ export class PanamaBridgeProviderService {
         }
         return res.data.networks.find(network => network.name === toBlockchain).networkFee;
       }),
-      catchError(err => {
+      catchError((err: unknown) => {
         return throwError(err);
       })
     );
@@ -121,7 +121,7 @@ export class PanamaBridgeProviderService {
         const { data } = res;
         return from(this.sendDeposit(data.id, bridgeTrade, data.depositAddress));
       }),
-      catchError(err => {
+      catchError((err: unknown) => {
         return throwError(err);
       })
     );

@@ -46,7 +46,7 @@ export class GasRefundComponent {
     this.userPromotions$ = gasRefundService.userPromotions$;
   }
 
-  public refreshRefunds() {
+  public refreshRefunds(): void {
     this.isLoading = true;
     this.gasRefundService
       .updateUserPromotions()
@@ -71,8 +71,8 @@ export class GasRefundComponent {
     this.gasRefundService
       .refund(promoId, onTransactionHash)
       .pipe(
-        catchError(err => {
-          this.errorsService.catchAnyError(err);
+        catchError((err: unknown) => {
+          this.errorsService.catchAnyError(err as Error);
           this.notificationSubscription$?.unsubscribe();
           return EMPTY;
         }),

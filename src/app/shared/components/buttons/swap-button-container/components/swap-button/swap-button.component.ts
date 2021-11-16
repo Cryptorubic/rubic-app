@@ -118,7 +118,7 @@ export class SwapButtonComponent implements OnInit {
       });
   }
 
-  private setPriceImpact() {
+  private setPriceImpact(): void {
     if (this.iframeService.isIframe || this.swapsService.swapMode === SWAP_PROVIDER_TYPE.BRIDGE) {
       this.priceImpact = 0;
       return;

@@ -55,7 +55,7 @@ export class RubicBlockchainsComponent implements OnInit {
     return this.blockchainsList.find(blockchain => blockchain.symbol === symbol);
   }
 
-  public selectBlockchain(blockchainSymbol: string) {
+  public selectBlockchain(blockchainSymbol: string): void {
     if (this.selectedBlockchain.symbol !== blockchainSymbol) {
       this.selectedBlockchain = this.findBlockchainBySymbol(blockchainSymbol);
 
