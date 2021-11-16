@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
@@ -27,7 +27,11 @@ export class TokensListElementComponent {
    */
   public readonly isHorizontalFrame$: Observable<boolean>;
 
-  constructor(iframeService: IframeService, private readonly tokensService: TokensService) {
+  constructor(
+    iframeService: IframeService,
+    private readonly tokensService: TokensService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.loadingFavoriteToken = false;
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
       map(appearance => appearance === 'horizontal')
@@ -46,7 +50,10 @@ export class TokensListElementComponent {
       return;
     }
     this.loadingFavoriteToken = true;
-    const callback = () => (this.loadingFavoriteToken = false);
+    const callback = () => {
+      this.loadingFavoriteToken = false;
+      this.cdr.markForCheck();
+    };
     if (!this.token.favorite) {
       this.tokensService.addFavoriteToken(this.token, callback);
     } else {

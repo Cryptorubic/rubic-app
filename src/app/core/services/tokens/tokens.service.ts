@@ -11,7 +11,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { catchError, finalize, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
@@ -21,7 +21,7 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
-import { compareAddresses } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletError } from '@core/errors/models/provider/WalletError';
 
@@ -526,12 +526,14 @@ export class TokensService {
    */
   public addFavoriteToken(favoriteToken: TokenAmount, callback: () => void): void {
     if (this.authService.userAddress) {
-      this.tokensApiService
-        .addFavoriteToken(favoriteToken)
-        .pipe(finalize(() => callback()))
-        .subscribe(() => {
-          this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
-        });
+      this.tokensApiService.addFavoriteToken(favoriteToken).subscribe({
+        next: () => {
+          if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {
+            this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+          }
+        },
+        complete: callback
+      });
     } else {
       callback();
       this.errorsService.catch(new WalletError());
@@ -548,12 +550,16 @@ export class TokensService {
       const filteredTokens = this._favoriteTokens$.value.filter(
         el => !TokensService.areTokensEqual(el, token)
       );
-      this.tokensApiService
-        .deleteFavoriteToken(token)
-        .pipe(finalize(() => callback()))
-        .subscribe(() => {
-          this._favoriteTokens$.next(filteredTokens);
-        });
+      this.tokensApiService.deleteFavoriteToken(token).subscribe({
+        next: () => {
+          if (
+            this._favoriteTokens$.value.some(favoriteToken => compareTokens(token, favoriteToken))
+          ) {
+            this._favoriteTokens$.next(filteredTokens);
+          }
+        },
+        complete: callback
+      });
     } else {
       callback();
       this.errorsService.catch(new WalletError());
