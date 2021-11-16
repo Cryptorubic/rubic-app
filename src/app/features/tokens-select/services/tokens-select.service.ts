@@ -21,8 +21,8 @@ export class TokensSelectService {
 
   /**
    * Show tokens dialog.
-   * @param tokens Tokens to show.
-   * @param favoriteTokens Favorite tokens to show.
+   * @param tokens$ Tokens to show.
+   * @param favoriteTokens$ Favorite tokens to show.
    * @param formType Tokens type (from || to)
    * @param currentBlockchain Tokens blockchain.
    * @param form Swap form information.
@@ -30,8 +30,8 @@ export class TokensSelectService {
    * @param idPrefix Id prefix for GA.
    */
   public showDialog(
-    tokens: Observable<AvailableTokenAmount[]>,
-    favoriteTokens: Observable<AvailableTokenAmount[]>,
+    tokens$: Observable<AvailableTokenAmount[]>,
+    favoriteTokens$: Observable<AvailableTokenAmount[]>,
     formType: 'from' | 'to',
     currentBlockchain: BLOCKCHAIN_NAME,
     form: FormGroup<ISwapFormInput>,
@@ -44,8 +44,8 @@ export class TokensSelectService {
       {
         size,
         data: {
-          tokens,
-          favoriteTokens,
+          tokens$,
+          favoriteTokens$,
           currentBlockchain,
           formType,
           form,
