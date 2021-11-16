@@ -178,9 +178,9 @@ export class SwapsFormComponent implements OnInit {
           this._bridgeFavoriteTokenPairsByBlockchainsArray =
             bridgeFavoriteTokenPairsByBlockchainsArray;
 
-          this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
-          this.callFunctionWithTokenTypes(this.setAvailableFavoriteTokens.bind(this));
-          this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
+          this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
+          this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
+          this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this), 'default');
 
           this.isLoading = false;
           this.cdr.detectChanges();
@@ -216,22 +216,34 @@ export class SwapsFormComponent implements OnInit {
     };
 
     if (this._supportedTokens) {
-      this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this));
-      this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this));
+      this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
+      this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
     }
   }
 
-  private callFunctionWithTokenTypes(functionToCall: (tokenType: TokenType) => void): void {
-    functionToCall('from');
-    functionToCall('to');
+  private callFunctionWithTokenTypes(
+    functionToCall: (tokenType: TokenType, tokenListType: 'default' | 'favorite') => void,
+    tokenListType: 'default' | 'favorite'
+  ): void {
+    functionToCall('from', tokenListType);
+    functionToCall('to', tokenListType);
   }
 
-  private setAvailableTokens(tokenType: TokenType): void {
+  private setAvailableTokens(tokenType: TokenType, tokenListType: 'default' | 'favorite'): void {
     const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromToken';
     const oppositeToken = this.swapFormService.inputValue[oppositeTokenKey];
 
+    const availableTokens =
+      tokenListType === 'default' ? this.availableTokens : this.availableFavoriteTokens;
+    const bridgePairsArray =
+      tokenListType === 'default'
+        ? this._bridgeTokenPairsByBlockchainsArray
+        : this._bridgeFavoriteTokenPairsByBlockchainsArray;
+    const supportedTokens =
+      tokenListType === 'default' ? this._supportedTokens : this._supportedFavoriteTokens;
+
     if (!oppositeToken) {
-      this.availableTokens[tokenType] = this._supportedTokens
+      availableTokens[tokenType] = supportedTokens
         .map(supportedToken => ({
           ...supportedToken,
           available: true
@@ -252,7 +264,7 @@ export class SwapsFormComponent implements OnInit {
       };
 
       const checkIsBridgeTokenPairAndPush = (supportedToken: TokenAmount): void => {
-        const isAvailable = !!this._bridgeTokenPairsByBlockchainsArray
+        const isAvailable = !!bridgePairsArray
           .find(
             pairsByBlockchains =>
               pairsByBlockchains[oppositeBlockchainKey] === oppositeToken.blockchain &&
@@ -272,7 +284,7 @@ export class SwapsFormComponent implements OnInit {
       };
 
       if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
-        this._supportedTokens.forEach(supportedToken => {
+        supportedTokens.forEach(supportedToken => {
           if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
             checkIsEqualTokenAndPush(supportedToken);
           } else {
@@ -280,7 +292,7 @@ export class SwapsFormComponent implements OnInit {
           }
         });
       } else if (InstantTradeService.isSupportedBlockchain(oppositeToken.blockchain)) {
-        this._supportedTokens.forEach(supportedToken => {
+        supportedTokens.forEach(supportedToken => {
           if (oppositeToken.blockchain === supportedToken.blockchain) {
             checkIsEqualTokenAndPush(supportedToken);
           } else {
@@ -288,93 +300,22 @@ export class SwapsFormComponent implements OnInit {
           }
         });
       } else {
-        this._supportedTokens.forEach(supportedToken =>
-          checkIsBridgeTokenPairAndPush(supportedToken)
-        );
+        supportedTokens.forEach(supportedToken => checkIsBridgeTokenPairAndPush(supportedToken));
       }
 
-      this.availableTokens[tokenType] = tokens;
+      availableTokens[tokenType] = tokens;
     }
   }
 
-  private setAvailableFavoriteTokens(tokenType: TokenType): void {
-    const oppositeTokenKey = tokenType === 'from' ? 'toToken' : 'fromToken';
-    const oppositeToken = this.swapFormService.inputValue[oppositeTokenKey];
-
-    if (!oppositeToken) {
-      this.availableFavoriteTokens[tokenType] = this._supportedFavoriteTokens
-        .map(supportedToken => ({
-          ...supportedToken,
-          available: true
-        }))
-        .toArray();
-    } else {
-      const tokens: AvailableTokenAmount[] = [];
-      const blockchainKey = tokenType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-      const oppositeBlockchainKey = tokenType === 'from' ? 'toBlockchain' : 'fromBlockchain';
-
-      const checkIsEqualTokenAndPush = (supportedToken: TokenAmount): void => {
-        tokens.push({
-          ...supportedToken,
-          available:
-            supportedToken.blockchain !== oppositeToken.blockchain ||
-            supportedToken.address.toLowerCase() !== oppositeToken.address.toLowerCase()
-        });
-      };
-
-      const checkIsBridgeTokenPairAndPush = (supportedToken: TokenAmount): void => {
-        const isAvailable = !!this._bridgeFavoriteTokenPairsByBlockchainsArray
-          .find(
-            pairsByBlockchains =>
-              pairsByBlockchains[oppositeBlockchainKey] === oppositeToken.blockchain &&
-              pairsByBlockchains[blockchainKey] === supportedToken.blockchain
-          )
-          ?.tokenPairs.find(
-            tokenPair =>
-              tokenPair.tokenByBlockchain[oppositeToken.blockchain].address.toLowerCase() ===
-                oppositeToken.address.toLowerCase() &&
-              tokenPair.tokenByBlockchain[supportedToken.blockchain].address.toLowerCase() ===
-                supportedToken.address.toLowerCase()
-          );
-        tokens.push({
-          ...supportedToken,
-          available: isAvailable
-        });
-      };
-
-      if (CrossChainRoutingService.isSupportedBlockchain(oppositeToken.blockchain)) {
-        this._supportedFavoriteTokens.forEach(supportedToken => {
-          if (CrossChainRoutingService.isSupportedBlockchain(supportedToken.blockchain)) {
-            checkIsEqualTokenAndPush(supportedToken);
-          } else {
-            checkIsBridgeTokenPairAndPush(supportedToken);
-          }
-        });
-      } else if (InstantTradeService.isSupportedBlockchain(oppositeToken.blockchain)) {
-        this._supportedFavoriteTokens.forEach(supportedToken => {
-          if (oppositeToken.blockchain === supportedToken.blockchain) {
-            checkIsEqualTokenAndPush(supportedToken);
-          } else {
-            checkIsBridgeTokenPairAndPush(supportedToken);
-          }
-        });
-      } else {
-        this._supportedFavoriteTokens.forEach(supportedToken =>
-          checkIsBridgeTokenPairAndPush(supportedToken)
-        );
-      }
-
-      this.availableFavoriteTokens[tokenType] = tokens;
-    }
-  }
-
-  private updateSelectedToken(tokenType: TokenType): void {
+  private updateSelectedToken(tokenType: TokenType, tokenListType: 'default' | 'favorite'): void {
+    const supportedTokens =
+      tokenListType === 'default' ? this._supportedTokens : this._supportedFavoriteTokens;
     const token = this.selectedToken[tokenType];
     if (!token) {
       return;
     }
 
-    const updatedToken = this._supportedTokens.find(
+    const updatedToken = supportedTokens.find(
       supportedToken =>
         supportedToken.blockchain === token.blockchain &&
         supportedToken.address.toLowerCase() === token.address.toLowerCase()

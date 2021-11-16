@@ -132,8 +132,8 @@ export class TokensService {
         switchMap(params => this.tokensApiService.getTokensList(params)),
         switchMap(tokens => {
           if (!this.isTestingMode) {
-            this.setDefaultTokensParams(tokens);
-            return this.calculateUserTokensBalances();
+            const newTokens = this.setDefaultTokensParams(tokens, false);
+            return this.calculateTokensBalances('default', newTokens);
           }
           return of();
         }),
@@ -146,7 +146,7 @@ export class TokensService {
 
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
-      await this.calculateUserTokensBalances();
+      await this.calculateTokensBalances('default');
       if (this.userAddress) {
         this.fetchFavoriteTokens();
       } else {
@@ -158,7 +158,7 @@ export class TokensService {
       if (isTestingMode) {
         this.isTestingMode = true;
         this._tokens$.next(List(coingeckoTestTokens));
-        await this.calculateUserTokensBalances();
+        await this.calculateTokensBalances('default');
       }
     });
 
@@ -168,42 +168,50 @@ export class TokensService {
   public fetchFavoriteTokens(): void {
     this.tokensApiService
       .fetchFavoriteTokens()
-      .subscribe(async tokens => this.calculateFavoriteTokensBalances(tokens));
+      .subscribe(tokens => this.calculateTokensBalances('favorite', tokens));
   }
 
   /**
    * Sets default tokens params.
    * @param tokens Tokens list.
+   * @param isFavorite Is tokens list favorite.
    */
-  private setDefaultTokensParams(tokens: List<Token> = this.tokens): void {
-    this._tokens$.next(
-      tokens.map(token => ({
-        ...token,
-        amount: new BigNumber(NaN),
-        favorite: false
-      }))
-    );
+  private setDefaultTokensParams(tokens: List<Token>, isFavorite: boolean): List<TokenAmount> {
+    return tokens.map(token => ({
+      ...token,
+      amount: new BigNumber(NaN),
+      favorite: isFavorite
+    }));
   }
 
   /**
-   * Calculates balance for favorite token list.
-   * @param tokensWithoutBalance Favorite token list.
+   * Calculates balance for favorite tokens list.
+   * @param type Type of tokens list: default or favorite.
+   * @param oldTokens Favorite tokens list.
    */
-  public async calculateFavoriteTokensBalances(
-    tokensWithoutBalance: List<TokenAmount | Token> = this.favoriteTokens
+  public async calculateTokensBalances(
+    type: 'favorite' | 'default',
+    oldTokens?: List<TokenAmount | Token>
   ): Promise<void> {
-    if (!tokensWithoutBalance.size || !this.userAddress) {
+    const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
+    const tokens =
+      oldTokens || (type === 'favorite' ? this._favoriteTokens$.value : this._tokens$.value);
+
+    if (type === 'default') {
+      if (!tokens.size) {
+        return;
+      }
+      if (!this.userAddress) {
+        this._tokens$.next(this.setDefaultTokensParams(tokens, false));
+        return;
+      }
+    } else if (!tokens.size || !this.userAddress) {
       this._favoriteTokens$.next(List([]));
       return;
     }
 
-    const tokens = tokensWithoutBalance.map(token => ({
-      ...token,
-      amount: new BigNumber(NaN),
-      favorite: true
-    }));
-
-    const tokensWithBalance = await this.getTokensWithBalance(tokens);
+    const newTokens = this.setDefaultTokensParams(tokens, type === 'default');
+    const tokensWithBalance = await this.getTokensWithBalance(newTokens as List<TokenAmount>);
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
       const updatedTokens = tokens.map(token => {
@@ -217,39 +225,7 @@ export class TokensService {
           amount: balance
         };
       });
-      this._favoriteTokens$.next(List(updatedTokens));
-    }
-  }
-
-  /**
-   * Calculates balance for token list.
-   * @param tokens Token list.
-   */
-  public async calculateUserTokensBalances(tokens: List<TokenAmount> = this.tokens): Promise<void> {
-    if (!tokens.size) {
-      return;
-    }
-
-    if (!this.userAddress) {
-      this.setDefaultTokensParams(tokens);
-      return;
-    }
-
-    const tokensWithBalance = await this.getTokensWithBalance(tokens);
-
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
-      const updatedTokens = tokens.map(token => {
-        const currentToken = this.tokens.find(t => TokensService.areTokensEqual(token, t));
-        const balance = tokensWithBalance.find(tWithBalance =>
-          TokensService.areTokensEqual(token, tWithBalance)
-        )?.amount;
-        return {
-          ...token,
-          ...currentToken,
-          amount: balance
-        };
-      });
-      this._tokens$.next(List(updatedTokens));
+      subject$.next(List(updatedTokens));
     }
   }
 

@@ -12,7 +12,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { compareAddresses } from 'src/app/shared/utils/utils';
+import { compareAddresses, compareTokens } from 'src/app/shared/utils/utils';
 import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 
 @Injectable()
@@ -149,7 +149,13 @@ export class SwapsService {
       );
 
       this._availableTokens$.next(List(updatedTokenAmounts));
-      this._availableFavoriteTokens$.next(List(updatedFavoriteTokenAmounts));
+
+      const availableFavoriteTokens = List(
+        updatedFavoriteTokenAmounts.filter(tokenA =>
+          favoriteTokenAmounts.some(tokenB => compareTokens(tokenA, tokenB))
+        )
+      );
+      this._availableFavoriteTokens$.next(availableFavoriteTokens);
     });
   }
 

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { first, map, mergeMap, switchMap } from 'rxjs/operators';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -257,12 +257,13 @@ export class QueryParamsService {
 
     if (!similarTokens.size) {
       return this.tokensService.fetchQueryTokens(symbol, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
-        map(foundedTokens =>
-          foundedTokens?.size > 1
-            ? foundedTokens.find(el => el.symbol === symbol)
-            : foundedTokens.first()
-        ),
-        switchMap(fetchedToken => this.getTokenWithBalance(fetchedToken))
+        map(foundedTokens => {
+          const token =
+            foundedTokens?.size > 1
+              ? foundedTokens.find(el => el.symbol === symbol)
+              : foundedTokens.first();
+          return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+        })
       );
     }
 
@@ -292,8 +293,10 @@ export class QueryParamsService {
     return searchingToken
       ? of(searchingToken)
       : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
-          map(fetchedToken => fetchedToken.first()),
-          switchMap(fetchedToken => this.getTokenWithBalance(fetchedToken))
+          map(fetchedToken => {
+            const token = fetchedToken.first();
+            return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+          })
         );
   }
 
