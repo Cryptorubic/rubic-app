@@ -30,7 +30,8 @@ import BigNumber from 'bignumber.js';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
+import { BuyTokenComponent, TokenInfo } from '@shared/components/buy-token/buy-token.component';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { HeaderStore } from '../../services/header.store';
 
 @Component({
@@ -43,6 +44,11 @@ export class HeaderComponent implements AfterViewInit {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
 
   @ViewChild(BuyTokenComponent) public buyTokenComponent: BuyTokenComponent;
+
+  public readonly bannerTokens: {
+    from: TokenInfo;
+    to: TokenInfo;
+  };
 
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
@@ -84,6 +90,19 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly destroy$: TuiDestroyService
   ) {
+    this.bannerTokens = {
+      from: {
+        blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        address: NATIVE_TOKEN_ADDRESS,
+        symbol: 'ETH',
+        amount: new BigNumber(1)
+      },
+      to: {
+        blockchain: BLOCKCHAIN_NAME.MOONRIVER,
+        address: NATIVE_TOKEN_ADDRESS,
+        symbol: 'MOVR'
+      }
+    };
     this.loadUser();
     // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();

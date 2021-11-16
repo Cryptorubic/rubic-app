@@ -1,7 +1,9 @@
 <!-- HARMONY BANNER -->
 <div class="banner" *noFrame>
   {{ 'banner.text' | translate }}
-  <a class="banner__link" (click)="buyTokenComponent.buyToken()">{{ 'banner.link' | translate }}</a>
+  <a class="banner__link" (click)="buyTokenComponent.buyToken(bannerTokens)">{{
+    'banner.link' | translate
+  }}</a>
 </div>
 <!-- HARMONY BANNER -->
 
@@ -52,7 +54,7 @@
       [class.button-link_active]="
         rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
       "
-      >Cross-Chain</a
+      >Multi-Chain</a
     >
   </nav>
 
