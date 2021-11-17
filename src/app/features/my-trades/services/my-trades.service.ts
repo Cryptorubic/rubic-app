@@ -32,6 +32,9 @@ import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/W
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+import { TuiNotification } from '@taiga-ui/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface PanamaStatusResponse {
   data: {
@@ -67,7 +70,9 @@ export class MyTradesService {
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService,
     private readonly gasRefundApiService: GasRefundApiService,
-    private readonly scannerLinkPipe: ScannerLinkPipe
+    private readonly scannerLinkPipe: ScannerLinkPipe,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   public updateTableTrades(): Observable<TableTrade[]> {
@@ -89,7 +94,9 @@ export class MyTradesService {
 
         return forkJoin([
           this.getBridgeTransactions(),
-          this.instantTradesApiService.getUserTrades(this.walletAddress),
+          this.instantTradesApiService.getUserTrades(this.walletAddress, (err: unknown) =>
+            this.showPartialDataWarning(err)
+          ),
           this.getCrossChainTrades(),
           this.getGasRefundTrades()
         ]).pipe(
@@ -133,8 +140,25 @@ export class MyTradesService {
           ),
           defaultIfEmpty<TableTrade[]>([])
         );
+      }),
+      catchError((err: unknown) => {
+        this.showPartialDataWarning(err);
+        return of([]);
       })
     );
+  }
+
+  /**
+   * Displays warning notification when got partial transactions data.
+   * @param err Method error.
+   */
+  private showPartialDataWarning(err: unknown): void {
+    console.debug(err);
+    this.notificationsService.show(this.translateService.instant('errors.partialTradesData'), {
+      label: this.translateService.instant('common.warning'),
+      status: TuiNotification.Info,
+      autoClose: 7000
+    });
   }
 
   private prepareBridgeData(trade: TableTrade): TableTrade {
@@ -198,6 +222,10 @@ export class MyTradesService {
             }
           };
         });
+      }),
+      catchError((err: unknown) => {
+        this.showPartialDataWarning(err);
+        return of([]);
       })
     );
   }
@@ -232,7 +260,11 @@ export class MyTradesService {
             };
           })
           .filter(item => !!item)
-      )
+      ),
+      catchError((err: unknown) => {
+        this.showPartialDataWarning(err);
+        return of([]);
+      })
     );
   }
 

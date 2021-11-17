@@ -1,5 +1,12 @@
-/* eslint-disable rxjs/no-exposed-subjects */
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
@@ -13,6 +20,7 @@ import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { TableTrade } from '@shared/models/my-trades/TableTrade';
 import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
 
 @Component({
@@ -22,9 +30,11 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent extends AbstractTableDataComponent implements OnInit {
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
+
   @Input() loading: boolean;
 
-  @Input() tableData$: BehaviorSubject<TableRow[]>;
+  @Input() tableData$!: Observable<TableRow[]>;
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -45,13 +55,45 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     Date: () => 0
   };
 
-  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
+  private readonly sorterSubject$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
 
-  public readonly direction$ = new BehaviorSubject<-1 | 1>(-1);
+  get sorter$(): Observable<TuiComparator<TableRow>> {
+    return this.sorterSubject$.asObservable();
+  }
 
-  public readonly page$ = new Subject<number>();
+  public setSorter$(comparator: TuiComparator<TableRow>) {
+    this.sorterSubject$.next(comparator);
+  }
 
-  public readonly size$ = new Subject<number>();
+  private readonly directionSubject$ = new BehaviorSubject<-1 | 1>(-1);
+
+  get direction$(): Observable<-1 | 1> {
+    return this.directionSubject$.asObservable();
+  }
+
+  public setDirection$(direction: -1 | 1) {
+    this.directionSubject$.next(direction);
+  }
+
+  private readonly pageSubject$ = new Subject<number>();
+
+  get page$(): Observable<number> {
+    return this.pageSubject$.asObservable();
+  }
+
+  public setPage$(page: number) {
+    this.pageSubject$.next(page);
+  }
+
+  private readonly sizeSubject$ = new Subject<number>();
+
+  get size$(): Observable<number> {
+    return this.sizeSubject$.asObservable();
+  }
+
+  public setSize$(size: number) {
+    this.pageSubject$.next(size);
+  }
 
   private request$: Observable<readonly TableRow[]>;
 
@@ -66,6 +108,13 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   }
 
   ngOnInit(): void {
+    this.initSubscriptions();
+  }
+
+  /**
+   * Inits component subscriptions and observables.
+   */
+  private initSubscriptions(): void {
     this.request$ = combineLatest([
       this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
       this.direction$.pipe(
@@ -123,7 +172,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
       );
       const otherTrades = tableData
         .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
-        .sort(this.sortBy('Date', this.direction$.getValue()));
+        .sort(this.sortBy('Date', this.directionSubject$.getValue()));
 
       return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>
         index >= start && index < end ? user : null

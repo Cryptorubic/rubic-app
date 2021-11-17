@@ -2,14 +2,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Injector,
   Input,
   OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {
   TableRow,
   TableRowKeyValue
@@ -28,8 +30,9 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccordionComponent extends AbstractTableDataComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  @Input() tableData$: BehaviorSubject<TableRow[]>;
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
+
+  @Input() tableData$!: Observable<TableRow[]>;
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -66,6 +69,17 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   }
 
   ngOnInit(): void {
+    this.initData();
+  }
+
+  ngOnDestroy(): void {
+    this.tableDataSubscription$.unsubscribe();
+  }
+
+  /**
+   * Inits component data and subscriptions
+   */
+  private initData(): void {
     this.selectedColumn = this.columns.find(column => column.value === 'Date');
     this.page = 0;
 
@@ -91,10 +105,6 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
       });
   }
 
-  ngOnDestroy(): void {
-    this.tableDataSubscription$.unsubscribe();
-  }
-
   public onColumnChange(column: TableRowKeyValue): void {
     this.isDropdownOpened = false;
     this.selectedColumn = column;
@@ -118,7 +128,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
     this.onReceivePolygonBridgeTrade.emit(trade);
   }
 
-  public goToPage(page: number) {
+  public goToPage(page: number): void {
     this.page = page;
     const start = this.page * this.PAGE_SIZE;
     this.visibleData = this.sortedTableData.slice(start, start + this.PAGE_SIZE);

@@ -5,8 +5,8 @@
   [columns]="['Status', 'FromTo', 'Provider', 'Sent', 'Expected', 'Date']"
   [sorter]="sorter$ | async"
   [direction]="direction$ | async"
-  (sorterChange)="sorter$.next($event)"
-  (directionChange)="direction$.next($event)"
+  (sorterChange)="setSorter$($event)"
+  (directionChange)="setDirection$($event)"
 >
   <thead>
     <tr tuiThGroup>
@@ -25,14 +25,14 @@
         <div
           class="sort-arrow"
           [class.sort-arrow_green]="
-            sorter$.getValue() === sorters[column.value] && direction$.getValue() === -1
+            (sorter$ | async) === sorters[column.value] && (direction$ | async) === -1
           "
           inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
         ></div>
         <div
           class="sort-arrow"
           [class.sort-arrow_green]="
-            sorter$.getValue() === sorters[column.value] && direction$.getValue() === 1
+            (sorter$ | async) === sorters[column.value] && (direction$ | async) === 1
           "
           inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
         ></div>
@@ -97,6 +97,7 @@
                 <div class="blockchains__blockchain">
                   <div class="img-container">
                     <img
+                      (error)="handleImageError($event)"
                       [src]="BLOCKCHAINS[trade.fromToken.blockchain].img"
                       alt="from blockchain"
                     />
@@ -115,7 +116,11 @@
                   *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain"
                 >
                   <div class="img-container">
-                    <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="to blockchain" />
+                    <img
+                      (error)="handleImageError($event)"
+                      [src]="BLOCKCHAINS[trade.toToken.blockchain].img"
+                      alt="to blockchain"
+                    />
                   </div>
                   {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
                 </div>
@@ -123,7 +128,11 @@
               <ng-template #showToTokenChain>
                 <div class="blockchains__blockchain">
                   <div class="img-container">
-                    <img [src]="BLOCKCHAINS[trade.toToken.blockchain].img" alt="from blockchain" />
+                    <img
+                      (error)="handleImageError($event)"
+                      [src]="BLOCKCHAINS[trade.toToken.blockchain].img"
+                      alt="from blockchain"
+                    />
                   </div>
                   {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
                 </div>
@@ -134,7 +143,11 @@
           <td *tuiCell="'Provider'" tuiTd>
             <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
               <div class="img-container">
-                <img [src]="TRADES_PROVIDERS[trade.provider].image" alt="provider" />
+                <img
+                  (error)="handleImageError($event)"
+                  [src]="TRADES_PROVIDERS[trade.provider].image"
+                  alt="provider"
+                />
               </div>
               {{ TRADES_PROVIDERS[trade.provider].name }}
             </a>
@@ -197,8 +210,8 @@
       <td [colSpan]="columns.length">
         <tui-table-pagination
           [total]="total$ | async"
-          (pageChange)="page$.next($event)"
-          (sizeChange)="size$.next($event)"
+          (pageChange)="setPage$($event)"
+          (sizeChange)="setSize$($event)"
         ></tui-table-pagination>
       </td>
     </tr>
