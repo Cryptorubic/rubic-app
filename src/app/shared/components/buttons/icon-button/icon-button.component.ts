@@ -29,7 +29,7 @@ export class IconButtonComponent {
   @Output()
   iconButtonClick = new EventEmitter<void>();
 
-  public onClick() {
+  public onClick(): void {
     this.iconButtonClick.emit();
   }
 

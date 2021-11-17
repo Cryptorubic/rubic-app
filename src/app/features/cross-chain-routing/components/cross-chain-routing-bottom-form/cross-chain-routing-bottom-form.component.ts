@@ -59,6 +59,7 @@ type CalculateTradeType = 'normal' | 'hidden';
   providers: [TuiDestroyService]
 })
 export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
+  // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
   @Input() loading: boolean;
@@ -265,6 +266,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
+            // eslint-disable-next-line rxjs/no-implicit-any-catch
             catchError((err: RubicError<ERROR_TYPE>) => {
               this.errorText = err.translateKey || err.message;
               this.swapFormService.output.patchValue({
@@ -323,6 +325,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
+            // eslint-disable-next-line rxjs/no-implicit-any-catch
             catchError((err: RubicError<ERROR_TYPE>) => {
               this.errorText = err.translateKey || err.message;
               this.swapFormService.output.patchValue({
@@ -340,7 +343,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-  public setHiddenData() {
+  public setHiddenData(): void {
     const data = this.hiddenTradeData$.getValue();
     this.toAmount = data.toAmount;
 
@@ -455,7 +458,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       );
   }
 
-  private notifyTradeInProgress() {
+  private notifyTradeInProgress(): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {

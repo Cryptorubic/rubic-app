@@ -120,15 +120,15 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       .get('networks/', {}, this.apiUrl)
       .pipe(
         timeout(3000),
-        catchError(e => {
+        catchError((e: unknown) => {
           console.error(e);
-          this.tokenPairs$.next(List([]));
+          this._tokenPairs$.next(List([]));
           return EMPTY;
         })
       )
       .subscribe((response: RubicApiResponse[]) => {
         if (!response) {
-          this.tokenPairs$.next(List([]));
+          this._tokenPairs$.next(List([]));
           return;
         }
         const ethContractData = response.find(data => data.network === 'Ethereum');
@@ -163,7 +163,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           fromEthFee: parseFloat(bscContractData.fee),
           toEthFee: parseFloat(ethContractData.fee)
         };
-        this.tokenPairs$.next(List([bridgeTokenPair]));
+        this._tokenPairs$.next(List([bridgeTokenPair]));
       });
   }
 
@@ -297,7 +297,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     trade: RubicTrade,
     web3Public: Web3Public,
     onApprove: (hash: string) => void
-  ) {
+  ): Promise<void> {
     const allowance = await web3Public.getAllowance(
       trade.token.address,
       this.providerConnectorService.address,

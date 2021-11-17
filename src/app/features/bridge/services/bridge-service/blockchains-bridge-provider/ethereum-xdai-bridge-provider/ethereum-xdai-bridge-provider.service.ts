@@ -54,7 +54,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   ) {
     super();
 
-    setTimeout(() => this.tokenPairs$.next(List(this.xDaiProviderTokenPair)));
+    setTimeout(() => this._tokenPairs$.next(List(this.xDaiProviderTokenPair)));
   }
 
   public getProviderType(): BRIDGE_PROVIDER {

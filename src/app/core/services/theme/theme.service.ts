@@ -34,7 +34,7 @@ export class ThemeService {
     }
   }
 
-  public switchTheme() {
+  public switchTheme(): void {
     const isCurrentThemeDark = this._theme$.value === 'dark';
     if (isCurrentThemeDark) {
       if (document.getElementById('gradient')) {

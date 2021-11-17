@@ -224,7 +224,11 @@ export class InstantTradeService {
     }
   }
 
-  private async postTrade(hash: string, provider: INSTANT_TRADES_PROVIDER, trade: InstantTrade) {
+  private async postTrade(
+    hash: string,
+    provider: INSTANT_TRADES_PROVIDER,
+    trade: InstantTrade
+  ): Promise<void> {
     const web3Public = this.web3Public[trade.blockchain];
     await web3Public.getTransactionByHash(hash, 0, 60, 1000);
     timer(1000)
@@ -232,7 +236,7 @@ export class InstantTradeService {
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
         ),
-        catchError(err => of(new CustomError(err.message)))
+        catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
       .subscribe();
   }
@@ -252,7 +256,7 @@ export class InstantTradeService {
    * @param hash Transaction's hash.
    * @param success If true status is `completed`, otherwise `cancelled`.
    */
-  private updateTrade(hash: string, success: boolean) {
+  private updateTrade(hash: string, success: boolean): Subscription {
     return this.instantTradesApiService.patchTrade(hash, success).subscribe({
       error: err => console.debug('IT patch request is failed', err)
     });
@@ -266,7 +270,7 @@ export class InstantTradeService {
 
     const providerApproveData = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
-        catchError(err => {
+        catchError((err: unknown) => {
           console.debug(err, provider);
           return of(null);
         })
@@ -312,7 +316,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyTradeInProgress() {
+  private notifyTradeInProgress(): void {
     this.modalSubscriptions.push(
       this.notificationsService.show(
         this.translateService.instant('notifications.tradeInProgress'),

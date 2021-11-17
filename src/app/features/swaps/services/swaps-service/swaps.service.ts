@@ -19,20 +19,20 @@ import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
 export class SwapsService {
   private _swapProviderType$ = new BehaviorSubject<SWAP_PROVIDER_TYPE>(undefined);
 
-  private _availableTokens = new BehaviorSubject<List<TokenAmount>>(undefined);
+  private _availableTokens$ = new BehaviorSubject<List<TokenAmount>>(undefined);
 
-  private _bridgeTokenPairsByBlockchainsArray = new BehaviorSubject<
+  private _bridgeTokenPairsByBlockchainsArray$ = new BehaviorSubject<
     List<BridgeTokenPairsByBlockchains>
   >(undefined);
 
   private intervalId: NodeJS.Timeout;
 
-  get availableTokens(): Observable<List<TokenAmount>> {
-    return this._availableTokens.asObservable();
+  get availableTokens$(): Observable<List<TokenAmount>> {
+    return this._availableTokens$.asObservable();
   }
 
-  get bridgeTokenPairsByBlockchainsArray(): Observable<List<BridgeTokenPairsByBlockchains>> {
-    return this._bridgeTokenPairsByBlockchainsArray.asObservable();
+  get bridgeTokenPairsByBlockchainsArray$(): Observable<List<BridgeTokenPairsByBlockchains>> {
+    return this._bridgeTokenPairsByBlockchainsArray$.asObservable();
   }
 
   get swapMode$(): Observable<SWAP_PROVIDER_TYPE | null> {
@@ -57,7 +57,7 @@ export class SwapsService {
     this.subscribeOnForm();
   }
 
-  private subscribeOnTokens() {
+  private subscribeOnTokens(): void {
     combineLatest([
       this.bridgeService.tokens$.pipe(filter(tokens => !!tokens.length)),
       this.tokensService.tokens$.pipe(filter(tokens => !!tokens.size))
@@ -129,14 +129,14 @@ export class SwapsService {
           ))
       );
 
-      this._bridgeTokenPairsByBlockchainsArray.next(
+      this._bridgeTokenPairsByBlockchainsArray$.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)
       );
-      this._availableTokens.next(List(updatedTokenAmounts));
+      this._availableTokens$.next(List(updatedTokenAmounts));
     });
   }
 
-  private subscribeOnForm() {
+  private subscribeOnForm(): void {
     this.swapFormService.inputValueChanges
       .pipe(startWith(null, this.swapFormService.inputValue), pairwise())
       .subscribe(([prevForm, curForm]) => {
@@ -169,7 +169,7 @@ export class SwapsService {
         this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
       }
     } else {
-      this.bridgeTokenPairsByBlockchainsArray
+      this.bridgeTokenPairsByBlockchainsArray$
         .pipe(first())
         .subscribe(bridgeTokenPairsByBlockchainsArray => {
           const foundBridgeToken = bridgeTokenPairsByBlockchainsArray
@@ -201,7 +201,7 @@ export class SwapsService {
    * Sets interval to update prices.
    * @param form Input form, which contains selected tokens.
    */
-  private updateTokensPrices(form: SwapFormInput) {
+  private updateTokensPrices(form: SwapFormInput): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -222,7 +222,7 @@ export class SwapsService {
   /**
    * Calls functions to update balance, if needed.
    */
-  private updateTokenBalance(fromToken: TokenAmount) {
+  private updateTokenBalance(fromToken: TokenAmount): void {
     if (!fromToken.amount?.isFinite()) {
       this.tokensService.getAndUpdateTokenBalance(fromToken);
     }

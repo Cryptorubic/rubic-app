@@ -28,6 +28,7 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccordionComponent extends AbstractTableDataComponent implements OnInit, OnDestroy {
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   @Input() tableData$: BehaviorSubject<TableRow[]>;
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
@@ -117,7 +118,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
     this.onReceivePolygonBridgeTrade.emit(trade);
   }
 
-  public goToPage(page: number) {
+  public goToPage(page: number): void {
     this.page = page;
     const start = this.page * this.PAGE_SIZE;
     this.visibleData = this.sortedTableData.slice(start, start + this.PAGE_SIZE);

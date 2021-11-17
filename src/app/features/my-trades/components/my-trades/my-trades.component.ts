@@ -35,6 +35,7 @@ const DESKTOP_WIDTH = 1240;
   providers: [TuiDestroyService]
 })
 export class MyTradesComponent implements OnInit {
+  // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly tableData$ = new BehaviorSubject<TableRow[]>(undefined);
 
   public loading = true;
@@ -182,7 +183,7 @@ export class MyTradesComponent implements OnInit {
   }
 
   @HostListener('window:resize')
-  private onResize() {
+  private onResize(): void {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
   }
 }

@@ -117,7 +117,7 @@ export class CcrSwapInfoComponent implements OnInit {
   /**
    * Sets parameters of currently selected ccr trade.
    */
-  private setTradeInfoParameters(tradeInfo: CcrTradeInfo, nativeCoinPrice: number) {
+  private setTradeInfoParameters(tradeInfo: CcrTradeInfo, nativeCoinPrice: number): void {
     this.estimateGasInEth = tradeInfo.estimatedGas;
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
