@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { ErrorsService } from '@core/errors/errors.service';
+import { WalletError } from '@core/errors/models/provider/WalletError';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -39,7 +41,8 @@ export class TokensListElementComponent {
   constructor(
     iframeService: IframeService,
     private readonly tokensService: TokensService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly errorsService: ErrorsService
   ) {
     this.loadingFavoriteToken = false;
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
@@ -59,15 +62,19 @@ export class TokensListElementComponent {
       return;
     }
     this.loadingFavoriteToken = true;
-    const callback = () => {
-      this.loadingFavoriteToken = false;
-      this.cdr.markForCheck();
-      this.toggleFavoriteToken.emit();
-    };
-    if (!this.token.favorite) {
-      this.tokensService.addFavoriteToken(this.token, callback);
-    } else {
-      this.tokensService.removeFavoriteToken(this.token, callback);
-    }
+    const request$ = this.token.favorite
+      ? this.tokensService.removeFavoriteToken
+      : this.tokensService.addFavoriteToken;
+
+    request$(this.token).subscribe({
+      error: () => {
+        this.errorsService.catch(new WalletError());
+      },
+      complete: () => {
+        this.loadingFavoriteToken = false;
+        this.cdr.markForCheck();
+        this.toggleFavoriteToken.emit();
+      }
+    });
   }
 }

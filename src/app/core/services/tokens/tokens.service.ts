@@ -23,7 +23,6 @@ import {
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WalletError } from '@core/errors/models/provider/WalletError';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -529,48 +528,34 @@ export class TokensService {
   /**
    * Adds token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
-   * @param onComplete Callback after HTTP request.
    */
-  public addFavoriteToken(favoriteToken: TokenAmount, onComplete: () => void): void {
-    if (this.authService.userAddress) {
-      this.tokensApiService.addFavoriteToken(favoriteToken).subscribe({
-        next: () => {
-          if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {
-            this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
-          }
-        },
-        complete: onComplete
-      });
-    } else {
-      onComplete();
-      this.errorsService.catch(new WalletError());
-    }
+  public addFavoriteToken(favoriteToken: TokenAmount): Observable<unknown> {
+    return this.tokensApiService.addFavoriteToken(favoriteToken).pipe(
+      tap(() => {
+        if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {
+          this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+        }
+      })
+    );
   }
 
   /**
    * Removes token from list of favorite tokens.
    * @param token Favorite token to remove.
-   * @param callback Callback after HTTP request.
    */
-  public removeFavoriteToken(token: TokenAmount, callback: () => void): void {
-    if (this.authService.userAddress) {
-      const filteredTokens = this._favoriteTokens$.value.filter(
-        el => !TokensService.areTokensEqual(el, token)
-      );
-      this.tokensApiService.deleteFavoriteToken(token).subscribe({
-        next: () => {
-          if (
-            this._favoriteTokens$.value.some(favoriteToken => compareTokens(token, favoriteToken))
-          ) {
-            this._favoriteTokens$.next(filteredTokens);
-          }
-        },
-        complete: callback
-      });
-    } else {
-      callback();
-      this.errorsService.catch(new WalletError());
-    }
+  public removeFavoriteToken(token: TokenAmount): Observable<unknown> {
+    const filteredTokens = this._favoriteTokens$.value.filter(
+      el => !TokensService.areTokensEqual(el, token)
+    );
+    return this.tokensApiService.addFavoriteToken(token).pipe(
+      tap(() => {
+        if (
+          this._favoriteTokens$.value.some(favoriteToken => compareTokens(token, favoriteToken))
+        ) {
+          this._favoriteTokens$.next(filteredTokens);
+        }
+      })
+    );
   }
 
   /**
