@@ -15,7 +15,7 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { compareAddresses } from 'src/app/shared/utils/utils';
+import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
@@ -257,11 +257,14 @@ export class QueryParamsService {
     if (!similarTokens.size) {
       return this.tokensService.fetchQueryTokens(symbol, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
         map(foundedTokens => {
-          const token =
-            foundedTokens?.size > 1
-              ? foundedTokens.find(el => el.symbol === symbol)
-              : foundedTokens.first();
-          return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+          if (foundedTokens?.size) {
+            const token =
+              foundedTokens?.size > 1
+                ? foundedTokens.find(el => el.symbol === symbol)
+                : foundedTokens.first();
+            return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+          }
+          return null;
         })
       );
     }
@@ -292,9 +295,13 @@ export class QueryParamsService {
     return searchingToken
       ? of(searchingToken)
       : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+          switchIif(
+            backendTokens => Boolean(backendTokens?.size),
+            () => of(tokens.first()),
+            () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
+          ),
           map(fetchedToken => {
-            const token = fetchedToken.first();
-            return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+            return { ...fetchedToken, amount: new BigNumber(NaN) } as TokenAmount;
           })
         );
   }
