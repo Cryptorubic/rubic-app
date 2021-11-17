@@ -17,7 +17,7 @@ export class PublicProviderService {
     }));
   }
 
-  public getBlockchainRpcLink(blockchainName: BLOCKCHAIN_NAME) {
+  public getBlockchainRpcLink(blockchainName: BLOCKCHAIN_NAME): string {
     return this.connectionLinks.find(connection => connection.blockchainName === blockchainName)
       ?.rpcLink;
   }

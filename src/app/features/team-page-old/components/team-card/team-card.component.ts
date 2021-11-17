@@ -1,4 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 interface ICardLink {
   icon: string;
@@ -20,9 +22,9 @@ export interface ICardContent {
 export class TeamCardComponent {
   @Input() content: ICardContent;
 
-  constructor() {}
+  constructor(@Inject(WINDOW) private readonly window: RubicWindow) {}
 
-  onClick() {
-    window.open(this.content.links[0].url, '_blank');
+  onClick(): void {
+    this.window.open(this.content.links[0].url, '_blank');
   }
 }

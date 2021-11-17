@@ -84,7 +84,7 @@ export class ProviderConnectorService {
    * @param message Data to sign.
    * @return The signature.
    */
-  public async signPersonal(message: string) {
+  public async signPersonal(message: string): Promise<string> {
     return this.web3.eth.personal.sign(message, this.provider.address, undefined);
   }
 

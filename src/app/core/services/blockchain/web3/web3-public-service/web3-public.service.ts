@@ -124,7 +124,7 @@ export class Web3PublicService {
     forkJoin(web3List.map(checkNode$)).subscribe(() => this._nodesChecked$.next(true));
   }
 
-  private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains) {
+  private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains): void {
     const web3Public = new Web3Public(
       new Web3(rpcLink),
       BlockchainsInfo.getBlockchainByName(blockchainName),
@@ -135,7 +135,7 @@ export class Web3PublicService {
     const nodesChecked$ = this._nodesChecked$.asObservable();
 
     this[blockchainName] = new Proxy(web3Public, {
-      get(target: Web3Public, prop: keyof Web3Public) {
+      get(target: Web3Public, prop: keyof Web3Public): unknown {
         if (prop === 'healthCheck' || prop === 'setProvider') {
           return target[prop].bind(target);
         }

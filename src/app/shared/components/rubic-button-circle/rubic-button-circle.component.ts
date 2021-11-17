@@ -29,7 +29,7 @@ export class RubicButtonCircleComponent {
     this.hint = '';
   }
 
-  onClick(event: MouseEvent) {
+  onClick(event: MouseEvent): void {
     this.clickEmit.emit(event);
   }
 }
