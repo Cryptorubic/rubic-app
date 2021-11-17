@@ -609,14 +609,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
     };
 
-    let createTradeMethod = this.getTokensToTokensTradeData;
+    let getTradeDataMethod = this.getTokensToTokensTradeData;
     let getTradeSupportingFeeDataMethod = this.getTokensToTokensTradeSupportingFeeData;
     if (Web3Public.isNativeAddress(trade.from.token.address)) {
-      createTradeMethod = this.getEthToTokensTradeData;
+      getTradeDataMethod = this.getEthToTokensTradeData;
       getTradeSupportingFeeDataMethod = this.getEthToTokensTradeSupportingFeeData;
     }
     if (Web3Public.isNativeAddress(trade.to.token.address)) {
-      createTradeMethod = this.getTokensToEthTradeData;
+      getTradeDataMethod = this.getTokensToEthTradeData;
       getTradeSupportingFeeDataMethod = this.getTokensToEthTradeSupportingFeeData;
     }
 
@@ -626,7 +626,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       methodName,
       methodArguments,
       options: uniswapTradeOptions
-    } = createTradeMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
+    } = getTradeDataMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
     await this.web3Public.tryExecuteContractMethod(
       contractAddress,
       contractAbi,
