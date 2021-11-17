@@ -114,20 +114,17 @@ export class TokensSelectComponent implements OnInit {
   /**
    * Contains default tokens to display.
    */
-  private _tokensToShow$: BehaviorSubject<AvailableTokenAmount[]>;
+  private _tokensToShow$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject([]);
 
-  get tokensToShow$(): Observable<AvailableTokenAmount[]> {
-    return this._tokensToShow$.asObservable();
-  }
+  public readonly tokensToShow$ = this._tokensToShow$.asObservable();
 
   /**
    * Contains favorite tokens to display.
    */
-  private favoriteTokensToShowSubject$: BehaviorSubject<AvailableTokenAmount[]>;
+  private favoriteTokensToShowSubject$: BehaviorSubject<AvailableTokenAmount[]> =
+    new BehaviorSubject([]);
 
-  get favoriteTokensToShow$(): Observable<AvailableTokenAmount[]> {
-    return this.favoriteTokensToShowSubject$.asObservable();
-  }
+  public readonly favoriteTokensToShow$ = this.favoriteTokensToShowSubject$.asObservable();
 
   /**
    * Current custom token, if user is searching for one.
@@ -152,12 +149,12 @@ export class TokensSelectComponent implements OnInit {
   /**
    * Emits new event to update tokens list using {@link searchQuery}.
    */
-  private readonly searchQuery$: BehaviorSubject<string>;
+  private readonly searchQuery$: BehaviorSubject<string> = new BehaviorSubject('');
 
   /**
    * Emits new event to request tokens from APIs by {@link searchQuery}.
    */
-  private updateTokensByQuery$: Subject<void>;
+  private updateTokensByQuery$: Subject<void> = new Subject();
 
   private updateTokensByQuerySubscription$: Subscription;
 
@@ -209,15 +206,8 @@ export class TokensSelectComponent implements OnInit {
     private readonly useTestingModeService: UseTestingModeService
   ) {
     this.searchQueryLoading = false;
-
     this.listType = 'default';
-    this._tokensToShow$ = new BehaviorSubject([]);
-    this.favoriteTokensToShowSubject$ = new BehaviorSubject([]);
     this.tokensListUpdating = false;
-
-    this.searchQuery$ = new BehaviorSubject('');
-    this.updateTokensByQuery$ = new Subject();
-
     this.initiateContextParams(context.data);
   }
 
@@ -331,7 +321,9 @@ export class TokensSelectComponent implements OnInit {
    * Handles search query requests to APIs.
    */
   private handleQuerySubscription(): void {
-    if (this.updateTokensByQuerySubscription$) return;
+    if (this.updateTokensByQuerySubscription$) {
+      return;
+    }
     this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
       .pipe(
         tap(() => {
