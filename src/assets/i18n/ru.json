@@ -73,7 +73,8 @@
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
     "unknown": "Oops, something went wrong, please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
-    "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки."
+    "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
+    "tradingIsNotAvailable": "Торговля недоступна"
   },
   "navigation": {
     "about": "О компании",
@@ -585,10 +586,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver теперь доступна для Multi-Chain и On-Chain свапов.",
+    "text": "Rubic Multi-Chain запустился! Совершайте обмены между 9,500 токенами между Ethereum, BSC, Polygon и  Avalanche.",
     "link": "Попробуйте уже сейчас!"
   },
-  "buyToken": "Купить MOVR",
+  "buyToken": "Купить RBC",
   "volume": {
     "title": "Накопленный Объем Операций",
     "instantTrades": "Swaps",

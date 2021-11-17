@@ -30,9 +30,11 @@ export class WalletLinkProvider extends PrivateProvider {
 
   private selectedChain: string;
 
-  public readonly onAddressChanges: BehaviorSubject<string>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly onAddressChanges$: BehaviorSubject<string>;
 
-  public readonly onNetworkChanges: BehaviorSubject<IBlockchain>;
+  // eslint-disable-next-line rxjs/no-exposed-subjects
+  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
     return !!this.core;
@@ -56,8 +58,8 @@ export class WalletLinkProvider extends PrivateProvider {
 
   constructor(
     web3: Web3,
-    chainChange: BehaviorSubject<IBlockchain>,
-    accountChange: BehaviorSubject<string>,
+    chainChange$: BehaviorSubject<IBlockchain>,
+    accountChange$: BehaviorSubject<string>,
     errorService: ErrorsService,
     blockchainId?: number
   ) {
@@ -88,8 +90,8 @@ export class WalletLinkProvider extends PrivateProvider {
       this.selectedChain = chainId.toString();
     }
 
-    this.onAddressChanges = accountChange;
-    this.onNetworkChanges = chainChange;
+    this.onAddressChanges$ = accountChange$;
+    this.onNetworkChanges$ = chainChange$;
     web3.setProvider(this.core);
   }
 
@@ -124,8 +126,8 @@ export class WalletLinkProvider extends PrivateProvider {
       this.selectedAddress = address;
       this.selectedChain = chainInfo.name;
       this.isEnabled = true;
-      this.onNetworkChanges.next(chainInfo);
-      this.onAddressChanges.next(address);
+      this.onNetworkChanges$.next(chainInfo);
+      this.onAddressChanges$.next(address);
     } catch (error) {
       if (!(error instanceof RubicError)) {
         throw new WalletlinkError();
@@ -137,8 +139,8 @@ export class WalletLinkProvider extends PrivateProvider {
 
   public async deActivate(): Promise<void> {
     this.core.close();
-    this.onAddressChanges.next(undefined);
-    this.onNetworkChanges.next(undefined);
+    this.onAddressChanges$.next(undefined);
+    this.onNetworkChanges$.next(undefined);
     this.isEnabled = false;
   }
 

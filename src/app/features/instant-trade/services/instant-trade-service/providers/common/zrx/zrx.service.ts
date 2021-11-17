@@ -48,7 +48,7 @@ export class ZrxService implements ItProvider {
 
   private currentTradeData: ZrxApiResponse;
 
-  private tradeDataIsUpdated: BehaviorSubject<boolean>;
+  private tradeDataIsUpdated$: BehaviorSubject<boolean>;
 
   protected blockchain: SupportedZrxBlockchain;
 
@@ -76,7 +76,7 @@ export class ZrxService implements ItProvider {
     private readonly authService: AuthService
   ) {
     this.gasMargin = 1.4;
-    this.tradeDataIsUpdated = new BehaviorSubject(false);
+    this.tradeDataIsUpdated$ = new BehaviorSubject(false);
 
     this.swapFormService.input.controls.fromBlockchain.valueChanges.subscribe(() =>
       this.setZrxParams()
@@ -104,7 +104,7 @@ export class ZrxService implements ItProvider {
   /**
    * Updates zrx data, which depends on selected blockchain.
    */
-  private setZrxParams() {
+  private setZrxParams(): void {
     const { fromBlockchain } = this.swapFormService.inputValue;
     this.web3Public = this.web3PublicService[fromBlockchain];
 
@@ -124,11 +124,11 @@ export class ZrxService implements ItProvider {
     if (Web3Public.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
-    return this.tradeDataIsUpdated.pipe(
+    return this.tradeDataIsUpdated$.pipe(
       filter(value => !!value),
       first(),
       mergeMap(() => {
-        this.tradeDataIsUpdated.next(false);
+        this.tradeDataIsUpdated$.next(false);
         return this.web3Public.getAllowance(
           tokenAddress,
           this.walletAddress,
@@ -174,7 +174,7 @@ export class ZrxService implements ItProvider {
       params.affiliateAddress = AFFILIATE_ADDRESS;
     }
     this.currentTradeData = await this.fetchTrade(params);
-    this.tradeDataIsUpdated.next(true);
+    this.tradeDataIsUpdated$.next(true);
 
     const trade: InstantTrade = {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,

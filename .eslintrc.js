@@ -3,7 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts'],
-      plugins: ['import', 'unused-imports'],
+      plugins: ['import', 'unused-imports', 'angular-rubic', 'rxjs', 'rxjs-angular'],
       parserOptions: {
         project: ['tsconfig.*?.json', 'e2e/tsconfig.e2e.json'],
         tsconfigRootDir: __dirname,
@@ -12,7 +12,8 @@ module.exports = {
       extends: [
         'plugin:@angular-eslint/recommended',
         'airbnb-typescript/base',
-        'plugin:prettier/recommended'
+        'plugin:prettier/recommended',
+        'plugin:rxjs/recommended'
       ],
       rules: {
         'import/prefer-default-export': 'off',
@@ -70,15 +71,42 @@ module.exports = {
         ],
         'no-empty': ['error', { allowEmptyCatch: true }],
         '@typescript-eslint/return-await': 'off',
-        'no-continue': 'off'
+        'angular-rubic/explicit-function-return-type': 2,
+        'no-continue': 'off',
+        /* RxJs */
+        'rxjs/finnish': [
+          'error',
+          {
+            functions: false,
+            methods: false,
+            names: {
+              '^(canActivate|canActivateChild|canDeactivate|canLoad|intercept|resolve|validate)$': false
+            },
+            parameters: true,
+            properties: true,
+            strict: false,
+            types: {
+              '^EventEmitter$': false,
+              '^TuiDialogService$': false
+            },
+            variables: true
+          }
+        ],
+        'rxjs/no-exposed-subjects': ['error', { allowProtected: true }],
+        'rxjs-angular/prefer-async-pipe': 'warn',
+        'rxjs-angular/prefer-takeuntil': [
+          'warn',
+          {
+            checkComplete: false,
+            checkDecorators: ['Component'],
+            checkDestroy: false
+          }
+        ]
       }
     },
     {
       files: ['*.component.html'],
-      extends: [
-        'plugin:@angular-eslint/template/recommended',
-        'plugin:prettier/recommended'
-      ],
+      extends: ['plugin:@angular-eslint/template/recommended', 'plugin:prettier/recommended'],
       rules: {
         'max-len': ['warn', { code: 200 }]
       }

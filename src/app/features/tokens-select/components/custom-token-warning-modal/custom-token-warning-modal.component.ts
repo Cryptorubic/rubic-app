@@ -19,11 +19,11 @@ export class CustomTokenWarningModalComponent {
     this.token = context.data.token;
   }
 
-  public onAccept() {
+  public onAccept(): void {
     this.context.completeWith(true);
   }
 
-  public onDecline() {
+  public onDecline(): void {
     this.context.completeWith(false);
   }
 }

@@ -23,9 +23,9 @@ import { PrivateProvider } from 'src/app/core/services/blockchain/providers/priv
   providedIn: 'root'
 })
 export class ProviderConnectorService {
-  private readonly $networkChangeSubject: BehaviorSubject<IBlockchain>;
+  private readonly networkChangeSubject$: BehaviorSubject<IBlockchain>;
 
-  private readonly $addressChangeSubject: BehaviorSubject<string>;
+  private readonly addressChangeSubject$: BehaviorSubject<string>;
 
   public providerName: WALLET_NAME;
 
@@ -59,12 +59,12 @@ export class ProviderConnectorService {
     return Boolean(this.provider?.isInstalled);
   }
 
-  public get $networkChange(): Observable<IBlockchain> {
-    return this.$networkChangeSubject.asObservable();
+  public get networkChange$(): Observable<IBlockchain> {
+    return this.networkChangeSubject$.asObservable();
   }
 
-  public get $addressChange(): Observable<string> {
-    return this.$addressChangeSubject.asObservable();
+  public get addressChange$(): Observable<string> {
+    return this.addressChangeSubject$.asObservable();
   }
 
   public readonly web3: Web3;
@@ -75,8 +75,8 @@ export class ProviderConnectorService {
     private readonly useTestingModeService: UseTestingModeService
   ) {
     this.web3 = new Web3();
-    this.$networkChangeSubject = new BehaviorSubject<IBlockchain>(null);
-    this.$addressChangeSubject = new BehaviorSubject<string>(null);
+    this.networkChangeSubject$ = new BehaviorSubject<IBlockchain>(null);
+    this.addressChangeSubject$ = new BehaviorSubject<string>(null);
   }
 
   /**
@@ -84,7 +84,7 @@ export class ProviderConnectorService {
    * @param message Data to sign.
    * @return The signature.
    */
-  public async signPersonal(message: string) {
+  public async signPersonal(message: string): Promise<string> {
     return this.web3.eth.personal.sign(message, this.provider.address, undefined);
   }
 
@@ -135,8 +135,8 @@ export class ProviderConnectorService {
         case WALLET_NAME.WALLET_LINK: {
           this.provider = new WalletLinkProvider(
             this.web3,
-            this.$networkChangeSubject,
-            this.$addressChangeSubject,
+            this.networkChangeSubject$,
+            this.addressChangeSubject$,
             this.errorService,
             chainId
           );
@@ -145,8 +145,8 @@ export class ProviderConnectorService {
         case WALLET_NAME.WALLET_CONNECT: {
           this.provider = new WalletConnectProvider(
             this.web3,
-            this.$networkChangeSubject,
-            this.$addressChangeSubject,
+            this.networkChangeSubject$,
+            this.addressChangeSubject$,
             this.errorService
           );
           break;
@@ -155,8 +155,8 @@ export class ProviderConnectorService {
         default: {
           this.provider = new MetamaskProvider(
             this.web3,
-            this.$networkChangeSubject,
-            this.$addressChangeSubject,
+            this.networkChangeSubject$,
+            this.addressChangeSubject$,
             this.errorService
           ) as PrivateProvider;
           await (this.provider as MetamaskProvider).setupDefaultValues();
@@ -173,8 +173,8 @@ export class ProviderConnectorService {
   public async connectDefaultProvider(): Promise<void> {
     this.provider = new MetamaskProvider(
       this.web3,
-      this.$networkChangeSubject,
-      this.$addressChangeSubject,
+      this.networkChangeSubject$,
+      this.addressChangeSubject$,
       this.errorService
     ) as PrivateProvider;
     this.providerName = WALLET_NAME.METAMASK;

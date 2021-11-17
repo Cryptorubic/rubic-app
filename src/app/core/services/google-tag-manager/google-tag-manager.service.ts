@@ -11,7 +11,7 @@ export class GoogleTagManagerService {
   /**
    * Inform google tag manager that tx was signed.
    */
-  public notifySignTransaction() {
+  public notifySignTransaction(): void {
     this.window.dataLayer?.push({
       event: 'transactionSigned',
       ecategory: 'transaction',

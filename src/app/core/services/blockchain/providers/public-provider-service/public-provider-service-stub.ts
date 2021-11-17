@@ -1,5 +1,4 @@
-// @ts-ignore
-import config from 'src/test/enviroment.test.json';
+import * as config from 'src/test/enviroment.test.json';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
@@ -21,7 +20,7 @@ export default () => {
         rpcLink: 'https://rpc-mumbai.maticvigil.com'
       }
     ],
-    getBlockchainRpcLink(blockchainName: BLOCKCHAIN_NAME) {
+    getBlockchainRpcLink(blockchainName: BLOCKCHAIN_NAME): string {
       return this.connectionLinks.find(
         (connection: { blockchainName: BLOCKCHAIN_NAME }) =>
           connection.blockchainName === blockchainName

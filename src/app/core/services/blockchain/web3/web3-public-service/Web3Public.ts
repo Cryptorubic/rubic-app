@@ -146,8 +146,8 @@ export class Web3Public {
     return from(contract.methods[healthcheckData.method]().call()).pipe(
       timeout(timeoutMs),
       map(result => result === healthcheckData.expected),
-      catchError(err => {
-        if (err?.name === 'TimeoutError') {
+      catchError((err: unknown) => {
+        if ((err as Error)?.name === 'TimeoutError') {
           console.debug(
             `${this.blockchain.label} node healthcheck timeout (${timeoutMs}ms) has occurred.`
           );
