@@ -10,6 +10,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { compareTokens } from '@shared/utils/utils';
 
 export interface TokenInfo {
   blockchain: BLOCKCHAIN_NAME;
@@ -60,12 +61,8 @@ export class BuyTokenComponent {
     return this.swapsService.availableTokens$.pipe(
       first(tokens => tokens?.size > 0),
       map((tokens: List<TokenAmount>) => ({
-        fromToken: tokens.find(
-          token => token.address === fromToken.address && token.blockchain === fromToken.blockchain
-        ),
-        toToken: tokens.find(
-          token => token.address === toToken.address && token.blockchain === toToken.blockchain
-        )
+        fromToken: tokens.find(token => compareTokens(token, fromToken)),
+        toToken: tokens.find(token => compareTokens(token, toToken))
       }))
     );
   }
