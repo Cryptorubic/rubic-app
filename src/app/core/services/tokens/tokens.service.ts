@@ -202,8 +202,7 @@ export class TokensService {
     oldTokens?: List<TokenAmount | Token>
   ): Promise<void> {
     const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
-    const tokens =
-      oldTokens || (type === 'favorite' ? this._favoriteTokens$.value : this._tokens$.value);
+    const tokens = oldTokens || subject$.value;
 
     if (type === 'default') {
       if (!tokens.size) {
@@ -530,9 +529,9 @@ export class TokensService {
   /**
    * Adds token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
-   * @param callback Callback after HTTP request.
+   * @param onComplete Callback after HTTP request.
    */
-  public addFavoriteToken(favoriteToken: TokenAmount, callback: () => void): void {
+  public addFavoriteToken(favoriteToken: TokenAmount, onComplete: () => void): void {
     if (this.authService.userAddress) {
       this.tokensApiService.addFavoriteToken(favoriteToken).subscribe({
         next: () => {
@@ -540,10 +539,10 @@ export class TokensService {
             this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
           }
         },
-        complete: callback
+        complete: onComplete
       });
     } else {
-      callback();
+      onComplete();
       this.errorsService.catch(new WalletError());
     }
   }

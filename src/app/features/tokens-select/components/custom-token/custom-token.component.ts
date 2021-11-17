@@ -5,7 +5,8 @@ import {
   Output,
   EventEmitter,
   Inject,
-  Injector
+  Injector,
+  ChangeDetectorRef
 } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -38,7 +39,8 @@ export class CustomTokenComponent {
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   /**
@@ -57,5 +59,10 @@ export class CustomTokenComponent {
           this.tokenSelected.emit(this.token);
         }
       });
+  }
+
+  public toggleFavorite(): void {
+    this.token.favorite = !this.token.favorite;
+    this.cdr.markForCheck();
   }
 }

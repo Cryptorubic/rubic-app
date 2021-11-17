@@ -82,56 +82,19 @@ export class SwapsService {
       const updatedTokenAmounts = tokenAmounts.toArray();
       const updatedFavoriteTokenAmounts = favoriteTokenAmounts.toArray();
 
-      const updatedBridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray.map(
-        tokenPairsByBlockchains => {
-          const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
-          return {
-            ...tokenPairsByBlockchains,
-            tokenPairs: tokenPairsByBlockchains.tokenPairs.map(tokenPair => ({
-              ...tokenPair,
-              tokenByBlockchain: {
-                [fromBlockchain]: this.getUpdatedBridgeToken(
-                  fromBlockchain,
-                  tokenPair,
-                  tokenAmounts,
-                  updatedTokenAmounts
-                ),
-                [toBlockchain]: this.getUpdatedBridgeToken(
-                  toBlockchain,
-                  tokenPair,
-                  tokenAmounts,
-                  updatedTokenAmounts
-                )
-              }
-            }))
-          };
-        }
-      );
+      const updatedBridgeTokenPairsByBlockchainsArray =
+        this.getBridgePairsArrayAndModifyTokensAmount(
+          bridgeTokenPairsByBlockchainsArray,
+          tokenAmounts,
+          updatedTokenAmounts
+        );
 
       const updatedBridgeFavoriteTokenPairsByBlockchainsArray =
-        bridgeTokenPairsByBlockchainsArray.map(tokenPairsByBlockchains => {
-          const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
-          return {
-            ...tokenPairsByBlockchains,
-            tokenPairs: tokenPairsByBlockchains.tokenPairs.map(tokenPair => ({
-              ...tokenPair,
-              tokenByBlockchain: {
-                [fromBlockchain]: this.getUpdatedBridgeToken(
-                  fromBlockchain,
-                  tokenPair,
-                  favoriteTokenAmounts,
-                  updatedFavoriteTokenAmounts
-                ),
-                [toBlockchain]: this.getUpdatedBridgeToken(
-                  toBlockchain,
-                  tokenPair,
-                  favoriteTokenAmounts,
-                  updatedFavoriteTokenAmounts
-                )
-              }
-            }))
-          };
-        });
+        this.getBridgePairsArrayAndModifyTokensAmount(
+          bridgeTokenPairsByBlockchainsArray,
+          favoriteTokenAmounts,
+          updatedFavoriteTokenAmounts
+        );
 
       // filter and remove bridge specific tokens in widget
       updatedBridgeTokenPairsByBlockchainsArray.forEach(
@@ -156,6 +119,43 @@ export class SwapsService {
         )
       );
       this._availableFavoriteTokens$.next(availableFavoriteTokens);
+    });
+  }
+
+  /**
+   * Gets bridge token pairs array for specific tokens list and modify tokens amounts list.
+   * @param pairsArray Token pairs array.
+   * @param tokenAmounts List of old tokens.
+   * @param updatedTokenAmounts List of new tokens.
+   * @private
+   */
+  private getBridgePairsArrayAndModifyTokensAmount(
+    pairsArray: BridgeTokenPairsByBlockchains[],
+    tokenAmounts: List<TokenAmount>,
+    updatedTokenAmounts: TokenAmount[]
+  ): BridgeTokenPairsByBlockchains[] {
+    return pairsArray.map(tokenPairsByBlockchains => {
+      const { fromBlockchain, toBlockchain } = tokenPairsByBlockchains;
+      return {
+        ...tokenPairsByBlockchains,
+        tokenPairs: tokenPairsByBlockchains.tokenPairs.map(tokenPair => ({
+          ...tokenPair,
+          tokenByBlockchain: {
+            [fromBlockchain]: this.getUpdatedBridgeToken(
+              fromBlockchain,
+              tokenPair,
+              tokenAmounts,
+              updatedTokenAmounts
+            ),
+            [toBlockchain]: this.getUpdatedBridgeToken(
+              toBlockchain,
+              tokenPair,
+              tokenAmounts,
+              updatedTokenAmounts
+            )
+          }
+        }))
+      };
     });
   }
 

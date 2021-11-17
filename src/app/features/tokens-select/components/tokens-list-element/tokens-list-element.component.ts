@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
@@ -19,6 +26,8 @@ export class TokensListElementComponent {
    * Token element.
    */
   @Input() token: TokenAmount;
+
+  @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
@@ -53,6 +62,7 @@ export class TokensListElementComponent {
     const callback = () => {
       this.loadingFavoriteToken = false;
       this.cdr.markForCheck();
+      this.toggleFavoriteToken.emit();
     };
     if (!this.token.favorite) {
       this.tokensService.addFavoriteToken(this.token, callback);

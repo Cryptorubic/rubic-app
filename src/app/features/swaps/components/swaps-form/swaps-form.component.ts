@@ -159,33 +159,44 @@ export class SwapsFormComponent implements OnInit {
       this.swapsService.bridgeTokenPairsByBlockchainsFavoriteArray$
     ])
       .pipe(debounceTime(0), takeUntil(this.destroy$))
-      .subscribe(
-        ([
-          supportedTokens,
-          supportedFavoriteTokens,
-          bridgeTokenPairsByBlockchainsArray,
-          bridgeFavoriteTokenPairsByBlockchainsArray
-        ]) => {
-          this.isLoading = true;
-          if (!supportedTokens) {
-            return;
-          }
+      .subscribe(tokensChangesTuple => this.handleTokensChange(tokensChangesTuple));
+  }
 
-          this._supportedTokens = supportedTokens;
-          this._supportedFavoriteTokens = supportedFavoriteTokens;
+  /**
+   * Handle changes in tokens and bridge pairs lists.
+   * @param supportedTokens List of supported tokens.
+   * @param supportedFavoriteTokens List of supported favorite tokens.
+   * @param bridgeTokenPairsByBlockchainsArray List of bridge tokens pairs.
+   * @param bridgeFavoriteTokenPairsByBlockchainsArray List of bridge favorite tokens pairs.
+   */
+  private handleTokensChange([
+    supportedTokens,
+    supportedFavoriteTokens,
+    bridgeTokenPairsByBlockchainsArray,
+    bridgeFavoriteTokenPairsByBlockchainsArray
+  ]: [
+    List<TokenAmount>,
+    List<TokenAmount>,
+    List<BridgeTokenPairsByBlockchains>,
+    List<BridgeTokenPairsByBlockchains>
+  ]): void {
+    this.isLoading = true;
+    if (!supportedTokens) {
+      return;
+    }
 
-          this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
-          this._bridgeFavoriteTokenPairsByBlockchainsArray =
-            bridgeFavoriteTokenPairsByBlockchainsArray;
+    this._supportedTokens = supportedTokens;
+    this._supportedFavoriteTokens = supportedFavoriteTokens;
 
-          this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
-          this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
-          this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this), 'default');
+    this._bridgeTokenPairsByBlockchainsArray = bridgeTokenPairsByBlockchainsArray;
+    this._bridgeFavoriteTokenPairsByBlockchainsArray = bridgeFavoriteTokenPairsByBlockchainsArray;
 
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      );
+    this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'default');
+    this.callFunctionWithTokenTypes(this.setAvailableTokens.bind(this), 'favorite');
+    this.callFunctionWithTokenTypes(this.updateSelectedToken.bind(this), 'default');
+
+    this.isLoading = false;
+    this.cdr.detectChanges();
   }
 
   private subscribeOnSettings(): void {

@@ -34,6 +34,7 @@ import {
   first,
   map,
   mapTo,
+  skip,
   switchMap,
   takeUntil,
   tap
@@ -113,10 +114,10 @@ export class TokensSelectComponent implements OnInit {
   /**
    * Contains default tokens to display.
    */
-  private tokensToShowSubject$: BehaviorSubject<AvailableTokenAmount[]>;
+  private _tokensToShow$: BehaviorSubject<AvailableTokenAmount[]>;
 
   get tokensToShow$(): Observable<AvailableTokenAmount[]> {
-    return this.tokensToShowSubject$.asObservable();
+    return this._tokensToShow$.asObservable();
   }
 
   /**
@@ -210,7 +211,7 @@ export class TokensSelectComponent implements OnInit {
     this.searchQueryLoading = false;
 
     this.listType = 'default';
-    this.tokensToShowSubject$ = new BehaviorSubject([]);
+    this._tokensToShow$ = new BehaviorSubject([]);
     this.favoriteTokensToShowSubject$ = new BehaviorSubject([]);
     this.tokensListUpdating = false;
 
@@ -253,7 +254,7 @@ export class TokensSelectComponent implements OnInit {
       .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
-    this.searchQuery$.pipe(debounceTime(500), takeUntil(this.destroy$)).subscribe(() => {
+    this.searchQuery$.pipe(skip(1), debounceTime(500), takeUntil(this.destroy$)).subscribe(() => {
       this.updateTokensList(true);
     });
 
@@ -310,8 +311,6 @@ export class TokensSelectComponent implements OnInit {
    * Updates default and favourite tokens lists.
    */
   private updateTokensList(shouldSearch?: boolean): void {
-    this.customToken = null;
-
     if (!this.updateTokensByQuerySubscription$) {
       this.handleQuerySubscription();
     }
@@ -324,6 +323,7 @@ export class TokensSelectComponent implements OnInit {
       this.filterDefaultTokens();
     } else if (!this.searchQuery.length) {
       this.sortTokens();
+      this.customToken = null;
     }
   }
 
@@ -331,6 +331,7 @@ export class TokensSelectComponent implements OnInit {
    * Handles search query requests to APIs.
    */
   private handleQuerySubscription(): void {
+    if (this.updateTokensByQuerySubscription$) return;
     this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
       .pipe(
         tap(() => {
@@ -358,9 +359,11 @@ export class TokensSelectComponent implements OnInit {
       )
       .subscribe(({ backendTokens, customToken }) => {
         if (backendTokens) {
-          this.tokensToShowSubject$.next(backendTokens);
-        } else {
+          this._tokensToShow$.next(backendTokens);
+        } else if (customToken) {
           this.customToken = customToken;
+        } else {
+          this._tokensToShow$.next([]);
         }
         this.searchQueryLoading = false;
         this.cdr.markForCheck();
@@ -368,15 +371,15 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * Map default tokens list with favorite.
+   * Maps default tokens list with favorite.
    */
   private filterDefaultTokens(): void {
-    this.favoriteTokens$.subscribe(favoriteTokens => {
-      const tokens = this.tokensToShowSubject$.value.map(token => ({
+    this.favoriteTokens$.pipe(first()).subscribe(favoriteTokens => {
+      const tokens = this._tokensToShow$.value.map(token => ({
         ...token,
         favorite: favoriteTokens.some(favoriteToken => compareTokens(favoriteToken, token))
       }));
-      this.tokensToShowSubject$.next(tokens);
+      this._tokensToShow$.next(tokens);
     });
   }
 
@@ -407,7 +410,7 @@ export class TokensSelectComponent implements OnInit {
 
         this.favoriteTokensToShowSubject$.next(symbolMatchingTokens.concat(nameMatchingTokens));
       }
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 
@@ -490,7 +493,9 @@ export class TokensSelectComponent implements OnInit {
               blockchainToken.blockchain,
               oppositeToken.blockchain
             ),
-          favorite: false
+          favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
+            compareTokens(favoriteToken, blockchainToken)
+          )
         };
       }
     }
@@ -538,9 +543,8 @@ export class TokensSelectComponent implements OnInit {
    * Sorts favorite and default lists of tokens.
    */
   private sortTokens(): void {
-    forkJoin([this.tokens$.pipe(first()), this.favoriteTokens$.pipe(first())])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([tokens, favoriteTokens]) => {
+    forkJoin([this.tokens$.pipe(first()), this.favoriteTokens$.pipe(first())]).subscribe(
+      ([tokens, favoriteTokens]) => {
         const currentBlockchainTokens = tokens.filter(
           (token: AvailableTokenAmount) => token.blockchain === this.blockchain
         );
@@ -557,7 +561,7 @@ export class TokensSelectComponent implements OnInit {
         );
         const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
 
-        this.tokensToShowSubject$.next(tokensWithFavorite);
+        this._tokensToShow$.next(tokensWithFavorite);
         this.favoriteTokensToShowSubject$.next(
           sortedFavoriteTokens.map(el => ({
             ...el,
@@ -567,6 +571,7 @@ export class TokensSelectComponent implements OnInit {
         );
         this.tokensListUpdating = false;
         this.cdr.markForCheck();
-      });
+      }
+    );
   }
 }
