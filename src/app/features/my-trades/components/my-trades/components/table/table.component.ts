@@ -55,44 +55,36 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     Date: () => 0
   };
 
-  private readonly sorterSubject$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
+  private readonly _sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
 
-  get sorter$(): Observable<TuiComparator<TableRow>> {
-    return this.sorterSubject$.asObservable();
-  }
+  public readonly sorter$ = this._sorter$.asObservable();
 
   public setSorter$(comparator: TuiComparator<TableRow>) {
-    this.sorterSubject$.next(comparator);
+    this._sorter$.next(comparator);
   }
 
-  private readonly directionSubject$ = new BehaviorSubject<-1 | 1>(-1);
+  private readonly _direction$ = new BehaviorSubject<-1 | 1>(-1);
 
-  get direction$(): Observable<-1 | 1> {
-    return this.directionSubject$.asObservable();
-  }
+  public readonly direction$ = this._direction$.asObservable();
 
   public setDirection$(direction: -1 | 1) {
-    this.directionSubject$.next(direction);
+    this._direction$.next(direction);
   }
 
-  private readonly pageSubject$ = new Subject<number>();
+  private readonly _page$ = new Subject<number>();
 
-  get page$(): Observable<number> {
-    return this.pageSubject$.asObservable();
-  }
+  public readonly page$ = this._page$.asObservable();
 
   public setPage$(page: number) {
-    this.pageSubject$.next(page);
+    this._page$.next(page);
   }
 
-  private readonly sizeSubject$ = new Subject<number>();
+  private readonly _size$ = new Subject<number>();
 
-  get size$(): Observable<number> {
-    return this.sizeSubject$.asObservable();
-  }
+  public readonly size$ = this._size$.asObservable();
 
   public setSize$(size: number) {
-    this.pageSubject$.next(size);
+    this._size$.next(size);
   }
 
   private request$: Observable<readonly TableRow[]>;
@@ -172,7 +164,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
       );
       const otherTrades = tableData
         .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
-        .sort(this.sortBy('Date', this.directionSubject$.getValue()));
+        .sort(this.sortBy('Date', this._direction$.getValue()));
 
       return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>
         index >= start && index < end ? user : null
