@@ -342,8 +342,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         }),
         switchMap(() =>
           forkJoin([
-            this.tokensService.calculateTokensBalances('default'),
-            this.tokensService.calculateTokensBalances('favorite')
+            this.tokensService.calculateTokensBalancesByType('default'),
+            this.tokensService.calculateTokensBalancesByType('favorite')
           ])
         ),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
@@ -388,8 +388,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         }),
         switchMap(() =>
           forkJoin([
-            this.tokensService.calculateTokensBalances('default'),
-            this.tokensService.calculateTokensBalances('favorite')
+            this.tokensService.calculateTokensBalancesByType('default'),
+            this.tokensService.calculateTokensBalancesByType('favorite')
           ])
         ),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),

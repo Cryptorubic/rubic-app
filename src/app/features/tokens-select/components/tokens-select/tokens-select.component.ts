@@ -323,7 +323,7 @@ export class TokensSelectComponent implements OnInit {
     } else if (this.searchQuery.length && this.listType === 'default') {
       this.filterDefaultTokens();
     } else if (!this.searchQuery.length) {
-      this.filterAndSortTokens();
+      this.sortTokens();
     }
   }
 
@@ -412,11 +412,11 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * Filters and sorts tokens by comparator.
+   * Sorts tokens by comparator.
    * @param tokens Tokens to perform with.
    * @return AvailableTokenAmount[] Filtered and sorted tokens.
    */
-  private sortTokens(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
+  private sortTokensByComparator(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const amountsDelta = b.amount
         .multipliedBy(b.price)
@@ -535,17 +535,17 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
-   * Filters and sorts favorite and default lists of tokens.
+   * Sorts favorite and default lists of tokens.
    */
-  private filterAndSortTokens(): void {
+  private sortTokens(): void {
     forkJoin([this.tokens$.pipe(first()), this.favoriteTokens$.pipe(first())])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([tokens, favoriteTokens]) => {
         const currentBlockchainTokens = tokens.filter(
           (token: AvailableTokenAmount) => token.blockchain === this.blockchain
         );
-        const sortedAndFilteredTokens = this.sortTokens(currentBlockchainTokens);
-        const tokensWithFavorite = sortedAndFilteredTokens.map(token => ({
+        const sortedTokens = this.sortTokensByComparator(currentBlockchainTokens);
+        const tokensWithFavorite = sortedTokens.map(token => ({
           ...token,
           favorite: favoriteTokens.some(favoriteToken =>
             TokensService.areTokensEqual(favoriteToken, token)
@@ -555,18 +555,18 @@ export class TokensSelectComponent implements OnInit {
         const currentBlockchainFavoriteTokens = favoriteTokens.filter(
           (token: AvailableTokenAmount) => token.blockchain === this.blockchain
         );
-        const sortedAndFilteredFavoriteTokens = this.sortTokens(currentBlockchainFavoriteTokens);
+        const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
 
         this.tokensToShowSubject$.next(tokensWithFavorite);
         this.favoriteTokensToShowSubject$.next(
-          sortedAndFilteredFavoriteTokens.map(el => ({
+          sortedFavoriteTokens.map(el => ({
             ...el,
             favorite: true,
             amount: el.amount || new BigNumber(NaN)
           }))
         );
         this.tokensListUpdating = false;
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
   }
 }

@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
-import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -17,7 +17,6 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
-import { Token } from '@shared/models/tokens/Token';
 import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
@@ -298,27 +297,6 @@ export class QueryParamsService {
             return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
           })
         );
-  }
-
-  /**
-   * Gets token with balance.
-   * @param fetchedToken Token to search balance.
-   * @return Observable<TokenAmount> Token with balance.
-   */
-  private getTokenWithBalance(fetchedToken: Token): Observable<TokenAmount> {
-    const token = {
-      ...fetchedToken,
-      amount: new BigNumber(NaN),
-      favorite: false
-    } as TokenAmount;
-    return from(this.tokensService.getTokensWithBalance(List([token]))).pipe(
-      map(tokensWithBalance => {
-        if (tokensWithBalance?.length) {
-          return tokensWithBalance.pop();
-        }
-        return token;
-      })
-    );
   }
 
   private navigate(): void {

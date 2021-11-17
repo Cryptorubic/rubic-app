@@ -396,8 +396,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             }
           );
 
-          await this.tokensService.calculateTokensBalances('default');
-          await this.tokensService.calculateTokensBalances('favorite');
+          await this.tokensService.calculateTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -446,8 +445,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           this.counterNotificationsService.updateUnread();
 
-          await this.tokensService.calculateTokensBalances('default');
-          await this.tokensService.calculateTokensBalances('favorite');
+          await this.tokensService.calculateTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           await this.conditionalCalculate();

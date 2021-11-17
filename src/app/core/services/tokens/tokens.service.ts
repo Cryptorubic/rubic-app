@@ -133,7 +133,7 @@ export class TokensService {
         switchMap(tokens => {
           if (!this.isTestingMode) {
             const newTokens = this.setDefaultTokensParams(tokens, false);
-            return this.calculateTokensBalances('default', newTokens);
+            return this.calculateTokensBalancesByType('default', newTokens);
           }
           return of();
         }),
@@ -146,7 +146,7 @@ export class TokensService {
 
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
-      await this.calculateTokensBalances('default');
+      await this.calculateTokensBalancesByType('default');
       if (this.userAddress) {
         this.fetchFavoriteTokens();
       } else {
@@ -158,7 +158,7 @@ export class TokensService {
       if (isTestingMode) {
         this.isTestingMode = true;
         this._tokens$.next(List(coingeckoTestTokens));
-        await this.calculateTokensBalances('default');
+        await this.calculateTokensBalancesByType('default');
       }
     });
 
@@ -168,7 +168,7 @@ export class TokensService {
   public fetchFavoriteTokens(): void {
     this.tokensApiService
       .fetchFavoriteTokens()
-      .subscribe(tokens => this.calculateTokensBalances('favorite', tokens));
+      .subscribe(tokens => this.calculateTokensBalancesByType('favorite', tokens));
   }
 
   /**
@@ -185,11 +185,19 @@ export class TokensService {
   }
 
   /**
+   * Calculates tokens balances for default and favorite tokens.
+   */
+  public async calculateTokensBalances(): Promise<void> {
+    await this.calculateTokensBalancesByType('default');
+    await this.calculateTokensBalancesByType('favorite');
+  }
+
+  /**
    * Calculates balance for favorite tokens list.
    * @param type Type of tokens list: default or favorite.
    * @param oldTokens Favorite tokens list.
    */
-  public async calculateTokensBalances(
+  public async calculateTokensBalancesByType(
     type: 'favorite' | 'default',
     oldTokens?: List<TokenAmount | Token>
   ): Promise<void> {
@@ -210,7 +218,7 @@ export class TokensService {
       return;
     }
 
-    const newTokens = this.setDefaultTokensParams(tokens, type === 'default');
+    const newTokens = this.setDefaultTokensParams(tokens, type === 'favorite');
     const tokensWithBalance = await this.getTokensWithBalance(newTokens as List<TokenAmount>);
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
@@ -234,7 +242,7 @@ export class TokensService {
    * @param tokens List of tokens.
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
-  public async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
+  private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
     const blockchains: BLOCKCHAIN_NAME[] = [
       BLOCKCHAIN_NAME.ETHEREUM,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

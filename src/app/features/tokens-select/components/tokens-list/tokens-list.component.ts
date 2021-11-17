@@ -16,12 +16,13 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PaginatedPage } from 'src/app/shared/models/tokens/paginated-tokens';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
 import { listAnimation } from 'src/app/features/tokens-select/components/tokens-list/animations/listAnimation';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { UserInterface } from '@core/services/auth/models/user.interface';
 
 @Component({
   selector: 'app-tokens-list',
@@ -113,12 +114,16 @@ export class TokensListComponent implements AfterViewInit {
     return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
   }
 
+  get user$(): Observable<UserInterface> {
+    return this.authService.getCurrentUser();
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
-    public readonly authService: AuthService,
+    private readonly authService: AuthService,
     private readonly walletsModalService: WalletsModalService
   ) {
     this.loading = false;

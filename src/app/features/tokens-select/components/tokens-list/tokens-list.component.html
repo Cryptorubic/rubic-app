@@ -8,7 +8,7 @@
         </ng-container>
 
         <ng-template #noFavoriteTokens>
-          <ng-container *ngIf="authService.getCurrentUser() | async; else noAuth">
+          <ng-container *ngIf="user$ | async; else noAuth">
             {{ 'modals.tokensListModal.noFavoriteData' | translate }}
             <button class="nothing-to-show-message__link" (click)="listTypeChange.emit('default')">
               {{ 'modals.tokensListModal.backToTokens' | translate }}

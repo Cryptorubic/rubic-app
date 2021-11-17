@@ -166,8 +166,7 @@ export class MyTradesComponent implements OnInit {
 
           this.refreshTable();
 
-          await this.tokensService.calculateTokensBalances('default');
-          await this.tokensService.calculateTokensBalances('favorite');
+          await this.tokensService.calculateTokensBalances();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
