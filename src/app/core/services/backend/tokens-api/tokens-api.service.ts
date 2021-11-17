@@ -105,7 +105,7 @@ export class TokensApiService {
     );
     return forkJoin(requests$).pipe(
       map(results => {
-        return TokensApiService.prepareTokens(results.flatMap(el => el.results));
+        return TokensApiService.prepareTokens(results.flatMap(el => el.results || []));
       })
     );
   }
