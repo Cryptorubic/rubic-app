@@ -22,7 +22,7 @@ import {
   DefaultEstimatedGas,
   defaultEstimatedGas
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
-import { CreateTradeMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/CreateTradeMethod';
+import { GetTradeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeData';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
 import { UniswapV2Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Route';
 import { UniswapV2Trade } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
@@ -227,62 +227,62 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     };
   };
 
-  private createEthToTokensTrade: CreateTradeMethod = (
+  private getEthToTokensTradeData: GetTradeData = (
     trade: UniswapV2Trade,
     options: ItOptions,
     gasLimit: string,
     gasPrice?: string
   ) => {
-    return this.web3PrivateService.tryExecuteContractMethod(
-      this.contractAddress,
-      this.contractAbi,
-      this.swapsMethod.ETH_TO_TOKENS,
-      [trade.amountOutMin, trade.path, trade.to, trade.deadline],
-      {
+    return {
+      contractAddress: this.contractAddress,
+      contractAbi: this.contractAbi,
+      methodName: this.swapsMethod.ETH_TO_TOKENS,
+      methodArguments: [trade.amountOutMin, trade.path, trade.to, trade.deadline],
+      options: {
         onTransactionHash: options.onConfirm,
         value: trade.amountIn,
         gas: gasLimit,
         gasPrice
       }
-    );
+    };
   };
 
-  private createTokensToEthTrade: CreateTradeMethod = (
+  private getTokensToEthTradeData: GetTradeData = (
     trade: UniswapV2Trade,
     options: ItOptions,
     gasLimit: string,
     gasPrice?: string
   ) => {
-    return this.web3PrivateService.tryExecuteContractMethod(
-      this.contractAddress,
-      this.contractAbi,
-      this.swapsMethod.TOKENS_TO_ETH,
-      [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
-      {
+    return {
+      contractAddress: this.contractAddress,
+      contractAbi: this.contractAbi,
+      methodName: this.swapsMethod.TOKENS_TO_ETH,
+      methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
+      options: {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
         gasPrice
       }
-    );
+    };
   };
 
-  private createTokensToTokensTrade: CreateTradeMethod = (
+  private getTokensToTokensTradeData: GetTradeData = (
     trade: UniswapV2Trade,
     options: ItOptions,
     gasLimit: string,
     gasPrice?: string
   ) => {
-    return this.web3PrivateService.tryExecuteContractMethod(
-      this.contractAddress,
-      this.contractAbi,
-      this.swapsMethod.TOKENS_TO_TOKENS,
-      [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
-      {
+    return {
+      contractAddress: this.contractAddress,
+      contractAbi: this.contractAbi,
+      methodName: this.swapsMethod.TOKENS_TO_TOKENS,
+      methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
+      options: {
         onTransactionHash: options.onConfirm,
         gas: gasLimit,
         gasPrice
       }
-    );
+    };
   };
 
   public getEthToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
@@ -293,7 +293,9 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.ETH_TO_TOKENS_SUPPORTING_FEE,
       methodArguments: [trade.amountOutMin, trade.path, trade.to, trade.deadline],
-      value: trade.amountIn
+      options: {
+        value: trade.amountIn
+      }
     };
   };
 
@@ -607,26 +609,49 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
     };
 
-    let createTradeMethod = this.createTokensToTokensTrade;
+    let createTradeMethod = this.getTokensToTokensTradeData;
     let getTradeSupportingFeeDataMethod = this.getTokensToTokensTradeSupportingFeeData;
     if (Web3Public.isNativeAddress(trade.from.token.address)) {
-      createTradeMethod = this.createEthToTokensTrade;
+      createTradeMethod = this.getEthToTokensTradeData;
       getTradeSupportingFeeDataMethod = this.getEthToTokensTradeSupportingFeeData;
     }
     if (Web3Public.isNativeAddress(trade.to.token.address)) {
-      createTradeMethod = this.createTokensToEthTrade;
+      createTradeMethod = this.getTokensToEthTradeData;
       getTradeSupportingFeeDataMethod = this.getTokensToEthTradeSupportingFeeData;
     }
 
+    const {
+      contractAddress,
+      contractAbi,
+      methodName,
+      methodArguments,
+      options: uniswapTradeOptions
+    } = createTradeMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
+    await this.web3Public.tryExecuteContractMethod(
+      contractAddress,
+      contractAbi,
+      methodName,
+      methodArguments,
+      this.walletAddress,
+      uniswapTradeOptions
+    );
+
     await this.tryExecuteTradeSupportingFee(uniswapV2Trade, getTradeSupportingFeeDataMethod);
-    return createTradeMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
+
+    return this.web3PrivateService.executeContractMethod(
+      contractAddress,
+      contractAbi,
+      methodName,
+      methodArguments,
+      uniswapTradeOptions
+    );
   }
 
   private async tryExecuteTradeSupportingFee(
     uniswapV2Trade: UniswapV2Trade,
     getTradeSupportingFeeDataMethod: GetTradeSupportingFeeData
-  ) {
-    const { contractAddress, contractAbi, methodName, methodArguments, value } =
+  ): Promise<void | never> {
+    const { contractAddress, contractAbi, methodName, methodArguments, options } =
       getTradeSupportingFeeDataMethod(uniswapV2Trade);
 
     try {
@@ -636,9 +661,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         methodName,
         methodArguments,
         this.walletAddress,
-        {
-          value
-        }
+        options
       );
     } catch (err) {
       console.error(err);
