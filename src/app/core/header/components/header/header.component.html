@@ -1,6 +1,6 @@
 <app-banner
-  [type]="advertisementType"
   *noFrame
+  [type]="advertisementType"
   (handleLinkClick)="buyTokenComponent.buyToken($event)"
 ></app-banner>
 
@@ -57,9 +57,9 @@
 
   <app-buy-token
     *noFrame
+    class="rubic-header__buy-token"
     [tokensType]="advertisementType"
     appearance="outline"
-    class="rubic-header__buy-token"
   ></app-buy-token>
 
   <div class="rubic-header__profile">
