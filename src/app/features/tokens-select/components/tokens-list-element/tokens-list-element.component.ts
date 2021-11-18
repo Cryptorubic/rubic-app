@@ -14,6 +14,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletError } from '@core/errors/models/provider/WalletError';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -42,7 +43,8 @@ export class TokensListElementComponent {
     iframeService: IframeService,
     private readonly tokensService: TokensService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly authService: AuthService
   ) {
     this.loadingFavoriteToken = false;
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
@@ -59,6 +61,10 @@ export class TokensListElementComponent {
    */
   public toggleFavorite(): void {
     if (this.loadingFavoriteToken) {
+      return;
+    }
+    if (!this.authService.userAddress) {
+      this.errorsService.catch(new WalletError());
       return;
     }
     this.loadingFavoriteToken = true;
