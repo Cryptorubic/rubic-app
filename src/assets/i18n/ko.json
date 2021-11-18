@@ -586,10 +586,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
+    "defaultText": "Rubic Multi-Chain이 출시되었습니다! Ethereum, BSC, Polygon 및 Avalanche에서 9,500개의 토큰을 교환하십시오.",
+    "customText": "Fantom는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
     "link": "오늘 시도!"
   },
-  "buyToken": "RBC 구매",
   "volume": {
     "title": "누적 거래량",
     "instantTrades": "Swaps",
@@ -604,5 +604,9 @@
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "RBC 구매",
+    "custom": "FTM 구매"
   }
 }
