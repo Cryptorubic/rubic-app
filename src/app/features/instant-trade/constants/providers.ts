@@ -142,5 +142,28 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
         value: INSTANT_TRADES_PROVIDER.SOLARBEAM
       }
     }
+  ],
+  [BLOCKCHAIN_NAME.FANTOM]: [
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Spookyswap',
+        value: INSTANT_TRADES_PROVIDER.SPOOKYSWAP
+      }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Spiritswap',
+        value: INSTANT_TRADES_PROVIDER.SPIRITSWAP
+      }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Sushiswap',
+        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
+      }
+    }
   ]
 };

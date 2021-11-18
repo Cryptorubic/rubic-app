@@ -15,6 +15,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.XDAI]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE]: Blockchain;
   [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
+  [BLOCKCHAIN_NAME.FANTOM]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
 };
@@ -61,6 +62,11 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.AVALANCHE,
     name: 'Avalanche',
     img: `${imageBaseSrc}avalanche.svg`
+  },
+  [BLOCKCHAIN_NAME.FANTOM]: {
+    key: BLOCKCHAIN_NAME.FANTOM,
+    name: 'Fantom',
+    img: `${imageBaseSrc}fantom.svg`
   },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
     key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,

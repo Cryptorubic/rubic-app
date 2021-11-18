@@ -37,6 +37,9 @@ import { SushiSwapAvalancheService } from '@features/instant-trade/services/inst
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
+import { SushiSwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
+import { SpookySwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
+import { SpiritSwapFantomService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
@@ -71,6 +74,9 @@ export class InstantTradeService {
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
+    private readonly sushiSwapFantomService: SushiSwapFantomService,
+    private readonly spookySwapFantomService: SpookySwapFantomService,
+    private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly zrxService: ZrxService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
@@ -124,6 +130,11 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.MOONRIVER]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapMoonRiverService,
         [INSTANT_TRADES_PROVIDER.SOLARBEAM]: this.solarBeamMoonriverService
+      },
+      [BLOCKCHAIN_NAME.FANTOM]: {
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
+        [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: this.spookySwapFantomService,
+        [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService
       }
     };
   }

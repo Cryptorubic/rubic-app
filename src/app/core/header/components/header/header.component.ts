@@ -44,6 +44,11 @@ export class HeaderComponent implements AfterViewInit {
 
   @ViewChild(BuyTokenComponent) public buyTokenComponent: BuyTokenComponent;
 
+  /**
+   * Rubic advertisement type. Renders different components based on type.
+   */
+  public advertisementType: 'default' | 'custom';
+
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
   public readonly isMobileMenuOpened$: Observable<boolean>;
@@ -85,6 +90,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
+    this.advertisementType = 'custom';
     // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();
     this.currentUser$ = this.authService.getCurrentUser();

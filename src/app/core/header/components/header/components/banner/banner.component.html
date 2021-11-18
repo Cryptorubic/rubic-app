@@ -1,6 +1,4 @@
 <div class="banner">
-  {{ 'banner.text' | translate }}
-  <a class="banner__link" (click)="handleLinkClick.emit(bannerTokens)">{{
-    'banner.link' | translate
-  }}</a>
+  {{ (type === 'default' ? 'banner.defaultText' : 'banner.customText') | translate }}
+  <a class="banner__link" (click)="handleLinkClick.emit()">{{ 'banner.link' | translate }}</a>
 </div>
