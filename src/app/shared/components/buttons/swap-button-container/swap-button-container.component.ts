@@ -337,7 +337,7 @@ export class SwapButtonContainerComponent implements OnInit {
     }
   }
 
-  public onLogin() {
+  public onLogin(): void {
     this.walletsModalService.open().subscribe();
   }
 

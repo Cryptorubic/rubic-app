@@ -586,10 +586,10 @@
     }
   },
   "banner": {
-    "text": "Rubic Multi-Chain запустился! Совершайте обмены между 9,500 токенами между Ethereum, BSC, Polygon и  Avalanche.",
+    "defaultText": "Rubic Multi-Chain запустился! Совершайте обмены между 9,500 токенами между Ethereum, BSC, Polygon и  Avalanche.",
+    "customText": "Fantom теперь доступна для Multi-Chain и On-Chain свапов.",
     "link": "Попробуйте уже сейчас!"
   },
-  "buyToken": "Купить RBC",
   "volume": {
     "title": "Накопленный Объем Операций",
     "instantTrades": "Swaps",
@@ -604,5 +604,9 @@
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Купить RBC",
+    "custom": "Купить FTM"
   }
 }

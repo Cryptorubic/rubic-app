@@ -46,7 +46,7 @@ export class GasRefundComponent {
     this.userPromotions$ = gasRefundService.userPromotions$;
   }
 
-  public refreshRefunds() {
+  public refreshRefunds(): void {
     this.isLoading = true;
     this.gasRefundService
       .updateUserPromotions()

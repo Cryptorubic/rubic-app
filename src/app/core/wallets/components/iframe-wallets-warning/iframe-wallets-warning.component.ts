@@ -25,7 +25,7 @@ export class IframeWalletsWarningComponent {
     private readonly iframeService: IframeService
   ) {}
 
-  public onCancel() {
+  public onCancel(): void {
     this.context.completeWith();
   }
 }

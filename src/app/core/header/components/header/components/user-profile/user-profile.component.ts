@@ -99,7 +99,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     this.authService.signOut().subscribe();
   }
 
-  public getDropdownStatus(status: boolean) {
+  public getDropdownStatus(status: boolean): void {
     this.dropdownIsOpened = status;
   }
 }

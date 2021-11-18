@@ -297,7 +297,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     trade: RubicTrade,
     web3Public: Web3Public,
     onApprove: (hash: string) => void
-  ) {
+  ): Promise<void> {
     const allowance = await web3Public.getAllowance(
       trade.token.address,
       this.providerConnectorService.address,

@@ -15,7 +15,7 @@ export class WithRoundPipe implements PipeTransform {
     decimals = this.DEFAULT_DECIMAL_LENGTH,
     minRound = 5,
     maxRound = 6
-  ) {
+  ): string {
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;
 

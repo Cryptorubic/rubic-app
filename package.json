@@ -77,6 +77,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-devkit/architect": "^0.1300.2",
     "@angular-devkit/build-angular": "^12.1.4",
     "@angular-eslint/builder": "1.2.0",
     "@angular-eslint/eslint-plugin": "^12.6.1",
@@ -98,6 +99,7 @@
     "eslint": "^7.27.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-angular-rubic": "file:angular-eslint-rubic",
     "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-jasmine": "^4.1.2",
     "eslint-plugin-jsdoc": "30.7.6",
