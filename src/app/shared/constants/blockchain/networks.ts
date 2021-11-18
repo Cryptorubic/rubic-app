@@ -133,6 +133,7 @@ export default [
   {
     id: 250,
     name: BLOCKCHAIN_NAME.FANTOM,
+    label: 'Fantom',
     scannerUrl: 'https://ftmscan.com',
     rpcLink: 'https://rpc.ftm.tools',
     additionalRpcLink: '',

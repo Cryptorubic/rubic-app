@@ -1,4 +1,8 @@
-<app-banner *noFrame (handleLinkClick)="buyTokenComponent.buyToken($event)"></app-banner>
+<app-banner
+  [type]="advertisementType"
+  *noFrame
+  (handleLinkClick)="buyTokenComponent.buyToken($event)"
+></app-banner>
 
 <header class="rubic-header">
   <a *noFrame class="rubic-header__logo" routerLink="/">
@@ -51,7 +55,12 @@
     >
   </nav>
 
-  <app-buy-token *noFrame appearance="outline" class="rubic-header__buy-token"></app-buy-token>
+  <app-buy-token
+    *noFrame
+    [tokensType]="advertisementType"
+    appearance="outline"
+    class="rubic-header__buy-token"
+  ></app-buy-token>
 
   <div class="rubic-header__profile">
     <a
