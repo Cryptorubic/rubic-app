@@ -50,10 +50,10 @@ export class BuyTokenComponent {
     this.tokensType = 'default';
     this.customTokens = {
       from: {
-        blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        address: NATIVE_TOKEN_ADDRESS,
-        symbol: 'BNB',
-        amount: new BigNumber(1)
+        blockchain: BLOCKCHAIN_NAME.FANTOM,
+        address: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+        symbol: 'USDC',
+        amount: new BigNumber(100)
       },
       to: {
         blockchain: BLOCKCHAIN_NAME.FANTOM,
