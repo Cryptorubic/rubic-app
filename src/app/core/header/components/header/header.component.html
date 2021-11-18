@@ -1,9 +1,4 @@
-<!-- HARMONY BANNER -->
-<div class="banner" *noFrame>
-  {{ 'banner.text' | translate }}
-  <a class="banner__link" (click)="buyTokenComponent.buyToken()">{{ 'banner.link' | translate }}</a>
-</div>
-<!-- HARMONY BANNER -->
+<app-banner *noFrame (handleLinkClick)="buyTokenComponent.buyToken($event)"></app-banner>
 
 <header class="rubic-header">
   <a *noFrame class="rubic-header__logo" routerLink="/">
@@ -52,7 +47,7 @@
       [class.button-link_active]="
         rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
       "
-      >Cross-Chain</a
+      >Multi-Chain</a
     >
   </nav>
 
