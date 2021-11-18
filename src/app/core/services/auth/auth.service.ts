@@ -58,6 +58,18 @@ export class AuthService {
   }
 
   /**
+   * Gets message for signing in human readable format.
+   * @param nonce nonce to sign.
+   * @return string Message to sign.
+   */
+  private static getMessageForSign(nonce: string): string {
+    return `Welcome to Rubic!
+        Sign this message to log into rubic.exchange. This signature will not cost you any fees.
+        
+        Sign message: ${nonce}`;
+  }
+
+  /**
    * Ger current user as observable.
    * @return Observable<UserInterface> User.
    */
@@ -173,10 +185,11 @@ export class AuthService {
         return;
       }
       const nonce = walletLoginBody.payload.message;
-      const signature = await this.providerConnectorService.signPersonal(nonce);
+      const message = AuthService.getMessageForSign(nonce);
+      const signature = await this.providerConnectorService.signPersonal(message);
       await this.sendSignedNonce(
         this.providerConnectorService.address,
-        nonce,
+        message,
         signature,
         this.providerConnectorService.provider.name
       );
@@ -210,10 +223,11 @@ export class AuthService {
           return;
         }
         const nonce = walletLoginBody.payload.message;
-        const signature = await this.providerConnectorService.signPersonal(nonce);
+        const message = AuthService.getMessageForSign(nonce);
+        const signature = await this.providerConnectorService.signPersonal(message);
         await this.sendSignedNonce(
           this.providerConnectorService.address,
-          nonce,
+          message,
           signature,
           this.providerConnectorService.provider.name
         );
