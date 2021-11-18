@@ -547,7 +547,7 @@ export class TokensService {
     const filteredTokens = this._favoriteTokens$.value.filter(
       el => !TokensService.areTokensEqual(el, token)
     );
-    return this.tokensApiService.addFavoriteToken(token).pipe(
+    return this.tokensApiService.deleteFavoriteToken(token).pipe(
       tap(() => {
         if (
           this._favoriteTokens$.value.some(favoriteToken => compareTokens(token, favoriteToken))
