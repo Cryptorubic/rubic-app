@@ -63,10 +63,10 @@ export class TokensListElementComponent {
     }
     this.loadingFavoriteToken = true;
     const request$ = this.token.favorite
-      ? this.tokensService.removeFavoriteToken
-      : this.tokensService.addFavoriteToken;
+      ? this.tokensService.removeFavoriteToken(this.token)
+      : this.tokensService.addFavoriteToken(this.token);
 
-    request$(this.token).subscribe({
+    request$.subscribe({
       error: () => {
         this.errorsService.catch(new WalletError());
       },
