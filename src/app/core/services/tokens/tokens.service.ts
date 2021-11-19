@@ -20,10 +20,9 @@ import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
-import { StoreService } from 'src/app/core/services/store/store.service';
-import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
-import { compareAddresses } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { ErrorsService } from '@core/errors/errors.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -43,7 +42,7 @@ export class TokensService {
    * Current favorite tokens list state.
    */
   // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly _favoriteTokens$ = new BehaviorSubject<LocalToken[]>(this.fetchFavoriteTokens());
+  public readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
@@ -86,7 +85,7 @@ export class TokensService {
   /**
    * Current favorite tokens list.
    */
-  get favoriteTokens(): LocalToken[] {
+  get favoriteTokens(): List<TokenAmount> {
     return this._favoriteTokens$.getValue();
   }
 
@@ -116,7 +115,7 @@ export class TokensService {
     private readonly web3PublicService: Web3PublicService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly store: StoreService
+    private readonly errorsService: ErrorsService
   ) {
     this.testTokensNumber = coingeckoTestTokens.length;
 
@@ -132,8 +131,8 @@ export class TokensService {
         switchMap(params => this.tokensApiService.getTokensList(params)),
         switchMap(tokens => {
           if (!this.isTestingMode) {
-            this.setDefaultTokensParams(tokens);
-            return this.calculateUserTokensBalances();
+            const newTokens = this.setDefaultTokensParams(tokens, false);
+            return this.calculateTokensBalancesByType('default', newTokens);
           }
           return of();
         }),
@@ -146,49 +145,79 @@ export class TokensService {
 
     this.authService.getCurrentUser().subscribe(async user => {
       this.userAddress = user?.address;
-      await this.calculateUserTokensBalances();
+      await this.calculateTokensBalancesByType('default');
+      if (this.userAddress) {
+        this.fetchFavoriteTokens();
+      } else {
+        this._favoriteTokens$.next(List([]));
+      }
     });
 
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
         this._tokens$.next(List(coingeckoTestTokens));
-        await this.calculateUserTokensBalances();
+        await this.calculateTokensBalancesByType('default');
       }
     });
 
     this._tokensRequestParameters$.next(undefined);
   }
 
-  /**
-   * Sets default tokens params.
-   * @param tokens Tokens list.
-   */
-  private setDefaultTokensParams(tokens: List<Token> = this.tokens): void {
-    this._tokens$.next(
-      tokens.map(token => ({
-        ...token,
-        amount: new BigNumber(NaN),
-        favorite: false
-      }))
-    );
+  public fetchFavoriteTokens(): void {
+    this.tokensApiService
+      .fetchFavoriteTokens()
+      .subscribe(tokens => this.calculateTokensBalancesByType('favorite', tokens));
   }
 
   /**
-   * Calculates balance for token list.
-   * @param tokens Token list.
+   * Sets default tokens params.
+   * @param tokens Tokens list.
+   * @param isFavorite Is tokens list favorite.
    */
-  public async calculateUserTokensBalances(tokens: List<TokenAmount> = this.tokens): Promise<void> {
-    if (!tokens.size) {
+  private setDefaultTokensParams(tokens: List<Token>, isFavorite: boolean): List<TokenAmount> {
+    return tokens.map(token => ({
+      ...token,
+      amount: new BigNumber(NaN),
+      favorite: isFavorite
+    }));
+  }
+
+  /**
+   * Calculates tokens balances for default and favorite tokens.
+   */
+  public async calculateTokensBalances(): Promise<void> {
+    await this.calculateTokensBalancesByType('default');
+    await this.calculateTokensBalancesByType('favorite');
+  }
+
+  /**
+   * Calculates balance for favorite tokens list.
+   * @param type Type of tokens list: default or favorite.
+   * @param oldTokens Favorite tokens list.
+   */
+  public async calculateTokensBalancesByType(
+    type: 'favorite' | 'default',
+    oldTokens?: List<TokenAmount | Token>
+  ): Promise<void> {
+    const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
+    const tokens = oldTokens || subject$.value;
+
+    if (type === 'default') {
+      if (!tokens.size) {
+        return;
+      }
+      if (!this.userAddress) {
+        this._tokens$.next(this.setDefaultTokensParams(tokens, false));
+        return;
+      }
+    } else if (!tokens.size || !this.userAddress) {
+      this._favoriteTokens$.next(List([]));
       return;
     }
 
-    if (!this.userAddress) {
-      this.setDefaultTokensParams(tokens);
-      return;
-    }
-
-    const tokensWithBalance = await this.getTokensWithBalance(tokens);
+    const newTokens = this.setDefaultTokensParams(tokens, type === 'favorite');
+    const tokensWithBalance = await this.getTokensWithBalance(newTokens as List<TokenAmount>);
 
     if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
       const updatedTokens = tokens.map(token => {
@@ -202,7 +231,7 @@ export class TokensService {
           amount: balance
         };
       });
-      this._tokens$.next(List(updatedTokens));
+      subject$.next(List(updatedTokens));
     }
   }
 
@@ -501,34 +530,33 @@ export class TokensService {
    * Adds token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
    */
-  public addFavoriteToken(favoriteToken: TokenAmount): void {
-    const localToken: LocalToken = {
-      address: favoriteToken.address,
-      blockchain: favoriteToken.blockchain
-    };
-    const collection = [...this._favoriteTokens$.value, localToken];
-    this.store.setItem('favoriteTokens', collection);
-    this._favoriteTokens$.next(collection);
+  public addFavoriteToken(favoriteToken: TokenAmount): Observable<unknown> {
+    return this.tokensApiService.addFavoriteToken(favoriteToken).pipe(
+      tap(() => {
+        if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {
+          this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
+        }
+      })
+    );
   }
 
   /**
    * Removes token from list of favorite tokens.
    * @param token Favorite token to remove.
    */
-  public removeFavoriteToken(token: TokenAmount): void {
+  public removeFavoriteToken(token: TokenAmount): Observable<unknown> {
     const filteredTokens = this._favoriteTokens$.value.filter(
       el => !TokensService.areTokensEqual(el, token)
     );
-
-    this.store.setItem('favoriteTokens', filteredTokens);
-    this._favoriteTokens$.next(filteredTokens);
-  }
-
-  /**
-   * Fetches favorite tokens from local storage.
-   */
-  private fetchFavoriteTokens(): LocalToken[] {
-    return this.store.getItem('favoriteTokens') || [];
+    return this.tokensApiService.deleteFavoriteToken(token).pipe(
+      tap(() => {
+        if (
+          this._favoriteTokens$.value.some(favoriteToken => compareTokens(token, favoriteToken))
+        ) {
+          this._favoriteTokens$.next(filteredTokens);
+        }
+      })
+    );
   }
 
   /**

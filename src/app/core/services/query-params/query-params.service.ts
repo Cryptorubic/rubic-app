@@ -15,7 +15,8 @@ import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/s
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { compareAddresses } from 'src/app/shared/utils/utils';
+import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
+import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
@@ -234,27 +235,54 @@ export class QueryParamsService {
 
     return Web3Public.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
-      : of(this.searchTokenBySymbol(tokens, token, chain));
+      : this.searchTokenBySymbol(tokens, token, chain);
   }
 
+  /**
+   * Searches token by symbol.
+   * @param tokens List of local tokens.
+   * @param symbol Symbol to search.
+   * @param chain Chain to search.
+   * @return Observable<TokenAmount> Searched token.
+   */
   private searchTokenBySymbol(
     tokens: List<TokenAmount>,
     symbol: string,
     chain: string
-  ): TokenAmount {
+  ): Observable<TokenAmount> {
     const similarTokens = tokens.filter(
       token => token.symbol === symbol && token.blockchain === chain
     );
 
     if (!similarTokens.size) {
-      return null;
+      return this.tokensService.fetchQueryTokens(symbol, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+        map(foundedTokens => {
+          if (foundedTokens?.size) {
+            const token =
+              foundedTokens?.size > 1
+                ? foundedTokens.find(el => el.symbol === symbol)
+                : foundedTokens.first();
+            return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+          }
+          return null;
+        })
+      );
     }
 
-    return similarTokens.size > 1
-      ? similarTokens.find(token => token.usedInIframe) || similarTokens.first()
-      : similarTokens.first();
+    return of(
+      similarTokens.size > 1
+        ? similarTokens.find(token => token.usedInIframe)
+        : similarTokens.first()
+    );
   }
 
+  /**
+   * Searches token by address.
+   * @param tokens List of local tokens.
+   * @param address Address to search.
+   * @param chain Chain to search.
+   * @return Observable<TokenAmount> Searched token.
+   */
   private searchTokenByAddress(
     tokens: List<TokenAmount>,
     address: string,
@@ -266,7 +294,16 @@ export class QueryParamsService {
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.addTokenByAddress(address, chain).pipe(first());
+      : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
+          switchIif(
+            backendTokens => Boolean(backendTokens?.size),
+            () => of(tokens.first()),
+            () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
+          ),
+          map(fetchedToken => {
+            return { ...fetchedToken, amount: new BigNumber(NaN) } as TokenAmount;
+          })
+        );
   }
 
   private navigate(): void {

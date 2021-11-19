@@ -3,6 +3,17 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { FromBackendBlockchain } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 
+export enum ENDPOINTS {
+  TOKKENS = 'tokens/',
+  IFRAME_TOKENS = 'tokens/iframe/',
+  FAVORITE_TOKENS = 'tokens/favorite/'
+}
+
+export interface FavoriteTokenRequestParams {
+  blockchain_network: string;
+  address: string;
+}
+
 export interface BackendToken {
   address: string;
   name: string;

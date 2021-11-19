@@ -1,10 +1,20 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { ErrorsService } from '@core/errors/errors.service';
+import { WalletError } from '@core/errors/models/provider/WalletError';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -13,10 +23,14 @@ import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOK
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
+  public loadingFavoriteToken: boolean;
+
   /**
    * Token element.
    */
   @Input() token: TokenAmount;
+
+  @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
@@ -25,7 +39,14 @@ export class TokensListElementComponent {
    */
   public readonly isHorizontalFrame$: Observable<boolean>;
 
-  constructor(iframeService: IframeService, private readonly tokensService: TokensService) {
+  constructor(
+    iframeService: IframeService,
+    private readonly tokensService: TokensService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly errorsService: ErrorsService,
+    private readonly authService: AuthService
+  ) {
+    this.loadingFavoriteToken = false;
     this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
       map(appearance => appearance === 'horizontal')
     );
@@ -39,10 +60,27 @@ export class TokensListElementComponent {
    * Makes token favorite or not favorite in the list.
    */
   public toggleFavorite(): void {
-    if (!this.token.favorite) {
-      this.tokensService.addFavoriteToken(this.token);
-    } else {
-      this.tokensService.removeFavoriteToken(this.token);
+    if (this.loadingFavoriteToken) {
+      return;
     }
+    if (!this.authService.userAddress) {
+      this.errorsService.catch(new WalletError());
+      return;
+    }
+    this.loadingFavoriteToken = true;
+    const request$ = this.token.favorite
+      ? this.tokensService.removeFavoriteToken(this.token)
+      : this.tokensService.addFavoriteToken(this.token);
+
+    request$.subscribe({
+      error: () => {
+        this.errorsService.catch(new WalletError());
+      },
+      complete: () => {
+        this.loadingFavoriteToken = false;
+        this.cdr.markForCheck();
+        this.toggleFavoriteToken.emit();
+      }
+    });
   }
 }
