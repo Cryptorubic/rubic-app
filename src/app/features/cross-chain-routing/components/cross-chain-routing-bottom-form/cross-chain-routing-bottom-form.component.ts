@@ -66,6 +66,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
@@ -394,7 +396,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             }
           );
 
-          await this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
@@ -442,7 +444,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           );
 
           this.counterNotificationsService.updateUnread();
-          await this.tokensService.calculateUserTokensBalances();
+
+          await this.tokensService.calculateTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           await this.conditionalCalculate();

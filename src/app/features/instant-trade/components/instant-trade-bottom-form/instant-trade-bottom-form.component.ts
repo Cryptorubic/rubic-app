@@ -75,6 +75,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
@@ -669,7 +671,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
-      await this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateTokensBalances();
 
       if (this.isIframe$) {
         this.needApprove = false;
@@ -737,7 +739,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       });
 
       this.counterNotificationsService.updateUnread();
-      await this.tokensService.calculateUserTokensBalances();
+
+      await this.tokensService.calculateTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();

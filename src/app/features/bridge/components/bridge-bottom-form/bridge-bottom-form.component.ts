@@ -67,6 +67,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
@@ -338,7 +340,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             }
           );
         }),
-        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        switchMap(() => this.tokensService.calculateTokensBalances()),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),
         catchError((err: unknown) => {
@@ -379,7 +381,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
           this.counterNotificationsService.updateUnread();
         }),
-        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        switchMap(() => this.tokensService.calculateTokensBalances()),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),
         switchMap(() => this.conditionalCalculate()),
