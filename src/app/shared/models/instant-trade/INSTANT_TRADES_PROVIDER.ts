@@ -9,5 +9,7 @@ export enum INSTANT_TRADES_PROVIDER {
   PANGOLIN = 'pangolin',
   JOE = 'joe',
   SOLARBEAM = 'solarbeam',
+  SPOOKYSWAP = 'spookyswap',
+  SPIRITSWAP = 'spiritswap',
   WRAPPED = 'wrapped'
 }

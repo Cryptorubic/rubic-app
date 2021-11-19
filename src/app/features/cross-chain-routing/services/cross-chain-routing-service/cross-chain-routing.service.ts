@@ -53,6 +53,7 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { PCacheable } from 'ts-cacheable';
 import CrossChainTokensWithFeeWarning from '@core/errors/models/cross-chain-routing/CrossChainTokensWithFeeWarning';
 import { UniswapV2Trade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
+import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 
 interface PathAndToAmount {
   path: string[];
@@ -99,6 +100,7 @@ export class CrossChainRoutingService {
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
+    private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
@@ -130,7 +132,8 @@ export class CrossChainRoutingService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [this.pancakeSwapService],
       [BLOCKCHAIN_NAME.POLYGON]: [this.quickSwapService],
       [BLOCKCHAIN_NAME.AVALANCHE]: [this.pangolinAvalancheService, this.joeAvalancheService],
-      [BLOCKCHAIN_NAME.MOONRIVER]: [this.solarBeamMoonRiverService]
+      [BLOCKCHAIN_NAME.MOONRIVER]: [this.solarBeamMoonRiverService],
+      [BLOCKCHAIN_NAME.FANTOM]: [this.spookySwapFantomService]
     };
   }
 
@@ -140,7 +143,8 @@ export class CrossChainRoutingService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [1],
       [BLOCKCHAIN_NAME.POLYGON]: [3],
       [BLOCKCHAIN_NAME.AVALANCHE]: [4, 5],
-      [BLOCKCHAIN_NAME.MOONRIVER]: [6]
+      [BLOCKCHAIN_NAME.MOONRIVER]: [6],
+      [BLOCKCHAIN_NAME.FANTOM]: [7]
     };
   }
 
@@ -505,32 +509,24 @@ export class CrossChainRoutingService {
     toTransitTokenBlockchain: SupportedCrossChainSwapBlockchain,
     fromTransitTokenAmount: BigNumber
   ): Promise<BigNumber> {
-    const nonRbcTransitBlockchains = [BLOCKCHAIN_NAME.AVALANCHE, BLOCKCHAIN_NAME.MOONRIVER];
-    if (
-      nonRbcTransitBlockchains.includes(fromTransitTokenBlockchain) ||
-      nonRbcTransitBlockchains.includes(toTransitTokenBlockchain)
-    ) {
-      const firstTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
-        {
-          address: this.transitTokens[fromTransitTokenBlockchain].address,
-          blockchain: fromTransitTokenBlockchain
-        },
-        true
-      );
-      const secondTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
-        {
-          address: this.transitTokens[toTransitTokenBlockchain].address,
-          blockchain: toTransitTokenBlockchain
-        },
-        true
-      );
+    const firstTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
+      {
+        address: this.transitTokens[fromTransitTokenBlockchain].address,
+        blockchain: fromTransitTokenBlockchain
+      },
+      true
+    );
+    const secondTransitTokenPrice = await this.tokensService.getAndUpdateTokenPrice(
+      {
+        address: this.transitTokens[toTransitTokenBlockchain].address,
+        blockchain: toTransitTokenBlockchain
+      },
+      true
+    );
 
-      return fromTransitTokenAmount
-        .multipliedBy(firstTransitTokenPrice)
-        .dividedBy(secondTransitTokenPrice);
-    }
-
-    return fromTransitTokenAmount;
+    return fromTransitTokenAmount
+      .multipliedBy(firstTransitTokenPrice)
+      .dividedBy(secondTransitTokenPrice);
   }
 
   /**

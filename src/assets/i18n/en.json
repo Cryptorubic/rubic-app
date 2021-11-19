@@ -46,7 +46,7 @@
     "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less amount or top up your {{ nativeToken }} balance.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
     "walletlinkWrongNetwork": "Please make sure that the {{ networkToChoose }} network is selected in the Coinbase application. To change the network in the coinbase application, go to the settings in the bottom panel and select the \"Active Network\" tab.",
-    "noWallet": "You have not connected any wallet",
+    "noWallet": "You have not connected any wallet. Please connect your wallet to be able to use site functionality.",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
     "oneInchQuote": "1inch quote error",
@@ -505,7 +505,8 @@
       "searchPlaceholder": "Search name or paste address",
       "noSearchData": "Nothing to show",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list"
+      "backToTokens": "back to whole tokens list",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Connect wallet",
@@ -587,10 +588,10 @@
     }
   },
   "banner": {
-    "text": "Rubic Cross-Chain has launched! Swap between 9,500 tokens across Ethereum, BSC, Polygon & Avalanche.",
-    "link": "Try it now!"
+    "defaultText": "Rubic Cross-Chain has launched! Swap between 9,500 tokens across Ethereum, BSC, Polygon & Avalanche.",
+    "customText": "Fantom is now available for Multi-Chain and On-Chain Swaps.",
+    "link": "Try it today!"
   },
-  "buyToken": "Buy RBC",
   "volume": {
     "title": "Accumulated Transaction Volume",
     "instantTrades": "Swaps",
@@ -605,5 +606,9 @@
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Buy RBC",
+    "custom": "Buy FTM"
   }
 }

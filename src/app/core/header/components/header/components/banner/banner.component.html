@@ -1,0 +1,4 @@
+<div class="banner">
+  {{ (type === 'default' ? 'banner.defaultText' : 'banner.customText') | translate }}
+  <a class="banner__link" (click)="handleLinkClick.emit()">{{ 'banner.link' | translate }}</a>
+</div>

@@ -28,6 +28,8 @@ export class TokenAmountInputComponent implements OnInit {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Input() placeholder = '0.0';
 
   private get formattedAmount(): string {

@@ -223,6 +223,10 @@ export class ProviderConnectorService {
       [BLOCKCHAIN_NAME.MOONRIVER]: {
         name: 'Moonriver',
         rpc: 'https://rpc.moonriver.moonbeam.network'
+      },
+      [BLOCKCHAIN_NAME.FANTOM]: {
+        name: 'Fantom Opera',
+        rpc: 'https://rpc.ftm.tools'
       }
     };
     const params = {

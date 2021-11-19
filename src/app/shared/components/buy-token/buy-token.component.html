@@ -1,3 +1,9 @@
-<app-rubic-button class="button_buy-token" *noFrame [appearance]="appereance" (click)="buyToken()">
-  {{ 'buyToken' | translate }}
+<app-rubic-button
+  *noFrame
+  class="button_buy-token"
+  [ngClass]="{ 'button_buy-token__custom': tokensType === 'custom' }"
+  [appearance]="appereance"
+  (click)="buyToken()"
+>
+  {{ (tokensType === 'default' ? 'buyTokens.default' : 'buyTokens.custom') | translate }}
 </app-rubic-button>
