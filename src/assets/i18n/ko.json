@@ -504,7 +504,8 @@
       "searchPlaceholder": "이름 검색 또는 주소 붙여 넣기",
       "noSearchData": "표시 할 내용 없음",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list"
+      "backToTokens": "back to whole tokens list",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "지갑 연결",

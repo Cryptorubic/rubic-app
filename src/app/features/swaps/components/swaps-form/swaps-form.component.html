@@ -53,6 +53,7 @@
           *noFrame="'vertical'"
           [loading]="isLoading"
           [tokens]="availableTokens['from']"
+          [favoriteTokens]="availableFavoriteTokens['from']"
         ></app-token-amount-input>
 
         <app-vertical-iframe-token-amount-input
@@ -78,6 +79,7 @@
           (onRefreshStatusChange)="loadingStatus = $event"
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
+          [favoriteTokens]="availableFavoriteTokens['to']"
           (allowRefreshChange)="allowRefresh = $event"
           (instantTradeInfoChange)="currentInstantTradeInfo = $event"
           (tradeStatusChange)="tradeStatus = $event"
@@ -88,6 +90,7 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           (tradeStatusChange)="tradeStatus = $event"
+          [favoriteTokens]="availableFavoriteTokens['to']"
         ></app-bridge-bottom-form>
 
         <app-cross-chain-routing-bottom-form
@@ -97,6 +100,7 @@
           [loading]="isLoading"
           [tokens]="availableTokens['to']"
           (tradeStatusChange)="tradeStatus = $event"
+          [favoriteTokens]="availableFavoriteTokens['to']"
         ></app-cross-chain-routing-bottom-form>
       </div>
     </main>

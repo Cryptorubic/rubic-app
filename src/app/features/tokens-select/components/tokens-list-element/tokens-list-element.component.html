@@ -19,11 +19,19 @@
     <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
   </div>
 
-  <div
+  <tui-loader
+    class="token-card__favorite-container"
     *noFrame
-    class="token-card__favorite"
-    [ngClass]="{ 'token-card__favorite_active': token?.favorite }"
-    [inlineSVG]="'assets/images/icons/star2.svg'"
-    (click.stop)="toggleFavorite()"
-  ></div>
+    [showLoader]="loadingFavoriteToken"
+    [overlay]="true"
+  >
+    <div
+      class="token-card__favorite"
+      [ngClass]="{
+        'token-card__favorite_active': token?.favorite
+      }"
+      [inlineSVG]="'assets/images/icons/star2.svg'"
+      (click.stop)="toggleFavorite()"
+    ></div>
+  </tui-loader>
 </div>

@@ -36,9 +36,16 @@ export class RubicTokensComponent implements OnInit {
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   @Input() set tokens(value: AvailableTokenAmount[]) {
-    const deepEquality = compareObjects(value, this.tokensSubject$.value);
+    const deepEquality = compareObjects(value, this._tokens$.value);
     if (!deepEquality) {
-      this.tokensSubject$.next(value);
+      this._tokens$.next(value);
+    }
+  }
+
+  @Input() set favoriteTokens(value: AvailableTokenAmount[]) {
+    const deepEquality = compareObjects(value, this._favoriteTokens$.value);
+    if (!deepEquality) {
+      this._favoriteTokens$.next(value);
     }
   }
 
@@ -58,8 +65,17 @@ export class RubicTokensComponent implements OnInit {
 
   public iframeForceDisabled = false;
 
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public tokensSubject$: BehaviorSubject<AvailableTokenAmount[]>;
+  private readonly _tokens$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject<
+    AvailableTokenAmount[]
+  >([]);
+
+  public readonly tokensSubject$ = this._tokens$.asObservable();
+
+  private readonly _favoriteTokens$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject<
+    AvailableTokenAmount[]
+  >([]);
+
+  public readonly favoriteTokensSubject$ = this._favoriteTokens$.asObservable();
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -67,9 +83,7 @@ export class RubicTokensComponent implements OnInit {
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
     private readonly destroy$: TuiDestroyService
-  ) {
-    this.tokensSubject$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.setFormValues(this.formService.inputValue);
@@ -100,7 +114,8 @@ export class RubicTokensComponent implements OnInit {
 
     this.tokensSelectService
       .showDialog(
-        this.tokensSubject$.asObservable(),
+        this._tokens$.asObservable(),
+        this._favoriteTokens$.asObservable(),
         this.formType,
         currentBlockchain,
         this.formService.input,

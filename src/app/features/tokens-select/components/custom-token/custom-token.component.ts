@@ -5,13 +5,13 @@ import {
   Output,
   EventEmitter,
   Inject,
-  Injector
+  Injector,
+  ChangeDetectorRef
 } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
 
 @Component({
@@ -40,7 +40,7 @@ export class CustomTokenComponent {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
-    private readonly tokensService: TokensService
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   /**
@@ -56,10 +56,13 @@ export class CustomTokenComponent {
       })
       .subscribe((confirm: boolean) => {
         if (confirm) {
-          const favoriteToken = { ...this.token, favorite: true };
-          this.tokenSelected.emit(favoriteToken);
-          this.tokensService.addFavoriteToken(favoriteToken);
+          this.tokenSelected.emit(this.token);
         }
       });
+  }
+
+  public toggleFavorite(): void {
+    this.token.favorite = !this.token.favorite;
+    this.cdr.markForCheck();
   }
 }
