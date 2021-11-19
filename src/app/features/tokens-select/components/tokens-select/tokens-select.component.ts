@@ -544,24 +544,23 @@ export class TokensSelectComponent implements OnInit {
         const sortedTokens = this.sortTokensByComparator(currentBlockchainTokens);
         const tokensWithFavorite = sortedTokens.map(token => ({
           ...token,
+          amount: token.amount || new BigNumber(NaN),
           favorite: favoriteTokens.some(favoriteToken =>
             TokensService.areTokensEqual(favoriteToken, token)
           )
         }));
 
-        const currentBlockchainFavoriteTokens = favoriteTokens.filter(
-          (token: AvailableTokenAmount) => token.blockchain === this.blockchain
-        );
+        const currentBlockchainFavoriteTokens = favoriteTokens
+          .filter((token: AvailableTokenAmount) => token.blockchain === this.blockchain)
+          .map(token => ({
+            ...token,
+            favorite: true,
+            amount: token.amount || new BigNumber(NaN)
+          }));
         const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
 
         this._tokensToShow$.next(tokensWithFavorite);
-        this.favoriteTokensToShowSubject$.next(
-          sortedFavoriteTokens.map(el => ({
-            ...el,
-            favorite: true,
-            amount: el.amount || new BigNumber(NaN)
-          }))
-        );
+        this.favoriteTokensToShowSubject$.next(sortedFavoriteTokens);
         this.tokensListUpdating = false;
         this.cdr.markForCheck();
       }
