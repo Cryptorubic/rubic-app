@@ -17,9 +17,10 @@
 
         <span class="title" *ngIf="column.value === 'FromTo'"
           >{{ 'tradesTable.columns.from' | translate
-          }}<img src="assets/images/icons/my-trades/arrow-right.svg" alt />{{
-            'tradesTable.columns.to' | translate
-          }}
+          }}<img
+            src="assets/images/icons/my-trades/arrow-right.svg"
+            [alt]="'tradesTable.columns.to' | translate"
+          />{{ 'tradesTable.columns.to' | translate }}
         </span>
 
         <div

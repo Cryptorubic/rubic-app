@@ -34,7 +34,10 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   @Input() loading: boolean;
 
-  @Input() tableData$!: Observable<TableRow[]>;
+  /**
+   * [REQUIRES] Table data to display.
+   */
+  @Input() tableData$: Observable<TableRow[]>;
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
