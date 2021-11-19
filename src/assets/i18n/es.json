@@ -587,10 +587,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver ahora está disponible para intercambios multicadena y en cadena.",
+    "defaultText": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 9.500 tokens en Ethereum, BSC, Polygon y Avalanche.",
+    "customText": "Fantom ahora está disponible para intercambios multicadena y en cadena.",
     "link": "Pruébalo hoy!"
   },
-  "buyToken": "Comprar RBC",
   "volume": {
     "title": "Volumen de transacciones acumuladas",
     "instantTrades": "Swaps",
@@ -605,5 +605,9 @@
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Comprar RBC",
+    "custom": "Comprar FTM"
   }
 }

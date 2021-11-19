@@ -15,6 +15,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import { compareAddresses } from '@shared/utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -45,11 +46,12 @@ export class EthWethSwapProviderService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
-    const wethAddress =
-      this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain].toLowerCase();
+    const wethAddress = this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain];
+
     return (
-      (fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress.toLowerCase() === wethAddress) ||
-      (toTokenAddress === NATIVE_TOKEN_ADDRESS && fromTokenAddress.toLowerCase() === wethAddress)
+      (fromTokenAddress === NATIVE_TOKEN_ADDRESS &&
+        compareAddresses(toTokenAddress, wethAddress)) ||
+      (toTokenAddress === NATIVE_TOKEN_ADDRESS && compareAddresses(fromTokenAddress, wethAddress))
     );
   }
 

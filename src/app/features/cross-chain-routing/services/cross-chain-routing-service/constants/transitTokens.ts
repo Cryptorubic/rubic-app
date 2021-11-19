@@ -29,5 +29,10 @@ export const transitTokensWithMode: TransitTokens = {
     address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
     decimals: 6,
     symbol: 'USDC'
+  },
+  [BLOCKCHAIN_NAME.FANTOM]: {
+    address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+    decimals: 6,
+    symbol: 'USDC'
   }
 };

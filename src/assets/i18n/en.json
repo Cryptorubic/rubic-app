@@ -587,10 +587,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver is now available for Multi-Chain and On-Chain Swaps.",
+    "defaultText": "Rubic Cross-Chain has launched! Swap between 9,500 tokens across Ethereum, BSC, Polygon & Avalanche.",
+    "customText": "Fantom is now available for Multi-Chain and On-Chain Swaps.",
     "link": "Try it today!"
   },
-  "buyToken": "Buy RBC",
   "volume": {
     "title": "Accumulated Transaction Volume",
     "instantTrades": "Swaps",
@@ -605,5 +605,9 @@
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Buy RBC",
+    "custom": "Buy FTM"
   }
 }

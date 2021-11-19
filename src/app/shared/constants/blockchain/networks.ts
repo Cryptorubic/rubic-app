@@ -130,6 +130,22 @@ export default [
       decimals: 18
     }
   },
+  {
+    id: 250,
+    name: BLOCKCHAIN_NAME.FANTOM,
+    label: 'Fantom',
+    scannerUrl: 'https://ftmscan.com',
+    rpcLink: 'https://rpc.ftm.tools',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/fantom.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.FANTOM,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'FTM',
+      symbol: 'FTM',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,
