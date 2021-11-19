@@ -1,4 +1,3 @@
-/* eslint-disable rxjs/no-exposed-subjects */
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,7 +9,15 @@ import {
 } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  Subscription
+} from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
@@ -23,6 +30,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
   debounceTime,
+  distinctUntilChanged,
   first,
   map,
   mapTo,
@@ -33,7 +41,7 @@ import {
 } from 'rxjs/operators';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
@@ -43,10 +51,11 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { supportedCrossChainSwapBlockchains } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { compareTokens } from '@shared/utils/utils';
 
 type ComponentInput = {
-  // eslint-disable-next-line rxjs/finnish
-  tokens: Observable<AvailableTokenAmount[]>;
+  tokens$: Observable<AvailableTokenAmount[]>;
+  favoriteTokens$: Observable<AvailableTokenAmount[]>;
   formType: 'from' | 'to';
   currentBlockchain: BLOCKCHAIN_NAME;
   form: FormGroup<ISwapFormInput>;
@@ -98,14 +107,24 @@ export class TokensSelectComponent implements OnInit {
   private tokens$: Observable<AvailableTokenAmount[]>;
 
   /**
-   * Contains default tokens to display.
+   * List of available favorite tokens.
    */
-  public tokensToShow$: BehaviorSubject<AvailableTokenAmount[]>;
+  private favoriteTokens$: Observable<AvailableTokenAmount[]>;
 
   /**
-   * Contains favourite tokens to display.
+   * Contains default tokens to display.
    */
-  public favoriteTokensToShow$: BehaviorSubject<AvailableTokenAmount[]>;
+  private _tokensToShow$: BehaviorSubject<AvailableTokenAmount[]> = new BehaviorSubject([]);
+
+  public readonly tokensToShow$ = this._tokensToShow$.asObservable();
+
+  /**
+   * Contains favorite tokens to display.
+   */
+  private favoriteTokensToShowSubject$: BehaviorSubject<AvailableTokenAmount[]> =
+    new BehaviorSubject([]);
+
+  public readonly favoriteTokensToShow$ = this.favoriteTokensToShowSubject$.asObservable();
 
   /**
    * Current custom token, if user is searching for one.
@@ -128,19 +147,14 @@ export class TokensSelectComponent implements OnInit {
   public tokensListUpdating: boolean;
 
   /**
-   * Query in the search bar.
-   */
-  private _searchQuery: string;
-
-  /**
    * Emits new event to update tokens list using {@link searchQuery}.
    */
-  private readonly searchQuery$: BehaviorSubject<string>;
+  private readonly searchQuery$: BehaviorSubject<string> = new BehaviorSubject('');
 
   /**
    * Emits new event to request tokens from APIs by {@link searchQuery}.
    */
-  private updateTokensByQuery$: Subject<void>;
+  private updateTokensByQuery$: Subject<void> = new Subject();
 
   private updateTokensByQuerySubscription$: Subscription;
 
@@ -158,11 +172,10 @@ export class TokensSelectComponent implements OnInit {
   }
 
   get searchQuery(): string {
-    return this._searchQuery;
+    return this.searchQuery$.value;
   }
 
   set searchQuery(value: string) {
-    this._searchQuery = value;
     this.searchQuery$.next(value);
   }
 
@@ -193,16 +206,8 @@ export class TokensSelectComponent implements OnInit {
     private readonly useTestingModeService: UseTestingModeService
   ) {
     this.searchQueryLoading = false;
-
     this.listType = 'default';
-    this.tokensToShow$ = new BehaviorSubject([]);
-    this.favoriteTokensToShow$ = new BehaviorSubject([]);
     this.tokensListUpdating = false;
-
-    this.searchQuery$ = new BehaviorSubject('');
-    this._searchQuery = '';
-    this.updateTokensByQuery$ = new Subject();
-
     this.initiateContextParams(context.data);
   }
 
@@ -220,7 +225,8 @@ export class TokensSelectComponent implements OnInit {
     this.formType = context.formType;
     this.allowedBlockchains = context.allowedBlockchains;
     this._blockchain = context.currentBlockchain;
-    this.tokens$ = context.tokens;
+    this.tokens$ = context.tokens$;
+    this.favoriteTokens$ = context.favoriteTokens$;
     this.currentlySelectedToken =
       this.form.value[this.formType === 'from' ? 'fromToken' : 'toToken'];
   }
@@ -229,26 +235,35 @@ export class TokensSelectComponent implements OnInit {
    * Inits subscriptions for tokens and searchQuery.
    */
   private initSubscriptions(): void {
-    combineLatest([this.tokensService.favoriteTokens$, this.tokens$])
-      .pipe(takeUntil(this.destroy$))
+    const changeFn = (prev: AvailableTokenAmount[], cur: AvailableTokenAmount[]) =>
+      cur.length === prev.length;
+    combineLatest([
+      this.favoriteTokens$.pipe(distinctUntilChanged(changeFn)),
+      this.tokens$.pipe(distinctUntilChanged(changeFn))
+    ])
+      .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => this.updateTokensList());
 
-    this.searchQuery$
-      .pipe(skip(1), debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => this.updateTokensList());
+    this.searchQuery$.pipe(skip(1), debounceTime(500), takeUntil(this.destroy$)).subscribe(() => {
+      this.updateTokensList(true);
+    });
 
     this.tokensService.tokensNetworkState$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((tokensNetworkState: TokensNetworkState) => {
-        this.tokensNetworkState = tokensNetworkState;
-        this.cdr.markForCheck();
-      });
+      .pipe(
+        watch(this.cdr),
+        tap((tokensNetworkState: TokensNetworkState) => {
+          this.tokensNetworkState = tokensNetworkState;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {});
   }
 
   /**
    * Switches tokens display mode (default or favorite).
    */
   public switchMode(): void {
+    this.searchQuery = '';
     if (this.listType === 'default') {
       this.listType = 'favorite';
     } else {
@@ -285,74 +300,118 @@ export class TokensSelectComponent implements OnInit {
   /**
    * Updates default and favourite tokens lists.
    */
-  private updateTokensList(): void {
-    this.customToken = null;
-
+  private updateTokensList(shouldSearch?: boolean): void {
     if (!this.updateTokensByQuerySubscription$) {
-      // handles search query requests to APIs
-      this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
-        .pipe(
-          tap(() => {
-            this.searchQueryLoading = true;
-            this.cdr.detectChanges();
-          }),
-          switchMap(() => this.tryParseQueryAsBackendTokens()),
-          switchMap(async backendTokens => {
-            if (backendTokens?.length) {
-              return { backendTokens, customToken: null };
-            }
-            const customToken = await this.tryParseQueryAsCustomToken();
-            return { tokens: null, customToken };
-          }),
-          takeUntil(this.destroy$)
-        )
-        .subscribe(({ backendTokens, customToken }) => {
-          if (backendTokens) {
-            this.tokensToShow$.next(backendTokens);
-          } else {
-            this.customToken = customToken;
-          }
-          this.searchQueryLoading = false;
-          this.cdr.markForCheck();
-        });
+      this.handleQuerySubscription();
     }
 
-    this.tokens$.pipe(first()).subscribe(tokens => {
-      const { favoriteTokens } = this.tokensService;
+    if (shouldSearch && this.searchQuery.length && this.listType === 'default') {
+      this.updateTokensByQuery$.next();
+    } else if (this.searchQuery.length && this.listType === 'favorite') {
+      this.filterFavoriteTokens();
+    } else if (this.searchQuery.length && this.listType === 'default') {
+      this.filterDefaultTokens();
+    } else if (!this.searchQuery.length) {
+      this.sortTokens();
+      this.customToken = null;
+    }
+  }
 
-      const currentBlockchainTokens = tokens.filter(
-        (token: AvailableTokenAmount) => token.blockchain === this.blockchain
-      );
-      const sortedAndFilteredTokens = this.filterAndSortTokens(currentBlockchainTokens);
-      const tokensWithFavorite = sortedAndFilteredTokens.map(token => ({
+  /**
+   * Handles search query requests to APIs.
+   */
+  private handleQuerySubscription(): void {
+    if (this.updateTokensByQuerySubscription$) {
+      return;
+    }
+    this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
+      .pipe(
+        tap(() => {
+          this.searchQueryLoading = true;
+          this.cdr.detectChanges();
+        }),
+        switchMap(() => this.tryParseQueryAsBackendTokens()),
+        switchMap(async backendTokens => {
+          if (backendTokens?.length) {
+            const tokensWithFavorite = backendTokens.map(
+              token =>
+                ({
+                  ...token,
+                  favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
+                    compareTokens(token, favoriteToken)
+                  )
+                } as AvailableTokenAmount)
+            );
+            return { backendTokens: tokensWithFavorite, customToken: null };
+          }
+          const customToken = await this.tryParseQueryAsCustomToken();
+          return { tokens: null, customToken };
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ backendTokens, customToken }) => {
+        if (backendTokens) {
+          this._tokensToShow$.next(backendTokens);
+        } else if (customToken) {
+          this.customToken = customToken;
+        } else {
+          this._tokensToShow$.next([]);
+        }
+        this.searchQueryLoading = false;
+        this.cdr.markForCheck();
+      });
+  }
+
+  /**
+   * Maps default tokens list with favorite.
+   */
+  private filterDefaultTokens(): void {
+    this.favoriteTokens$.pipe(first()).subscribe(favoriteTokens => {
+      const tokens = this._tokensToShow$.value.map(token => ({
         ...token,
-        favorite: favoriteTokens.some(favoriteToken =>
-          TokensService.areTokensEqual(favoriteToken, token)
-        )
+        favorite: favoriteTokens.some(favoriteToken => compareTokens(favoriteToken, token))
       }));
-      const availableFavoriteTokens = tokensWithFavorite.filter(token => token.favorite);
-
-      this.tokensToShow$.next(tokensWithFavorite);
-      this.favoriteTokensToShow$?.next(availableFavoriteTokens);
-      this.tokensListUpdating = false;
-      this.cdr.detectChanges();
-
-      const shouldSearch =
-        (this.listType === 'default' && !sortedAndFilteredTokens.length) ||
-        (this.listType === 'favorite' && !availableFavoriteTokens.length);
-
-      if (shouldSearch && this.searchQuery) {
-        this.updateTokensByQuery$.next();
-      }
+      this._tokensToShow$.next(tokens);
     });
   }
 
   /**
-   * Filters and sorts tokens by comparator.
+   * Filters favorite tokens by blockchain and query.
+   */
+  private filterFavoriteTokens(): void {
+    this.favoriteTokens$.subscribe(favoriteTokens => {
+      const query = this.searchQuery.toLowerCase();
+      const currentBlockchainTokens = favoriteTokens.filter(
+        el => el.blockchain === this.blockchain
+      );
+
+      if (query.startsWith('0x')) {
+        const tokens = currentBlockchainTokens.filter(token =>
+          token.address.toLowerCase().includes(query)
+        );
+        this.favoriteTokensToShowSubject$.next(tokens);
+      } else {
+        const symbolMatchingTokens = currentBlockchainTokens.filter(token =>
+          token.symbol.toLowerCase().includes(query)
+        );
+        const nameMatchingTokens = currentBlockchainTokens.filter(
+          token =>
+            token.name.toLowerCase().includes(query) &&
+            symbolMatchingTokens.every(item => item.address !== token.address)
+        );
+
+        this.favoriteTokensToShowSubject$.next(symbolMatchingTokens.concat(nameMatchingTokens));
+      }
+      this.cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Sorts tokens by comparator.
    * @param tokens Tokens to perform with.
    * @return AvailableTokenAmount[] Filtered and sorted tokens.
    */
-  private filterAndSortTokens(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
+  private sortTokensByComparator(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
       const amountsDelta = b.amount
         .multipliedBy(b.price)
@@ -360,28 +419,7 @@ export class TokensSelectComponent implements OnInit {
         .toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
-
-    const query = this.searchQuery.toLowerCase();
-    if (!query) {
-      return tokens.sort(comparator);
-    }
-
-    if (query.startsWith('0x')) {
-      return tokens.filter(token => token.address.toLowerCase().includes(query)).sort(comparator);
-    }
-
-    const symbolMatchingTokens = tokens
-      .filter(token => token.symbol.toLowerCase().includes(query))
-      .sort(comparator);
-    const nameMatchingTokens = tokens
-      .filter(
-        token =>
-          token.name.toLowerCase().includes(query) &&
-          symbolMatchingTokens.every(item => item.address !== token.address)
-      )
-      .sort(comparator);
-
-    return symbolMatchingTokens.concat(nameMatchingTokens);
+    return tokens.sort(comparator);
   }
 
   /**
@@ -447,7 +485,9 @@ export class TokensSelectComponent implements OnInit {
               blockchainToken.blockchain,
               oppositeToken.blockchain
             ),
-          favorite: false
+          favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
+            compareTokens(favoriteToken, blockchainToken)
+          )
         };
       }
     }
@@ -464,7 +504,8 @@ export class TokensSelectComponent implements OnInit {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
-      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver'
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
+      [BLOCKCHAIN_NAME.FANTOM]: 'fantom'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]
@@ -489,5 +530,40 @@ export class TokensSelectComponent implements OnInit {
       this.tokensListUpdating = true;
       this.tokensService.fetchNetworkTokens(this.blockchain as PAGINATED_BLOCKCHAIN_NAME);
     }
+  }
+
+  /**
+   * Sorts favorite and default lists of tokens.
+   */
+  private sortTokens(): void {
+    forkJoin([this.tokens$.pipe(first()), this.favoriteTokens$.pipe(first())]).subscribe(
+      ([tokens, favoriteTokens]) => {
+        const currentBlockchainTokens = tokens.filter(
+          (token: AvailableTokenAmount) => token.blockchain === this.blockchain
+        );
+        const sortedTokens = this.sortTokensByComparator(currentBlockchainTokens);
+        const tokensWithFavorite = sortedTokens.map(token => ({
+          ...token,
+          amount: token.amount || new BigNumber(NaN),
+          favorite: favoriteTokens.some(favoriteToken =>
+            TokensService.areTokensEqual(favoriteToken, token)
+          )
+        }));
+
+        const currentBlockchainFavoriteTokens = favoriteTokens
+          .filter((token: AvailableTokenAmount) => token.blockchain === this.blockchain)
+          .map(token => ({
+            ...token,
+            favorite: true,
+            amount: token.amount || new BigNumber(NaN)
+          }));
+        const sortedFavoriteTokens = this.sortTokensByComparator(currentBlockchainFavoriteTokens);
+
+        this._tokensToShow$.next(tokensWithFavorite);
+        this.favoriteTokensToShowSubject$.next(sortedFavoriteTokens);
+        this.tokensListUpdating = false;
+        this.cdr.markForCheck();
+      }
+    );
   }
 }

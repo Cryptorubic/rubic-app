@@ -31,6 +31,7 @@ import { SettingsComponent } from './components/header/components/settings/setti
 import { CurrentLanguageComponent } from './components/header/components/current-language/current-language.component';
 import { TutorialsComponent } from './components/header/components/tutorials/tutorials.component';
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
+import { BannerComponent } from './components/header/components/banner/banner.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ThemeSwitcherComponent } from './components/header/components/theme-swi
     SettingsComponent,
     CurrentLanguageComponent,
     TutorialsComponent,
-    ThemeSwitcherComponent
+    ThemeSwitcherComponent,
+    BannerComponent
   ],
   imports: [
     CommonModule,

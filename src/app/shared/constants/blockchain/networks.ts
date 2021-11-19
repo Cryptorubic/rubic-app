@@ -1,6 +1,25 @@
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
+interface NativeCoin {
+  blockchain: BLOCKCHAIN_NAME;
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+}
+
+interface Network {
+  id: number;
+  name: BLOCKCHAIN_NAME;
+  label: string;
+  scannerUrl: string;
+  rpcLink: string;
+  additionalRpcLink: string;
+  imagePath: string;
+  nativeCoin: NativeCoin;
+}
+
 export default [
   {
     id: 1,
@@ -103,6 +122,7 @@ export default [
   {
     id: 43114,
     name: BLOCKCHAIN_NAME.AVALANCHE,
+    label: 'Avalanche',
     scannerUrl: 'https://snowtrace.io/',
     rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
     additionalRpcLink: '',
@@ -118,6 +138,7 @@ export default [
   {
     id: 1285,
     name: BLOCKCHAIN_NAME.MOONRIVER,
+    label: 'Moonriver',
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
     rpcLink: 'https://rpc.moonriver.moonbeam.network',
     additionalRpcLink: '',
@@ -127,6 +148,22 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'MOVR',
       symbol: 'MOVR',
+      decimals: 18
+    }
+  },
+  {
+    id: 250,
+    name: BLOCKCHAIN_NAME.FANTOM,
+    label: 'Fantom',
+    scannerUrl: 'https://ftmscan.com',
+    rpcLink: 'https://rpc.ftm.tools',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/fantom.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.FANTOM,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'FTM',
+      symbol: 'FTM',
       decimals: 18
     }
   },
@@ -211,4 +248,4 @@ export default [
       decimals: 18
     }
   }
-] as const;
+] as ReadonlyArray<Network>;

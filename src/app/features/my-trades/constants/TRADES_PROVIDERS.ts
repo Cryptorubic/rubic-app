@@ -69,6 +69,14 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
     name: 'Joe',
     image: `${imageBasePath}joe.png`
   },
+  [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: {
+    name: 'Spookyswap',
+    image: `${imageBasePath}spookyswap.png`
+  },
+  [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: {
+    name: 'Spiritswap',
+    image: `${imageBasePath}spiritswap.png`
+  },
   [INSTANT_TRADES_PROVIDER.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`
