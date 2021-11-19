@@ -15,7 +15,9 @@ export class CoinbaseConfirmModalComponent {
   public availableBlockchains: IBlockchain[] = [
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM),
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.POLYGON),
-    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.FANTOM)
+    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.FANTOM),
+    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.AVALANCHE),
+    BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
   ];
 
   public selectedBlockchain = this.availableBlockchains[0];

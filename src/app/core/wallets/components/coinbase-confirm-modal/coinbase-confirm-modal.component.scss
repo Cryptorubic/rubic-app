@@ -2,13 +2,25 @@
 
 .warning-text {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .networks {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   margin-bottom: 20px;
+
+  column-gap: 20px;
+  row-gap: 20px;
+
+  &__label {
+    text-align: center;
+  }
+
+  &__image {
+    margin-bottom: 10px;
+  }
 
   &__item {
     display: flex;
@@ -16,7 +28,7 @@
     align-items: center;
     justify-content: center;
     width: 150px;
-    height: 60px;
+    padding: 10px 15px;
 
     border-radius: $border-radius-1;
 
