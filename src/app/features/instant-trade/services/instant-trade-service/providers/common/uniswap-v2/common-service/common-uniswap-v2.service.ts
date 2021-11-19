@@ -47,7 +47,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-pu
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
-import InstantTradeTokensWithFeeError from '@core/errors/models/instant-trade/InstantTradeTokensWithFeeError';
+import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -665,7 +665,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       );
     } catch (err) {
       console.error(err);
-      throw new InstantTradeTokensWithFeeError();
+      throw new TokenWithFeeError();
     }
   }
 }
