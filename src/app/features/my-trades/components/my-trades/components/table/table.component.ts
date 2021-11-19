@@ -35,7 +35,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   @Input() loading: boolean;
 
   /**
-   * [REQUIRES] Table data to display.
+   * [REQUIRED] Table data to display.
    */
   @Input() tableData$: Observable<TableRow[]>;
 

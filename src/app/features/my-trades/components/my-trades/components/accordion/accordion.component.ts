@@ -34,7 +34,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   /**
-   * [REQUIRES] Table data to display.
+   * [REQUIRED] Table data to display.
    */
   @Input() tableData$: Observable<TableRow[]>;
 
