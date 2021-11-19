@@ -22,6 +22,7 @@ import {
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -115,6 +116,41 @@ export class TokensApiService {
   }
 
   /**
+   * Fetches static tokens for bridges.
+   * @return BackendToken[] Static tokens for bridge.
+   */
+  private fetchStaticTokens(): BackendToken[] {
+    return [
+      {
+        address: NATIVE_TOKEN_ADDRESS,
+        name: 'Dai Stablecoin',
+        symbol: 'xDAI',
+        decimals: 18,
+        image:
+          'https://api.rubic.exchange/assets/xdai/0x0000000000000000000000000000000000000000/logo.png',
+        rank: 1,
+        blockchain_network: 'xdai',
+        coingecko_id: '0',
+        usd_price: 1,
+        used_in_iframe: false
+      },
+      {
+        address: 'tr7nhqjekqxgtci8q8zy4pl8otszgjlj6t',
+        name: 'Tether USD',
+        symbol: 'USDT',
+        decimals: 6,
+        image:
+          'https://api.rubic.exchange/assets/tron-mainnet/tr7nhqjekqxgtci8q8zy4pl8otszgjlj6t/logo.png',
+        rank: 1,
+        blockchain_network: 'tron-mainnet',
+        coingecko_id: '0',
+        usd_price: 1,
+        used_in_iframe: false
+      }
+    ];
+  }
+
+  /**
    * Fetches basic tokens from backend.
    */
   private fetchBasicTokens(): Observable<List<Token>> {
@@ -133,7 +169,9 @@ export class TokensApiService {
     );
     return forkJoin(requests$).pipe(
       map(results => {
-        return TokensApiService.prepareTokens(results.flatMap(el => el.results));
+        const backendTokens = results.flatMap(el => el.results);
+        const staticTokens = this.fetchStaticTokens();
+        return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
       })
     );
   }
