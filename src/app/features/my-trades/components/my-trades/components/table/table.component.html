@@ -1,10 +1,17 @@
 <table
+  *ngLet="{
+    sorter: sorter$ | async,
+    direction: direction$ | async,
+    visibleData: visibleData$ | async,
+    data: tableData$ | async,
+    totalSize: total$ | async
+  } as table"
   tuiTable
   class="table"
-  [ngClass]="{ table_hidden: loading === false && !(tableData$ | async).length }"
+  [ngClass]="{ table_hidden: loading === false && !table.data.length }"
   [columns]="['Status', 'FromTo', 'Provider', 'Sent', 'Expected', 'Date']"
-  [sorter]="sorter$ | async"
-  [direction]="direction$ | async"
+  [sorter]="table.sorter"
+  [direction]="table.direction"
   (sorterChange)="setSorter$($event)"
   (directionChange)="setDirection$($event)"
 >
@@ -26,23 +33,21 @@
         <div
           class="sort-arrow"
           [class.sort-arrow_green]="
-            (sorter$ | async) === sorters[column.value] && (direction$ | async) === -1
+            table.sorter === sorters[column.value] && table.direction === -1
           "
           inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
         ></div>
         <div
           class="sort-arrow"
-          [class.sort-arrow_green]="
-            (sorter$ | async) === sorters[column.value] && (direction$ | async) === 1
-          "
+          [class.sort-arrow_green]="table.sorter === sorters[column.value] && table.direction === 1"
           inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
         ></div>
       </th>
     </tr>
   </thead>
 
-  <tbody tuiTbody *tuiLet="visibleData$ | async as data" [data]="data">
-    <ng-container *ngFor="let item of data">
+  <tbody tuiTbody [data]="table.visibleData">
+    <ng-container *ngFor="let item of table.visibleData">
       <tr tuiTr *tuiLet="getTableTrade(item) as trade">
         <ng-container *ngIf="trade">
           <td *tuiCell="'Status'" tuiTd class="status">
@@ -210,7 +215,7 @@
     <tr>
       <td [colSpan]="columns.length">
         <tui-table-pagination
-          [total]="total$ | async"
+          [total]="table.totalSize"
           (pageChange)="setPage$($event)"
           (sizeChange)="setSize$($event)"
         ></tui-table-pagination>
