@@ -33,7 +33,6 @@ enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
   WRONG_BLOCKCHAIN = 'Wrong user network',
   NOT_SUPPORTED_BRIDGE = 'Not supported bridge',
-  TRON_WALLET_ADDRESS = 'TRON wallet address is not set',
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
   MULTICHAIN_WALLET = 'Multichain wallets are not supported',
@@ -100,10 +99,6 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Input() set isBridgeNotSupported(value: boolean) {
     this.errorType[ERROR_TYPE.NOT_SUPPORTED_BRIDGE] = value;
-  }
-
-  @Input() set isTronAddressNotSet(value: boolean) {
-    this.errorType[ERROR_TYPE.TRON_WALLET_ADDRESS] = value;
   }
 
   @Input() buttonText = 'Swap';
@@ -183,9 +178,6 @@ export class SwapButtonContainerComponent implements OnInit {
         if (this.formService.outputValue.toAmount?.isFinite()) {
           translateParams = { key: 'errors.InsufficientBalance' };
         }
-        break;
-      case err[ERROR_TYPE.TRON_WALLET_ADDRESS]:
-        translateParams = { key: 'errors.setTronAddress' };
         break;
       case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
         translateParams = { key: 'errors.multichainWallet' };

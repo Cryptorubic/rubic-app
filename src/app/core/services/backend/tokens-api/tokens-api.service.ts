@@ -133,19 +133,6 @@ export class TokensApiService {
         coingecko_id: '0',
         usd_price: 1,
         used_in_iframe: false
-      },
-      {
-        address: 'tr7nhqjekqxgtci8q8zy4pl8otszgjlj6t',
-        name: 'Tether USD',
-        symbol: 'USDT',
-        decimals: 6,
-        image:
-          'https://api.rubic.exchange/assets/tron-mainnet/tr7nhqjekqxgtci8q8zy4pl8otszgjlj6t/logo.png',
-        rank: 1,
-        blockchain_network: 'tron-mainnet',
-        coingecko_id: '0',
-        usd_price: 1,
-        used_in_iframe: false
       }
     ];
   }

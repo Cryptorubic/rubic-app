@@ -63,7 +63,6 @@
     "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
     "chooseSupportedBridge": "選擇支持的網橋",
     "InsufficientBalance": "餘額不足",
-    "setTronAddress": "在設置中設置波場地址",
     "chooseNetworkWallet": "在您的錢包中選擇 {{blockchain}} 網絡",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",

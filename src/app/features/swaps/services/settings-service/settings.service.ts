@@ -18,9 +18,7 @@ export interface ItSettingsForm {
   autoRefresh: boolean;
 }
 
-export interface BridgeSettingsForm {
-  tronAddress: string;
-}
+export interface BridgeSettingsForm {}
 
 export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
@@ -131,9 +129,7 @@ export class SettingsService {
         rubicOptimisation: new FormControl<boolean>(this.defaultItSettings.rubicOptimisation),
         autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh)
       }),
-      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({
-        tronAddress: new FormControl<string>('')
-      }),
+      [SWAP_PROVIDER_TYPE.BRIDGE]: new FormGroup<BridgeSettingsForm>({}),
       [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsForm>({
         autoSlippageTolerance: new FormControl<boolean>(
           this.defaultItSettings.autoSlippageTolerance
