@@ -28,6 +28,7 @@ import {
   MULTICALL_ADDRESSES_TESTNET
 } from 'src/app/core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 
 interface MulticallResponse {
   success: boolean;
@@ -710,5 +711,40 @@ export class Web3Public {
   @Cacheable({ maxAge: 10000 })
   private getGasPrice$(): Observable<string> {
     return from(this.web3.eth.getGasPrice());
+  }
+
+  /**
+   * Tries to execute method of smart-contract.
+   * @param contractAddress Address of smart-contract which method is to be executed.
+   * @param contractAbi Abi of smart-contract which method is to be executed.
+   * @param methodName Method to execute.
+   * @param methodArguments Method's arguments.
+   * @param fromAddress Address, from which transaction will be sent.
+   * @param [options] Additional options.
+   * @param [options.value] Value in Wei to be attached to the transaction.
+   * @param [options.gas] Gas limit to be attached to the transaction.
+   */
+  public async tryExecuteContractMethod(
+    contractAddress: string,
+    contractAbi: AbiItem[],
+    methodName: string,
+    methodArguments: unknown[],
+    fromAddress: string,
+    options: TransactionOptions = {}
+  ): Promise<void | never> {
+    const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
+    try {
+      await contract.methods[methodName](...methodArguments).call({
+        from: fromAddress,
+        ...(options.value && { value: options.value }),
+        ...(options.gas && { gas: options.gas })
+        // ...(options.gasPrice && { gasPrice: options.gasPrice }) doesn't work on mobile
+      });
+      return;
+    } catch (err) {
+      console.error('Method execution error:', err);
+      throw err;
+    }
   }
 }
