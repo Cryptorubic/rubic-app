@@ -103,6 +103,12 @@ export class SwapsService {
             Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
           ))
       );
+      updatedBridgeFavoriteTokenPairsByBlockchainsArray.forEach(
+        item =>
+          (item.tokenPairs = item.tokenPairs.filter(pair =>
+            Object.values(pair.tokenByBlockchain).every(bridgeToken => bridgeToken)
+          ))
+      );
 
       this._bridgeTokenPairsByBlockchainsArray$.next(
         List(updatedBridgeTokenPairsByBlockchainsArray)

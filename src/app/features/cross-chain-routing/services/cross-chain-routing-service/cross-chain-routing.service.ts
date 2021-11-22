@@ -50,6 +50,7 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { SolarBeamMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { CcrTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CcrTradeInfo';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
+import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 
 interface PathAndToAmount {
@@ -61,6 +62,8 @@ interface IndexedPathAndToAmount {
   contractIndex: number;
   pathAndToAmount: PathAndToAmount;
 }
+
+const CACHEABLE_MAX_AGE = 15_000;
 
 @Injectable({
   providedIn: 'root'
@@ -748,21 +751,32 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Checks that in targeted blockchain tokens' pool's balance is enough.
+   * Gets pool's address in target network.
    */
-  private async checkPoolBalance(trade: CrossChainRoutingTrade): Promise<void | never> {
+  @PCacheable({
+    maxAge: CACHEABLE_MAX_AGE
+  })
+  private getPoolAddressInTargetNetwork(trade: CrossChainRoutingTrade): Promise<string> {
     const { toBlockchain, toContractIndex } = trade;
 
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
-    const poolAddress = await web3Public.callContractMethod(
-      contractAddress,
-      this.contractAbi,
-      'blockchainPool'
-    );
+    return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainPool');
+  }
 
+  /**
+   * Checks that in targeted blockchain tokens' pool's balance is enough.
+   */
+  @PCacheable({
+    maxAge: CACHEABLE_MAX_AGE
+  })
+  private async checkPoolBalance(trade: CrossChainRoutingTrade): Promise<void | never> {
+    const { toBlockchain } = trade;
     const secondTransitToken = this.transitTokens[toBlockchain];
+    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+
+    const poolAddress = await this.getPoolAddressInTargetNetwork(trade);
     const poolBalanceAbsolute = await web3Public.getTokenBalance(
       poolAddress,
       secondTransitToken.address
