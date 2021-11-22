@@ -286,7 +286,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     };
   };
 
-  public getEthToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
+  private getEthToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
     trade: UniswapV2Trade
   ) => {
     return {
@@ -300,7 +300,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     };
   };
 
-  public getTokensToEthTradeSupportingFeeData: GetTradeSupportingFeeData = (
+  private getTokensToEthTradeSupportingFeeData: GetTradeSupportingFeeData = (
     trade: UniswapV2Trade
   ) => {
     return {
@@ -311,7 +311,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     };
   };
 
-  public getTokensToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
+  private getTokensToTokensTradeSupportingFeeData: GetTradeSupportingFeeData = (
     trade: UniswapV2Trade
   ) => {
     return {

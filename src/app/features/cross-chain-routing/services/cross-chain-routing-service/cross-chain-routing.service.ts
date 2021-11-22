@@ -51,8 +51,6 @@ import { SolarBeamMoonRiverService } from '@features/instant-trade/services/inst
 import { CcrTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CcrTradeInfo';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
-import CrossChainTokensWithFeeWarning from '@core/errors/models/cross-chain-routing/CrossChainTokensWithFeeWarning';
-import { UniswapV2Trade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/UniswapV2Trade';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 
 interface PathAndToAmount {
@@ -882,59 +880,6 @@ export class CrossChainRoutingService {
     };
   }
 
-  /**
-   * Makes test execution of instant trade in source network.
-   */
-  private async tryExecuteInstantTradeInTargetNetwork(
-    trade: CrossChainRoutingTrade
-  ): Promise<void | never> {
-    const uniswapProvider = this.uniswapV2Providers[trade.toBlockchain][trade.toContractIndex];
-    const uniswapGetTradeSupportingFeeData = Web3Public.isNativeAddress(trade.tokenOut.address)
-      ? uniswapProvider.getTokensToEthTradeSupportingFeeData
-      : uniswapProvider.getTokensToTokensTradeSupportingFeeData;
-
-    // uniswap trade arguments
-    const secondTransitTokenAmountAbsolute = Web3Public.toWei(
-      trade.secondTransitTokenAmount,
-      this.transitTokens[trade.toBlockchain].decimals
-    );
-
-    const slippageTolerance = this.settings.slippageTolerance / 100;
-    const tokenOutMinAbsolute = Web3Public.toWei(
-      trade.tokenOutAmount.multipliedBy(1 - slippageTolerance),
-      trade.tokenOut.decimals
-    );
-
-    const poolAddress = await this.getPoolAddressInTargetNetwork(trade);
-
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes
-
-    const uniswapTrade: UniswapV2Trade = {
-      amountIn: secondTransitTokenAmountAbsolute,
-      amountOutMin: tokenOutMinAbsolute,
-      path: trade.secondPath,
-      to: poolAddress,
-      deadline
-    };
-
-    const { contractAddress, contractAbi, methodName, methodArguments } =
-      uniswapGetTradeSupportingFeeData(uniswapTrade);
-
-    try {
-      const web3Public = this.web3PublicService[trade.toBlockchain];
-      await web3Public.tryExecuteContractMethod(
-        contractAddress,
-        contractAbi,
-        methodName,
-        methodArguments,
-        poolAddress
-      );
-    } catch (err) {
-      console.debug(err);
-      throw new CrossChainTokensWithFeeWarning();
-    }
-  }
-
   public createTrade(options: TransactionOptions = {}): Observable<void> {
     return from(
       (async () => {
@@ -945,8 +890,6 @@ export class CrossChainRoutingService {
           trade,
           this.authService.userAddress
         );
-
-        await this.tryExecuteInstantTradeInTargetNetwork(trade);
 
         let transactionHash: string;
         try {
