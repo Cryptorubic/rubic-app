@@ -31,12 +31,12 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   providers: [TuiDestroyService]
 })
 export class AccordionComponent extends AbstractTableDataComponent implements OnInit {
-  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
-
   /**
    * [REQUIRED] Table data to display.
    */
   @Input() tableData$: Observable<TableRow[]>;
+
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
