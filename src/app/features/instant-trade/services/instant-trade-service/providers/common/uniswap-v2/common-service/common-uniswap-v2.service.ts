@@ -47,6 +47,7 @@ import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-pu
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
+import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/TradeContractData';
 import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
 
 interface RecGraphVisitorOptions {
@@ -620,52 +621,63 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       getTradeSupportingFeeDataMethod = this.getTokensToEthTradeSupportingFeeData;
     }
 
-    const {
-      contractAddress,
-      contractAbi,
-      methodName,
-      methodArguments,
-      options: uniswapTradeOptions
-    } = getTradeDataMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
-    await this.web3Public.tryExecuteContractMethod(
-      contractAddress,
-      contractAbi,
-      methodName,
-      methodArguments,
-      this.walletAddress,
-      uniswapTradeOptions
+    const tradeData = getTradeDataMethod(uniswapV2Trade, options, trade.gasLimit, trade.gasPrice);
+    const tradeDataSupportingFee = getTradeSupportingFeeDataMethod(uniswapV2Trade);
+    const methodName = await this.tryExecuteTradeAndGetMethodName(
+      tradeData,
+      tradeDataSupportingFee
     );
 
-    await this.tryExecuteTradeSupportingFee(uniswapV2Trade, getTradeSupportingFeeDataMethod);
-
     return this.web3PrivateService.executeContractMethod(
-      contractAddress,
-      contractAbi,
+      this.contractAddress,
+      this.contractAbi,
       methodName,
-      methodArguments,
-      uniswapTradeOptions
+      tradeData.methodArguments,
+      tradeData.options
     );
   }
 
-  private async tryExecuteTradeSupportingFee(
-    uniswapV2Trade: UniswapV2Trade,
-    getTradeSupportingFeeDataMethod: GetTradeSupportingFeeData
-  ): Promise<void | never> {
-    const { contractAddress, contractAbi, methodName, methodArguments, options } =
-      getTradeSupportingFeeDataMethod(uniswapV2Trade);
+  /**
+   * Makes test calls on uniswap contract and returns one of swap functions for tokens with or without fee.
+   * @param tradeData Trade data for tokens without fee.
+   * @param tradeDataSupportingFee Trade data for tokens with fee.
+   */
+  private async tryExecuteTradeAndGetMethodName(
+    tradeData: TradeContractData,
+    tradeDataSupportingFee: TradeContractData
+  ): Promise<string | never> {
+    const tryExecute = async (methodData: {
+      methodName: string;
+      methodArguments: unknown[];
+      options?: TransactionOptions;
+    }): Promise<boolean> => {
+      try {
+        await this.web3Public.tryExecuteContractMethod(
+          this.contractAddress,
+          this.contractAbi,
+          methodData.methodName,
+          methodData.methodArguments,
+          this.walletAddress,
+          methodData.options
+        );
+        return true;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
+    };
 
-    try {
-      await this.web3Public.tryExecuteContractMethod(
-        contractAddress,
-        contractAbi,
-        methodName,
-        methodArguments,
-        this.walletAddress,
-        options
-      );
-    } catch (err) {
-      console.error(err);
-      throw new TokenWithFeeError();
+    const [isTradeSuccessful, isTradeSupportingFeeSuccessful] = await Promise.all([
+      tryExecute(tradeData),
+      tryExecute(tradeDataSupportingFee)
+    ]);
+
+    if (isTradeSuccessful && isTradeSupportingFeeSuccessful) {
+      return tradeData.methodName;
     }
+    if (isTradeSupportingFeeSuccessful) {
+      return tradeDataSupportingFee.methodName;
+    }
+    throw new TokenWithFeeError();
   }
 }
