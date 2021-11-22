@@ -33,7 +33,7 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
   }
 
   /**
-   * Subscribes to wallet connect deep link url and redirect after getting.
+   * Subscribes to wallet connect deep link url and redirects after getting.
    * @param window Window object to redirect.
    */
   private initDisplaySubscription(window: RubicWindow): void {

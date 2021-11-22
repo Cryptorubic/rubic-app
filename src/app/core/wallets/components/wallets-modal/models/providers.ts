@@ -21,7 +21,7 @@ export interface UnreadTrades {
   [userAddress: string]: number;
 }
 
-export const PROVIDERS_LIST = [
+export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {
     name: 'MetaMask',
     value: WALLET_NAME.METAMASK,
@@ -66,4 +66,4 @@ export const PROVIDERS_LIST = [
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: true
   }
-] as ReadonlyArray<WalletProvider>;
+];

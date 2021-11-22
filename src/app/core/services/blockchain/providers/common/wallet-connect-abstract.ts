@@ -1,5 +1,4 @@
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
@@ -22,11 +21,9 @@ export abstract class WalletConnectAbstractProvider extends PrivateProvider {
 
   private selectedChain: string;
 
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onAddressChanges$: BehaviorSubject<string>;
+  private readonly onAddressChanges$: BehaviorSubject<string>;
 
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
+  private readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
 
   get isInstalled(): boolean {
     return !!this.core;
@@ -85,9 +82,7 @@ export abstract class WalletConnectAbstractProvider extends PrivateProvider {
   }
 
   public getNetwork(): IBlockchain {
-    return (
-      this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain as BLOCKCHAIN_NAME)
-    );
+    return this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain);
   }
 
   public get name(): WALLET_NAME {
