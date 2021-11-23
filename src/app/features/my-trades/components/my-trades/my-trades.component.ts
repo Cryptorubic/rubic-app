@@ -6,7 +6,7 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
@@ -37,9 +37,7 @@ const DESKTOP_WIDTH = 1240;
 export class MyTradesComponent implements OnInit {
   private readonly tableDataSubject$ = new BehaviorSubject<TableRow[]>(undefined);
 
-  get tableData$(): Observable<TableRow[]> {
-    return this.tableDataSubject$.asObservable();
-  }
+  public readonly tableData$ = this.tableDataSubject$.asObservable();
 
   public loading = true;
 
