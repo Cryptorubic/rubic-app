@@ -5,6 +5,7 @@ import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefine
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 import { TuiManualHintModule } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { SharedModule } from '@shared/shared.module';
 import { NotSupportedNetworkErrorComponent } from './components/not-supported-network-error/not-supported-network-error.component';
 import { InsufficientFundsErrorComponent } from './components/insufficient-funds-error/insufficient-funds-error.component';
 import { MetamaskErrorComponent } from './components/metamask-error/metamask-error.component';
@@ -14,6 +15,7 @@ import { OverQueryLimitErrorComponent } from './components/over-query-limit-erro
 import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-overflow-error/max-gas-price-overflow-error.component';
 import { InsufficientFundsCcrErrorComponent } from './components/insufficient-funds-ccr-error/insufficient-funds-ccr-error.component';
 import { InsufficientFundsOneinchErrorComponent } from './components/insufficient-funds-oneinch-error/insufficient-funds-oneinch-error.component';
+import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/token-with-fee-error.component';
 
 @NgModule({
   declarations: [
@@ -27,9 +29,10 @@ import { InsufficientFundsOneinchErrorComponent } from './components/insufficien
     MaxGasPriceOverflowErrorComponent,
     UnknownErrorComponent,
     InsufficientFundsCcrErrorComponent,
-    InsufficientFundsOneinchErrorComponent
+    InsufficientFundsOneinchErrorComponent,
+    TokenWithFeeErrorComponent
   ],
-  imports: [CommonModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
+  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
   entryComponents: [
     UndefinedErrorComponent,
     NotSupportedNetworkErrorComponent,
