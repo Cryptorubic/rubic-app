@@ -103,6 +103,9 @@ export class WalletConnectProvider extends PrivateProvider {
     return WALLET_NAME.WALLET_CONNECT;
   }
 
+  /**
+   * Gets detailed provider name with peer meta information.
+   */
   public get detailedWalletName(): string {
     return `${this.name} (${this.core.connector.peerMeta.name})`;
   }

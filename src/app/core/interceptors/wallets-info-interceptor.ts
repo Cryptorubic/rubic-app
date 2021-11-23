@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
-type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface EndpointData {
   route: string;
-  methods: Set<HttpRequestType>;
+  methods: Set<HttpMethod>;
 }
 
 interface WalletInfo {
@@ -46,25 +46,32 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
   }
 
   intercept(httpRequest: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (!httpRequest.url.includes(this.DOMAIN_SUBSTRING)) {
-      return next.handle(httpRequest);
-    }
-
-    if (this.isTransactionOperation(httpRequest)) {
+    if (
+      httpRequest.url.includes(this.DOMAIN_SUBSTRING) &&
+      this.isTransactionOperation(httpRequest)
+    ) {
       return next.handle(this.addWalletInfoToRequest(httpRequest));
     }
-
     return next.handle(httpRequest);
   }
 
+  /**
+   * Checks if request is create transaction operation.
+   * @param request Pending http request.
+   * @return boolean Is request create transaction or not.
+   */
   private isTransactionOperation(request: HttpRequest<unknown>): boolean {
     return this.endpoints.some(
       endpoint =>
-        request.url.includes(endpoint.route) &&
-        endpoint.methods.has(request.method as HttpRequestType)
+        request.url.includes(endpoint.route) && endpoint.methods.has(request.method as HttpMethod)
     );
   }
 
+  /**
+   * Adds wallet info to create transaction request body.
+   * @param request Pending request.
+   * @return HttpRequest<unknown> New request with appended body params.
+   */
   private addWalletInfoToRequest(request: HttpRequest<unknown>): HttpRequest<unknown> {
     const walletsInfo: WalletInfo = {
       walletName: this.providerConnectorService.provider.detailedWalletName,
