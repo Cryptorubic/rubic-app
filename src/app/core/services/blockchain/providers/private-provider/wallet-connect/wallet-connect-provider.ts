@@ -103,6 +103,10 @@ export class WalletConnectProvider extends PrivateProvider {
     return WALLET_NAME.WALLET_CONNECT;
   }
 
+  public get detailedWalletName(): string {
+    return `${this.name} (${this.core.connector.peerMeta.name})`;
+  }
+
   public async activate(): Promise<void> {
     try {
       const [address] = await this.core.enable();

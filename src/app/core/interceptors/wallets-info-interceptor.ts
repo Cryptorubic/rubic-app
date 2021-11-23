@@ -1,12 +1,19 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface EndpointData {
   route: string;
   methods: Set<HttpRequestType>;
+}
+
+interface WalletInfo {
+  walletName: string;
+  deviceType: 'mobile' | 'desktop';
 }
 
 /**
@@ -18,15 +25,18 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
 
   private readonly endpoints: EndpointData[];
 
-  constructor() {
+  constructor(
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
+    private readonly providerConnectorService: ProviderConnectorService
+  ) {
     this.endpoints = [
       {
         route: '/api/bridges/transactions',
-        methods: new Set(['POST', 'PUT', 'PATCH'])
+        methods: new Set(['POST'])
       },
       {
         route: '/api/instant_trades/',
-        methods: new Set(['POST', 'PATCH'])
+        methods: new Set(['POST'])
       },
       {
         route: '/api/trades/',
@@ -41,7 +51,7 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
     }
 
     if (this.isTransactionOperation(httpRequest)) {
-      return next.handle(WalletsInfoInterceptor.addWalletInfoToRequest(httpRequest));
+      return next.handle(this.addWalletInfoToRequest(httpRequest));
     }
 
     return next.handle(httpRequest);
@@ -55,9 +65,13 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
     );
   }
 
-  private static addWalletInfoToRequest(request: HttpRequest<unknown>): HttpRequest<unknown> {
+  private addWalletInfoToRequest(request: HttpRequest<unknown>): HttpRequest<unknown> {
+    const walletsInfo: WalletInfo = {
+      walletName: this.providerConnectorService.provider.detailedWalletName,
+      deviceType: this.isMobile ? 'mobile' : 'desktop'
+    };
     return request.clone({
-      body: { ...(request.body as object), hello: 'world' }
+      body: { ...(request.body as object), ...walletsInfo }
     });
   }
 }

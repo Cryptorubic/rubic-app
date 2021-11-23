@@ -26,6 +26,10 @@ export abstract class PrivateProvider {
    */
   abstract get name(): WALLET_NAME;
 
+  get detailedWalletName(): string {
+    return this.name;
+  }
+
   /**
    * current selected wallet address
    * @return current selected wallet address or undefined if isActive is false
