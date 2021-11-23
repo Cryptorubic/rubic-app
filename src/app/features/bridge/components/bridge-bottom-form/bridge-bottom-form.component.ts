@@ -97,8 +97,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public toWalletAddress: string;
 
-  public tronAddress: string;
-
   public needApprove: boolean;
 
   private _tradeStatus: TRADE_STATUS;
@@ -177,13 +175,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsService.bridgeValueChanges
-      .pipe(startWith(this.settingsService.bridgeValue), takeUntil(this.destroy$))
-      .subscribe(settings => {
-        this.tronAddress = settings.tronAddress;
-        this.setToWalletAddress();
-      });
-
     this.authService
       .getCurrentUser()
       .pipe(
@@ -214,12 +205,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setToWalletAddress(): void {
-    const { toBlockchain } = this.swapFormService.inputValue;
-    if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
-      this.toWalletAddress = this.tronAddress;
-    } else {
-      this.toWalletAddress = this.authService.userAddress;
-    }
+    this.toWalletAddress = this.authService.userAddress;
   }
 
   private async conditionalCalculate(): Promise<void> {

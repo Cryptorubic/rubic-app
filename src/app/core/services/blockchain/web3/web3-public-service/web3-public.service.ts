@@ -44,8 +44,6 @@ export class Web3PublicService {
 
   public [BLOCKCHAIN_NAME.FANTOM]: Web3Public;
 
-  public readonly [BLOCKCHAIN_NAME.TRON]: Web3Public = null;
-
   public readonly [BLOCKCHAIN_NAME.XDAI]: Web3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Web3Public = null;

@@ -63,7 +63,6 @@
     "cancelDeadline": "Ваша транзакция была отменена, поскольку срок транзакции истек. Пожалуйста, увеличьте срок транзакции или количество газа.",
     "chooseSupportedBridge": "Выберите поддерживаемый мост",
     "InsufficientBalance": "Баланс недостаточен",
-    "setTronAddress": "Задайте Адрес Tron в настройках",
     "chooseNetworkWallet": "Выберите {{blockchain}} сеть в вашем кошельке",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",

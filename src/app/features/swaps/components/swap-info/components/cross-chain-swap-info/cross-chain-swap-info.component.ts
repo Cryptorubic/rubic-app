@@ -22,7 +22,6 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.XDAI,
-  BLOCKCHAIN_NAME.TRON,
   BLOCKCHAIN_NAME.ETHEREUM_TESTNET
 ] as const;
 
@@ -67,7 +66,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
       [BLOCKCHAIN_NAME.POLYGON]: 'Polygon',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'Avalanche',
       [BLOCKCHAIN_NAME.XDAI]: 'Xdai',
-      [BLOCKCHAIN_NAME.TRON]: 'Tron',
       [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: 'Kovan'
     };
 
@@ -83,19 +81,12 @@ export class CrossChainSwapInfoComponent implements OnInit {
       this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
         startWith(this.swapFormService.inputValue.toBlockchain)
       ),
-      this.authService.getCurrentUser(),
-      this.settingsService.bridge.controls.tronAddress.valueChanges.pipe(
-        startWith(this.settingsService.bridgeValue.tronAddress)
-      )
+      this.authService.getCurrentUser()
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([toBlockchain, user, tronAddress]) => {
+      .subscribe(([toBlockchain, user]) => {
         this.toBlockchain = toBlockchain as SupportedBlockchain;
-        if (this.toBlockchain === BLOCKCHAIN_NAME.TRON) {
-          this.toWalletAddress = tronAddress;
-        } else {
-          this.toWalletAddress = user?.address;
-        }
+        this.toWalletAddress = user?.address;
 
         this.cdr.markForCheck();
       });

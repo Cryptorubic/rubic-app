@@ -63,7 +63,6 @@
     "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",
     "chooseSupportedBridge": "지원되는 브리지 선택",
     "InsufficientBalance": "잔액 불충분",
-    "setTronAddress": "설정에서 TRON 주소 설정",
     "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
