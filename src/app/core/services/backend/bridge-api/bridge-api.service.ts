@@ -31,7 +31,7 @@ export class BridgeApiService {
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
     XDAI: BLOCKCHAIN_NAME.XDAI,
-    TRON: DEPRECATED_BLOCKCHAIN_NAME.TRON
+    TRX: DEPRECATED_BLOCKCHAIN_NAME.TRON
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
