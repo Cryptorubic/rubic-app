@@ -24,7 +24,6 @@ export class BridgeApiService {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
-    TRX: BLOCKCHAIN_NAME.TRON,
     XDAI: BLOCKCHAIN_NAME.XDAI
   };
 
@@ -82,27 +81,6 @@ export class BridgeApiService {
       },
       date: new Date(trade.updateTime)
     };
-  }
-
-  /**
-   * Makes POST request to add transaction to database.
-   * @param binanceTransactionId ID of transaction in BSC.
-   * @param ethSymbol From token symbol.
-   * @param bscSymbol To token symbol.
-   */
-  public postPanamaTransaction(
-    binanceTransactionId: string,
-    ethSymbol: string,
-    bscSymbol: string
-  ): Promise<void> {
-    const body = {
-      type: 'panama',
-      transaction_id: binanceTransactionId,
-      ethSymbol,
-      bscSymbol
-    };
-
-    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**

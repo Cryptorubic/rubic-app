@@ -54,14 +54,6 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.TRON]: {
-    baseUrl: 'https://tronscan.org/#/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token20/',
-    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.XDAI]: {
     baseUrl: 'https://blockscout.com/xdai/mainnet/',
     nativeCoinUrl: '',

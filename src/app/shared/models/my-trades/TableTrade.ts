@@ -11,9 +11,14 @@ export interface TableToken {
   address?: string;
 }
 
+export enum DEPRECATED_PROVIDER {
+  PANAMA = 'panama'
+}
+
 export type TableProvider =
   | INSTANT_TRADES_PROVIDER
   | BRIDGE_PROVIDER
+  | DEPRECATED_PROVIDER
   | 'CROSS_CHAIN_ROUTING_PROVIDER'
   | 'GAS_REFUND_PROVIDER';
 

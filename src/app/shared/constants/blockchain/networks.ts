@@ -89,22 +89,6 @@ export default [
     }
   },
   {
-    id: NaN,
-    name: BLOCKCHAIN_NAME.TRON,
-    label: 'Tron',
-    scannerUrl: '',
-    rpcLink: '',
-    additionalRpcLink: '',
-    imagePath: 'assets/images/icons/coins/tron.svg',
-    nativeCoin: {
-      blockchain: BLOCKCHAIN_NAME.TRON,
-      address: NATIVE_TOKEN_ADDRESS,
-      name: 'Tron',
-      symbol: 'TRON',
-      decimals: 18
-    }
-  },
-  {
     id: 1666600000,
     name: BLOCKCHAIN_NAME.HARMONY,
     scannerUrl: 'https://explorer.harmony.one/#/',

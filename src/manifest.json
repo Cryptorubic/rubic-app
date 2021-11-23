@@ -1,7 +1,7 @@
 {
   "short_name": "Rubic",
   "name": "Rubic - Trading ReDefined",
-  "description": "Rubic is a multichain DEX aggregator, with instant & cross-chain swaps for Ethereum, BSC, Polygon, Harmony, Tron & xDai, limit orders, fiat on-ramps and more!",
+  "description": "Rubic is a multichain DEX aggregator, with instant & cross-chain swaps for Ethereum, BSC, Polygon, Harmony & xDai, limit orders, fiat on-ramps and more!",
   "icons": [
     {
       "src": "./assets/favicon/google-touch-icon-512.png",
