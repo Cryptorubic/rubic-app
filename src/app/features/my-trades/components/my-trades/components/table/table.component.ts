@@ -30,14 +30,14 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent extends AbstractTableDataComponent implements OnInit {
-  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
-
   @Input() loading: boolean;
 
   /**
    * [REQUIRED] Table data to display.
    */
   @Input() tableData$: Observable<TableRow[]>;
+
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
