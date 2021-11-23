@@ -1,7 +1,7 @@
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 
-export type BridgeBlockchainApi = 'ETH' | 'BSC' | 'POL' | 'XDAI';
+export type BridgeBlockchainApi = 'ETH' | 'BSC' | 'POL' | 'XDAI' | 'TRON';
 
 export interface BridgeTableTradeApi {
   transaction_id: string;
