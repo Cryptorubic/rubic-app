@@ -63,7 +63,6 @@
     "cancelDeadline": "Su transacción se ha revertido porque la fecha límite de la transacción ha expirado. Intente aumentar el tiempo límite de la transacción o la cantidad de gas.",
     "chooseSupportedBridge": "Elija un puente compatible",
     "InsufficientBalance": "Saldo insuficiente",
-    "setTronAddress": "Establecer la dirección TRON en la configuración",
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
@@ -104,11 +103,11 @@
       },
       "2": {
         "title": "Multichain support",
-        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)."
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain & Polygon)."
       },
       "3": {
         "title": "Cross-chain swaps",
-        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
+        "description": "Complete swaps between these networks: BSC <-> Ethereum and Polygon <-> Ethereum."
       },
       "4": {
         "title": "Faucet",
@@ -506,7 +505,8 @@
       "searchPlaceholder": "Buscar nombre o pegar dirección",
       "noSearchData": "Nada que mostrar",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list"
+      "backToTokens": "back to whole tokens list",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Conectar billetera",
@@ -588,10 +588,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver ahora está disponible para intercambios multicadena y en cadena.",
+    "defaultText": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 9.500 tokens en Ethereum, BSC, Polygon y Avalanche.",
+    "customText": "Fantom ahora está disponible para intercambios multicadena y en cadena.",
     "link": "Pruébalo hoy!"
   },
-  "buyToken": "Comprar MOVR",
   "volume": {
     "title": "Volumen de transacciones acumuladas",
     "instantTrades": "Swaps",
@@ -606,5 +606,9 @@
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Comprar RBC",
+    "custom": "Comprar FTM"
   }
 }

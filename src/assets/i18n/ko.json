@@ -63,7 +63,6 @@
     "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",
     "chooseSupportedBridge": "지원되는 브리지 선택",
     "InsufficientBalance": "잔액 불충분",
-    "setTronAddress": "설정에서 TRON 주소 설정",
     "chooseNetworkWallet": "지갑에서 {{blockchain}} 네트워크를 선택하세요",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
@@ -506,7 +505,8 @@
       "searchPlaceholder": "이름 검색 또는 주소 붙여 넣기",
       "noSearchData": "표시 할 내용 없음",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list"
+      "backToTokens": "back to whole tokens list",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "지갑 연결",
@@ -588,10 +588,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
+    "defaultText": "Rubic Multi-Chain이 출시되었습니다! Ethereum, BSC, Polygon 및 Avalanche에서 9,500개의 토큰을 교환하십시오.",
+    "customText": "Fantom는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
     "link": "오늘 시도!"
   },
-  "buyToken": "MOVR 구매",
   "volume": {
     "title": "누적 거래량",
     "instantTrades": "Swaps",
@@ -606,5 +606,9 @@
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "RBC 구매",
+    "custom": "FTM 구매"
   }
 }

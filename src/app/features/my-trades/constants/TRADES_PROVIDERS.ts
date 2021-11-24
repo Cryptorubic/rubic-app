@@ -1,6 +1,6 @@
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { TableProvider } from '@shared/models/my-trades/TableTrade';
+import { TableProvider, DEPRECATED_PROVIDER } from '@shared/models/my-trades/TableTrade';
 
 type Provider = {
   name: string;
@@ -10,10 +10,6 @@ type Provider = {
 const imageBasePath = 'assets/images/icons/providers/';
 
 const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
-  [BRIDGE_PROVIDER.PANAMA]: {
-    name: 'Panama',
-    image: `${imageBasePath}panama.svg`
-  },
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
@@ -69,6 +65,14 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
     name: 'Joe',
     image: `${imageBasePath}joe.png`
   },
+  [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: {
+    name: 'Spookyswap',
+    image: `${imageBasePath}spookyswap.png`
+  },
+  [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: {
+    name: 'Spiritswap',
+    image: `${imageBasePath}spiritswap.png`
+  },
   [INSTANT_TRADES_PROVIDER.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`
@@ -93,9 +97,17 @@ const GAS_REFUND_PROVIDER: Provider = {
   image: `${imageBasePath}gas-refund.svg`
 };
 
+const DEPRECATED_PROVIDERS: Record<DEPRECATED_PROVIDER, Provider> = {
+  [DEPRECATED_PROVIDER.PANAMA]: {
+    name: 'Panama',
+    image: `${imageBasePath}panama.svg`
+  }
+};
+
 export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDERS,
+  ...DEPRECATED_PROVIDERS,
   CROSS_CHAIN_ROUTING_PROVIDER,
   GAS_REFUND_PROVIDER
 };

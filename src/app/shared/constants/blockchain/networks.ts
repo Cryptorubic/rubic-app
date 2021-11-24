@@ -1,6 +1,25 @@
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
+interface NativeCoin {
+  blockchain: BLOCKCHAIN_NAME;
+  address: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+}
+
+interface Network {
+  id: number;
+  name: BLOCKCHAIN_NAME;
+  label: string;
+  scannerUrl: string;
+  rpcLink: string;
+  additionalRpcLink: string;
+  imagePath: string;
+  nativeCoin: NativeCoin;
+}
+
 export default [
   {
     id: 1,
@@ -24,9 +43,8 @@ export default [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://damp-old-resonance.bsc.quiknode.pro/',
-    additionalRpcLink:
-      'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    rpcLink: 'https://old-spring-bird.bsc.quiknode.pro/',
+    additionalRpcLink: 'https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/bsc/mainnet',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -70,22 +88,6 @@ export default [
     }
   },
   {
-    id: NaN,
-    name: BLOCKCHAIN_NAME.TRON,
-    label: 'Tron',
-    scannerUrl: '',
-    rpcLink: '',
-    additionalRpcLink: '',
-    imagePath: 'assets/images/icons/coins/tron.svg',
-    nativeCoin: {
-      blockchain: BLOCKCHAIN_NAME.TRON,
-      address: NATIVE_TOKEN_ADDRESS,
-      name: 'Tron',
-      symbol: 'TRON',
-      decimals: 18
-    }
-  },
-  {
     id: 1666600000,
     name: BLOCKCHAIN_NAME.HARMONY,
     scannerUrl: 'https://explorer.harmony.one/#/',
@@ -103,6 +105,7 @@ export default [
   {
     id: 43114,
     name: BLOCKCHAIN_NAME.AVALANCHE,
+    label: 'Avalanche',
     scannerUrl: 'https://snowtrace.io/',
     rpcLink: 'https://api.avax.network/ext/bc/C/rpc',
     additionalRpcLink: '',
@@ -118,6 +121,7 @@ export default [
   {
     id: 1285,
     name: BLOCKCHAIN_NAME.MOONRIVER,
+    label: 'Moonriver',
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
     rpcLink: 'https://rpc.moonriver.moonbeam.network',
     additionalRpcLink: '',
@@ -127,6 +131,22 @@ export default [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'MOVR',
       symbol: 'MOVR',
+      decimals: 18
+    }
+  },
+  {
+    id: 250,
+    name: BLOCKCHAIN_NAME.FANTOM,
+    label: 'Fantom',
+    scannerUrl: 'https://ftmscan.com',
+    rpcLink: 'https://rpc.ftm.tools',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/fantom.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.FANTOM,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'FTM',
+      symbol: 'FTM',
       decimals: 18
     }
   },
@@ -211,4 +231,4 @@ export default [
       decimals: 18
     }
   }
-] as const;
+] as ReadonlyArray<Network>;

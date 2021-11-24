@@ -29,12 +29,6 @@ export const blockchainsList: BlockchainItem[] = [
     id: 100
   },
   {
-    symbol: BLOCKCHAIN_NAME.TRON,
-    visibleName: 'Tron',
-    image: `${imageBaseSrc}tron.svg`,
-    id: null
-  },
-  {
     symbol: BLOCKCHAIN_NAME.HARMONY,
     visibleName: 'Harmony',
     image: `${imageBaseSrc}harmony.svg`,
@@ -51,5 +45,11 @@ export const blockchainsList: BlockchainItem[] = [
     visibleName: 'Moonriver',
     image: `${imageBaseSrc}moonriver.webp`,
     id: 1285
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.FANTOM,
+    visibleName: 'Fantom',
+    image: `${imageBaseSrc}fantom.svg`,
+    id: 250
   }
 ];

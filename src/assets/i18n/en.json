@@ -46,7 +46,7 @@
     "insufficientFunds1inch": "You have not enough amount of {{ nativeToken }} for transfer and gas fee. For transaction enter less amount or top up your {{ nativeToken }} balance.",
     "noQrCode": "Please make sure that you have scanned the QR code.",
     "walletlinkWrongNetwork": "Please make sure that the {{ networkToChoose }} network is selected in the Coinbase application. To change the network in the coinbase application, go to the settings in the bottom panel and select the \"Active Network\" tab.",
-    "noWallet": "You have not connected any wallet",
+    "noWallet": "You have not connected any wallet. Please connect your wallet to be able to use site functionality.",
     "retrievingTokensError": "Error retrieving tokens",
     "wrongToken": "Rubic bridge supports only rubic token.",
     "oneInchQuote": "1inch quote error",
@@ -63,7 +63,6 @@
     "cancelDeadline": "Your transaction has been reverted because the transaction deadline has expired. Please try to increase transaction deadline time or gas amount.",
     "chooseSupportedBridge": "Choose supported bridge",
     "InsufficientBalance": "Insufficient balance",
-    "setTronAddress": "Set TRON address in settings",
     "chooseNetworkWallet": "Choose {{blockchain}} network in your wallet",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
@@ -104,11 +103,11 @@
       },
       "2": {
         "title": "Multichain support",
-        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain, Polygon & TRON)"
+        "description": "Currently supported blockchains: Ethereum, Binance Smart Chain & Polygon)"
       },
       "3": {
         "title": "Cross-chain swaps",
-        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON"
+        "description": "Complete swaps between these networks: BSC <-> Ethereum & Polygon <-> Ethereum"
       },
       "4": {
         "title": "Faucet",
@@ -129,7 +128,7 @@
         "0": "iFrame Widget",
         "1": "Custom routing",
         "2": "Cross-chain swaps",
-        "3": "Multichain Support: Ethereum, Binance Smart Chain, Polygon & TRON networks",
+        "3": "Multichain Support: Ethereum, Binance Smart Chain & Polygon networks",
         "4": "Ability to make crowdsales",
         "5": "Percentage of platform revenue can be regulated",
         "6": "Instant Trades",
@@ -172,8 +171,7 @@
           "data": [
             "Custom Token Support",
             "Custom Bridges Feature",
-            "Custom Routing System",
-            "Cross-chain Solution For TRON"
+            "Custom Routing System"
           ]
         },
         "2": {
@@ -182,7 +180,6 @@
           "done": true,
           "data": [
             "CoinGecko And Coin Market Cap API For ETH<>RBC",
-            "TRON Integration",
             "BNB Faucet",
             "Instant Trades Table",
             "UI Simple Update",
@@ -274,7 +271,7 @@
     "questions": {
       "0": {
         "title": "What is Rubic?",
-        "answer": "Rubic is a multichain DeFi ecosystem, which features cross-chain swaps, instant swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete cross-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as buying MATIC or BNB directly via our Crypto Tap.\n\nAt the moment, Rubic supports trades on Ethereum, Polygon (ex Matic), and Binance Smart Chain networks and cross-chain swaps between Ethereum, Polygon (ex Matic), and Binance Smart Chain, xDai and TRON networks."
+        "answer": "Rubic is a multichain DeFi ecosystem, which features cross-chain swaps, instant swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete cross-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as buying MATIC or BNB directly via our Crypto Tap.\n\nAt the moment, Rubic supports trades on Ethereum, Polygon (ex Matic), and Binance Smart Chain networks and cross-chain swaps between Ethereum, Polygon (ex Matic), and Binance Smart Chain and xDai."
       },
       "1": {
         "title": "Who can use our service?",
@@ -290,7 +287,7 @@
       },
       "4": {
         "title": "Which cryptocurrencies are supported?",
-        "answer": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20),  Binance Smart Chain tokens (BEP-20), and on the Polygon network. For cross-chain swaps Rubic also allows users to transfer their assets between Ethereum, BSC, Polygon, xDai and TRON networks. \nMore blockchains will be implemented soon.\n\nAt the same time, thanks to our partnership, MyWish users can create and manage tokens. We also provide multichain services supported by Ethereum, Tron, EOS, NEO, and Binance Smart Chain.\n"
+        "answer": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20),  Binance Smart Chain tokens (BEP-20), and on the Polygon network. For cross-chain swaps Rubic also allows users to transfer their assets between Ethereum, BSC, Polygon and xDai networks. \nMore blockchains will be implemented soon.\n\nAt the same time, thanks to our partnership, MyWish users can create and manage tokens. We also provide multichain services supported by Ethereum, EOS, NEO, and Binance Smart Chain.\n"
       },
       "5": {
         "title": "Should I list my token before using your service?",
@@ -506,7 +503,8 @@
       "searchPlaceholder": "Search name or paste address",
       "noSearchData": "Nothing to show",
       "noFavoriteData": "You don't have favorite tokens in selected network, ",
-      "backToTokens": "back to whole tokens list"
+      "backToTokens": "back to whole tokens list",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Connect wallet",
@@ -588,10 +586,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver is now available for Multi-Chain and On-Chain Swaps.",
+    "defaultText": "Rubic Cross-Chain has launched! Swap between 9,500 tokens across Ethereum, BSC, Polygon & Avalanche.",
+    "customText": "Fantom is now available for Multi-Chain and On-Chain Swaps.",
     "link": "Try it today!"
   },
-  "buyToken": "Buy MOVR",
   "volume": {
     "title": "Accumulated Transaction Volume",
     "instantTrades": "Swaps",
@@ -606,5 +604,9 @@
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Buy RBC",
+    "custom": "Buy FTM"
   }
 }

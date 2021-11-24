@@ -56,10 +56,16 @@
     }
   }
 
+  &__favorite-container {
+    width: 24px;
+    height: 24px;
+    margin-left: 20px;
+  }
+
   ::ng-deep &__favorite {
     display: flex;
     align-items: center;
-    margin-left: 20px;
+
 
     svg {
       width: 24px;

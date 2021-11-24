@@ -11,6 +11,7 @@
       tuiHintDirection="bottom-right"
       (mouseenter)="hintShown = !token.available && true"
       (mouseleave)="hintShown = false"
+      (toggleFavoriteToken)="toggleFavorite()"
     >
     </app-tokens-list-element>
   </div>

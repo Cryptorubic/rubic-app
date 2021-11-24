@@ -6,27 +6,32 @@ export type TransitTokens = Record<SupportedCrossChainSwapBlockchain, InstantTra
 
 export const transitTokensWithMode: TransitTokens = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
-    address: '0xA4EED63db85311E22dF4473f87CcfC3DaDCFA3E3',
-    decimals: 18,
-    symbol: 'RBC'
+    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    decimals: 6,
+    symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-    address: '0x8E3BCC334657560253B83f08331d85267316e08a',
+    address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
     decimals: 18,
-    symbol: 'BRBC'
+    symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
-    address: '0xc3cFFDAf8F3fdF07da6D5e3A89B8723D5E385ff8',
-    decimals: 18,
-    symbol: 'RBC'
+    address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+    decimals: 6,
+    symbol: 'USDC'
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
-    address: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118',
+    address: '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
     decimals: 6,
-    symbol: 'USDT.e'
+    symbol: 'USDC.e'
   },
   [BLOCKCHAIN_NAME.MOONRIVER]: {
     address: '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d',
+    decimals: 6,
+    symbol: 'USDC'
+  },
+  [BLOCKCHAIN_NAME.FANTOM]: {
+    address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
     decimals: 6,
     symbol: 'USDC'
   }

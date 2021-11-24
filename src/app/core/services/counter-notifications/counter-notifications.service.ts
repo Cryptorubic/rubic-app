@@ -50,13 +50,13 @@ export class CounterNotificationsService {
       .subscribe(this._unreadTrades$);
   }
 
-  public updateUnread(count: number = 1) {
+  public updateUnread(count: number = 1): void {
     const unreadTrades = this._unreadTrades$.getValue();
     this.storeService.setItem(CounterNotificationsService.storageKey, unreadTrades + count);
     this._unreadTrades$.next(unreadTrades + count);
   }
 
-  public resetCounter() {
+  public resetCounter(): void {
     this.storeService.setItem(CounterNotificationsService.storageKey, 0);
     this._unreadTrades$.next(0);
   }

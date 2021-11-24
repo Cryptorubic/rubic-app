@@ -176,7 +176,7 @@ export class MyTradesComponent implements OnInit {
 
           this.refreshTable();
 
-          await this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateTokensBalances();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
@@ -193,7 +193,7 @@ export class MyTradesComponent implements OnInit {
   }
 
   @HostListener('window:resize')
-  private onResize() {
+  private onResize(): void {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
   }
 }

@@ -12,7 +12,7 @@ import { forkJoin, from, of } from 'rxjs';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { CcrTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CcrTradeInfo';
+import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainTradeInfo';
 
 @Component({
   selector: 'app-ccr-swap-info',
@@ -117,7 +117,7 @@ export class CcrSwapInfoComponent implements OnInit {
   /**
    * Sets parameters of currently selected ccr trade.
    */
-  private setTradeInfoParameters(tradeInfo: CcrTradeInfo, nativeCoinPrice: number) {
+  private setTradeInfoParameters(tradeInfo: CrossChainTradeInfo, nativeCoinPrice: number): void {
     this.estimateGasInEth = tradeInfo.estimatedGas;
     this.estimateGasInUsd = this.estimateGasInEth?.multipliedBy(nativeCoinPrice);
 
@@ -136,7 +136,7 @@ export class CcrSwapInfoComponent implements OnInit {
   /**
    * Sets from and to price impacts and sets maximum as current price impact.
    */
-  private setPriceImpact(tradeInfo: CcrTradeInfo): void {
+  private setPriceImpact(tradeInfo: CrossChainTradeInfo): void {
     this.priceImpactFrom = tradeInfo.priceImpactFrom;
     if (this.priceImpactFrom < -PERMITTED_PRICE_DIFFERENCE * 100) {
       this.priceImpactFrom = null;
@@ -169,14 +169,7 @@ export class CcrSwapInfoComponent implements OnInit {
    * Calculates maximum spent and minimum received amounts based on slippage.
    */
   private calculateMaxSentAndMinReceived(): void {
-    const slippage = this.settingsService.crossChainRoutingValue.slippageTolerance;
-
-    const slippageFrom = new BigNumber(100).plus(slippage).dividedBy(100);
-    const { fromAmount } = this.swapFormService.inputValue;
-    this.maximumSent = fromAmount.multipliedBy(slippageFrom);
-
-    const secondTo = new BigNumber(100).minus(slippage).dividedBy(100);
-    const { toAmount } = this.swapFormService.outputValue;
-    this.minimumReceived = toAmount.multipliedBy(secondTo);
+    this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
+    this.maximumSent = this.crossChainRoutingService.calculateTokenInAmountMax();
   }
 }

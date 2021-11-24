@@ -33,6 +33,7 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/InsufficientFundsOneinchError';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -360,14 +361,17 @@ export class CommonOneinchService {
 
   private specifyError(err: unknown, blockchain: BLOCKCHAIN_NAME): never {
     if (err instanceof HttpErrorResponse) {
-      if (err.error.message.includes('cannot estimate')) {
+      if (err.error.message?.includes('cannot estimate')) {
         const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
         const message = `1inch sets increased costs on gas fee. For transaction enter less ${nativeToken} amount or top up your ${nativeToken} balance.`;
         throw new CustomError(message);
       }
-      if (err.error.message.includes('insufficient funds for transfer')) {
+      if (err.error.message?.includes('insufficient funds for transfer')) {
         const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
         throw new InsufficientFundsOneinchError(nativeToken);
+      }
+      if (err.error.description?.includes('cannot estimate')) {
+        throw new TokenWithFeeError();
       }
       throw new CustomError(err.error.message);
     }

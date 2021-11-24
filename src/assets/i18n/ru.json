@@ -63,7 +63,6 @@
     "cancelDeadline": "Ваша транзакция была отменена, поскольку срок транзакции истек. Пожалуйста, увеличьте срок транзакции или количество газа.",
     "chooseSupportedBridge": "Выберите поддерживаемый мост",
     "InsufficientBalance": "Баланс недостаточен",
-    "setTronAddress": "Задайте Адрес Tron в настройках",
     "chooseNetworkWallet": "Выберите {{blockchain}} сеть в вашем кошельке",
     "noEnteredAmount": "Enter an amount",
     "minimumAmount": "Minimum amount is {{amount}} {{token}}",
@@ -506,7 +505,8 @@
       "searchPlaceholder": "Найдите по названию или вставьте адрес",
       "noSearchData": "Нет подходящих данных",
       "noFavoriteData": "Нет избранных токенов в выбранной сети, ",
-      "backToTokens": "вернутся к списку всех токенов"
+      "backToTokens": "вернутся к списку всех токенов",
+      "unauthorized": "User is not authorized. Pleas log in to make tokens favorite."
     },
     "walletsModal": {
       "title": "Подключить кошелёк",
@@ -588,10 +588,10 @@
     }
   },
   "banner": {
-    "text": "Moonriver теперь доступна для Multi-Chain и On-Chain свапов.",
+    "defaultText": "Rubic Multi-Chain запустился! Совершайте обмены между 9,500 токенами между Ethereum, BSC, Polygon и  Avalanche.",
+    "customText": "Fantom теперь доступна для Multi-Chain и On-Chain свапов.",
     "link": "Попробуйте уже сейчас!"
   },
-  "buyToken": "Купить MOVR",
   "volume": {
     "title": "Накопленный Объем Операций",
     "instantTrades": "Swaps",
@@ -606,5 +606,9 @@
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+  },
+  "buyTokens": {
+    "default": "Купить RBC",
+    "custom": "Купить FTM"
   }
 }

@@ -73,7 +73,7 @@ export class SettingsCcrComponent implements OnInit {
     });
   }
 
-  public onPromoCodeChanges(promoCode: PromoCode | null) {
+  public onPromoCodeChanges(promoCode: PromoCode | null): void {
     this.crossChainRoutingForm.patchValue({ promoCode });
   }
 }

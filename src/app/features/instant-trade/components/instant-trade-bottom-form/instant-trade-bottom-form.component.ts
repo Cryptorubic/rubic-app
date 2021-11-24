@@ -75,6 +75,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
   @Output() allowRefreshChange = new EventEmitter<boolean>();
@@ -265,7 +267,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.conditionalCalculate('normal');
   }
 
-  private initiateProviders(blockchain: BLOCKCHAIN_NAME) {
+  private initiateProviders(blockchain: BLOCKCHAIN_NAME): void {
     if (!InstantTradeService.isSupportedBlockchain(blockchain)) {
       this.errorService.catch(new NotSupportedItNetwork());
       return;
@@ -493,7 +495,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   /**
    * Selects best provider controller and updates trade status.
    */
-  private chooseBestController() {
+  private chooseBestController(): void {
     this.sortProviders();
     const bestProvider = this.providerControllers[0];
 
@@ -606,7 +608,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.setSlippageTolerance(this.selectedProvider);
   }
 
-  private setSlippageTolerance(provider: ProviderControllerData) {
+  private setSlippageTolerance(provider: ProviderControllerData): void {
     const providerName = provider.tradeProviderInfo.value;
     if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
       const currentBlockchainDefaultSlippage =
@@ -669,7 +671,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     try {
       await this.instantTradeService.approve(provider.tradeProviderInfo.value, provider.trade);
 
-      await this.tokensService.calculateUserTokensBalances();
+      await this.tokensService.calculateTokensBalances();
 
       if (this.isIframe$) {
         this.needApprove = false;
@@ -737,7 +739,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       });
 
       this.counterNotificationsService.updateUnread();
-      await this.tokensService.calculateUserTokensBalances();
+
+      await this.tokensService.calculateTokensBalances();
 
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();

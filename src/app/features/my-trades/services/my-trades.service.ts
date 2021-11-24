@@ -31,17 +31,9 @@ import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
-
-interface PanamaStatusResponse {
-  data: {
-    depositTxId: string;
-    swapTxId: string;
-  };
-}
 
 interface HashPair {
   fromTransactionHash: string;
@@ -117,14 +109,6 @@ export class MyTradesService {
           .map(trade => this.prepareBridgeData(trade))
           .filter(trade => !!trade);
         const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
-          if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
-            return trade.fromTransactionHash && trade.status !== TRANSACTION_STATUS.CANCELLED
-              ? of({
-                  fromTransactionHash: trade.fromTransactionHash,
-                  toTransactionHash: trade.toTransactionHash
-                })
-              : this.loadPanamaTxHash(trade.transactionId);
-          }
           return of({
             fromTransactionHash: trade.fromTransactionHash,
             toTransactionHash: trade.toTransactionHash
@@ -292,14 +276,5 @@ export class MyTradesService {
           return throwError(err);
         })
       );
-  }
-
-  public loadPanamaTxHash(panamaId: string): Observable<HashPair> {
-    return this.httpClient.get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`).pipe(
-      map((response: PanamaStatusResponse) => ({
-        fromTransactionHash: response.data.depositTxId,
-        toTransactionHash: response.data.swapTxId
-      }))
-    );
   }
 }

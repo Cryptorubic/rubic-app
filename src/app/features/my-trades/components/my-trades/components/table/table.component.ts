@@ -17,11 +17,14 @@ import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import {
+  BLOCKCHAINS,
+  DEPRECATED_BLOCKCHAINS
+} from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/TRANSLATION_STATUS_KEYS';
 import { TableTrade } from '@shared/models/my-trades/TableTrade';
-import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
 
 @Component({
   selector: 'app-table',
@@ -41,7 +44,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
-  public BLOCKCHAINS = BLOCKCHAINS;
+  public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
@@ -62,7 +65,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public readonly sorter$ = this._sorter$.asObservable();
 
-  public setSorter$(comparator: TuiComparator<TableRow>) {
+  public setSorter$(comparator: TuiComparator<TableRow>): void {
     this._sorter$.next(comparator);
   }
 
@@ -70,7 +73,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public readonly direction$ = this._direction$.asObservable();
 
-  public setDirection$(direction: -1 | 1) {
+  public setDirection$(direction: -1 | 1): void {
     this._direction$.next(direction);
   }
 
@@ -78,7 +81,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public readonly page$ = this._page$.asObservable();
 
-  public setPage$(page: number) {
+  public setPage$(page: number): void {
     this._page$.next(page);
   }
 
@@ -86,7 +89,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public readonly size$ = this._size$.asObservable();
 
-  public setSize$(size: number) {
+  public setSize$(size: number): void {
     this._size$.next(size);
   }
 
