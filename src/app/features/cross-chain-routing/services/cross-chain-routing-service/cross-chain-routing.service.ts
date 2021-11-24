@@ -729,7 +729,7 @@ export class CrossChainRoutingService {
     if (trade.firstPath.length === 1) {
       return trade.tokenInAmount;
     }
-    return trade.tokenInAmount.multipliedBy(1 + this.slippageTolerance);
+    return trade.tokenInAmount.multipliedBy(1 + this.slippageTolerance / 2);
   }
 
   /**
@@ -741,7 +741,7 @@ export class CrossChainRoutingService {
     if (trade.secondPath.length === 1) {
       return trade.tokenOutAmount;
     }
-    return trade.tokenOutAmount.multipliedBy(1 - this.slippageTolerance);
+    return trade.tokenOutAmount.multipliedBy(1 - this.slippageTolerance / 2);
   }
 
   /**
