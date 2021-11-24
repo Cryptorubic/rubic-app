@@ -2,16 +2,11 @@ import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import {
-  CcrSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { from, Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
@@ -69,6 +64,14 @@ const CACHEABLE_MAX_AGE = 15_000;
   providedIn: 'root'
 })
 export class CrossChainRoutingService {
+  public static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedCrossChainSwapBlockchain {
+    return !!supportedCrossChainSwapBlockchains.find(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
+  }
+
   private readonly contractAbi: AbiItem[];
 
   private readonly contractAddresses: Record<SupportedCrossChainSwapBlockchain, string[]>;
@@ -79,16 +82,13 @@ export class CrossChainRoutingService {
 
   private numOfBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number[]>;
 
-  private settings: CcrSettingsForm;
-
   private currentCrossChainTrade: CrossChainRoutingTrade;
 
-  public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
-  ): blockchain is SupportedCrossChainSwapBlockchain {
-    return !!supportedCrossChainSwapBlockchains.find(
-      supportedBlockchain => supportedBlockchain === blockchain
-    );
+  /**
+   * Gets slippage, selected in settings, divided by 100%.
+   */
+  private get slippageTolerance(): number {
+    return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
   }
 
   constructor(
@@ -99,7 +99,6 @@ export class CrossChainRoutingService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
-    private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
@@ -116,12 +115,6 @@ export class CrossChainRoutingService {
     this.setToBlockchainsInContract();
     this.contractAddresses = crossChainSwapContractAddresses;
     this.transitTokens = transitTokensWithMode;
-
-    this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue))
-      .subscribe(settings => {
-        this.settings = settings;
-      });
   }
 
   private setUniswapProviders(): void {
@@ -736,8 +729,7 @@ export class CrossChainRoutingService {
     if (trade.firstPath.length === 1) {
       return trade.tokenInAmount;
     }
-    const slippageTolerance = this.settings.slippageTolerance / 100;
-    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
+    return trade.tokenInAmount.multipliedBy(1 + this.slippageTolerance);
   }
 
   /**
@@ -749,8 +741,7 @@ export class CrossChainRoutingService {
     if (trade.secondPath.length === 1) {
       return trade.tokenOutAmount;
     }
-    const slippageTolerance = this.settings.slippageTolerance / 100;
-    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
+    return trade.tokenOutAmount.multipliedBy(1 - this.slippageTolerance);
   }
 
   /**
@@ -907,11 +898,12 @@ export class CrossChainRoutingService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
-    if (this.settings.promoCode?.status === 'accepted') {
+    const settings = this.settingsService.crossChainRoutingValue;
+    if (settings.promoCode?.status === 'accepted') {
       await this.crossChainRoutingApiService.postTrade(
         transactionHash,
         this.currentCrossChainTrade.fromBlockchain,
-        this.settings.promoCode.text
+        settings.promoCode.text
       );
       return;
     }
