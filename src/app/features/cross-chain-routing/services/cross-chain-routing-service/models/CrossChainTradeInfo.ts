@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-export interface CcrTradeInfo {
+export interface CrossChainTradeInfo {
   feePercent: number;
   feeAmount: BigNumber;
   feeTokenSymbol: string;
