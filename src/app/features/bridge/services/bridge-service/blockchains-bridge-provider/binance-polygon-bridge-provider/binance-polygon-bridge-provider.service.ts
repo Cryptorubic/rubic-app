@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -45,7 +45,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   private evoTokenPairs: EvoBridgeTokenPair[];
 
   constructor(
-    private web3PublicService: Web3PublicService,
+    private web3PublicService: PublicBlockchainAdapterService,
     private web3PrivateService: Web3PrivateService,
     private readonly translateService: TranslateService,
     private tokensService: TokensService,

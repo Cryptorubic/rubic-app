@@ -8,7 +8,7 @@ import {
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
@@ -66,7 +66,7 @@ export class ZrxService implements ItProvider {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
@@ -106,7 +106,7 @@ export class ZrxService implements ItProvider {
    */
   private setZrxParams(): void {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    this.web3Public = this.web3PublicService[fromBlockchain];
+    this.web3Public = this.publicBlockchainAdapterService[fromBlockchain];
 
     let blockchain: BLOCKCHAIN_NAME;
     if (this.isTestingMode) {

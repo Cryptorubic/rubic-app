@@ -9,7 +9,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-se
 import { TransactionReceipt } from 'web3-eth';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
@@ -26,7 +26,7 @@ export class EthWethSwapProviderService {
   private contractAddresses: Record<SupportedEthWethSwapBlockchain, string>;
 
   constructor(
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
@@ -61,7 +61,7 @@ export class EthWethSwapProviderService {
     const fromAmount = trade.from.amount;
 
     this.providerConnectorService.checkSettings(blockchain);
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[blockchain];
     await web3Public.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount);

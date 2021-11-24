@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { Web3PublicService } from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME, DEPRECATED_BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from '../models/blockchain/ADDRESS_TYPE';
@@ -133,7 +133,10 @@ const blockchainsScanners = {
 export class ScannerLinkPipe implements PipeTransform {
   private isTestingMode = false;
 
-  constructor(private web3PublicService: Web3PublicService, useTestingMode: UseTestingModeService) {
+  constructor(
+    private web3PublicService: PublicBlockchainAdapterService,
+    useTestingMode: UseTestingModeService
+  ) {
     useTestingMode.isTestingMode.subscribe(value => (this.isTestingMode = value));
   }
 

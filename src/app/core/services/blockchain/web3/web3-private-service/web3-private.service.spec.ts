@@ -10,7 +10,7 @@ import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-p
 import * as config from 'src/test/enviroment.test.json';
 import { PublicProviderService } from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider.service';
 import publicProviderServiceStub from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider-service-stub';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { MetamaskProvider } from 'src/app/core/services/blockchain/providers/private-provider/metamask-provider/metamask-provider';
 
@@ -28,14 +28,14 @@ describe('Web3PrivateService', () => {
         HttpHandler,
         { provide: MetamaskProvider, useValue: providerServiceStub() },
         { provide: PublicProviderService, useValue: publicProviderServiceStub() },
-        Web3PublicService,
+        PublicBlockchainAdapterService,
         CookieService
       ],
       imports: [TranslateModule.forRoot()]
     });
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
-    web3PublicEth = TestBed.inject(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
+    web3PublicEth = TestBed.inject(PublicBlockchainAdapterService)[BLOCKCHAIN_NAME.ETHEREUM];
     service = TestBed.inject(Web3PrivateService);
   });
 

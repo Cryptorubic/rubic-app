@@ -14,7 +14,7 @@ import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_F
 import { from, Observable, of } from 'rxjs';
 import { HEALTHCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
-import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { HttpClient } from '@angular/common/http';
 import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
 import { RpcResponse } from 'src/app/core/services/blockchain/models/RpcResponse';

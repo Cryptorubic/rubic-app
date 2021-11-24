@@ -17,7 +17,7 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
-import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
@@ -67,7 +67,7 @@ export class QueryParamsService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly web3Public: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,

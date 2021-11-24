@@ -9,7 +9,7 @@ import { TokensApiService } from 'src/app/core/services/backend/tokens-api/token
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
@@ -112,7 +112,7 @@ export class TokensService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly errorsService: ErrorsService
@@ -256,7 +256,7 @@ export class TokensService {
         .map(token => token.address)
         .toArray();
 
-      return this.web3PublicService[blockchain].getTokensBalances(
+      return this.publicBlockchainAdapterService[blockchain].getTokensBalances(
         this.userAddress,
         tokensAddresses
       );
@@ -290,7 +290,7 @@ export class TokensService {
    * @return Observable<TokenAmount> Token with balance.
    */
   public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
       ? from(web3Public.getTokenBalance(this.userAddress, address))
       : of(null);
@@ -431,7 +431,7 @@ export class TokensService {
     }
 
     try {
-      const web3Public = this.web3PublicService[token.blockchain];
+      const web3Public = this.publicBlockchainAdapterService[token.blockchain];
       const balanceInWei = await web3Public.getTokenOrNativeBalance(
         this.userAddress,
         token.address
@@ -569,7 +569,7 @@ export class TokensService {
     if (foundToken) {
       return foundToken?.symbol;
     }
-    const web3Public = this.web3PublicService[blockchain];
+    const web3Public = this.publicBlockchainAdapterService[blockchain];
     return web3Public.getTokenSymbol(tokenAddress);
   }
 }

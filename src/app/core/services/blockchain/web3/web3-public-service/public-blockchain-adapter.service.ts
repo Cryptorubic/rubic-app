@@ -25,7 +25,7 @@ export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number]
 @Injectable({
   providedIn: 'root'
 })
-export class Web3PublicService {
+export class PublicBlockchainAdapterService {
   private readonly _nodesChecked$ = new BehaviorSubject<boolean>(false);
 
   private readonly connectionLinks: ConnectionLink[];

@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
 import { Web3PrivateService } from '@core/services/blockchain/web3/web3-private-service/web3-private.service';
-import { Web3PublicService } from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
@@ -41,7 +41,7 @@ export class GasRefundService {
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly authService: AuthService,
     private readonly web3Private: Web3PrivateService,
-    private readonly web3Public: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnector: ProviderConnectorService,
     private readonly testingModeService: UseTestingModeService
   ) {
@@ -164,7 +164,7 @@ export class GasRefundService {
     onTransactionHash?: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const address = this.authService.userAddress;
-    const web3Public = this.web3Public[this.refundBlockchain];
+    const web3Public = this.publicBlockchainAdapterService[this.refundBlockchain];
     const hexRootFromContract = await web3Public.callContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,

@@ -5,7 +5,7 @@ import networks from 'src/app/shared/constants/blockchain/networks';
 import {
   WEB3_SUPPORTED_BLOCKCHAINS,
   Web3SupportedBlockchains
-} from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
+} from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 
 @Injectable({
   providedIn: 'root'

@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -51,7 +51,7 @@ export class BridgeService {
     private readonly binancePolygonProviderService: BinancePolygonBridgeProviderService,
     // bridge providers end
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService
@@ -265,7 +265,7 @@ export class BridgeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
     return web3Public.checkBalance(token, amount, this.authService.user.address);
   }
 }

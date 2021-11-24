@@ -43,7 +43,7 @@ import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
@@ -88,7 +88,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private maxTransitTokens: number;
 
   // Injected services
-  private readonly web3PublicService = inject(Web3PublicService);
+  private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
 
   private readonly web3PrivateService = inject(Web3PrivateService);
 
@@ -128,7 +128,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
     this.blockchain = uniswapConstants.blockchain;
-    this.web3Public = this.web3PublicService[this.blockchain];
+    this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
 
     this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
@@ -137,7 +137,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.web3Public = this.web3PublicService[this.blockchain];
+        this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
 
         this.contractAddress = uniswapConstants.contractAddressNetMode.testnet;
         this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;

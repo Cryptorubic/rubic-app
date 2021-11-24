@@ -3,7 +3,7 @@ import { List } from 'immutable';
 import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { first, tap, timeout } from 'rxjs/operators';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -50,15 +50,15 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
   ) {
     super();
-    this.web3PublicEth = this.web3PublicService[BLOCKCHAIN_NAME.ETHEREUM];
-    this.web3PublicPolygon = this.web3PublicService[BLOCKCHAIN_NAME.POLYGON];
+    this.web3PublicEth = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.ETHEREUM];
+    this.web3PublicPolygon = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.POLYGON];
 
     this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)).subscribe(tokenAmounts => {
       this.getTokensList(tokenAmounts);

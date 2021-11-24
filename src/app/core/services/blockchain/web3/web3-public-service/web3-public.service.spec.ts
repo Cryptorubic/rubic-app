@@ -11,7 +11,7 @@ import {
   XEENUS,
   YEENUS
 } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { PublicProviderService } from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider.service';
 
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
@@ -24,7 +24,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { useTestingModeStub } from 'src/app/core/services/use-testing-mode/use-testing-mode.stub';
 
 describe('Web3PublicService', () => {
-  let service: Web3PublicService;
+  let service: PublicBlockchainAdapterService;
   let originalTimeout: number;
 
   const blockchainName = BLOCKCHAIN_NAME.ETHEREUM;
@@ -39,7 +39,7 @@ describe('Web3PublicService', () => {
         { provide: UseTestingModeService, useValue: useTestingModeStub() }
       ]
     });
-    service = TestBed.inject(Web3PublicService);
+    service = TestBed.inject(PublicBlockchainAdapterService);
   });
 
   beforeAll(() => {

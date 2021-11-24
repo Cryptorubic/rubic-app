@@ -16,7 +16,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
@@ -206,7 +206,7 @@ export class SwapButtonContainerComponent implements OnInit {
     private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly iframeService: IframeService,
     private readonly headerStore: HeaderStore,
@@ -299,7 +299,7 @@ export class SwapButtonContainerComponent implements OnInit {
     let balance = fromToken.amount;
     if (!fromToken.amount.isFinite()) {
       balance = Web3Public.fromWei(
-        await this.web3PublicService[fromToken.blockchain].getTokenOrNativeBalance(
+        await this.publicBlockchainAdapterService[fromToken.blockchain].getTokenOrNativeBalance(
           this.authService.user.address,
           fromToken.address
         ),

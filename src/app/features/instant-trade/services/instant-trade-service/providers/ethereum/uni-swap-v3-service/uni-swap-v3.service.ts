@@ -8,7 +8,7 @@ import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTrad
 import { from, Observable, of } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import {
@@ -79,7 +79,7 @@ export class UniSwapV3Service implements ItProvider {
   private walletAddress: string;
 
   constructor(
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly web3PrivateService: Web3PrivateService,
@@ -91,7 +91,7 @@ export class UniSwapV3Service implements ItProvider {
     this.gasMargin = 1.2;
 
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    this.web3Public = this.web3PublicService[this.blockchain];
+    this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
     this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public);
     this.wethAddress = wethAddressNetMode.mainnet;
 
@@ -110,7 +110,7 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.web3Public = this.web3PublicService[this.blockchain];
+        this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
         this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, true);
         this.wethAddress = wethAddressNetMode.testnet;
       }

@@ -8,7 +8,7 @@ import {
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { from, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
@@ -102,7 +102,7 @@ export class CrossChainRoutingService {
     private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
@@ -151,7 +151,7 @@ export class CrossChainRoutingService {
     contractIndex: number,
     fromToken: BlockchainToken
   ): Promise<boolean> {
-    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
     if (Web3Public.isNativeAddress(fromToken.address)) {
       return false;
     }
@@ -377,7 +377,7 @@ export class CrossChainRoutingService {
     const fromContractAddress = this.contractAddresses[fromBlockchain][0];
 
     const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
-      const firstTransitTokenAmountAbsolute = await this.web3PublicService[
+      const firstTransitTokenAmountAbsolute = await this.publicBlockchainAdapterService[
         fromBlockchain
       ].callContractMethod(
         fromContractAddress,
@@ -462,7 +462,7 @@ export class CrossChainRoutingService {
     const contractAddress = this.contractAddresses[toBlockchain][0];
     const numOfBlockchainInContract = this.numOfBlockchainsInContract[toBlockchain][0];
 
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
     const feeOfToBlockchainAbsolute = await web3Public.callContractMethod(
       contractAddress,
       this.contractAbi,
@@ -488,7 +488,7 @@ export class CrossChainRoutingService {
     const toBlockchainInContract = this.numOfBlockchainsInContract[toBlockchain][0];
     const contractAddress = this.contractAddresses[fromBlockchain][0];
 
-    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
 
     return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainCryptoFee', {
       methodArguments: [toBlockchainInContract]
@@ -514,7 +514,7 @@ export class CrossChainRoutingService {
         walletAddress
       );
 
-      const web3Public = this.web3PublicService[fromBlockchain];
+      const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
       const gasLimit = await web3Public.getEstimatedGas(
         this.contractAbi,
         contractAddress,
@@ -631,8 +631,8 @@ export class CrossChainRoutingService {
 
     const fromContractAddress = this.contractAddresses[fromBlockchain][fromContractIndex];
     const toContractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const fromWeb3Public: Web3Public = this.web3PublicService[fromBlockchain];
-    const toWeb3Public: Web3Public = this.web3PublicService[toBlockchain];
+    const fromWeb3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
+    const toWeb3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
 
     const sourceContractPaused = await fromWeb3Public.callContractMethod(
       fromContractAddress,
@@ -662,7 +662,7 @@ export class CrossChainRoutingService {
     }
 
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
 
     const maxGasPrice = await web3Public.callContractMethod(
       contractAddress,
@@ -687,7 +687,7 @@ export class CrossChainRoutingService {
     const { toBlockchain, toContractIndex } = this.currentCrossChainTrade;
 
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
 
     return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainPool');
   }
@@ -701,7 +701,7 @@ export class CrossChainRoutingService {
   private async checkPoolBalance(): Promise<void | never> {
     const { toBlockchain, secondTransitTokenAmount } = this.currentCrossChainTrade;
     const secondTransitToken = this.transitTokens[toBlockchain];
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
+    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
 
     const poolAddress = await this.getPoolAddressInTargetNetwork();
     const poolBalanceAbsolute = await web3Public.getTokenBalance(
@@ -761,7 +761,8 @@ export class CrossChainRoutingService {
 
     const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
     const tokenInAmountMax = this.calculateTokenInAmountMax();
-    const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
+    const web3PublicFromBlockchain: Web3Public =
+      this.publicBlockchainAdapterService[fromBlockchain];
     await web3PublicFromBlockchain.checkBalance(
       tokenIn,
       tokenInAmountMax,

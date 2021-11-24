@@ -20,7 +20,7 @@ import {
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
@@ -199,7 +199,7 @@ export class TokensSelectComponent implements OnInit {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: ComponentContext,
     private readonly cdr: ChangeDetectorRef,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
@@ -455,7 +455,7 @@ export class TokensSelectComponent implements OnInit {
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     if (this.searchQuery) {
-      const web3Public: Web3Public = this.web3PublicService[this.blockchain];
+      const web3Public: Web3Public = this.publicBlockchainAdapterService[this.blockchain];
 
       if (!Web3Public.isAddressCorrect(this.searchQuery)) {
         return null;
