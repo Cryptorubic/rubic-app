@@ -23,6 +23,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { map } from 'rxjs/operators';
+import { TUI_IS_IOS } from '@taiga-ui/cdk';
 
 interface WCWallets {
   [P: string]: {
@@ -93,7 +94,8 @@ export class ProviderConnectorService {
     private readonly errorService: ErrorsService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly httpService: HttpService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(TUI_IS_IOS) private readonly isIos: boolean
   ) {
     this.web3 = new Web3();
     this.networkChangeSubject$ = new BehaviorSubject<IBlockchain>(null);
@@ -169,6 +171,7 @@ export class ProviderConnectorService {
             this.networkChangeSubject$,
             this.addressChangeSubject$,
             this.errorService,
+            this.isIos,
             this.window
           );
           break;

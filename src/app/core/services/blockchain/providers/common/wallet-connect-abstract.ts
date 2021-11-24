@@ -11,6 +11,8 @@ import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-inf
 import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import Web3 from 'web3';
+import networks from '@shared/constants/blockchain/networks';
+import { IWalletConnectProviderOptions } from '@walletconnect/types';
 
 export abstract class WalletConnectAbstractProvider extends PrivateProvider {
   private isEnabled: boolean;
@@ -48,15 +50,18 @@ export abstract class WalletConnectAbstractProvider extends PrivateProvider {
     chainChange$: BehaviorSubject<IBlockchain>,
     accountChange$: BehaviorSubject<string>,
     errorsService: ErrorsService,
-    core: WalletConnect
+    providerConfig: IWalletConnectProviderOptions
   ) {
     super(errorsService);
     this.isEnabled = false;
-    this.core = core;
+    this.core = new WalletConnect({
+      rpc: this.getNetworksProviders(),
+      ...providerConfig
+    });
     this.onAddressChanges$ = accountChange$;
     this.onNetworkChanges$ = chainChange$;
     // eslint-disable-next-line
-    web3.setProvider(core as any);
+    web3.setProvider(this.core as any);
     this.initSubscriptions();
   }
 
@@ -75,6 +80,20 @@ export abstract class WalletConnectAbstractProvider extends PrivateProvider {
         console.info('Selected account changed to', accounts[0]);
       }
     });
+  }
+
+  /**
+   * Gets RPC links for app networks.
+   */
+  protected getNetworksProviders(): Record<typeof networks[number]['id'], string> {
+    return networks
+      .filter(network => isFinite(network.id))
+      .reduce((prev, cur) => {
+        return {
+          ...prev,
+          [cur.id]: cur.rpcLink
+        };
+      }, {});
   }
 
   public getAddress(): string {
