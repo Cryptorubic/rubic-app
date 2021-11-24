@@ -716,7 +716,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Returns true, if amount of token-in must be multiplied on slippage to be passed as trade argument.
+   * Returns true, if amount of token-in must be multiplied on slippage to calculate maximum sent amount.
    */
   public isTokenInAmountMaxWithSlippage(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
@@ -725,7 +725,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Calculates amount of token-in to be passed as trade argument, based on tokens route and slippage.
+   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
    */
   public calculateTokenInAmountMax(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
@@ -738,7 +738,7 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Calculates amount of token-out to be passed as trade argument, based on tokens route and slippage.
+   * Calculates minimum received amount of token-out, based on tokens route and slippage.
    */
   public calculateTokenOutAmountMin(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
