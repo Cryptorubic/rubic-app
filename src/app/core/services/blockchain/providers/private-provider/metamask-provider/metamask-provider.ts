@@ -103,6 +103,10 @@ export class MetamaskProvider extends PrivateProvider {
     return null;
   }
 
+  public async signPersonal(message: string): Promise<string> {
+    return this.core.eth.personal.sign(message, this.address, undefined);
+  }
+
   public getNetwork(): IBlockchain {
     if (this.isEnabled) {
       return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;

@@ -173,13 +173,14 @@ export class AuthService {
         return;
       }
       const nonce = walletLoginBody.payload.message;
-      const signature = await this.providerConnectorService.signPersonal(nonce);
-      await this.sendSignedNonce(
-        this.providerConnectorService.address,
-        nonce,
-        signature,
-        this.providerConnectorService.provider.name
-      );
+      await this.providerConnectorService.signPersonal(nonce);
+      // @TODO SOLANA.
+      // await this.sendSignedNonce(
+      //   this.providerConnectorService.address,
+      //   nonce,
+      //   signature,
+      //   this.providerConnectorService.provider.name
+      // );
 
       this.currentUser$.next({ address: this.providerConnectorService.address });
       this.isAuthProcess = false;

@@ -89,6 +89,10 @@ export class WalletConnectProvider extends PrivateProvider {
     });
   }
 
+  public async signPersonal(message: string): Promise<string> {
+    return this.core.connector.signPersonalMessage([message, this.address]);
+  }
+
   public getAddress(): string {
     return this.isEnabled && this.selectedAddress;
   }

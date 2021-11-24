@@ -204,7 +204,10 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
   }
 
   private async fetchSupportedTokens(): Promise<EvoContractTokenInBlockchains[]> {
-    const blockchains = [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, BLOCKCHAIN_NAME.POLYGON];
+    const blockchains: EvoBridgeBlockchains[] = [
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      BLOCKCHAIN_NAME.POLYGON
+    ];
     const tokensListPromises = blockchains.map(blockchain =>
       this.web3PublicService[blockchain].callContractMethod<string[]>(
         EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],

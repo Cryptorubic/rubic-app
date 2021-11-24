@@ -63,6 +63,8 @@ export abstract class PrivateProvider {
     this.errorsService = errorsService;
   }
 
+  public abstract signPersonal(message: string): Promise<string>;
+
   /**
    * current selected network name
    * @return current selected network name or undefined if isActive is false

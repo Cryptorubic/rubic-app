@@ -56,16 +56,19 @@ export class Web3PublicService {
 
   public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Web3Public = null;
 
+  // @TODO SOLANA.
+  public readonly [BLOCKCHAIN_NAME.SOLANA]: Web3Public = null;
+
   constructor(
     publicProvider: PublicProviderService,
     private useTestingModeService: UseTestingModeService,
     private readonly httpClient: HttpClient
   ) {
     this.connectionLinks = publicProvider.connectionLinks.filter(connection =>
-      WEB3_SUPPORTED_BLOCKCHAINS.includes(connection.blockchainName as Web3SupportedBlockchains)
+      WEB3_SUPPORTED_BLOCKCHAINS.includes(connection.blockchainName)
     );
     this.connectionLinks.forEach(connection =>
-      this.addWeb3(connection.rpcLink, connection.blockchainName as Web3SupportedBlockchains)
+      this.addWeb3(connection.rpcLink, connection.blockchainName)
     );
 
     this.checkAllRpcProviders();

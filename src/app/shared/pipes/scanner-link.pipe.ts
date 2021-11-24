@@ -117,6 +117,15 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TOKEN]: 'token20/',
     [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  // @TODO SOLANA.
+  [BLOCKCHAIN_NAME.SOLANA]: {
+    baseUrl: 'https://tronscan.org/#/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token20/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
 

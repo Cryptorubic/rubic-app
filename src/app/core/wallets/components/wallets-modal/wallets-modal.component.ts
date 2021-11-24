@@ -134,6 +134,17 @@ export class WalletsModalComponent implements OnInit {
         supportsInHorizontalIframe: false,
         supportsInVerticalIframe: true,
         supportsInVerticalMobileIframe: true
+      },
+      {
+        name: 'Phantom',
+        value: WALLET_NAME.PHANTOM,
+        img: './assets/images/icons/cross.svg',
+        desktopOnly: true,
+        display: true,
+        // @TODO SOLANA.
+        supportsInHorizontalIframe: false,
+        supportsInVerticalIframe: false,
+        supportsInVerticalMobileIframe: false
       }
     ];
   }

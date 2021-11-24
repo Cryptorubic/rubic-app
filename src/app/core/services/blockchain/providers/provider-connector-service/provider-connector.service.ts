@@ -18,6 +18,7 @@ import { WalletLinkProvider } from 'src/app/core/services/blockchain/providers/p
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { PhantomProvider } from '@core/services/blockchain/providers/private-provider/phantom/phantom-provider';
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +86,7 @@ export class ProviderConnectorService {
    * @return The signature.
    */
   public async signPersonal(message: string): Promise<string> {
-    return this.web3.eth.personal.sign(message, this.provider.address, undefined);
+    return this.provider.signPersonal(message);
   }
 
   /**
@@ -145,6 +146,14 @@ export class ProviderConnectorService {
         case WALLET_NAME.WALLET_CONNECT: {
           this.provider = new WalletConnectProvider(
             this.web3,
+            this.networkChangeSubject$,
+            this.addressChangeSubject$,
+            this.errorService
+          );
+          break;
+        }
+        case WALLET_NAME.PHANTOM: {
+          this.provider = new PhantomProvider(
             this.networkChangeSubject$,
             this.addressChangeSubject$,
             this.errorService

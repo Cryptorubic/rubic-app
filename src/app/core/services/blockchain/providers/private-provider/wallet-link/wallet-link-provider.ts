@@ -99,6 +99,10 @@ export class WalletLinkProvider extends PrivateProvider {
     return this.isEnabled && this.selectedAddress;
   }
 
+  public async signPersonal(message: string): Promise<string> {
+    return new Web3(this.core).eth.personal.sign(message, this.address, undefined);
+  }
+
   public getNetwork(): IBlockchain {
     return (
       this.isEnabled &&

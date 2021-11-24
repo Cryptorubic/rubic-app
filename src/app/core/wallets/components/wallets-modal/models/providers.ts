@@ -1,7 +1,8 @@
 export enum WALLET_NAME {
   METAMASK = 'metamask',
   WALLET_LINK = 'walletlink',
-  WALLET_CONNECT = 'walletconnect'
+  WALLET_CONNECT = 'walletconnect',
+  PHANTOM = 'phantom'
 }
 
 export interface WalletProvider {

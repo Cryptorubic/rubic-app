@@ -45,6 +45,7 @@
     "@ngneat/reactive-forms": "^1.7.3",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@solana/web3.js": "^1.30.2",
     "@taiga-ui/addon-table": "^2.11.2",
     "@taiga-ui/cdk": "^2.10.1",
     "@taiga-ui/core": "^2.10.1",
