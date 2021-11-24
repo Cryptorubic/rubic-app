@@ -718,10 +718,13 @@ export class CrossChainRoutingService {
   /**
    * Returns true, if amount of token-in must be multiplied on slippage to calculate maximum sent amount.
    */
-  public isTokenInAmountMaxWithSlippage(
-    trade: CrossChainRoutingTrade = this.currentCrossChainTrade
-  ): boolean {
-    return trade.firstPath.length > 1;
+  public isTokenInAmountMaxWithSlippage(): boolean {
+    const { fromToken, fromBlockchain } = this.swapFormService.inputValue;
+    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
+      throw Error('Not supported blockchain');
+    }
+    const firstTransitToken = this.transitTokens[fromBlockchain];
+    return !compareAddresses(fromToken.address, firstTransitToken.address);
   }
 
   /**
@@ -730,7 +733,7 @@ export class CrossChainRoutingService {
   public calculateTokenInAmountMax(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
   ): BigNumber {
-    if (!this.isTokenInAmountMaxWithSlippage(trade)) {
+    if (trade.firstPath.length === 1) {
       return trade.tokenInAmount;
     }
     const slippageTolerance = this.settings.slippageTolerance / 100;
