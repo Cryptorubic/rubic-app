@@ -10,10 +10,13 @@ import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import {
+  BLOCKCHAINS,
+  DEPRECATED_BLOCKCHAINS
+} from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
-import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
+import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/TRANSLATION_STATUS_KEYS';
 
 @Component({
   selector: 'app-table',
@@ -28,7 +31,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
-  public BLOCKCHAINS = BLOCKCHAINS;
+  public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 

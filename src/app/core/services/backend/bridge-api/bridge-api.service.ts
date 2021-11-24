@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import {
+  BLOCKCHAIN_NAME,
+  DEPRECATED_BLOCKCHAIN_NAME
+} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { EMPTY, Observable } from 'rxjs';
@@ -20,12 +23,15 @@ import { BOT_URL } from '../constants/BOT_URL';
   providedIn: 'root'
 })
 export class BridgeApiService {
-  private readonly tradeBlockchain: Record<BridgeBlockchainApi, BLOCKCHAIN_NAME> = {
+  private readonly tradeBlockchain: Record<
+    BridgeBlockchainApi,
+    BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME
+  > = {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
-    TRX: BLOCKCHAIN_NAME.TRON,
-    XDAI: BLOCKCHAIN_NAME.XDAI
+    XDAI: BLOCKCHAIN_NAME.XDAI,
+    TRX: DEPRECATED_BLOCKCHAIN_NAME.TRON
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
@@ -82,27 +88,6 @@ export class BridgeApiService {
       },
       date: new Date(trade.updateTime)
     };
-  }
-
-  /**
-   * Makes POST request to add transaction to database.
-   * @param binanceTransactionId ID of transaction in BSC.
-   * @param ethSymbol From token symbol.
-   * @param bscSymbol To token symbol.
-   */
-  public postPanamaTransaction(
-    binanceTransactionId: string,
-    ethSymbol: string,
-    bscSymbol: string
-  ): Promise<void> {
-    const body = {
-      type: 'panama',
-      transaction_id: binanceTransactionId,
-      ethSymbol,
-      bscSymbol
-    };
-
-    return this.httpService.post<void>('bridges/transactions', body).toPromise();
   }
 
   /**

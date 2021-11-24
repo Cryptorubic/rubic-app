@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Web3PublicService } from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
-import { BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME, DEPRECATED_BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
 import ADDRESS_TYPE from '../models/blockchain/ADDRESS_TYPE';
 
 const blockchainsScanners = {
@@ -52,14 +52,6 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
-  [BLOCKCHAIN_NAME.TRON]: {
-    baseUrl: 'https://tronscan.org/#/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token20/',
-    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.XDAI]: {
@@ -117,6 +109,14 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [DEPRECATED_BLOCKCHAIN_NAME.TRON]: {
+    baseUrl: 'https://tronscan.org/#/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token20/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
 
@@ -128,7 +128,11 @@ export class ScannerLinkPipe implements PipeTransform {
     useTestingMode.isTestingMode.subscribe(value => (this.isTestingMode = value));
   }
 
-  transform(address: string, blockchainName: BLOCKCHAIN_NAME, type: ADDRESS_TYPE): string {
+  transform(
+    address: string,
+    blockchainName: BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME,
+    type: ADDRESS_TYPE
+  ): string {
     if (!address || !blockchainName) {
       return '';
     }

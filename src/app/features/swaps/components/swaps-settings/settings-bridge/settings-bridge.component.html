@@ -1,21 +1,3 @@
 <div class="settings">
-  <form [formGroup]="bridgeForm" class="settings__form">
-    <div class="settings__form-row settings__form-row_large-input">
-      <label for="tronAddress">TRON wallet address</label>
-      <div
-        class="settings__hint"
-        [inlineSVG]="'/assets/images/icons/hint.svg'"
-        [tuiHint]="'settings.bridge.walletAddress' | translate"
-      ></div>
-    </div>
-    <div>
-      <tui-input
-        id="tronAddress"
-        [tuiTextfieldLabelOutside]="true"
-        formControlName="tronAddress"
-        pattern="T[1-9A-HJ-NP-Za-km-z]{33}$"
-        >TKEZDGPjLJDhieooBqEeBkVbXiz8XCsZLz</tui-input
-      >
-    </div>
-  </form>
+  <form [formGroup]="bridgeForm" class="settings__form"></form>
 </div>
