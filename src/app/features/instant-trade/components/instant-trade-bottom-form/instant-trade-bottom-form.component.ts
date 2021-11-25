@@ -466,7 +466,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets to providers calculated trade data, approve data and trade status.
+   * Sets to wallets calculated trade data, approve data and trade status.
    * @param tradeData Calculated trade data.
    * @param approveData Calculated info about whether provider must be approved or not.
    */
@@ -519,7 +519,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sorts providers based on usd$ price.
+   * Sorts wallets based on usd$ price.
    */
   private sortProviders(): void {
     const calculateProfit = (trade: InstantTrade): BigNumber => {
@@ -553,7 +553,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Focuses some of providers. If user have selected provider, keeps old index.
+   * Focuses some of wallets. If user have selected provider, keeps old index.
    * @param providerIndex Provider's index to select.
    */
   private selectController(providerIndex: number): void {

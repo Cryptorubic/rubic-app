@@ -18,7 +18,7 @@ import {
   REFUND_ADDRESS,
   REFUND_ADDRESS_TESTNET
 } from '@features/my-trades/constants/REFUND_ADDRESS';
-import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class GasRefundService {
     private readonly authService: AuthService,
     private readonly web3Private: Web3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly providerConnector: ProviderConnectorService,
+    private readonly providerConnector: WalletConnectorService,
     private readonly testingModeService: UseTestingModeService
   ) {
     this.userPromotions$ = this._userPromotions$.asObservable();

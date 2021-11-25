@@ -1,19 +1,19 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { MetamaskError } from 'src/app/core/errors/models/provider/MetamaskError';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Token } from 'src/app/shared/models/tokens/Token';
-import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { CoinbaseExtensionError } from 'src/app/core/errors/models/provider/CoinbaseExtensionError';
-import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { NetworkError } from '@core/errors/models/provider/NetworkError';
+import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { MetamaskError } from '@core/errors/models/provider/MetamaskError';
+import { ErrorsService } from '@core/errors/errors.service';
+import { Token } from '@shared/models/tokens/Token';
+import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { CoinbaseExtensionError } from '@core/errors/models/provider/CoinbaseExtensionError';
+import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 
-export class MetamaskProvider extends PrivateProvider {
+export class MetamaskWalletAdapter extends CommonWalletAdapter {
   private isEnabled = false;
 
   /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */

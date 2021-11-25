@@ -11,7 +11,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { WrongToken } from 'src/app/core/errors/models/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
@@ -69,7 +69,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService
   ) {
     super();

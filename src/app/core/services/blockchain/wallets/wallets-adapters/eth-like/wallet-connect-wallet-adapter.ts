@@ -1,20 +1,20 @@
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { NetworkError } from '@core/errors/models/provider/NetworkError';
+import { WalletlinkError } from '@core/errors/models/provider/WalletlinkError';
 import Web3 from 'web3';
 import WalletConnect from '@walletconnect/web3-provider';
-import networks from 'src/app/shared/constants/blockchain/networks';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { WalletconnectError } from 'src/app/core/errors/models/provider/WalletconnectError';
-import { Token } from 'src/app/shared/models/tokens/Token';
-import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import networks from '@shared/constants/blockchain/networks';
+import { ErrorsService } from '@core/errors/errors.service';
+import { WalletconnectError } from '@core/errors/models/provider/WalletconnectError';
+import { Token } from '@shared/models/tokens/Token';
+import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 
-export class WalletConnectProvider extends PrivateProvider {
+export class WalletConnectWalletAdapter extends CommonWalletAdapter {
   private isEnabled: boolean;
 
   private readonly core: WalletConnect;

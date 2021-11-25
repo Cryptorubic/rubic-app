@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
@@ -60,7 +60,7 @@ export class CommonOneinchService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3Private: Web3PrivateService,
     private readonly settingsService: SettingsService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService
   ) {

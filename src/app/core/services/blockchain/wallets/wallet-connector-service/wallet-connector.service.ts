@@ -12,25 +12,26 @@ import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
 import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
 import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { MetamaskProvider } from 'src/app/core/services/blockchain/providers/private-provider/metamask-provider/metamask-provider';
-import { WalletConnectProvider } from 'src/app/core/services/blockchain/providers/private-provider/wallet-connect/wallet-connect-provider';
-import { WalletLinkProvider } from 'src/app/core/services/blockchain/providers/private-provider/wallet-link/wallet-link-provider';
+import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
+import { WalletConnectWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-wallet-adapter';
+import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
-import { PhantomProvider } from '@core/services/blockchain/providers/private-provider/phantom/phantom-provider';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
+import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProviderConnectorService {
+export class WalletConnectorService {
   private readonly networkChangeSubject$: BehaviorSubject<IBlockchain>;
 
   private readonly addressChangeSubject$: BehaviorSubject<string>;
 
   public providerName: WALLET_NAME;
 
-  private privateProvider: PrivateProvider;
+  private privateProvider: CommonWalletAdapter;
 
   public get address(): string | undefined {
     return this.provider?.address;
@@ -44,11 +45,11 @@ export class ProviderConnectorService {
     return this.provider.networkName;
   }
 
-  public get provider(): PrivateProvider {
+  public get provider(): CommonWalletAdapter {
     return this.privateProvider;
   }
 
-  public set provider(value: PrivateProvider) {
+  public set provider(value: CommonWalletAdapter) {
     this.privateProvider = value;
   }
 
@@ -130,48 +131,9 @@ export class ProviderConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(provider: WALLET_NAME, chainId?: number): Promise<boolean> {
+  public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
-      switch (provider) {
-        case WALLET_NAME.WALLET_LINK: {
-          this.provider = new WalletLinkProvider(
-            this.web3,
-            this.networkChangeSubject$,
-            this.addressChangeSubject$,
-            this.errorService,
-            chainId
-          );
-          break;
-        }
-        case WALLET_NAME.WALLET_CONNECT: {
-          this.provider = new WalletConnectProvider(
-            this.web3,
-            this.networkChangeSubject$,
-            this.addressChangeSubject$,
-            this.errorService
-          );
-          break;
-        }
-        case WALLET_NAME.PHANTOM: {
-          this.provider = new PhantomProvider(
-            this.networkChangeSubject$,
-            this.addressChangeSubject$,
-            this.errorService
-          );
-          break;
-        }
-        case WALLET_NAME.METAMASK:
-        default: {
-          this.provider = new MetamaskProvider(
-            this.web3,
-            this.networkChangeSubject$,
-            this.addressChangeSubject$,
-            this.errorService
-          ) as PrivateProvider;
-          await (this.provider as MetamaskProvider).setupDefaultValues();
-        }
-      }
-      this.providerName = provider;
+      this.provider = await this.createWalletAdapter(walletName, chainId);
       return true;
     } catch (e) {
       this.errorService.catch(e);
@@ -179,13 +141,59 @@ export class ProviderConnectorService {
     }
   }
 
+  private async createWalletAdapter(
+    walletName: WALLET_NAME,
+    chainId?: number
+  ): Promise<CommonWalletAdapter> {
+    const walletAdapters: Record<WALLET_NAME, () => Promise<CommonWalletAdapter>> = {
+      [WALLET_NAME.SOLFLARE]: async () =>
+        new SolflareWalletAdapter(
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService
+        ),
+      [WALLET_NAME.PHANTOM]: async () =>
+        new PhantomWalletAdapter(
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService
+        ),
+      [WALLET_NAME.WALLET_CONNECT]: async () =>
+        new WalletConnectWalletAdapter(
+          this.web3,
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService
+        ),
+      [WALLET_NAME.METAMASK]: async () => {
+        const metamaskWalletAdapter = new MetamaskWalletAdapter(
+          this.web3,
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService
+        );
+        await metamaskWalletAdapter.setupDefaultValues();
+        return metamaskWalletAdapter as CommonWalletAdapter;
+      },
+      [WALLET_NAME.WALLET_LINK]: async () =>
+        new WalletLinkWalletAdapter(
+          this.web3,
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService,
+          chainId
+        )
+    };
+    return walletAdapters[walletName]();
+  }
+
   public async connectDefaultProvider(): Promise<void> {
-    this.provider = new MetamaskProvider(
+    this.provider = new MetamaskWalletAdapter(
       this.web3,
       this.networkChangeSubject$,
       this.addressChangeSubject$,
       this.errorService
-    ) as PrivateProvider;
+    ) as CommonWalletAdapter;
     this.providerName = WALLET_NAME.METAMASK;
   }
 

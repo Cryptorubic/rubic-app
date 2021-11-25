@@ -3,11 +3,9 @@ import { ApplicationRef, Inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { WINDOW } from '@ng-web-apis/common';
-import { PhantomWallet } from '@core/services/blockchain/providers/private-provider/phantom/models/types';
 
 declare global {
   interface Window {
-    solana?: PhantomWallet;
     testingMode: {
       use: () => void;
       set: () => void;

@@ -3,7 +3,7 @@ import { from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { tap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { ethToXDaiDepositWallet } from 'src/app/shared/constants/bridge/deposit-wallets';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
@@ -50,7 +50,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   constructor(
     private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly providerConnectorService: WalletConnectorService
   ) {
     super();
 

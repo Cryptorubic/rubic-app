@@ -7,7 +7,7 @@ type Provider = {
   image: string;
 };
 
-const imageBasePath = 'assets/images/icons/providers/';
+const imageBasePath = 'assets/images/icons/wallets/';
 
 const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {

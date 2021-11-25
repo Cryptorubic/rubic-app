@@ -9,7 +9,7 @@ import CustomError from 'src/app/core/errors/models/custom-error';
 import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
 import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
 import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { LowGasError } from 'src/app/core/errors/models/provider/LowGasError';
 import { GasApiService } from 'src/app/core/services/backend/gas-api/gas-api.service';
 
@@ -31,7 +31,7 @@ export class Web3PrivateService {
   }
 
   constructor(
-    private readonly providerConnector: ProviderConnectorService,
+    private readonly providerConnector: WalletConnectorService,
     private readonly gasApiService: GasApiService
   ) {
     this.web3 = providerConnector.web3;

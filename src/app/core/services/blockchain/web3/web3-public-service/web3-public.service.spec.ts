@@ -12,12 +12,12 @@ import {
   YEENUS
 } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
-import { PublicProviderService } from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider.service';
+import { PublicProviderService } from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider.service';
 
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 // @ts-ignore
 import config from 'src/test/enviroment.test.json';
-import publicProviderServiceStub from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider-service-stub';
+import publicProviderServiceStub from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider-service-stub';
 
 import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';

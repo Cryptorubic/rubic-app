@@ -8,10 +8,10 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { switchIif } from '@shared/utils/utils';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { WalletLoginInterface, UserInterface } from './models/user.interface';
-import { ProviderConnectorService } from '../blockchain/providers/provider-connector-service/provider-connector.service';
 import { StoreService } from '../store/store.service';
 
 /**
@@ -47,7 +47,7 @@ export class AuthService {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly httpService: HttpService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly store: StoreService,
     private readonly errorService: ErrorsService,
     private readonly iframeService: IframeService

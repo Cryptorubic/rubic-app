@@ -1,16 +1,16 @@
 import { BehaviorSubject } from 'rxjs';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { ErrorsService } from '@core/errors/errors.service';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { PhantomWallet } from '@core/services/blockchain/providers/private-provider/phantom/models/types';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import CustomError from '@core/errors/models/custom-error';
 import { PublicKey } from '@solana/web3.js';
+import { PhantomWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 
-export class PhantomProvider extends PrivateProvider {
+export class PhantomWalletAdapter extends CommonWalletAdapter {
   private isEnabled = false;
 
   private core: PhantomWallet | null = null;
@@ -61,7 +61,8 @@ export class PhantomProvider extends PrivateProvider {
   public async signPersonal(message: string): Promise<string> {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
-    const { signature } = await this.core.signMessage(encoder.encode(message));
+    const encodedMessage = encoder.encode(message);
+    const { signature } = await this.core.signMessage(encodedMessage);
     return decoder.decode(signature);
   }
 

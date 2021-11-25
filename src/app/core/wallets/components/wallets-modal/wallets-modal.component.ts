@@ -6,7 +6,7 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -95,7 +95,7 @@ export class WalletsModalComponent implements OnInit {
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: Window,
     private readonly translateService: TranslateService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
@@ -139,6 +139,17 @@ export class WalletsModalComponent implements OnInit {
         name: 'Phantom',
         value: WALLET_NAME.PHANTOM,
         img: './assets/images/icons/cross.svg',
+        desktopOnly: true,
+        display: true,
+        // @TODO SOLANA.
+        supportsInHorizontalIframe: false,
+        supportsInVerticalIframe: false,
+        supportsInVerticalMobileIframe: false
+      },
+      {
+        name: 'Solflare',
+        value: WALLET_NAME.SOLFLARE,
+        img: './assets/images/icons/back.svg',
         desktopOnly: true,
         display: true,
         // @TODO SOLANA.

@@ -11,7 +11,7 @@ import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -202,7 +202,7 @@ export class SwapButtonContainerComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,

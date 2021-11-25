@@ -14,7 +14,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -33,7 +33,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private translateService: TranslateService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,

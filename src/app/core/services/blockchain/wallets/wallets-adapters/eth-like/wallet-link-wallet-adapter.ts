@@ -1,23 +1,23 @@
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import { WalletlinkError } from 'src/app/core/errors/models/provider/WalletlinkError';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { NetworkError } from '@core/errors/models/provider/NetworkError';
+import { WalletlinkError } from '@core/errors/models/provider/WalletlinkError';
 import WalletLink, { WalletLinkProvider as CoinbaseProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Token } from 'src/app/shared/models/tokens/Token';
-import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
+import { ErrorsService } from '@core/errors/errors.service';
+import { Token } from '@shared/models/tokens/Token';
+import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { UndefinedError } from '@core/errors/models/undefined.error';
 import BigNumber from 'bignumber.js';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { WalletlinkWrongNetwork } from 'src/app/core/errors/models/provider/WalletlinkWrongNetwork';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { RubicError } from '@core/errors/models/RubicError';
+import { WalletlinkWrongNetwork } from '@core/errors/models/provider/WalletlinkWrongNetwork';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 
-export class WalletLinkProvider extends PrivateProvider {
+export class WalletLinkWalletAdapter extends CommonWalletAdapter {
   private isMobileMode = false;
 
   private isEnabled: boolean;

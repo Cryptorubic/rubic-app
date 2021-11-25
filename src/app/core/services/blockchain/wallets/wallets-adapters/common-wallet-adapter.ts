@@ -5,7 +5,7 @@ import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 
-export abstract class PrivateProvider {
+export abstract class CommonWalletAdapter {
   /**
    * is the blockchain provider installed
    */

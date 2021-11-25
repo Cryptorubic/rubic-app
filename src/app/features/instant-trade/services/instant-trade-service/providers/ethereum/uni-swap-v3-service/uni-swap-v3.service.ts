@@ -10,7 +10,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
   maxTransitPools,
   uniSwapV3ContractData,
@@ -80,7 +80,7 @@ export class UniSwapV3Service implements ItProvider {
 
   constructor(
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly settingsService: SettingsService,

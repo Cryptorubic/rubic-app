@@ -13,7 +13,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
@@ -43,16 +43,16 @@ export class BridgeService {
   private isTestingMode = false;
 
   constructor(
-    // bridge providers start
+    // bridge wallets start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
     private readonly rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
     private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private readonly binancePolygonProviderService: BinancePolygonBridgeProviderService,
-    // bridge providers end
+    // bridge wallets end
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService
   ) {

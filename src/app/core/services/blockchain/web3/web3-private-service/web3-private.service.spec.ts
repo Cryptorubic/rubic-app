@@ -4,15 +4,15 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
-import providerServiceStub from 'src/app/core/services/blockchain/providers/private-provider/metamask-provider/metamask-provider.stub';
+import providerServiceStub from '@core/services/blockchain/wallets/wallets-adapters/eth-like/tests/metamask-provider.stub';
 import { WEENUS } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import * as config from 'src/test/enviroment.test.json';
-import { PublicProviderService } from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider.service';
-import publicProviderServiceStub from 'src/app/core/services/blockchain/providers/public-provider-service/public-provider-service-stub';
+import { PublicProviderService } from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider.service';
+import publicProviderServiceStub from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider-service-stub';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { MetamaskProvider } from 'src/app/core/services/blockchain/providers/private-provider/metamask-provider/metamask-provider';
+import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
 
 describe('Web3PrivateService', () => {
   let originalTimeout: number;
@@ -26,7 +26,7 @@ describe('Web3PrivateService', () => {
       providers: [
         HttpClient,
         HttpHandler,
-        { provide: MetamaskProvider, useValue: providerServiceStub() },
+        { provide: MetamaskWalletAdapter, useValue: providerServiceStub() },
         { provide: PublicProviderService, useValue: publicProviderServiceStub() },
         PublicBlockchainAdapterService,
         CookieService

@@ -12,7 +12,7 @@ import {
 } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
@@ -51,7 +51,7 @@ export class MyTradesService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly instantTradesApiService: InstantTradesApiService,

@@ -8,7 +8,7 @@
 //
 //   beforeEach(() => {
 //     TestBed.configureTestingModule({
-//       providers: [
+//       wallets: [
 //         UniSwapService,
 //         Web3PrivateService,
 //         ProviderConnectorService,
