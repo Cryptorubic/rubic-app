@@ -6,9 +6,9 @@ import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import ConnectionLink from 'src/app/core/services/blockchain/models/ConnectionLink';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { PublicProviderService } from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import networks from '@shared/constants/blockchain/networks';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -29,6 +29,8 @@ export class PublicBlockchainAdapterService {
   private readonly _nodesChecked$ = new BehaviorSubject<boolean>(false);
 
   private readonly connectionLinks: ConnectionLink[];
+
+  private readonly defaultConnectionLinks: ConnectionLink[];
 
   public [BLOCKCHAIN_NAME.ETHEREUM]: Web3Public;
 
@@ -60,11 +62,17 @@ export class PublicBlockchainAdapterService {
   public readonly [BLOCKCHAIN_NAME.SOLANA]: Web3Public = null;
 
   constructor(
-    publicProvider: PublicProviderService,
     private useTestingModeService: UseTestingModeService,
     private readonly httpClient: HttpClient
   ) {
-    this.connectionLinks = publicProvider.connectionLinks.filter(connection =>
+    this.defaultConnectionLinks = networks
+      .filter(network => WEB3_SUPPORTED_BLOCKCHAINS.some(el => el === network.name))
+      .map(network => ({
+        blockchainName: network.name as Web3SupportedBlockchains,
+        rpcLink: network.rpcLink,
+        additionalRpcLink: network.additionalRpcLink
+      }));
+    this.connectionLinks = this.defaultConnectionLinks.filter(connection =>
       WEB3_SUPPORTED_BLOCKCHAINS.includes(connection.blockchainName)
     );
     this.connectionLinks.forEach(connection =>
@@ -76,7 +84,7 @@ export class PublicBlockchainAdapterService {
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.connectionLinks.forEach(connection => {
-          const testingConnection = publicProvider.connectionLinks.find(
+          const testingConnection = this.defaultConnectionLinks.find(
             c => c.blockchainName === `${connection.blockchainName}_TESTNET`
           );
           if (!testingConnection) {

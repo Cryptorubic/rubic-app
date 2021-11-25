@@ -8,8 +8,6 @@ import providerServiceStub from '@core/services/blockchain/wallets/wallets-adapt
 import { WEENUS } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import * as config from 'src/test/enviroment.test.json';
-import { PublicProviderService } from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider.service';
-import publicProviderServiceStub from 'src/app/core/services/blockchain/wallets/public-provider-service/public-provider-service-stub';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
@@ -27,7 +25,6 @@ describe('Web3PrivateService', () => {
         HttpClient,
         HttpHandler,
         { provide: MetamaskWalletAdapter, useValue: providerServiceStub() },
-        { provide: PublicProviderService, useValue: publicProviderServiceStub() },
         PublicBlockchainAdapterService,
         CookieService
       ],

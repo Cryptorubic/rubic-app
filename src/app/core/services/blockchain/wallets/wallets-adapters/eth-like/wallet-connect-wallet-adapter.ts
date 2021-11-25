@@ -1,5 +1,4 @@
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { NetworkError } from '@core/errors/models/provider/NetworkError';
 import { WalletlinkError } from '@core/errors/models/provider/WalletlinkError';
@@ -13,51 +12,36 @@ import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-param
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
-export class WalletConnectWalletAdapter extends CommonWalletAdapter {
-  private isEnabled: boolean;
-
-  private readonly core: WalletConnect;
-
-  private selectedAddress: string;
-
-  private selectedChain: string;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onAddressChanges$: BehaviorSubject<string>;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
-
-  get isInstalled(): boolean {
-    return !!this.core;
-  }
-
+export class WalletConnectWalletAdapter extends CommonWalletAdapter<WalletConnect> {
   get isMultiChainWallet(): boolean {
     const multiChainWalletNames = ['Trust Wallet Android', 'Trust Wallet'];
-    const walletName = this.core.connector.peerMeta.name;
+    const walletName = this.wallet.connector.peerMeta.name;
     return multiChainWalletNames.includes(walletName);
   }
 
-  get isActive(): boolean {
-    return this.isEnabled && this.core?.accounts.length > 0;
-  }
-
-  public get address(): string {
-    return this.selectedAddress;
+  public get walletName(): WALLET_NAME {
+    return WALLET_NAME.WALLET_CONNECT;
   }
 
   constructor(
     web3: Web3,
-    chainChange$: BehaviorSubject<IBlockchain>,
-    accountChange$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService
   ) {
-    super(errorsService);
-    this.isEnabled = false;
-    this.onAddressChanges$ = accountChange$;
-    this.onNetworkChanges$ = chainChange$;
+    super(errorsService, onAddressChanges$, onNetworkChanges$);
+    this.wallet = this.getWallet();
+    web3.setProvider(this.wallet as RubicAny);
+    this.handleEvents();
+  }
 
+  /**
+   * Creates instance of Wallet.
+   * @return WalletConnect The wallet.
+   */
+  private getWallet(): WalletConnect {
     const rpcParams: Record<typeof networks[number]['id'], string> = networks
       .filter(network => isFinite(network.id))
       .reduce((prev, cur) => {
@@ -66,53 +50,47 @@ export class WalletConnectWalletAdapter extends CommonWalletAdapter {
           [cur.id]: cur.rpcLink
         };
       }, {});
-    this.core = new WalletConnect({
+    return new WalletConnect({
       rpc: rpcParams,
       bridge: 'https://bridge.walletconnect.org',
       qrcode: true
     });
-    // eslint-disable-next-line
-    web3.setProvider(this.core as any);
-    this.core.on('chainChanged', (chain: string) => {
+  }
+
+  /**
+   * Handles chain and account change events.
+   */
+  private handleEvents(): void {
+    this.wallet.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        chainChange$.next(BlockchainsInfo.getBlockchainById(chain));
+        this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
       }
     });
-    this.core.on('accountsChanged', (accounts: string[]) => {
+    this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges$.next(this.selectedAddress);
         console.info('Selected account changed to', accounts[0]);
       }
+      if (!this.selectedAddress) {
+        this.selectedChain = null;
+        this.deActivate();
+      }
     });
   }
 
   public async signPersonal(message: string): Promise<string> {
-    return this.core.connector.signPersonalMessage([message, this.address]);
-  }
-
-  public getAddress(): string {
-    return this.isEnabled && this.selectedAddress;
-  }
-
-  public getNetwork(): IBlockchain {
-    return (
-      this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain as BLOCKCHAIN_NAME)
-    );
-  }
-
-  public get name(): WALLET_NAME {
-    return WALLET_NAME.WALLET_CONNECT;
+    return this.wallet.connector.signPersonalMessage([message, this.address]);
   }
 
   public async activate(): Promise<void> {
     try {
-      const [address] = await this.core.enable();
+      const [address] = await this.wallet.enable();
       this.isEnabled = true;
       this.selectedAddress = address;
-      this.selectedChain = String(this.core.chainId);
+      this.selectedChain = String(this.wallet.chainId);
       this.onNetworkChanges$.next(this.getNetwork());
       this.onAddressChanges$.next(address);
     } catch (error) {
@@ -121,7 +99,7 @@ export class WalletConnectWalletAdapter extends CommonWalletAdapter {
   }
 
   public async deActivate(): Promise<void> {
-    await this.core.close();
+    await this.wallet.close();
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
@@ -135,7 +113,7 @@ export class WalletConnectWalletAdapter extends CommonWalletAdapter {
       throw new NetworkError(token.blockchain);
     }
 
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
@@ -150,14 +128,14 @@ export class WalletConnectWalletAdapter extends CommonWalletAdapter {
   }
 
   public async switchChain(chainId: string): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
   }
 
   public async addChain(params: AddEthChainParams): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_addEthereumChain',
       params: [params]
     });

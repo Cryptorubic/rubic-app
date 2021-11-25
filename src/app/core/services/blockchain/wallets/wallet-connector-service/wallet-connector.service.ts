@@ -20,6 +20,7 @@ import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/model
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
+import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 
 @Injectable({
   providedIn: 'root'
@@ -87,7 +88,11 @@ export class WalletConnectorService {
    * @return The signature.
    */
   public async signPersonal(message: string): Promise<string> {
-    return this.provider.signPersonal(message);
+    try {
+      return this.provider.signPersonal(message);
+    } catch (err: unknown) {
+      throw new SignRejectError();
+    }
   }
 
   /**
@@ -107,14 +112,13 @@ export class WalletConnectorService {
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    this.storage.setItem('provider', this.provider.name);
-    if (this.provider.name === WALLET_NAME.WALLET_LINK) {
+    this.storage.setItem('provider', this.provider.walletName);
+    if (this.provider.walletName === WALLET_NAME.WALLET_LINK) {
       this.storage.setItem('chainId', this.provider.network.id);
     }
   }
 
-  // eslint-disable-next-line
-  public async requestPermissions(): Promise<any[]> {
+  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     return this.provider.requestPermissions();
   }
 

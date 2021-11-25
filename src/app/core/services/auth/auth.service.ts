@@ -216,7 +216,7 @@ export class AuthService {
           this.providerConnectorService.address,
           nonce,
           signature,
-          this.providerConnectorService.provider.name
+          this.providerConnectorService.provider.walletName
         );
 
         this.currentUser$.next({ address: this.providerConnectorService.address });

@@ -9,53 +9,38 @@ import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-param
 import { CoinbaseExtensionError } from '@core/errors/models/provider/CoinbaseExtensionError';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 export class MetamaskWalletAdapter extends CommonWalletAdapter {
-  private isEnabled = false;
-
-  /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-  private readonly core: any;
-
-  private selectedAddress: string;
-
-  private selectedChain: string;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onAddressChanges$: BehaviorSubject<string>;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
-
   public get isMultiChainWallet(): boolean {
     return false;
   }
 
-  get isInstalled(): boolean {
-    return !!this.core;
-  }
-
-  get isActive(): boolean {
-    return this.isEnabled && !!this.selectedAddress;
-  }
-
-  public get name(): WALLET_NAME {
+  public get walletName(): WALLET_NAME {
     return WALLET_NAME.METAMASK;
   }
 
   constructor(
     web3: Web3,
-    chainChange$: BehaviorSubject<IBlockchain>,
-    accountChange$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService
   ) {
-    super(errorsService);
-    this.onAddressChanges$ = accountChange$;
-    this.onNetworkChanges$ = chainChange$;
-
+    super(errorsService, onAddressChanges$, onNetworkChanges$);
     const { ethereum } = window;
+    MetamaskWalletAdapter.checkErrors(ethereum);
+    web3.setProvider(ethereum);
+    this.wallet = ethereum;
+    this.handleEvents();
+  }
+
+  /**
+   * Checks possible metamask errors.
+   * @param ethereum Global ethereum object.
+   */
+  private static checkErrors(ethereum: RubicAny): void {
     if (!ethereum?.isMetaMask) {
       throw new MetamaskError();
     }
@@ -64,22 +49,23 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     if (ethereum.hasOwnProperty('overrideIsMetaMask')) {
       throw new CoinbaseExtensionError();
     }
+  }
 
-    web3.setProvider(ethereum);
-    this.core = ethereum;
-    this.core.on('chainChanged', (chain: string) => {
+  /**
+   * Handles chain and account change events.
+   */
+  private handleEvents(): void {
+    this.wallet.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
-        chainChange$.next(BlockchainsInfo.getBlockchainById(chain));
-        // tslint:disable-next-line:no-console
+        this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
       }
     });
-    this.core.on('accountsChanged', (accounts: string[]) => {
+    this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges$.next(this.selectedAddress);
-        // tslint:disable-next-line:no-console
         console.info('Selected account changed to', accounts[0]);
       }
       if (!this.selectedAddress) {
@@ -90,37 +76,23 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
   }
 
   public async setupDefaultValues(): Promise<void> {
-    const chain = await this.core.request({ method: 'eth_chainId' });
-    const accounts = await this.core.request({ method: 'eth_accounts' });
+    const chain = await this.wallet.request({ method: 'eth_chainId' });
+    const accounts = await this.wallet.request({ method: 'eth_accounts' });
     this.selectedChain = chain;
     [this.selectedAddress] = accounts;
   }
 
-  public getAddress(): string {
-    if (this.isEnabled) {
-      return this.selectedAddress;
-    }
-    return null;
-  }
-
   public async signPersonal(message: string): Promise<string> {
-    return this.core.eth.personal.sign(message, this.address, undefined);
-  }
-
-  public getNetwork(): IBlockchain {
-    if (this.isEnabled) {
-      return this.selectedChain ? BlockchainsInfo.getBlockchainById(this.selectedChain) : undefined;
-    }
-    return null;
+    return new Web3(this.wallet).eth.personal.sign(message, this.address, undefined);
   }
 
   public async activate(params?: unknown[]): Promise<void> {
     try {
-      const accounts = await this.core.request({
+      const accounts = await this.wallet.request({
         method: 'eth_requestAccounts',
         params
       });
-      const chain = await this.core.request({ method: 'eth_chainId' });
+      const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
       this.selectedChain = String(chain);
       [this.selectedAddress] = accounts;
@@ -138,9 +110,9 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     }
   }
 
-  public async requestPermissions(): Promise<unknown[]> {
+  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     try {
-      return this.core.request({
+      return this.wallet.request({
         method: 'wallet_requestPermissions',
         params: [{ eth_accounts: {} }]
       });
@@ -164,7 +136,7 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
       throw new NetworkError(token.blockchain);
     }
 
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
@@ -179,14 +151,14 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
   }
 
   public async switchChain(chainId: string): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
   }
 
   public async addChain(params: AddEthChainParams): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_addEthereumChain',
       params: [params]
     });

@@ -1,9 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { NetworkError } from '@core/errors/models/provider/NetworkError';
 import { WalletlinkError } from '@core/errors/models/provider/WalletlinkError';
-import WalletLink, { WalletLinkProvider as CoinbaseProvider } from 'walletlink';
+import WalletLink, { WalletLinkProvider, WalletLinkProvider as CoinbaseProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
@@ -17,105 +16,68 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 
-export class WalletLinkWalletAdapter extends CommonWalletAdapter {
-  private isMobileMode = false;
+export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
+  private isMobileMode: boolean = false;
 
-  private isEnabled: boolean;
+  private defaultWalletParams: WalletLinkOptions;
 
-  private readonly defaultWalletParams: WalletLinkOptions;
-
-  private readonly core: CoinbaseProvider;
-
-  private selectedAddress: string;
-
-  private selectedChain: string;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onAddressChanges$: BehaviorSubject<string>;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
-
-  get isInstalled(): boolean {
-    return !!this.core;
-  }
-
-  get isMultiChainWallet(): boolean {
+  public get isMultiChainWallet(): boolean {
     return false;
   }
 
-  get isActive(): boolean {
-    return this.isEnabled && Boolean(this.core?.selectedAddress);
-  }
-
-  public get address(): string {
-    return this.selectedAddress;
-  }
-
-  public get name(): WALLET_NAME {
+  public get walletName(): WALLET_NAME {
     return WALLET_NAME.WALLET_LINK;
   }
 
   constructor(
     web3: Web3,
-    chainChange$: BehaviorSubject<IBlockchain>,
-    accountChange$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onAddressChanges$: BehaviorSubject<string>,
     errorService: ErrorsService,
     blockchainId?: number
   ) {
-    super(errorService);
+    super(errorService, onAddressChanges$, onNetworkChanges$);
     this.isEnabled = false;
-
-    // @ts-ignore
-    if (window.ethereum && window.ethereum.isCoinbaseWallet === true) {
-      // mobile coinbase browser
-      this.core = window.ethereum;
-      this.isMobileMode = true;
-    } else {
-      this.defaultWalletParams = {
-        appName: 'Rubic',
-        appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
-        darkMode: false
-      };
-
-      if (!blockchainId) {
-        console.error('Desktop walletLink works only with predefined chainId');
-        throw new UndefinedError();
-      }
-
-      const chainId = blockchainId;
-      const chain = BlockchainsInfo.getBlockchainById(chainId);
-      const walletLink = new WalletLink(this.defaultWalletParams);
-      this.core = walletLink.makeWeb3Provider(chain.rpcLink, chainId);
-      this.selectedChain = chainId.toString();
-    }
-
-    this.onAddressChanges$ = accountChange$;
-    this.onNetworkChanges$ = chainChange$;
-    web3.setProvider(this.core);
+    this.wallet = this.getWallet(blockchainId);
+    web3.setProvider(this.wallet);
   }
 
-  public getAddress(): string {
-    return this.isEnabled && this.selectedAddress;
+  public getWallet(blockchainId?: number): CoinbaseProvider {
+    const provider = window?.ethereum as WalletLinkProvider & {
+      isCoinbaseWallet: boolean;
+    };
+    if (provider?.isCoinbaseWallet === true) {
+      // Handle mobile coinbase browser.
+      this.isMobileMode = true;
+      return window.ethereum;
+    }
+    this.defaultWalletParams = {
+      appName: 'Rubic',
+      appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
+      darkMode: false
+    };
+
+    if (!blockchainId) {
+      console.error('Desktop walletLink works only with predefined chainId');
+      throw new UndefinedError();
+    }
+
+    const chainId = blockchainId;
+    const chain = BlockchainsInfo.getBlockchainById(chainId);
+    const walletLink = new WalletLink(this.defaultWalletParams);
+    this.selectedChain = chainId.toString();
+    return walletLink.makeWeb3Provider(chain.rpcLink, chainId);
   }
 
   public async signPersonal(message: string): Promise<string> {
-    return new Web3(this.core).eth.personal.sign(message, this.address, undefined);
-  }
-
-  public getNetwork(): IBlockchain {
-    return (
-      this.isEnabled &&
-      this.selectedChain &&
-      BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME)
-    );
+    return new Web3(this.wallet).eth.personal.sign(message, this.address, undefined);
   }
 
   public async activate(): Promise<void> {
     try {
-      const [address] = await this.core.request({ method: 'eth_requestAccounts' });
+      const [address] = await this.wallet.request({ method: 'eth_requestAccounts' });
 
-      const activeChain = (await this.core.request({ method: 'eth_chainId' })) as string;
+      const activeChain = (await this.wallet.request({ method: 'eth_chainId' })) as string;
       const chainInfo = BlockchainsInfo.getBlockchainById(parseInt(activeChain).toString());
 
       // in desktop version selected into modal chain should match mobile app selected chain
@@ -142,7 +104,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter {
   }
 
   public async deActivate(): Promise<void> {
-    this.core.close();
+    this.wallet.close();
     this.onAddressChanges$.next(undefined);
     this.onNetworkChanges$.next(undefined);
     this.isEnabled = false;
@@ -156,7 +118,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter {
       throw new NetworkError(token.blockchain);
     }
 
-    await this.core.request({
+    await this.wallet.request({
       method: 'wallet_watchAsset',
       params: [
         {
@@ -173,14 +135,14 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter {
   }
 
   public async switchChain(chainId: string): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
   }
 
   public async addChain(params: AddEthChainParams): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_addEthereumChain',
       params: [params]
     });

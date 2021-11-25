@@ -3,59 +3,27 @@ import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { ErrorsService } from '@core/errors/errors.service';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import CustomError from '@core/errors/models/custom-error';
 import { PublicKey } from '@solana/web3.js';
 import { SolflareWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
+import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 
-export class SolflareWalletAdapter extends CommonWalletAdapter {
-  private isEnabled = false;
-
-  private wallet: SolflareWallet | null = null;
-
-  private selectedAddress: string;
-
-  private selectedChain: string;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onAddressChanges$: BehaviorSubject<string>;
-
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
-
-  public get isMultiChainWallet(): boolean {
+export class SolflareWalletAdapter extends CommonWalletAdapter<SolflareWallet | null> {
+  get isMultiChainWallet(): boolean {
     return false;
   }
 
-  get isInstalled(): boolean {
-    return Boolean(this.wallet);
-  }
-
-  get isActive(): boolean {
-    return this.isEnabled && Boolean(this.selectedAddress);
-  }
-
-  public get name(): WALLET_NAME {
+  public get walletName(): WALLET_NAME {
     return WALLET_NAME.PHANTOM;
   }
 
   constructor(
-    chainChange$: BehaviorSubject<IBlockchain>,
-    accountChange$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService
   ) {
-    super(errorsService);
-    this.onAddressChanges$ = accountChange$;
-    this.onNetworkChanges$ = chainChange$;
-  }
-
-  public getAddress(): string {
-    if (this.isEnabled) {
-      return this.selectedAddress;
-    }
-    return null;
+    super(errorsService, onAddressChanges$, onNetworkChanges$);
   }
 
   public async signPersonal(message: string): Promise<string> {
@@ -66,44 +34,11 @@ export class SolflareWalletAdapter extends CommonWalletAdapter {
     return decoder.decode(signature);
   }
 
-  public getNetwork(): IBlockchain {
-    if (this.isEnabled) {
-      return this.selectedChain
-        ? BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.SOLANA)
-        : undefined;
-    }
-    return null;
-  }
-
   public async activate(): Promise<void> {
     const wallet = typeof window !== 'undefined' && window.solflare;
+    await this.checkErrors(wallet);
 
-    if (!wallet) {
-      throw new CustomError('Wallet is not instelled');
-    }
-    if (!wallet.isSolflare) {
-      throw new CustomError('Phantom is not instelled');
-    }
-
-    if (!wallet.isConnected) {
-      try {
-        await wallet.connect();
-      } catch (error: unknown) {
-        throw new CustomError('Connection error');
-      }
-    }
-
-    // HACK: Solflare doesn't reject its promise if the popup is closed
-    if (!wallet.publicKey) {
-      throw new CustomError('Connection error');
-    }
-
-    let publicKey: PublicKey;
-    try {
-      publicKey = new PublicKey(wallet.publicKey.toBytes());
-    } catch (error: unknown) {
-      throw new CustomError('Public key error');
-    }
+    const publicKey = new PublicKey(wallet.publicKey.toBytes());
     this.isEnabled = true;
     wallet.on('disconnect', this.deActivate);
 
@@ -158,5 +93,27 @@ export class SolflareWalletAdapter extends CommonWalletAdapter {
     //   method: 'wallet_addEthereumChain',
     //   params: [params]
     // });
+  }
+
+  private async checkErrors(wallet: SolflareWallet): Promise<void> {
+    if (!wallet) {
+      throw new CustomError('Wallet is not instelled');
+    }
+    if (!wallet.isSolflare) {
+      throw new CustomError('Phantom is not instelled');
+    }
+
+    if (!wallet.isConnected) {
+      try {
+        await wallet.connect();
+      } catch (error: unknown) {
+        throw new SignRejectError();
+      }
+    }
+
+    // HACK: Solflare doesn't reject its promise if the popup is closed.
+    if (!wallet.publicKey) {
+      throw new CustomError('Connection error');
+    }
   }
 }

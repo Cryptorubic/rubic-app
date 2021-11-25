@@ -4,17 +4,32 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { BehaviorSubject } from 'rxjs';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
-export abstract class CommonWalletAdapter {
+export abstract class CommonWalletAdapter<T = RubicAny> {
+  protected selectedAddress: string;
+
+  protected selectedChain: string;
+
+  protected isEnabled: boolean;
+
+  protected wallet: T = null;
+
   /**
    * is the blockchain provider installed
    */
-  abstract get isInstalled(): boolean;
+  get isInstalled(): boolean {
+    return Boolean(this.wallet);
+  }
 
   /**
    * is the blockchain provider activated
    */
-  abstract get isActive(): boolean;
+  get isActive(): boolean {
+    return this.isEnabled && Boolean(this.selectedAddress);
+  }
 
   /**
    * Is connected app provider supports multi chain wallet.
@@ -24,7 +39,7 @@ export abstract class CommonWalletAdapter {
   /**
    * Current provider name.
    */
-  abstract get name(): WALLET_NAME;
+  abstract get walletName(): WALLET_NAME;
 
   /**
    * current selected wallet address
@@ -48,19 +63,37 @@ export abstract class CommonWalletAdapter {
     return this.getNetwork();
   }
 
-  /**
-   * default value for transactions gasLimit. Required for tests provider stub
-   */
-  public readonly defaultGasLimit: string | undefined = undefined;
-
   public errorsService: ErrorsService;
 
-  public abstract getAddress(): string;
+  protected getAddress(): string | null {
+    if (this.isEnabled) {
+      return this.selectedAddress;
+    }
+    return null;
+  }
 
-  public abstract getNetwork(): IBlockchain;
+  protected getNetwork(): IBlockchain | null {
+    if (this.isEnabled && this.selectedChain) {
+      return (
+        BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME) ||
+        BlockchainsInfo.getBlockchainById(this.selectedChain)
+      );
+    }
+    return null;
+  }
 
-  protected constructor(errorsService: ErrorsService) {
+  protected readonly onAddressChanges$: BehaviorSubject<string>;
+
+  protected readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
+
+  protected constructor(
+    errorsService: ErrorsService,
+    onAddressChanges$: BehaviorSubject<string>,
+    onNetworkChanges$: BehaviorSubject<IBlockchain>
+  ) {
     this.errorsService = errorsService;
+    this.onAddressChanges$ = onAddressChanges$;
+    this.onNetworkChanges$ = onNetworkChanges$;
   }
 
   public abstract signPersonal(message: string): Promise<string>;
@@ -89,7 +122,7 @@ export abstract class CommonWalletAdapter {
    */
   public abstract addToken(token: Token): Promise<void>;
 
-  public async requestPermissions(): Promise<unknown[]> {
+  public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     return [{ parentCapability: 'eth_accounts' }];
   }
 
