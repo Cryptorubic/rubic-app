@@ -11,6 +11,8 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
 
   private readonly window: RubicWindow;
 
+  private readonly isIos: boolean;
+
   constructor(
     web3: Web3,
     chainChange$: BehaviorSubject<IBlockchain>,
@@ -26,7 +28,8 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
     };
     super(web3, chainChange$, accountChange$, errorsService, providerConfig);
     this.window = window;
-    this.initDisplaySubscription(isIos);
+    this.isIos = isIos;
+    this.initDisplaySubscription();
     transactionEmitter$.subscribe(() => {
       this.redirectToWallet();
     });
@@ -34,9 +37,8 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
 
   /**
    * Subscribes to wallet connect deep link url and redirects after getting.
-   * @param isIos Is current device has mobile Apple OS.
    */
-  private initDisplaySubscription(isIos: boolean): void {
+  private initDisplaySubscription(): void {
     this.core.connector.on('display_uri', (err, payload) => {
       if (err) {
         console.debug(err);
@@ -45,7 +47,7 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
       const uri = payload.params[0];
       const encodedUri = encodeURIComponent(uri);
       const decodedUri = decodeURIComponent(uri);
-      this.deepLink = isIos ? `https://link.trustwallet.com/wc?uri=${encodedUri}` : decodedUri;
+      this.deepLink = this.isIos ? `wc?uri=${encodedUri}` : decodedUri;
       this.redirectToWallet();
     });
   }
@@ -54,6 +56,14 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
    * Redirects to trust wallet mobile app via deep linking.
    */
   private redirectToWallet(): void {
-    this.window.location.assign(this.deepLink);
+    if (this.isIos) {
+      try {
+        this.window.location.assign(`trust://${this.deepLink}`);
+      } catch (err) {
+        this.window.location.assign(`https://link.trustwallet.com/${this.deepLink}`);
+      }
+    } else {
+      this.window.location.assign(this.deepLink);
+    }
   }
 }
