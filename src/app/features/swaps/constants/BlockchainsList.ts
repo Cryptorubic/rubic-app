@@ -51,5 +51,11 @@ export const blockchainsList: BlockchainItem[] = [
     visibleName: 'Fantom',
     image: `${imageBaseSrc}fantom.svg`,
     id: 250
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.SOLANA,
+    visibleName: 'Solana',
+    image: `${imageBaseSrc}solana.svg`,
+    id: 999999
   }
 ];

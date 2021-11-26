@@ -106,7 +106,7 @@ export class ZrxService implements ItProvider {
    */
   private setZrxParams(): void {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    this.web3Public = this.publicBlockchainAdapterService[fromBlockchain];
+    this.web3Public = this.publicBlockchainAdapterService[fromBlockchain] as Web3Public;
 
     let blockchain: BLOCKCHAIN_NAME;
     if (this.isTestingMode) {

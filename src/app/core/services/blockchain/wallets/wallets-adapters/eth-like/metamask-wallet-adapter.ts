@@ -18,6 +18,10 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     return false;
   }
 
+  get walletType(): 'solana' | 'ethLike' {
+    return 'ethLike';
+  }
+
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.METAMASK;
   }

@@ -21,6 +21,7 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
+import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +109,16 @@ export class WalletConnectorService {
       return this.connectProvider(provider, chainId);
     }
     return this.connectProvider(provider);
+  }
+
+  public getBlockchainsBasedOnWallet(): BLOCKCHAIN_NAME[] {
+    if (this.provider.walletType === 'solana') {
+      return [BLOCKCHAIN_NAME.SOLANA];
+    }
+    if (this.provider.walletType === 'ethLike') {
+      return [...WEB3_SUPPORTED_BLOCKCHAINS];
+    }
+    return [];
   }
 
   public async activate(): Promise<void> {

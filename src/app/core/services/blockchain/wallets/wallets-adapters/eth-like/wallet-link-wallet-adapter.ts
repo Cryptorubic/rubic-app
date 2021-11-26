@@ -25,6 +25,10 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     return false;
   }
 
+  get walletType(): 'solana' | 'ethLike' {
+    return 'ethLike';
+  }
+
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.WALLET_LINK;
   }

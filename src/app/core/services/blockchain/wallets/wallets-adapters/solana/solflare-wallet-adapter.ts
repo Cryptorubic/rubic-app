@@ -14,6 +14,10 @@ export class SolflareWalletAdapter extends CommonWalletAdapter<SolflareWallet | 
     return false;
   }
 
+  get walletType(): 'solana' | 'ethLike' {
+    return 'solana';
+  }
+
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.PHANTOM;
   }
@@ -44,7 +48,7 @@ export class SolflareWalletAdapter extends CommonWalletAdapter<SolflareWallet | 
 
     this.wallet = wallet;
     this.selectedAddress = publicKey.toBase58();
-    this.selectedChain = 'mainnet';
+    this.selectedChain = 'mainnet-beta';
 
     this.onNetworkChanges$.next(this.getNetwork());
     this.onAddressChanges$.next(this.selectedAddress);

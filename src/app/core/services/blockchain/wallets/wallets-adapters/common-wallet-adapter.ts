@@ -24,6 +24,8 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     return Boolean(this.wallet);
   }
 
+  abstract get walletType(): 'solana' | 'ethLike';
+
   /**
    * is the blockchain provider activated
    */

@@ -21,6 +21,10 @@ export class WalletConnectWalletAdapter extends CommonWalletAdapter<WalletConnec
     return multiChainWalletNames.includes(walletName);
   }
 
+  get walletType(): 'solana' | 'ethLike' {
+    return 'ethLike';
+  }
+
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.WALLET_CONNECT;
   }

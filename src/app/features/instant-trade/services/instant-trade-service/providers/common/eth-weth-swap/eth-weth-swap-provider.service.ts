@@ -61,7 +61,7 @@ export class EthWethSwapProviderService {
     const fromAmount = trade.from.amount;
 
     this.providerConnectorService.checkSettings(blockchain);
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[blockchain];
+    const web3Public = this.publicBlockchainAdapterService[blockchain];
     await web3Public.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
     const fromAmountAbsolute = Web3Public.toWei(fromAmount);

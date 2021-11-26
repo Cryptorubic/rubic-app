@@ -200,7 +200,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
+    const web3Public = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
@@ -250,7 +250,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       throw new WrongToken();
     }
 
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
+    const web3Public = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
     const trade: RubicTrade = {
       token: {
         address:
@@ -266,7 +266,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
 
     const onApprove = bridgeTrade.onTransactionHash;
-    await this.provideAllowance(trade, web3Public, onApprove);
+    await this.provideAllowance(trade, web3Public as Web3Public, onApprove);
 
     const blockchain = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;
 

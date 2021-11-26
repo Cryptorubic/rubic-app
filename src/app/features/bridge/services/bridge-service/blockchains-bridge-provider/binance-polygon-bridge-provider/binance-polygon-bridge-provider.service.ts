@@ -87,7 +87,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
   needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const web3Public: Web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    const web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (!this.authService?.user?.address) {

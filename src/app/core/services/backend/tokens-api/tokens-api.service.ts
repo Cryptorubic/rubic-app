@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -23,6 +23,7 @@ import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginate
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { TokenListContainer, TokenListProvider } from '@solana/spl-token-registry';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -155,7 +156,31 @@ export class TokensApiService {
     const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
     );
-    return forkJoin(requests$).pipe(
+    // @TODO Solana.
+    const solanaTokens$ = from(new TokenListProvider().resolve()).pipe(
+      map((tokenList: TokenListContainer) => ({
+        results: tokenList
+          .filterByChainId(101)
+          .getList()
+          .map(token => {
+            const coolNames = ['ray', 'usdt', 'usdc', 'eth', 'sol', 'wsol'];
+            const rank = coolNames.includes(token.symbol.toLowerCase()) ? 1 : 0;
+            return {
+              address: token.address,
+              name: token.name,
+              symbol: token.symbol,
+              blockchain_network: 'solana',
+              decimals: token.decimals,
+              rank,
+              image: token.logoURI,
+              coingecko_id: null,
+              usd_price: 0,
+              used_in_iframe: false
+            };
+          }) as BackendToken[]
+      }))
+    );
+    return forkJoin([...requests$, solanaTokens$]).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
         const staticTokens = this.fetchStaticTokens();

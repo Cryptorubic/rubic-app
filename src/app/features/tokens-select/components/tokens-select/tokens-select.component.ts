@@ -455,7 +455,7 @@ export class TokensSelectComponent implements OnInit {
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     if (this.searchQuery) {
-      const web3Public: Web3Public = this.publicBlockchainAdapterService[this.blockchain];
+      const web3Public = this.publicBlockchainAdapterService[this.blockchain];
 
       if (!Web3Public.isAddressCorrect(this.searchQuery)) {
         return null;

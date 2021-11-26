@@ -10,7 +10,6 @@ import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/Br
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -265,7 +264,7 @@ export class BridgeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
+    const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
     return web3Public.checkBalance(token, amount, this.authService.user.address);
   }
 }

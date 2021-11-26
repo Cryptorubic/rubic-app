@@ -13,6 +13,10 @@ export class PhantomWalletAdapter extends CommonWalletAdapter<PhantomWallet | nu
     return false;
   }
 
+  get walletType(): 'solana' | 'ethLike' {
+    return 'solana';
+  }
+
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.PHANTOM;
   }
@@ -42,7 +46,7 @@ export class PhantomWalletAdapter extends CommonWalletAdapter<PhantomWallet | nu
 
     this.wallet = wallet;
     this.selectedAddress = publicKey.toBase58();
-    this.selectedChain = 'mainnet';
+    this.selectedChain = 'mainnet-beta';
 
     this.onNetworkChanges$.next(this.getNetwork());
     this.onAddressChanges$.next(this.selectedAddress);
@@ -50,15 +54,15 @@ export class PhantomWalletAdapter extends CommonWalletAdapter<PhantomWallet | nu
 
   private async handleDisconnect(wallet: PhantomWallet): Promise<void> {
     // HACK: Phantom doesn't reject or emit an event if the popup is closed
-    const handleDisconnect = this.wallet._handleDisconnect;
+    const handleDisconnect = wallet._handleDisconnect;
     try {
       await new Promise<void>((resolve, reject) => {
         const connect = () => {
-          this.wallet.off('connect', connect);
+          wallet.off('connect', connect);
           resolve();
         };
 
-        this.wallet._handleDisconnect = (...args: unknown[]) => {
+        wallet._handleDisconnect = (...args: unknown[]) => {
           wallet.off('connect', connect);
           reject(new CustomError('User close modal'));
           return handleDisconnect.apply(wallet, args);

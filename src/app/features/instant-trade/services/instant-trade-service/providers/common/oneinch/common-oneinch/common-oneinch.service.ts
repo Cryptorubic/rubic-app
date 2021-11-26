@@ -124,7 +124,7 @@ export class CommonOneinchService {
   }
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[blockchain];
+    const web3Public = this.publicBlockchainAdapterService[blockchain];
     if (Web3Public.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
@@ -190,7 +190,7 @@ export class CommonOneinchService {
       return instantTrade;
     }
 
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[blockchain];
+    const web3Public = this.publicBlockchainAdapterService[blockchain];
     const gasPrice = await web3Public.getGasPrice();
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
@@ -315,7 +315,7 @@ export class CommonOneinchService {
     const { blockchain } = trade;
     this.providerConnectorService.checkSettings(blockchain);
 
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[trade.blockchain];
+    const web3Public = this.publicBlockchainAdapterService[trade.blockchain];
     await web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
 
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(

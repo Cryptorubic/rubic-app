@@ -9,6 +9,9 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-se
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import networks from '@shared/constants/blockchain/networks';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
+import { clusterApiUrl, Connection } from '@solana/web3.js';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -59,10 +62,11 @@ export class PublicBlockchainAdapterService {
   public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Web3Public = null;
 
   // @TODO SOLANA.
-  public readonly [BLOCKCHAIN_NAME.SOLANA]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 
   constructor(
     private useTestingModeService: UseTestingModeService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly httpClient: HttpClient
   ) {
     this.defaultConnectionLinks = networks
@@ -77,6 +81,15 @@ export class PublicBlockchainAdapterService {
     );
     this.connectionLinks.forEach(connection =>
       this.addWeb3(connection.rpcLink, connection.blockchainName)
+    );
+
+    this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(
+      new Web3(),
+      BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.SOLANA),
+      this.useTestingModeService,
+      this.httpClient,
+      new Connection(clusterApiUrl('mainnet-beta')),
+      'this.walletConnectorService.provider.address'
     );
 
     this.checkAllRpcProviders();

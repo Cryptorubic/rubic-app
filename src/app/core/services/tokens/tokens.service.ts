@@ -23,6 +23,7 @@ import {
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -115,7 +116,8 @@ export class TokensService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.testTokensNumber = coingeckoTestTokens.length;
 
@@ -241,16 +243,9 @@ export class TokensService {
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
   private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
-    const blockchains: BLOCKCHAIN_NAME[] = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.HARMONY,
-      BLOCKCHAIN_NAME.AVALANCHE,
-      BLOCKCHAIN_NAME.MOONRIVER,
-      BLOCKCHAIN_NAME.FANTOM
-    ];
-    const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
+    const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
+
+    const balances$ = blockchains.map(blockchain => {
       const tokensAddresses = tokens
         .filter(token => token.blockchain === blockchain)
         .map(token => token.address)
@@ -290,7 +285,7 @@ export class TokensService {
    * @return Observable<TokenAmount> Token with balance.
    */
   public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[blockchain];
+    const web3Public = this.publicBlockchainAdapterService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
       ? from(web3Public.getTokenBalance(this.userAddress, address))
       : of(null);

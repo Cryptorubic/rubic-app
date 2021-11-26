@@ -230,5 +230,21 @@ export default [
       symbol: 'AVAX',
       decimals: 18
     }
+  },
+  {
+    id: NaN,
+    name: BLOCKCHAIN_NAME.SOLANA,
+    label: 'Solana',
+    scannerUrl: 'https://explorer.solana.com',
+    rpcLink: 'https:/https://api.mainnet-beta.solana.com',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/solana.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.SOLANA,
+      address: 'SOLANA_NATIVE_TOKEN_ADDRESS',
+      name: 'SOL',
+      symbol: 'SOL',
+      decimals: 9
+    }
   }
 ] as ReadonlyArray<Network>;

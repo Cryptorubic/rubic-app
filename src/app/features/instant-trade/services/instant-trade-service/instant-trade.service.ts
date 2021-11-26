@@ -43,6 +43,7 @@ import { SpiritSwapFantomService } from 'src/app/features/instant-trade/services
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +84,7 @@ export class InstantTradeService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
+    private readonly raydiumService: RaydiumService,
     // Providers end
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -135,6 +137,9 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
         [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: this.spookySwapFantomService,
         [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService
+      },
+      [BLOCKCHAIN_NAME.SOLANA]: {
+        [INSTANT_TRADES_PROVIDER.RAYDIUM]: this.raydiumService
       }
     };
   }

@@ -49,6 +49,7 @@ import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
 import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/TradeContractData';
 import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
+import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -74,7 +75,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  protected web3Public: Web3Public;
+  protected web3Public: Web3Public | SolanaWeb3Public;
 
   // Uniswap constants
   private blockchain: BLOCKCHAIN_NAME;
