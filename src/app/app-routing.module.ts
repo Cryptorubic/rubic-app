@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
 
 const routes: Routes = [
   {
@@ -14,7 +15,12 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: () =>
-      import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule)
+      import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule),
+    canLoad: [LandingRedirectGuard],
+    canActivate: [LandingRedirectGuard],
+    data: {
+      externalUrl: 'https://www.rubic.finance/'
+    }
   },
   {
     path: 'team',
