@@ -1,6 +1,15 @@
 import { Injectable } from '@angular/core';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  throwError
+} from 'rxjs';
 import {
   catchError,
   debounceTime,
@@ -54,7 +63,7 @@ export class MyTradesService {
 
   private walletAddress: string;
 
-  private readonly _warningHandler$ = new BehaviorSubject<void>(undefined);
+  private readonly _warningHandler$ = new Subject<void>();
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -78,7 +87,9 @@ export class MyTradesService {
     this._warningHandler$
       .pipe(
         debounceTime(500),
-        filter(() => this.router.url === '/my-trades')
+        filter(
+          () => this.router.url === '/my-trades' && Boolean(this.providerConnectorService.address)
+        )
       )
       .subscribe(() => {
         this.notificationsService.show(this.translateService.instant('errors.partialTradesData'), {

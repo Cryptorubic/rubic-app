@@ -104,11 +104,11 @@
                   <div class="img-container">
                     <img
                       (error)="handleImageError($event)"
-                      [src]="BLOCKCHAINS[trade.fromToken.blockchain].img"
+                      [src]="BLOCKCHAINS[trade.fromToken.blockchain]?.img"
                       alt="from blockchain"
                     />
                   </div>
-                  {{ BLOCKCHAINS[trade.fromToken.blockchain].name }}
+                  {{ BLOCKCHAINS[trade.fromToken.blockchain]?.name || trade.fromToken.blockchain }}
                 </div>
 
                 <ng-container *ngIf="trade.fromToken.blockchain !== trade.toToken.blockchain">
@@ -125,11 +125,11 @@
                     <div class="img-container">
                       <img
                         (error)="handleImageError($event)"
-                        [src]="BLOCKCHAINS[trade.toToken.blockchain].img"
+                        [src]="BLOCKCHAINS[trade.toToken.blockchain]?.img"
                         alt="to blockchain"
                       />
                     </div>
-                    {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+                    {{ BLOCKCHAINS[trade.toToken.blockchain]?.name || trade.toToken.blockchain }}
                   </div>
                 </ng-container>
               </ng-container>
@@ -138,11 +138,11 @@
                   <div class="img-container">
                     <img
                       (error)="handleImageError($event)"
-                      [src]="BLOCKCHAINS[trade.toToken.blockchain].img"
+                      [src]="BLOCKCHAINS[trade.toToken.blockchain]?.img"
                       alt="from blockchain"
                     />
                   </div>
-                  {{ BLOCKCHAINS[trade.toToken.blockchain].name }}
+                  {{ BLOCKCHAINS[trade.toToken.blockchain]?.name || trade.toToken.blockchain }}
                 </div>
               </ng-template>
             </a>
