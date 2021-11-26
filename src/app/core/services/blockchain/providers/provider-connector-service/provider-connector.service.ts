@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import Web3 from 'web3';
@@ -44,6 +44,10 @@ export class ProviderConnectorService {
   private readonly networkChangeSubject$: BehaviorSubject<IBlockchain>;
 
   private readonly addressChangeSubject$: BehaviorSubject<string>;
+
+  private readonly _transactionEmitter$ = new Subject<void>();
+
+  public readonly transactionEmitter$ = this._transactionEmitter$.asObservable();
 
   public providerName: WALLET_NAME;
 
@@ -111,6 +115,10 @@ export class ProviderConnectorService {
     return this.web3.eth.personal.sign(message, this.provider.address, undefined);
   }
 
+  public emitTransaction(): void {
+    this._transactionEmitter$.next();
+  }
+
   /**
    * Setup provider based on local storage.
    */
@@ -172,7 +180,8 @@ export class ProviderConnectorService {
             this.addressChangeSubject$,
             this.errorService,
             this.isIos,
-            this.window
+            this.window,
+            this.transactionEmitter$
           );
           break;
         }
