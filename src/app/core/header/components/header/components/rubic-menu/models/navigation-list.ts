@@ -22,12 +22,6 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}faq.svg`
   },
   {
-    translateKey: 'navigation.project',
-    type: 'external',
-    link: 'https://rubic.finance/',
-    imagePath: `${defaultSrc}project.svg`
-  },
-  {
     translateKey: 'navigation.team',
     type: 'internal',
     link: 'team',
