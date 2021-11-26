@@ -3,6 +3,7 @@ import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/service
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
 import {
   catchError,
+  debounceTime,
   defaultIfEmpty,
   filter,
   first,
@@ -34,6 +35,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 interface HashPair {
   fromTransactionHash: string;
@@ -52,6 +54,8 @@ export class MyTradesService {
 
   private walletAddress: string;
 
+  private readonly _warningHandler$ = new BehaviorSubject<void>(undefined);
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly providerConnectorService: ProviderConnectorService,
@@ -64,8 +68,26 @@ export class MyTradesService {
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly scannerLinkPipe: ScannerLinkPipe,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
-  ) {}
+    private readonly translateService: TranslateService,
+    private readonly router: Router
+  ) {
+    this.initWarningSubscription();
+  }
+
+  private initWarningSubscription(): void {
+    this._warningHandler$
+      .pipe(
+        debounceTime(500),
+        filter(() => this.router.url === '/my-trades')
+      )
+      .subscribe(() => {
+        this.notificationsService.show(this.translateService.instant('errors.partialTradesData'), {
+          label: this.translateService.instant('common.warning'),
+          status: TuiNotification.Warning,
+          autoClose: 7000
+        });
+      });
+  }
 
   public updateTableTrades(): Observable<TableTrade[]> {
     return combineLatest([
@@ -86,9 +108,10 @@ export class MyTradesService {
 
         return forkJoin([
           this.getBridgeTransactions(),
-          this.instantTradesApiService.getUserTrades(this.walletAddress, (err: unknown) =>
-            this.showPartialDataWarning(err)
-          ),
+          this.instantTradesApiService.getUserTrades(this.walletAddress, (err: unknown) => {
+            console.debug(err);
+            this._warningHandler$.next();
+          }),
           this.getCrossChainTrades(),
           this.getGasRefundTrades()
         ]).pipe(
@@ -126,23 +149,11 @@ export class MyTradesService {
         );
       }),
       catchError((err: unknown) => {
-        this.showPartialDataWarning(err);
+        console.debug(err);
+        this._warningHandler$.next();
         return of([]);
       })
     );
-  }
-
-  /**
-   * Displays warning notification when got partial transactions data.
-   * @param err Method error.
-   */
-  private showPartialDataWarning(err: unknown): void {
-    console.debug(err);
-    this.notificationsService.show(this.translateService.instant('errors.partialTradesData'), {
-      label: this.translateService.instant('common.warning'),
-      status: TuiNotification.Info,
-      autoClose: 7000
-    });
   }
 
   private prepareBridgeData(trade: TableTrade): TableTrade {
@@ -208,7 +219,8 @@ export class MyTradesService {
         });
       }),
       catchError((err: unknown) => {
-        this.showPartialDataWarning(err);
+        console.debug(err);
+        this._warningHandler$.next();
         return of([]);
       })
     );
@@ -246,7 +258,8 @@ export class MyTradesService {
           .filter(item => !!item)
       ),
       catchError((err: unknown) => {
-        this.showPartialDataWarning(err);
+        console.debug(err);
+        this._warningHandler$.next();
         return of([]);
       })
     );
