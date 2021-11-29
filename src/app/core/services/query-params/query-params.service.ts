@@ -18,7 +18,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
-import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 const DEFAULT_PARAMETERS = {
@@ -224,6 +223,13 @@ export class QueryParamsService {
     );
   }
 
+  /**
+   * Gets tokens by symbol or address.
+   * @param tokens Tokens list to search.
+   * @param token Token symbol or address.
+   * @param chain Token chain.
+   * @return Observable<TokenAmount> Founded token.
+   */
   private getTokenBySymbolOrAddress(
     tokens: List<TokenAmount>,
     token: string,
@@ -232,8 +238,9 @@ export class QueryParamsService {
     if (!token) {
       return of(null);
     }
+    const blockchainAdapter = this.publicBlockchainAdapterService[chain];
 
-    return Web3Public.isAddressCorrect(token)
+    return blockchainAdapter.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
   }

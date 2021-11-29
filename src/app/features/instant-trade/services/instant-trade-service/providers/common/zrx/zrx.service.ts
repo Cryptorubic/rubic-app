@@ -42,7 +42,9 @@ const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 export class ZrxService implements ItProvider {
   private readonly gasMargin: number;
 
-  private web3Public: Web3Public;
+  private fromBlockchainAdapter: Web3Public;
+
+  private toBlockchainAdapter: Web3Public;
 
   private settings: ItSettingsForm;
 
@@ -105,8 +107,9 @@ export class ZrxService implements ItProvider {
    * Updates zrx data, which depends on selected blockchain.
    */
   private setZrxParams(): void {
-    const { fromBlockchain } = this.swapFormService.inputValue;
-    this.web3Public = this.publicBlockchainAdapterService[fromBlockchain] as Web3Public;
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    this.fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain] as Web3Public;
+    this.toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain] as Web3Public;
 
     let blockchain: BLOCKCHAIN_NAME;
     if (this.isTestingMode) {
@@ -121,7 +124,7 @@ export class ZrxService implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (this.fromBlockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return this.tradeDataIsUpdated$.pipe(
@@ -129,7 +132,7 @@ export class ZrxService implements ItProvider {
       first(),
       mergeMap(() => {
         this.tradeDataIsUpdated$.next(false);
-        return this.web3Public.getAllowance(
+        return this.fromBlockchainAdapter.getAllowance(
           tokenAddress,
           this.walletAddress,
           this.currentTradeData?.allowanceTarget
@@ -157,10 +160,10 @@ export class ZrxService implements ItProvider {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
 
-    if (Web3Public.isNativeAddress(fromToken.address)) {
+    if (this.fromBlockchainAdapter.isNativeAddress(fromToken.address)) {
       fromTokenClone.address = ZRX_NATIVE_TOKEN;
     }
-    if (Web3Public.isNativeAddress(toToken.address)) {
+    if (this.toBlockchainAdapter.isNativeAddress(toToken.address)) {
       toTokenClone.address = ZRX_NATIVE_TOKEN;
     }
 
@@ -214,7 +217,7 @@ export class ZrxService implements ItProvider {
     this.providerConnectorService.checkSettings(trade.blockchain);
 
     const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
-    await this.web3Public.checkBalance(trade.from.token, amount, this.walletAddress);
+    await this.fromBlockchainAdapter.checkBalance(trade.from.token, amount, this.walletAddress);
 
     return this.web3PrivateService.trySendTransaction(
       this.currentTradeData.to,

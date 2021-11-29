@@ -75,7 +75,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  protected web3Public: Web3Public | SolanaWeb3Public;
+  protected blockchainAdapter: Web3Public | SolanaWeb3Public;
 
   // Uniswap constants
   private blockchain: BLOCKCHAIN_NAME;
@@ -129,7 +129,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
     this.blockchain = uniswapConstants.blockchain;
-    this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
+    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
 
     this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
@@ -138,7 +138,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
+        this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
 
         this.contractAddress = uniswapConstants.contractAddressNetMode.testnet;
         this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
@@ -154,7 +154,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
    * @return Promise<Multicall[]>
    */
   protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
-    return this.web3Public.multicallContractMethods<{ amounts: string[] }>(
+    return this.blockchainAdapter.multicallContractMethods<{ amounts: string[] }>(
       this.contractAddress,
       this.contractAbi,
       routesMethodArguments.map((methodArguments: string[]) => ({
@@ -165,11 +165,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
-      this.web3Public.getAllowance(tokenAddress, this.walletAddress, this.contractAddress)
+      this.blockchainAdapter.getAllowance(tokenAddress, this.walletAddress, this.contractAddress)
     );
   }
 
@@ -334,11 +334,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     let estimatedGasPredictionMethod = this.calculateTokensToTokensGasLimit;
 
-    if (Web3Public.isNativeAddress(fromTokenClone.address)) {
+    if (this.blockchainAdapter.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateEthToTokensGasLimit;
     }
-    if (Web3Public.isNativeAddress(toTokenClone.address)) {
+    if (this.blockchainAdapter.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.wethAddress;
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
     }
@@ -428,7 +428,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
+        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
           this.contractAbi,
           this.contractAddress,
           this.walletAddress,
@@ -465,7 +465,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       route.path.map(token => token.address),
       deadline
     );
-    const estimatedGas = await this.web3Public
+    const estimatedGas = await this.blockchainAdapter
       .getEstimatedGas(
         this.contractAbi,
         this.contractAddress,
@@ -579,10 +579,10 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const fromTokenClone = { ...fromToken };
     const toTokenClone = { ...toToken };
 
-    if (Web3Public.isNativeAddress(fromTokenClone.address)) {
+    if (this.blockchainAdapter.isNativeAddress(fromTokenClone.address)) {
       fromTokenClone.address = this.wethAddress;
     }
-    if (Web3Public.isNativeAddress(toTokenClone.address)) {
+    if (this.blockchainAdapter.isNativeAddress(toTokenClone.address)) {
       toTokenClone.address = this.wethAddress;
     }
 
@@ -598,7 +598,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(trade.blockchain);
-    await this.web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
+    await this.blockchainAdapter.checkBalance(
+      trade.from.token,
+      trade.from.amount,
+      this.walletAddress
+    );
 
     const uniswapV2Trade: UniswapV2Trade = {
       amountIn: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
@@ -613,11 +617,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
     let getTradeDataMethod = this.getTokensToTokensTradeData;
     let getTradeSupportingFeeDataMethod = this.getTokensToTokensTradeSupportingFeeData;
-    if (Web3Public.isNativeAddress(trade.from.token.address)) {
+    if (this.blockchainAdapter.isNativeAddress(trade.from.token.address)) {
       getTradeDataMethod = this.getEthToTokensTradeData;
       getTradeSupportingFeeDataMethod = this.getEthToTokensTradeSupportingFeeData;
     }
-    if (Web3Public.isNativeAddress(trade.to.token.address)) {
+    if (this.blockchainAdapter.isNativeAddress(trade.to.token.address)) {
       getTradeDataMethod = this.getTokensToEthTradeData;
       getTradeSupportingFeeDataMethod = this.getTokensToEthTradeSupportingFeeData;
     }
@@ -653,7 +657,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       options?: TransactionOptions;
     }): Promise<boolean> => {
       try {
-        await this.web3Public.tryExecuteContractMethod(
+        await this.blockchainAdapter.tryExecuteContractMethod(
           this.contractAddress,
           this.contractAbi,
           methodData.methodName,

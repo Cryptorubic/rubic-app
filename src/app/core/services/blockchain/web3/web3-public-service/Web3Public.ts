@@ -92,7 +92,7 @@ export class Web3Public {
    * checks if a given address is a valid Ethereum address
    * @param address the address to check validity
    */
-  static isAddressCorrect(address: string): boolean {
+  public isAddressCorrect(address: string): boolean {
     return isAddress(address);
   }
 
@@ -116,7 +116,7 @@ export class Web3Public {
    * checks if address is Ether native address
    * @param address address to check
    */
-  static isNativeAddress = (address: string): boolean => {
+  public isNativeAddress = (address: string): boolean => {
     return address === NATIVE_ETH_LIKE_TOKEN_ADDRESS;
   };
 
@@ -182,7 +182,7 @@ export class Web3Public {
     tokenAddress: string
   ): Promise<BigNumber> {
     let balance;
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (this.isNativeAddress(tokenAddress)) {
       balance = await this.web3.eth.getBalance(userAddress);
     } else {
       balance = await this.getTokenBalance(userAddress, tokenAddress);
@@ -407,7 +407,7 @@ export class Web3Public {
 
     return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
       if (!tokensCache[tokenAddress]) {
-        if (Web3Public.isNativeAddress(tokenAddress)) {
+        if (this.isNativeAddress(tokenAddress)) {
           return {
             ...this.blockchain.nativeCoin,
             blockchain: this.blockchain.name
@@ -452,7 +452,7 @@ export class Web3Public {
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokensAddresses[0]);
-    const indexOfNativeCoin = tokensAddresses.findIndex(Web3Public.isNativeAddress);
+    const indexOfNativeCoin = tokensAddresses.findIndex(this.isNativeAddress);
     const promises: [Promise<MulticallResponse[]>, Promise<BigNumber>] = [undefined, undefined];
 
     if (indexOfNativeCoin !== -1) {
@@ -581,7 +581,7 @@ export class Web3Public {
     userAddress: string
   ): Promise<void> {
     let balance: BigNumber;
-    if (Web3Public.isNativeAddress(token.address)) {
+    if (this.isNativeAddress(token.address)) {
       balance = await this.getBalance(userAddress, {
         inWei: true
       });

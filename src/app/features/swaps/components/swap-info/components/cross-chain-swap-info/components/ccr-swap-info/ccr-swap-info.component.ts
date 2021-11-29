@@ -9,10 +9,10 @@ import { SettingsService } from '@features/swaps/services/settings-service/setti
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
-import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainTradeInfo';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 
 @Component({
   selector: 'app-ccr-swap-info',
@@ -58,6 +58,7 @@ export class CcrSwapInfoComponent implements OnInit {
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -98,9 +99,11 @@ export class CcrSwapInfoComponent implements OnInit {
             this.crossChainRoutingService.getTradeInfo()
           ]).pipe(
             map(([tokens, nativeCoinPrice, tradeInfo]) => {
+              const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
               this.nativeCoinSymbol = tokens.find(
                 token =>
-                  token.blockchain === fromBlockchain && Web3Public.isNativeAddress(token.address)
+                  token.blockchain === fromBlockchain &&
+                  blockchainAdapter?.isNativeAddress(token.address)
               ).symbol;
               this.setTradeInfoParameters(tradeInfo, nativeCoinPrice);
 

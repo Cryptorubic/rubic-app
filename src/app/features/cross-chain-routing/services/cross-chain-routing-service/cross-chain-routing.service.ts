@@ -151,13 +151,13 @@ export class CrossChainRoutingService {
     contractIndex: number,
     fromToken: BlockchainToken
   ): Promise<boolean> {
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
-    if (Web3Public.isNativeAddress(fromToken.address)) {
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    if (blockchainAdapter.isNativeAddress(fromToken.address)) {
       return false;
     }
 
     const contractAddress = this.contractAddresses[fromBlockchain][contractIndex];
-    return web3Public
+    return blockchainAdapter
       .getAllowance(fromToken.address, this.authService.userAddress, contractAddress)
       .then(allowance => allowance.eq(0));
   }
@@ -793,8 +793,10 @@ export class CrossChainRoutingService {
     value: string;
   }> {
     const contractAddress = this.contractAddresses[trade.fromBlockchain][trade.fromContractIndex];
+    const blockchainFromAdapter = this.publicBlockchainAdapterService[trade.fromBlockchain];
+    const blockchainToAdapter = this.publicBlockchainAdapterService[trade.toBlockchain];
 
-    const isFromTokenNative = Web3Public.isNativeAddress(trade.tokenIn.address);
+    const isFromTokenNative = blockchainFromAdapter.isNativeAddress(trade.tokenIn.address);
     const methodName = isFromTokenNative
       ? CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_CRYPTO
       : CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_TOKENS;
@@ -821,7 +823,7 @@ export class CrossChainRoutingService {
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         walletAddress,
-        Web3Public.isNativeAddress(trade.tokenOut.address)
+        blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
       ]
     ];
 

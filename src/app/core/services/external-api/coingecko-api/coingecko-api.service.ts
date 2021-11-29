@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { Cacheable } from 'ts-cacheable';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -29,7 +29,10 @@ export class CoingeckoApiService {
 
   private readonly tokenBlockchainId: Record<SupportedBlockchain, string>;
 
-  constructor(private readonly httpClient: HttpClient) {
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly blockchainAdapterService: PublicBlockchainAdapterService
+  ) {
     this.nativeCoinsCoingeckoIds = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binancecoin',
@@ -127,7 +130,8 @@ export class CoingeckoApiService {
     address: string;
     blockchain: BLOCKCHAIN_NAME;
   }): Observable<number | undefined> {
-    if (Web3Public.isNativeAddress(token.address)) {
+    const blockchainAdapter = this.blockchainAdapterService[token.blockchain];
+    if (blockchainAdapter.isNativeAddress(token.address)) {
       return this.getNativeCoinPrice(token.blockchain);
     }
     return this.getCommonTokenPrice(token.blockchain, token.address);

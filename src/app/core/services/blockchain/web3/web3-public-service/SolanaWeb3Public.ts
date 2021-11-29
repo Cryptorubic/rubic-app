@@ -5,13 +5,12 @@ import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
+import { AbiItem, fromWei, toChecksumAddress, toWei } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import {
   NATIVE_ETH_LIKE_TOKEN_ADDRESS,
   NATIVE_SOLANA_MINT_ADDRESS
 } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
-import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { from, Observable, of } from 'rxjs';
@@ -82,25 +81,20 @@ export class SolanaWeb3Public {
     return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
   }
 
-  static addressToBytes32(address: string): string {
-    if (address.slice(0, 2) !== '0x' || address.length !== 42) {
-      console.error('Wrong address format');
-      throw new UndefinedError();
-    }
-
-    return `0x${address.slice(2).padStart(64, '0')}`;
-  }
-
   static toChecksumAddress(address: string): string {
     return toChecksumAddress(address);
   }
 
   /**
-   * checks if a given address is a valid Ethereum address
-   * @param address the address to check validity
+   * Checks if a given address is a valid Solana address.
+   * @param address The address to check validity.
    */
-  static isAddressCorrect(address: string): boolean {
-    return isAddress(address);
+  public isAddressCorrect(address: string): boolean {
+    try {
+      return Boolean(new PublicKey(address)?.toBase58());
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -123,7 +117,7 @@ export class SolanaWeb3Public {
    * checks if address is Ether native address
    * @param address address to check
    */
-  static isNativeAddress = (address: string): boolean => {
+  public isNativeAddress = (address: string): boolean => {
     return address === NATIVE_SOLANA_MINT_ADDRESS;
   };
 
@@ -189,7 +183,7 @@ export class SolanaWeb3Public {
     tokenAddress: string
   ): Promise<BigNumber> {
     let balance;
-    if (SolanaWeb3Public.isNativeAddress(tokenAddress)) {
+    if (this.isNativeAddress(tokenAddress)) {
       balance = await this.web3.eth.getBalance(userAddress);
     } else {
       balance = await this.getTokenBalance(userAddress, tokenAddress);
@@ -414,7 +408,7 @@ export class SolanaWeb3Public {
 
     return async (tokenAddress: string): Promise<BlockchainTokenExtended> => {
       if (!tokensCache[tokenAddress]) {
-        if (SolanaWeb3Public.isNativeAddress(tokenAddress)) {
+        if (this.isNativeAddress(tokenAddress)) {
           return {
             ...this.blockchain.nativeCoin,
             blockchain: this.blockchain.name
@@ -607,7 +601,7 @@ export class SolanaWeb3Public {
     userAddress: string
   ): Promise<void> {
     let balance: BigNumber;
-    if (SolanaWeb3Public.isNativeAddress(token.address)) {
+    if (this.isNativeAddress(token.address)) {
       balance = await this.getBalance(userAddress, {
         inWei: true
       });

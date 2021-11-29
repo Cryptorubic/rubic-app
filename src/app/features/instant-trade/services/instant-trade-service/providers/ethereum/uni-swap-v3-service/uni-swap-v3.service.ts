@@ -68,7 +68,7 @@ export class UniSwapV3Service implements ItProvider {
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  private web3Public: Web3Public;
+  private blockchainAdapter: Web3Public;
 
   private liquidityPoolsController: LiquidityPoolsController;
 
@@ -91,8 +91,8 @@ export class UniSwapV3Service implements ItProvider {
     this.gasMargin = 1.2;
 
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    this.web3Public = this.publicBlockchainAdapterService[this.blockchain];
-    this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public);
+    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
+    this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainAdapter);
     this.wethAddress = wethAddressNetMode.mainnet;
 
     this.settingsService.instantTradeValueChanges
@@ -110,19 +110,19 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.web3Public = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
-        this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, true);
+        this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
+        this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainAdapter, true);
         this.wethAddress = wethAddressNetMode.testnet;
       }
     });
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
-      this.web3Public.getAllowance(
+      this.blockchainAdapter.getAllowance(
         tokenAddress,
         this.walletAddress,
         uniSwapV3ContractData.swapRouter.address
@@ -227,11 +227,11 @@ export class UniSwapV3Service implements ItProvider {
     const fromTokenWrapped = { ...fromToken };
     const toTokenWrapped = { ...toToken };
     const isEth: IsEthFromOrTo = {} as IsEthFromOrTo;
-    if (Web3Public.isNativeAddress(fromToken.address)) {
+    if (this.blockchainAdapter.isNativeAddress(fromToken.address)) {
       fromTokenWrapped.address = this.wethAddress;
       isEth.from = true;
     }
-    if (Web3Public.isNativeAddress(toToken.address)) {
+    if (this.blockchainAdapter.isNativeAddress(toToken.address)) {
       toTokenWrapped.address = this.wethAddress;
       isEth.to = true;
     }
@@ -293,7 +293,7 @@ export class UniSwapV3Service implements ItProvider {
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
+        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
           uniSwapV3ContractData.swapRouter.abi,
           uniSwapV3ContractData.swapRouter.address,
           this.walletAddress,
@@ -330,7 +330,7 @@ export class UniSwapV3Service implements ItProvider {
       isEth,
       deadline
     );
-    const estimatedGas = await this.web3Public
+    const estimatedGas = await this.blockchainAdapter
       .getEstimatedGas(
         uniSwapV3ContractData.swapRouter.abi,
         uniSwapV3ContractData.swapRouter.address,
@@ -439,7 +439,11 @@ export class UniSwapV3Service implements ItProvider {
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     this.providerConnectorService.checkSettings(this.blockchain);
-    await this.web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
+    await this.blockchainAdapter.checkBalance(
+      trade.from.token,
+      trade.from.amount,
+      this.walletAddress
+    );
 
     const fromToken = trade.from.token;
     const toToken = trade.to.token;

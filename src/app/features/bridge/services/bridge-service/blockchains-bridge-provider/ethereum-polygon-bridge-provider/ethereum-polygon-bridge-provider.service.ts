@@ -44,9 +44,9 @@ const ERC20_TOKEN_TYPE = '0x8ae85d849167ff996c04040c44924fd364217285e4cad818292c
 
 @Injectable()
 export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvider {
-  private readonly web3PublicEth: Web3Public;
+  private readonly ethBlockchainAdapter: Web3Public;
 
-  private readonly web3PublicPolygon: Web3Public;
+  private readonly polygonBlockchainAdapter: Web3Public;
 
   constructor(
     private readonly httpClient: HttpClient,
@@ -57,8 +57,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     private readonly authService: AuthService
   ) {
     super();
-    this.web3PublicEth = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.ETHEREUM];
-    this.web3PublicPolygon = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.POLYGON];
+    this.ethBlockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.ETHEREUM];
+    this.polygonBlockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.POLYGON];
 
     this.tokensService.tokens$.pipe(first(tokens => !!tokens.size)).subscribe(tokenAmounts => {
       this.getTokensList(tokenAmounts);
@@ -191,7 +191,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     maxAge: 15 * 60 * 1000
   })
   private async getPredicateAddress(tokenAddress: string): Promise<string> {
-    const tokenType = await this.web3PublicEth.callContractMethod(
+    const tokenType = await this.ethBlockchainAdapter.callContractMethod(
       posRootChainManagerAddress,
       posRootChainManagerAbi,
       'tokenToType',
@@ -200,7 +200,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     if (!tokenType) {
       throw new Error('Invalid Token Type');
     }
-    return await this.web3PublicEth.callContractMethod(
+    return await this.ethBlockchainAdapter.callContractMethod(
       posRootChainManagerAddress,
       posRootChainManagerAbi,
       'typeToPredicate',
@@ -214,7 +214,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }
 
     const token = bridgeTrade.token.tokenByBlockchain[BLOCKCHAIN_NAME.ETHEREUM];
-    if (Web3Public.isNativeAddress(token.address)) {
+    if (this.ethBlockchainAdapter.isNativeAddress(token.address)) {
       return of(false);
     }
 
@@ -222,7 +222,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       (async () => {
         const predicateAddress = await this.getPredicateAddress(token.address);
         const walletAddress = this.authService.userAddress;
-        const allowance = await this.web3PublicEth.getAllowance(
+        const allowance = await this.ethBlockchainAdapter.getAllowance(
           token.address,
           walletAddress,
           predicateAddress
@@ -274,7 +274,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     };
 
     if (bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-      if (Web3Public.isNativeAddress(fromToken.address)) {
+      if (this.ethBlockchainAdapter.isNativeAddress(fromToken.address)) {
         return from(
           this.web3PrivateService.tryExecuteContractMethod(
             posRootChainManagerAddress,

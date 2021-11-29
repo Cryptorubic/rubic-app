@@ -124,12 +124,14 @@ export class CommonOneinchService {
   }
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
-    const web3Public = this.publicBlockchainAdapterService[blockchain];
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
+    if (blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return this.loadApproveAddress(BlockchainsInfo.getBlockchainByName(blockchain).id).pipe(
-      switchMap(address => from(web3Public.getAllowance(tokenAddress, this.walletAddress, address)))
+      switchMap(address =>
+        from(blockchainAdapter.getAllowance(tokenAddress, this.walletAddress, address))
+      )
     );
   }
 
