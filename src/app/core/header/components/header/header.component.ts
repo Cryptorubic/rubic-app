@@ -64,7 +64,7 @@ export class HeaderComponent implements AfterViewInit {
   public isSettingsOpened = false;
 
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
 
   public get rootPath(): boolean {
