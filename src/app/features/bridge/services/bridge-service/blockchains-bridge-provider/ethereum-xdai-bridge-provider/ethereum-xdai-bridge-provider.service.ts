@@ -10,7 +10,7 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
@@ -35,7 +35,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         },
         [BLOCKCHAIN_NAME.XDAI]: {
           blockchain: BLOCKCHAIN_NAME.XDAI,
-          address: NATIVE_TOKEN_ADDRESS,
+          address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
           name: 'xDai',
           symbol: 'XDAI',
           decimals: 18,

@@ -13,7 +13,7 @@ import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
@@ -230,7 +230,7 @@ export class TokensService {
         return {
           ...token,
           ...currentToken,
-          amount: balance
+          amount: balance || new BigNumber(NaN)
         };
       });
       subject$.next(List(updatedTokens));
@@ -354,7 +354,7 @@ export class TokensService {
    */
   public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
     const nativeCoin = this.tokens.find(token =>
-      TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
+      TokensService.areTokensEqual(token, { blockchain, address: NATIVE_ETH_LIKE_TOKEN_ADDRESS })
     );
     return this.coingeckoApiService
       .getNativeCoinPrice(blockchain)

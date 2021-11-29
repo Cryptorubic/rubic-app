@@ -16,7 +16,7 @@ import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import {
   ItSettingsForm,
   SettingsService
@@ -88,10 +88,10 @@ export class CommonOneinchService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): { fromTokenAddress: string; toTokenAddress: string } {
-    if (fromTokenAddress === NATIVE_TOKEN_ADDRESS) {
+    if (fromTokenAddress === NATIVE_ETH_LIKE_TOKEN_ADDRESS) {
       fromTokenAddress = this.oneInchNativeAddress;
     }
-    if (toTokenAddress === NATIVE_TOKEN_ADDRESS) {
+    if (toTokenAddress === NATIVE_ETH_LIKE_TOKEN_ADDRESS) {
       toTokenAddress = this.oneInchNativeAddress;
     }
     return { fromTokenAddress, toTokenAddress };
@@ -287,13 +287,13 @@ export class CommonOneinchService {
     const promises = addressesPath.map(async (wrappedTokenAddress, index) => {
       const tokenAddress =
         wrappedTokenAddress === this.oneInchNativeAddress
-          ? NATIVE_TOKEN_ADDRESS
+          ? NATIVE_ETH_LIKE_TOKEN_ADDRESS
           : wrappedTokenAddress;
       let symbol = await this.tokensService.getTokenSymbol(blockchain, tokenAddress);
       if (
         index !== 0 &&
         index !== addressesPath.length - 1 &&
-        tokenAddress === NATIVE_TOKEN_ADDRESS
+        tokenAddress === NATIVE_ETH_LIKE_TOKEN_ADDRESS
       ) {
         symbol = `W${symbol}`;
       }

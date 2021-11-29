@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { startWith } from 'rxjs/operators';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
@@ -42,13 +42,13 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
   get tokenInfoUrl(): string {
     let tokenAddress: string;
     if (this.toToken && Web3Public.isAddressCorrect(this.toToken.address)) {
-      if (this.toToken.address === NATIVE_TOKEN_ADDRESS) {
+      if (this.toToken.address === NATIVE_ETH_LIKE_TOKEN_ADDRESS) {
         tokenAddress = WETH_ADDRESSES[this.toToken.blockchain as WethBlockchains];
       } else {
         tokenAddress = this.toToken.address;
       }
     } else if (this.fromToken) {
-      if (this.fromToken.address === NATIVE_TOKEN_ADDRESS) {
+      if (this.fromToken.address === NATIVE_ETH_LIKE_TOKEN_ADDRESS) {
         tokenAddress = WETH_ADDRESSES[this.fromToken.blockchain as WethBlockchains];
       } else {
         tokenAddress = this.fromToken.address;

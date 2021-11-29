@@ -9,7 +9,7 @@ import { List } from 'immutable';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { compareTokens } from '@shared/utils/utils';
 
 export interface TokenInfo {
@@ -57,14 +57,14 @@ export class BuyTokenComponent {
       },
       to: {
         blockchain: BLOCKCHAIN_NAME.FANTOM,
-        address: NATIVE_TOKEN_ADDRESS,
+        address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
         symbol: 'FTM'
       }
     };
     this.defaultTokens = {
       from: {
         blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-        address: NATIVE_TOKEN_ADDRESS,
+        address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
         symbol: 'ETH',
         amount: new BigNumber(1)
       },
