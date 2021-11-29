@@ -20,6 +20,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
 import {
+  PROVIDERS_LIST,
   WALLET_NAME,
   WalletProvider
 } from 'src/app/core/wallets/components/wallets-modal/models/providers';
@@ -36,14 +37,14 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$: Observable<boolean>;
 
-  private readonly allProviders: WalletProvider[];
+  private readonly allProviders: ReadonlyArray<WalletProvider>;
 
   private readonly mobileDisplayStatus$: Observable<boolean>;
 
-  public get providers(): WalletProvider[] {
+  public get providers(): ReadonlyArray<WalletProvider> {
     const deviceFiltered = this.isMobile
       ? this.allProviders.filter(provider => !provider.desktopOnly)
-      : this.allProviders;
+      : this.allProviders.filter(provider => !provider.mobileOnly);
 
     return this.iframeService.isIframe && this.iframeService.device === 'mobile'
       ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
@@ -104,38 +105,7 @@ export class WalletsModalComponent implements OnInit {
   ) {
     this.walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
     this.mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
-    this.allProviders = [
-      {
-        name: 'MetaMask',
-        value: WALLET_NAME.METAMASK,
-        img: './assets/images/icons/wallets/metamask.svg',
-        desktopOnly: false,
-        display: true,
-        supportsInHorizontalIframe: true,
-        supportsInVerticalIframe: true,
-        supportsInVerticalMobileIframe: false
-      },
-      {
-        name: 'Coinbase wallet',
-        value: WALLET_NAME.WALLET_LINK,
-        img: './assets/images/icons/wallets/coinbase.png',
-        desktopOnly: false,
-        display: true,
-        supportsInHorizontalIframe: false,
-        supportsInVerticalIframe: false,
-        supportsInVerticalMobileIframe: true
-      },
-      {
-        name: 'WalletConnect',
-        value: WALLET_NAME.WALLET_CONNECT,
-        img: './assets/images/icons/wallets/walletconnect.svg',
-        desktopOnly: false,
-        display: true,
-        supportsInHorizontalIframe: false,
-        supportsInVerticalIframe: true,
-        supportsInVerticalMobileIframe: true
-      }
-    ];
+    this.allProviders = PROVIDERS_LIST;
   }
 
   ngOnInit() {
