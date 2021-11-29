@@ -588,7 +588,7 @@
     }
   },
   "banner": {
-    "defaultText": "Rubic Multi-Chain запустился! Совершайте обмены между 9,500 токенами между Ethereum, BSC, Polygon и  Avalanche.",
+    "defaultText": "Rubic Multi-Chain запустился! Совершайте обмены между 10,000 токенами между Ethereum, BSC, Polygon, Avalanche, MoonRiver и Fantom.",
     "customText": "Fantom теперь доступна для Multi-Chain и On-Chain свапов.",
     "link": "Попробуйте уже сейчас!"
   },

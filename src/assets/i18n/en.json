@@ -586,7 +586,7 @@
     }
   },
   "banner": {
-    "defaultText": "Rubic Cross-Chain has launched! Swap between 9,500 tokens across Ethereum, BSC, Polygon & Avalanche.",
+    "defaultText": "Rubic Cross-Chain has launched! Swap between 10,000 tokens across Ethereum, BSC, Polygon, Avalanche, MoonRiver and Fantom.",
     "customText": "Fantom is now available for Multi-Chain and On-Chain Swaps.",
     "link": "Try it today!"
   },
