@@ -589,7 +589,7 @@
     }
   },
   "banner": {
-    "defaultText": "Rubic Multi-Chain 已經推出！在以太坊、BSC、Polygon, Avalanche, MoonRiver 和 Avalanche 之間交換 10,000 個代幣。",
+    "defaultText": "Rubic Multi-Chain 已經推出！在以太坊、BSC, Polygon, Avalanche, MoonRiver 和 Fantom 之間交換 10,000 個代幣。",
     "customText": "Fantom 現在可用於多鍊和鏈上交換。",
     "link": "今天試試!"
   },

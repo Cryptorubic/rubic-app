@@ -19,6 +19,10 @@
 
   backdrop-filter: blur(20px);
 
+  @include b($tablet) {
+    background-image: url('/assets/images/total-values/graphic-mobile.png');
+  }
+
   &__title {
     margin-bottom: 15px;
 
@@ -40,12 +44,6 @@
   &__time {
     font-weight: 300;
     font-size: 18px;
-  }
-}
-
-@include b($tablet) {
-  .rubic-volume {
-    background-image: url('/assets/images/total-values/graphic-mobile.png');
   }
 }
 
