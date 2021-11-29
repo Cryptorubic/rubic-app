@@ -19,7 +19,7 @@ type LoadResult = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | b
   providedIn: 'root'
 })
 export class LandingRedirectGuard implements CanActivate, CanLoad {
-  private readonly redirectUrl = 'https://rubic.finance/';
+  private readonly redirectUrl = 'https://rubic.exchange/';
 
   constructor(@Inject(WINDOW) private readonly window: RubicWindow) {}
 

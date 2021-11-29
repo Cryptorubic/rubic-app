@@ -111,7 +111,7 @@ export class TokensListComponent implements AfterViewInit {
   public readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport>;
 
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `https://app.rubic.exchange${this.queryParamsService.noFrameLink}`;
   }
 
   get user$(): Observable<UserInterface> {

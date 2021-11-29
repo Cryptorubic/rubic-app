@@ -12,7 +12,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 })
 export class IframeWalletsWarningComponent {
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `https://app.rubic.exchange${this.queryParamsService.noFrameLink}`;
   }
 
   public get appearance(): 'vertical' | 'horizontal' {

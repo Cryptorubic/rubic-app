@@ -286,7 +286,7 @@ export class ProviderConnectorService {
       },
       rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcLink],
       blockExplorerUrls: [network.scannerUrl],
-      iconUrls: [`https://rubic.exchange/${network.imagePath}`]
+      iconUrls: [`https://app.rubic.exchange/${network.imagePath}`]
     } as AddEthChainParams;
     await this.provider.addChain(params);
   }

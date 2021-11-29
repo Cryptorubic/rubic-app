@@ -19,7 +19,7 @@ const routes: Routes = [
     canLoad: [LandingRedirectGuard],
     canActivate: [LandingRedirectGuard],
     data: {
-      externalUrl: 'https://www.rubic.finance/'
+      externalUrl: 'https://www.rubic.exchange/'
     }
   },
   {

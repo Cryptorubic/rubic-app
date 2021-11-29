@@ -74,7 +74,7 @@ export class WalletLinkProvider extends PrivateProvider {
     } else {
       this.defaultWalletParams = {
         appName: 'Rubic',
-        appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
+        appLogoUrl: 'https://app.rubic.exchange/assets/images/rubic-logo.svg',
         darkMode: false
       };
 

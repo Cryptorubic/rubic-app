@@ -6,7 +6,7 @@ export const NAVIGATION_LIST = [
   {
     translateKey: 'navigation.about',
     type: 'external',
-    link: 'https://rubic.finance/',
+    link: 'https://rubic.exchange/',
     imagePath: `${defaultSrc}about.svg`
   },
   {
