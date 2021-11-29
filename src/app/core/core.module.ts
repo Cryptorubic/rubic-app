@@ -11,6 +11,7 @@ import { WalletsModule } from 'src/app/core/wallets/wallets.module';
 import { NG_EVENT_PLUGINS } from '@tinkoff/ng-event-plugins';
 import { RubicExchangeInterceptor } from 'src/app/core/interceptors/rubic-exchange-interceptor';
 import { SharedModule } from '@shared/shared.module';
+import { WalletsInfoInterceptor } from '@core/interceptors/wallets-info-interceptor';
 import { MaintenanceComponent } from './header/components/maintenance/maintenance.component';
 import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
@@ -26,6 +27,11 @@ import { ErrorsModule } from './errors/errors.module';
       provide: APP_INITIALIZER,
       useFactory: configLoader,
       deps: [ContentLoaderService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: WalletsInfoInterceptor,
       multi: true
     },
     {

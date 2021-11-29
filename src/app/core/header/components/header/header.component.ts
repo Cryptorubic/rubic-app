@@ -125,7 +125,7 @@ export class HeaderComponent implements AfterViewInit {
 
   private async loadUser(): Promise<void> {
     const { isIframe } = this.iframeService;
-    this.storeService.fetchData(isIframe);
+    this.storeService.fetchData();
     if (!isIframe) {
       try {
         await this.authService.loadUser();

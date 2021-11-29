@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import Web3 from 'web3';
@@ -18,6 +18,24 @@ import { WalletLinkProvider } from 'src/app/core/services/blockchain/providers/p
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
+import { TrustWalletProvider } from '@core/services/blockchain/providers/private-provider/trust-wallet/trust-wallet-provider';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
+import { HttpService } from '@core/services/http/http.service';
+import { map } from 'rxjs/operators';
+import { TUI_IS_IOS } from '@taiga-ui/cdk';
+
+interface WCWallets {
+  [P: string]: {
+    mobile: {
+      native: string;
+      universal: string;
+    };
+    metadata: {
+      shortName: string;
+    };
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +45,15 @@ export class ProviderConnectorService {
 
   private readonly addressChangeSubject$: BehaviorSubject<string>;
 
+  private readonly _transactionEmitter$ = new Subject<void>();
+
+  public readonly transactionEmitter$ = this._transactionEmitter$.asObservable();
+
   public providerName: WALLET_NAME;
 
   private privateProvider: PrivateProvider;
+
+  private walletConnectWallets: string[];
 
   public get address(): string | undefined {
     return this.provider?.address;
@@ -72,7 +96,10 @@ export class ProviderConnectorService {
   constructor(
     private readonly storage: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly httpService: HttpService,
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(TUI_IS_IOS) private readonly isIos: boolean
   ) {
     this.web3 = new Web3();
     this.networkChangeSubject$ = new BehaviorSubject<IBlockchain>(null);
@@ -86,6 +113,10 @@ export class ProviderConnectorService {
    */
   public async signPersonal(message: string): Promise<string> {
     return this.web3.eth.personal.sign(message, this.provider.address, undefined);
+  }
+
+  public emitTransaction(): void {
+    this._transactionEmitter$.next();
   }
 
   /**
@@ -142,12 +173,28 @@ export class ProviderConnectorService {
           );
           break;
         }
+        case WALLET_NAME.TRUST_WALLET: {
+          this.provider = new TrustWalletProvider(
+            this.web3,
+            this.networkChangeSubject$,
+            this.addressChangeSubject$,
+            this.errorService,
+            this.isIos,
+            this.window,
+            this.transactionEmitter$
+          );
+          break;
+        }
         case WALLET_NAME.WALLET_CONNECT: {
+          if (!this.walletConnectWallets) {
+            this.walletConnectWallets = await this.getWalletConnectWallets().toPromise();
+          }
           this.provider = new WalletConnectProvider(
             this.web3,
             this.networkChangeSubject$,
             this.addressChangeSubject$,
-            this.errorService
+            this.errorService,
+            this.walletConnectWallets
           );
           break;
         }
@@ -270,5 +317,23 @@ export class ProviderConnectorService {
         return false;
       }
     }
+  }
+
+  /**
+   * Fetches wallets from WC API, filters by black list and takes names.
+   * @return Observable<string[]> List of wallets names.
+   */
+  private getWalletConnectWallets(): Observable<string[]> {
+    const url = 'https://registry.walletconnect.org/data/wallets.json';
+    const blackListWallets = ['trust'];
+    return this.httpService.get<WCWallets>(null, null, url).pipe(
+      map(registry => {
+        const mobileWallets = Object.values(registry).filter(el => el.mobile?.native);
+        const allowMobileWallets = mobileWallets.filter(
+          el => !blackListWallets.includes(el.metadata.shortName.toLowerCase())
+        );
+        return allowMobileWallets.map(el => el.metadata.shortName);
+      })
+    );
   }
 }

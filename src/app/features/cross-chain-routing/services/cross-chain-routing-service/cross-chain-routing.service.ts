@@ -907,19 +907,10 @@ export class CrossChainRoutingService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
-    if (this.settings.promoCode?.status === 'accepted') {
-      await this.crossChainRoutingApiService.postTrade(
-        transactionHash,
-        this.currentCrossChainTrade.fromBlockchain,
-        this.settings.promoCode.text
-      );
-      return;
-    }
-    if (this.iframeService.isIframe) {
-      await this.crossChainRoutingApiService.postTrade(
-        transactionHash,
-        this.currentCrossChainTrade.fromBlockchain
-      );
-    }
+    await this.crossChainRoutingApiService.postTrade(
+      transactionHash,
+      this.currentCrossChainTrade.fromBlockchain,
+      this.settings.promoCode?.status === 'accepted' ? this.settings.promoCode.text : undefined
+    );
   }
 }
