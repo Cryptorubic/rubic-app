@@ -169,6 +169,7 @@ export class ProviderConnectorService {
             this.networkChangeSubject$,
             this.addressChangeSubject$,
             this.errorService,
+            this.window,
             chainId
           );
           break;
@@ -286,7 +287,7 @@ export class ProviderConnectorService {
       },
       rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcLink],
       blockExplorerUrls: [network.scannerUrl],
-      iconUrls: [`https://app.rubic.exchange/${network.imagePath}`]
+      iconUrls: [`${this.window.location.origin}/${network.imagePath}`]
     } as AddEthChainParams;
     await this.provider.addChain(params);
   }
