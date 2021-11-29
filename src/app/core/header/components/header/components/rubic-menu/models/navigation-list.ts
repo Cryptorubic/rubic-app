@@ -21,17 +21,5 @@ export const NAVIGATION_LIST = [
     type: 'internal',
     link: 'faq',
     imagePath: `${defaultSrc}faq.svg`
-  },
-  {
-    translateKey: 'navigation.team',
-    type: 'internal',
-    link: 'team',
-    imagePath: `${defaultSrc}team.svg`
-  },
-  {
-    translateKey: 'navigation.merch',
-    type: 'external',
-    link: 'https://shop.rubic.exchange',
-    imagePath: `${defaultSrc}shop.svg`
   }
 ] as NavigationItem[];
