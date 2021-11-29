@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 
 /**
- * Intercepts requests targeted to 'rubic.exchange' domains.
+ * Intercepts requests targeted to '*.rubic.exchange' domains.
  */
 @Injectable()
 export class RubicExchangeInterceptor implements HttpInterceptor {

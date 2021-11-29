@@ -17,7 +17,7 @@ interface WalletInfo {
 }
 
 /**
- * Intercepts add transaction requests targeted to 'rubic.exchange'.
+ * Intercepts add transaction requests targeted to '*.rubic.exchange'.
  */
 @Injectable()
 export class WalletsInfoInterceptor implements HttpInterceptor {

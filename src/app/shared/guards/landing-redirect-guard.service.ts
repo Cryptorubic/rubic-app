@@ -3,6 +3,7 @@ import { CanActivate, CanLoad, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 
 type ActivationResult =
   | Observable<boolean | UrlTree>
@@ -19,7 +20,7 @@ type LoadResult = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | b
   providedIn: 'root'
 })
 export class LandingRedirectGuard implements CanActivate, CanLoad {
-  private readonly redirectUrl = 'https://rubic.finance/';
+  private readonly redirectUrl = EXTERNAL_LINKS.LANDING;
 
   constructor(@Inject(WINDOW) private readonly window: RubicWindow) {}
 
