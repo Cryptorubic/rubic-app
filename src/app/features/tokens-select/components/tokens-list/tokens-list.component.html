@@ -76,9 +76,7 @@
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
       <li class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item-link">
-        <a rel="noopener noreferrer" target="_blank" [href]="noFrameLink"
-          >More on {{ rubicDomain }}</a
-        >
+        <a safetyLink [link]="noFrameLink">More on {{ rubicDomain }}</a>
       </li>
     </ul>
     <!--horizontal iframe -->
@@ -100,9 +98,7 @@
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
       <li class="tokens-list__item vertical-frame-link">
-        <a rel="noopener noreferrer" target="_blank" [href]="noFrameLink"
-          >More on {{ rubicDomain }}</a
-        >
+        <a safetyLink [link]="noFrameLink">More on {{ rubicDomain }}</a>
       </li>
     </ul>
     <!--vertical iframe -->
