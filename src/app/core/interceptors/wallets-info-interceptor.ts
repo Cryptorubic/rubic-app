@@ -45,7 +45,7 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
     ];
   }
 
-  intercept(httpRequest: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+  intercept(httpRequest: HttpRequest<object>, next: HttpHandler): Observable<HttpEvent<object>> {
     if (
       httpRequest.url.includes(this.DOMAIN_SUBSTRING) &&
       this.isTransactionOperation(httpRequest)
@@ -60,7 +60,7 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
    * @param request Pending http request.
    * @return boolean Is request create transaction or not.
    */
-  private isTransactionOperation(request: HttpRequest<unknown>): boolean {
+  private isTransactionOperation(request: HttpRequest<object>): boolean {
     return this.endpoints.some(
       endpoint =>
         request.url.includes(endpoint.route) && endpoint.methods.has(request.method as HttpMethod)
@@ -72,13 +72,13 @@ export class WalletsInfoInterceptor implements HttpInterceptor {
    * @param request Pending request.
    * @return HttpRequest<unknown> New request with appended body params.
    */
-  private addWalletInfoToRequest(request: HttpRequest<unknown>): HttpRequest<unknown> {
+  private addWalletInfoToRequest(request: HttpRequest<object>): HttpRequest<object> {
     const walletsInfo: WalletInfo = {
       walletName: this.providerConnectorService.provider.detailedWalletName,
       deviceType: this.isMobile ? 'mobile' : 'desktop'
     };
     return request.clone({
-      body: { ...(request.body as object), ...walletsInfo }
+      body: { ...request.body, ...walletsInfo }
     });
   }
 }
