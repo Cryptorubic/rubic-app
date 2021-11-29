@@ -182,6 +182,9 @@ export class CrossChainRoutingService {
     const firstTransitToken = this.transitTokens[fromBlockchain];
     const secondTransitToken = this.transitTokens[toBlockchain];
 
+    const fromSlippage = 1 - this.slippageTolerance / 2;
+    const toSlippage = 1 - this.slippageTolerance / 2;
+
     const {
       contractIndex: fromContractIndex,
       pathAndToAmount: { path: firstPath, toAmount: firstTransitTokenAmount }
@@ -189,7 +192,9 @@ export class CrossChainRoutingService {
 
     const { secondTransitTokenAmount, feeInPercents } = await this.getSecondTransitTokenAmount(
       toBlockchain,
-      firstTransitTokenAmount
+      firstTransitTokenAmount,
+      firstPath.length === 1,
+      fromSlippage
     );
 
     const {
@@ -213,6 +218,7 @@ export class CrossChainRoutingService {
       tokenInAmount: fromAmount,
       firstTransitTokenAmount,
       firstPath,
+      fromSlippage,
 
       toBlockchain,
       toContractIndex,
@@ -220,6 +226,7 @@ export class CrossChainRoutingService {
       tokenOut: toToken,
       tokenOutAmount: toAmount,
       secondPath,
+      toSlippage,
 
       transitTokenFee: feeInPercents,
       cryptoFee
@@ -320,9 +327,9 @@ export class CrossChainRoutingService {
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
-    const { fromBlockchain, firstTransitTokenAmount } = trade;
+    const { fromBlockchain, firstTransitTokenAmount, fromSlippage } = trade;
     const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
-      await this.getMinMaxTransitTokenAmounts(fromBlockchain);
+      await this.getMinMaxTransitTokenAmounts(fromBlockchain, fromSlippage);
 
     if (firstTransitTokenAmount.lt(minTransitTokenAmount)) {
       const minAmount = await this.getFromTokenAmount(
@@ -357,9 +364,11 @@ export class CrossChainRoutingService {
   /**
    * Gets min and max permitted amounts of transit token in source and target blockchain.
    * @param fromBlockchain Source blockchain.
+   * @param fromSlippage Slippage in source blockchain.
    */
   private async getMinMaxTransitTokenAmounts(
-    fromBlockchain: SupportedCrossChainSwapBlockchain
+    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    fromSlippage: number
   ): Promise<{
     minAmount: BigNumber;
     maxAmount: BigNumber;
@@ -383,7 +392,7 @@ export class CrossChainRoutingService {
       );
 
       if (type === 'minAmount') {
-        return firstTransitTokenAmount;
+        return firstTransitTokenAmount.plus(1).dividedBy(fromSlippage);
       }
       return firstTransitTokenAmount.minus(1);
     };
@@ -432,16 +441,26 @@ export class CrossChainRoutingService {
    * Calculates transit token's amount in target blockchain, based on transit token's amount is source blockchain.
    * @param toBlockchain Target blockchain
    * @param firstTransitTokenAmount Amount of transit token in source blockchain.
+   * @param isDirectTrade True, if first transit token is traded directrly.
+   * @param fromSlippage Slippage in source blockchain.
    */
   private async getSecondTransitTokenAmount(
     toBlockchain: SupportedCrossChainSwapBlockchain,
-    firstTransitTokenAmount: BigNumber
+    firstTransitTokenAmount: BigNumber,
+    isDirectTrade: boolean,
+    fromSlippage: number
   ): Promise<{ secondTransitTokenAmount: BigNumber; feeInPercents: number }> {
     const feeInPercents = await this.getFeeInPercents(toBlockchain);
+    let secondTransitTokenAmount = firstTransitTokenAmount
+      .multipliedBy(100 - feeInPercents)
+      .dividedBy(100);
+
+    if (!isDirectTrade) {
+      secondTransitTokenAmount = secondTransitTokenAmount.multipliedBy(fromSlippage);
+    }
+
     return {
-      secondTransitTokenAmount: firstTransitTokenAmount
-        .multipliedBy(100 - feeInPercents)
-        .dividedBy(100),
+      secondTransitTokenAmount,
       feeInPercents
     };
   }
@@ -671,65 +690,41 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Gets pool's address in target network.
-   */
-  @PCacheable({
-    maxAge: CACHEABLE_MAX_AGE
-  })
-  private getPoolAddressInTargetNetwork(): Promise<string> {
-    const { toBlockchain, toContractIndex } = this.currentCrossChainTrade;
-
-    const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
-
-    return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainPool');
-  }
-
-  /**
    * Checks that in target blockchain tokens' pool's balance is enough.
    */
   @PCacheable({
     maxAge: CACHEABLE_MAX_AGE
   })
   private async checkPoolBalance(): Promise<void | never> {
-    const { toBlockchain, secondTransitTokenAmount } = this.currentCrossChainTrade;
+    const { toBlockchain, toContractIndex, secondTransitTokenAmount } = this.currentCrossChainTrade;
+    const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const secondTransitToken = this.transitTokens[toBlockchain];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
-    const poolAddress = await this.getPoolAddressInTargetNetwork();
-    const poolBalanceAbsolute = await web3Public.getTokenBalance(
-      poolAddress,
+    const contractBalanceAbsolute = await web3Public.getTokenBalance(
+      contractAddress,
       secondTransitToken.address
     );
-    const poolBalance = Web3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
+    const contractBalance = Web3Public.fromWei(
+      contractBalanceAbsolute,
+      secondTransitToken.decimals
+    );
 
-    if (secondTransitTokenAmount.gt(poolBalance)) {
+    if (secondTransitTokenAmount.gt(contractBalance)) {
       throw new CrossChainIsUnavailableWarning();
     }
   }
 
   /**
-   * Returns true, if amount of token-in must be multiplied on slippage to calculate maximum sent amount.
-   */
-  public isTokenInAmountMaxWithSlippage(): boolean {
-    const { fromToken, fromBlockchain } = this.swapFormService.inputValue;
-    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
-      throw Error('Not supported blockchain');
-    }
-    const firstTransitToken = this.transitTokens[fromBlockchain];
-    return !compareAddresses(fromToken.address, firstTransitToken.address);
-  }
-
-  /**
    * Calculates maximum sent amount of token-in, based on tokens route and slippage.
    */
-  public calculateTokenInAmountMax(
+  public calculateFirstTransitTokenAmountMin(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
   ): BigNumber {
     if (trade.firstPath.length === 1) {
       return trade.tokenInAmount;
     }
-    return trade.tokenInAmount.multipliedBy(1 + this.slippageTolerance / 2);
+    return trade.tokenInAmount.multipliedBy(trade.fromSlippage);
   }
 
   /**
@@ -741,17 +736,17 @@ export class CrossChainRoutingService {
     if (trade.secondPath.length === 1) {
       return trade.tokenOutAmount;
     }
-    return trade.tokenOutAmount.multipliedBy(1 - this.slippageTolerance / 2);
+    return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
   }
 
   /**
    * Checks contracts' state and user's balance.
    */
   private async checkTradeWorking(): Promise<void | never> {
-    await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkPoolBalance()]);
+    await Promise.all([this.checkWorking(), this.checkGasPrice()]);
 
     const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
-    const tokenInAmountMax = this.calculateTokenInAmountMax();
+    const tokenInAmountMax = this.calculateFirstTransitTokenAmountMin();
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
     await web3PublicFromBlockchain.checkBalance(
       tokenIn,
@@ -792,8 +787,7 @@ export class CrossChainRoutingService {
     const toBlockchainInContract =
       this.numOfBlockchainsInContract[trade.toBlockchain][trade.toContractIndex];
 
-    const tokenInAmountMax = this.calculateTokenInAmountMax(trade);
-    const tokenInAmountAbsolute = Web3Public.toWei(tokenInAmountMax, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = Web3Public.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const tokenOutAmountMin = this.calculateTokenOutAmountMin(trade);
     const tokenOutMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
@@ -811,7 +805,8 @@ export class CrossChainRoutingService {
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         walletAddress,
-        Web3Public.isNativeAddress(trade.tokenOut.address)
+        Web3Public.isNativeAddress(trade.tokenOut.address),
+        true
       ]
     ];
 

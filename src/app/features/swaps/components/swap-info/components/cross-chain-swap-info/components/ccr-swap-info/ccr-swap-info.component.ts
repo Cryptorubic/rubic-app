@@ -170,6 +170,6 @@ export class CcrSwapInfoComponent implements OnInit {
    */
   private calculateMaxSentAndMinReceived(): void {
     this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
-    this.maximumSent = this.crossChainRoutingService.calculateTokenInAmountMax();
+    this.maximumSent = this.crossChainRoutingService.calculateFirstTransitTokenAmountMin();
   }
 }
