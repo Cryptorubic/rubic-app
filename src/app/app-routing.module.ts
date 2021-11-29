@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
-import { ROUTE_PATH } from '@shared/constants/common/links';
+import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 
 const routes: Routes = [
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
     canLoad: [LandingRedirectGuard],
     canActivate: [LandingRedirectGuard],
     data: {
-      externalUrl: ROUTE_PATH.LANDING
+      externalUrl: EXTERNAL_LINKS.LANDING
     }
   },
   {

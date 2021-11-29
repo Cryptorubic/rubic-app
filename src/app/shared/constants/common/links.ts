@@ -6,6 +6,9 @@ export enum ROUTE_PATH {
   CONTRACTS = 'contracts',
   FAQ = 'faq',
   TRADES = 'my-trades',
-  LANDING = 'https://rubic.exchange/',
   REST = '**'
+}
+
+export enum EXTERNAL_LINKS {
+  LANDING = 'https://rubic.exchange/'
 }

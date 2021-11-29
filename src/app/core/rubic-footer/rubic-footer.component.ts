@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { footerLinks } from 'src/app/core/rubic-footer/models/footer-links';
 import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
-import { ROUTE_PATH } from '@shared/constants/common/links';
+import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 
 @Component({
   selector: 'app-rubic-footer',
@@ -17,7 +17,7 @@ export class RubicFooterComponent {
    * Returns landing domain address.
    */
   public get landingDomain(): string {
-    return ROUTE_PATH.LANDING;
+    return EXTERNAL_LINKS.LANDING;
   }
 
   constructor() {
