@@ -21,4 +21,11 @@ export class WalletConnectProvider extends WalletConnectAbstractProvider {
     };
     super(web3, chainChange$, accountChange$, errorsService, providerConfig);
   }
+
+  /**
+   * Gets detailed provider name with peer meta information.
+   */
+  public get detailedWalletName(): string {
+    return `${this.name} (${this.core.connector.peerMeta.name})`;
+  }
 }
