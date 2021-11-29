@@ -5,8 +5,8 @@ const defaultSrc = 'assets/images/icons/navigation/';
 export const NAVIGATION_LIST = [
   {
     translateKey: 'navigation.about',
-    type: 'internal',
-    link: 'about',
+    type: 'external',
+    link: 'https://rubic.finance/',
     imagePath: `${defaultSrc}about.svg`
   },
   {
@@ -20,12 +20,6 @@ export const NAVIGATION_LIST = [
     type: 'internal',
     link: 'faq',
     imagePath: `${defaultSrc}faq.svg`
-  },
-  {
-    translateKey: 'navigation.project',
-    type: 'external',
-    link: 'https://rubic.finance/',
-    imagePath: `${defaultSrc}project.svg`
   },
   {
     translateKey: 'navigation.team',

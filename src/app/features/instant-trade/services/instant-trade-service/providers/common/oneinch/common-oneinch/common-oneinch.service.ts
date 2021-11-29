@@ -359,19 +359,25 @@ export class CommonOneinchService {
     );
   }
 
-  private specifyError(err: HttpErrorResponse, blockchain: BLOCKCHAIN_NAME): never {
-    if (err.error.message?.includes('cannot estimate')) {
-      const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
-      const message = `1inch sets increased costs on gas fee. For transaction enter less ${nativeToken} amount or top up your ${nativeToken} balance.`;
-      throw new CustomError(message);
+  private specifyError(err: unknown, blockchain: BLOCKCHAIN_NAME): never {
+    if (err instanceof HttpErrorResponse) {
+      if (err.error.message?.includes('cannot estimate')) {
+        const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+        const message = `1inch sets increased costs on gas fee. For transaction enter less ${nativeToken} amount or top up your ${nativeToken} balance.`;
+        throw new CustomError(message);
+      }
+      if (err.error.message?.includes('insufficient funds for transfer')) {
+        const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
+        throw new InsufficientFundsOneinchError(nativeToken);
+      }
+      if (err.error.description?.includes('cannot estimate')) {
+        throw new TokenWithFeeError();
+      }
+      throw new CustomError(err.error.message);
     }
-    if (err.error.message?.includes('insufficient funds for transfer')) {
-      const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;
-      throw new InsufficientFundsOneinchError(nativeToken);
+    if (err instanceof Error) {
+      throw new CustomError(err.message);
     }
-    if (err.error.description?.includes('cannot estimate')) {
-      throw new TokenWithFeeError();
-    }
-    throw new CustomError(err.error.message);
+    throw new CustomError(err?.toString());
   }
 }

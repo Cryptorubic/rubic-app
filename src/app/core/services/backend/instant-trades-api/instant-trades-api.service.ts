@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, delay, map } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
@@ -100,15 +100,23 @@ export class InstantTradesApiService {
   /**
    * Sends request to get list of user's instant trades.
    * @param walletAddress Wallet address of user.
+   * @param errorCallback Callback on error.
    * @return list List of trades.
    */
-  public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
+  public getUserTrades(
+    walletAddress: string,
+    errorCallback?: (error: unknown) => void
+  ): Observable<TableTrade[]> {
     return this.httpService
       .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.parseTradeApiToTableTrade(swap))
-        )
+        ),
+        catchError((err: unknown) => {
+          errorCallback?.(err);
+          return of([]);
+        })
       );
   }
 

@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import {
+  BLOCKCHAIN_NAME,
+  DEPRECATED_BLOCKCHAIN_NAME
+} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { EMPTY, Observable } from 'rxjs';
@@ -20,11 +23,15 @@ import { BOT_URL } from '../constants/BOT_URL';
   providedIn: 'root'
 })
 export class BridgeApiService {
-  private readonly tradeBlockchain: Record<BridgeBlockchainApi, BLOCKCHAIN_NAME> = {
+  private readonly tradeBlockchain: Record<
+    BridgeBlockchainApi,
+    BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME
+  > = {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     POL: BLOCKCHAIN_NAME.POLYGON,
-    XDAI: BLOCKCHAIN_NAME.XDAI
+    XDAI: BLOCKCHAIN_NAME.XDAI,
+    TRX: DEPRECATED_BLOCKCHAIN_NAME.TRON
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}

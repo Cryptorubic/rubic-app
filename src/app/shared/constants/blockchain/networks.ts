@@ -43,9 +43,8 @@ export default [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://damp-old-resonance.bsc.quiknode.pro/',
-    additionalRpcLink:
-      'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    rpcLink: 'https://old-spring-bird.bsc.quiknode.pro/',
+    additionalRpcLink: 'https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/bsc/mainnet',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
