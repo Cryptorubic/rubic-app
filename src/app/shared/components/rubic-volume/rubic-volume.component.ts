@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { VolumeApiService } from 'src/app/core/services/backend/volume-api/volume-api.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TradeVolume } from 'src/app/core/services/backend/volume-api/models/TradeVolume';
 import { Observable } from 'rxjs';
 import { ContentLoaderService } from '../../../core/services/content-loader/content-loader.service';
@@ -16,9 +15,7 @@ export class RubicVolumeComponent {
 
   constructor(
     private readonly contentLoaderService: ContentLoaderService,
-    private readonly volumeApiService: VolumeApiService,
-    private readonly destroy$: TuiDestroyService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly volumeApiService: VolumeApiService
   ) {
     this.volume$ = this.volumeApiService.tradingVolume$;
   }

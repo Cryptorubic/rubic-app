@@ -5,72 +5,60 @@
   display: block;
   padding: 29px 43px;
 
-  color: $rubic-base-05;
+  color: var(--rubic-base-17);
+  font-size: 22px;
   font-family: $sf-pro-font;
 
   background-color: var(--main-form-background);
+  background-image: url('/assets/images/total-values/graphic.png');
+  background-repeat: no-repeat;
+  background-position: right 0;
+  background-size: contain;
+
   border-radius: 19px;
 
   backdrop-filter: blur(20px);
 
   &__title {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 
     font-weight: 300;
     font-size: $rubic-font-size-02;
   }
 
-  &__values {
-    display: flex;
-
-    font-weight: 300;
-  }
-
   &__value {
+    width: 55%;
     min-height: 48px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 
+    color: var(--rubic-base-02);
     font-weight: 100;
     font-size: 48px;
     line-height: 48px;
-
-    &-it {
-      width: 48%;
-
-      &:first-child {
-        margin-right: 4%;
-      }
-    }
   }
 
-  &__label {
-    color: $rubic-base-06;
-    font-weight: 400;
-    font-size: $rubic-font-size-main;
+  &__time {
+    font-weight: 300;
+    font-size: 18px;
+  }
+}
+
+@include b($tablet) {
+  .rubic-volume {
+    background-image: url('/assets/images/total-values/graphic-mobile.png');
   }
 }
 
 @include b($mobile-md) {
   .rubic-volume {
     padding: 30px 20px;
-
-    &__values {
-      display: block;
-
-      > div:first-child {
-        margin-right: 0;
-      }
-    }
-
-    &__value-it {
-      width: 100%;
-      margin-bottom: 15px;
-    }
   }
 }
 
 @include b($mobile-sm) {
   .rubic-volume {
+    background-position: right -15px bottom;
+
     &__title {
       margin-bottom: 15px;
 
@@ -78,8 +66,6 @@
     }
 
     &__value {
-      margin-bottom: 0;
-
       font-size: 42px;
     }
   }
