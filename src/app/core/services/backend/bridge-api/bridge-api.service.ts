@@ -187,25 +187,6 @@ export class BridgeApiService {
   }
 
   /**
-   * Makes POST request to add transaction to database.
-   * @param transactionHash Transaction hash.
-   * @param fromBlockchain From blockchain name.
-   */
-  public postEvoTransaction(
-    transactionHash: string,
-    fromBlockchain: BLOCKCHAIN_NAME
-  ): Promise<void> {
-    const body = {
-      type: 'evodefi',
-      fromNetwork:
-        fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ? 'binance-smart-chain' : 'polygon',
-      transaction_id: transactionHash
-    };
-
-    return this.httpService.post<void>('bridges/transactions', body).toPromise();
-  }
-
-  /**
    * Makes POST request for notify bridge bot.
    * @param bridgeTrade Trade data object.
    * @param transactionHash Hash of transaction.
