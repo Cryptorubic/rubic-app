@@ -48,8 +48,7 @@ export class BridgeSwapInfoComponent implements OnInit {
     this.averageTimeInProvider = {
       [BRIDGE_PROVIDER.SWAP_RBC]: '5m',
       [BRIDGE_PROVIDER.POLYGON]: '15m',
-      [BRIDGE_PROVIDER.XDAI]: '15m',
-      [BRIDGE_PROVIDER.EVO]: '15m'
+      [BRIDGE_PROVIDER.XDAI]: '15m'
     };
   }
 
