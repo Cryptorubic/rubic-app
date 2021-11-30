@@ -96,6 +96,13 @@ export class SettingsService {
     };
     this.createForm();
     this.setupData();
+
+    this.settingsForm.controls.INSTANT_TRADE.controls.slippageTolerance.valueChanges.subscribe(
+      el => {
+        console.log(el);
+        debugger;
+      }
+    );
   }
 
   private setupData(): void {
