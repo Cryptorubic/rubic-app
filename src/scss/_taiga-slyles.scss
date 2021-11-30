@@ -10,6 +10,7 @@ tui-dialog {
 
   &[data-size='m'] {
     width: 36em !important;
+    margin-bottom: auto !important;
 
     > .content {
       padding: 1.5em !important;
