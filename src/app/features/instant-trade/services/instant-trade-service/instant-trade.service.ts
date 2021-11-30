@@ -48,7 +48,7 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
   providedIn: 'root'
 })
 export class InstantTradeService {
-  private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.TRON, BLOCKCHAIN_NAME.XDAI];
+  private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.XDAI];
 
   private blockchainsProviders: Partial<
     Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDER, ItProvider>>>

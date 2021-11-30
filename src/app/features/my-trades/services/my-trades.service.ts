@@ -1,8 +1,18 @@
 import { Injectable } from '@angular/core';
 import { EthereumPolygonBridgeService } from 'src/app/features/my-trades/services/ethereum-polygon-bridge-service/ethereum-polygon-bridge.service';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  throwError
+} from 'rxjs';
 import {
   catchError,
+  debounceTime,
   defaultIfEmpty,
   filter,
   first,
@@ -31,14 +41,10 @@ import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-
-interface PanamaStatusResponse {
-  data: {
-    depositTxId: string;
-    swapTxId: string;
-  };
-}
+import { TuiNotification } from '@taiga-ui/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 interface HashPair {
   fromTransactionHash: string;
@@ -57,6 +63,8 @@ export class MyTradesService {
 
   private walletAddress: string;
 
+  private readonly _warningHandler$ = new Subject<void>();
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly providerConnectorService: ProviderConnectorService,
@@ -67,8 +75,30 @@ export class MyTradesService {
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly ethereumPolygonBridgeService: EthereumPolygonBridgeService,
     private readonly gasRefundApiService: GasRefundApiService,
-    private readonly scannerLinkPipe: ScannerLinkPipe
-  ) {}
+    private readonly scannerLinkPipe: ScannerLinkPipe,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService,
+    private readonly router: Router
+  ) {
+    this.initWarningSubscription();
+  }
+
+  private initWarningSubscription(): void {
+    this._warningHandler$
+      .pipe(
+        debounceTime(500),
+        filter(
+          () => this.router.url === '/my-trades' && Boolean(this.providerConnectorService.address)
+        )
+      )
+      .subscribe(() => {
+        this.notificationsService.show(this.translateService.instant('errors.partialTradesData'), {
+          label: this.translateService.instant('common.warning'),
+          status: TuiNotification.Warning,
+          autoClose: 7000
+        });
+      });
+  }
 
   public updateTableTrades(): Observable<TableTrade[]> {
     return combineLatest([
@@ -89,7 +119,10 @@ export class MyTradesService {
 
         return forkJoin([
           this.getBridgeTransactions(),
-          this.instantTradesApiService.getUserTrades(this.walletAddress),
+          this.instantTradesApiService.getUserTrades(this.walletAddress, (err: unknown) => {
+            console.debug(err);
+            this._warningHandler$.next();
+          }),
           this.getCrossChainTrades(),
           this.getGasRefundTrades()
         ]).pipe(
@@ -110,14 +143,6 @@ export class MyTradesService {
           .map(trade => this.prepareBridgeData(trade))
           .filter(trade => !!trade);
         const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
-          if (trade.provider === BRIDGE_PROVIDER.PANAMA) {
-            return trade.fromTransactionHash && trade.status !== TRANSACTION_STATUS.CANCELLED
-              ? of({
-                  fromTransactionHash: trade.fromTransactionHash,
-                  toTransactionHash: trade.toTransactionHash
-                })
-              : this.loadPanamaTxHash(trade.transactionId);
-          }
           return of({
             fromTransactionHash: trade.fromTransactionHash,
             toTransactionHash: trade.toTransactionHash
@@ -133,6 +158,11 @@ export class MyTradesService {
           ),
           defaultIfEmpty<TableTrade[]>([])
         );
+      }),
+      catchError((err: unknown) => {
+        console.debug(err);
+        this._warningHandler$.next();
+        return of([]);
       })
     );
   }
@@ -198,6 +228,11 @@ export class MyTradesService {
             }
           };
         });
+      }),
+      catchError((err: unknown) => {
+        console.debug(err);
+        this._warningHandler$.next();
+        return of([]);
       })
     );
   }
@@ -232,7 +267,12 @@ export class MyTradesService {
             };
           })
           .filter(item => !!item)
-      )
+      ),
+      catchError((err: unknown) => {
+        console.debug(err);
+        this._warningHandler$.next();
+        return of([]);
+      })
     );
   }
 
@@ -260,14 +300,5 @@ export class MyTradesService {
           return throwError(err);
         })
       );
-  }
-
-  public loadPanamaTxHash(panamaId: string): Observable<HashPair> {
-    return this.httpClient.get(`https://api.binance.org/bridge/api/v2/swaps/${panamaId}`).pipe(
-      map((response: PanamaStatusResponse) => ({
-        fromTransactionHash: response.data.depositTxId,
-        toTransactionHash: response.data.swapTxId
-      }))
-    );
   }
 }

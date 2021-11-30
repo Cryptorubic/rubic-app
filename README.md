@@ -3,9 +3,9 @@
 # Multichain DeFi platform
 [![develop](https://github.com/Cryptorubic/rubic-app/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/Cryptorubic/rubic-app/actions/workflows/develop.yml)
 
-[Try our platform](https://rubic.exchange/)
+[Try our platform](https://app.rubic.exchange/)
 
-[Read more about us](https://rubic.finance/)
+[Read more about us](https://rubic.exchange/)
 
 ![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/docs/Banner.jpg "")
 
@@ -14,6 +14,6 @@ We already provide multichain services for creating and managing tokens (airdrop
 
 Rubic's goal is to add multichain p2p trades to existing services and develop other products such as liquidity pools. And make it simple and user friendly.
 
-[Read White Paper](https://rubic.finance/assets/WhitePaper.pdf)
+[Read White Paper](https://rubic.exchange/assets/WhitePaper.pdf)
 
-[Read One Pager](https://rubic.finance/assets/pdf/OnePager.pdf)
+[Read One Pager](https://rubic.exchange/assets/pdf/OnePager.pdf)

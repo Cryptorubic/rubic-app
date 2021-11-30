@@ -15,8 +15,6 @@ export interface IframeSettingsForm {
   disableMultihops: boolean;
   rubicOptimisation: boolean;
   autoRefresh: boolean;
-
-  tronAddress: string;
 }
 
 @Component({
@@ -52,8 +50,7 @@ export class IframeSettingsComponent implements OnInit {
       slippageTolerance: new FormControl<number>(itSettingsForm.value.slippageTolerance),
       disableMultihops: new FormControl<boolean>(itSettingsForm.value.disableMultihops),
       rubicOptimisation: new FormControl<boolean>(itSettingsForm.value.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(itSettingsForm.value.autoRefresh),
-      tronAddress: new FormControl<string>(bridgeSettingsForm.value.tronAddress)
+      autoRefresh: new FormControl<boolean>(itSettingsForm.value.autoRefresh)
     });
     this.slippageTolerance = itSettingsForm.value.slippageTolerance;
     this.setFormChanges(itSettingsForm, bridgeSettingsForm, ccrSettingsForm);
@@ -65,9 +62,8 @@ export class IframeSettingsComponent implements OnInit {
     ccrSettingsForm: AbstractControl<CcrSettingsForm>
   ): void {
     this.iframeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
-      const { tronAddress, ...itSettings } = settings;
+      const { ...itSettings } = settings;
       itSettingsForm.patchValue({ ...itSettings });
-      bridgeSettingsForm.patchValue({ tronAddress });
       ccrSettingsForm.patchValue({ ...itSettings });
     });
 

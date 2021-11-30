@@ -146,6 +146,9 @@
             },
             "prod-api": {
               "browserTarget": "rubic:build:prod-api"
+            },
+            "stage": {
+              "browserTarget": "rubic:build:stage"
             }
           }
         },
