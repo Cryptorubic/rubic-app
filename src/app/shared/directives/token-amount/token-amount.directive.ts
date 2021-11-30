@@ -98,7 +98,7 @@ export class TokenAmountDirective {
 
   @HostListener('keyup')
   @HostListener('click')
-  private onCaretPositionChange() {
+  private onCaretPositionChange(): void {
     this.prevCaretPosition = this.elementRef.nativeElement.selectionStart;
   }
 }

@@ -35,8 +35,9 @@ const DESKTOP_WIDTH = 1240;
   providers: [TuiDestroyService]
 })
 export class MyTradesComponent implements OnInit {
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  public readonly tableData$ = new BehaviorSubject<TableRow[]>(undefined);
+  private readonly tableDataSubject$ = new BehaviorSubject<TableRow[]>(undefined);
+
+  public readonly tableData$ = this.tableDataSubject$.asObservable();
 
   public loading = true;
 
@@ -59,6 +60,13 @@ export class MyTradesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initDataAndSubscriptions();
+  }
+
+  /**
+   * Inits component data and subscriptions.
+   */
+  private initDataAndSubscriptions(): void {
     this.counterNotificationsService.resetCounter();
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
 
@@ -88,7 +96,7 @@ export class MyTradesComponent implements OnInit {
           if (this.walletAddress) {
             return this.myTradesService.updateTableTrades().pipe(first());
           }
-          this.tableData$.next([]);
+          this.tableDataSubject$.next([]);
           this.loading = false;
           return of(undefined);
         }),
@@ -98,21 +106,23 @@ export class MyTradesComponent implements OnInit {
   }
 
   private updateTableData(tableTrades: TableTrade[]): void {
-    let tableData: TableRow[] = [];
-    tableTrades.forEach(trade => {
-      tableData.push({
-        Status: trade.status,
-        FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
-        Provider: trade.provider,
-        Sent: new BigNumber(trade.fromToken?.amount),
-        Expected: new BigNumber(trade.toToken.amount),
-        Date: trade.date,
+    const tableData = tableTrades
+      .map(
+        trade =>
+          ({
+            Status: trade.status,
+            FromTo: trade.fromToken?.blockchain + trade.toToken.blockchain,
+            Provider: trade.provider,
+            Sent: new BigNumber(trade.fromToken?.amount),
+            Expected: new BigNumber(trade.toToken.amount),
+            Date: trade.date,
 
-        inProgress: false
-      });
-    });
-    tableData = tableData.sort((a, b) => defaultSort(a.Date, b.Date) * -1);
-    this.tableData$.next(tableData);
+            inProgress: false
+          } as TableRow)
+      )
+      .sort((a, b) => defaultSort(a.Date, b.Date) * -1);
+
+    this.tableDataSubject$.next(tableData);
 
     setTimeout(() => {
       this.loading = false;
@@ -130,7 +140,7 @@ export class MyTradesComponent implements OnInit {
   }
 
   public receivePolygonBridgeTrade(trade: TableTrade): void {
-    let tableData = this.tableData$.getValue().map(tableTrade => {
+    let tableData = this.tableDataSubject$.getValue().map(tableTrade => {
       if (tableTrade.Date.getTime() === trade.date.getTime()) {
         return {
           ...tableTrade,
@@ -139,7 +149,7 @@ export class MyTradesComponent implements OnInit {
       }
       return tableTrade;
     });
-    this.tableData$.next(tableData);
+    this.tableDataSubject$.next(tableData);
 
     let tradeInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
@@ -166,16 +176,16 @@ export class MyTradesComponent implements OnInit {
 
           this.refreshTable();
 
-          await this.tokensService.calculateUserTokensBalances();
+          await this.tokensService.calculateTokensBalances();
         },
         err => {
           tradeInProgressSubscription$?.unsubscribe();
 
-          tableData = this.tableData$.getValue().map(tableTrade => ({
+          tableData = this.tableDataSubject$.getValue().map(tableTrade => ({
             ...tableTrade,
             inProgress: false
           }));
-          this.tableData$.next(tableData);
+          this.tableDataSubject$.next(tableData);
 
           this.errorsService.catch(err);
         }
@@ -183,7 +193,7 @@ export class MyTradesComponent implements OnInit {
   }
 
   @HostListener('window:resize')
-  private onResize() {
+  private onResize(): void {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH;
   }
 }

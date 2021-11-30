@@ -44,6 +44,11 @@ export class HeaderComponent implements AfterViewInit {
 
   @ViewChild(BuyTokenComponent) public buyTokenComponent: BuyTokenComponent;
 
+  /**
+   * Rubic advertisement type. Renders different components based on type.
+   */
+  public advertisementType: 'default' | 'custom';
+
   public SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
   public readonly isMobileMenuOpened$: Observable<boolean>;
@@ -59,7 +64,7 @@ export class HeaderComponent implements AfterViewInit {
   public isSettingsOpened = false;
 
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
 
   public get rootPath(): boolean {
@@ -85,6 +90,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
+    this.advertisementType = 'default';
     // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();
     this.currentUser$ = this.authService.getCurrentUser();
@@ -133,7 +139,7 @@ export class HeaderComponent implements AfterViewInit {
    * Triggering redefining status of using mobile.
    */
   @HostListener('window:resize', ['$event'])
-  public onResize() {
+  public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 

@@ -36,27 +36,6 @@
           </tui-input-number>
         </div>
       </div>
-
-      <div class="iframe-settings__row bridge-address">
-        <div class="bridge-address__head">
-          <label for="tronAddress">TRON wallet address</label>
-          <div
-            class="iframe-settings__hint"
-            [inlineSVG]="'/assets/images/icons/hint.svg'"
-            [tuiHint]="'settings.bridge.walletAddress' | translate"
-          ></div>
-        </div>
-        <div class="bridge-address__body">
-          <tui-input
-            id="tronAddress"
-            [tuiTextfieldLabelOutside]="true"
-            formControlName="tronAddress"
-            pattern="T[1-9A-HJ-NP-Za-km-z]{33}$"
-            tuiTextfieldSize="s"
-            >TKEZDGPjLJDhieooBqEeBkVbXiz8XCsZLz</tui-input
-          >
-        </div>
-      </div>
     </div>
 
     <div class="iframe-settings__column">

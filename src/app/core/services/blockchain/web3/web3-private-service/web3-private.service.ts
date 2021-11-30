@@ -95,6 +95,7 @@ export class Web3PrivateService {
     const gasPrice = await this.calculateGasPrice(options.gasPrice);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       contract.methods
         .transfer(toAddress, amount.toString())
         .send({
@@ -128,6 +129,7 @@ export class Web3PrivateService {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, contractAddress);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       contract.methods
         .transfer(toAddress, amount.toString())
         .send({ from: this.address, ...(this.defaultMockGas && { gas: this.defaultMockGas }) })
@@ -198,6 +200,7 @@ export class Web3PrivateService {
     const gasPrice = await this.calculateGasPrice(options.gasPrice);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       this.web3.eth
         .sendTransaction({
           from: this.address,
@@ -234,6 +237,7 @@ export class Web3PrivateService {
     const gasPrice = await this.calculateGasPrice(options.gasPrice);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       this.web3.eth
         .sendTransaction({
           from: this.address,
@@ -274,6 +278,7 @@ export class Web3PrivateService {
     const gasPrice = await this.calculateGasPrice(options.gasPrice);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       contract.methods
         .approve(spenderAddress, rawValue.toFixed(0))
         .send({
@@ -366,6 +371,7 @@ export class Web3PrivateService {
     const gasPrice = await this.calculateGasPrice(options.gasPrice);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       contract.methods[methodName](...methodArguments)
         .send({
           from: this.address,
@@ -401,6 +407,7 @@ export class Web3PrivateService {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
 
     return new Promise((resolve, reject) => {
+      this.emitTransaction();
       contract.methods[methodName](...methodArguments)
         .send({
           from: this.address,
@@ -440,5 +447,14 @@ export class Web3PrivateService {
    */
   private weiToEth(value: string | BigNumber): string {
     return this.web3.utils.fromWei(value.toString(), 'ether');
+  }
+
+  /**
+   * Emits transaction action to wallet.
+   */
+  private emitTransaction(): void {
+    setTimeout(() => {
+      this.providerConnector.emitTransaction();
+    }, 500);
   }
 }

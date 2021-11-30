@@ -16,6 +16,7 @@ import { WalletlinkWrongNetwork } from 'src/app/core/errors/models/provider/Wall
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { PrivateProvider } from 'src/app/core/services/blockchain/providers/private-provider/private-provider';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 export class WalletLinkProvider extends PrivateProvider {
   private isMobileMode = false;
@@ -61,6 +62,7 @@ export class WalletLinkProvider extends PrivateProvider {
     chainChange$: BehaviorSubject<IBlockchain>,
     accountChange$: BehaviorSubject<string>,
     errorService: ErrorsService,
+    window: RubicWindow,
     blockchainId?: number
   ) {
     super(errorService);
@@ -74,7 +76,7 @@ export class WalletLinkProvider extends PrivateProvider {
     } else {
       this.defaultWalletParams = {
         appName: 'Rubic',
-        appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
+        appLogoUrl: `${window.location.origin}/assets/images/rubic-logo.svg`,
         darkMode: false
       };
 

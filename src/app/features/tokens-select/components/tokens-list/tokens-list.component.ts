@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   Output,
   Self,
@@ -16,10 +17,15 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PaginatedPage } from 'src/app/shared/models/tokens/paginated-tokens';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
 import { listAnimation } from 'src/app/features/tokens-select/components/tokens-list/animations/listAnimation';
+import { AuthService } from '@core/services/auth/auth.service';
+import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { UserInterface } from '@core/services/auth/models/user.interface';
+import { RubicWindow } from '@shared/utils/rubic-window';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-tokens-list',
@@ -108,14 +114,25 @@ export class TokensListComponent implements AfterViewInit {
   public readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport>;
 
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
+  }
+
+  public get rubicDomain(): string {
+    return this.window.location.pathname;
+  }
+
+  get user$(): Observable<UserInterface> {
+    return this.authService.getCurrentUser();
   }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly authService: AuthService,
+    private readonly walletsModalService: WalletsModalService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.loading = false;
     this.pageUpdate = new EventEmitter();
@@ -124,6 +141,16 @@ export class TokensListComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.observeScroll();
+  }
+
+  /**
+   * Function to track list element by unique key: token blockchain and address.
+   * @param _index Index of list element.
+   * @param tokenListElement List element.
+   * @return string Unique key for element.
+   */
+  public trackByFn(_index: number, tokenListElement: AvailableTokenAmount): string {
+    return `${tokenListElement.blockchain}_${tokenListElement.address}`;
   }
 
   /**
@@ -190,5 +217,9 @@ export class TokensListComponent implements AfterViewInit {
     if (token.available) {
       this.tokenSelect.emit(token);
     }
+  }
+
+  public openAuthModal(): void {
+    this.walletsModalService.open$();
   }
 }

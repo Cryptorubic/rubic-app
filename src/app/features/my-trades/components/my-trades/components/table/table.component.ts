@@ -1,5 +1,12 @@
-/* eslint-disable rxjs/no-exposed-subjects */
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Injector,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
@@ -10,10 +17,14 @@ import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import {
+  BLOCKCHAINS,
+  DEPRECATED_BLOCKCHAINS
+} from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
-import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
+import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/TRANSLATION_STATUS_KEYS';
+import { TableTrade } from '@shared/models/my-trades/TableTrade';
 
 @Component({
   selector: 'app-table',
@@ -24,11 +35,16 @@ import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS'
 export class TableComponent extends AbstractTableDataComponent implements OnInit {
   @Input() loading: boolean;
 
-  @Input() tableData$: BehaviorSubject<TableRow[]>;
+  /**
+   * [REQUIRED] Table data to display.
+   */
+  @Input() tableData$: Observable<TableRow[]>;
+
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
-  public BLOCKCHAINS = BLOCKCHAINS;
+  public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
   public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
@@ -45,13 +61,37 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     Date: () => 0
   };
 
-  public readonly sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
+  private readonly _sorter$ = new BehaviorSubject<TuiComparator<TableRow>>(this.sorters.Date);
 
-  public readonly direction$ = new BehaviorSubject<-1 | 1>(-1);
+  public readonly sorter$ = this._sorter$.asObservable();
 
-  public readonly page$ = new Subject<number>();
+  public setSorter$(comparator: TuiComparator<TableRow>): void {
+    this._sorter$.next(comparator);
+  }
 
-  public readonly size$ = new Subject<number>();
+  private readonly _direction$ = new BehaviorSubject<-1 | 1>(-1);
+
+  public readonly direction$ = this._direction$.asObservable();
+
+  public setDirection$(direction: -1 | 1): void {
+    this._direction$.next(direction);
+  }
+
+  private readonly _page$ = new Subject<number>();
+
+  public readonly page$ = this._page$.asObservable();
+
+  public setPage$(page: number): void {
+    this._page$.next(page);
+  }
+
+  private readonly _size$ = new Subject<number>();
+
+  public readonly size$ = this._size$.asObservable();
+
+  public setSize$(size: number): void {
+    this._size$.next(size);
+  }
 
   private request$: Observable<readonly TableRow[]>;
 
@@ -66,6 +106,13 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
   }
 
   ngOnInit(): void {
+    this.initSubscriptions();
+  }
+
+  /**
+   * Inits component subscriptions and observables.
+   */
+  private initSubscriptions(): void {
     this.request$ = combineLatest([
       this.sorter$.pipe(map(sorter => this.getTableRowKey(sorter, this.sorters))),
       this.direction$.pipe(
@@ -123,7 +170,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
       );
       const otherTrades = tableData
         .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
-        .sort(this.sortBy('Date', this.direction$.getValue()));
+        .sort(this.sortBy('Date', this._direction$.getValue()));
 
       return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>
         index >= start && index < end ? user : null

@@ -1,7 +1,10 @@
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import {
+  BLOCKCHAIN_NAME,
+  DEPRECATED_BLOCKCHAIN_NAME
+} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 
 interface Blockchain {
-  key: BLOCKCHAIN_NAME;
+  key: BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME;
   name: string;
   img: string;
 }
@@ -11,15 +14,27 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Blockchain;
   [BLOCKCHAIN_NAME.POLYGON]: Blockchain;
   [BLOCKCHAIN_NAME.HARMONY]: Blockchain;
-  [BLOCKCHAIN_NAME.TRON]: Blockchain;
   [BLOCKCHAIN_NAME.XDAI]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE]: Blockchain;
   [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
+  [BLOCKCHAIN_NAME.FANTOM]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
 };
 
+type DeprecatedBlockchains = {
+  [DEPRECATED_BLOCKCHAIN_NAME.TRON]: Blockchain;
+};
+
 const imageBaseSrc = 'assets/images/icons/coins/';
+
+export const DEPRECATED_BLOCKCHAINS: DeprecatedBlockchains = {
+  [DEPRECATED_BLOCKCHAIN_NAME.TRON]: {
+    key: DEPRECATED_BLOCKCHAIN_NAME.TRON,
+    name: 'Tron',
+    img: `${imageBaseSrc}tron.svg`
+  }
+};
 
 export const BLOCKCHAINS: Blockchains = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
@@ -47,11 +62,6 @@ export const BLOCKCHAINS: Blockchains = {
     name: 'Moonriver',
     img: `${imageBaseSrc}moonriver.webp`
   },
-  [BLOCKCHAIN_NAME.TRON]: {
-    key: BLOCKCHAIN_NAME.TRON,
-    name: 'TRON',
-    img: `${imageBaseSrc}tron.svg`
-  },
   [BLOCKCHAIN_NAME.XDAI]: {
     key: BLOCKCHAIN_NAME.XDAI,
     name: 'XDAI',
@@ -61,6 +71,11 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.AVALANCHE,
     name: 'Avalanche',
     img: `${imageBaseSrc}avalanche.svg`
+  },
+  [BLOCKCHAIN_NAME.FANTOM]: {
+    key: BLOCKCHAIN_NAME.FANTOM,
+    name: 'Fantom',
+    img: `${imageBaseSrc}fantom.svg`
   },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
     key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,

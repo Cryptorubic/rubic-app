@@ -23,8 +23,8 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.POLYGON,
     BLOCKCHAIN_NAME.AVALANCHE,
     BLOCKCHAIN_NAME.MOONRIVER,
+    BLOCKCHAIN_NAME.FANTOM,
     BLOCKCHAIN_NAME.HARMONY,
-    BLOCKCHAIN_NAME.TRON,
     BLOCKCHAIN_NAME.XDAI
   ];
 
@@ -44,7 +44,7 @@ export class BlockchainsAsideComponent {
 
   constructor() {}
 
-  onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME) {
+  onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME): void {
     this.blockchain = blockchainName;
     this.blockchainChange.emit(blockchainName);
   }

@@ -67,6 +67,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() tokens: AvailableTokenAmount[];
 
+  @Input() favoriteTokens: AvailableTokenAmount[];
+
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
   public readonly TRADE_STATUS = TRADE_STATUS;
@@ -94,8 +96,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   public maxError: false | number;
 
   public toWalletAddress: string;
-
-  public tronAddress: string;
 
   public needApprove: boolean;
 
@@ -175,13 +175,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => this.setFormValues(form));
 
-    this.settingsService.bridgeValueChanges
-      .pipe(startWith(this.settingsService.bridgeValue), takeUntil(this.destroy$))
-      .subscribe(settings => {
-        this.tronAddress = settings.tronAddress;
-        this.setToWalletAddress();
-      });
-
     this.authService
       .getCurrentUser()
       .pipe(
@@ -212,12 +205,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setToWalletAddress(): void {
-    const { toBlockchain } = this.swapFormService.inputValue;
-    if (toBlockchain === BLOCKCHAIN_NAME.TRON) {
-      this.toWalletAddress = this.tronAddress;
-    } else {
-      this.toWalletAddress = this.authService.userAddress;
-    }
+    this.toWalletAddress = this.authService.userAddress;
   }
 
   private async conditionalCalculate(): Promise<void> {
@@ -338,7 +326,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             }
           );
         }),
-        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        switchMap(() => this.tokensService.calculateTokensBalances()),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),
         catchError((err: unknown) => {
@@ -379,7 +367,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
           this.counterNotificationsService.updateUnread();
         }),
-        switchMap(() => this.tokensService.calculateUserTokensBalances()),
+        switchMap(() => this.tokensService.calculateTokensBalances()),
         tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),
         switchMap(() => this.conditionalCalculate()),
@@ -420,7 +408,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       )?.tokenByBlockchain[fromBlockchain][amountType];
   }
 
-  public handleClick(clickType: 'swap' | 'approve') {
+  public handleClick(clickType: 'swap' | 'approve'): void {
     const isPolygonEthBridge =
       this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
       this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
@@ -445,7 +433,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyTradeInProgress() {
+  private notifyTradeInProgress(): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('bridgePage.progressMessage'),
       {

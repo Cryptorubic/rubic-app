@@ -1,0 +1,23 @@
+@import 'src/styles';
+
+:host .button_buy-token {
+  &__custom ::ng-deep {
+    [tuiButton][data-appearance='outline'] {
+      border: 1px solid $buy-custom-token;
+
+      &._pressed,
+      &._hovered,
+      &._focused:not(&._pressed) {
+        background: rgba($buy-custom-token, 0.3);
+
+        border: 1px solid $buy-custom-token;
+      }
+
+      &._pressed {
+        ::ng-deep tui-wrapper[data-appearance='outline'] {
+          color: white;
+        }
+      }
+    }
+  }
+}

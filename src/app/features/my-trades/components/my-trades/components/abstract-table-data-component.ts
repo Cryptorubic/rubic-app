@@ -8,14 +8,12 @@ import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { Directive, EventEmitter, Injector, Output } from '@angular/core';
+import { EventEmitter, Injector } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
-@Directive()
-// eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class AbstractTableDataComponent {
-  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
+  public abstract onReceivePolygonBridgeTrade: EventEmitter<TableTrade>;
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
@@ -71,5 +69,14 @@ export abstract class AbstractTableDataComponent {
 
   public onTokenImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
+  }
+
+  public handleImageError($event: ErrorEvent): void {
+    const defaultUnknownImage = '/assets/images/icons/unknown.svg';
+
+    const target = $event.target as HTMLImageElement;
+    if (target.src !== defaultUnknownImage) {
+      target.src = defaultUnknownImage;
+    }
   }
 }

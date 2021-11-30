@@ -3,14 +3,23 @@
     <!--standard mode -->
     <tui-loader [showLoader]="loading" [overlay]="true">
       <div class="nothing-to-show-message" *ngIf="!tokens?.length">
-        <ng-container *ngIf="hasSearchQuery || listType === 'default'; else favoriteTokens">
+        <ng-container *ngIf="hasSearchQuery || listType === 'default'; else noFavoriteTokens">
           {{ 'modals.tokensListModal.noSearchData' | translate }}
         </ng-container>
 
-        <ng-template #favoriteTokens>
-          {{ 'modals.tokensListModal.noFavoriteData' | translate }}
-          <button class="nothing-to-show-message__link" (click)="listTypeChange.emit('default')">
-            {{ 'modals.tokensListModal.backToTokens' | translate }}
+        <ng-template #noFavoriteTokens>
+          <ng-container *ngIf="user$ | async; else noAuth">
+            {{ 'modals.tokensListModal.noFavoriteData' | translate }}
+            <button class="nothing-to-show-message__link" (click)="listTypeChange.emit('default')">
+              {{ 'modals.tokensListModal.backToTokens' | translate }}
+            </button>
+          </ng-container>
+        </ng-template>
+
+        <ng-template #noAuth>
+          {{ 'modals.tokensListModal.unauthorized' | translate }}
+          <button class="nothing-to-show-message__link" (click)="openAuthModal()">
+            {{ 'navigation.login' | translate }}
           </button>
         </ng-template>
       </div>
@@ -23,7 +32,12 @@
           [style.overflow]="loading ? 'hidden' : 'auto'"
         >
           <li
-            *cdkVirtualFor="let token of tokens; let i = index; templateCacheSize: 0"
+            *cdkVirtualFor="
+              let token of tokens;
+              let i = index;
+              templateCacheSize: 0;
+              trackBy: trackByFn
+            "
             class="tokens-list__item"
             [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
             [tuiManualHint]="disabledTokenHint"
@@ -62,7 +76,7 @@
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
       <li class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item-link">
-        <a rel="noopener noreferrer" target="_blank" [href]="noFrameLink">More on rubic.exchange</a>
+        <a safetyLink [link]="noFrameLink">More on {{ rubicDomain }}</a>
       </li>
     </ul>
     <!--horizontal iframe -->
@@ -84,7 +98,7 @@
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
       <li class="tokens-list__item vertical-frame-link">
-        <a rel="noopener noreferrer" target="_blank" [href]="noFrameLink">More on rubic.exchange</a>
+        <a safetyLink [link]="noFrameLink">More on {{ rubicDomain }}</a>
       </li>
     </ul>
     <!--vertical iframe -->

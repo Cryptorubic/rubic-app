@@ -17,23 +17,23 @@ export default () => {
     web3,
     onAddressChanges$: new BehaviorSubject<string>(undefined),
     onNetworkChanges$: new BehaviorSubject<IBlockchain>(undefined),
-    get address() {
+    get address(): string {
       return config.testWallet.address;
     },
-    get isInstalled() {
+    get isInstalled(): boolean {
       return true;
     },
-    get isActive() {
+    get isActive(): boolean {
       return true;
     },
-    get network() {
+    get network(): IBlockchain {
       const eth = BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM);
       return {
         ...eth,
         id: 42
       };
     },
-    get networkName() {
+    get networkName(): BLOCKCHAIN_NAME {
       return this.network.name;
     },
     defaultGasLimit: '400000'

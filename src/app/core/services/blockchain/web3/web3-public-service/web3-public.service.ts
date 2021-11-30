@@ -16,7 +16,8 @@ export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.AVALANCHE,
-  BLOCKCHAIN_NAME.MOONRIVER
+  BLOCKCHAIN_NAME.MOONRIVER,
+  BLOCKCHAIN_NAME.FANTOM
 ] as const;
 
 export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number];
@@ -41,7 +42,7 @@ export class Web3PublicService {
 
   public [BLOCKCHAIN_NAME.MOONRIVER]: Web3Public;
 
-  public readonly [BLOCKCHAIN_NAME.TRON]: Web3Public = null;
+  public [BLOCKCHAIN_NAME.FANTOM]: Web3Public;
 
   public readonly [BLOCKCHAIN_NAME.XDAI]: Web3Public = null;
 
@@ -124,7 +125,7 @@ export class Web3PublicService {
     forkJoin(web3List.map(checkNode$)).subscribe(() => this._nodesChecked$.next(true));
   }
 
-  private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains) {
+  private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains): void {
     const web3Public = new Web3Public(
       new Web3(rpcLink),
       BlockchainsInfo.getBlockchainByName(blockchainName),
@@ -135,7 +136,7 @@ export class Web3PublicService {
     const nodesChecked$ = this._nodesChecked$.asObservable();
 
     this[blockchainName] = new Proxy(web3Public, {
-      get(target: Web3Public, prop: keyof Web3Public) {
+      get(target: Web3Public, prop: keyof Web3Public): unknown {
         if (prop === 'healthCheck' || prop === 'setProvider') {
           return target[prop].bind(target);
         }

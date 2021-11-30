@@ -15,6 +15,7 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { FormControl } from '@ngneat/reactive-forms';
+import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -27,6 +28,8 @@ export class TokenAmountInputComponent implements OnInit {
   @Input() loading: boolean;
 
   @Input() tokens: AvailableTokenAmount[];
+
+  @Input() favoriteTokens: AvailableTokenAmount[];
 
   @Input() placeholder = '0.0';
 
@@ -57,6 +60,7 @@ export class TokenAmountInputComponent implements OnInit {
     private readonly swapsService: SwapsService,
     public readonly swapFormService: SwapFormService,
     private readonly settingsService: SettingsService,
+    private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -91,7 +95,7 @@ export class TokenAmountInputComponent implements OnInit {
       });
   }
 
-  private checkMaxAmountInCrossChainRouting() {
+  private checkMaxAmountInCrossChainRouting(): void {
     const maxAmount = this.getMaxAmountInCrossChainRouting();
     if (
       maxAmount &&
@@ -104,10 +108,13 @@ export class TokenAmountInputComponent implements OnInit {
   }
 
   private getMaxAmountInCrossChainRouting(): string {
-    if (!this.selectedToken?.amount || this.selectedToken.amount.isNaN()) {
+    if (!this.selectedToken?.amount?.isFinite()) {
       return null;
     }
 
+    if (!this.crossChainRoutingService.isTokenInAmountMaxWithSlippage()) {
+      return this.selectedToken?.amount.toFixed();
+    }
     const slippage = 1 + this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     return this.selectedToken.amount.dividedBy(slippage).toFixed();
   }

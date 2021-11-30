@@ -19,7 +19,7 @@ export class FaqComponent {
     });
   }
 
-  public toggleQuestion(containerElement: MouseEvent, question: Question) {
+  public toggleQuestion(containerElement: MouseEvent, question: Question): void {
     const answerElement = (containerElement.currentTarget as HTMLElement)
       .children[1] as HTMLElement;
     question.isActive = !question.isActive;

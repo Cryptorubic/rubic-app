@@ -3,7 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts'],
-      plugins: ['unused-imports', 'rxjs', 'rxjs-angular'],
+      plugins: ['unused-imports', 'angular-rubic', 'rxjs', 'rxjs-angular'],
       parserOptions: {
         project: ['tsconfig.*?.json', 'e2e/tsconfig.e2e.json'],
         tsconfigRootDir: __dirname,
@@ -71,6 +71,7 @@ module.exports = {
         ],
         'no-empty': ['error', { allowEmptyCatch: true }],
         '@typescript-eslint/return-await': 'off',
+        'angular-rubic/explicit-function-return-type': 2,
         'no-continue': 'off',
         /* RxJs */
         'rxjs/finnish': [
