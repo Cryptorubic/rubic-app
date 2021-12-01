@@ -30,15 +30,7 @@ export class ErrorsService {
     @Inject(Injector) private injector: Injector,
     private translateService: TranslateService
   ) {
-    this.translateService.stream('faqPage.questions').subscribe(questions => {
-      this.questions = Object.values(questions).map((question: Question, index: number) => {
-        return {
-          title: question.title,
-          answer: question.answer,
-          id: index
-        };
-      });
-    });
+    this.getFaqQuestions();
   }
 
   /**
@@ -101,23 +93,43 @@ export class ErrorsService {
       return;
     }
 
-    const faqError = this.findQuestion(error);
-
-    if (faqError) {
-      console.log('FAQ ERROR');
-      this.notificationsService.show(new PolymorpheusComponent(FaqErrorComponent, this.injector), {
-        data: faqError
-      });
-    }
-
     const text = error?.translateKey
       ? this.translateService.instant(error.translateKey, error?.data)
       : error.message;
     this.notificationsService.show(text, options);
   }
 
-  public findQuestion(error: RubicError<ERROR_TYPE>): Question {
-    return this.questions.find(question => question.title.includes(error.message));
+  /**
+   * Checking for an error in the faq.
+   * @param error Caught error.
+   */
+  public checkFaqError(error: RubicError<ERROR_TYPE>): void {
+    function findQuestion(): Question {
+      return this.questions.find((question: Question) => question.title.includes(error.message));
+    }
+
+    const faqError = findQuestion();
+
+    if (faqError) {
+      this.notificationsService.show(new PolymorpheusComponent(FaqErrorComponent, this.injector), {
+        data: faqError
+      });
+    }
+  }
+
+  /**
+   * Gets faq array from current translation json file.
+   */
+  public getFaqQuestions(): void {
+    this.translateService.stream('faqPage.questions').subscribe(questions => {
+      this.questions = Object.values(questions).map((question: Question, index: number) => {
+        return {
+          title: question.title,
+          answer: question.answer,
+          id: index
+        };
+      });
+    });
   }
 
   /**
