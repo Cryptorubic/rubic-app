@@ -63,7 +63,7 @@ export class SettingsItComponent implements OnInit {
   }
 
   public onSlippageToleranceChange(slippageTolerance: number): void {
-    this.slippageTolerance = slippageTolerance;
+    this.slippageTolerance = slippageTolerance || this.defaultSlippageTolerance;
     this.instantTradeForm.patchValue({
       autoSlippageTolerance: false,
       slippageTolerance: this.slippageTolerance
