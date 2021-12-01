@@ -695,7 +695,7 @@ export class CrossChainRoutingService {
   @PCacheable({
     maxAge: CACHEABLE_MAX_AGE
   })
-  private async checkPoolBalance(): Promise<void | never> {
+  private async checkContractBalance(): Promise<void | never> {
     const { toBlockchain, toContractIndex, secondTransitTokenAmount } = this.currentCrossChainTrade;
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const secondTransitToken = this.transitTokens[toBlockchain];
@@ -743,7 +743,7 @@ export class CrossChainRoutingService {
    * Checks contracts' state and user's balance.
    */
   private async checkTradeWorking(): Promise<void | never> {
-    await Promise.all([this.checkWorking(), this.checkGasPrice()]);
+    await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkContractBalance()]);
 
     const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
