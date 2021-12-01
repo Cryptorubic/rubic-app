@@ -716,15 +716,15 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
+   * Calculates minimum received amount of transit token, based on tokens route and slippage.
    */
-  public calculateFirstTransitTokenAmountMin(
+  private calculateFirstTransitTokenAmountMin(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
   ): BigNumber {
     if (trade.firstPath.length === 1) {
-      return trade.tokenInAmount;
+      return trade.firstTransitTokenAmount;
     }
-    return trade.tokenInAmount.multipliedBy(trade.fromSlippage);
+    return trade.firstTransitTokenAmount.multipliedBy(trade.fromSlippage);
   }
 
   /**
@@ -745,12 +745,11 @@ export class CrossChainRoutingService {
   private async checkTradeWorking(): Promise<void | never> {
     await Promise.all([this.checkWorking(), this.checkGasPrice()]);
 
-    const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
-    const tokenInAmountMax = this.calculateFirstTransitTokenAmountMin();
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
     await web3PublicFromBlockchain.checkBalance(
       tokenIn,
-      tokenInAmountMax,
+      tokenInAmount,
       this.authService.userAddress
     );
   }
@@ -789,10 +788,11 @@ export class CrossChainRoutingService {
 
     const tokenInAmountAbsolute = Web3Public.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const tokenOutAmountMin = this.calculateTokenOutAmountMin(trade);
-    const tokenOutMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+    const tokenOutAmountMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const firstTransitTokenAmountAbsolute = Web3Public.toWei(
-      trade.firstTransitTokenAmount,
+    const firstTransitTokenAmountMin = this.calculateFirstTransitTokenAmountMin(trade);
+    const firstTransitTokenAmountMinAbsolute = Web3Public.toWei(
+      firstTransitTokenAmountMin,
       this.transitTokens[trade.fromBlockchain].decimals
     );
 
@@ -802,8 +802,8 @@ export class CrossChainRoutingService {
         tokenInAmountAbsolute,
         trade.firstPath,
         trade.secondPath,
-        firstTransitTokenAmountAbsolute,
-        tokenOutMinAbsolute,
+        firstTransitTokenAmountMinAbsolute,
+        tokenOutAmountMinAbsolute,
         walletAddress,
         Web3Public.isNativeAddress(trade.tokenOut.address),
         true
