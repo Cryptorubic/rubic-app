@@ -74,7 +74,8 @@ export class WalletsModalComponent implements OnInit {
   }
 
   private redirectToCoinbaseBrowser(): void {
-    const walletLinkAppLink = 'https://go.cb-w.com/9gaKnqLDajb';
+    // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
+    const walletLinkAppLink = 'https://go.cb-w.com/cDgO1V5aDlb';
     this.window.location.assign(walletLinkAppLink);
   }
 
@@ -84,7 +85,7 @@ export class WalletsModalComponent implements OnInit {
       this.iframeService.device === 'mobile' &&
       provider === WALLET_NAME.WALLET_LINK
     ) {
-      return 'https://go.cb-w.com/9gaKnqLDajb';
+      return 'https://go.cb-w.com/cDgO1V5aDlb';
     }
 
     return null;

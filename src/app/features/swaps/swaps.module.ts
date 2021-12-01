@@ -22,7 +22,7 @@ import {
   TuiSliderModule,
   TuiToggleModule
 } from '@taiga-ui/kit';
-import { InlineSVGModule } from 'ng-inline-svg';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TokensSelectModule } from 'src/app/features/tokens-select/tokens-select.module';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { CrossChainModule } from 'src/app/features/cross-chain-routing/cross-chain.module';
