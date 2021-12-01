@@ -2,10 +2,11 @@
   <div class="questions-container">
     <h2 class="title-section">{{ 'faqPage.title' | translate }}</h2>
     <div
-      *ngFor="let question of questions"
+      *ngFor="let question of questions; let index = index"
       [ngClass]="{ 'questions-container__question_active': question.isActive }"
       (click)="toggleQuestion($event, question)"
       class="questions-container__question"
+      [id]="index"
     >
       <div class="questions-container__question-head">
         <span class="questions-container__title" [innerHTML]="question.title | translate"> </span>

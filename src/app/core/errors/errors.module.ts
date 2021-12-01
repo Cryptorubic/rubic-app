@@ -16,6 +16,7 @@ import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-ov
 import { InsufficientFundsCcrErrorComponent } from './components/insufficient-funds-ccr-error/insufficient-funds-ccr-error.component';
 import { InsufficientFundsOneinchErrorComponent } from './components/insufficient-funds-oneinch-error/insufficient-funds-oneinch-error.component';
 import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/token-with-fee-error.component';
+import { FaqErrorComponent } from './components/faq-error/faq-error.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/to
     UnknownErrorComponent,
     InsufficientFundsCcrErrorComponent,
     InsufficientFundsOneinchErrorComponent,
-    TokenWithFeeErrorComponent
+    TokenWithFeeErrorComponent,
+    FaqErrorComponent
   ],
   imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule],
   entryComponents: [

@@ -11,16 +11,35 @@ import { EIP_1474 } from 'src/app/core/errors/models/standard/EIP-1474';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
 import { customRpcError } from 'src/app/core/errors/models/standard/custom-rpc-error';
+import { FaqErrorComponent } from '@core/errors/components/faq-error/faq-error.component';
+
+interface Question {
+  id: number;
+  title: string;
+  answer: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
+  public questions: Question[];
+
   constructor(
     private readonly notificationsService: NotificationsService,
     @Inject(Injector) private injector: Injector,
     private translateService: TranslateService
-  ) {}
+  ) {
+    this.translateService.stream('faqPage.questions').subscribe(questions => {
+      this.questions = Object.values(questions).map((question: Question, index: number) => {
+        return {
+          title: question.title,
+          answer: question.answer,
+          id: index
+        };
+      });
+    });
+  }
 
   /**
    * @deprecated
@@ -82,10 +101,23 @@ export class ErrorsService {
       return;
     }
 
+    const faqError = this.findQuestion(error);
+
+    if (faqError) {
+      console.log('FAQ ERROR');
+      this.notificationsService.show(new PolymorpheusComponent(FaqErrorComponent, this.injector), {
+        data: faqError
+      });
+    }
+
     const text = error?.translateKey
       ? this.translateService.instant(error.translateKey, error?.data)
       : error.message;
     this.notificationsService.show(text, options);
+  }
+
+  public findQuestion(error: RubicError<ERROR_TYPE>): Question {
+    return this.questions.find(question => question.title.includes(error.message));
   }
 
   /**
