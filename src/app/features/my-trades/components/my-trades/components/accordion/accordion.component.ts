@@ -2,14 +2,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Injector,
   Input,
-  OnDestroy,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
 import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   TableRow,
   TableRowKeyValue
@@ -17,19 +18,25 @@ import {
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
 
 @Component({
   selector: 'app-accordion',
   templateUrl: './accordion.component.html',
   styleUrls: ['./accordion.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class AccordionComponent extends AbstractTableDataComponent implements OnInit, OnDestroy {
-  // eslint-disable-next-line rxjs/no-exposed-subjects
-  @Input() tableData$: BehaviorSubject<TableRow[]>;
+export class AccordionComponent extends AbstractTableDataComponent implements OnInit {
+  /**
+   * [REQUIRED] Table data to display.
+   */
+  @Input() tableData$: Observable<TableRow[]>;
+
+  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -59,18 +66,30 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public sortDirection: -1 | 1 = -1;
 
-  private tableDataSubscription$: Subscription;
-
-  constructor(injector: Injector, private readonly cdr: ChangeDetectorRef) {
+  constructor(
+    injector: Injector,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly destroy$: TuiDestroyService
+  ) {
     super(injector);
   }
 
   ngOnInit(): void {
+    this.initData();
+  }
+
+  /**
+   * Inits component data and subscriptions
+   */
+  private initData(): void {
     this.selectedColumn = this.columns.find(column => column.value === 'Date');
     this.page = 0;
 
-    this.tableDataSubscription$ = this.tableData$
-      .pipe(filter(tableData => !!tableData))
+    this.tableData$
+      .pipe(
+        filter(tableData => !!tableData),
+        takeUntil(this.destroy$)
+      )
       .subscribe(tableData => {
         this.tableData = tableData;
         this.pagesLength = Math.ceil(this.tableData.length / this.PAGE_SIZE);
@@ -89,10 +108,6 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
         this.sortedTableData = this.tableData;
         this.goToPage(this.page);
       });
-  }
-
-  ngOnDestroy(): void {
-    this.tableDataSubscription$.unsubscribe();
   }
 
   public onColumnChange(column: TableRowKeyValue): void {

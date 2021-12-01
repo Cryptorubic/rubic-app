@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   Output,
   Self,
@@ -23,6 +24,8 @@ import { listAnimation } from 'src/app/features/tokens-select/components/tokens-
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { UserInterface } from '@core/services/auth/models/user.interface';
+import { RubicWindow } from '@shared/utils/rubic-window';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-tokens-list',
@@ -111,7 +114,11 @@ export class TokensListComponent implements AfterViewInit {
   public readonly scrollSubject$: BehaviorSubject<CdkVirtualScrollViewport>;
 
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
+  }
+
+  public get rubicDomain(): string {
+    return this.window.location.hostname;
   }
 
   get user$(): Observable<UserInterface> {
@@ -124,7 +131,8 @@ export class TokensListComponent implements AfterViewInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
     private readonly authService: AuthService,
-    private readonly walletsModalService: WalletsModalService
+    private readonly walletsModalService: WalletsModalService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.loading = false;
     this.pageUpdate = new EventEmitter();

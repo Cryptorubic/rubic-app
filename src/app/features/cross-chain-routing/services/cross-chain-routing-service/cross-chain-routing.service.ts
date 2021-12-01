@@ -894,19 +894,10 @@ export class CrossChainRoutingService {
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
     const settings = this.settingsService.crossChainRoutingValue;
-    if (settings.promoCode?.status === 'accepted') {
-      await this.crossChainRoutingApiService.postTrade(
-        transactionHash,
-        this.currentCrossChainTrade.fromBlockchain,
-        settings.promoCode.text
-      );
-      return;
-    }
-    if (this.iframeService.isIframe) {
-      await this.crossChainRoutingApiService.postTrade(
-        transactionHash,
-        this.currentCrossChainTrade.fromBlockchain
-      );
-    }
+    await this.crossChainRoutingApiService.postTrade(
+      transactionHash,
+      this.currentCrossChainTrade.fromBlockchain,
+      settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
+    );
   }
 }
