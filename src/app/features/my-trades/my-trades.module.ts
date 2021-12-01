@@ -13,7 +13,7 @@ import {
   TuiSvgModule
 } from '@taiga-ui/core';
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk';
-import { InlineSVGModule } from 'ng-inline-svg';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { MyTradesPageComponent } from 'src/app/features/my-trades/my-trades-page.component';
 import { GasRefundService } from 'src/app/features/my-trades/services/gas-refund.service';

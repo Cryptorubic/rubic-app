@@ -3,7 +3,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.ts'],
-      plugins: ['unused-imports', 'angular-rubic', 'rxjs', 'rxjs-angular'],
+      plugins: ['import', 'unused-imports', 'angular-rubic', 'rxjs', 'rxjs-angular'],
       parserOptions: {
         project: ['tsconfig.*?.json', 'e2e/tsconfig.e2e.json'],
         tsconfigRootDir: __dirname,
