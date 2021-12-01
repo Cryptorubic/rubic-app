@@ -15,7 +15,8 @@ export interface TableToken {
 }
 
 export enum DEPRECATED_PROVIDER {
-  PANAMA = 'panama'
+  PANAMA = 'panama',
+  EVO = 'evodefi'
 }
 
 export type TableProvider =
