@@ -118,7 +118,8 @@ export class TokensListComponent implements AfterViewInit {
   }
 
   public get rubicDomain(): string {
-    return this.window.location.pathname;
+    console.log(this.window.location.hostname);
+    return this.window.location.hostname;
   }
 
   get user$(): Observable<UserInterface> {

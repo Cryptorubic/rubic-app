@@ -68,7 +68,7 @@ tui-notification {
   }
 }
 
-.tooltip .text {
+.t-text {
   font-size: $rubic-font-size-01;
 }
 
@@ -92,8 +92,8 @@ tui-notification-alert {
     max-width: 160px !important;
   }
 
-  .tooltip .text {
-    font-size: $rubic-font-size-01;
+  .t-text {
+    font-size: $rubic-font-size-main;
   }
 }
 
