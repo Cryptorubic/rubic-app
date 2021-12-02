@@ -596,7 +596,8 @@
     "title": "Накопленный Объем Операций",
     "instantTrades": "Swaps",
     "bridges": "Bridges",
-    "crossChain": "Кросс-чейн обмены"
+    "crossChain": "Кросс-чейн обмены",
+    "description": "За всё время"
   },
   "notifications": {
     "tradeInProgress": "Сделка в процессе выполнения",

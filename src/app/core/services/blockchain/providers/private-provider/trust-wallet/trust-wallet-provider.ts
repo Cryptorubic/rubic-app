@@ -5,6 +5,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletConnectAbstractProvider } from '@core/services/blockchain/providers/common/wallet-connect-abstract';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 
 export class TrustWalletProvider extends WalletConnectAbstractProvider {
   private deepLink: string;
@@ -12,6 +13,10 @@ export class TrustWalletProvider extends WalletConnectAbstractProvider {
   private readonly window: RubicWindow;
 
   private readonly isIos: boolean;
+
+  public get name(): WALLET_NAME {
+    return WALLET_NAME.TRUST_WALLET;
+  }
 
   constructor(
     web3: Web3,
