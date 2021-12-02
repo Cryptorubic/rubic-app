@@ -4,5 +4,7 @@
     ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat: 0 }}
   </div>
 
-  <div class="rubic-volume__time">For all time</div>
+  <div class="rubic-volume__time">
+    {{ 'volume.description' | translate }}
+  </div>
 </div>

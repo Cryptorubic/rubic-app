@@ -597,7 +597,8 @@
     "title": "累計交易量",
     "instantTrades": "Swaps",
     "bridges": "Bridges",
-    "crossChain": "跨鏈掉期"
+    "crossChain": "跨鏈掉期",
+    "description": "All Time"
   },
   "notifications": {
     "tradeInProgress": "進行中的交易",
