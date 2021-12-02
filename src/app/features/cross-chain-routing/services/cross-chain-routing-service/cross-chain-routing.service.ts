@@ -392,7 +392,7 @@ export class CrossChainRoutingService {
       );
 
       if (type === 'minAmount') {
-        return firstTransitTokenAmount.plus(1).dividedBy(fromSlippage);
+        return firstTransitTokenAmount.dividedBy(fromSlippage);
       }
       return firstTransitTokenAmount.minus(1);
     };
