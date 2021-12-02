@@ -598,7 +598,7 @@
     "instantTrades": "Swaps",
     "bridges": "Bridges",
     "crossChain": "跨鏈掉期",
-    "description": "All Time"
+    "description": "每時每刻"
   },
   "notifications": {
     "tradeInProgress": "進行中的交易",
