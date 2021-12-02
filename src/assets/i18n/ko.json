@@ -597,7 +597,7 @@
     "instantTrades": "Swaps",
     "bridges": "Bridges",
     "crossChain": "크로스-체인 스왑",
-    "allTime": "All Time"
+    "description": "All Time"
   },
   "notifications": {
     "tradeInProgress": "진행중인 거래",

@@ -597,7 +597,7 @@
     "instantTrades": "Swaps",
     "bridges": "Bridges",
     "crossChain": "Кросс-чейн обмены",
-    "allTime": "За всё время"
+    "description": "За всё время"
   },
   "notifications": {
     "tradeInProgress": "Сделка в процессе выполнения",

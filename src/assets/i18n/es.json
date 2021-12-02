@@ -597,7 +597,7 @@
     "instantTrades": "Swaps",
     "bridges": "Bridges",
     "crossChain": "Ntercambios entre plataformas",
-    "allTime": "All Time"
+    "description": "All Time"
   },
   "notifications": {
     "tradeInProgress": "Comercio en curso",
