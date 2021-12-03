@@ -83,7 +83,6 @@ export class IframeSettingsComponent implements OnInit {
 
     itSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
-      // this.slippageTolerance = settings.slippageTolerance;
       ccrSettingsForm.patchValue({ slippageTolerance: settings.slippageTolerance });
     });
 
