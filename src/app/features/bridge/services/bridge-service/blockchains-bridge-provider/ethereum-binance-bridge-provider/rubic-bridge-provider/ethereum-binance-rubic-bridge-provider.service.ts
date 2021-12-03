@@ -24,6 +24,8 @@ import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair'
 import { HttpService } from 'src/app/core/services/http/http.service';
 import rubicBridgeContractAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/constants/rubicBridgeContractAbi';
 
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 import { BlockchainsBridgeProvider } from '../../blockchains-bridge-provider';
 
 interface RubicConfig {
@@ -200,7 +202,13 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const web3Public = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
+    if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
+    const web3Public = this.publicBlockchainAdapterService[
+      bridgeTrade.fromBlockchain
+    ] as Web3Public;
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
@@ -266,6 +274,10 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     trade.amount = bridgeTrade.amount.multipliedBy(10 ** trade.token.decimals);
 
     const onApprove = bridgeTrade.onTransactionHash;
+    if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
     await this.provideAllowance(trade, web3Public as Web3Public, onApprove);
 
     const blockchain = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;

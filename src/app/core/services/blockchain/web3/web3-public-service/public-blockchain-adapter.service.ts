@@ -11,7 +11,7 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import networks from '@shared/constants/blockchain/networks';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
-import { clusterApiUrl, Connection } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -83,14 +83,17 @@ export class PublicBlockchainAdapterService {
       this.addWeb3(connection.rpcLink, connection.blockchainName)
     );
 
-    this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(
-      new Web3(),
-      BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.SOLANA),
-      this.useTestingModeService,
-      this.httpClient,
-      new Connection(clusterApiUrl('mainnet-beta')),
-      'this.walletConnectorService.provider.address'
-    );
+    const solanaRpc = {
+      free: { url: 'https://free.rpcpool.com', weight: 10 },
+      mainnet: { url: 'https://mainnet.rpcpool.com', weight: 10 },
+      api: { url: 'https://api.rpcpool.com', weight: 10 },
+      solanaApi: { url: 'https://solana-api.projectserum.com', weight: 10 },
+      raydium: { url: 'https://raydium.rpcpool.com', weight: 50 },
+      apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 10 }
+    };
+    const solanaConnection = new Connection(solanaRpc.solanaApi.url);
+    this.walletConnectorService.solanaWeb3Connection = solanaConnection;
+    this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(solanaConnection);
 
     this.checkAllRpcProviders();
 
@@ -166,6 +169,10 @@ export class PublicBlockchainAdapterService {
         }
 
         if (typeof target[prop] === 'function') {
+          if (prop === 'isAddressCorrect' || prop === 'isNativeAddress') {
+            return (...params: unknown[]) => (target[prop] as Function).call(target, ...params);
+          }
+
           return (...params: unknown[]) =>
             nodesChecked$
               .pipe(

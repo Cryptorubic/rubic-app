@@ -15,7 +15,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected isEnabled: boolean;
 
-  protected wallet: T = null;
+  public wallet: T = null;
 
   /**
    * is the blockchain provider installed

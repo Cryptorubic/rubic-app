@@ -33,6 +33,7 @@ import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 
@@ -108,6 +109,13 @@ export class ZrxService implements ItProvider {
    */
   private setZrxParams(): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    if (
+      BlockchainsInfo.getBlockchainType(fromBlockchain) !== 'ethLike' ||
+      BlockchainsInfo.getBlockchainType(toBlockchain) !== 'ethLike'
+    ) {
+      console.debug('0x wallet error');
+      return;
+    }
     this.fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain] as Web3Public;
     this.toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain] as Web3Public;
 

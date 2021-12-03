@@ -124,7 +124,11 @@ export class CommonOneinchService {
   }
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
+    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as Web3Public;
     if (blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
@@ -192,8 +196,12 @@ export class CommonOneinchService {
       return instantTrade;
     }
 
-    const web3Public = this.publicBlockchainAdapterService[blockchain];
-    const gasPrice = await web3Public.getGasPrice();
+    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as Web3Public;
+    const gasPrice = await blockchainAdapter.getGasPrice();
     const gasPriceInEth = Web3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);

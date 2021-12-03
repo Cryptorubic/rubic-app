@@ -36,7 +36,8 @@ enum ERROR_TYPE {
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
   MULTICHAIN_WALLET = 'Multichain wallets are not supported',
-  NO_AMOUNT = 'From amount was not entered'
+  NO_AMOUNT = 'From amount was not entered',
+  WRONG_WALLET = 'Wrong wallet'
 }
 
 @Component({
@@ -156,6 +157,10 @@ export class SwapButtonContainerComponent implements OnInit {
     const { fromToken, fromBlockchain } = this.formService.inputValue;
 
     switch (true) {
+      case err[ERROR_TYPE.WRONG_WALLET]: {
+        translateParams = { key: 'errors.wrongWallet' };
+        break;
+      }
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
         break;
@@ -284,34 +289,39 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private async checkErrors(): Promise<void> {
-    await this.checkInsufficientFundsError();
+    if (this.checkWalletError()) return;
+    if (await this.checkInsufficientFundsError()) return;
     this.checkWrongBlockchainError();
   }
 
-  private async checkInsufficientFundsError(): Promise<void> {
+  private async checkInsufficientFundsError(): Promise<boolean> {
     const { fromToken } = this.formService.inputValue;
     if (!this._fromAmount || !fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
-      return;
+      return false;
     }
 
-    let balance = fromToken.amount;
-    if (!fromToken.amount.isFinite()) {
-      balance = Web3Public.fromWei(
-        await this.publicBlockchainAdapterService[fromToken.blockchain].getTokenOrNativeBalance(
-          this.authService.user.address,
-          fromToken.address
-        ),
-        fromToken.decimals
-      );
+    if (this.checkWrongBlockchainError()) {
+      return false;
     }
+    const balance = !fromToken.amount.isFinite()
+      ? Web3Public.fromWei(
+          await this.publicBlockchainAdapterService[fromToken.blockchain].getTokenOrNativeBalance(
+            this.authService.user.address,
+            fromToken.address
+          ),
+          fromToken.decimals
+        )
+      : fromToken.amount;
 
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
+    const isError = balance.lt(this._fromAmount);
+    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = isError;
     this.cdr.detectChanges();
+    return isError;
   }
 
-  private checkWrongBlockchainError(): void {
+  private checkWrongBlockchainError(): boolean {
     if (this.providerConnectorService.provider) {
       const userBlockchain = this.providerConnectorService.network?.name;
       const { fromBlockchain } = this.formService.inputValue;
@@ -326,7 +336,11 @@ export class SwapButtonContainerComponent implements OnInit {
         (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
+      return (
+        this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] || this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]
+      );
     }
+    return false;
   }
 
   public onLogin(): void {
@@ -342,5 +356,15 @@ export class SwapButtonContainerComponent implements OnInit {
     } finally {
       this.status = currentStatus;
     }
+  }
+
+  private checkWalletError(): boolean {
+    const blockchainAdapter =
+      this.publicBlockchainAdapterService[this.formService.inputValue.fromBlockchain];
+    this.errorType[ERROR_TYPE.WRONG_WALLET] = !blockchainAdapter.isAddressCorrect(
+      this.providerConnectorService.address
+    );
+    this.cdr.detectChanges();
+    return this.errorType[ERROR_TYPE.WRONG_WALLET];
   }
 }

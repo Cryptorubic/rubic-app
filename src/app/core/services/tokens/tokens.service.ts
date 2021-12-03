@@ -24,6 +24,8 @@ import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOK
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -285,12 +287,12 @@ export class TokensService {
    * @return Observable<TokenAmount> Token with balance.
    */
   public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
-    const web3Public = this.publicBlockchainAdapterService[blockchain];
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
-      ? from(web3Public.getTokenBalance(this.userAddress, address))
+      ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
       : of(null);
 
-    return forkJoin([web3Public.getTokenInfo(address), balance$]).pipe(
+    return forkJoin([blockchainAdapter.getTokenInfo(address), balance$]).pipe(
       map(([tokenInfo, amount]) => ({
         blockchain,
         address,
@@ -564,7 +566,11 @@ export class TokensService {
     if (foundToken) {
       return foundToken?.symbol;
     }
-    const web3Public = this.publicBlockchainAdapterService[blockchain];
+    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
+    const web3Public = this.publicBlockchainAdapterService[blockchain] as Web3Public;
     return web3Public.getTokenSymbol(tokenAddress);
   }
 }

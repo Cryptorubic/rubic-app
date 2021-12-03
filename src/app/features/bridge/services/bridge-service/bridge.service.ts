@@ -264,7 +264,7 @@ export class BridgeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
-    return web3Public.checkBalance(token, amount, this.authService.user.address);
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
   }
 }

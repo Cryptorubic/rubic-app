@@ -22,6 +22,7 @@ import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { Connection } from '@solana/web3.js';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +73,16 @@ export class WalletConnectorService {
   }
 
   public readonly web3: Web3;
+
+  private _solanaWeb3connection: Connection;
+
+  set solanaWeb3Connection(value: Connection) {
+    this._solanaWeb3connection = value;
+  }
+
+  get solanaWeb3Connection(): Connection {
+    return this._solanaWeb3connection;
+  }
 
   constructor(
     private readonly storage: StoreService,
@@ -165,13 +176,15 @@ export class WalletConnectorService {
         new SolflareWalletAdapter(
           this.networkChangeSubject$,
           this.addressChangeSubject$,
-          this.errorService
+          this.errorService,
+          this.solanaWeb3Connection
         ),
       [WALLET_NAME.PHANTOM]: async () =>
         new PhantomWalletAdapter(
           this.networkChangeSubject$,
           this.addressChangeSubject$,
-          this.errorService
+          this.errorService,
+          this.solanaWeb3Connection
         ),
       [WALLET_NAME.WALLET_CONNECT]: async () =>
         new WalletConnectWalletAdapter(

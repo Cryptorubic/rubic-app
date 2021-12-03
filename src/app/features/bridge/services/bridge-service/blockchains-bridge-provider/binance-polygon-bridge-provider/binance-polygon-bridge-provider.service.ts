@@ -31,6 +31,8 @@ import {
   TokensIdConfig
 } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/Config';
 import { ConfigResponse } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/ConfigResponse';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 
 // Exclude MATIC token because it is not supported by EVO relayer
 const EXCLUDED_TOKENS = {
@@ -87,7 +89,11 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
   needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
-    const web3Public = this.web3PublicService[bridgeTrade.fromBlockchain];
+    if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
+    const web3Public = this.web3PublicService[bridgeTrade.fromBlockchain] as Web3Public;
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (!this.authService?.user?.address) {
@@ -227,15 +233,20 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       console.warn('[EVO TOKENS WARNING]: BSC tokens number is not equal to POLYGON tokens number');
     }
 
-    const tokensInfoPromises = blockchains.map(blockchain =>
-      (this.web3PublicService[blockchain] as Web3Public).multicallContractMethods<EvoResponseToken>(
+    const tokensInfoPromises = blockchains.map(blockchain => {
+      if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+        // @TODO Solana.
+        throw new CustomError('Solana error');
+      }
+      const blockchainAdapter = this.web3PublicService[blockchain] as Web3Public;
+      return blockchainAdapter.multicallContractMethods<EvoResponseToken>(
         EVO_ADDRESSES[blockchain as EvoBridgeBlockchains],
         EVO_ABI,
         [
           ...Array(Math.min(tokensInBlockchains[0].length, tokensInBlockchains[1].length)).keys()
         ].map(number => ({ methodName: 'tokens', methodArguments: [number] }))
-      )
-    );
+      );
+    });
 
     const tokens = (await Promise.all(tokensInfoPromises)).map(responses =>
       responses.map(response => response.output)
@@ -404,6 +415,10 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
     const blockchainPromises: Promise<TokensIdConfig>[] = blockchains.map(async blockchain => {
       const tokenIds = blockchainTokenIds[blockchain.name];
+      if (BlockchainsInfo.getBlockchainType(blockchain.name) !== 'ethLike') {
+        // @TODO Solana.
+        throw new CustomError('Solana error');
+      }
       const configResponse = (
         await (
           this.web3PublicService[blockchain.name] as Web3Public

@@ -1,22 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
 import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { ErrorsService } from '@core/errors/errors.service';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import CustomError from '@core/errors/models/custom-error';
-import { PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { PhantomWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
+import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common-solana-wallet-adapter';
 
-export class PhantomWalletAdapter extends CommonWalletAdapter<PhantomWallet | null> {
-  public get isMultiChainWallet(): boolean {
-    return false;
-  }
-
-  get walletType(): 'solana' | 'ethLike' {
-    return 'solana';
-  }
-
+export class PhantomWalletAdapter extends CommonSolanaWalletAdapter {
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.PHANTOM;
   }
@@ -24,9 +16,10 @@ export class PhantomWalletAdapter extends CommonWalletAdapter<PhantomWallet | nu
   constructor(
     onNetworkChanges$: BehaviorSubject<IBlockchain>,
     onAddressChanges$: BehaviorSubject<string>,
-    errorsService: ErrorsService
+    errorsService: ErrorsService,
+    connection: Connection
   ) {
-    super(errorsService, onAddressChanges$, onNetworkChanges$);
+    super(errorsService, onAddressChanges$, onNetworkChanges$, connection);
   }
 
   public async signPersonal(message: string): Promise<string> {
@@ -85,51 +78,6 @@ export class PhantomWalletAdapter extends CommonWalletAdapter<PhantomWallet | nu
     } finally {
       wallet._handleDisconnect = handleDisconnect;
     }
-  }
-
-  public deActivate(): void {
-    this.onAddressChanges$.next(null);
-    this.onNetworkChanges$.next(null);
-    this.isEnabled = false;
-  }
-
-  public addToken(/* token: Token */): Promise<void> {
-    return null;
-    // if (!this.isActive) {
-    //   throw new MetamaskError();
-    // }
-    // if (this.getNetwork().name !== token.blockchain) {
-    //   throw new NetworkError(token.blockchain);
-    // }
-    //
-    // return this.core.request({
-    //   method: 'wallet_watchAsset',
-    //   params: {
-    //     type: 'ERC20',
-    //     options: {
-    //       address: token.address,
-    //       symbol: token.symbol,
-    //       decimals: token.decimals,
-    //       image: token.image
-    //     }
-    //   }
-    // });
-  }
-
-  public async switchChain(/* chainId: string */): Promise<null | never> {
-    return null;
-    // return this.core.request({
-    //   method: 'wallet_switchEthereumChain',
-    //   params: [{ chainId }]
-    // });
-  }
-
-  public async addChain(/* params: AddEthChainParams */): Promise<null | never> {
-    return null;
-    // return this.core.request({
-    //   method: 'wallet_addEthereumChain',
-    //   params: [params]
-    // });
   }
 
   private async checkErrors(wallet: PhantomWallet): Promise<void> {

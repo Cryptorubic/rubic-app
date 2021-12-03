@@ -53,6 +53,7 @@ import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -172,6 +173,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService,
+    private readonly walletConnectorService: WalletConnectorService,
     iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
@@ -309,6 +311,21 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   private conditionalCalculate(type?: 'normal' | 'hidden'): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
 
+    // @TODO Solana.
+    // const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    // try {
+    //   if (
+    //     this.walletConnectorService.address &&
+    //     !blockchainAdapter.isAddressCorrect(this.walletConnectorService.address)
+    //   ) {
+    //     throw new CustomError('Wrong wallet');
+    //   }
+    // } catch {
+    //   // @TODO Solana.
+    //   this.errorService.catch(new CustomError('Wrong wallet'));
+    //   return;
+    // }
+
     if (fromBlockchain !== toBlockchain) {
       return;
     }
@@ -379,7 +396,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
                 (tradeData as CalculationResult[]).map((trade, index) => {
-                  if (trade.status === 'fulfilled') {
+                  if (trade.status === 'fulfilled' && trade.value) {
                     return {
                       amount: trade.value.to.amount,
                       name: providersNames[index]

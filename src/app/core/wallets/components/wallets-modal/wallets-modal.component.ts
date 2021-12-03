@@ -138,8 +138,8 @@ export class WalletsModalComponent implements OnInit {
       {
         name: 'Phantom',
         value: WALLET_NAME.PHANTOM,
-        img: './assets/images/icons/cross.svg',
-        desktopOnly: true,
+        img: './assets/images/icons/wallets/phantom.svg',
+        desktopOnly: false,
         display: true,
         // @TODO SOLANA.
         supportsInHorizontalIframe: false,
@@ -149,7 +149,7 @@ export class WalletsModalComponent implements OnInit {
       {
         name: 'Solflare',
         value: WALLET_NAME.SOLFLARE,
-        img: './assets/images/icons/back.svg',
+        img: './assets/images/icons/wallets/solflare.svg',
         desktopOnly: true,
         display: true,
         // @TODO SOLANA.

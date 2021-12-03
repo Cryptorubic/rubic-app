@@ -20,6 +20,9 @@ import {
 } from '@features/my-trades/constants/REFUND_ADDRESS';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
+import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 
 @Injectable()
 export class GasRefundService {
@@ -164,8 +167,14 @@ export class GasRefundService {
     onTransactionHash?: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const address = this.authService.userAddress;
-    const web3Public = this.publicBlockchainAdapterService[this.refundBlockchain];
-    const hexRootFromContract = await web3Public.callContractMethod(
+    if (BlockchainsInfo.getBlockchainType(this.refundBlockchain) !== 'ethLike') {
+      // @TODO Solana.
+      throw new CustomError('Solana error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[
+      this.refundBlockchain
+    ] as Web3Public;
+    const hexRootFromContract = await blockchainAdapter.callContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,
       'merkleRoots',

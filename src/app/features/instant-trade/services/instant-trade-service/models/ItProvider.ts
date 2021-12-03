@@ -10,7 +10,7 @@ export interface ItOptions {
 }
 
 export interface ItProvider {
-  createTrade: (trade: InstantTrade, options: ItOptions) => Promise<TransactionReceipt>;
+  createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
   calculateTrade: (
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,

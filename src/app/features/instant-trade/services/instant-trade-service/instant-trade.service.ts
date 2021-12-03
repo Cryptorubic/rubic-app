@@ -44,6 +44,7 @@ import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -96,7 +97,8 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
@@ -245,8 +247,8 @@ export class InstantTradeService {
     provider: INSTANT_TRADES_PROVIDER,
     trade: InstantTrade
   ): Promise<void> {
-    const web3Public = this.publicBlockchainAdapterService[trade.blockchain];
-    await web3Public.getTransactionByHash(hash, 0, 60, 1000);
+    const publicBlockchainAdapter = this.publicBlockchainAdapterService[trade.blockchain];
+    await publicBlockchainAdapter.getTransactionByHash(hash, 0, 60, 1000);
     timer(1000)
       .pipe(
         switchMap(() =>

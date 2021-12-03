@@ -24,6 +24,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { TokenListContainer, TokenListProvider } from '@solana/spl-token-registry';
+import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -163,7 +164,18 @@ export class TokensApiService {
           .filterByChainId(101)
           .getList()
           .map(token => {
-            const coolNames = ['ray', 'usdt', 'usdc', 'eth', 'sol', 'wsol'];
+            const coolNames = [
+              'ray',
+              'usdt',
+              'usdc',
+              'eth',
+              'sol',
+              'wsol',
+              'aury',
+              'abr',
+              'slim',
+              'yfi'
+            ];
             const rank = coolNames.includes(token.symbol.toLowerCase()) ? 1 : 0;
             return {
               address: token.address,
@@ -178,7 +190,26 @@ export class TokensApiService {
               used_in_iframe: false
             };
           }) as BackendToken[]
-      }))
+      })),
+      map(tokens => {
+        return {
+          results: [
+            ...tokens.results,
+            {
+              address: NATIVE_SOL.mintAddress,
+              name: NATIVE_SOL.name,
+              symbol: NATIVE_SOL.symbol,
+              blockchain_network: 'solana',
+              decimals: NATIVE_SOL.decimals,
+              rank: 1,
+              image: 'NATIVE_SOL.logoURI',
+              coingecko_id: null,
+              usd_price: 0,
+              used_in_iframe: false
+            } as BackendToken
+          ]
+        };
+      })
     );
     return forkJoin([...requests$, solanaTokens$]).pipe(
       map(results => {

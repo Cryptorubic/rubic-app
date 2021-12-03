@@ -46,6 +46,8 @@ import {
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 
 /**
  * Shows whether Eth is used as from or to token.
@@ -110,6 +112,10 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
+        if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
+          // @TODO Solana.
+          throw new CustomError('Solana error');
+        }
         this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
         this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainAdapter, true);
         this.wethAddress = wethAddressNetMode.testnet;
