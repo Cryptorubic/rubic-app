@@ -596,7 +596,8 @@
     "title": "Volumen de transacciones acumuladas",
     "instantTrades": "Swaps",
     "bridges": "Bridges",
-    "crossChain": "Ntercambios entre plataformas"
+    "crossChain": "Ntercambios entre plataformas",
+    "description": "Todo el tiempo"
   },
   "notifications": {
     "tradeInProgress": "Comercio en curso",

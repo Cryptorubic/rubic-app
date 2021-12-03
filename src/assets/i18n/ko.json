@@ -596,7 +596,8 @@
     "title": "누적 거래량",
     "instantTrades": "Swaps",
     "bridges": "Bridges",
-    "crossChain": "크로스-체인 스왑"
+    "crossChain": "크로스-체인 스왑",
+    "description": "항상"
   },
   "notifications": {
     "tradeInProgress": "진행중인 거래",
