@@ -21,6 +21,11 @@ import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-p
 import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
+interface QuerySlippage {
+  slippageIt: number;
+  slippageCcr: number;
+}
+
 const DEFAULT_PARAMETERS = {
   swap: {
     fromChain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -59,17 +64,9 @@ export class QueryParamsService {
     return this._tokensSelectionDisabled$.asObservable();
   }
 
-  private readonly _slippage$ = new BehaviorSubject<{
-    slippageIt: number;
-    slippageCcr: number;
-  }>(null);
+  private readonly _slippage$ = new BehaviorSubject<QuerySlippage>(null);
 
-  public get slippage$(): Observable<{
-    slippageIt: number;
-    slippageCcr: number;
-  }> {
-    return this._slippage$.asObservable();
-  }
+  public slippage$ = this._slippage$.asObservable();
 
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);

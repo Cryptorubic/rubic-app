@@ -20,6 +20,16 @@ export interface IframeSettingsForm {
   autoRefresh: boolean;
 }
 
+interface SlippageTolerance {
+  instantTrades: number;
+  crossChain: number;
+}
+
+const defaultSlippageTolerance: SlippageTolerance = {
+  instantTrades: 2,
+  crossChain: 5
+};
+
 @Component({
   selector: 'app-iframe-settings',
   templateUrl: './iframe-settings.component.html',
@@ -28,9 +38,7 @@ export interface IframeSettingsForm {
   providers: [TuiDestroyService]
 })
 export class IframeSettingsComponent implements OnInit {
-  private defaultSlippageToleranceIT = 2;
-
-  private defaultSlippageToleranceCcr = 5;
+  private defaultSlippageTolerance: SlippageTolerance;
 
   public iframeSettingsForm: FormGroup<IframeSettingsForm>;
 
@@ -44,13 +52,13 @@ export class IframeSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.queryParamsService.slippage$
-      .pipe(first(), takeUntil(this.destroy$))
-      .subscribe(({ slippageIt, slippageCcr }) => {
-        this.defaultSlippageToleranceIT = slippageIt ?? this.defaultSlippageToleranceIT;
-        this.defaultSlippageToleranceCcr = slippageCcr ?? this.defaultSlippageToleranceCcr;
-        this.setForm();
-      });
+    this.queryParamsService.slippage$.pipe(first()).subscribe(({ slippageIt, slippageCcr }) => {
+      this.defaultSlippageTolerance = {
+        instantTrades: slippageIt ?? defaultSlippageTolerance.instantTrades,
+        crossChain: slippageCcr ?? defaultSlippageTolerance.crossChain
+      };
+      this.setForm();
+    });
   }
 
   private setForm(): void {
@@ -120,11 +128,11 @@ export class IframeSettingsComponent implements OnInit {
   public setDefaultSlippageBySwapProvider(): void {
     switch (this.swapService.swapMode) {
       case SWAP_PROVIDER_TYPE.INSTANT_TRADE: {
-        this.slippageTolerance = this.defaultSlippageToleranceIT;
+        this.slippageTolerance = this.defaultSlippageTolerance.instantTrades;
         break;
       }
       case SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING: {
-        this.slippageTolerance = this.defaultSlippageToleranceCcr;
+        this.slippageTolerance = this.defaultSlippageTolerance.crossChain;
         break;
       }
       default: {
