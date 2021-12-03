@@ -59,6 +59,18 @@ export class QueryParamsService {
     return this._tokensSelectionDisabled$.asObservable();
   }
 
+  private readonly _slippage$ = new BehaviorSubject<{
+    slippageIt: number;
+    slippageCcr: number;
+  }>(null);
+
+  public get slippage$(): Observable<{
+    slippageIt: number;
+    slippageCcr: number;
+  }> {
+    return this._slippage$.asObservable();
+  }
+
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
     delete urlTree.queryParams.iframe;
@@ -94,6 +106,7 @@ export class QueryParamsService {
       this.setIframeInfo(queryParams);
       this.setBackgroundStatus(queryParams);
       this.setHideSelectionStatus(queryParams);
+      this.setSlippage(queryParams);
       this.setThemeStatus(queryParams);
       this.setAdditionalIframeTokens(queryParams);
       this.setLanguage(queryParams);
@@ -346,6 +359,17 @@ export class QueryParamsService {
     if (tokensSelectionDisabled.includes(true)) {
       this._tokensSelectionDisabled$.next(tokensSelectionDisabled);
     }
+  }
+
+  private setSlippage(queryParams: QueryParams): void {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    this._slippage$.next({
+      slippageIt: queryParams.slippageIt ? parseInt(queryParams.slippageIt) : null,
+      slippageCcr: queryParams.slippageCcr ? parseInt(queryParams?.slippageCcr) : null
+    });
   }
 
   private setThemeStatus(queryParams: QueryParams): void {

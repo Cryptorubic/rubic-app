@@ -132,6 +132,10 @@
 
   &__output {
     overflow: hidden;
+
+    @include iframe() {
+      line-height: 1.3;
+    }
   }
 
   &__hint {
