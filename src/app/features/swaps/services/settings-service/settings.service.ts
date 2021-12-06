@@ -115,7 +115,7 @@ export class SettingsService {
   }
 
   private parseSlippage(slippage: number): number {
-    if (isNaN(slippage)) {
+    if (!slippage || isNaN(slippage)) {
       return null;
     }
     return Math.min(Math.max(slippage, 0.1), 50);
