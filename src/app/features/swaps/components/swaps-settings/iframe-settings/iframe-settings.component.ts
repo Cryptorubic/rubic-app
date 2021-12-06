@@ -7,10 +7,11 @@ import {
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { first, takeUntil } from 'rxjs/operators';
+import { filter, first, startWith, takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
+import { combineLatest } from 'rxjs';
 
 export interface IframeSettingsForm {
   autoSlippageTolerance: boolean;
@@ -66,15 +67,24 @@ export class IframeSettingsComponent implements OnInit {
     const bridgeSettingsForm = this.settingsService.bridge;
     const ccrSettingsForm = this.settingsService.crossChainRouting;
 
-    this.setDefaultSlippageBySwapProvider();
+    const settingsForm =
+      this.swapService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+        ? itSettingsForm
+        : ccrSettingsForm;
+    if (settingsForm.value.autoSlippageTolerance) {
+      this.setDefaultSlippageBySwapProvider();
+    } else {
+      this.slippageTolerance = settingsForm.value.slippageTolerance;
+    }
 
     this.iframeSettingsForm = new FormGroup<IframeSettingsForm>({
-      autoSlippageTolerance: new FormControl<boolean>(itSettingsForm.value.autoSlippageTolerance),
+      autoSlippageTolerance: new FormControl<boolean>(settingsForm.value.autoSlippageTolerance),
       slippageTolerance: new FormControl<number>(this.slippageTolerance),
       disableMultihops: new FormControl<boolean>(itSettingsForm.value.disableMultihops),
       rubicOptimisation: new FormControl<boolean>(itSettingsForm.value.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(itSettingsForm.value.autoRefresh)
+      autoRefresh: new FormControl<boolean>(settingsForm.value.autoRefresh)
     });
+
     this.setFormChanges(itSettingsForm, bridgeSettingsForm, ccrSettingsForm);
   }
 
@@ -84,23 +94,39 @@ export class IframeSettingsComponent implements OnInit {
     ccrSettingsForm: AbstractControl<CcrSettingsForm>
   ): void {
     this.iframeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
-      const { ...itSettings } = settings;
-      itSettingsForm.patchValue({ ...itSettings });
-      ccrSettingsForm.patchValue({ ...itSettings });
+      itSettingsForm.patchValue(settings);
+      ccrSettingsForm.patchValue(settings);
     });
 
-    itSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
-      this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
-      ccrSettingsForm.patchValue({ slippageTolerance: settings.slippageTolerance });
-    });
+    combineLatest([
+      itSettingsForm.valueChanges,
+      this.swapService.swapMode$.pipe(
+        filter(swapMode => swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
+      )
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([settings]) => {
+        this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
+        this.slippageTolerance = settings.slippageTolerance;
+        ccrSettingsForm.patchValue(settings);
+      });
 
     bridgeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
     });
 
-    ccrSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
-      this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
-    });
+    combineLatest([
+      ccrSettingsForm.valueChanges.pipe(startWith(ccrSettingsForm.value)),
+      this.swapService.swapMode$.pipe(
+        filter(swapMode => swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING)
+      )
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([settings]) => {
+        this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
+        this.slippageTolerance = settings.slippageTolerance;
+        itSettingsForm.patchValue(settings);
+      });
   }
 
   public toggleAutoSlippageTolerance(): void {
@@ -140,4 +166,16 @@ export class IframeSettingsComponent implements OnInit {
       }
     }
   }
+
+  // public regulateSlippage(slippage: number) {
+  //   if (isNaN(slippage)) {
+  //     return
+  //   }
+  //   if (slippage < 0) {
+  //
+  //   }
+  //   if (slippage > 50) {
+  //
+  //   }
+  // }
 }

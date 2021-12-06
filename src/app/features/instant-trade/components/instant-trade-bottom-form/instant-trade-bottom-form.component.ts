@@ -172,7 +172,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    iframeService: IframeService,
+    private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.autoSelect = true;
@@ -289,7 +289,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     if (
       this.settingsForm &&
-      this.settingsForm.autoSlippageTolerance !== form.autoSlippageTolerance
+      this.settingsForm.autoSlippageTolerance !== form.autoSlippageTolerance &&
+      !this.iframeService.isIframe
     ) {
       const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
       if (providerIndex !== -1) {
@@ -609,10 +610,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setSlippageTolerance(provider: ProviderControllerData): void {
-    const providerName = provider.tradeProviderInfo.value;
     if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
       const currentBlockchainDefaultSlippage =
         defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
+      const providerName = provider.tradeProviderInfo.value;
       this.settingsService.instantTrade.patchValue({
         slippageTolerance:
           currentBlockchainDefaultSlippage[
@@ -673,15 +674,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       await this.tokensService.calculateTokensBalances();
 
-      if (this.isIframe$) {
-        this.needApprove = false;
-      }
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,
         providerIndex,
         INSTANT_TRADES_STATUS.COMPLETED,
         false
       );
+      this.needApprove = false;
     } catch (err) {
       this.errorService.catch(err);
 

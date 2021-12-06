@@ -192,10 +192,10 @@ export class SwapsService {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = form;
 
     if (fromBlockchain === toBlockchain) {
-      this._swapProviderType$.next(SWAP_PROVIDER_TYPE.INSTANT_TRADE);
+      this.swapMode = SWAP_PROVIDER_TYPE.INSTANT_TRADE;
     } else if (!fromToken || !toToken) {
       if (!this.swapMode || this.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-        this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+        this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
       }
     } else {
       this.bridgeTokenPairsByBlockchainsArray$
@@ -217,9 +217,9 @@ export class SwapsService {
             );
 
           if (foundBridgeToken) {
-            this._swapProviderType$.next(SWAP_PROVIDER_TYPE.BRIDGE);
+            this.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
           } else {
-            this._swapProviderType$.next(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+            this.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
           }
         });
     }

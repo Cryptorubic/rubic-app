@@ -68,6 +68,10 @@ export class QueryParamsService {
 
   public slippage$ = this._slippage$.asObservable();
 
+  public get slippage(): QuerySlippage {
+    return this._slippage$.getValue();
+  }
+
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
     delete urlTree.queryParams.iframe;
