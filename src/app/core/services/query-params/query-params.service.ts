@@ -369,7 +369,7 @@ export class QueryParamsService {
 
     this._slippage$.next({
       slippageIt: queryParams.slippageIt ? parseInt(queryParams.slippageIt) : null,
-      slippageCcr: queryParams.slippageCcr ? parseInt(queryParams?.slippageCcr) : null
+      slippageCcr: queryParams.slippageCcr ? parseInt(queryParams.slippageCcr) : null
     });
   }
 

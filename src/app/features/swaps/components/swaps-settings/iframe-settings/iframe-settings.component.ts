@@ -154,16 +154,4 @@ export class IframeSettingsComponent implements OnInit {
       }
     }
   }
-
-  // public regulateSlippage(slippage: number) {
-  //   if (isNaN(slippage)) {
-  //     return
-  //   }
-  //   if (slippage < 0) {
-  //
-  //   }
-  //   if (slippage > 50) {
-  //
-  //   }
-  // }
 }

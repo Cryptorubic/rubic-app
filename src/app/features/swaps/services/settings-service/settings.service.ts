@@ -98,7 +98,8 @@ export class SettingsService {
     const { slippageIt, slippageCcr } = this.queryParamsService.slippage;
     this.defaultItSettings = {
       autoSlippageTolerance: true,
-      slippageTolerance: slippageIt ?? this.defaultSlippageTolerance.instantTrades,
+      slippageTolerance:
+        this.parseSlippage(slippageIt) ?? this.defaultSlippageTolerance.instantTrades,
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
@@ -106,11 +107,18 @@ export class SettingsService {
     };
     this.defaultCcrSettings = {
       ...this.defaultItSettings,
-      slippageTolerance: slippageCcr ?? this.defaultSlippageTolerance.crossChain
+      slippageTolerance: this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain
     };
 
     this.createForm();
     this.setupData();
+  }
+
+  private parseSlippage(slippage: number): number {
+    if (isNaN(slippage)) {
+      return null;
+    }
+    return Math.min(Math.max(slippage, 0.1), 50);
   }
 
   private setupData(): void {
