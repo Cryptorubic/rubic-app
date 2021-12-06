@@ -13,12 +13,16 @@
     height: 212px;
   }
 
-  &__container {
+  &__estimate-container {
     display: flex;
     justify-content: space-between;
+    min-height: 65px;
+  }
 
-    min-height: 105px;
+  &__container {
+    min-height: 110px;
     padding: 15px 20px 30px;
+    // @TODO Solana. Do iframe styles.
 
     background-color: var(--main-background);
     border-radius: 0 0 14px 14px;

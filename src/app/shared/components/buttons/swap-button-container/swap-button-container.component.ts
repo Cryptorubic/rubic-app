@@ -37,7 +37,8 @@ enum ERROR_TYPE {
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
   MULTICHAIN_WALLET = 'Multichain wallets are not supported',
   NO_AMOUNT = 'From amount was not entered',
-  WRONG_WALLET = 'Wrong wallet'
+  WRONG_WALLET = 'Wrong wallet',
+  INVALID_TARGET_ADDRESS = 'Invalid target network address'
 }
 
 @Component({
@@ -60,6 +61,10 @@ export class SwapButtonContainerComponent implements OnInit {
     this._fromAmount = value;
     this.errorType[ERROR_TYPE.NO_AMOUNT] = Boolean(value === null ? true : value?.isNaN());
     this.checkInsufficientFundsError();
+  }
+
+  @Input() set isTargetAddressValid(isValid: boolean) {
+    this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = !isValid;
   }
 
   @Input() set minAmount(value: false | number | BigNumber) {
@@ -193,6 +198,10 @@ export class SwapButtonContainerComponent implements OnInit {
           key: 'errors.chooseNetworkWallet',
           interpolateParams: { blockchain: fromBlockchain || fromToken?.blockchain }
         };
+        break;
+      }
+      case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
+        translateParams = { key: 'errors.invalidTargetAddress' };
         break;
       }
       default:

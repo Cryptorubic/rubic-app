@@ -1,0 +1,38 @@
+:host ::ng-deep .network-container {
+  &__input-status-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  tui-wrapper[data-appearance='textfield'] {
+    --tui-base-01: var(--rubic-base-17);
+    border-radius: 50px;
+    box-shadow: none;
+
+    input {
+      border-left-width: 18px !important;
+    }
+
+    .content {
+      padding-left: 18px !important;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  &__hint {
+    display: flex;
+    margin-left: 10px;
+
+    cursor: pointer;
+
+    svg {
+      width: 21px;
+      height: 21px;
+    }
+  }
+}

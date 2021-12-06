@@ -74,7 +74,8 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Oops, something went wrong, please try to reload the page. Contact our support if you still have this issue after reloading.",
     "tradingIsNotAvailable": "Trading is not available",
-    "wrongWallet": "Wrong wallet"
+    "wrongWallet": "Wrong wallet",
+    "invalidTargetAddress": "Invalid target network address"
   },
   "navigation": {
     "about": "About",

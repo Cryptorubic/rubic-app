@@ -50,6 +50,7 @@ export class SolanaWeb3Public {
    * @param address The address to check validity.
    */
   public isAddressCorrect(address: string): boolean {
+    // @TODO Solana.
     try {
       return Boolean(new PublicKey(address)?.toBase58());
     } catch {

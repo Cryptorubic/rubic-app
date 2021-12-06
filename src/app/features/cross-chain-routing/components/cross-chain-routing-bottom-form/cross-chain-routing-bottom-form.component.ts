@@ -104,6 +104,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private tradeInProgressSubscription$: Subscription;
 
+  public isTargetNetworkValid: boolean;
+
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
   }
