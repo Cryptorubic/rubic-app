@@ -1,14 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms';
+import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
+import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import {
-  BridgeSettingsForm,
   CcrSettingsForm,
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { filter, first, startWith, takeUntil } from 'rxjs/operators';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
 import { combineLatest } from 'rxjs';
@@ -21,16 +19,6 @@ export interface IframeSettingsForm {
   autoRefresh: boolean;
 }
 
-interface SlippageTolerance {
-  instantTrades: number;
-  crossChain: number;
-}
-
-const defaultSlippageTolerance: SlippageTolerance = {
-  instantTrades: 2,
-  crossChain: 5
-};
-
 @Component({
   selector: 'app-iframe-settings',
   templateUrl: './iframe-settings.component.html',
@@ -39,63 +27,48 @@ const defaultSlippageTolerance: SlippageTolerance = {
   providers: [TuiDestroyService]
 })
 export class IframeSettingsComponent implements OnInit {
-  private defaultSlippageTolerance: SlippageTolerance;
-
   public iframeSettingsForm: FormGroup<IframeSettingsForm>;
 
   public slippageTolerance: number;
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly destroy$: TuiDestroyService,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly swapService: SwapsService
+    private readonly swapService: SwapsService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
-    this.queryParamsService.slippage$.pipe(first()).subscribe(({ slippageIt, slippageCcr }) => {
-      this.defaultSlippageTolerance = {
-        instantTrades: slippageIt ?? defaultSlippageTolerance.instantTrades,
-        crossChain: slippageCcr ?? defaultSlippageTolerance.crossChain
-      };
-      this.setForm();
-    });
+    this.setForm();
   }
 
   private setForm(): void {
-    const itSettingsForm = this.settingsService.instantTrade;
-    const bridgeSettingsForm = this.settingsService.bridge;
-    const ccrSettingsForm = this.settingsService.crossChainRouting;
+    const itSettingsForm = this.settingsService.instantTradeValue;
+    const ccrSettingsForm = this.settingsService.crossChainRoutingValue;
 
     const settingsForm =
       this.swapService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
         ? itSettingsForm
         : ccrSettingsForm;
-    if (settingsForm.value.autoSlippageTolerance) {
-      this.setDefaultSlippageBySwapProvider();
-    } else {
-      this.slippageTolerance = settingsForm.value.slippageTolerance;
-    }
 
     this.iframeSettingsForm = new FormGroup<IframeSettingsForm>({
-      autoSlippageTolerance: new FormControl<boolean>(settingsForm.value.autoSlippageTolerance),
-      slippageTolerance: new FormControl<number>(this.slippageTolerance),
-      disableMultihops: new FormControl<boolean>(itSettingsForm.value.disableMultihops),
-      rubicOptimisation: new FormControl<boolean>(itSettingsForm.value.rubicOptimisation),
-      autoRefresh: new FormControl<boolean>(settingsForm.value.autoRefresh)
+      autoSlippageTolerance: new FormControl<boolean>(settingsForm.autoSlippageTolerance),
+      slippageTolerance: new FormControl<number>(settingsForm.slippageTolerance),
+      disableMultihops: new FormControl<boolean>(itSettingsForm.disableMultihops),
+      rubicOptimisation: new FormControl<boolean>(itSettingsForm.rubicOptimisation),
+      autoRefresh: new FormControl<boolean>(settingsForm.autoRefresh)
     });
+    this.slippageTolerance = this.iframeSettingsForm.value.slippageTolerance;
 
-    this.setFormChanges(itSettingsForm, bridgeSettingsForm, ccrSettingsForm);
+    this.setFormChanges();
   }
 
-  private setFormChanges(
-    itSettingsForm: AbstractControl<ItSettingsForm>,
-    bridgeSettingsForm: AbstractControl<BridgeSettingsForm>,
-    ccrSettingsForm: AbstractControl<CcrSettingsForm>
-  ): void {
-    this.iframeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
-      itSettingsForm.patchValue(settings);
-      ccrSettingsForm.patchValue(settings);
+  private setFormChanges(): void {
+    const itSettingsForm = this.settingsService.instantTrade;
+    const ccrSettingsForm = this.settingsService.crossChainRouting;
+
+    this.iframeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.updateSettingsForm(itSettingsForm, SWAP_PROVIDER_TYPE.INSTANT_TRADE);
+      this.updateSettingsForm(ccrSettingsForm, SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
     });
 
     combineLatest([
@@ -106,14 +79,12 @@ export class IframeSettingsComponent implements OnInit {
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([settings]) => {
-        this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
-        this.slippageTolerance = settings.slippageTolerance;
-        ccrSettingsForm.patchValue(settings);
+        if (this.swapService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+          this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
+          this.slippageTolerance = settings.slippageTolerance;
+          this.updateSettingsForm(ccrSettingsForm, SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING);
+        }
       });
-
-    bridgeSettingsForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(settings => {
-      this.iframeSettingsForm.patchValue({ ...settings }, { emitEvent: false });
-    });
 
     combineLatest([
       ccrSettingsForm.valueChanges.pipe(startWith(ccrSettingsForm.value)),
@@ -122,16 +93,33 @@ export class IframeSettingsComponent implements OnInit {
       )
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([settings]) => {
-        this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
-        this.slippageTolerance = settings.slippageTolerance;
-        itSettingsForm.patchValue(settings);
+      .subscribe(([settings]: [CcrSettingsForm, SWAP_PROVIDER_TYPE]) => {
+        if (this.swapService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+          this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
+          this.slippageTolerance = settings.slippageTolerance;
+          this.updateSettingsForm(itSettingsForm, SWAP_PROVIDER_TYPE.INSTANT_TRADE);
+        }
       });
+  }
+
+  private updateSettingsForm(
+    settingsForm: FormGroup<ItSettingsForm | CcrSettingsForm>,
+    swapMode: SWAP_PROVIDER_TYPE
+  ): void {
+    const settings = this.iframeSettingsForm.value;
+    const slippageTolerance = settings.autoSlippageTolerance
+      ? this.getDefaultSlippageBySwapMode(swapMode)
+      : settings.slippageTolerance;
+
+    settingsForm.patchValue({
+      ...settings,
+      slippageTolerance
+    });
   }
 
   public toggleAutoSlippageTolerance(): void {
     if (!this.iframeSettingsForm.value.autoSlippageTolerance) {
-      this.setDefaultSlippageBySwapProvider();
+      this.slippageTolerance = this.getDefaultSlippageBySwapMode();
       this.iframeSettingsForm.patchValue({
         autoSlippageTolerance: true,
         slippageTolerance: this.slippageTolerance
@@ -151,18 +139,18 @@ export class IframeSettingsComponent implements OnInit {
     });
   }
 
-  public setDefaultSlippageBySwapProvider(): void {
-    switch (this.swapService.swapMode) {
+  public getDefaultSlippageBySwapMode(
+    swapMode: SWAP_PROVIDER_TYPE = this.swapService.swapMode
+  ): number {
+    switch (swapMode) {
       case SWAP_PROVIDER_TYPE.INSTANT_TRADE: {
-        this.slippageTolerance = this.defaultSlippageTolerance.instantTrades;
-        break;
+        return this.settingsService.defaultItSettings.slippageTolerance;
       }
       case SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING: {
-        this.slippageTolerance = this.defaultSlippageTolerance.crossChain;
-        break;
+        return this.settingsService.defaultCcrSettings.slippageTolerance;
       }
       default: {
-        this.slippageTolerance = 1;
+        return 1;
       }
     }
   }

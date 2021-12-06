@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 import { copyObject } from 'src/app/shared/utils/utils';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -33,13 +34,23 @@ export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormGroup<CcrSettingsForm>;
 }
 
+export interface SlippageTolerance {
+  instantTrades: number;
+  crossChain: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private readonly defaultItSettings: ItSettingsForm;
+  private readonly defaultSlippageTolerance: SlippageTolerance = {
+    instantTrades: 2,
+    crossChain: 5
+  };
 
-  private readonly defaultCcrSettings: ItSettingsForm;
+  public readonly defaultItSettings: ItSettingsForm;
+
+  public readonly defaultCcrSettings: ItSettingsForm;
 
   public settingsForm: FormGroup<SettingsForm>;
 
@@ -79,10 +90,15 @@ export class SettingsService {
     return this.crossChainRouting.valueChanges;
   }
 
-  constructor(private readonly storeService: StoreService, private iframeService: IframeService) {
+  constructor(
+    private readonly storeService: StoreService,
+    private readonly iframeService: IframeService,
+    private readonly queryParamsService: QueryParamsService
+  ) {
+    const { slippageIt, slippageCcr } = this.queryParamsService.slippage;
     this.defaultItSettings = {
       autoSlippageTolerance: true,
-      slippageTolerance: 2,
+      slippageTolerance: slippageIt ?? this.defaultSlippageTolerance.instantTrades,
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
@@ -90,8 +106,9 @@ export class SettingsService {
     };
     this.defaultCcrSettings = {
       ...this.defaultItSettings,
-      slippageTolerance: 5
+      slippageTolerance: slippageCcr ?? this.defaultSlippageTolerance.crossChain
     };
+
     this.createForm();
     this.setupData();
   }

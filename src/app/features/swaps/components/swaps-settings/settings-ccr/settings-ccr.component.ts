@@ -13,7 +13,7 @@ import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsCcrComponent implements OnInit {
-  public readonly defaultSlippageTolerance = 5;
+  public readonly defaultSlippageTolerance: number;
 
   public crossChainRoutingForm: FormGroup<CcrSettingsForm>;
 
@@ -21,7 +21,9 @@ export class SettingsCcrComponent implements OnInit {
 
   public promoCode: PromoCode | null = null;
 
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(private readonly settingsService: SettingsService) {
+    this.defaultSlippageTolerance = this.settingsService.defaultCcrSettings.slippageTolerance;
+  }
 
   public ngOnInit(): void {
     this.setForm();

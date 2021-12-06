@@ -610,7 +610,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setSlippageTolerance(provider: ProviderControllerData): void {
-    if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
+    if (
+      this.settingsService.instantTradeValue.autoSlippageTolerance &&
+      !this.iframeService.isIframe
+    ) {
       const currentBlockchainDefaultSlippage =
         defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
       const providerName = provider.tradeProviderInfo.value;
