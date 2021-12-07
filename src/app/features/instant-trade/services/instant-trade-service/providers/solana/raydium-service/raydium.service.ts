@@ -82,6 +82,17 @@ export class RaydiumService implements ItProvider {
     );
   }
 
+  public async getFromAmount(
+    fromToken: InstantTradeToken,
+    toToken: InstantTradeToken,
+    toAmount: BigNumber
+  ): Promise<BigNumber> {
+    // @TODO Solana.
+    console.log(fromToken, toToken, toAmount);
+    return null;
+    // return this.calculateTrade(fromToken, toToken)
+  }
+
   public approve(
     tokenAddress: string,
     options: { onTransactionHash?: (hash: string) => void }
@@ -95,6 +106,9 @@ export class RaydiumService implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken
   ): Promise<InstantTrade> {
+    // TODO Tests.
+    return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, fromAmount);
+
     if (this.isWrap(fromToken.address, toToken.address)) {
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, fromAmount);
     }
@@ -107,7 +121,6 @@ export class RaydiumService implements ItProvider {
     const amms = Object.values(poolInfos).filter(
       p =>
         p.version === 4 &&
-        p.status === 1 &&
         ((p.coin.mintAddress === fromToken.address && p.pc.mintAddress === toToken.address) ||
           (p.coin.mintAddress === toToken.address && p.pc.mintAddress === fromToken.address))
     );

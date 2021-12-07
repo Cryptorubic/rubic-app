@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import {
   FROM_BACKEND_BLOCKCHAINS,
@@ -12,19 +12,17 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
   DEFAULT_PAGE_SIZE,
-  TokensListResponse,
-  TokensBackendResponse,
-  TokensRequestQueryOptions,
-  TokensRequestNetworkOptions,
   ENDPOINTS,
-  FavoriteTokenRequestParams
+  FavoriteTokenRequestParams,
+  TokensBackendResponse,
+  TokensListResponse,
+  TokensRequestNetworkOptions,
+  TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
-import { TokenListContainer, TokenListProvider } from '@solana/spl-token-registry';
-import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -121,7 +119,7 @@ export class TokensApiService {
    * Fetches static tokens for bridges.
    * @return BackendToken[] Static tokens for bridge.
    */
-  private fetchStaticTokens(): BackendToken[] {
+  private static fetchStaticTokens(): BackendToken[] {
     return [
       {
         address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
@@ -151,70 +149,17 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.HARMONY,
       BLOCKCHAIN_NAME.AVALANCHE,
       BLOCKCHAIN_NAME.MOONRIVER,
-      BLOCKCHAIN_NAME.FANTOM
+      BLOCKCHAIN_NAME.FANTOM,
+      BLOCKCHAIN_NAME.SOLANA
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
     const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
     );
-    // @TODO Solana.
-    const solanaTokens$ = from(new TokenListProvider().resolve()).pipe(
-      map((tokenList: TokenListContainer) => ({
-        results: tokenList
-          .filterByChainId(101)
-          .getList()
-          .map(token => {
-            const coolNames = [
-              'ray',
-              'usdt',
-              'usdc',
-              'eth',
-              'sol',
-              'wsol',
-              'aury',
-              'abr',
-              'slim',
-              'yfi'
-            ];
-            const rank = coolNames.includes(token.symbol.toLowerCase()) ? 1 : 0;
-            return {
-              address: token.address,
-              name: token.name,
-              symbol: token.symbol,
-              blockchain_network: 'solana',
-              decimals: token.decimals,
-              rank,
-              image: token.logoURI,
-              coingecko_id: null,
-              usd_price: 0,
-              used_in_iframe: false
-            };
-          }) as BackendToken[]
-      })),
-      map(tokens => {
-        return {
-          results: [
-            ...tokens.results,
-            {
-              address: NATIVE_SOL.mintAddress,
-              name: NATIVE_SOL.name,
-              symbol: NATIVE_SOL.symbol,
-              blockchain_network: 'solana',
-              decimals: NATIVE_SOL.decimals,
-              rank: 1,
-              image: 'NATIVE_SOL.logoURI',
-              coingecko_id: null,
-              usd_price: 0,
-              used_in_iframe: false
-            } as BackendToken
-          ]
-        };
-      })
-    );
-    return forkJoin([...requests$, solanaTokens$]).pipe(
+    return forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
-        const staticTokens = this.fetchStaticTokens();
+        const staticTokens = TokensApiService.fetchStaticTokens();
         return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
       })
     );

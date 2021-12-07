@@ -46,6 +46,14 @@ export class SolanaWeb3Public {
   }
 
   /**
+   * @TODO Solana.
+   * Gets allowance.
+   */
+  public async getAllowance(): Promise<BigNumber> {
+    return new BigNumber(999999);
+  }
+
+  /**
    * Checks if a given address is a valid Solana address.
    * @param address The address to check validity.
    */

@@ -89,7 +89,8 @@ export class PublicBlockchainAdapterService {
       api: { url: 'https://api.rpcpool.com', weight: 10 },
       solanaApi: { url: 'https://solana-api.projectserum.com', weight: 10 },
       raydium: { url: 'https://raydium.rpcpool.com', weight: 50 },
-      apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 10 }
+      apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 10 },
+      devnet: { url: 'https://api.devnet.solana.com', weight: 0 }
     };
     const solanaConnection = new Connection(solanaRpc.solanaApi.url);
     this.walletConnectorService.solanaWeb3Connection = solanaConnection;

@@ -60,7 +60,8 @@ export class SwapButtonContainerComponent implements OnInit {
   @Input() set fromAmount(value: BigNumber | null) {
     this._fromAmount = value;
     this.errorType[ERROR_TYPE.NO_AMOUNT] = Boolean(value === null ? true : value?.isNaN());
-    this.checkInsufficientFundsError();
+    // @TODO tests.
+    // this.checkInsufficientFundsError();
   }
 
   @Input() set isTargetAddressValid(isValid: boolean) {
@@ -299,7 +300,8 @@ export class SwapButtonContainerComponent implements OnInit {
 
   private async checkErrors(): Promise<void> {
     if (this.checkWalletError()) return;
-    if (await this.checkInsufficientFundsError()) return;
+    // @TODO tests.
+    // if (await this.checkInsufficientFundsError()) return;
     this.checkWrongBlockchainError();
   }
 

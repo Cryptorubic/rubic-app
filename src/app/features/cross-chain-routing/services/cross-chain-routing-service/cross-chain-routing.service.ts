@@ -27,7 +27,6 @@ import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
-import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 import { AbiItem } from 'web3-utils';
 import {
   SupportedCrossChainSwapBlockchain,
@@ -52,6 +51,9 @@ import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cros
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
+import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import { ContractsFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts.facade';
 
 interface PathAndToAmount {
   path: string[];
@@ -65,6 +67,20 @@ interface IndexedPathAndToAmount {
 
 const CACHEABLE_MAX_AGE = 15_000;
 
+interface minimalProvider {
+  calculateTrade: (
+    fromToken: InstantTradeToken,
+    fromAmount: BigNumber,
+    toToken: InstantTradeToken,
+    shouldCalculateGas: boolean
+  ) => Promise<InstantTrade>;
+  getFromAmount: (
+    fromToken: InstantTradeToken,
+    toToken: InstantTradeToken,
+    toAmount: BigNumber
+  ) => Promise<BigNumber>;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -75,7 +91,7 @@ export class CrossChainRoutingService {
 
   private readonly transitTokens: TransitTokens;
 
-  private uniswapV2Providers: Record<SupportedCrossChainSwapBlockchain, CommonUniswapV2Service[]>;
+  private swapProviders: Record<SupportedCrossChainSwapBlockchain, minimalProvider[]>;
 
   private numOfBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number[]>;
 
@@ -92,6 +108,7 @@ export class CrossChainRoutingService {
   }
 
   constructor(
+    // Providers start.
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
@@ -99,6 +116,8 @@ export class CrossChainRoutingService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
+    private readonly raydiumService: RaydiumService,
+    // Providers end.
     private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
@@ -112,7 +131,7 @@ export class CrossChainRoutingService {
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
-    this.setUniswapProviders();
+    this.setProviders();
     this.setToBlockchainsInContract();
     this.contractAddresses = crossChainSwapContractAddresses;
     this.transitTokens = transitTokensWithMode;
@@ -124,14 +143,15 @@ export class CrossChainRoutingService {
       });
   }
 
-  private setUniswapProviders(): void {
-    this.uniswapV2Providers = {
+  private setProviders(): void {
+    this.swapProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: [this.uniSwapV2Service],
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [this.pancakeSwapService],
       [BLOCKCHAIN_NAME.POLYGON]: [this.quickSwapService],
       [BLOCKCHAIN_NAME.AVALANCHE]: [this.pangolinAvalancheService, this.joeAvalancheService],
       [BLOCKCHAIN_NAME.MOONRIVER]: [this.solarBeamMoonRiverService],
-      [BLOCKCHAIN_NAME.FANTOM]: [this.spookySwapFantomService]
+      [BLOCKCHAIN_NAME.FANTOM]: [this.spookySwapFantomService],
+      [BLOCKCHAIN_NAME.SOLANA]: [this.raydiumService]
     };
   }
 
@@ -142,7 +162,9 @@ export class CrossChainRoutingService {
       [BLOCKCHAIN_NAME.POLYGON]: [3],
       [BLOCKCHAIN_NAME.AVALANCHE]: [4, 5],
       [BLOCKCHAIN_NAME.MOONRIVER]: [6],
-      [BLOCKCHAIN_NAME.FANTOM]: [7]
+      [BLOCKCHAIN_NAME.FANTOM]: [7],
+      // @TODO Solana.
+      [BLOCKCHAIN_NAME.SOLANA]: [8]
     };
   }
 
@@ -300,9 +322,12 @@ export class CrossChainRoutingService {
   ): Promise<PathAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
-        const instantTrade = await this.uniswapV2Providers[blockchain][
-          contractIndex
-        ].calculateTrade(fromToken, fromAmount, toToken, false);
+        const instantTrade = await this.swapProviders[blockchain][contractIndex].calculateTrade(
+          fromToken,
+          fromAmount,
+          toToken,
+          false
+        );
         return {
           path: instantTrade.path.map(token => token.address),
           toAmount: instantTrade.to.amount
@@ -377,13 +402,12 @@ export class CrossChainRoutingService {
     const fromContractAddress = this.contractAddresses[fromBlockchain][0];
 
     const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
-      const firstTransitTokenAmountAbsolute = await this.publicBlockchainAdapterService[
-        fromBlockchain
-      ].callContractMethod(
-        fromContractAddress,
-        this.contractAbi,
-        type === 'minAmount' ? 'minTokenAmount' : 'maxTokenAmount'
-      );
+      const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+      const contractFacade = new ContractsFacade(blockchainAdapter);
+      const firstTransitTokenAmountAbsolute =
+        type === 'minAmount'
+          ? await contractFacade.minTokenAmount(fromContractAddress)
+          : await contractFacade.maxTokenAmount(fromContractAddress);
       const firstTransitTokenAmount = Web3Public.fromWei(
         firstTransitTokenAmountAbsolute,
         firstTransitToken.decimals
@@ -426,7 +450,7 @@ export class CrossChainRoutingService {
     }
 
     const amountAbsolute = transitTokenAmount.gt(0)
-      ? await this.uniswapV2Providers[fromToken.blockchain][contractIndex].getFromAmount(
+      ? await this.swapProviders[fromToken.blockchain][contractIndex].getFromAmount(
           fromToken,
           transitToken,
           transitTokenAmount
@@ -462,15 +486,10 @@ export class CrossChainRoutingService {
     const contractAddress = this.contractAddresses[toBlockchain][0];
     const numOfBlockchainInContract = this.numOfBlockchainsInContract[toBlockchain][0];
 
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
-    const feeOfToBlockchainAbsolute = await web3Public.callContractMethod(
-      contractAddress,
-      this.contractAbi,
-      'feeAmountOfBlockchain',
-      {
-        methodArguments: [numOfBlockchainInContract]
-      }
-    );
+    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
+    const feeOfToBlockchainAbsolute = await new ContractsFacade(
+      blockchainAdapter
+    ).feeAmountOfBlockchain(contractAddress, numOfBlockchainInContract);
     return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
   }
 
@@ -487,12 +506,12 @@ export class CrossChainRoutingService {
     // crypto fee is equal in all contracts
     const toBlockchainInContract = this.numOfBlockchainsInContract[toBlockchain][0];
     const contractAddress = this.contractAddresses[fromBlockchain][0];
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
-
-    return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainCryptoFee', {
-      methodArguments: [toBlockchainInContract]
-    });
+    return new ContractsFacade(blockchainAdapter).blockchainCryptoFee(
+      contractAddress,
+      toBlockchainInContract
+    );
   }
 
   /**
@@ -630,23 +649,18 @@ export class CrossChainRoutingService {
       this.currentCrossChainTrade;
 
     const fromContractAddress = this.contractAddresses[fromBlockchain][fromContractIndex];
+    const fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    const isFromPaused = await new ContractsFacade(fromBlockchainAdapter).isPaused(
+      fromContractAddress
+    );
+    if (isFromPaused) {
+      throw new CrossChainIsUnavailableWarning();
+    }
+
     const toContractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const fromWeb3Public: Web3Public = this.publicBlockchainAdapterService[fromBlockchain];
-    const toWeb3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
-
-    const sourceContractPaused = await fromWeb3Public.callContractMethod(
-      fromContractAddress,
-      this.contractAbi,
-      'paused'
-    );
-
-    const targetContractPaused = await toWeb3Public.callContractMethod(
-      toContractAddress,
-      this.contractAbi,
-      'paused'
-    );
-
-    if (sourceContractPaused || targetContractPaused) {
+    const toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
+    const isToPaused = await new ContractsFacade(toBlockchainAdapter).isPaused(toContractAddress);
+    if (isToPaused) {
       throw new CrossChainIsUnavailableWarning();
     }
   }
@@ -662,9 +676,9 @@ export class CrossChainRoutingService {
     }
 
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
+    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
 
-    const maxGasPrice = await web3Public.callContractMethod(
+    const maxGasPrice = await blockchainAdapter.callContractMethod(
       contractAddress,
       this.contractAbi,
       'maxGasPrice'
@@ -687,9 +701,8 @@ export class CrossChainRoutingService {
     const { toBlockchain, toContractIndex } = this.currentCrossChainTrade;
 
     const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
-
-    return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainPool');
+    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
+    return new ContractsFacade(blockchainAdapter).blockchainPool(contractAddress);
   }
 
   /**
@@ -701,10 +714,10 @@ export class CrossChainRoutingService {
   private async checkPoolBalance(): Promise<void | never> {
     const { toBlockchain, secondTransitTokenAmount } = this.currentCrossChainTrade;
     const secondTransitToken = this.transitTokens[toBlockchain];
-    const web3Public: Web3Public = this.publicBlockchainAdapterService[toBlockchain];
+    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
 
     const poolAddress = await this.getPoolAddressInTargetNetwork();
-    const poolBalanceAbsolute = await web3Public.getTokenBalance(
+    const poolBalanceAbsolute = await blockchainAdapter.getTokenBalance(
       poolAddress,
       secondTransitToken.address
     );
@@ -761,13 +774,8 @@ export class CrossChainRoutingService {
 
     const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
     const tokenInAmountMax = this.calculateTokenInAmountMax();
-    const web3PublicFromBlockchain: Web3Public =
-      this.publicBlockchainAdapterService[fromBlockchain];
-    await web3PublicFromBlockchain.checkBalance(
-      tokenIn,
-      tokenInAmountMax,
-      this.authService.userAddress
-    );
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    await blockchainAdapter.checkBalance(tokenIn, tokenInAmountMax, this.authService.userAddress);
   }
 
   /**
@@ -853,6 +861,7 @@ export class CrossChainRoutingService {
 
         let transactionHash: string;
         try {
+          // @TODO Solana!!!
           await this.web3PrivateService.tryExecuteContractMethod(
             contractAddress,
             this.contractAbi,
