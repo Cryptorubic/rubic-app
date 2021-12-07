@@ -95,8 +95,7 @@ export class SettingsService {
     private readonly iframeService: IframeService,
     private readonly queryParamsService: QueryParamsService
   ) {
-    const slippageIt = this.queryParamsService.slippage?.slippageIt;
-    const slippageCcr = this.queryParamsService.slippage?.slippageCcr;
+    const { slippageIt, slippageCcr } = this.queryParamsService.slippage ?? {};
     this.defaultItSettings = this.getDefaultITSettings(slippageIt);
     this.defaultCcrSettings = this.getDefaultCCRSettings(slippageCcr);
 
@@ -137,7 +136,7 @@ export class SettingsService {
 
   private setupData(): void {
     const localData = this.storeService.getItem('settings') as string;
-    if (localData) {
+    if (localData && !this.iframeService.isIframe) {
       this.settingsForm.patchValue(
         { ...JSON.parse(localData) },
         {
