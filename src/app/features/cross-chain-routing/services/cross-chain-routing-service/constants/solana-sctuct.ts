@@ -1,4 +1,4 @@
-import { bool, Layout, publicKey, struct, u64, u8 } from '@project-serum/borsh';
+import { bool, Layout, publicKey, str, struct, u64, u8, vec } from '@project-serum/borsh';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
@@ -31,3 +31,13 @@ export type BridgeConfigData = {
   refund_slippage: BigNumber;
   is_paused: boolean;
 };
+
+export const CCR_DATA_LAYOUT = struct([
+  u64('blockchain'),
+  u64('token_in_amount'),
+  vec<string>(struct([str('first_string'), str('second_string')]), 'second_path'),
+  u64('exact_rbc_token_out'),
+  u64('token_out_min'),
+  str('new_address'),
+  bool('swap_to_crypto')
+]);

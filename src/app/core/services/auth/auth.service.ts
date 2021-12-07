@@ -91,7 +91,8 @@ export class AuthService {
         address,
         message: nonce,
         signedMessage: signature,
-        walletProvider
+        walletProvider,
+        type: this.providerConnectorService.provider.walletType.toLowerCase()
       })
       .pipe(switchMap(() => EMPTY))
       .toPromise();
@@ -136,7 +137,7 @@ export class AuthService {
     return from(this.providerConnectorService.activate()).pipe(
       switchMap(() => {
         if (address.toLowerCase() === this.providerConnectorService.address.toLowerCase()) {
-          this.currentUser$.next({ address });
+          this.currentUser$.next({ address: this.providerConnectorService.address });
           return of() as Observable<void>;
         }
         return this.signOut().pipe(
@@ -167,8 +168,7 @@ export class AuthService {
 
       const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
       if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-        const { address } = walletLoginBody.payload.user;
-        this.currentUser$.next({ address });
+        this.currentUser$.next({ address: this.providerConnectorService.provider.address });
         this.isAuthProcess = false;
         return;
       }
@@ -204,8 +204,7 @@ export class AuthService {
 
         const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
         if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-          const { address } = walletLoginBody.payload.user;
-          this.currentUser$.next({ address });
+          this.currentUser$.next({ address: this.providerConnectorService.provider.address });
           this.isAuthProcess = false;
           return;
         }

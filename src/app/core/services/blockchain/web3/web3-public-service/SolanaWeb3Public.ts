@@ -20,7 +20,6 @@ import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 
 export class SolanaWeb3Public {
   public readonly connection: Connection;
@@ -71,7 +70,7 @@ export class SolanaWeb3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_SOLANA_MINT_ADDRESS;
+    return address === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase().toLowerCase();
   };
 
   public async getTokenInfo(): Promise<BlockchainTokenExtended> {
@@ -191,8 +190,8 @@ export class SolanaWeb3Public {
     );
 
     return tokensAddresses.map(tokenAddress => {
-      if (tokenAddress === NATIVE_SOL.mintAddress) {
-        return new BigNumber(nativeSolBalance.value.toFixed(5));
+      if (tokenAddress === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase()) {
+        return new BigNumber(nativeSolBalance.value.toString());
       }
       const tokenWithBalance = resp.result.value.find(token => {
         const { info } = token.account.data.parsed;

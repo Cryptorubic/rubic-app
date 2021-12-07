@@ -23,7 +23,6 @@ import {
   Transaction,
   TransactionInstruction
 } from '@solana/web3.js';
-import { DATA_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
@@ -43,6 +42,8 @@ import {
   SOLANA_CROSS_CHAIN_CONTRACT
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-constants';
 import { Buffer } from 'buffer';
+import { str, u64, struct } from '@project-serum/borsh';
+import { CCR_DATA_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
 
 @Injectable({
   providedIn: 'root'
@@ -128,10 +129,25 @@ export class CcrContractWriterService {
     console.log(fromFinalAmount, toFinalAmount);
     const poolInfo = this.raydiumCrossChainContractWriterService.currentPoolInfo;
 
+    const dataLayout = struct([str('prefix'), str('blockchain'), u64('uuid')]);
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        prefix: 'prefix',
+        blockchain: 'blockchain',
+        uuid: new BigNumber(toBlockchainInContractNumber)
+      },
+      data
+    );
+    const program = await PublicKey.findProgramAddress(
+      [data],
+      new PublicKey(SOLANA_CROSS_CHAIN_CONTRACT)
+    );
+
     transaction.add(
       this.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
-        new PublicKey(PDA_CONFIG),
+        program[0],
         TOKEN_PROGRAM_ID,
         new PublicKey(poolInfo.ammId),
         new PublicKey(poolInfo.ammAuthority),
@@ -150,7 +166,7 @@ export class CcrContractWriterService {
         fromAccount.key,
         toAccount.key,
         new PublicKey(address),
-        new PublicKey(poolInfo.ammId), // ???
+        new PublicKey(poolInfo.programId),
         new PublicKey(PDA_DELEGATE),
         new PublicKey(SYSTEM_PROGRAM_ID),
         {
@@ -407,7 +423,7 @@ export class CcrContractWriterService {
       { pubkey: systemProgram, isSigner: false, isWritable: false }
     ];
 
-    const dataLayout = DATA_LAYOUT;
+    const dataLayout = CCR_DATA_LAYOUT;
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode(
       {
