@@ -88,17 +88,18 @@ export class IframeSettingsComponent implements OnInit {
 
     combineLatest([
       ccrSettingsForm.valueChanges.pipe(startWith(ccrSettingsForm.value)),
-      this.swapService.swapMode$.pipe(
-        filter(swapMode => swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING)
-      )
+      this.swapService.swapMode$
     ])
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(
+          ([_, swapProviderType]) => swapProviderType === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+        ),
+        takeUntil(this.destroy$)
+      )
       .subscribe(([settings]: [CcrSettingsForm, SWAP_PROVIDER_TYPE]) => {
-        if (this.swapService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
-          this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
-          this.slippageTolerance = settings.slippageTolerance;
-          this.updateSettingsForm(itSettingsForm, SWAP_PROVIDER_TYPE.INSTANT_TRADE);
-        }
+        this.iframeSettingsForm.patchValue(settings, { emitEvent: false });
+        this.slippageTolerance = settings.slippageTolerance;
+        this.updateSettingsForm(itSettingsForm, SWAP_PROVIDER_TYPE.INSTANT_TRADE);
       });
   }
 

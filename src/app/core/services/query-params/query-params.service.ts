@@ -22,8 +22,8 @@ import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 interface QuerySlippage {
-  slippageIt: number;
-  slippageCcr: number;
+  slippageIt: number | null;
+  slippageCcr: number | null;
 }
 
 const DEFAULT_PARAMETERS = {
@@ -65,8 +65,6 @@ export class QueryParamsService {
   }
 
   private readonly _slippage$ = new BehaviorSubject<QuerySlippage>(null);
-
-  public slippage$ = this._slippage$.asObservable();
 
   public get slippage(): QuerySlippage {
     return this._slippage$.getValue();
@@ -368,8 +366,8 @@ export class QueryParamsService {
     }
 
     this._slippage$.next({
-      slippageIt: queryParams.slippageIt ? parseInt(queryParams.slippageIt) : null,
-      slippageCcr: queryParams.slippageCcr ? parseInt(queryParams.slippageCcr) : null
+      slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
+      slippageCcr: queryParams.slippageCcr ? parseFloat(queryParams.slippageCcr) : null
     });
   }
 

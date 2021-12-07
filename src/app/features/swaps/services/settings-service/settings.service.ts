@@ -95,8 +95,17 @@ export class SettingsService {
     private readonly iframeService: IframeService,
     private readonly queryParamsService: QueryParamsService
   ) {
-    const { slippageIt, slippageCcr } = this.queryParamsService.slippage;
-    this.defaultItSettings = {
+    const slippageIt = this.queryParamsService.slippage?.slippageIt;
+    const slippageCcr = this.queryParamsService.slippage?.slippageCcr;
+    this.defaultItSettings = this.getDefaultITSettings(slippageIt);
+    this.defaultCcrSettings = this.getDefaultCCRSettings(slippageCcr);
+
+    this.createForm();
+    this.setupData();
+  }
+
+  private getDefaultITSettings(slippageIt?: number): ItSettingsForm {
+    return {
       autoSlippageTolerance: true,
       slippageTolerance:
         this.parseSlippage(slippageIt) ?? this.defaultSlippageTolerance.instantTrades,
@@ -105,13 +114,18 @@ export class SettingsService {
       rubicOptimisation: true,
       autoRefresh: true
     };
-    this.defaultCcrSettings = {
-      ...this.defaultItSettings,
-      slippageTolerance: this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain
-    };
+  }
 
-    this.createForm();
-    this.setupData();
+  private getDefaultCCRSettings(slippageCcr?: number): ItSettingsForm {
+    return {
+      autoSlippageTolerance: true,
+      slippageTolerance:
+        this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
+      deadline: 20,
+      disableMultihops: false,
+      rubicOptimisation: true,
+      autoRefresh: true
+    };
   }
 
   private parseSlippage(slippage: number): number {
