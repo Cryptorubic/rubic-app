@@ -29,9 +29,21 @@ import BigNumber from 'bignumber.js';
 import { Layout } from '@project-serum/borsh';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
+import { Injectable } from '@angular/core';
 
-export class SolanaWeb3Private {
-  constructor(private readonly connection: Connection) {}
+@Injectable({
+  providedIn: 'root'
+})
+export class SolanaPrivateAdapterService {
+  private _connection: Connection;
+
+  set connection(connection: Connection) {
+    if (!this._connection) {
+      this._connection = connection;
+    }
+  }
+
+  constructor() {}
 
   public async findProgramAddress(
     seeds: Array<Buffer | Uint8Array>,
@@ -170,7 +182,7 @@ export class SolanaWeb3Private {
       true
     );
     if (!publicKey) {
-      const rent = await Token.getMinBalanceRentForExemptAccount(this.connection);
+      const rent = await Token.getMinBalanceRentForExemptAccount(this._connection);
       transaction.add(
         SystemProgram.transfer({ fromPubkey: owner, toPubkey: ata, lamports: amount + rent }),
         Token.createAssociatedTokenAccountInstruction(
@@ -183,7 +195,7 @@ export class SolanaWeb3Private {
         )
       );
     } else {
-      const rent = await Token.getMinBalanceRentForExemptAccount(this.connection);
+      const rent = await Token.getMinBalanceRentForExemptAccount(this._connection);
       const wsol = await this.createTokenAccountIfNotExist(
         null,
         owner,
@@ -221,7 +233,7 @@ export class SolanaWeb3Private {
           fromPubkey: owner,
           newAccountPubkey: publicKey,
           lamports:
-            lamports ?? (await this.connection.getMinimumBalanceForRentExemption(layout.span)),
+            lamports ?? (await this._connection.getMinimumBalanceForRentExemption(layout.span)),
           space: layout.span,
           programId
         })
@@ -294,10 +306,10 @@ export class SolanaWeb3Private {
     filters: unknown
   ): Promise<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
     // @ts-ignore
-    const resp = await this.connection._rpcRequest('getProgramAccounts', [
+    const resp = await this._connection._rpcRequest('getProgramAccounts', [
       programId.toBase58(),
       {
-        commitment: this.connection.commitment,
+        commitment: this._connection.commitment,
         filters,
         encoding: 'base64'
       }
@@ -369,7 +381,7 @@ export class SolanaWeb3Private {
     const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = {};
     await Promise.all(
       keys.map(async (key, index) => {
-        resArray[index] = await this.connection.getMultipleAccountsInfo(key, commitment);
+        resArray[index] = await this._connection.getMultipleAccountsInfo(key, commitment);
       })
     );
 
@@ -400,7 +412,7 @@ export class SolanaWeb3Private {
     transaction: Transaction,
     signers: Array<Account> = []
   ): Promise<Transaction> {
-    transaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
+    transaction.recentBlockhash = (await this._connection.getRecentBlockhash()).blockhash;
     transaction.setSigners(wallet.publicKey, ...signers.map(s => s.publicKey));
     if (signers.length > 0) {
       transaction.partialSign(...signers);
@@ -413,7 +425,7 @@ export class SolanaWeb3Private {
     transaction: Transaction,
     signers: Array<Account> = []
   ): Promise<string> {
-    const txid: TransactionSignature = await wallet.sendTransaction(transaction, this.connection, {
+    const txid: TransactionSignature = await wallet.sendTransaction(transaction, this._connection, {
       signers,
       skipPreflight: true,
       preflightCommitment: 'confirmed'
@@ -480,7 +492,7 @@ export class SolanaWeb3Private {
   }
 
   public async getTokenAccounts(address: string): Promise<{ [P: string]: string }> {
-    const parsedTokenAccounts = await this.connection.getParsedTokenAccountsByOwner(
+    const parsedTokenAccounts = await this._connection.getParsedTokenAccountsByOwner(
       new PublicKey(address),
       { programId: TOKEN_PROGRAM_ID },
       'confirmed'
@@ -515,7 +527,10 @@ export class SolanaWeb3Private {
   }
 
   public async getMintDecimals(mint: PublicKey): Promise<number> {
-    const { data } = this.throwIfNull(await this.connection.getAccountInfo(mint), 'mint not found');
+    const { data } = this.throwIfNull(
+      await this._connection.getAccountInfo(mint),
+      'mint not found'
+    );
     const { decimals } = MINT_LAYOUT.decode(data);
     return decimals;
   }
@@ -525,7 +540,7 @@ export class SolanaWeb3Private {
     mint: PublicKey
   ): Promise<{ context: {}; value: [] }> {
     // @ts-ignore
-    const resp = await this.connection._rpcRequest('getTokenAccountsByOwner', [
+    const resp = await this._connection._rpcRequest('getTokenAccountsByOwner', [
       programId.toBase58(),
       {
         mint: mint.toBase58()

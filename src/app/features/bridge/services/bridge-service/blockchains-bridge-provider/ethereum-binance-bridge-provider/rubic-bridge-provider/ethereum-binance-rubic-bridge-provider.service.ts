@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -67,7 +67,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: PrivateAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,

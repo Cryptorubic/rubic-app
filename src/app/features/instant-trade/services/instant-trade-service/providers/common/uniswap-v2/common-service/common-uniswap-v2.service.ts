@@ -4,7 +4,7 @@ import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTrad
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
   ItSettingsForm,
@@ -92,7 +92,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   // Injected services
   private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
 
-  private readonly web3PrivateService = inject(Web3PrivateService);
+  private readonly web3PrivateService = inject(PrivateAdapterService);
 
   private readonly providerConnectorService = inject(WalletConnectorService);
 

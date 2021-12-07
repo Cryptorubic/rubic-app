@@ -6,6 +6,7 @@ import {
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-token-amount';
+import { Injectable } from '@angular/core';
 
 interface SwapOutAmount {
   amountIn: BigNumber;
@@ -33,15 +34,28 @@ export interface RaydiumRouterInfo {
   route: [Route, Route];
 }
 
-export class SolanaRouter {
-  private _value: RaydiumRouterInfo;
+@Injectable({
+  providedIn: 'root'
+})
+export class RaydiumRoutingService {
+  private _routerInfo: RaydiumRouterInfo;
 
-  public get value(): RaydiumRouterInfo {
-    return this._value;
+  public get routerInfo(): RaydiumRouterInfo {
+    return this._routerInfo;
   }
 
-  private set value(value: RaydiumRouterInfo) {
-    this._value = value;
+  private set routerInfo(value: RaydiumRouterInfo) {
+    this._routerInfo = value;
+  }
+
+  private _currentPoolInfo: LiquidityPoolInfo;
+
+  public get currentPoolInfo(): LiquidityPoolInfo {
+    return this._currentPoolInfo;
+  }
+
+  public set currentPoolInfo(info: LiquidityPoolInfo) {
+    this._currentPoolInfo = info;
   }
 
   constructor() {}
@@ -53,6 +67,7 @@ export class SolanaRouter {
     amount: string,
     slippage: number
   ): SwapOutAmount {
+    this._currentPoolInfo = poolInfo;
     const { coin, pc, fees } = poolInfo;
     const { swapFeeNumerator, swapFeeDenominator } = fees;
 
@@ -200,7 +215,7 @@ export class SolanaRouter {
   ): RaydiumRouterInfo | null {
     const routesInfo = this.getSwapRouter(poolInfos, fromToken.address, toToken.address);
     if (routesInfo?.length) {
-      this.value = routesInfo.reduce(
+      this.routerInfo = routesInfo.reduce(
         (acc, route) => {
           // First token route
           const middleCoin =
@@ -256,7 +271,7 @@ export class SolanaRouter {
           maxAmountOut: new BigNumber(0)
         } as RaydiumRouterInfo
       );
-      return this.value;
+      return this.routerInfo;
     }
     return null;
   }

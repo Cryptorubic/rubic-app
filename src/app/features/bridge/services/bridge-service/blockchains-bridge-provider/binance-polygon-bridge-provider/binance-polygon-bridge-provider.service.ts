@@ -24,7 +24,7 @@ import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-se
 import { AbiItem } from 'web3-utils';
 import { EvoResponseToken } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/models/EvoResponseToken';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import {
   BlockchainsConfig,
@@ -48,7 +48,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
 
   constructor(
     private web3PublicService: PublicBlockchainAdapterService,
-    private web3PrivateService: Web3PrivateService,
+    private web3PrivateService: PrivateAdapterService,
     private readonly translateService: TranslateService,
     private tokensService: TokensService,
     private authService: AuthService,

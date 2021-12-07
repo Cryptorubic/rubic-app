@@ -47,6 +47,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { CcrContractWriterService } from '@features/cross-chain-routing/services/cross-chain-routing-service/ccr-contract-writer.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
@@ -135,7 +136,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly successTxModalService: SuccessTxModalService
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly ccrContractWriterService: CcrContractWriterService
   ) {
     this.onCalculateTrade$ = new Subject();
     this.hiddenTradeData$ = new BehaviorSubject(undefined);
@@ -483,5 +485,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     } else {
       this.approveTrade();
     }
+  }
+
+  setAddress(address: { address: string; isValid: boolean }): void {
+    this.ccrContractWriterService.setTargetNetworkAddress(address.address);
+    this.isTargetNetworkValid = address.isValid;
   }
 }

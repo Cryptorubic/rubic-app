@@ -7,7 +7,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { from, Observable, of } from 'rxjs';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
 import CustomError from 'src/app/core/errors/models/custom-error';
@@ -58,7 +58,7 @@ export class CommonOneinchService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3Private: Web3PrivateService,
+    private readonly web3Private: PrivateAdapterService,
     private readonly settingsService: SettingsService,
     private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,

@@ -19,13 +19,13 @@ import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-ser
 import { RaydiumLiquidityManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-liquidity-manager';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { SolanaWeb3Private } from '@core/services/blockchain/web3/web3-private-service/solana-web3-private';
+import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 import {
   NATIVE_SOL,
   WRAPPED_SOL
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { SolanaRouter } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-info';
+import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -44,10 +44,6 @@ export class RaydiumService implements ItProvider {
 
   private readonly blockchainAdapter: SolanaWeb3Public;
 
-  private readonly privateBlockchainAdapter: SolanaWeb3Private;
-
-  private readonly solanaRouter: SolanaRouter;
-
   private readonly swapManager: RaydiumSwapManager;
 
   constructor(
@@ -56,14 +52,15 @@ export class RaydiumService implements ItProvider {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly priceImpactService: PriceImpactService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly solanaPrivateAdapterService: SolanaPrivateAdapterService,
+    private readonly raydiumRoutingService: RaydiumRoutingService
   ) {
     this.blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA];
     this.connection = this.blockchainAdapter.connection;
-    this.privateBlockchainAdapter = new SolanaWeb3Private(this.connection);
-    this.solanaRouter = new SolanaRouter();
+    solanaPrivateAdapterService.connection = this.connection;
     this.swapManager = new RaydiumSwapManager(
-      this.privateBlockchainAdapter,
+      this.solanaPrivateAdapterService,
       this.blockchainAdapter,
       this.connection
     );
@@ -78,7 +75,7 @@ export class RaydiumService implements ItProvider {
     this.liquidityManager = new RaydiumLiquidityManager(
       httpClient,
       this.blockchainAdapter,
-      this.privateBlockchainAdapter
+      this.solanaPrivateAdapterService
     );
   }
 
@@ -128,7 +125,7 @@ export class RaydiumService implements ItProvider {
     if (amms?.length) {
       const pool = amms.pop();
       this.poolInfo = [pool];
-      const { amountOut, priceImpact } = this.solanaRouter.getSwapOutAmount(
+      const { amountOut, priceImpact } = this.raydiumRoutingService.getSwapOutAmount(
         pool,
         fromToken.address,
         toToken.address,
@@ -139,7 +136,7 @@ export class RaydiumService implements ItProvider {
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     }
 
-    const { maxAmountOut, middleCoin, priceImpact } = this.solanaRouter.calculate(
+    const { maxAmountOut, middleCoin, priceImpact } = this.raydiumRoutingService.calculate(
       poolInfos,
       fromToken,
       toToken,
@@ -191,7 +188,7 @@ export class RaydiumService implements ItProvider {
         ? await this.swapManager.createRouteSwap(
             this.poolInfo[0],
             this.poolInfo[1],
-            this.solanaRouter.value,
+            this.raydiumRoutingService.routerInfo,
             trade.from.token,
             trade.to.token,
             trade.from.amount,

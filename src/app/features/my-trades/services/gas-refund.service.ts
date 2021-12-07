@@ -8,7 +8,7 @@ import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
-import { Web3PrivateService } from '@core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
 import { UnknownError } from '@core/errors/models/unknown.error';
@@ -43,7 +43,7 @@ export class GasRefundService {
   constructor(
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly authService: AuthService,
-    private readonly web3Private: Web3PrivateService,
+    private readonly web3Private: PrivateAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnector: WalletConnectorService,
     private readonly testingModeService: UseTestingModeService

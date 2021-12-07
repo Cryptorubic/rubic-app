@@ -6,7 +6,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
 import providerServiceStub from '@core/services/blockchain/wallets/wallets-adapters/eth-like/tests/metamask-provider.stub';
 import { WEENUS } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import * as config from 'src/test/enviroment.test.json';
 import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
@@ -16,7 +16,7 @@ describe('Web3PrivateService', () => {
   let originalTimeout: number;
 
   const bobAddress = config.testReceiverAddress;
-  let service: Web3PrivateService;
+  let service: PrivateAdapterService;
   let web3PublicEth: Web3Public;
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('Web3PrivateService', () => {
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
     web3PublicEth = TestBed.inject(PublicBlockchainAdapterService)[BLOCKCHAIN_NAME.ETHEREUM];
-    service = TestBed.inject(Web3PrivateService);
+    service = TestBed.inject(PrivateAdapterService);
   });
 
   afterEach(() => {

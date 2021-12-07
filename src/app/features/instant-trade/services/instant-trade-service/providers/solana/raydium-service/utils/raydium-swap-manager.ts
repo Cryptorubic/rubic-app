@@ -26,13 +26,13 @@ import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
-import { SolanaWeb3Private } from '@core/services/blockchain/web3/web3-private-service/solana-web3-private';
+import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { getBigNumber } from '@shared/utils/utils';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common-solana-wallet-adapter';
 import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
-import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-info';
+import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 
@@ -49,7 +49,7 @@ export type TokenAccounts = {
 
 export class RaydiumSwapManager {
   constructor(
-    private readonly privateBlockchainAdapter: SolanaWeb3Private,
+    private readonly privateBlockchainAdapter: SolanaPrivateAdapterService,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
     private readonly connection: Connection
   ) {}
@@ -324,8 +324,6 @@ export class RaydiumSwapManager {
     userOwner: PublicKey,
     amountIn: number
   ): TransactionInstruction {
-    const dataLayout = struct([u8('instruction'), nu64('amountIn')]);
-
     const keys = [
       { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
       // spl token
@@ -356,6 +354,7 @@ export class RaydiumSwapManager {
       { pubkey: userOwner, isSigner: true, isWritable: false }
     ];
 
+    const dataLayout = struct([u8('instruction'), nu64('amountIn')]);
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode(
       {

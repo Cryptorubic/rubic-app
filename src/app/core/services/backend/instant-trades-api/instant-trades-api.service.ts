@@ -14,14 +14,15 @@ import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 
 const instantTradesApiRoutes = {
-  createData: 'instant_trades/',
-  editData: 'instant_trades/',
-  getData: 'instant_trades/'
+  createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
+  editData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
+  getData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`
 };
 
 @Injectable({
@@ -32,7 +33,8 @@ export class InstantTradesApiService {
 
   constructor(
     private httpService: HttpService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly walletConnnctorService: WalletConnectorService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
   }
@@ -81,9 +83,8 @@ export class InstantTradesApiService {
       tradeInfo.network = 'ethereum-test';
     }
 
-    return this.httpService
-      .post<InstantTradesResponseApi>(instantTradesApiRoutes.createData, tradeInfo)
-      .pipe(delay(1000));
+    const url = instantTradesApiRoutes.createData(this.walletConnnctorService.provider.walletType);
+    return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
   }
 
   /**
@@ -93,7 +94,7 @@ export class InstantTradesApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
-    const url = instantTradesApiRoutes.editData;
+    const url = instantTradesApiRoutes.editData(this.walletConnnctorService.provider.walletType);
     return this.httpService.patch(url, { hash, success });
   }
 
@@ -103,8 +104,9 @@ export class InstantTradesApiService {
    * @return list List of trades.
    */
   public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
+    const url = instantTradesApiRoutes.getData(this.walletConnnctorService.provider.walletType);
     return this.httpService
-      .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
+      .get(url, { user: walletAddress.toLowerCase() })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.parseTradeApiToTableTrade(swap))

@@ -12,7 +12,7 @@ import {
   PDA_POOL
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-constants';
 
-export class ContractsFacade {
+export class CrossChainContractReader {
   private readonly ethContractAbi: AbiItem[];
 
   constructor(private readonly blockchainAdapter: SolanaWeb3Public | Web3Public) {

@@ -15,7 +15,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import BigNumber from 'bignumber.js';
 import { getBigNumber } from '@shared/utils/utils';
-import { SolanaWeb3Private } from '@core/services/blockchain/web3/web3-private-service/solana-web3-private';
+import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { OpenOrders } from '@project-serum/serum';
 import {
   LP_TOKENS,
@@ -67,7 +67,7 @@ export class RaydiumLiquidityManager {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
-    private readonly privateBlockchainAdapter: SolanaWeb3Private
+    private readonly privateBlockchainAdapter: SolanaPrivateAdapterService
   ) {}
 
   public static getAddressForWhat(

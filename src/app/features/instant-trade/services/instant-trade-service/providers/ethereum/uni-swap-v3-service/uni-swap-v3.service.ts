@@ -16,7 +16,7 @@ import {
   uniSwapV3ContractData,
   wethAddressNetMode
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import {
   ItSettingsForm,
@@ -84,7 +84,7 @@ export class UniSwapV3Service implements ItProvider {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: PrivateAdapterService,
     private readonly settingsService: SettingsService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly tokensService: TokensService,

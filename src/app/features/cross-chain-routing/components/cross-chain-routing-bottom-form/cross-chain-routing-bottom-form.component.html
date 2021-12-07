@@ -15,7 +15,7 @@
     </div>
     <app-target-network-address
       [targetBlockchain]="toBlockchain"
-      (isAddressValid)="isTargetNetworkValid = $event"
+      (targetAddress)="setAddress($event)"
     ></app-target-network-address>
   </div>
 

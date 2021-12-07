@@ -6,7 +6,7 @@ import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-ser
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 function correctAddressValidator(blockchainAdapter: Web3Public | SolanaWeb3Public): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -29,20 +29,22 @@ export class TargetNetworkAddressComponent {
     this.address.setValidators(correctAddressValidator(blockchainAdapter));
   }
 
-  @Output() isAddressValid: EventEmitter<boolean>;
+  @Output() targetAddress: EventEmitter<{
+    address: string;
+    isValid: boolean;
+  }>;
 
   public address: FormControl<string>;
 
   constructor(private readonly blockchainAdapterService: PublicBlockchainAdapterService) {
     this.address = new FormControl<string>(null, [Validators.required]);
     this.address.markAsDirty();
-    this.isAddressValid = new EventEmitter<boolean>();
-    this.address.valueChanges
-      .pipe(
-        debounceTime(10),
-        map(() => this.address.valid),
-        distinctUntilChanged()
-      )
-      .subscribe(isValid => this.isAddressValid.emit(isValid));
+    this.targetAddress = new EventEmitter();
+    this.address.valueChanges.pipe(debounceTime(10), distinctUntilChanged()).subscribe(() =>
+      this.targetAddress.emit({
+        address: this.address.value,
+        isValid: this.address.valid
+      })
+    );
   }
 }
