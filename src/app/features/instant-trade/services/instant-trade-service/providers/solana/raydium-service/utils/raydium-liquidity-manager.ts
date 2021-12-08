@@ -95,7 +95,8 @@ export class RaydiumLiquidityManager {
   public async requestInfos(
     fromSymbol: string,
     toSymbol: string,
-    solanaTokens: List<TokenAmount>
+    solanaTokens: List<TokenAmount>,
+    multihops: boolean
   ): Promise<{ [p: string]: LiquidityPoolInfo }> {
     const ammAll = await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
       'amm',
@@ -136,8 +137,12 @@ export class RaydiumLiquidityManager {
             decimals: el.decimals
           } as SolanaTokenInfo)
       );
-      const coin = tokens.find(item => item.mintAddress === fromCoin);
-      const pc = tokens.find(item => item.mintAddress === toCoin);
+      const coin =
+        tokens.find(item => item.mintAddress === fromCoin) ||
+        Object.values(TOKENS).find(item => item.mintAddress === fromCoin);
+      const pc =
+        tokens.find(item => item.mintAddress === toCoin) ||
+        Object.values(TOKENS).find(item => item.mintAddress === toCoin);
 
       if (!coin || !pc) {
         continue;
@@ -155,7 +160,7 @@ export class RaydiumLiquidityManager {
       }
       const lp = Object.values(LP_TOKENS).find(
         item => item.mintAddress === ammInfo.lpMintAddress
-      ) ?? {
+      ) || {
         symbol: `${coin.symbol}-${pc.symbol}`,
         name: `${coin.symbol}-${pc.symbol}`,
         coin,
@@ -225,9 +230,14 @@ export class RaydiumLiquidityManager {
     const liquidityPools: { [K: string]: LiquidityPoolInfo } = {};
     const publicKeys: PublicKey[] = [];
 
-    const LP = LIQUIDITY_POOLS.filter(
-      pool => pool.name.includes(fromSymbol) || pool.name.includes(toSymbol)
-    );
+    const LP = multihops
+      ? LIQUIDITY_POOLS.filter(
+          pool => pool.name.includes(fromSymbol) || pool.name.includes(toSymbol)
+        )
+      : LIQUIDITY_POOLS.filter(
+          pool =>
+            pool.name === `${fromSymbol}-${toSymbol}` || pool.name === `${toSymbol}-${fromSymbol}`
+        );
 
     LP.forEach(pool => {
       const { poolCoinTokenAccount, poolPcTokenAccount, ammOpenOrders, ammId, lp } = pool;

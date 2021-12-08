@@ -7,6 +7,7 @@ export const BridgeConfig = struct([
   publicKey('owner'),
   publicKey('manager'),
   publicKey('transfer_mint'),
+  publicKey('amm_program_id'),
   u64('num_of_this_blockchain'),
   u64('fee_amount_of_blockchain'),
   u64('blockchain_crypto_fee'),
