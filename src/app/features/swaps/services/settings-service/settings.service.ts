@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
 import { copyObject } from 'src/app/shared/utils/utils';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -33,13 +34,23 @@ export interface SettingsForm {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: FormGroup<CcrSettingsForm>;
 }
 
+export interface SlippageTolerance {
+  instantTrades: number;
+  crossChain: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private readonly defaultItSettings: ItSettingsForm;
+  private readonly defaultSlippageTolerance: SlippageTolerance = {
+    instantTrades: 2,
+    crossChain: 5
+  };
 
-  private readonly defaultCcrSettings: ItSettingsForm;
+  public readonly defaultItSettings: ItSettingsForm;
+
+  public readonly defaultCcrSettings: ItSettingsForm;
 
   public settingsForm: FormGroup<SettingsForm>;
 
@@ -79,26 +90,53 @@ export class SettingsService {
     return this.crossChainRouting.valueChanges;
   }
 
-  constructor(private readonly storeService: StoreService, private iframeService: IframeService) {
-    this.defaultItSettings = {
+  constructor(
+    private readonly storeService: StoreService,
+    private readonly iframeService: IframeService,
+    private readonly queryParamsService: QueryParamsService
+  ) {
+    const { slippageIt, slippageCcr } = this.queryParamsService.slippage ?? {};
+    this.defaultItSettings = this.getDefaultITSettings(slippageIt);
+    this.defaultCcrSettings = this.getDefaultCCRSettings(slippageCcr);
+
+    this.createForm();
+    this.setupData();
+  }
+
+  private getDefaultITSettings(slippageIt?: number): ItSettingsForm {
+    return {
       autoSlippageTolerance: true,
-      slippageTolerance: 2,
+      slippageTolerance:
+        this.parseSlippage(slippageIt) ?? this.defaultSlippageTolerance.instantTrades,
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
       autoRefresh: true
     };
-    this.defaultCcrSettings = {
-      ...this.defaultItSettings,
-      slippageTolerance: 5
+  }
+
+  private getDefaultCCRSettings(slippageCcr?: number): ItSettingsForm {
+    return {
+      autoSlippageTolerance: true,
+      slippageTolerance:
+        this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
+      deadline: 20,
+      disableMultihops: false,
+      rubicOptimisation: true,
+      autoRefresh: true
     };
-    this.createForm();
-    this.setupData();
+  }
+
+  private parseSlippage(slippage: number): number {
+    if (!slippage || isNaN(slippage)) {
+      return null;
+    }
+    return Math.min(Math.max(slippage, 0.1), 50);
   }
 
   private setupData(): void {
     const localData = this.storeService.getItem('settings') as string;
-    if (localData) {
+    if (localData && !this.iframeService.isIframe) {
       this.settingsForm.patchValue(
         { ...JSON.parse(localData) },
         {
