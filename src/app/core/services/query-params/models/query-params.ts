@@ -16,6 +16,8 @@ interface AllQueryParams {
   iframe: 'vertical' | 'horizontal';
   hideSelectionFrom: string;
   hideSelectionTo: string;
+  slippageIt: string;
+  slippageCcr: string;
   background: string;
   theme: string;
   language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
