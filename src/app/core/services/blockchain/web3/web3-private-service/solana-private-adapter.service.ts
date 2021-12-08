@@ -444,14 +444,14 @@ export class SolanaPrivateAdapterService {
     transaction: Transaction,
     signers: Account[]
   ): Promise<TokenAccounts> {
-    const isFromWeth = fromCoinMint === NATIVE_SOL.mintAddress;
-    const isToWeth = toCoinMint === NATIVE_SOL.mintAddress;
+    const fromNative = fromCoinMint === NATIVE_SOL.mintAddress;
+    const toNative = toCoinMint === NATIVE_SOL.mintAddress;
 
     const fromTokenAccount = mintAccountsAddresses[fromCoinMint];
     const toTokenAccount = mintAccountsAddresses[toCoinMint];
 
     const fromAccount = {
-      key: isFromWeth
+      key: fromNative
         ? await this.createTokenAccountIfNotExist(
             null,
             owner,
@@ -466,11 +466,11 @@ export class SolanaPrivateAdapterService {
             fromCoinMint,
             transaction
           ),
-      isWeth: isFromWeth
+      isWeth: fromNative
     };
 
     const toAccount = {
-      key: isToWeth
+      key: toNative
         ? await this.createTokenAccountIfNotExist(
             null,
             owner,
@@ -485,7 +485,7 @@ export class SolanaPrivateAdapterService {
             toCoinMint,
             transaction
           ),
-      isWeth: isToWeth
+      isWeth: toNative
     };
 
     return { from: fromAccount, to: toAccount };

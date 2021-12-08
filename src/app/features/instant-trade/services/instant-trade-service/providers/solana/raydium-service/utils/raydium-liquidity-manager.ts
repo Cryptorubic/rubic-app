@@ -29,51 +29,26 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
-import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
-interface PublicKeyAccount {
-  publicKey: PublicKey;
-  account: AccountInfo<Buffer>;
-}
+type LpAddress = { key: string; lpMintAddress: string; version: number };
 
-type LiquidityPools = {
-  [P: string]: LiquidityPoolInfo;
-};
+type LpInfo = { [p: string]: LiquidityPoolInfo };
 
-type PoolFnName =
-  | 'poolCoinTokenAccount'
-  | 'poolPcTokenAccount'
-  | 'ammOpenOrders'
-  | 'ammId'
-  | 'lpMintAddress';
+type LpDecimals = { [name: string]: number };
 
-type PoolGetter = {
-  [P in PoolFnName]: () => void;
-};
-
-interface BN {
-  toNumber: () => number;
-}
-
-interface LayoutDecode {
-  swapFeeNumerator: BN;
-  swapFeeDenominator: BN;
-  status: BN;
-  needTakePnlCoin: BN;
-  needTakePnlPc: BN;
-}
+type PubKeyAccountInfo = { publicKey: PublicKey; accountInfo: AccountInfo<Buffer> };
 
 export class RaydiumLiquidityManager {
+  private allPools: LiquidityPoolInfo[];
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
     private readonly privateBlockchainAdapter: SolanaPrivateAdapterService
   ) {}
 
-  public static getAddressForWhat(
-    address: string
-  ): Partial<{ key: string; lpMintAddress: string; version: number }> {
-    for (const pool of LIQUIDITY_POOLS) {
+  public getAddressForWhat(address: string, pools: LiquidityPoolInfo[]): Partial<LpAddress> {
+    for (const pool of pools) {
       for (const [key, value] of Object.entries(pool)) {
         if (key === 'lp') {
           if (value.mintAddress === address) {
@@ -88,7 +63,6 @@ export class RaydiumLiquidityManager {
         }
       }
     }
-
     return {};
   }
 
@@ -97,144 +71,144 @@ export class RaydiumLiquidityManager {
     toSymbol: string,
     solanaTokens: List<TokenAmount>,
     multihops: boolean
-  ): Promise<{ [p: string]: LiquidityPoolInfo }> {
-    const ammAll = await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
-      'amm',
-      new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
-      [{ dataSize: AMM_INFO_LAYOUT_V4.span }]
-    );
-
-    const lpMintAddressList = ammAll.reduce((acc, curr) => {
-      const ammLayout = AMM_INFO_LAYOUT_V4.decode(Buffer.from(curr.accountInfo.data));
-      if (
-        ammLayout.pcMintAddress.toString() === ammLayout.serumMarket.toString() ||
-        ammLayout.lpMintAddress.toString() === '11111111111111111111111111111111'
-      ) {
-        return acc;
-      }
-      return [...acc, ammLayout.lpMintAddress.toString()];
-    }, []);
-
+  ): Promise<LpInfo> {
+    const { ammAll, lpMintAddressList } = await this.fetchAmmAndMintAddresses();
     const lpMintListDecimals = await this.getLpMintListDecimals(lpMintAddressList);
+    this.allPools = await this.getAllPools(ammAll, solanaTokens, lpMintListDecimals);
 
-    for (let indexAmmInfo = 0; indexAmmInfo < ammAll.length; indexAmmInfo += 1) {
-      const ammInfo = AMM_INFO_LAYOUT_V4.decode(Buffer.from(ammAll[indexAmmInfo].accountInfo.data));
-      const fromCoin =
-        ammInfo.coinMintAddress.toString() === TOKENS.WSOL.mintAddress
-          ? NATIVE_SOL.mintAddress
-          : ammInfo.coinMintAddress.toString();
-      const toCoin =
-        ammInfo.pcMintAddress.toString() === TOKENS.WSOL.mintAddress
-          ? NATIVE_SOL.mintAddress
-          : ammInfo.pcMintAddress.toString();
+    return await this.getSpecificPools(this.allPools, multihops, fromSymbol, toSymbol);
+  }
 
-      const tokens = solanaTokens.map(
-        el =>
-          ({
-            symbol: el.symbol,
-            name: el.name,
-            mintAddress: el.address,
-            decimals: el.decimals
-          } as SolanaTokenInfo)
-      );
-      const coin =
-        tokens.find(item => item.mintAddress === fromCoin) ||
-        Object.values(TOKENS).find(item => item.mintAddress === fromCoin);
-      const pc =
-        tokens.find(item => item.mintAddress === toCoin) ||
-        Object.values(TOKENS).find(item => item.mintAddress === toCoin);
-
-      if (!coin || !pc) {
-        continue;
+  public async getLpMintListDecimals(mintAddressInfos: string[]): Promise<LpDecimals> {
+    const reLpInfoDict: LpDecimals = {};
+    const mintList: PublicKey[] = [];
+    mintAddressInfos.forEach(item => {
+      const lpInfo = Object.values(LP_TOKENS).find(itemLpToken => itemLpToken.mintAddress === item);
+      if (!lpInfo) {
+        mintList.push(new PublicKey(item));
       }
+      reLpInfoDict[item] = lpInfo ? lpInfo.decimals : null;
+    });
 
-      if (coin.mintAddress === TOKENS.WSOL.mintAddress) {
-        coin.symbol = 'SOL';
-        coin.name = 'SOL';
-        coin.mintAddress = '11111111111111111111111111111111';
-      }
-      if (pc.mintAddress === TOKENS.WSOL.mintAddress) {
-        pc.symbol = 'SOL';
-        pc.name = 'SOL';
-        pc.mintAddress = '11111111111111111111111111111111';
-      }
-      const lp = Object.values(LP_TOKENS).find(
-        item => item.mintAddress === ammInfo.lpMintAddress
-      ) || {
-        symbol: `${coin.symbol}-${pc.symbol}`,
-        name: `${coin.symbol}-${pc.symbol}`,
-        coin,
-        pc,
-        mintAddress: ammInfo.lpMintAddress.toString(),
-        decimals: lpMintListDecimals[ammInfo.lpMintAddress]
-      };
+    const mintAll = await this.privateBlockchainAdapter.getMultipleAccounts(mintList);
 
-      // eslint-disable-next-line no-await-in-loop
-      const { publicKey } = await this.privateBlockchainAdapter.createAmmAuthority(
-        new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4)
-      );
-
-      // const market = marketToLayout[ammInfo.serumMarket];
-      //
-      // // eslint-disable-next-line no-await-in-loop
-      // const serumVaultSigner = await PublicKey.createProgramAddress(
-      //   [ammInfo.serumMarket.toBuffer(), market.vaultSignerNonce.toArrayLike(Buffer, 'le', 8)],
-      //   new PublicKey(SERUM_PROGRAM_ID_V3)
-      // );
-
-      const itemLiquidity: LiquidityPoolInfo = {
-        name: `${coin.symbol}-${pc.symbol}`,
-        coin,
-        pc,
-        lp,
-        version: 4,
-        programId: LIQUIDITY_POOL_PROGRAM_ID_V4,
-        ammId: ammAll[indexAmmInfo].publicKey.toString(),
-        ammAuthority: publicKey.toString(),
-        ammOpenOrders: ammInfo.ammOpenOrders.toString(),
-        ammTargetOrders: ammInfo.ammTargetOrders.toString(),
-        ammQuantities: NATIVE_SOL.mintAddress,
-        poolCoinTokenAccount: ammInfo.poolCoinTokenAccount.toString(),
-        poolPcTokenAccount: ammInfo.poolPcTokenAccount.toString(),
-        poolWithdrawQueue: ammInfo.poolWithdrawQueue.toString(),
-        poolTempLpTokenAccount: ammInfo.poolTempLpTokenAccount.toString(),
-        serumProgramId: SERUM_PROGRAM_ID_V3,
-        serumMarket: ammInfo.serumMarket.toString(),
-        serumBids: '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.bids.toString() */,
-        serumAsks: '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.asks.toString() */,
-        serumEventQueue:
-          '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.eventQueue.toString() */,
-        serumCoinVaultAccount:
-          '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.baseVault.toString() */,
-        serumPcVaultAccount:
-          '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.quoteVault.toString() */,
-        serumVaultSigner:
-          '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* serumVaultSigner.toString() */,
-        official: false
-      };
-      if (!LIQUIDITY_POOLS.find(item => item.ammId === itemLiquidity.ammId)) {
-        LIQUIDITY_POOLS.push(itemLiquidity);
-      } else {
-        for (let itemIndex = 0; itemIndex < LIQUIDITY_POOLS.length; itemIndex += 1) {
-          if (
-            LIQUIDITY_POOLS[itemIndex].ammId === itemLiquidity.ammId &&
-            LIQUIDITY_POOLS[itemIndex].name !== itemLiquidity.name &&
-            !LIQUIDITY_POOLS[itemIndex].official
-          ) {
-            LIQUIDITY_POOLS[itemIndex] = itemLiquidity;
-          }
-        }
+    for (let mintIndex = 0; mintIndex < mintAll.length; mintIndex += 1) {
+      const itemMint = mintAll[mintIndex];
+      if (itemMint) {
+        const mintLayoutData = MINT_LAYOUT.decode(Buffer.from(itemMint.account.data));
+        reLpInfoDict[mintList[mintIndex].toString()] = mintLayoutData.decimals;
       }
     }
+    return Object.keys(reLpInfoDict).reduce((prev, key) => {
+      if (reLpInfoDict[key] !== null) {
+        return { ...prev, [key]: reLpInfoDict[key] };
+      }
+      return prev;
+    }, {} as LpDecimals);
+  }
 
-    const liquidityPools: { [K: string]: LiquidityPoolInfo } = {};
+  private async getAllPools(
+    ammAll: PubKeyAccountInfo[],
+    solanaTokens: List<TokenAmount>,
+    lpMintListDecimals: { [p: string]: number }
+  ): Promise<LiquidityPoolInfo[]> {
+    const liquidityPools = [...LIQUIDITY_POOLS];
+    const tokens: List<SolanaTokenInfo> = solanaTokens.map(el => ({
+      symbol: el.symbol,
+      name: el.name,
+      mintAddress: el.address,
+      decimals: el.decimals
+    }));
+    const { publicKey } = await this.privateBlockchainAdapter.createAmmAuthority(
+      new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4)
+    );
+    const test = ammAll.reduce(
+      (acc, curr, index) => {
+        const ammInfo = AMM_INFO_LAYOUT_V4.decode(Buffer.from(curr.accountInfo.data));
+        const fromCoin = ammInfo.coinMintAddress.toString();
+        const toCoin = ammInfo.pcMintAddress.toString();
+
+        const coin =
+          tokens.find(item => item.mintAddress === fromCoin) ||
+          Object.values(TOKENS).find(item => item.mintAddress === fromCoin);
+        const pc =
+          tokens.find(item => item.mintAddress === toCoin) ||
+          Object.values(TOKENS).find(item => item.mintAddress === toCoin);
+
+        if (!coin || !pc) {
+          return acc;
+        }
+
+        const lp = Object.values(LP_TOKENS).find(
+          item => item.mintAddress === ammInfo.lpMintAddress
+        ) || {
+          symbol: `${coin.symbol}-${pc.symbol}`,
+          name: `${coin.symbol}-${pc.symbol}`,
+          coin,
+          pc,
+          mintAddress: ammInfo.lpMintAddress.toString(),
+          decimals: lpMintListDecimals[ammInfo.lpMintAddress]
+        };
+        const itemLiquidity: LiquidityPoolInfo = {
+          name: `${coin.symbol}-${pc.symbol}`,
+          coin,
+          pc,
+          lp,
+          version: 4,
+          programId: LIQUIDITY_POOL_PROGRAM_ID_V4,
+          ammId: ammAll[index].publicKey.toString(),
+          ammAuthority: publicKey.toString(),
+          ammOpenOrders: ammInfo.ammOpenOrders.toString(),
+          ammTargetOrders: ammInfo.ammTargetOrders.toString(),
+          ammQuantities: NATIVE_SOL.mintAddress,
+          poolCoinTokenAccount: ammInfo.poolCoinTokenAccount.toString(),
+          poolPcTokenAccount: ammInfo.poolPcTokenAccount.toString(),
+          poolWithdrawQueue: ammInfo.poolWithdrawQueue.toString(),
+          poolTempLpTokenAccount: ammInfo.poolTempLpTokenAccount.toString(),
+          serumProgramId: SERUM_PROGRAM_ID_V3,
+          serumMarket: ammInfo.serumMarket.toString(),
+          serumBids: '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.bids.toString() */,
+          serumAsks: '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.asks.toString() */,
+          serumEventQueue:
+            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.eventQueue.toString() */,
+          serumCoinVaultAccount:
+            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.baseVault.toString() */,
+          serumPcVaultAccount:
+            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.quoteVault.toString() */,
+          serumVaultSigner:
+            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* serumVaultSigner.toString() */,
+          official: false
+        };
+
+        if (!liquidityPools.find(item => item.ammId === itemLiquidity.ammId)) {
+          return [...acc, itemLiquidity];
+        }
+        return [
+          ...acc.map(
+            el =>
+              (el.ammId === itemLiquidity.ammId && el.name !== itemLiquidity.name && !el.official
+                ? itemLiquidity
+                : el) as LiquidityPoolInfo
+          )
+        ];
+      },
+      [...liquidityPools]
+    );
+    return test;
+  }
+
+  private async getSpecificPools(
+    allPools: LiquidityPoolInfo[],
+    multihops: boolean,
+    fromSymbol: string,
+    toSymbol: string
+  ): Promise<LpInfo> {
     const publicKeys: PublicKey[] = [];
+    const liquidityPools: LpInfo = {};
 
     const LP = multihops
-      ? LIQUIDITY_POOLS.filter(
-          pool => pool.name.includes(fromSymbol) || pool.name.includes(toSymbol)
-        )
-      : LIQUIDITY_POOLS.filter(
+      ? allPools.filter(pool => pool.name.includes(fromSymbol) || pool.name.includes(toSymbol))
+      : allPools.filter(
           pool =>
             pool.name === `${fromSymbol}-${toSymbol}` || pool.name === `${toSymbol}-${fromSymbol}`
         );
@@ -265,7 +239,7 @@ export class RaydiumLiquidityManager {
         const address = info.publicKey.toBase58();
         const data = Buffer.from(info.account.data);
 
-        const { key, lpMintAddress, version } = RaydiumLiquidityManager.getAddressForWhat(address);
+        const { key, lpMintAddress, version } = this.getAddressForWhat(address, LP);
 
         if (key && lpMintAddress) {
           const poolInfo = liquidityPools[lpMintAddress];
@@ -339,142 +313,26 @@ export class RaydiumLiquidityManager {
     return liquidityPools;
   }
 
-  public async requestLiquidity(symbol1: string, symbol2: string): Promise<LiquidityPoolInfo[]> {
-    const LP = LIQUIDITY_POOLS.filter(el => el.name === `${symbol1}-${symbol2}`);
-    const { liquidityPools, publicKeys } = LP.reduce(
-      (prev, curr) => {
-        const { poolCoinTokenAccount, poolPcTokenAccount, ammOpenOrders, ammId, lp } = curr;
-        const newPool: LiquidityPoolInfo = JSON.parse(JSON.stringify(curr));
-        newPool.coin.balance = new BigNumber(0);
-        newPool.pc.balance = new BigNumber(0);
-
-        const newPublicKeys = [
-          new PublicKey(poolCoinTokenAccount),
-          new PublicKey(poolPcTokenAccount),
-          new PublicKey(ammOpenOrders),
-          new PublicKey(ammId),
-          new PublicKey(lp.mintAddress)
-        ];
-
-        return {
-          liquidityPools: { ...prev.liquidityPools, [lp.mintAddress]: newPool },
-          publicKeys: [...prev.publicKeys, ...newPublicKeys]
-        };
-      },
-      {
-        liquidityPools: {},
-        publicKeys: []
-      }
+  private async fetchAmmAndMintAddresses(): Promise<{
+    ammAll: PubKeyAccountInfo[];
+    lpMintAddressList: string[];
+  }> {
+    const ammAll = await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
+      'amm',
+      new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
+      [{ dataSize: AMM_INFO_LAYOUT_V4.span }]
     );
 
-    const multipleInfo: PublicKeyAccount[] = (
-      await this.privateBlockchainAdapter.getMultipleAccounts(publicKeys, 'confirmed')
-    ).filter(Boolean);
-
-    return this.getMultipleInfos(multipleInfo, liquidityPools);
-  }
-
-  private getMultipleInfos(
-    infos: PublicKeyAccount[],
-    liquidityPools: LiquidityPools
-  ): LiquidityPoolInfo[] {
-    return infos.reduce((prev, curr) => {
-      const address = curr.publicKey.toBase58();
-      const data = Buffer.from(curr.account.data);
-
-      const { key, lpMintAddress, version } = RaydiumLiquidityManager.getAddressForWhat(address);
-
-      if (key && lpMintAddress) {
-        const newPoolInfo = liquidityPools[lpMintAddress];
-        this.constructPool(newPoolInfo, key as PoolFnName, data, version);
-        return [...prev, newPoolInfo];
+    const lpMintAddressList = ammAll.reduce((acc, curr) => {
+      const ammLayout = AMM_INFO_LAYOUT_V4.decode(Buffer.from(curr.accountInfo.data));
+      if (
+        ammLayout.pcMintAddress.toString() === ammLayout.serumMarket.toString() ||
+        ammLayout.lpMintAddress.toString() === '11111111111111111111111111111111'
+      ) {
+        return acc;
       }
-      return prev;
+      return [...acc, ammLayout.lpMintAddress.toString()];
     }, []);
-  }
-
-  private constructPool(
-    poolInfo: LiquidityPoolInfo,
-    key: PoolFnName,
-    data: unknown,
-    version: number
-  ): void {
-    const editPool: PoolGetter = {
-      poolCoinTokenAccount: () => {
-        const parsed = ACCOUNT_LAYOUT.decode(data);
-        poolInfo.coin.balance = poolInfo.coin.balance.plus(getBigNumber(parsed.amount));
-      },
-      poolPcTokenAccount: () => {
-        const parsed = ACCOUNT_LAYOUT.decode(data);
-        poolInfo.pc.balance = poolInfo.pc.balance.plus(getBigNumber(parsed.amount));
-      },
-      ammOpenOrders: () => {
-        const OPEN_ORDERS_LAYOUT = OpenOrders.getLayout(new PublicKey(poolInfo.serumProgramId));
-        const parsed = OPEN_ORDERS_LAYOUT.decode(data);
-        const { baseTokenTotal, quoteTokenTotal } = parsed;
-
-        poolInfo.coin.balance = poolInfo.coin.balance.plus(getBigNumber(baseTokenTotal));
-        poolInfo.pc.balance = poolInfo.pc.balance.plus(getBigNumber(quoteTokenTotal));
-      },
-      ammId: () => {
-        const getLayout: { [p: string]: () => LayoutDecode } = {
-          2: () => AMM_INFO_LAYOUT.decode(data),
-          3: () => AMM_INFO_LAYOUT_V3.decode(data),
-          4: () => AMM_INFO_LAYOUT_V4.decode(data)
-        };
-
-        const { swapFeeNumerator, swapFeeDenominator, status, needTakePnlCoin, needTakePnlPc } =
-          getLayout[version]();
-
-        if (version === 4) {
-          poolInfo.fees = {
-            swapFeeNumerator: getBigNumber(swapFeeNumerator),
-            swapFeeDenominator: getBigNumber(swapFeeDenominator)
-          };
-        }
-
-        poolInfo.status = getBigNumber(status);
-        poolInfo.coin.balance = poolInfo.coin.balance.minus(getBigNumber(needTakePnlCoin));
-        poolInfo.pc.balance = poolInfo.pc.balance.minus(getBigNumber(needTakePnlPc));
-      },
-      lpMintAddress: () => {
-        const parsed = MINT_LAYOUT.decode(data);
-        poolInfo.lp.totalSupply = new BigNumber(getBigNumber(parsed.supply));
-      }
-    };
-    editPool[key]();
-  }
-
-  public async getLpMintListDecimals(
-    mintAddressInfos: string[]
-  ): Promise<{ [name: string]: number }> {
-    const reLpInfoDict: { [name: string]: number } = {};
-    const mintList = [] as PublicKey[];
-    mintAddressInfos.forEach(item => {
-      let lpInfo = Object.values(LP_TOKENS).find(itemLpToken => itemLpToken.mintAddress === item);
-      if (!lpInfo) {
-        mintList.push(new PublicKey(item));
-        lpInfo = {
-          decimals: null
-        } as RubicAny;
-      }
-      reLpInfoDict[item] = lpInfo.decimals;
-    });
-
-    const mintAll = await this.privateBlockchainAdapter.getMultipleAccounts(mintList);
-    for (let mintIndex = 0; mintIndex < mintAll.length; mintIndex += 1) {
-      const itemMint = mintAll[mintIndex];
-      if (itemMint) {
-        const mintLayoutData = MINT_LAYOUT.decode(Buffer.from(itemMint.account.data));
-        reLpInfoDict[mintList[mintIndex].toString()] = mintLayoutData.decimals;
-      }
-    }
-    const reInfo: { [name: string]: number } = {};
-    for (const key of Object.keys(reLpInfoDict)) {
-      if (reLpInfoDict[key] !== null) {
-        reInfo[key] = reLpInfoDict[key];
-      }
-    }
-    return reInfo;
+    return { ammAll, lpMintAddressList };
   }
 }

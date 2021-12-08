@@ -44,6 +44,7 @@ import {
 import { Buffer } from 'buffer';
 import { str, u64, struct } from '@project-serum/borsh';
 import { CCR_DATA_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
+import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +62,8 @@ export class CcrContractWriterService {
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly tokensService: TokensService,
-    private readonly raydiumCrossChainContractWriterService: RaydiumRoutingService
+    private readonly raydiumCrossChainContractWriterService: RaydiumRoutingService,
+    private readonly apiService: CrossChainRoutingApiService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
     this.contractAddresses = crossChainSwapContractAddresses;
@@ -215,6 +217,14 @@ export class CcrContractWriterService {
             options.onTransactionHash(hash);
           }
           transactionHash = hash;
+          // @TODO SOLANA KOSTYL.
+          if (toBlockchainInContractNumber === 8) {
+            this.apiService.postSolanaCCRdata(
+              transactionHash,
+              this.targetAddress,
+              trade.secondPath
+            );
+          }
         }
       },
       err => {
@@ -306,7 +316,7 @@ export class CcrContractWriterService {
         toBlockchainInContractNumber,
         tokenInAmountAbsolute,
         trade.firstPath,
-        trade.secondPath,
+        toBlockchainInContractNumber === 8 ? [] : trade.secondPath || [],
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         walletAddress,

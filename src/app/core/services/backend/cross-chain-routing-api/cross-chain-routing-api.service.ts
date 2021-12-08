@@ -65,6 +65,18 @@ export class CrossChainRoutingApiService {
       );
   }
 
+  public postSolanaCCRdata(
+    transactionHash: string,
+    targetAddress: string,
+    secondPath: string[]
+  ): Observable<void> {
+    return this.httpService.post('solana-params/', {
+      transactionHash,
+      targetAddress,
+      secondPath
+    });
+  }
+
   /**
    * post trade with domain query {@link RubicExchangeInterceptor} to save extended trade info in backend
    * @param transactionHash hash of crosschain swap transaction

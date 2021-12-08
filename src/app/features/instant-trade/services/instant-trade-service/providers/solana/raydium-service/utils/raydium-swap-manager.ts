@@ -13,10 +13,6 @@ import {
   Transaction,
   TransactionInstruction
 } from '@solana/web3.js';
-import {
-  NATIVE_SOL,
-  TOKENS
-} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { closeAccount, transfer } from '@project-serum/serum/lib/token-instructions';
 import { DATA_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
@@ -123,14 +119,9 @@ export class RaydiumSwapManager {
     const toDecimals = new BigNumber(10).exponentiatedBy(toDec);
     const amountOut = new BigNumber(aOut.toString()).multipliedBy(toDecimals);
 
-    const fromMint =
-      fromToken.address === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : fromToken.address;
-    const toMint =
-      toToken.address === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toToken.address;
-    const middleMint =
-      routerInfo.middleCoin.address === NATIVE_SOL.mintAddress
-        ? TOKENS.WSOL.mintAddress
-        : routerInfo.middleCoin.address;
+    const fromMint = fromToken.address;
+    const toMint = toToken.address;
+    const middleMint = routerInfo.middleCoin.address;
 
     const { from: fromAccount } = await this.privateBlockchainAdapter.getTokensAccounts(
       mintAccountsAddresses,
@@ -172,7 +163,7 @@ export class RaydiumSwapManager {
     );
 
     transaction.add(
-      this.createRouteSwapInInstruction(
+      RaydiumSwapManager.createRouteSwapInInstruction(
         new PublicKey(ROUTE_SWAP_PROGRAM_ID),
         new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
         new PublicKey(poolInfoA.ammId),
@@ -196,7 +187,7 @@ export class RaydiumSwapManager {
         owner,
         fromFinalAmount
       ),
-      this.createRouteSwapOutInstruction(
+      RaydiumSwapManager.createRouteSwapOutInstruction(
         new PublicKey(ROUTE_SWAP_PROGRAM_ID),
         new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
         new PublicKey(poolInfoA.ammId),
@@ -224,7 +215,7 @@ export class RaydiumSwapManager {
     return { transaction, signers };
   }
 
-  private createRouteSwapOutInstruction(
+  private static createRouteSwapOutInstruction(
     programId: PublicKey,
     ammProgramId: PublicKey,
     fromAmmId: PublicKey,
@@ -296,7 +287,7 @@ export class RaydiumSwapManager {
     });
   }
 
-  private createRouteSwapInInstruction(
+  private static createRouteSwapInInstruction(
     programId: PublicKey,
     ammProgramId: PublicKey,
     fromAmmId: PublicKey,
@@ -386,7 +377,6 @@ export class RaydiumSwapManager {
     const signers: Account[] = [];
     const owner = new PublicKey(address);
     const mintAccountsAddresses = await this.privateBlockchainAdapter.getTokenAccounts(address);
-    const wsolAddress = mintAccountsAddresses[TOKENS.WSOL.mintAddress];
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(fromDec);
     const amountIn = new BigNumber(aIn.toString()).multipliedBy(fromDecimals);
@@ -399,25 +389,23 @@ export class RaydiumSwapManager {
       throw new Error('Miss token info');
     }
 
-    if (fromCoinMint === NATIVE_SOL.mintAddress && wsolAddress) {
-      transaction.add(
-        closeAccount({
-          source: new PublicKey(wsolAddress),
-          destination: owner,
-          owner
-        })
-      );
-    }
-
-    const fromMint =
-      fromCoinMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : fromCoinMint;
-    const toMint = toCoinMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toCoinMint;
+    // @TODO Solana. remove wsol.
+    // const wsolAddress = mintAccountsAddresses[TOKENS.WSOL.mintAddress];
+    // if (fromCoinMint === NATIVE_SOL.mintAddress && wsolAddress) {
+    //   transaction.add(
+    //     closeAccount({
+    //       source: new PublicKey(wsolAddress),
+    //       destination: owner,
+    //       owner
+    //     })
+    //   );
+    // }
 
     const { from: fromAccount, to: toAccount } =
       await this.privateBlockchainAdapter.getTokensAccounts(
         mintAccountsAddresses,
-        fromMint,
-        toMint,
+        fromCoinMint,
+        toCoinMint,
         owner,
         aIn,
         aOut,

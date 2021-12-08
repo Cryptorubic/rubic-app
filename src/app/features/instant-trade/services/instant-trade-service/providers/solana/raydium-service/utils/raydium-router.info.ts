@@ -1,10 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
-import {
-  NATIVE_SOL,
-  TOKENS
-} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+
 import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-token-amount';
 import { Injectable } from '@angular/core';
 
@@ -70,9 +67,6 @@ export class RaydiumRoutingService {
     this._currentPoolInfo = poolInfo;
     const { coin, pc, fees } = poolInfo;
     const { swapFeeNumerator, swapFeeDenominator } = fees;
-
-    if (fromCoinMint === TOKENS.WSOL.mintAddress) fromCoinMint = NATIVE_SOL.mintAddress;
-    if (toCoinMint === TOKENS.WSOL.mintAddress) toCoinMint = NATIVE_SOL.mintAddress;
 
     if (fromCoinMint === coin.mintAddress && toCoinMint === pc.mintAddress) {
       // coin2pc
@@ -163,47 +157,53 @@ export class RaydiumRoutingService {
     toCoinMint: string
   ): [LiquidityPoolInfo, LiquidityPoolInfo][] {
     const routerCoinDefault = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI'];
-    const ret: [LiquidityPoolInfo, LiquidityPoolInfo][] = [];
-    const avaPools: LiquidityPoolInfo[] = [];
-    for (const p of Object.values(poolInfos)) {
-      if (!(p.version === 4 && p.status === 1)) continue;
+    const avaPools: LiquidityPoolInfo[] = Object.values(poolInfos).reduce((acc, curr) => {
+      if (!(curr.version === 4 && curr.status === 1)) {
+        return acc;
+      }
       if (
-        [fromCoinMint, toCoinMint].includes(p.coin.mintAddress) &&
-        routerCoinDefault.includes(p.pc.symbol)
+        ([fromCoinMint, toCoinMint].includes(curr.pc.mintAddress) &&
+          routerCoinDefault.includes(curr.coin.symbol)) ||
+        ([fromCoinMint, toCoinMint].includes(curr.coin.mintAddress) &&
+          routerCoinDefault.includes(curr.pc.symbol))
       ) {
-        avaPools.push(p);
-      } else if (
-        [fromCoinMint, toCoinMint].includes(p.pc.mintAddress) &&
-        routerCoinDefault.includes(p.coin.symbol)
-      ) {
-        avaPools.push(p);
+        avaPools.push(curr);
       }
-    }
+      return acc;
+    }, []);
 
-    for (const p1 of avaPools) {
-      if (p1.coin.mintAddress === fromCoinMint) {
-        const poolInfo = avaPools.filter(
-          p2 =>
-            p1.ammId !== p2.ammId &&
-            ((p2.pc.mintAddress === p1.pc.mintAddress && p2.coin.mintAddress === toCoinMint) ||
-              (p2.coin.mintAddress === p1.pc.mintAddress && p2.pc.mintAddress === toCoinMint))
-        );
-        for (const aP of poolInfo) {
-          ret.push([p1, aP]);
-        }
-      } else if (p1.pc.mintAddress === fromCoinMint) {
-        const poolInfo = avaPools.filter(
-          p2 =>
-            p1.ammId !== p2.ammId &&
-            ((p2.pc.mintAddress === p1.coin.mintAddress && p2.coin.mintAddress === toCoinMint) ||
-              (p2.coin.mintAddress === p1.coin.mintAddress && p2.pc.mintAddress === toCoinMint))
-        );
-        for (const aP of poolInfo) {
-          ret.push([p1, aP]);
-        }
+    return avaPools.reduce((acc, curr) => {
+      if (curr.coin.mintAddress === fromCoinMint) {
+        return [
+          ...acc,
+          ...avaPools
+            .filter(
+              p2 =>
+                curr.ammId !== p2.ammId &&
+                ((p2.pc.mintAddress === curr.pc.mintAddress &&
+                  p2.coin.mintAddress === toCoinMint) ||
+                  (p2.coin.mintAddress === curr.pc.mintAddress && p2.pc.mintAddress === toCoinMint))
+            )
+            .map(ap => [curr, ap] as [LiquidityPoolInfo, LiquidityPoolInfo])
+        ];
       }
-    }
-    return ret;
+      if (curr.pc.mintAddress === fromCoinMint) {
+        return [
+          ...acc,
+          ...avaPools
+            .filter(
+              p2 =>
+                curr.ammId !== p2.ammId &&
+                ((p2.pc.mintAddress === curr.coin.mintAddress &&
+                  p2.coin.mintAddress === toCoinMint) ||
+                  (p2.coin.mintAddress === curr.coin.mintAddress &&
+                    p2.pc.mintAddress === toCoinMint))
+            )
+            .map(ap => [curr, ap] as [LiquidityPoolInfo, LiquidityPoolInfo])
+        ];
+      }
+      return acc;
+    }, [] as [LiquidityPoolInfo, LiquidityPoolInfo][]);
   }
 
   public calculate(
