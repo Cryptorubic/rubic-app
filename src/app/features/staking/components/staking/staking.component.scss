@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 909px;
+  margin: 0 auto;
+  padding: 36px;
+
+  background-color: var(--main-form-background);
+  border-radius: 19px;
+  backdrop-filter: blur(50px);
+}

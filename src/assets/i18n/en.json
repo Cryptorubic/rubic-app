@@ -88,7 +88,8 @@
     "logout": "Logout",
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
-    "merch": "Merch shop"
+    "merch": "Merch shop",
+    "staking": "Staking"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",

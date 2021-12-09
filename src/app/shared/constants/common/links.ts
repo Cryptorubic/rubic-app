@@ -6,6 +6,7 @@ export enum ROUTE_PATH {
   CONTRACTS = 'contracts',
   FAQ = 'faq',
   TRADES = 'my-trades',
+  STAKING = 'staking',
   REST = '**'
 }
 
