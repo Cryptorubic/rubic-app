@@ -73,7 +73,8 @@ export class CcrContractWriterService {
   private async executeSolanaContract(
     trade: CrossChainRoutingTrade,
     address: string,
-    toBlockchainInContractNumber: number
+    toBlockchainInContractNumber: number,
+    settings: CcrSettingsForm
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
     const transaction = new Transaction();
     const signers: Account[] = [];
@@ -147,6 +148,18 @@ export class CcrContractWriterService {
       new PublicKey(SOLANA_CROSS_CHAIN_CONTRACT)
     );
 
+    const tokenInAmountMax = this.calculateTokenInAmountMax(trade, settings);
+    const tokenOutAmountMin = this.calculateTokenOutAmountMin(trade, settings);
+    const methodArguments = {
+      blockchain: new BigNumber(toBlockchainInContractNumber),
+      tokenInAmount: tokenInAmountMax,
+      secondPath: trade.secondPath,
+      rbcTokenOut: trade.firstTransitTokenAmount,
+      tokenOutMin: tokenOutAmountMin,
+      newAddress: this.targetAddress,
+      swapToCrypto: true
+    };
+
     transaction.add(
       this.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
@@ -172,15 +185,7 @@ export class CcrContractWriterService {
         new PublicKey(poolInfo.programId),
         new PublicKey(PDA_DELEGATE),
         new PublicKey(SYSTEM_PROGRAM_ID),
-        {
-          blockchain: new BigNumber(toBlockchainInContractNumber),
-          tokenInAmount: trade.tokenIn.amount,
-          secondPath: trade.secondPath,
-          rbcTokenOut: new BigNumber(0), // ???
-          tokenOutMin: new BigNumber(0), // ???
-          newAddress: this.targetAddress,
-          swapToCrypto: true
-        }
+        methodArguments
       )
     );
     // @TODO Solana.
@@ -261,7 +266,7 @@ export class CcrContractWriterService {
     }
     if (type === 'solana') {
       // const { transaction, signers } = this.executeSolanaContract(trade, userAddress, null);
-      await this.executeSolanaContract(trade, userAddress, toBlockchainInContractNumber);
+      await this.executeSolanaContract(trade, userAddress, toBlockchainInContractNumber, settings);
       return null;
     }
     return null;
@@ -317,10 +322,10 @@ export class CcrContractWriterService {
         toBlockchainInContractNumber,
         tokenInAmountAbsolute,
         trade.firstPath,
-        toBlockchainInContractNumber === 8 ? [] : trade.secondPath || [],
+        toBlockchainInContractNumber === 8 ? [] : trade.secondPath,
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
-        walletAddress,
+        toBlockchainInContractNumber === 8 ? '0x1' : walletAddress,
         blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
       ]
     ];

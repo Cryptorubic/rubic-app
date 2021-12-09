@@ -33,10 +33,12 @@ export type BridgeConfigData = {
   is_paused: boolean;
 };
 
+const CCR_SECOND_PATH = struct([str('first_string'), str('second_string')]);
+
 export const CCR_DATA_LAYOUT = struct([
   u64('blockchain'),
   u64('token_in_amount'),
-  vec<string>(struct([str('first_string'), str('second_string')]), 'second_path'),
+  vec<string>(CCR_SECOND_PATH, 'second_path'),
   u64('exact_rbc_token_out'),
   u64('token_out_min'),
   str('new_address'),

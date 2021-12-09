@@ -119,7 +119,7 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
-    baseUrl: 'https://solscan.io/t',
+    baseUrl: 'https://solscan.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
