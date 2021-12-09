@@ -249,14 +249,14 @@ export class InstantTradeService {
   ): Promise<void> {
     const publicBlockchainAdapter = this.publicBlockchainAdapterService[trade.blockchain];
     await publicBlockchainAdapter.getTransactionByHash(hash, 0, 60, 1000);
-    timer(1000)
+    await timer(1000)
       .pipe(
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
         ),
         catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
-      .subscribe();
+      .toPromise();
   }
 
   /**

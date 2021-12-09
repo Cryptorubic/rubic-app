@@ -100,8 +100,10 @@ export class InstantTradesApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
+    const isSolana = this.walletConnnctorService.provider.walletType === 'solana';
+    const body = { success, ...(isSolana ? { signature: hash } : { hash }) };
     const url = instantTradesApiRoutes.editData(this.walletConnnctorService.provider.walletType);
-    return this.httpService.patch(url, { hash, success });
+    return this.httpService.patch(url, body);
   }
 
   /**
