@@ -15,6 +15,7 @@ import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INS
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
@@ -69,14 +70,19 @@ export class InstantTradesApiService {
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    const hashObject = {
+      ...(blockchainType === 'ethLike' && { hash }),
+      ...(blockchainType === 'solana' && { signature: hash })
+    };
     const tradeInfo: InstantTradesPostApi = {
-      hash,
       network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain],
       provider,
       from_token: trade.from.token.address,
       to_token: trade.to.token.address,
       from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
-      to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
+      to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals),
+      ...hashObject
     };
 
     if (this.isTestingMode) {

@@ -169,7 +169,7 @@ export class GasRefundService {
     const address = this.authService.userAddress;
     if (BlockchainsInfo.getBlockchainType(this.refundBlockchain) !== 'ethLike') {
       // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Non eth like blockchain error');
     }
     const blockchainAdapter = this.publicBlockchainAdapterService[
       this.refundBlockchain

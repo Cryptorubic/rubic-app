@@ -434,7 +434,7 @@ export class SolanaPrivateAdapterService {
     return txid;
   }
 
-  public async getTokensAccounts(
+  public async getOrCreatesTokensAccounts(
     mintAccountsAddresses: { [P: string]: string },
     fromCoinMint: string,
     toCoinMint: string,

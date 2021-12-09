@@ -113,16 +113,17 @@ export class CcrContractWriterService {
         ? TOKENS.WSOL.mintAddress
         : trade.tokenOut.address;
 
-    const { from: fromAccount, to: toAccount } = await privateBlockchainAdapter.getTokensAccounts(
-      mintAccountsAddresses,
-      fromMint,
-      toMint,
-      owner,
-      trade.tokenInAmount,
-      trade.tokenOutAmount,
-      transaction,
-      signers
-    );
+    const { from: fromAccount, to: toAccount } =
+      await privateBlockchainAdapter.getOrCreatesTokensAccounts(
+        mintAccountsAddresses,
+        fromMint,
+        toMint,
+        owner,
+        trade.tokenInAmount,
+        trade.tokenOutAmount,
+        transaction,
+        signers
+      );
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
     const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));

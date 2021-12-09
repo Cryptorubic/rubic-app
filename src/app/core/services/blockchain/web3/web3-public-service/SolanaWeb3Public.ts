@@ -45,11 +45,11 @@ export class SolanaWeb3Public {
   }
 
   /**
-   * @TODO Solana.
+   * @TODO Solana. Rename approve to preswap.
    * Gets allowance.
    */
   public async getAllowance(): Promise<BigNumber> {
-    return new BigNumber(999999);
+    return new BigNumber(Infinity);
   }
 
   /**

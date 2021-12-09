@@ -21,15 +21,13 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
-import {
-  NATIVE_SOL,
-  WRAPPED_SOL
-} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 
 @Injectable({
   providedIn: 'root'
@@ -186,44 +184,57 @@ export class RaydiumService implements ItProvider {
     return null;
   }
 
-  public async createTrade(trade: InstantTrade): Promise<Partial<TransactionReceipt>> {
-    if (this.isWrap(trade.from.token.address, trade.to.token.address)) {
-      // @TODO Solana.
-      // const hash = await this.wrap(trade);
-      // return {
-      //   transactionHash: hash
-      // };
-    }
+  public async createTrade(
+    trade: InstantTrade,
+    options: { onConfirm?: (hash: string) => void }
+  ): Promise<Partial<TransactionReceipt>> {
     const solanaTokens = this.tokensService.tokens.filter(
       el => el.blockchain === BLOCKCHAIN_NAME.SOLANA
     );
-    const { transaction, signers } =
-      trade.path.length > 2
-        ? await this.swapManager.createRouteSwap(
-            this.poolInfo[0],
-            this.poolInfo[1],
-            this.raydiumRoutingService.routerInfo,
-            trade.from.token,
-            trade.to.token,
-            trade.from.amount,
-            trade.to.amount,
-            this.walletConnectorService.address,
-            trade.from.token.decimals,
-            trade.to.token.decimals
-          )
-        : await this.swapManager.createSwapTransaction(
-            this.poolInfo[0],
-            trade.from.token.address,
-            trade.to.token.address,
-            trade.from.amount,
-            trade.to.amount,
-            trade.from.token.decimals,
-            trade.to.token.decimals,
-            this.walletConnectorService.address,
-            solanaTokens
-          );
-    await this.swapManager.addTransactionMeta(transaction, this.walletConnectorService.address);
+    // @TODO Solana.
+    // eslint-disable-next-line no-nested-ternary
+    const isWrap = this.isWrap(trade.from.token.address, trade.to.token.address);
+    const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase();
 
+    let transaction;
+    let signers;
+    if (isWrap) {
+      const wrapResult = fromNativeSol
+        ? await this.swapManager.wrapSol(trade, this.walletConnectorService.address, solanaTokens)
+        : await this.swapManager.unwrapSol(this.walletConnectorService.address);
+      transaction = wrapResult.transaction;
+      signers = wrapResult.signers;
+    } else {
+      const swapResult =
+        trade.path.length > 2
+          ? await this.swapManager.createRouteSwap(
+              this.poolInfo[0],
+              this.poolInfo[1],
+              this.raydiumRoutingService.routerInfo,
+              trade.from.token,
+              trade.to.token,
+              trade.from.amount,
+              trade.to.amount,
+              this.walletConnectorService.address,
+              trade.from.token.decimals,
+              trade.to.token.decimals
+            )
+          : await this.swapManager.createSwapTransaction(
+              this.poolInfo[0],
+              trade.from.token.address,
+              trade.to.token.address,
+              trade.from.amount,
+              trade.to.amount,
+              trade.from.token.decimals,
+              trade.to.token.decimals,
+              this.walletConnectorService.address,
+              solanaTokens
+            );
+      transaction = swapResult.transaction;
+      signers = swapResult.signers;
+    }
+
+    await this.swapManager.addTransactionMeta(transaction, this.walletConnectorService.address);
     if (signers?.length) {
       transaction.partialSign(...signers);
     }
@@ -235,6 +246,7 @@ export class RaydiumService implements ItProvider {
     );
     const rawTransaction = trx?.serialize();
     const hash = await this.connection?.sendRawTransaction(rawTransaction);
+    options.onConfirm(hash);
     return {
       from: this.walletConnectorService.address,
       transactionHash: hash
@@ -248,8 +260,10 @@ export class RaydiumService implements ItProvider {
 
   private isWrap(fromAddress: string, toAddress: string): boolean {
     return (
-      (fromAddress === NATIVE_SOL.mintAddress && toAddress === WRAPPED_SOL.mintAddress) ||
-      (fromAddress === WRAPPED_SOL.mintAddress && toAddress === NATIVE_SOL.mintAddress)
+      (fromAddress === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase() &&
+        toAddress === WRAPPED_SOL.mintAddress.toLowerCase()) ||
+      (fromAddress === WRAPPED_SOL.mintAddress.toLowerCase() &&
+        toAddress === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase())
     );
   }
 }

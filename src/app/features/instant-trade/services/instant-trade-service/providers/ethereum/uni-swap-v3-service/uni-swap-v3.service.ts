@@ -113,8 +113,7 @@ export class UniSwapV3Service implements ItProvider {
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
-          // @TODO Solana.
-          throw new CustomError('Solana error');
+          throw new CustomError('wrong wallet: solana');
         }
         this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
         this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainAdapter, true);

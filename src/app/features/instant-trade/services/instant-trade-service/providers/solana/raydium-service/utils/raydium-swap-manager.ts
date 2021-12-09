@@ -16,6 +16,7 @@ import {
 import { closeAccount, transfer } from '@project-serum/serum/lib/token-instructions';
 import { DATA_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   LIQUIDITY_POOL_PROGRAM_ID_V4,
   MEMO_PROGRAM_ID,
   ROUTE_SWAP_PROGRAM_ID,
@@ -31,6 +32,8 @@ import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-ser
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
+import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { Token } from '@solana/spl-token';
 
 export type TokenAccounts = {
   from: {
@@ -123,7 +126,7 @@ export class RaydiumSwapManager {
     const toMint = toToken.address;
     const middleMint = routerInfo.middleCoin.address;
 
-    const { from: fromAccount } = await this.privateBlockchainAdapter.getTokensAccounts(
+    const { from: fromAccount } = await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
       mintAccountsAddresses,
       fromMint,
       middleMint,
@@ -135,7 +138,7 @@ export class RaydiumSwapManager {
     );
 
     const { from: middleAccount, to: toAccount } =
-      await this.privateBlockchainAdapter.getTokensAccounts(
+      await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
         mintAccountsAddresses,
         middleMint,
         toMint,
@@ -402,7 +405,7 @@ export class RaydiumSwapManager {
     // }
 
     const { from: fromAccount, to: toAccount } =
-      await this.privateBlockchainAdapter.getTokensAccounts(
+      await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
         mintAccountsAddresses,
         fromCoinMint,
         toCoinMint,
@@ -608,5 +611,93 @@ export class RaydiumSwapManager {
       transaction,
       signers
     );
+  }
+
+  public async unwrapSol(
+    // trade: InstantTrade,
+    address: string
+    // tokens: List<TokenAmount>
+  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+    const transaction = new Transaction();
+    // const signers: Account[] = [];
+    const owner = new PublicKey(address);
+    const toPublicKey = new PublicKey(TOKENS.WSOL.mintAddress);
+    const ata = await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      toPublicKey,
+      owner,
+      true
+    );
+
+    // const fromDecimals = new BigNumber(10).exponentiatedBy(trade.from.token.decimals);
+    // const amountIn = new BigNumber(trade.from.amount.toString()).multipliedBy(fromDecimals);
+    // const from = tokens.find(el => el.address === trade.from.token.address);
+    // const to = tokens.find(el => el.address === trade.to.token.address);
+
+    transaction.add(
+      closeAccount({
+        source: new PublicKey(ata),
+        destination: owner,
+        owner
+      })
+    );
+
+    return { transaction, signers: [] };
+  }
+
+  public async wrapSol(
+    trade: InstantTrade,
+    address: string,
+    tokens: List<TokenAmount>
+  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+    const transaction = new Transaction();
+    const signers: Account[] = [];
+    const owner = new PublicKey(address);
+
+    const fromDecimals = new BigNumber(10).exponentiatedBy(trade.from.token.decimals);
+    const amountIn = new BigNumber(trade.from.amount.toString()).multipliedBy(fromDecimals);
+    const from = tokens.find(el => el.address === trade.from.token.address);
+    const to = tokens.find(el => el.address === trade.to.token.address);
+
+    if (!from || !to) {
+      throw new Error('Miss token info');
+    }
+    // const mintAccountsAddresses = await this.privateBlockchainAdapter.getTokenAccounts(address);
+
+    // const { from: fromAccount } = await this.privateBlockchainAdapter.getTokensAccounts(
+    //   mintAccountsAddresses,
+    //   NATIVE_SOL.mintAddress,
+    //   trade.to.token.address,
+    //   owner,
+    //   trade.from.amount,
+    //   trade.to.amount,
+    //   transaction,
+    //   signers
+    // );
+
+    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
+
+    await this.privateBlockchainAdapter.createAtaSolIfNotExistAndWrap(
+      undefined,
+      owner,
+      transaction,
+      signers,
+      fromFinalAmount
+    );
+
+    // const toMint =
+    //   trade.to.token.address === NATIVE_SOL.mintAddress.toLowerCase()
+    //     ? trade.to.token.address
+    //     : TOKENS.WSOL.mintAddress;
+
+    // await this.privateBlockchainAdapter.createAssociatedTokenAccountIfNotExist(
+    //   toAccount.key.toBase58(),
+    //   owner,
+    //   toMint,
+    //   transaction
+    // );
+
+    return { transaction, signers };
   }
 }
