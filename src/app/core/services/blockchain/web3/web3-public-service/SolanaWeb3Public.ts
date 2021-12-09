@@ -70,7 +70,7 @@ export class SolanaWeb3Public {
    * @param address address to check
    */
   public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase().toLowerCase();
+    return address === NATIVE_SOLANA_MINT_ADDRESS;
   };
 
   public async getTokenInfo(): Promise<BlockchainTokenExtended> {
@@ -190,7 +190,7 @@ export class SolanaWeb3Public {
     );
 
     return tokensAddresses.map(tokenAddress => {
-      if (tokenAddress === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase()) {
+      if (tokenAddress === NATIVE_SOLANA_MINT_ADDRESS) {
         return new BigNumber(nativeSolBalance.value.toString());
       }
       const tokenWithBalance = resp.result.value.find(token => {

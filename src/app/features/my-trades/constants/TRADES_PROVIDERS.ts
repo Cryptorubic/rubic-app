@@ -7,7 +7,7 @@ type Provider = {
   image: string;
 };
 
-const imageBasePath = 'assets/images/icons/wallets/';
+const imageBasePath = 'assets/images/icons/providers/';
 
 const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
@@ -87,7 +87,7 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
   },
   [INSTANT_TRADES_PROVIDER.RAYDIUM]: {
     name: 'Raydium',
-    image: `${imageBasePath}raydium.png`
+    image: `${imageBasePath}raydium.svg`
   }
 };
 

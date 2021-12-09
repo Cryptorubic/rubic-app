@@ -112,7 +112,7 @@ export class InstantTradesApiService {
   public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
     const url = instantTradesApiRoutes.getData(this.walletConnnctorService.provider.walletType);
     return this.httpService
-      .get(url, { user: walletAddress.toLowerCase() })
+      .get(url, { user: walletAddress })
       .pipe(
         map((swaps: InstantTradesResponseApi[]) =>
           swaps.map(swap => this.parseTradeApiToTableTrade(swap))
@@ -135,13 +135,27 @@ export class InstantTradesApiService {
       };
     }
 
-    let provider = tradeApi.contract.name;
+    let provider;
+    if ('contract' in tradeApi) {
+      provider = tradeApi.contract.name;
+    }
+    if ('program' in tradeApi) {
+      provider = tradeApi.program.name;
+    }
     if (provider === 'pancakeswap_old') {
       provider = INSTANT_TRADES_PROVIDER.PANCAKESWAP;
     }
 
+    let fromTransactionHash;
+    if ('hash' in tradeApi) {
+      fromTransactionHash = tradeApi.hash;
+    }
+    if ('signature' in tradeApi) {
+      fromTransactionHash = tradeApi.signature;
+    }
+
     return {
-      fromTransactionHash: tradeApi.hash,
+      fromTransactionHash,
       status: tradeApi.status,
       provider,
       fromToken: getTableToken('from'),

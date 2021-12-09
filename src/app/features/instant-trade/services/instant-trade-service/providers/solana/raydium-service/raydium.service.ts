@@ -115,11 +115,10 @@ export class RaydiumService implements ItProvider {
     );
     const amms = Object.values(StraightPoolInfos).filter(
       p =>
-        p.version === 4 &&
-        ((p.coin.mintAddress.toLowerCase() === fromToken.address.toLowerCase() &&
-          p.pc.mintAddress.toLowerCase() === toToken.address.toLowerCase()) ||
-          (p.coin.mintAddress.toLowerCase() === toToken.address.toLowerCase() &&
-            p.pc.mintAddress.toLowerCase() === fromToken.address.toLowerCase()))
+        (p.version === 4 &&
+          p.coin.mintAddress === fromToken.address &&
+          p.pc.mintAddress === toToken.address) ||
+        (p.coin.mintAddress === toToken.address && p.pc.mintAddress === fromToken.address)
     );
 
     if (amms?.length) {
@@ -186,7 +185,7 @@ export class RaydiumService implements ItProvider {
 
   public async createTrade(
     trade: InstantTrade,
-    options: { onConfirm?: (hash: string) => void }
+    options: { onConfirm?: (hash: string) => Promise<void> }
   ): Promise<Partial<TransactionReceipt>> {
     const solanaTokens = this.tokensService.tokens.filter(
       el => el.blockchain === BLOCKCHAIN_NAME.SOLANA
@@ -194,7 +193,7 @@ export class RaydiumService implements ItProvider {
     // @TODO Solana.
     // eslint-disable-next-line no-nested-ternary
     const isWrap = this.isWrap(trade.from.token.address, trade.to.token.address);
-    const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase();
+    const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS;
 
     let transaction;
     let signers;
@@ -246,7 +245,7 @@ export class RaydiumService implements ItProvider {
     );
     const rawTransaction = trx?.serialize();
     const hash = await this.connection?.sendRawTransaction(rawTransaction);
-    options.onConfirm(hash);
+    await options.onConfirm(hash);
     return {
       from: this.walletConnectorService.address,
       transactionHash: hash
@@ -260,10 +259,8 @@ export class RaydiumService implements ItProvider {
 
   private isWrap(fromAddress: string, toAddress: string): boolean {
     return (
-      (fromAddress === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase() &&
-        toAddress === WRAPPED_SOL.mintAddress.toLowerCase()) ||
-      (fromAddress === WRAPPED_SOL.mintAddress.toLowerCase() &&
-        toAddress === NATIVE_SOLANA_MINT_ADDRESS.toLowerCase())
+      (fromAddress === NATIVE_SOLANA_MINT_ADDRESS && toAddress === WRAPPED_SOL.mintAddress) ||
+      (fromAddress === WRAPPED_SOL.mintAddress && toAddress === NATIVE_SOLANA_MINT_ADDRESS)
     );
   }
 }

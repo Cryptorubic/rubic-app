@@ -57,7 +57,7 @@ export class CrossChainRoutingApiService {
    */
   public getUserTrades(walletAddress: string): Observable<TableTrade[]> {
     return this.httpService
-      .get('trades/', { user: walletAddress.toLowerCase() }, BASE_URL)
+      .get('trades/', { user: walletAddress }, BASE_URL)
       .pipe(
         map((trades: CrossChainTradesResponseApi[]) =>
           trades.map(trade => CrossChainRoutingApiService.parseTradeApiToTableTrade(trade))
