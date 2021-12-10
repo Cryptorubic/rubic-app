@@ -245,8 +245,6 @@ export class RaydiumSwapManager {
     userOwner: PublicKey,
     amountOut: number
   ): TransactionInstruction {
-    const dataLayout = struct([u8('instruction'), nu64('amountOut')]);
-
     const keys = [
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
 
@@ -275,6 +273,7 @@ export class RaydiumSwapManager {
       { pubkey: userOwner, isSigner: true, isWritable: false }
     ];
 
+    const dataLayout = struct([u8('instruction'), nu64('amountOut')]);
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode(
       {

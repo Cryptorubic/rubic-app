@@ -6,7 +6,7 @@ import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken'
 import BigNumber from 'bignumber.js';
 import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Connection, SignatureResult } from '@solana/web3.js';
+import { Account, Connection, SignatureResult, Transaction } from '@solana/web3.js';
 import {
   ItSettingsForm,
   SettingsService
@@ -21,10 +21,7 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
-import {
-  NATIVE_SOL,
-  WRAPPED_SOL
-} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
@@ -111,27 +108,13 @@ export class RaydiumService implements ItProvider {
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, fromAmount);
     }
 
-    const StraightPoolInfos = await this.liquidityManager.requestInfos(
+    const directPoolInfos = await this.liquidityManager.requestInfos(
       fromToken.symbol,
       toToken.symbol,
       this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
       false
     );
-    const amms = Object.values(StraightPoolInfos).filter(pool => {
-      const coinAddress =
-        pool.coin.mintAddress === NATIVE_SOL.mintAddress
-          ? NATIVE_SOLANA_MINT_ADDRESS
-          : pool.coin.mintAddress;
-      const pCoinAddress =
-        pool.pc.mintAddress === NATIVE_SOL.mintAddress
-          ? NATIVE_SOLANA_MINT_ADDRESS
-          : pool.coin.mintAddress;
-      return (
-        pool.version === 4 &&
-        ((coinAddress === fromToken.address && pCoinAddress === toToken.address) ||
-          (coinAddress === toToken.address && pCoinAddress === fromToken.address))
-      );
-    });
+    const amms = Object.values(directPoolInfos).filter(pool => pool.version === 4);
 
     if (amms?.length) {
       const pool = amms.pop();
@@ -147,7 +130,6 @@ export class RaydiumService implements ItProvider {
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     }
 
-    // @TODO Solana. Rooting.
     // const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     // if (fromBlockchain !== toBlockchain) {
     //   const poolInfos = await this.liquidityManager.requestInfos(
@@ -246,18 +228,7 @@ export class RaydiumService implements ItProvider {
       signers = swapResult.signers;
     }
 
-    await this.swapManager.addTransactionMeta(transaction, this.walletConnectorService.address);
-    if (signers?.length) {
-      transaction.partialSign(...signers);
-    }
-
-    const trx = await this.blockchainAdapter.signTransaction(
-      this.walletConnectorService.provider as CommonWalletAdapter<SolanaWallet>,
-      transaction,
-      signers
-    );
-
-    const hash = await this.connection?.sendRawTransaction(trx?.serialize());
+    const hash = await this.addMetaAndSend(transaction, signers);
 
     await options.onConfirm(hash);
     await new Promise((resolve, reject) => {
@@ -273,6 +244,21 @@ export class RaydiumService implements ItProvider {
       from: this.walletConnectorService.address,
       transactionHash: hash
     };
+  }
+
+  public async addMetaAndSend(transaction: Transaction, signers: Account[]): Promise<string> {
+    await this.swapManager.addTransactionMeta(transaction, this.walletConnectorService.address);
+    if (signers?.length) {
+      transaction.partialSign(...signers);
+    }
+
+    const trx = await this.blockchainAdapter.signTransaction(
+      this.walletConnectorService.provider as CommonWalletAdapter<SolanaWallet>,
+      transaction,
+      signers
+    );
+
+    return this.connection?.sendRawTransaction(trx?.serialize());
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {

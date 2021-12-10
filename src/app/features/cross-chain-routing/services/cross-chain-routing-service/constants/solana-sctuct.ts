@@ -1,6 +1,8 @@
-import { bool, Layout, publicKey, str, struct, u64, u8, vec } from '@project-serum/borsh';
+import { bool, Layout, publicKey, struct, u64, u8 } from '@project-serum/borsh';
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+// @ts-ignore
+import { nu64 } from 'buffer-layout';
 
 export const BridgeConfig = struct([
   u8('key'),
@@ -33,14 +35,8 @@ export type BridgeConfigData = {
   is_paused: boolean;
 };
 
-const CCR_SECOND_PATH = struct([str('first_string'), str('second_string')]);
+export const FIRST_CCR_DATA_LAYOUT = struct([nu64('blockchain'), nu64('token_in_amount')]);
 
-export const CCR_DATA_LAYOUT = struct([
-  u64('blockchain'),
-  u64('token_in_amount'),
-  vec<string>(CCR_SECOND_PATH, 'second_path'),
-  u64('exact_rbc_token_out'),
-  u64('token_out_min'),
-  str('new_address'),
-  bool('swap_to_crypto')
-]);
+export const swap_to_crypto = struct([bool('swap_to_crypto')]);
+
+export const SECOND_CCR_DATA_LAYOUT = struct([nu64('exact_rbc_token_out'), nu64('token_out_min')]);
