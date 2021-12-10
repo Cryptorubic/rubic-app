@@ -21,13 +21,17 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
-import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import {
+  NATIVE_SOL,
+  WRAPPED_SOL
+} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
 
 @Injectable({
   providedIn: 'root'
@@ -113,13 +117,21 @@ export class RaydiumService implements ItProvider {
       this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
       false
     );
-    const amms = Object.values(StraightPoolInfos).filter(
-      p =>
-        (p.version === 4 &&
-          p.coin.mintAddress === fromToken.address &&
-          p.pc.mintAddress === toToken.address) ||
-        (p.coin.mintAddress === toToken.address && p.pc.mintAddress === fromToken.address)
-    );
+    const amms = Object.values(StraightPoolInfos).filter(pool => {
+      const coinAddress =
+        pool.coin.mintAddress === NATIVE_SOL.mintAddress
+          ? NATIVE_SOLANA_MINT_ADDRESS
+          : pool.coin.mintAddress;
+      const pCoinAddress =
+        pool.pc.mintAddress === NATIVE_SOL.mintAddress
+          ? NATIVE_SOLANA_MINT_ADDRESS
+          : pool.coin.mintAddress;
+      return (
+        pool.version === 4 &&
+        ((coinAddress === fromToken.address && pCoinAddress === toToken.address) ||
+          (coinAddress === toToken.address && pCoinAddress === fromToken.address))
+      );
+    });
 
     if (amms?.length) {
       const pool = amms.pop();
@@ -135,52 +147,53 @@ export class RaydiumService implements ItProvider {
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     }
 
-    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-    if (fromBlockchain !== toBlockchain) {
-      const poolInfos = await this.liquidityManager.requestInfos(
-        fromToken.symbol,
-        toToken.symbol,
-        this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
-        true
-      );
-
-      const { maxAmountOut, middleCoin, priceImpact } = this.raydiumRoutingService.calculate(
-        poolInfos,
-        fromToken,
-        toToken,
-        fromAmount,
-        this.settings.slippageTolerance
-      );
-      if (maxAmountOut) {
-        const poolInfoA = Object.values(poolInfos)
-          .filter(
-            p =>
-              (p.coin.mintAddress === fromToken.address &&
-                p.pc.mintAddress === middleCoin.address) ||
-              (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === fromToken.address)
-          )
-          .pop();
-        const poolInfoB = Object.values(poolInfos)
-          .filter(
-            p =>
-              (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === toToken.address) ||
-              (p.coin.mintAddress === toToken.address && p.pc.mintAddress === middleCoin.address)
-          )
-          .pop();
-        this.poolInfo = [poolInfoA, poolInfoB];
-        this.priceImpactService.setPriceImpact(priceImpact);
-
-        return this.swapManager.getInstantTradeInfo(
-          fromToken,
-          toToken,
-          fromAmount,
-          maxAmountOut,
-          middleCoin
-        );
-      }
-    }
-
-    return null;
+    // @TODO Solana. Rooting.
+    // const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    // if (fromBlockchain !== toBlockchain) {
+    //   const poolInfos = await this.liquidityManager.requestInfos(
+    //     fromToken.symbol,
+    //     toToken.symbol,
+    //     this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
+    //     true
+    //   );
+    //
+    //   const { maxAmountOut, middleCoin, priceImpact } = this.raydiumRoutingService.calculate(
+    //     poolInfos,
+    //     fromToken,
+    //     toToken,
+    //     fromAmount,
+    //     this.settings.slippageTolerance
+    //   );
+    //   if (maxAmountOut) {
+    //     const poolInfoA = Object.values(poolInfos)
+    //       .filter(
+    //         p =>
+    //           (p.coin.mintAddress === fromToken.address &&
+    //             p.pc.mintAddress === middleCoin.address) ||
+    //           (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === fromToken.address)
+    //       )
+    //       .pop();
+    //     const poolInfoB = Object.values(poolInfos)
+    //       .filter(
+    //         p =>
+    //           (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === toToken.address) ||
+    //           (p.coin.mintAddress === toToken.address && p.pc.mintAddress === middleCoin.address)
+    //       )
+    //       .pop();
+    //     this.poolInfo = [poolInfoA, poolInfoB];
+    //     this.priceImpactService.setPriceImpact(priceImpact);
+    //
+    //     return this.swapManager.getInstantTradeInfo(
+    //       fromToken,
+    //       toToken,
+    //       fromAmount,
+    //       maxAmountOut,
+    //       middleCoin
+    //     );
+    //   }
+    // }
+    throw new InsufficientLiquidityError('CrossChainRouting');
+    // return null;
   }
 
   public async createTrade(

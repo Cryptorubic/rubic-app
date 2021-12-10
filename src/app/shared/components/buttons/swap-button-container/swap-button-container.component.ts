@@ -28,8 +28,6 @@ import { InstantTradeService } from 'src/app/features/instant-trade/services/ins
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
-import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -299,17 +297,13 @@ export class SwapButtonContainerComponent implements OnInit {
     this.checkingOnErrors = true;
 
     this.tokensFilled = Boolean(form.fromToken && form.toToken);
-    this.checkErrors(form).then(() => {
+    this.checkErrors().then(() => {
       this.checkingOnErrors = false;
       this.cdr.markForCheck();
     });
   }
 
-  private async checkErrors(form?: ISwapFormInput): Promise<void> {
-    this.errorType[ERROR_TYPE.SOL_SWAP] =
-      form &&
-      form.fromToken.address === NATIVE_SOLANA_MINT_ADDRESS &&
-      form.toToken.address !== WRAPPED_SOL.mintAddress;
+  private async checkErrors(): Promise<void> {
     this.checkWalletError();
     await this.checkInsufficientFundsError();
     this.checkWrongBlockchainError();
@@ -382,9 +376,9 @@ export class SwapButtonContainerComponent implements OnInit {
   private checkWalletError(): boolean {
     const blockchainAdapter =
       this.publicBlockchainAdapterService[this.formService.inputValue.fromBlockchain];
-    this.errorType[ERROR_TYPE.WRONG_WALLET] = !blockchainAdapter.isAddressCorrect(
-      this.providerConnectorService.address
-    );
+    this.errorType[ERROR_TYPE.WRONG_WALLET] =
+      Boolean(this.providerConnectorService.address) &&
+      !blockchainAdapter.isAddressCorrect(this.providerConnectorService.address);
     this.cdr.detectChanges();
     return this.errorType[ERROR_TYPE.WRONG_WALLET];
   }

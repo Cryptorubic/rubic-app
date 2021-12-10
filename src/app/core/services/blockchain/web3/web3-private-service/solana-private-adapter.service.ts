@@ -21,15 +21,13 @@ import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
-import {
-  NATIVE_SOL,
-  TOKENS
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { TOKENS } from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
 import { Layout } from '@project-serum/borsh';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { Injectable } from '@angular/core';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 
 @Injectable({
   providedIn: 'root'
@@ -444,8 +442,8 @@ export class SolanaPrivateAdapterService {
     transaction: Transaction,
     signers: Account[]
   ): Promise<TokenAccounts> {
-    const fromNative = fromCoinMint === NATIVE_SOL.mintAddress;
-    const toNative = toCoinMint === NATIVE_SOL.mintAddress;
+    const fromNative = fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
+    const toNative = toCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
 
     const fromTokenAccount = mintAccountsAddresses[fromCoinMint];
     const toTokenAccount = mintAccountsAddresses[toCoinMint];

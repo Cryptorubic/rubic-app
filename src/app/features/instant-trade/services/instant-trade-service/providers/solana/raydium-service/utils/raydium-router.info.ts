@@ -4,6 +4,8 @@ import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken'
 
 import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-token-amount';
 import { Injectable } from '@angular/core';
+import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 
 interface SwapOutAmount {
   amountIn: BigNumber;
@@ -67,8 +69,12 @@ export class RaydiumRoutingService {
     this._currentPoolInfo = poolInfo;
     const { coin, pc, fees } = poolInfo;
     const { swapFeeNumerator, swapFeeDenominator } = fees;
+    const coinMint =
+      coin.mintAddress === NATIVE_SOL.mintAddress ? NATIVE_SOLANA_MINT_ADDRESS : coin.mintAddress;
+    const toMint =
+      pc.mintAddress === NATIVE_SOL.mintAddress ? NATIVE_SOLANA_MINT_ADDRESS : pc.mintAddress;
 
-    if (fromCoinMint === coin.mintAddress && toCoinMint === pc.mintAddress) {
+    if (fromCoinMint === coinMint && toCoinMint === toMint) {
       // coin2pc
       const fromAmount = new RaydiumTokenAmount(amount, coin.decimals, false);
       const fromAmountWithFee = fromAmount.wei

@@ -34,6 +34,7 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Token } from '@solana/spl-token';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 
 export type TokenAccounts = {
   from: {
@@ -392,17 +393,16 @@ export class RaydiumSwapManager {
       throw new Error('Miss token info');
     }
 
-    // @TODO Solana. remove wsol.
-    // const wsolAddress = mintAccountsAddresses[TOKENS.WSOL.mintAddress];
-    // if (fromCoinMint === NATIVE_SOL.mintAddress && wsolAddress) {
-    //   transaction.add(
-    //     closeAccount({
-    //       source: new PublicKey(wsolAddress),
-    //       destination: owner,
-    //       owner
-    //     })
-    //   );
-    // }
+    const wsolAddress = mintAccountsAddresses[TOKENS.WSOL.mintAddress];
+    if (fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS && wsolAddress) {
+      transaction.add(
+        closeAccount({
+          source: new PublicKey(wsolAddress),
+          destination: owner,
+          owner
+        })
+      );
+    }
 
     const { from: fromAccount, to: toAccount } =
       await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
@@ -420,7 +420,7 @@ export class RaydiumSwapManager {
     const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
 
     transaction.add(
-      this.createSwapInstruction(
+      RaydiumSwapManager.createSwapInstruction(
         new PublicKey(poolInfo.programId),
         new PublicKey(poolInfo.ammId),
         new PublicKey(poolInfo.ammAuthority),
@@ -443,12 +443,16 @@ export class RaydiumSwapManager {
         toFinalAmount
       )
     );
-    this.closeAccounts({ from: fromAccount, to: toAccount }, transaction, owner);
+    RaydiumSwapManager.closeWethAccounts({ from: fromAccount, to: toAccount }, transaction, owner);
 
     return { transaction, signers };
   }
 
-  private closeAccounts(accounts: TokenAccounts, transaction: Transaction, owner: PublicKey): void {
+  private static closeWethAccounts(
+    accounts: TokenAccounts,
+    transaction: Transaction,
+    owner: PublicKey
+  ): void {
     if (accounts.from.isWeth) {
       transaction.add(
         closeAccount({
@@ -469,7 +473,7 @@ export class RaydiumSwapManager {
     }
   }
 
-  private createSwapInstruction(
+  private static createSwapInstruction(
     programId: PublicKey,
     // tokenProgramId: PublicKey,
     // amm
