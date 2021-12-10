@@ -28,6 +28,8 @@ import { InstantTradeService } from 'src/app/features/instant-trade/services/ins
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
+import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -284,6 +286,14 @@ export class SwapButtonContainerComponent implements OnInit {
     this.formService.inputValueChanges
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
+        const { fromToken, toToken } = form;
+        // @TODO Solana.
+        this.errorType[ERROR_TYPE.SOL_SWAP] =
+          fromToken &&
+          toToken &&
+          fromToken.address === TOKENS.WSOL.mintAddress &&
+          toToken.address !== NATIVE_SOLANA_MINT_ADDRESS;
+
         this.setFormValues(form);
         this.cdr.markForCheck();
       });

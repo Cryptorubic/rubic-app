@@ -117,15 +117,27 @@ export class RaydiumService implements ItProvider {
     const amms = Object.values(directPoolInfos).filter(pool => pool.version === 4);
 
     if (amms?.length) {
-      const pool = amms.pop();
-      this.poolInfo = [pool];
-      const { amountOut, priceImpact } = this.raydiumRoutingService.getSwapOutAmount(
-        pool,
-        fromToken.address,
-        toToken.address,
-        fromAmount.toString(),
-        this.settings.slippageTolerance
+      const { amountOut, priceImpact } = amms.reduce(
+        (acc, pool) => {
+          const { amountOut: poolAmountOut, priceImpact: poolPriceImpact } =
+            this.raydiumRoutingService.getSwapOutAmount(
+              pool,
+              fromToken.address,
+              toToken.address,
+              fromAmount.toString(),
+              this.settings.slippageTolerance
+            );
+          if (poolAmountOut.gt(acc.amountOut)) {
+            return { amountOut: poolAmountOut, priceImpact: poolPriceImpact };
+          }
+          return acc;
+        },
+        {
+          amountOut: new BigNumber(0),
+          priceImpact: 100
+        }
       );
+
       this.priceImpactService.setPriceImpact(priceImpact);
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     }

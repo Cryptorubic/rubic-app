@@ -54,6 +54,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -175,7 +176,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly walletConnectorService: WalletConnectorService,
     iframeService: IframeService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly swapInfoService: SwapInfoService
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
@@ -531,6 +533,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.setSlippageTolerance(this.selectedProvider);
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
+      this.instantTradeInfoChange.emit(null);
+      this.swapInfoService.emitInfoCalculated();
     }
     this.cdr.detectChanges();
   }
