@@ -26,7 +26,7 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
     const encodedMessage = encoder.encode(message);
-    const { signature } = await this.wallet.signMessage(encodedMessage);
+    const { signature } = await this.wallet.signMessage(encodedMessage, 'utf-8');
     return decoder.decode(signature);
   }
 

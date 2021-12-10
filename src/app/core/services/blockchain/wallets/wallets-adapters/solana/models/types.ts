@@ -11,7 +11,7 @@ export interface SolanaWallet extends EventEmitter<SolanaWalletEvents> {
   isConnected: boolean;
   signTransaction(transaction: Transaction): Promise<Transaction>;
   signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
-  signMessage(...args: unknown[]): Promise<{ signature: Uint8Array }>;
+  signMessage(message: Uint8Array, encoding: string): Promise<{ signature: Uint8Array }>;
   sendTransaction(
     transaction: Transaction,
     connection: Connection,
@@ -26,12 +26,10 @@ export interface SolanaWallet extends EventEmitter<SolanaWalletEvents> {
 export interface PhantomWallet extends SolanaWallet {
   isPhantom?: boolean;
   _handleDisconnect(...args: unknown[]): unknown;
-  signMessage(message: Uint8Array): Promise<{ signature: Uint8Array }>;
 }
 
 export interface SolflareWallet extends SolanaWallet {
   isSolflare?: boolean;
-  signMessage(message: Uint8Array, encoding: string): Promise<{ signature: Uint8Array }>;
 }
 
 declare global {

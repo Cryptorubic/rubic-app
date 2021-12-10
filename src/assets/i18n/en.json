@@ -76,7 +76,7 @@
     "tradingIsNotAvailable": "Trading is not available",
     "wrongWallet": "Choose Solana network. To use other networks, log in with a suitable wallet.",
     "invalidTargetAddress": "Invalid target network address",
-    "solSwap": "Wrap SOL token to swap. Choose Wrapper SOL as the second token."
+    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },
   "navigation": {
     "about": "About",
