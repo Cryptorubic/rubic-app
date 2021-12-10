@@ -14,6 +14,7 @@
       ></app-amount-estimated>
     </div>
     <app-target-network-address
+      *ngIf="displayTargetAddressInput"
       [targetBlockchain]="toBlockchain"
       (targetAddress)="setAddress($event)"
     ></app-target-network-address>

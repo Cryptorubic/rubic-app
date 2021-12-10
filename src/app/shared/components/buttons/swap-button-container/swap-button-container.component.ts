@@ -28,6 +28,8 @@ import { InstantTradeService } from 'src/app/features/instant-trade/services/ins
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -38,7 +40,8 @@ enum ERROR_TYPE {
   MULTICHAIN_WALLET = 'Multichain wallets are not supported',
   NO_AMOUNT = 'From amount was not entered',
   WRONG_WALLET = 'Wrong wallet',
-  INVALID_TARGET_ADDRESS = 'Invalid target network address'
+  INVALID_TARGET_ADDRESS = 'Invalid target network address',
+  SOL_SWAP = 'Wrap SOL firstly'
 }
 
 @Component({
@@ -139,7 +142,7 @@ export class SwapButtonContainerComponent implements OnInit {
   get allowChangeNetwork(): boolean {
     const form = this.formService.inputValue;
     if (
-      this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK ||
+      this.providerConnectorService?.provider.walletName !== WALLET_NAME.METAMASK ||
       !form.fromBlockchain
     ) {
       return false;
@@ -203,6 +206,10 @@ export class SwapButtonContainerComponent implements OnInit {
       }
       case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
         translateParams = { key: 'errors.invalidTargetAddress' };
+        break;
+      }
+      case err[ERROR_TYPE.SOL_SWAP]: {
+        translateParams = { key: 'errors.solSwap' };
         break;
       }
       default:
@@ -292,16 +299,19 @@ export class SwapButtonContainerComponent implements OnInit {
     this.checkingOnErrors = true;
 
     this.tokensFilled = Boolean(form.fromToken && form.toToken);
-    this.checkErrors().then(() => {
+    this.checkErrors(form).then(() => {
       this.checkingOnErrors = false;
       this.cdr.markForCheck();
     });
   }
 
-  private async checkErrors(): Promise<void> {
-    if (this.checkWalletError()) return;
-    // @TODO tests.
-    // if (await this.checkInsufficientFundsError()) return;
+  private async checkErrors(form?: ISwapFormInput): Promise<void> {
+    this.errorType[ERROR_TYPE.SOL_SWAP] =
+      form &&
+      form.fromToken.address === NATIVE_SOLANA_MINT_ADDRESS &&
+      form.toToken.address !== WRAPPED_SOL.mintAddress;
+    this.checkWalletError();
+    await this.checkInsufficientFundsError();
     this.checkWrongBlockchainError();
   }
 

@@ -77,6 +77,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
+  private readonly networksWithAdditionalAddress = [BLOCKCHAIN_NAME.SOLANA];
+
+  public displayTargetAddressInput: boolean;
+
   private readonly hiddenTradeData$: BehaviorSubject<{
     toAmount: BigNumber;
   }>;
@@ -189,7 +193,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.toBlockchain = form.toBlockchain;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
-
+    this.displayTargetAddressInput =
+      this.networksWithAdditionalAddress.includes(form.fromBlockchain) ||
+      this.networksWithAdditionalAddress.includes(form.toBlockchain);
     this.conditionalCalculate('normal');
   }
 

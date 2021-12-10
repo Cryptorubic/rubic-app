@@ -6,7 +6,7 @@ import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken'
 import BigNumber from 'bignumber.js';
 import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Connection } from '@solana/web3.js';
+import { Connection, SignatureResult } from '@solana/web3.js';
 import {
   ItSettingsForm,
   SettingsService
@@ -243,9 +243,19 @@ export class RaydiumService implements ItProvider {
       transaction,
       signers
     );
-    const rawTransaction = trx?.serialize();
-    const hash = await this.connection?.sendRawTransaction(rawTransaction);
+
+    const hash = await this.connection?.sendRawTransaction(trx?.serialize());
+
     await options.onConfirm(hash);
+    await new Promise((resolve, reject) => {
+      this.connection.onSignature(hash, (signatureResult: SignatureResult) => {
+        if (!signatureResult.err) {
+          resolve(hash);
+        } else {
+          reject(signatureResult.err);
+        }
+      });
+    });
     return {
       from: this.walletConnectorService.address,
       transactionHash: hash

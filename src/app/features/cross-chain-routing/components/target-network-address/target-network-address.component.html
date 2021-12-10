@@ -10,7 +10,7 @@
 
   <!-- @TODO Solana. Get i18n -->
   <tui-input
-    [tuiTextfieldCustomContent]="!!address.value ? icon : ''"
+    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
     tuiTextfieldSize="m"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
@@ -18,12 +18,16 @@
     [pseudoInvalid]="(address.touch$ | async) !== undefined && address.invalid"
     >Enter or past address</tui-input
   >
-  <ng-template #icon>
+  <ng-template #success>
     <div
       class="network-container__input-status-icon"
-      [inlineSVG]="
-        'assets/images/icons/forms/' + address.valid ? 'success' : 'error' + '-input.svg'
-      "
+      [inlineSVG]="'assets/images/icons/forms/success-input.svg'"
+    ></div>
+  </ng-template>
+  <ng-template #error>
+    <div
+      class="network-container__input-status-icon"
+      [inlineSVG]="'assets/images/icons/forms/error-input.svg'"
     ></div>
   </ng-template>
 </div>

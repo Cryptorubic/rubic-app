@@ -11,7 +11,7 @@ import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wal
 
 export class SolflareWalletAdapter extends CommonSolanaWalletAdapter {
   public get walletName(): WALLET_NAME {
-    return WALLET_NAME.PHANTOM;
+    return WALLET_NAME.SOLFLARE;
   }
 
   constructor(

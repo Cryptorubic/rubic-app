@@ -74,8 +74,9 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Oops, something went wrong, please try to reload the page. Contact our support if you still have this issue after reloading.",
     "tradingIsNotAvailable": "Trading is not available",
-    "wrongWallet": "Wrong wallet",
-    "invalidTargetAddress": "Invalid target network address"
+    "wrongWallet": "Choose Solana network. To use other networks, log in with a suitable wallet.",
+    "invalidTargetAddress": "Invalid target network address",
+    "solSwap": "Wrap SOL token to swap. Choose Wrapper SOL as the second token."
   },
   "navigation": {
     "about": "About",
