@@ -104,6 +104,17 @@
       ]
     },
     {
+      "img": "KutirinVlad.jpg",
+      "name": "Vlad Kutirin",
+      "role": "Frontend developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/sometimesvlad"
+        }
+      ]
+    },
+    {
       "img": "PoezzhaevVlad.png",
       "name": "Vladislav Poezzhaev",
       "role": "Frontend developer",
@@ -126,17 +137,6 @@
       ]
     },
     {
-      "img": "AleksandrVolkov.jpg",
-      "name": "Alexandr Volkov",
-      "role": "Backend Developer",
-      "links": [
-        {
-          "icon": "Github.svg",
-          "url": "https://github.com/jetvolkov"
-        }
-      ]
-    },
-    {
       "img": "AleksandrM.jpg",
       "name": "Alexandr Menshikov",
       "role": "Backend Developer",
@@ -148,6 +148,28 @@
       ]
     },
     {
+      "img": "KolebaevRoman.jpg",
+      "name": "Roman Kolebaev",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/RomanK96"
+        }
+      ]
+    },
+    {
+      "img": "MininaAlexandra.jpg",
+      "name": "Alexandra Minina",
+      "role": "Backend Developer",
+      "links": [
+        {
+          "icon": "Github.svg",
+          "url": "https://github.com/karelinaas"
+        }
+      ]
+    },
+    {
       "img": "AndreyAksenov.png",
       "name": "Andrey Aksenov",
       "role": "Marketing",
@@ -155,6 +177,17 @@
         {
           "icon": "Telegram.svg",
           "url": "https://t.me/renedsaa"
+        }
+      ]
+    },
+    {
+      "img": "AkhmetkhanovaMira.jpg",
+      "name": "Mira Akhmetkhanova",
+      "role": "Marketing",
+      "links": [
+        {
+          "icon": "Telegram.svg",
+          "url": "https://t.me/mirapravitel"
         }
       ]
     },
