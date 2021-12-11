@@ -1,4 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject, Injector } from '@angular/core';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogService } from '@taiga-ui/core';
+import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 
 @Component({
   selector: 'app-stake',
@@ -7,5 +10,21 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakeComponent {
-  constructor() {}
+  constructor(
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector
+  ) {}
+
+  public openSwapModal(): void {
+    console.log('work');
+    this.dialogService
+      .open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
+        size: 'l'
+      })
+      .subscribe((confirm: boolean) => {
+        if (confirm) {
+          console.log('work');
+        }
+      });
+  }
 }

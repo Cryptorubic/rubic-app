@@ -11,17 +11,19 @@
     />
 
     <div class="stake__balance">
-      You have 143,000
+      {{ 'staking.balance' | translate }} 143,000
       <button class="stake__balance-max">MAX</button>
     </div>
 
     <div class="stake__price">$22,379.00</div>
   </div>
 
-  <app-rubic-button class="stake__button" appearance="secondary"> Confirm stake </app-rubic-button>
+  <app-rubic-button class="stake__button" appearance="secondary" (onClick)="openSwapModal()">
+    {{ 'staking.stake.button' | translate }}
+  </app-rubic-button>
 
   <p class="stake__warning">
     <img src="assets/images/icons/warning.svg" alt="warning" />
-    One stake limits 1,000 BRBC to 100,000 BRBC
+    {{ 'staking.stake.warning' | translate }}
   </p>
 </form>

@@ -483,6 +483,24 @@
     "tradingNotAvailable": "Trading is not available",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "staking": {
+    "balance": "You have",
+    "stake": {
+      "button": "Confirm stake",
+      "warning": "One stake limits 1,000 BRBC to 100,000 BRBC"
+    },
+    "withdraw": {
+      "button": "Unstake"
+    },
+    "stats": {
+      "profitTime": "Yesterday's APY",
+      "calc": "Calculate",
+      "balance": "Balance",
+      "receive": "Can receive",
+      "usersTotal": "Users total staked",
+      "total": "Total staked"
+    }
+  },
   "maintenance": {
     "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
@@ -521,6 +539,14 @@
       "ccrTitle": "Successful swap in source network!",
       "seeDetails": "See details in ",
       "link": "My Trades"
+    },
+    "stakingSwapModal": {
+      "title1": "For",
+      "title2": "staking, you need to swap in",
+      "subtitle": "We’ll do everything automatically",
+      "text": "The transaction will take ~7 minutes. But you can swap tokens yourself.",
+      "button1": "Ok, I agree",
+      "button2": "I swap myself"
     }
   },
   "settings": {

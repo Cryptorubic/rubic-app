@@ -17,6 +17,7 @@ import {
 import { StakingStatsComponent } from './components/staking-stats/staking-stats.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { WithdrawComponent } from './components/withdraw/withdraw.component';
+import { SwapModalComponent } from './components/swap-modal/swap-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { WithdrawComponent } from './components/withdraw/withdraw.component';
     StakeComponent,
     StakingTokensComponent,
     StakingStatsComponent,
-    WithdrawComponent
+    WithdrawComponent,
+    SwapModalComponent
   ],
   imports: [
     CommonModule,
