@@ -588,9 +588,15 @@
     }
   },
   "banner": {
-    "defaultText": "Rubic Multi-Chain запустился! Совершайте обмены между 10,000 токенами между Ethereum, BSC, Polygon, Avalanche, MoonRiver и Fantom.",
-    "customText": "Fantom теперь доступна для Multi-Chain и On-Chain свапов.",
-    "link": "Попробуйте уже сейчас!"
+    "trading": {
+      "defaultText": "Rubic Multi-Chain запустился! Совершайте обмены между 10,000 токенами между Ethereum, BSC, Polygon, Avalanche, MoonRiver и Fantom.",
+      "customText": "Fantom теперь доступна для Multi-Chain и On-Chain свапов.",
+      "link": "Попробуйте уже сейчас!"
+    },
+    "external": {
+      "text": "Стейкинг с 80% APY и выше начнется 23 декабря.",
+      "link": "Подпишитесь, чтобы принять участие!"
+    }
   },
   "volume": {
     "title": "Накопленный Объем Операций",
