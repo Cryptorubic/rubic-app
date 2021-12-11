@@ -26,7 +26,7 @@ export default [
     name: BLOCKCHAIN_NAME.ETHEREUM,
     label: 'Ethereum',
     scannerUrl: 'https://etherscan.io/',
-    rpcLink: 'https://speedy-nodes-nyc.moralis.io/e92f2199e24dc0f948329de5/eth/mainnet',
+    rpcLink: 'https://empty-broken-firefly.quiknode.pro/55b63ded29c6e56f01da6c1fa29babd3be2ee1c8/',
     additionalRpcLink:
       'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
@@ -43,8 +43,9 @@ export default [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://speedy-nodes-nyc.moralis.io/8969f29ff0ccc113bf220b01/bsc/mainnet/',
-    additionalRpcLink: 'https://speedy-nodes-nyc.moralis.io/7bd080fb0b17e63d491392c0/bsc/mainnet',
+    rpcLink: 'https://summer-late-dew.bsc.quiknode.pro/362f8e0606a3c572692dafdfb3a23e76a7be5f1d/',
+    additionalRpcLink:
+      'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -59,7 +60,7 @@ export default [
     name: BLOCKCHAIN_NAME.POLYGON,
     label: 'Polygon',
     scannerUrl: 'https://polygonscan.com',
-    rpcLink: 'https://speedy-nodes-nyc.moralis.io/ba230966b76ba16e1e2dda2b/polygon/mainnet',
+    rpcLink: 'https://polygon-mainnet.infura.io/v3/ecf1e6d0427b458b89760012a8500abf',
     additionalRpcLink:
       'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/polygon.svg',
