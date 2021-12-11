@@ -1,0 +1,15 @@
+<div class="staking-container">
+  <tui-tabs class="staking-container__tabs" [(activeItemIndex)]="activeItemIndex">
+    <button tuiTab class="staking-container__tab staking-container__tab_first">Stake BRBC</button>
+    <button tuiTab class="staking-container__tab staking-container__tab_last">Unstake</button>
+  </tui-tabs>
+
+  <div [ngSwitch]="activeItemIndex">
+    <ng-template ngSwitchCase="0">
+      <app-stake class="staking-container__stake"></app-stake>
+    </ng-template>
+    <ng-template ngSwitchCase="1">
+      <app-withdraw class="staking-container__withdraw"></app-withdraw>
+    </ng-template>
+  </div>
+</div>

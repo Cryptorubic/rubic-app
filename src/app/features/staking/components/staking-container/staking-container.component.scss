@@ -1,0 +1,75 @@
+:host {
+  padding: 8px;
+
+  background-color: #202320;
+  border-radius: 22px;
+}
+
+.staking-container {
+  border-radius: 22px;
+
+  &__tabs {
+    font-weight: 700;
+    font-size: 20px;
+
+    background: linear-gradient(to bottom, #202320 50%, #414141 50%);
+    box-shadow: none;
+
+    ::ng-deep {
+      tui-underline {
+        display: none;
+      }
+    }
+  }
+
+  &__tab {
+    flex-grow: 1;
+    justify-content: center;
+    margin-right: 0 !important;
+
+    font-weight: 800;
+    text-align: center;
+
+    background-color: #202320;
+    border-radius: 22px;
+
+    &._active {
+      background-color: #414141;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &_first {
+      border-bottom-left-radius: 0;
+    }
+
+    &_last {
+      border-top-left-radius: 0;
+      border-bottom-right-radius: 0;
+
+      &._active {
+        border-top-left-radius: 22px;
+      }
+    }
+
+    &:hover {
+      box-shadow: none !important;
+    }
+  }
+
+  &__stake,
+  &__withdraw {
+    display: block;
+
+    background-color: #414141;
+    border-radius: 22px;
+  }
+
+  &__stake {
+    border-top-left-radius: 0;
+  }
+
+  &__withdraw {
+    border-top-right-radius: 0;
+  }
+}

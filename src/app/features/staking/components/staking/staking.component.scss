@@ -1,5 +1,8 @@
 :host {
-  display: block;
+  display: grid;
+  grid-gap: 18px;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 260px;
   width: 100%;
   max-width: 909px;
   margin: 0 auto;
@@ -8,4 +11,13 @@
   background-color: var(--main-form-background);
   border-radius: 19px;
   backdrop-filter: blur(50px);
+}
+
+div {
+  background-color: #202320;
+  border-radius: 22px;
+}
+
+app-staking-stats {
+  grid-row: span 2;
 }

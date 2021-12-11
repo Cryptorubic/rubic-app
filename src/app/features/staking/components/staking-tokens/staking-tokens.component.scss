@@ -1,0 +1,59 @@
+.token {
+  &__select {
+    min-width: 155px;
+
+    &-img {
+      margin-right: 10px;
+    }
+
+    &-symbol {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+    }
+
+    ::ng-deep {
+      --tui-height-l: 43px;
+      --tui-radius-m: 22px;
+
+      tui-wrapper[data-appearance='textfield'] {
+        background-color: #000;
+
+        .tui-autofill.input {
+          z-index: 10;
+        }
+
+        .input.input_template {
+          padding-top: 0 !important;
+        }
+
+        div.icon {
+          width: 25px;
+          height: 25px;
+
+          background-color: #2c2c2c;
+          border-radius: 50%;
+
+          tui-svg.icon {
+            width: 13px;
+          }
+        }
+      }
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    padding: 8px 18px;
+    
+    &_active {
+      background-color: #214a26;
+      border-radius: 100px;
+    }
+    
+    &-img {
+      margin-right: 14px;
+    }
+  }
+}

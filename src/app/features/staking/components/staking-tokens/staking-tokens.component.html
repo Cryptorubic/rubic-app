@@ -1,0 +1,32 @@
+<tui-select class="token__select" [formControl]="selectedToken" [valueContent]="valueContent">
+  <div tuiHint="1" [tuiHintDirection]="'bottom-left'"></div>
+  <tui-data-list-wrapper
+    *tuiDataList
+    [items]="stakingTokens"
+    [itemContent]="optionContent"
+  ></tui-data-list-wrapper>
+</tui-select>
+
+<ng-template #valueContent let-item>
+  <img
+    class="token__select-img"
+    src="assets/images/icons/staking/rbc.svg"
+    width="20"
+    height="23"
+    [alt]="item.symbol"
+  />
+  <span class="token__select-symbol">{{ item.symbol }}</span>
+</ng-template>
+
+<ng-template #optionContent let-item>
+  <div
+    class="token__option"
+    [ngClass]="{ token__option_active: item.address === selectedToken.value.address }"
+  >
+    <img class="token__option-img" [src]="item.img" width="44" height="44" [alt]="item.symbol" />
+    <div>
+      <div>{{ item.symbol }}</div>
+      <div>{{ item.name }}</div>
+    </div>
+  </div>
+</ng-template>

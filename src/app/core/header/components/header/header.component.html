@@ -53,19 +53,8 @@
       "
       >Multi-Chain</a
     >
-    <a
-      *noFrame
-      class="rubic-header__profile-trades button-link"
-      routerLink="my-trades"
-      routerLinkActive="button-link_active"
-    >
+    <a *noFrame class="button-link" routerLink="staking" routerLinkActive="button-link_active">
       {{ 'navigation.staking' | translate }}
-      <app-notification-badge
-        class="notification-counter"
-        *ngIf="(countNotifications$ | async) && (currentUser$ | async)"
-        size="s"
-        [value]="countNotifications$ | async"
-      ></app-notification-badge>
     </a>
   </nav>
 
