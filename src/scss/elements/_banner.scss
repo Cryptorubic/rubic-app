@@ -1,6 +1,8 @@
-@import 'src/styles';
+@use 'src/scss/vars';
+@use 'src/scss/mixins';
 
 .banner {
+  display: block;
   width: 100%;
   min-height: 30px;
 
@@ -9,10 +11,10 @@
   line-height: 30px;
   text-align: center;
 
-  background-color: var(--bg-banner);
+  background: var(--bg-banner);
   backdrop-filter: blur(10px);
 
-  @include b($mobile-md) {
+  @include mixins.b(vars.$mobile-md) {
     font-size: 13px;
   }
 

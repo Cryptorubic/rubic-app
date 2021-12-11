@@ -588,9 +588,15 @@
     }
   },
   "banner": {
-    "defaultText": "Rubic Multi-Chain이 출시되었습니다! Ethereum, BSC, Polygon, Avalanche, MoonRiver 및 Fantom 에서 10,000개의 토큰을 교환하십시오.",
-    "customText": "Fantom는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
-    "link": "오늘 시도!"
+    "trading": {
+      "defaultText": "Rubic Multi-Chain이 출시되었습니다! Ethereum, BSC, Polygon, Avalanche, MoonRiver 및 Fantom 에서 10,000개의 토큰을 교환하십시오.",
+      "customText": "Fantom는 이제 멀티체인 및 온체인 스왑에 사용할 수 있습니다.",
+      "link": "오늘 시도!"
+    },
+    "external": {
+      "text": "APY 80% 이상 스테이킹은 12월 23일부터 시작됩니다.",
+      "link": "참여하려면 구독하십시오!"
+    }
   },
   "volume": {
     "title": "누적 거래량",
