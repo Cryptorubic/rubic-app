@@ -12,10 +12,17 @@ import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-er
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
 import { customRpcError } from 'src/app/core/errors/models/standard/custom-rpc-error';
 
+interface Question {
+  title: string;
+  answer: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ErrorsService {
+  public questions: Question[];
+
   constructor(
     private readonly notificationsService: NotificationsService,
     @Inject(Injector) private injector: Injector,
@@ -68,6 +75,14 @@ export class ErrorsService {
       autoClose: 7000
     };
 
+    if (this.isCustomRPCError(error)) {
+      const errorComponent = new PolymorpheusComponent(
+        error.component || UnknownErrorComponent,
+        this.injector
+      );
+      this.notificationsService.show(errorComponent, options);
+    }
+
     if (
       error?.type === ERROR_TYPE.COMPONENT ||
       error?.type === ERROR_TYPE.RAW_MESSAGE ||
@@ -113,8 +128,16 @@ export class ErrorsService {
   private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
     return (
       EIP_1193.some(rpcError => this.findRPCError(rpcError, currentError)) ||
-      EIP_1474.some(rpcError => this.findRPCError(rpcError, currentError)) ||
-      customRpcError.some(rpcError => this.findRPCError(rpcError, currentError))
+      EIP_1474.some(rpcError => this.findRPCError(rpcError, currentError))
     );
+  }
+
+  /**
+   * Checks if error connected to RPC.
+   * @param currentError Error to check.
+   * @return boolean Error content flag.
+   */
+  private isCustomRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
+    return customRpcError.some(rpcError => this.findRPCError(rpcError, currentError));
   }
 }

@@ -50,6 +50,7 @@
       }
 
       .questions-container__text {
+        max-height: 500px;
         margin: 12px 0;
 
         opacity: 1;
@@ -70,7 +71,7 @@
   }
 
   &__text {
-    height: 0;
+    max-height: 0;
     margin: 0;
     overflow: hidden;
 
@@ -81,7 +82,8 @@
     cursor: text;
     opacity: 0;
 
-    transition: all 0.5s ease;
+    transition: 0.4s ease-in-out;
+    transition-property: opacity, max-height, margin-top;
   }
 
   &__arrow {
@@ -96,7 +98,7 @@
     border-width: 0 2px 2px 0;
     transform: rotate(315deg);
 
-    transition: transform 0.5s ease;
+    transition: transform 0.4s ease-in-out;
   }
 }
 

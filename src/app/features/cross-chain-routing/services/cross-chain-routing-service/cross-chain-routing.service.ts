@@ -52,6 +52,7 @@ import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cros
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
+import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 
 interface PathAndToAmount {
   path: string[];
@@ -869,7 +870,7 @@ export class CrossChainRoutingService {
               const includesErrCode = err?.message?.includes('-32000');
               const allowedErrors = [
                 'insufficient funds for transfer',
-                'insufficient funds for gas * price+ value',
+                'insufficient funds for gas * price + value',
                 'insufficient funds for gas * price + value'
               ];
               const includesPhrase = Boolean(
@@ -894,6 +895,20 @@ export class CrossChainRoutingService {
             throw new InsufficientFundsGasPriceValueError(
               this.currentCrossChainTrade.tokenIn.symbol
             );
+          }
+
+          const unsupportedTokenErrors = [
+            'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
+            'execution reverted: UniswapV2: K',
+            'execution reverted: UniswapV2:  TRANSFER_FAILED',
+            'execution reverted: Pancake: K',
+            'execution reverted: Pancake:  TRANSFER_FAILED',
+            'execution reverted: Solarbeam: K',
+            'execution reverted: Solarbeam:  TRANSFER_FAILED'
+          ];
+
+          if (unsupportedTokenErrors.some(errText => errMessage.includes(errText))) {
+            throw new UnsupportedTokenCCR();
           }
 
           throw err;
