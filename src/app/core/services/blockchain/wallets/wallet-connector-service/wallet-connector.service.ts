@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import Web3 from 'web3';
@@ -13,16 +13,34 @@ import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
 import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
-import { WalletConnectWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-wallet-adapter';
+import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
+import { HttpService } from '@core/services/http/http.service';
+import { map } from 'rxjs/operators';
+import { TUI_IS_IOS } from '@taiga-ui/cdk';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { Connection } from '@solana/web3.js';
+import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
+
+interface WCWallets {
+  [P: string]: {
+    mobile: {
+      native: string;
+      universal: string;
+    };
+    metadata: {
+      shortName: string;
+    };
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +50,15 @@ export class WalletConnectorService {
 
   private readonly addressChangeSubject$: BehaviorSubject<string>;
 
+  private readonly _transactionEmitter$ = new Subject<void>();
+
+  public readonly transactionEmitter$ = this._transactionEmitter$.asObservable();
+
   public providerName: WALLET_NAME;
 
   private privateProvider: CommonWalletAdapter;
+
+  private walletConnectWallets: string[];
 
   public get address(): string | undefined {
     return this.provider?.address;
@@ -87,7 +111,10 @@ export class WalletConnectorService {
   constructor(
     private readonly storage: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly httpService: HttpService,
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    @Inject(TUI_IS_IOS) private readonly isIos: boolean
   ) {
     this.web3 = new Web3();
     this.networkChangeSubject$ = new BehaviorSubject<IBlockchain>(null);
@@ -105,6 +132,10 @@ export class WalletConnectorService {
     } catch (err: unknown) {
       throw new SignRejectError();
     }
+  }
+
+  public emitTransaction(): void {
+    this._transactionEmitter$.next();
   }
 
   /**
@@ -186,8 +217,18 @@ export class WalletConnectorService {
           this.errorService,
           this.solanaWeb3Connection
         ),
+      [WALLET_NAME.TRUST_WALLET]: async () =>
+        new TrustWalletAdapter(
+          this.web3,
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService,
+          this.isIos,
+          this.window,
+          this.transactionEmitter$
+        ),
       [WALLET_NAME.WALLET_CONNECT]: async () =>
-        new WalletConnectWalletAdapter(
+        new WalletConnectAdapter(
           this.web3,
           this.networkChangeSubject$,
           this.addressChangeSubject$,
@@ -284,7 +325,7 @@ export class WalletConnectorService {
       },
       rpcUrls: [defaultData[network.name as keyof typeof defaultData]?.rpc || network.rpcLink],
       blockExplorerUrls: [network.scannerUrl],
-      iconUrls: [`https://rubic.exchange/${network.imagePath}`]
+      iconUrls: [`${this.window.location.origin}/${network.imagePath}`]
     } as AddEthChainParams;
     await this.provider.addChain(params);
   }
@@ -315,5 +356,23 @@ export class WalletConnectorService {
         return false;
       }
     }
+  }
+
+  /**
+   * Fetches wallets from WC API, filters by black list and takes names.
+   * @return Observable<string[]> List of wallets names.
+   */
+  private getWalletConnectWallets(): Observable<string[]> {
+    const url = 'https://registry.walletconnect.org/data/wallets.json';
+    const blackListWallets = ['trust'];
+    return this.httpService.get<WCWallets>(null, null, url).pipe(
+      map(registry => {
+        const mobileWallets = Object.values(registry).filter(el => el.mobile?.native);
+        const allowMobileWallets = mobileWallets.filter(
+          el => !blackListWallets.includes(el.metadata.shortName.toLowerCase())
+        );
+        return allowMobileWallets.map(el => el.metadata.shortName);
+      })
+    );
   }
 }

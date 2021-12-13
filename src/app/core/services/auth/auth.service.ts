@@ -172,11 +172,11 @@ export class AuthService {
         this.isAuthProcess = false;
         return;
       }
-      const nonce = walletLoginBody.payload.message;
-      const signature = await this.providerConnectorService.signPersonal(nonce);
+      const { message } = walletLoginBody.payload;
+      const signature = await this.providerConnectorService.signPersonal(message);
       await this.sendSignedNonce(
         this.providerConnectorService.address,
-        nonce,
+        message,
         signature,
         this.providerConnectorService.provider.walletName
       );
@@ -208,11 +208,11 @@ export class AuthService {
           this.isAuthProcess = false;
           return;
         }
-        const nonce = walletLoginBody.payload.message;
-        const signature = await this.providerConnectorService.signPersonal(nonce);
+        const { message } = walletLoginBody.payload;
+        const signature = await this.providerConnectorService.signPersonal(message);
         await this.sendSignedNonce(
           this.providerConnectorService.address,
-          nonce,
+          message,
           signature,
           this.providerConnectorService.provider.walletName
         );

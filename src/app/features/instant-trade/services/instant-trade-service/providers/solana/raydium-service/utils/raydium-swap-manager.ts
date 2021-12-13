@@ -25,9 +25,9 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { getBigNumber } from '@shared/utils/utils';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common-solana-wallet-adapter';
+import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';

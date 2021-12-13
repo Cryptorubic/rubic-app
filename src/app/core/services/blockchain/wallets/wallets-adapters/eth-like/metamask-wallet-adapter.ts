@@ -8,7 +8,7 @@ import { Token } from '@shared/models/tokens/Token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/CoinbaseExtensionError';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';

@@ -1,4 +1,4 @@
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { Connection } from '@solana/web3.js';
 import { BehaviorSubject } from 'rxjs';

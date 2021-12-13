@@ -64,7 +64,7 @@ export class HeaderComponent implements AfterViewInit {
   public isSettingsOpened = false;
 
   public get noFrameLink(): string {
-    return `https://rubic.exchange${this.queryParamsService.noFrameLink}`;
+    return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
 
   public get rootPath(): boolean {
@@ -90,7 +90,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly destroy$: TuiDestroyService
   ) {
     this.loadUser();
-    this.advertisementType = 'custom';
+    this.advertisementType = 'default';
     // TODO: remake update table trades by the right way
     this.myTradesService.updateTableTrades().subscribe();
     this.currentUser$ = this.authService.getCurrentUser();
@@ -125,7 +125,7 @@ export class HeaderComponent implements AfterViewInit {
 
   private async loadUser(): Promise<void> {
     const { isIframe } = this.iframeService;
-    this.storeService.fetchData(isIframe);
+    this.storeService.fetchData();
     if (!isIframe) {
       try {
         await this.authService.loadUser();

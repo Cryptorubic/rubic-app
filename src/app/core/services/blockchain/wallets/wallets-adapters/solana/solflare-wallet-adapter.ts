@@ -7,7 +7,7 @@ import CustomError from '@core/errors/models/custom-error';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { SolflareWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
-import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common-solana-wallet-adapter';
+import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 
 export class SolflareWalletAdapter extends CommonSolanaWalletAdapter {
   public get walletName(): WALLET_NAME {

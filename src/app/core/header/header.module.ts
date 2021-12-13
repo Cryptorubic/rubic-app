@@ -6,7 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { A11yModule } from '@angular/cdk/a11y';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { InlineSVGModule } from 'ng-inline-svg';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   TuiDataListModule,
   TuiDropdownControllerModule,
@@ -31,7 +31,9 @@ import { SettingsComponent } from './components/header/components/settings/setti
 import { CurrentLanguageComponent } from './components/header/components/current-language/current-language.component';
 import { TutorialsComponent } from './components/header/components/tutorials/tutorials.component';
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
-import { BannerComponent } from './components/header/components/banner/banner.component';
+import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
+import { BannerDirective } from './components/header/directives/banner.directive';
+import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { BannerComponent } from './components/header/components/banner/banner.co
     CurrentLanguageComponent,
     TutorialsComponent,
     ThemeSwitcherComponent,
-    BannerComponent
+    TradingBannerComponent,
+    ExternalLinkBannerComponent,
+    BannerDirective
   ],
   imports: [
     CommonModule,

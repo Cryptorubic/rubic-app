@@ -10,6 +10,7 @@ tui-dialog {
 
   &[data-size='m'] {
     width: 36em !important;
+    margin-bottom: auto !important;
 
     > .content {
       padding: 1.5em !important;
@@ -67,7 +68,7 @@ tui-notification {
   }
 }
 
-.tooltip .text {
+.t-text {
   font-size: $rubic-font-size-01;
 }
 
@@ -91,7 +92,7 @@ tui-notification-alert {
     max-width: 160px !important;
   }
 
-  .tooltip .text {
+  .t-text {
     font-size: $rubic-font-size-main;
   }
 }
@@ -115,3 +116,11 @@ tui-notification-alert {
 ::ng-deep tui-input-number input {
   border: none !important;
 }
+
+tui-value-decoration {
+  position: absolute;
+  top: 17px;
+  right: 11px;
+}
+
+

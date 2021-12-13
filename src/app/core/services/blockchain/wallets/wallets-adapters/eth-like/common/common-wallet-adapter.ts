@@ -1,9 +1,9 @@
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Token } from 'src/app/shared/models/tokens/Token';
-import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ErrorsService } from '@core/errors/errors.service';
+import { Token } from '@shared/models/tokens/Token';
+import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
@@ -42,6 +42,13 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * Current provider name.
    */
   abstract get walletName(): WALLET_NAME;
+
+  /**
+   * Gets detailed provider name if it's possible. Otherwise returns common name.
+   */
+  get detailedWalletName(): string {
+    return this.walletName;
+  }
 
   /**
    * current selected wallet address

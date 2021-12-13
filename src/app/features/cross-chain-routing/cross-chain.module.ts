@@ -5,7 +5,7 @@ import { CrossChainRoutingBottomFormComponent } from 'src/app/features/cross-cha
 import { ReactiveFormsModule } from '@angular/forms';
 import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
-import { InlineSVGModule } from 'ng-inline-svg';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from './components/target-network-address/target-network-address.component';
 
 @NgModule({

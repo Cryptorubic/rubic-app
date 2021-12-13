@@ -12,13 +12,15 @@ import { AbstractControl, FormControl, FormGroup } from '@ngneat/reactive-forms'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsItComponent implements OnInit {
-  private defaultSlippageTolerance = 2;
+  private readonly defaultSlippageTolerance: number;
 
   public instantTradeForm: FormGroup<ItSettingsForm>;
 
   public slippageTolerance: number;
 
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(private readonly settingsService: SettingsService) {
+    this.defaultSlippageTolerance = this.settingsService.defaultItSettings.slippageTolerance;
+  }
 
   public ngOnInit(): void {
     this.setForm();
@@ -63,7 +65,7 @@ export class SettingsItComponent implements OnInit {
   }
 
   public onSlippageToleranceChange(slippageTolerance: number): void {
-    this.slippageTolerance = slippageTolerance;
+    this.slippageTolerance = slippageTolerance || this.defaultSlippageTolerance;
     this.instantTradeForm.patchValue({
       autoSlippageTolerance: false,
       slippageTolerance: this.slippageTolerance

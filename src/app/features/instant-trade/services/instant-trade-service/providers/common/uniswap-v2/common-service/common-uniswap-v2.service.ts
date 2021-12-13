@@ -51,6 +51,7 @@ import { TradeContractData } from '@features/instant-trade/services/instant-trad
 import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import CustomError from '@core/errors/models/custom-error';
+import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation.error';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -464,7 +465,15 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         };
       });
 
-      return routesWithProfit.sort((a, b) => b.profit.comparedTo(a.profit))[0];
+      const sortedRoutes = routesWithProfit
+        .filter(el => el.route.outputAbsoluteAmount.gt(0))
+        .sort((a, b) => b.profit.comparedTo(a.profit));
+
+      if (!sortedRoutes.length) {
+        throw new InsufficientLiquidityRubicOptimisation();
+      }
+
+      return sortedRoutes[0];
     }
 
     const route = routes[0];

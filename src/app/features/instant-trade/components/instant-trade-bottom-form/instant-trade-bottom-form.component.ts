@@ -174,10 +174,10 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly walletConnectorService: WalletConnectorService,
-    iframeService: IframeService,
+    private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly swapInfoService: SwapInfoService
+    private readonly swapInfoService: SwapInfoService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
@@ -293,7 +293,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     if (
       this.settingsForm &&
-      this.settingsForm.autoSlippageTolerance !== form.autoSlippageTolerance
+      this.settingsForm.autoSlippageTolerance !== form.autoSlippageTolerance &&
+      !this.iframeService.isIframe
     ) {
       const providerIndex = this.providerControllers.findIndex(el => el.isSelected);
       if (providerIndex !== -1) {
@@ -312,21 +313,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private conditionalCalculate(type?: 'normal' | 'hidden'): void {
     const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
-
-    // @TODO Solana.
-    // const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    // try {
-    //   if (
-    //     this.walletConnectorService.address &&
-    //     !blockchainAdapter.isAddressCorrect(this.walletConnectorService.address)
-    //   ) {
-    //     throw new CustomError('Wrong wallet');
-    //   }
-    // } catch {
-    //   // @TODO Solana.
-    //   this.errorService.catch(new CustomError('Wrong wallet'));
-    //   return;
-    // }
 
     if (fromBlockchain !== toBlockchain) {
       return;
@@ -485,7 +471,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets to wallets calculated trade data, approve data and trade status.
+   * Sets to providers calculated trade data, approve data and trade status.
    * @param tradeData Calculated trade data.
    * @param approveData Calculated info about whether provider must be approved or not.
    */
@@ -540,7 +526,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sorts wallets based on usd$ price.
+   * Sorts providers based on usd$ price.
    */
   private sortProviders(): void {
     const calculateProfit = (trade: InstantTrade): BigNumber => {
@@ -574,7 +560,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Focuses some of wallets. If user have selected provider, keeps old index.
+   * Focuses some of providers. If user have selected provider, keeps old index.
    * @param providerIndex Provider's index to select.
    */
   private selectController(providerIndex: number): void {
@@ -630,10 +616,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setSlippageTolerance(provider: ProviderControllerData): void {
-    const providerName = provider.tradeProviderInfo.value;
-    if (this.settingsService.instantTradeValue.autoSlippageTolerance) {
+    if (
+      this.settingsService.instantTradeValue.autoSlippageTolerance &&
+      !this.iframeService.isIframe
+    ) {
       const currentBlockchainDefaultSlippage =
         defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
+      const providerName = provider.tradeProviderInfo.value;
       this.settingsService.instantTrade.patchValue({
         slippageTolerance:
           currentBlockchainDefaultSlippage[
@@ -694,15 +683,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       await this.tokensService.calculateTokensBalances();
 
-      if (this.isIframe$) {
-        this.needApprove = false;
-      }
       this.setProviderState(
         TRADE_STATUS.READY_TO_SWAP,
         providerIndex,
         INSTANT_TRADES_STATUS.COMPLETED,
         false
       );
+      this.needApprove = false;
     } catch (err) {
       this.errorService.catch(err);
 

@@ -6,7 +6,7 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/provi
 import CustomError from '@core/errors/models/custom-error';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { PhantomWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common-solana-wallet-adapter';
+import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 
 export class PhantomWalletAdapter extends CommonSolanaWalletAdapter {
   public get walletName(): WALLET_NAME {

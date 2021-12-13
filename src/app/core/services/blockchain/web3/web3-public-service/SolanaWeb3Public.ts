@@ -19,7 +19,7 @@ import {
 import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 
 export class SolanaWeb3Public {
   public readonly connection: Connection;

@@ -13,7 +13,7 @@ import BigNumber from 'bignumber.js';
 import { RubicError } from '@core/errors/models/RubicError';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/WalletlinkWrongNetwork';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {

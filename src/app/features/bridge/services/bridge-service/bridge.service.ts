@@ -16,7 +16,6 @@ import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { BinancePolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
@@ -42,13 +41,12 @@ export class BridgeService {
   private isTestingMode = false;
 
   constructor(
-    // bridge wallets start
+    // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
     private readonly rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
     private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
-    private readonly binancePolygonProviderService: BinancePolygonBridgeProviderService,
-    // bridge wallets end
+    // bridge providers end
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnectorService: WalletConnectorService,
@@ -76,12 +74,10 @@ export class BridgeService {
         [BLOCKCHAIN_NAME.XDAI]: this.ethereumXdaiBridgeProviderService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService,
-        [BLOCKCHAIN_NAME.POLYGON]: this.binancePolygonProviderService
+        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService,
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.binancePolygonProviderService
+        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService
       }
     };
   }

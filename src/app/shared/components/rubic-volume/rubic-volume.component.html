@@ -1,17 +1,10 @@
 <div class="rubic-volume" *ngLet="volume$ | async as volume">
   <div class="rubic-volume__title">{{ 'volume.title' | translate }}</div>
-  <div class="rubic-volume__values">
-    <div class="rubic-volume__value-it">
-      <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
-        ${{ volume?.instantTrades | bigNumberFormat: 0 }}
-      </div>
-      <div class="rubic-volume__label">{{ 'volume.instantTrades' | translate }}</div>
-    </div>
-    <div class="rubic-volume__value-it">
-      <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
-        ${{ volume?.bridges | bigNumberFormat: 0 }}
-      </div>
-      <div class="rubic-volume__label">{{ 'volume.bridges' | translate }}</div>
-    </div>
+  <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
+    ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat: 0 }}
+  </div>
+
+  <div class="rubic-volume__time">
+    {{ 'volume.description' | translate }}
   </div>
 </div>

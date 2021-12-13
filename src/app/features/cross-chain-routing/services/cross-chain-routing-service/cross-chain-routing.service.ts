@@ -134,14 +134,6 @@ export class CrossChainRoutingService {
 
     this.setProviders();
     this.setToBlockchainsInContract();
-    // this.c
-    //
-    // this.ccrContractExecutorFacade = new RaydiumCrossChainContractWriterService(
-    //   this.privateBlockchainAdapterService,
-    //   this.publicBlockchainAdapterService,
-    //   this.numOfBlockchainsInContract,
-    //   this.tokensService.tokens
-    // );
     this.contractAddresses = crossChainSwapContractAddresses;
     this.transitTokens = transitTokensWithMode;
 
@@ -172,7 +164,6 @@ export class CrossChainRoutingService {
       [BLOCKCHAIN_NAME.AVALANCHE]: [4, 5],
       [BLOCKCHAIN_NAME.MOONRIVER]: [6],
       [BLOCKCHAIN_NAME.FANTOM]: [7],
-      // @TODO Solana.
       [BLOCKCHAIN_NAME.SOLANA]: [8]
     };
   }
@@ -786,7 +777,6 @@ export class CrossChainRoutingService {
               this.currentCrossChainTrade.fromContractIndex
             ]
           );
-          // @TODO Solana!!!
 
           await this.postCrossChainTrade(transactionHash);
         } catch (err) {
@@ -816,28 +806,21 @@ export class CrossChainRoutingService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
-    if (this.settings.promoCode?.status === 'accepted') {
-      await this.crossChainRoutingApiService.postTrade(
-        transactionHash,
-        this.currentCrossChainTrade.fromBlockchain,
-        this.settings.promoCode.text
-      );
-      return;
-    }
     await this.crossChainRoutingApiService.postTrade(
       transactionHash,
-      this.currentCrossChainTrade.fromBlockchain
+      this.currentCrossChainTrade.fromBlockchain,
+      this.settings.promoCode?.status === 'accepted' ? this.settings.promoCode.text : undefined
     );
   }
 
-  calculateTokenOutAmountMin(): BigNumber {
+  public calculateTokenOutAmountMin(): BigNumber {
     return this.ccrContractExecutorFacade.calculateTokenOutAmountMin(
       this.currentCrossChainTrade,
       this.settings
     );
   }
 
-  calculateTokenInAmountMax(): BigNumber {
+  public calculateTokenInAmountMax(): BigNumber {
     return this.ccrContractExecutorFacade.calculateTokenInAmountMax(
       this.currentCrossChainTrade,
       this.settings

@@ -21,10 +21,6 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.XDAI]: {
     name: 'XDai',
     image: `${imageBasePath}xdai.svg`
-  },
-  [BRIDGE_PROVIDER.EVO]: {
-    name: 'Evo',
-    image: `${imageBasePath}evo.svg`
   }
 };
 
@@ -105,6 +101,10 @@ const DEPRECATED_PROVIDERS: Record<DEPRECATED_PROVIDER, Provider> = {
   [DEPRECATED_PROVIDER.PANAMA]: {
     name: 'Panama',
     image: `${imageBasePath}panama.svg`
+  },
+  [DEPRECATED_PROVIDER.EVO]: {
+    name: 'Evo',
+    image: `${imageBasePath}evo.svg`
   }
 };
 

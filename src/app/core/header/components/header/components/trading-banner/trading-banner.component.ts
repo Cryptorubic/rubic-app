@@ -10,12 +10,11 @@ interface TokenPair {
 }
 
 @Component({
-  selector: 'app-banner',
-  templateUrl: './banner.component.html',
-  styleUrls: ['./banner.component.scss'],
+  selector: 'app-trading-banner',
+  templateUrl: './trading-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BannerComponent {
+export class TradingBannerComponent {
   @Output() handleLinkClick: EventEmitter<TokenPair> = new EventEmitter();
 
   /**

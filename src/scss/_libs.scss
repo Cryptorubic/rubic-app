@@ -1,0 +1,17 @@
+@import 'mixins';
+
+#walletconnect-wrapper {
+  .walletconnect-modal__mobile__toggle {
+    color: black;
+  }
+}
+
+html.iframe-vertical #walletconnect-wrapper .walletconnect-modal__header {
+  top: 10px !important;
+  left: -10px !important;
+
+  > img,
+  > p {
+    display: none;
+  }
+}

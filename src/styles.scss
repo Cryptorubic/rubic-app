@@ -9,6 +9,7 @@
 /* Elements */
 @import 'scss/elements/icons';
 @import 'scss/elements/dropdown-labels';
+@import 'scss/elements/banner';
 
 /* Global */
 @import 'scss/carrot-quest';
@@ -17,6 +18,9 @@
 
 /* TaigaUI custom styles */
 @import 'scss/taiga-slyles';
+
+/* External libs styles */
+@import 'scss/libs';
 
 * {
   box-sizing: border-box;
