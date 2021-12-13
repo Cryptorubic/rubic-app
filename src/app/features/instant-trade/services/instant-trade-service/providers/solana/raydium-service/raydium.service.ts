@@ -29,6 +29,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
+import { subtractPercent } from '@shared/utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +129,7 @@ export class RaydiumService implements ItProvider {
               this.settings.slippageTolerance
             );
           if (poolAmountOut.gt(acc.amountOut)) {
+            this.poolInfo = [pool];
             return { amountOut: poolAmountOut, priceImpact: poolPriceImpact };
           }
           return acc;
@@ -230,7 +232,7 @@ export class RaydiumService implements ItProvider {
               trade.from.token.address,
               trade.to.token.address,
               trade.from.amount,
-              trade.to.amount,
+              subtractPercent(trade.to.amount, this.settings.slippageTolerance),
               trade.from.token.decimals,
               trade.to.token.decimals,
               this.walletConnectorService.address,

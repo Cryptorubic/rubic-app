@@ -824,12 +824,10 @@ export class CrossChainRoutingService {
       );
       return;
     }
-    if (this.iframeService.isIframe) {
-      await this.crossChainRoutingApiService.postTrade(
-        transactionHash,
-        this.currentCrossChainTrade.fromBlockchain
-      );
-    }
+    await this.crossChainRoutingApiService.postTrade(
+      transactionHash,
+      this.currentCrossChainTrade.fromBlockchain
+    );
   }
 
   calculateTokenOutAmountMin(): BigNumber {

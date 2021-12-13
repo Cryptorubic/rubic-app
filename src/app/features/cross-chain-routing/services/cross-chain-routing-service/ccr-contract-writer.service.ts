@@ -20,6 +20,7 @@ import {
   Account,
   AccountMeta,
   PublicKey,
+  SignatureResult,
   Transaction,
   TransactionInstruction
 } from '@solana/web3.js';
@@ -42,14 +43,11 @@ import {
   SOLANA_CROSS_CHAIN_CONTRACT
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-constants';
 import { Buffer } from 'buffer';
-import { struct, u64 } from '@project-serum/borsh';
-import {
-  FIRST_CCR_DATA_LAYOUT,
-  SECOND_CCR_DATA_LAYOUT,
-  swap_to_crypto
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
+import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { subtractPercent } from '@shared/utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -81,6 +79,7 @@ export class CcrContractWriterService {
     address: string,
     toBlockchainInContractNumber: number,
     settings: CcrSettingsForm
+    // settings: CcrSettingsForm
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
     const transaction = new Transaction();
     const signers: Account[] = [];
@@ -92,8 +91,17 @@ export class CcrContractWriterService {
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
     const amountIn = new BigNumber(trade.tokenInAmount.toString()).multipliedBy(fromDecimals);
+
     const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
     const amountOut = new BigNumber(trade.tokenOutAmount.toString()).multipliedBy(toDecimals);
+
+    const middleDecimals = new BigNumber(10).exponentiatedBy(
+      transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
+    );
+    const amountMiddle = new BigNumber(
+      subtractPercent(trade.firstTransitTokenAmount, settings.slippageTolerance / 100).toString()
+    ).multipliedBy(middleDecimals);
+
     const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
     const to = this.tokensService.tokens.find(el => el.address === trade.tokenOut.address);
 
@@ -118,56 +126,62 @@ export class CcrContractWriterService {
     const toRouteMint = trade.firstPath[trade.firstPath.length - 1];
     const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
 
-    const { from: fromAccount, to: toAccount } =
-      await privateBlockchainAdapter.getOrCreatesTokensAccounts(
-        mintAccountsAddresses,
-        fromMint,
-        toMint,
-        owner,
-        trade.tokenInAmount,
-        trade.tokenOutAmount,
-        transaction,
-        signers
-      );
+    const { from: fromAccount } = await privateBlockchainAdapter.getOrCreatesTokensAccounts(
+      mintAccountsAddresses,
+      fromMint,
+      toMint,
+      owner,
+      trade.tokenInAmount,
+      trade.tokenOutAmount,
+      transaction,
+      signers
+    );
 
-    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
-
-    // @TODO Solana.
-    console.log(fromFinalAmount, toFinalAmount);
     const poolInfo = this.raydiumCrossChainContractWriterService.currentPoolInfo;
 
-    const encoder = new TextEncoder();
-    const prefix = encoder.encode('prefix');
-    const blockchain = encoder.encode('blockchain');
+    const blockchainUuid: Partial<Record<BLOCKCHAIN_NAME, string>> = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx'
+    };
+    //
+    // const encoder = new TextEncoder();
+    // const prefix = encoder.encode('prefix');
+    // const blockchain = encoder.encode('blockchain');
+    //
+    // const dataLayout = UUID;
+    // const data = Buffer.alloc(dataLayout.span);
+    // dataLayout.encode(
+    //   {
+    //     version: 0,
+    //     uuid: toBlockchainInContractNumber
+    //   },
+    //   data
+    // );
+    //
+    // const seeds = new Uint8Array(prefix.length + blockchain.length + data.length);
+    // seeds.set(prefix);
+    // seeds.set(blockchain, prefix.length);
+    // seeds.set(data, prefix.length + blockchain.length);
+    //
+    // const program = await PublicKey.findProgramAddress(
+    //   [seeds],
+    //   new PublicKey(SOLANA_CROSS_CHAIN_CONTRACT)
+    // );
+    //
+    // const test = '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx';
 
-    const dataLayout = struct([u64('amountOut')]);
-    const data = Buffer.alloc(dataLayout.span);
-    dataLayout.encode(
-      {
-        uuid: new BigNumber(toBlockchainInContractNumber)
-      },
-      data
-    );
+    // const tokenInAmountMax = this.calculateTokenInAmountMax(trade, settings);
+    // const tokenOutAmount?Min = this.calculateTokenOutAmountMin(trade, settings);
 
-    const seeds = new Uint8Array(prefix.length + blockchain.length + data.length);
-    seeds.set(prefix);
-    seeds.set(blockchain, prefix.length);
-    seeds.set(data, prefix.length + blockchain.length);
+    const fromFinalAmount = Math.floor(parseFloat(amountIn.toFixed(5)));
+    const toFinalAmount = Math.floor(parseFloat(amountOut.toFixed(5)));
+    const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toFixed(5)));
 
-    const program = await PublicKey.findProgramAddress(
-      [seeds],
-      new PublicKey(SOLANA_CROSS_CHAIN_CONTRACT)
-    );
-
-    const tokenInAmountMax = this.calculateTokenInAmountMax(trade, settings);
-    const tokenOutAmountMin = this.calculateTokenOutAmountMin(trade, settings);
     const methodArguments = {
-      blockchain: new BigNumber(toBlockchainInContractNumber),
-      tokenInAmount: tokenInAmountMax,
+      blockchain: toBlockchainInContractNumber,
+      tokenInAmount: fromFinalAmount,
       secondPath: trade.secondPath,
-      rbcTokenOut: trade.firstTransitTokenAmount,
-      tokenOutMin: tokenOutAmountMin,
+      exactRbcTokenOut: middleFinalAmount,
+      tokenOutMin: toFinalAmount,
       newAddress: this.targetAddress,
       swapToCrypto: true
     };
@@ -175,7 +189,7 @@ export class CcrContractWriterService {
     transaction.add(
       CcrContractWriterService.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
-        program[0],
+        new PublicKey(blockchainUuid[trade.toBlockchain]),
         TOKEN_PROGRAM_ID,
         new PublicKey(poolInfo.ammId),
         new PublicKey(poolInfo.ammAuthority),
@@ -192,7 +206,7 @@ export class CcrContractWriterService {
         new PublicKey(poolInfo.serumPcVaultAccount),
         new PublicKey(poolInfo.serumVaultSigner),
         fromAccount.key,
-        toAccount.key,
+        new PublicKey('6rvuMQ7B3cwpmPHhbMGQFBsfDfkgnxiwmWxxSnkd9FjK'),
         new PublicKey(address),
         new PublicKey(poolInfo.programId),
         new PublicKey(PDA_DELEGATE),
@@ -239,6 +253,7 @@ export class CcrContractWriterService {
           if (toBlockchainInContractNumber === 8) {
             this.apiService.postSolanaCCRdata(
               transactionHash,
+              TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
               this.targetAddress,
               trade.secondPath
             );
@@ -284,7 +299,23 @@ export class CcrContractWriterService {
         toBlockchainInContractNumber,
         settings
       );
-      return this.raydiumService.addMetaAndSend(transaction, signers);
+      const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
+      if (options.onTransactionHash) {
+        options.onTransactionHash(hash);
+      }
+      await new Promise((resolve, reject) => {
+        this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
+          hash,
+          (signatureResult: SignatureResult) => {
+            if (!signatureResult.err) {
+              resolve(hash);
+            } else {
+              reject(signatureResult.err);
+            }
+          }
+        );
+      });
+      return hash;
     }
     return null;
   }
@@ -413,11 +444,11 @@ export class CcrContractWriterService {
     pdaDelegate: PublicKey,
     systemProgram: PublicKey,
     swapParams: {
-      blockchain: BigNumber;
-      tokenInAmount: BigNumber;
+      blockchain: number;
+      tokenInAmount: number;
       secondPath: string[];
-      rbcTokenOut: BigNumber;
-      tokenOutMin: BigNumber;
+      exactRbcTokenOut: number;
+      tokenOutMin: number;
       newAddress: string;
       swapToCrypto: boolean;
     }
@@ -443,9 +474,6 @@ export class CcrContractWriterService {
       { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
       { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
       { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
-      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
-      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
-      { pubkey: userOwner, isSigner: true, isWritable: false },
       // User accounts.
       { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
       { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
@@ -456,56 +484,14 @@ export class CcrContractWriterService {
       { pubkey: systemProgram, isSigner: false, isWritable: false }
     ];
 
-    const dataLayout1 = FIRST_CCR_DATA_LAYOUT;
-    const data1 = Buffer.alloc(dataLayout1.span);
-    dataLayout1.encode(
-      {
-        blockchain: swapParams.blockchain,
-        token_in_amount: swapParams.tokenInAmount
-      },
-      data1
-    );
-
-    const encoder = new TextEncoder();
-    const str1 = encoder.encode(swapParams.secondPath[0]);
-    const str2 = encoder.encode(swapParams.secondPath[1]);
-    const vec = new Uint8Array(str1.length + str2.length);
-    vec.set(str1);
-    vec.set(str2, str1.length);
-
-    const dataLayout2 = SECOND_CCR_DATA_LAYOUT;
-    const data2 = Buffer.alloc(dataLayout2.span);
-    dataLayout2.encode(
-      {
-        exact_rbc_token_out: swapParams.rbcTokenOut,
-        token_out_min: swapParams.tokenOutMin
-      },
-      data2
-    );
-
-    const str = encoder.encode(swapParams.newAddress);
-    const data3 = new Uint8Array(str.length);
-    vec.set(str1);
-
-    const dataLayout4 = swap_to_crypto;
-    const data4 = Buffer.alloc(dataLayout4.span);
-    dataLayout4.encode({ swap_to_crypto: swapParams.swapToCrypto }, data4);
-
-    const data = new Uint8Array(
-      data1.length + vec.length + data2.length + data3.length + data4.length
-    );
-    data.set(data1);
-    data.set(vec, data1.length);
-    data.set(data2, data1.length + vec.length);
-    data.set(data3, data1.length + vec.length + data2.length);
-    data.set(data4, data1.length + vec.length + data2.length + data3.length);
-
-    const bufferData = Buffer.concat([data]);
+    const buffer = Buffer.alloc(1000);
+    const length = SOLANA_CCR_LAYOUT.encode({ instructionNumber: 1, ...swapParams }, buffer);
+    const data = buffer.slice(0, length);
 
     return new TransactionInstruction({
       keys,
       programId: new PublicKey(SOLANA_CROSS_CHAIN_CONTRACT),
-      data: bufferData
+      data
     });
   }
 
