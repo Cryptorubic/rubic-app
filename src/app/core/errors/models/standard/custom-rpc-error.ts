@@ -13,5 +13,8 @@ export const customRpcError = [
   },
   {
     message: 'JsonRpcEngine: Response has no error or result for request'
+  },
+  {
+    message: 'cannot estimate'
   }
 ];
