@@ -52,8 +52,8 @@ import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-reader';
-import { CcrContractWriterService } from '@features/cross-chain-routing/services/cross-chain-routing-service/ccr-contract-writer.service';
+import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
+import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 
 interface PathAndToAmount {
   path: string[];
@@ -128,7 +128,7 @@ export class CrossChainRoutingService {
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly iframeService: IframeService,
     private readonly gasService: GasService,
-    private readonly crossChainContractWriter: CcrContractWriterService
+    private readonly ccrContractExecutorFacade: CrossChainContractExecutorFacade
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
@@ -136,7 +136,7 @@ export class CrossChainRoutingService {
     this.setToBlockchainsInContract();
     // this.c
     //
-    // this.crossChainContractWriter = new RaydiumCrossChainContractWriterService(
+    // this.ccrContractExecutorFacade = new RaydiumCrossChainContractWriterService(
     //   this.privateBlockchainAdapterService,
     //   this.publicBlockchainAdapterService,
     //   this.numOfBlockchainsInContract,
@@ -538,7 +538,7 @@ export class CrossChainRoutingService {
 
     try {
       const { contractAddress, methodName, methodArguments, value } =
-        await this.crossChainContractWriter.getContractData(
+        await this.ccrContractExecutorFacade.getContractData(
           trade,
           walletAddress,
           this.settings,
@@ -763,7 +763,7 @@ export class CrossChainRoutingService {
     await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkPoolBalance()]);
 
     const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
-    const tokenInAmountMax = this.crossChainContractWriter.calculateTokenInAmountMax(
+    const tokenInAmountMax = this.ccrContractExecutorFacade.calculateTokenInAmountMax(
       this.currentCrossChainTrade,
       this.settings
     );
@@ -777,7 +777,7 @@ export class CrossChainRoutingService {
         await this.checkTradeWorking();
         let transactionHash;
         try {
-          transactionHash = await this.crossChainContractWriter.executeCCRContract(
+          transactionHash = await this.ccrContractExecutorFacade.executeCCRContract(
             this.currentCrossChainTrade,
             options,
             this.providerConnectorService.address,
@@ -831,14 +831,14 @@ export class CrossChainRoutingService {
   }
 
   calculateTokenOutAmountMin(): BigNumber {
-    return this.crossChainContractWriter.calculateTokenOutAmountMin(
+    return this.ccrContractExecutorFacade.calculateTokenOutAmountMin(
       this.currentCrossChainTrade,
       this.settings
     );
   }
 
   calculateTokenInAmountMax(): BigNumber {
-    return this.crossChainContractWriter.calculateTokenInAmountMax(
+    return this.ccrContractExecutorFacade.calculateTokenInAmountMax(
       this.currentCrossChainTrade,
       this.settings
     );

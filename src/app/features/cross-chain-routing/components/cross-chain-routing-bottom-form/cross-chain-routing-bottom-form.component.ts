@@ -47,7 +47,7 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { CcrContractWriterService } from '@features/cross-chain-routing/services/cross-chain-routing-service/ccr-contract-writer.service';
+import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
@@ -141,7 +141,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly gtmService: GoogleTagManagerService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly ccrContractWriterService: CcrContractWriterService
+    private readonly ccrContractWriterService: CrossChainContractExecutorFacade
   ) {
     this.onCalculateTrade$ = new Subject();
     this.hiddenTradeData$ = new BehaviorSubject(undefined);
