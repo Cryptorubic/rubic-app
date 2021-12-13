@@ -35,7 +35,7 @@ export class SolanaContractExecutor {
   constructor(
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly tokensService: TokensService,
-    private readonly raydiumCrossChainContractWriterService: RaydiumRoutingService
+    private readonly raydiumRoutingService: RaydiumRoutingService
   ) {}
 
   public async execute(
@@ -101,10 +101,12 @@ export class SolanaContractExecutor {
       signers
     );
 
-    const poolInfo = this.raydiumCrossChainContractWriterService.currentPoolInfo;
+    const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
     const blockchainUuid: Partial<Record<BLOCKCHAIN_NAME, string>> = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx'
+      [BLOCKCHAIN_NAME.ETHEREUM]: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx',
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '4JCZAgsC5XwXxgexidRmJmdtMCBSAcMqHAUF152x5a71',
+      [BLOCKCHAIN_NAME.POLYGON]: 'CaXfJCA4ccnvmMDFxf9V57SxjAXDe9JC1TgYWXcuyxs1'
     };
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toFixed(5)));
@@ -118,7 +120,9 @@ export class SolanaContractExecutor {
       exactRbcTokenOut: middleFinalAmount,
       tokenOutMin: toFinalAmount,
       newAddress: targetAddress,
-      swapToCrypto: true
+      swapToCrypto: true,
+      isTransferToken:
+        trade.tokenIn.address === transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].address
     };
 
     transaction.add(
@@ -126,20 +130,20 @@ export class SolanaContractExecutor {
         new PublicKey(PDA_CONFIG),
         new PublicKey(blockchainUuid[trade.toBlockchain]),
         TOKEN_PROGRAM_ID,
-        new PublicKey(poolInfo.ammId),
-        new PublicKey(poolInfo.ammAuthority),
-        new PublicKey(poolInfo.ammOpenOrders),
-        new PublicKey(poolInfo.ammTargetOrders),
-        new PublicKey(poolInfo.poolCoinTokenAccount),
-        new PublicKey(poolInfo.poolPcTokenAccount),
-        new PublicKey(poolInfo.serumProgramId),
-        new PublicKey(poolInfo.serumMarket),
-        new PublicKey(poolInfo.serumBids),
-        new PublicKey(poolInfo.serumAsks),
-        new PublicKey(poolInfo.serumEventQueue),
-        new PublicKey(poolInfo.serumCoinVaultAccount),
-        new PublicKey(poolInfo.serumPcVaultAccount),
-        new PublicKey(poolInfo.serumVaultSigner),
+        new PublicKey(poolInfo?.ammId),
+        new PublicKey(poolInfo?.ammAuthority),
+        new PublicKey(poolInfo?.ammOpenOrders),
+        new PublicKey(poolInfo?.ammTargetOrders),
+        new PublicKey(poolInfo?.poolCoinTokenAccount),
+        new PublicKey(poolInfo?.poolPcTokenAccount),
+        new PublicKey(poolInfo?.serumProgramId),
+        new PublicKey(poolInfo?.serumMarket),
+        new PublicKey(poolInfo?.serumBids),
+        new PublicKey(poolInfo?.serumAsks),
+        new PublicKey(poolInfo?.serumEventQueue),
+        new PublicKey(poolInfo?.serumCoinVaultAccount),
+        new PublicKey(poolInfo?.serumPcVaultAccount),
+        new PublicKey(poolInfo?.serumVaultSigner),
         fromAccount.key,
         new PublicKey('6rvuMQ7B3cwpmPHhbMGQFBsfDfkgnxiwmWxxSnkd9FjK'),
         new PublicKey(address),
@@ -187,21 +191,24 @@ export class SolanaContractExecutor {
       tokenOutMin: number;
       newAddress: string;
       swapToCrypto: boolean;
+      isTransferToken: boolean;
     }
   ): TransactionInstruction {
     const keys: Array<AccountMeta> = [
-      // SPL accounts.
       { pubkey: pdaConfig, isSigner: false, isWritable: false },
       { pubkey: pdaBlockchainConfig, isSigner: false, isWritable: false },
+      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userOwner, isSigner: true, isWritable: false },
+      { pubkey: pdaDelegate, isSigner: false, isWritable: true },
+      { pubkey: systemProgram, isSigner: false, isWritable: false },
       { pubkey: splProgramId, isSigner: false, isWritable: false },
-      // Amm accounts
       { pubkey: ammId, isSigner: false, isWritable: true },
       { pubkey: ammAuthority, isSigner: false, isWritable: false },
       { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
       { pubkey: ammTargetOrders, isSigner: false, isWritable: true },
       { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
       { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
-      // Serum accounts
       { pubkey: serumProgramId, isSigner: false, isWritable: false },
       { pubkey: serumMarket, isSigner: false, isWritable: true },
       { pubkey: serumBids, isSigner: false, isWritable: true },
@@ -210,14 +217,7 @@ export class SolanaContractExecutor {
       { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
       { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
       { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
-      // User accounts.
-      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
-      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
-      { pubkey: userOwner, isSigner: true, isWritable: false },
-      // Other accounts.
-      { pubkey: raydiumAmm, isSigner: false, isWritable: false },
-      { pubkey: pdaDelegate, isSigner: false, isWritable: true },
-      { pubkey: systemProgram, isSigner: false, isWritable: false }
+      { pubkey: raydiumAmm, isSigner: false, isWritable: false }
     ];
 
     const buffer = Buffer.alloc(1000);

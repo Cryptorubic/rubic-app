@@ -31,14 +31,14 @@ export class CrossChainContractExecutorFacade {
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly tokensService: TokensService,
-    private readonly raydiumCrossChainContractWriterService: RaydiumRoutingService,
+    private readonly raydiumRoutingService: RaydiumRoutingService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly raydiumService: RaydiumService
   ) {
     this.solanaContractExecutor = new SolanaContractExecutor(
       privateAdapter,
       tokensService,
-      raydiumCrossChainContractWriterService
+      raydiumRoutingService
     );
     this.ethLikeContractExecutor = new EthLikeContractExecutor(
       privateAdapter,

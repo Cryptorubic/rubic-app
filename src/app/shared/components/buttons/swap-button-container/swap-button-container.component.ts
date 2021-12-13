@@ -68,7 +68,7 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   @Input() set isTargetAddressValid(isValid: boolean) {
-    this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = !isValid;
+    this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = isValid !== undefined && !isValid;
   }
 
   @Input() set minAmount(value: false | number | BigNumber) {

@@ -43,7 +43,8 @@ export const SOLANA_CCR_LAYOUT = struct([
   bufferLayout.nu64('exactRbcTokenOut'),
   bufferLayout.nu64('tokenOutMin'),
   str('newAddress'),
-  bool('swapToCrypto')
+  bool('swapToCrypto'),
+  bool('isTransferToken')
 ]);
 
 export const INSTRUCTION_NUMBER = struct([u8('instruction')]);

@@ -493,8 +493,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  setAddress(address: { address: string; isValid: boolean }): void {
-    this.ccrContractWriterService.setTargetNetworkAddress(address.address);
-    this.isTargetNetworkValid = address.isValid;
+  public setAddress(address: { address: string; isValid: boolean }): void {
+    if (this.displayTargetAddressInput) {
+      this.ccrContractWriterService.setTargetNetworkAddress(address.address);
+      this.isTargetNetworkValid = address.isValid;
+    } else {
+      this.isTargetNetworkValid = true;
+    }
   }
 }

@@ -139,9 +139,11 @@ export class EthLikeContractExecutor {
         toBlockchainInContractNumber,
         tokenInAmountAbsolute,
         trade.firstPath,
+        // @TODO Solana.
         toBlockchainInContractNumber === 8 ? [] : trade.secondPath,
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
+        // @TODO Solana.
         toBlockchainInContractNumber === 8 ? '0x1' : walletAddress,
         blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
       ]
