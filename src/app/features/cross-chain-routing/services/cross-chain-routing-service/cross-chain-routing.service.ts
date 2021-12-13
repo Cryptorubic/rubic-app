@@ -2,16 +2,11 @@ import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import {
-  CcrSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { from, Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
@@ -70,6 +65,14 @@ const CACHEABLE_MAX_AGE = 15_000;
   providedIn: 'root'
 })
 export class CrossChainRoutingService {
+  public static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedCrossChainSwapBlockchain {
+    return !!supportedCrossChainSwapBlockchains.find(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
+  }
+
   private readonly contractAbi: AbiItem[];
 
   private readonly contractAddresses: Record<SupportedCrossChainSwapBlockchain, string[]>;
@@ -80,16 +83,13 @@ export class CrossChainRoutingService {
 
   private numOfBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number[]>;
 
-  private settings: CcrSettingsForm;
-
   private currentCrossChainTrade: CrossChainRoutingTrade;
 
-  public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
-  ): blockchain is SupportedCrossChainSwapBlockchain {
-    return !!supportedCrossChainSwapBlockchains.find(
-      supportedBlockchain => supportedBlockchain === blockchain
-    );
+  /**
+   * Gets slippage, selected in settings, divided by 100%.
+   */
+  private get slippageTolerance(): number {
+    return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
   }
 
   constructor(
@@ -100,7 +100,6 @@ export class CrossChainRoutingService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
-    private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly web3PublicService: Web3PublicService,
@@ -117,12 +116,6 @@ export class CrossChainRoutingService {
     this.setToBlockchainsInContract();
     this.contractAddresses = crossChainSwapContractAddresses;
     this.transitTokens = transitTokensWithMode;
-
-    this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue))
-      .subscribe(settings => {
-        this.settings = settings;
-      });
   }
 
   private setUniswapProviders(): void {
@@ -190,6 +183,9 @@ export class CrossChainRoutingService {
     const firstTransitToken = this.transitTokens[fromBlockchain];
     const secondTransitToken = this.transitTokens[toBlockchain];
 
+    const fromSlippage = 1 - this.slippageTolerance / 2;
+    const toSlippage = 1 - this.slippageTolerance / 2;
+
     const {
       contractIndex: fromContractIndex,
       pathAndToAmount: { path: firstPath, toAmount: firstTransitTokenAmount }
@@ -197,7 +193,9 @@ export class CrossChainRoutingService {
 
     const { secondTransitTokenAmount, feeInPercents } = await this.getSecondTransitTokenAmount(
       toBlockchain,
-      firstTransitTokenAmount
+      firstTransitTokenAmount,
+      firstPath.length === 1,
+      fromSlippage
     );
 
     const {
@@ -221,6 +219,7 @@ export class CrossChainRoutingService {
       tokenInAmount: fromAmount,
       firstTransitTokenAmount,
       firstPath,
+      fromSlippage,
 
       toBlockchain,
       toContractIndex,
@@ -228,6 +227,7 @@ export class CrossChainRoutingService {
       tokenOut: toToken,
       tokenOutAmount: toAmount,
       secondPath,
+      toSlippage,
 
       transitTokenFee: feeInPercents,
       cryptoFee
@@ -328,9 +328,9 @@ export class CrossChainRoutingService {
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
-    const { fromBlockchain, firstTransitTokenAmount } = trade;
+    const { fromBlockchain, firstTransitTokenAmount, fromSlippage } = trade;
     const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
-      await this.getMinMaxTransitTokenAmounts(fromBlockchain);
+      await this.getMinMaxTransitTokenAmounts(fromBlockchain, fromSlippage);
 
     if (firstTransitTokenAmount.lt(minTransitTokenAmount)) {
       const minAmount = await this.getFromTokenAmount(
@@ -365,9 +365,11 @@ export class CrossChainRoutingService {
   /**
    * Gets min and max permitted amounts of transit token in source and target blockchain.
    * @param fromBlockchain Source blockchain.
+   * @param fromSlippage Slippage in source blockchain.
    */
   private async getMinMaxTransitTokenAmounts(
-    fromBlockchain: SupportedCrossChainSwapBlockchain
+    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    fromSlippage: number
   ): Promise<{
     minAmount: BigNumber;
     maxAmount: BigNumber;
@@ -391,7 +393,7 @@ export class CrossChainRoutingService {
       );
 
       if (type === 'minAmount') {
-        return firstTransitTokenAmount;
+        return firstTransitTokenAmount.dividedBy(fromSlippage);
       }
       return firstTransitTokenAmount.minus(1);
     };
@@ -440,16 +442,26 @@ export class CrossChainRoutingService {
    * Calculates transit token's amount in target blockchain, based on transit token's amount is source blockchain.
    * @param toBlockchain Target blockchain
    * @param firstTransitTokenAmount Amount of transit token in source blockchain.
+   * @param isDirectTrade True, if first transit token is traded directrly.
+   * @param fromSlippage Slippage in source blockchain.
    */
   private async getSecondTransitTokenAmount(
     toBlockchain: SupportedCrossChainSwapBlockchain,
-    firstTransitTokenAmount: BigNumber
+    firstTransitTokenAmount: BigNumber,
+    isDirectTrade: boolean,
+    fromSlippage: number
   ): Promise<{ secondTransitTokenAmount: BigNumber; feeInPercents: number }> {
     const feeInPercents = await this.getFeeInPercents(toBlockchain);
+    let secondTransitTokenAmount = firstTransitTokenAmount
+      .multipliedBy(100 - feeInPercents)
+      .dividedBy(100);
+
+    if (!isDirectTrade) {
+      secondTransitTokenAmount = secondTransitTokenAmount.multipliedBy(fromSlippage);
+    }
+
     return {
-      secondTransitTokenAmount: firstTransitTokenAmount
-        .multipliedBy(100 - feeInPercents)
-        .dividedBy(100),
+      secondTransitTokenAmount,
       feeInPercents
     };
   }
@@ -679,66 +691,41 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Gets pool's address in target network.
-   */
-  @PCacheable({
-    maxAge: CACHEABLE_MAX_AGE
-  })
-  private getPoolAddressInTargetNetwork(): Promise<string> {
-    const { toBlockchain, toContractIndex } = this.currentCrossChainTrade;
-
-    const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const web3Public: Web3Public = this.web3PublicService[toBlockchain];
-
-    return web3Public.callContractMethod(contractAddress, this.contractAbi, 'blockchainPool');
-  }
-
-  /**
    * Checks that in target blockchain tokens' pool's balance is enough.
    */
   @PCacheable({
     maxAge: CACHEABLE_MAX_AGE
   })
-  private async checkPoolBalance(): Promise<void | never> {
-    const { toBlockchain, secondTransitTokenAmount } = this.currentCrossChainTrade;
+  private async checkContractBalance(): Promise<void | never> {
+    const { toBlockchain, toContractIndex, secondTransitTokenAmount } = this.currentCrossChainTrade;
+    const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const secondTransitToken = this.transitTokens[toBlockchain];
     const web3Public: Web3Public = this.web3PublicService[toBlockchain];
 
-    const poolAddress = await this.getPoolAddressInTargetNetwork();
-    const poolBalanceAbsolute = await web3Public.getTokenBalance(
-      poolAddress,
+    const contractBalanceAbsolute = await web3Public.getTokenBalance(
+      contractAddress,
       secondTransitToken.address
     );
-    const poolBalance = Web3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
+    const contractBalance = Web3Public.fromWei(
+      contractBalanceAbsolute,
+      secondTransitToken.decimals
+    );
 
-    if (secondTransitTokenAmount.gt(poolBalance)) {
+    if (secondTransitTokenAmount.gt(contractBalance)) {
       throw new CrossChainIsUnavailableWarning();
     }
   }
 
   /**
-   * Returns true, if amount of token-in must be multiplied on slippage to calculate maximum sent amount.
+   * Calculates minimum received amount of transit token, based on tokens route and slippage.
    */
-  public isTokenInAmountMaxWithSlippage(): boolean {
-    const { fromToken, fromBlockchain } = this.swapFormService.inputValue;
-    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
-      throw Error('Not supported blockchain');
-    }
-    const firstTransitToken = this.transitTokens[fromBlockchain];
-    return !compareAddresses(fromToken.address, firstTransitToken.address);
-  }
-
-  /**
-   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
-   */
-  public calculateTokenInAmountMax(
+  private calculateFirstTransitTokenAmountMin(
     trade: CrossChainRoutingTrade = this.currentCrossChainTrade
   ): BigNumber {
     if (trade.firstPath.length === 1) {
-      return trade.tokenInAmount;
+      return trade.firstTransitTokenAmount;
     }
-    const slippageTolerance = this.settings.slippageTolerance / 100;
-    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
+    return trade.firstTransitTokenAmount.multipliedBy(trade.fromSlippage);
   }
 
   /**
@@ -750,22 +737,20 @@ export class CrossChainRoutingService {
     if (trade.secondPath.length === 1) {
       return trade.tokenOutAmount;
     }
-    const slippageTolerance = this.settings.slippageTolerance / 100;
-    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
+    return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
   }
 
   /**
    * Checks contracts' state and user's balance.
    */
   private async checkTradeWorking(): Promise<void | never> {
-    await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkPoolBalance()]);
+    await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkContractBalance()]);
 
-    const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
-    const tokenInAmountMax = this.calculateTokenInAmountMax();
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
     const web3PublicFromBlockchain: Web3Public = this.web3PublicService[fromBlockchain];
     await web3PublicFromBlockchain.checkBalance(
       tokenIn,
-      tokenInAmountMax,
+      tokenInAmount,
       this.authService.userAddress
     );
   }
@@ -802,13 +787,13 @@ export class CrossChainRoutingService {
     const toBlockchainInContract =
       this.numOfBlockchainsInContract[trade.toBlockchain][trade.toContractIndex];
 
-    const tokenInAmountMax = this.calculateTokenInAmountMax(trade);
-    const tokenInAmountAbsolute = Web3Public.toWei(tokenInAmountMax, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = Web3Public.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const tokenOutAmountMin = this.calculateTokenOutAmountMin(trade);
-    const tokenOutMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+    const tokenOutAmountMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const firstTransitTokenAmountAbsolute = Web3Public.toWei(
-      trade.firstTransitTokenAmount,
+    const firstTransitTokenAmountMin = this.calculateFirstTransitTokenAmountMin(trade);
+    const firstTransitTokenAmountMinAbsolute = Web3Public.toWei(
+      firstTransitTokenAmountMin,
       this.transitTokens[trade.fromBlockchain].decimals
     );
 
@@ -818,10 +803,11 @@ export class CrossChainRoutingService {
         tokenInAmountAbsolute,
         trade.firstPath,
         trade.secondPath,
-        firstTransitTokenAmountAbsolute,
-        tokenOutMinAbsolute,
+        firstTransitTokenAmountMinAbsolute,
+        tokenOutAmountMinAbsolute,
         walletAddress,
-        Web3Public.isNativeAddress(trade.tokenOut.address)
+        Web3Public.isNativeAddress(trade.tokenOut.address),
+        true
       ]
     ];
 
@@ -922,10 +908,11 @@ export class CrossChainRoutingService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
+    const settings = this.settingsService.crossChainRoutingValue;
     await this.crossChainRoutingApiService.postTrade(
       transactionHash,
       this.currentCrossChainTrade.fromBlockchain,
-      this.settings.promoCode?.status === 'accepted' ? this.settings.promoCode.text : undefined
+      settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
   }
 }

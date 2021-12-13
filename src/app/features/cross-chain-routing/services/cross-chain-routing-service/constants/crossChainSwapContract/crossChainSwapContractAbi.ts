@@ -54,13 +54,8 @@ export const crossChainSwapContractAbi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: 'uint256', name: 'blockchain', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'sender', type: 'address' },
       { indexed: false, internalType: 'uint256', name: 'RBCAmountIn', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'amountSpent', type: 'uint256' },
-      { indexed: false, internalType: 'string', name: 'newAddress', type: 'string' },
-      { indexed: false, internalType: 'uint256', name: 'cryptoOutMin', type: 'uint256' },
-      { indexed: false, internalType: 'address[]', name: 'path', type: 'address[]' }
+      { indexed: false, internalType: 'uint256', name: 'amountSpent', type: 'uint256' }
     ],
     name: 'TransferCryptoToOtherBlockchainUser',
     type: 'event'
@@ -79,13 +74,8 @@ export const crossChainSwapContractAbi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: 'uint256', name: 'blockchain', type: 'uint256' },
-      { indexed: false, internalType: 'address', name: 'sender', type: 'address' },
       { indexed: false, internalType: 'uint256', name: 'RBCAmountIn', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'amountSpent', type: 'uint256' },
-      { indexed: false, internalType: 'string', name: 'newAddress', type: 'string' },
-      { indexed: false, internalType: 'uint256', name: 'tokenOutMin', type: 'uint256' },
-      { indexed: false, internalType: 'address[]', name: 'path', type: 'address[]' }
+      { indexed: false, internalType: 'uint256', name: 'amountSpent', type: 'uint256' }
     ],
     name: 'TransferTokensToOtherBlockchainUser',
     type: 'event'
@@ -164,16 +154,16 @@ export const crossChainSwapContractAbi = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'blockchainCryptoFee',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
+    inputs: [{ internalType: 'contract IERC20', name: '_token', type: 'address' }],
+    name: 'approveTokenToRouter',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'blockchainPool',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    name: 'blockchainCryptoFee',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
@@ -197,8 +187,7 @@ export const crossChainSwapContractAbi = [
   {
     inputs: [
       { internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' },
-      { internalType: 'uint256', name: 'statusCode', type: 'uint256' },
-      { internalType: 'bytes32', name: 'hashedParams', type: 'bytes32' }
+      { internalType: 'uint256', name: 'statusCode', type: 'uint256' }
     ],
     name: 'changeTxStatus',
     outputs: [],
@@ -206,7 +195,7 @@ export const crossChainSwapContractAbi = [
     type: 'function'
   },
   {
-    inputs: [],
+    inputs: [{ internalType: 'address', name: 'toAddress', type: 'address' }],
     name: 'collectCryptoFee',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -255,7 +244,8 @@ export const crossChainSwapContractAbi = [
     inputs: [
       { internalType: 'address', name: 'user', type: 'address' },
       { internalType: 'uint256', name: 'amountWithFee', type: 'uint256' },
-      { internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' }
+      { internalType: 'bytes32', name: 'originalTxHash', type: 'bytes32' },
+      { internalType: 'uint256', name: 'blockchainNum', type: 'uint256' }
     ],
     name: 'getHashPacked',
     outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
@@ -381,12 +371,16 @@ export const crossChainSwapContractAbi = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'uint256', name: 'amount', type: 'uint256' }],
+    name: 'poolBalancing',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
     name: 'processedTransactions',
-    outputs: [
-      { internalType: 'uint256', name: 'statusCode', type: 'uint256' },
-      { internalType: 'bytes32', name: 'hashedParams', type: 'bytes32' }
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
@@ -522,13 +516,6 @@ export const crossChainSwapContractAbi = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'address', name: '_poolAddress', type: 'address' }],
-    name: 'setPoolAddress',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [{ internalType: 'uint256', name: '_refundSlippage', type: 'uint256' }],
     name: 'setRefundSlippage',
     outputs: [],
@@ -570,7 +557,8 @@ export const crossChainSwapContractAbi = [
           { internalType: 'uint256', name: 'exactRBCtokenOut', type: 'uint256' },
           { internalType: 'uint256', name: 'tokenOutMin', type: 'uint256' },
           { internalType: 'string', name: 'newAddress', type: 'string' },
-          { internalType: 'bool', name: 'swapToCrypto', type: 'bool' }
+          { internalType: 'bool', name: 'swapToCrypto', type: 'bool' },
+          { internalType: 'bool', name: 'swapExactFor', type: 'bool' }
         ],
         internalType: 'struct SwapContract.swapToParams',
         name: 'params',
@@ -614,7 +602,8 @@ export const crossChainSwapContractAbi = [
           { internalType: 'uint256', name: 'exactRBCtokenOut', type: 'uint256' },
           { internalType: 'uint256', name: 'tokenOutMin', type: 'uint256' },
           { internalType: 'string', name: 'newAddress', type: 'string' },
-          { internalType: 'bool', name: 'swapToCrypto', type: 'bool' }
+          { internalType: 'bool', name: 'swapToCrypto', type: 'bool' },
+          { internalType: 'bool', name: 'swapExactFor', type: 'bool' }
         ],
         internalType: 'struct SwapContract.swapToParams',
         name: 'params',
