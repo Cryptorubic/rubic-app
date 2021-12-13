@@ -104,13 +104,13 @@
       ]
     },
     {
-      "img": "KutirinVlad.jpg",
-      "name": "Vlad Kutirin",
+      "img": "KolebayevVlad.jpg",
+      "name": "Vlad Kolebayev",
       "role": "Frontend developer",
       "links": [
         {
           "icon": "Github.svg",
-          "url": "https://github.com/sometimesvlad"
+          "url": "https://github.com/kolebayevv"
         }
       ]
     },
@@ -148,8 +148,8 @@
       ]
     },
     {
-      "img": "KolebaevRoman.jpg",
-      "name": "Roman Kolebaev",
+      "img": "KutirinRoman.jpg",
+      "name": "Roman Kutirin",
       "role": "Backend Developer",
       "links": [
         {
