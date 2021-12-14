@@ -437,8 +437,7 @@ export class SolanaPrivateAdapterService {
     fromCoinMint: string,
     toCoinMint: string,
     owner: PublicKey,
-    amountIn: BigNumber,
-    amountOut: BigNumber,
+    amountIn: number,
     transaction: Transaction,
     signers: Account[]
   ): Promise<TokenAccounts> {
@@ -454,7 +453,7 @@ export class SolanaPrivateAdapterService {
             null,
             owner,
             TOKENS.WSOL.mintAddress,
-            amountIn.plus('1e7'),
+            new BigNumber(amountIn).plus(1e7, 16),
             transaction,
             signers
           )
@@ -473,7 +472,7 @@ export class SolanaPrivateAdapterService {
             null,
             owner,
             TOKENS.WSOL.mintAddress,
-            amountOut.plus('1e7'),
+            new BigNumber(1e7, 16),
             transaction,
             signers
           )

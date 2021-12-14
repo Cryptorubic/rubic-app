@@ -76,7 +76,7 @@
     "rubicOptimisation": "Liquidez insuficiente para esta operación. Intente deshabilitar la optimización de Rubic.",
     "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
     "tradingIsNotAvailable": "El comercio no está disponible",
-    "wrongWallet": "Please log in with wallet that supports {{symbol}} token",
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },

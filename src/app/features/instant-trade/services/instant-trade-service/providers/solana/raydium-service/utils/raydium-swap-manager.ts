@@ -127,13 +127,16 @@ export class RaydiumSwapManager {
     const toMint = toToken.address;
     const middleMint = routerInfo.middleCoin.address;
 
+    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
+    const middleFinalAmount = Math.floor(parseFloat(routerInfo.route[1].amountA.toString()));
+    const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
+
     const { from: fromAccount } = await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
       mintAccountsAddresses,
       fromMint,
       middleMint,
       owner,
-      aIn,
-      new BigNumber(routerInfo.route[0].amountB),
+      fromFinalAmount,
       transaction,
       signers
     );
@@ -144,14 +147,10 @@ export class RaydiumSwapManager {
         middleMint,
         toMint,
         owner,
-        new BigNumber(routerInfo.route[1].amountA),
-        aOut,
+        middleFinalAmount,
         transaction,
         signers
       );
-
-    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
 
     const newFromTokenAccount = fromAccount.key;
     const newMiddleTokenAccount = middleAccount.key;
@@ -403,20 +402,19 @@ export class RaydiumSwapManager {
       );
     }
 
+    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
+    const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
+
     const { from: fromAccount, to: toAccount } =
       await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
         mintAccountsAddresses,
         fromCoinMint,
         toCoinMint,
         owner,
-        aIn,
-        aOut,
+        fromFinalAmount,
         transaction,
         signers
       );
-
-    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
 
     transaction.add(
       RaydiumSwapManager.createSwapInstruction(

@@ -76,7 +76,7 @@
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
     "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "tradingIsNotAvailable": "거래 불가",
-    "wrongWallet": "Please log in with wallet that supports {{symbol}} token",
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },

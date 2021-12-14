@@ -76,7 +76,7 @@
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "tradingIsNotAvailable": "交易不可用",
     "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
-    "wrongWallet": "Please log in with wallet that supports {{symbol}} token",
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },

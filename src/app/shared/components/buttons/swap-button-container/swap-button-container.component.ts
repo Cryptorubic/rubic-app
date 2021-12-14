@@ -172,7 +172,9 @@ export class SwapButtonContainerComponent implements OnInit {
       case err[ERROR_TYPE.WRONG_WALLET]: {
         translateParams = {
           key: 'errors.wrongWallet',
-          interpolateParams: { symbol: fromToken.symbol }
+          interpolateParams: {
+            network: BlockchainsInfo.getBlockchainByName(fromToken.blockchain).label
+          }
         };
         break;
       }
@@ -322,19 +324,17 @@ export class SwapButtonContainerComponent implements OnInit {
   private async checkErrors(): Promise<void> {
     this.checkWalletError();
     await this.checkInsufficientFundsError();
-    this.checkWrongBlockchainError();
   }
 
-  private async checkInsufficientFundsError(): Promise<boolean> {
+  private async checkInsufficientFundsError(): Promise<void> {
     const { fromToken } = this.formService.inputValue;
     if (!this._fromAmount || !fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
-      return false;
     }
 
     if (this.checkWrongBlockchainError()) {
-      return false;
+      return;
     }
     const balance = !fromToken.amount.isFinite()
       ? Web3Public.fromWei(
@@ -345,11 +345,8 @@ export class SwapButtonContainerComponent implements OnInit {
           fromToken.decimals
         )
       : fromToken.amount;
-
-    const isError = balance.lt(this._fromAmount);
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = isError;
+    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
     this.cdr.detectChanges();
-    return isError;
   }
 
   private checkWrongBlockchainError(): boolean {

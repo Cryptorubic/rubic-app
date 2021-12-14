@@ -76,7 +76,7 @@
     "rubicOptimisation": "Insufficient liquidity for this trade. Try to disable rubic optimisation.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Trading is not available",
-    "wrongWallet": "Please log in with wallet that supports {{symbol}} token",
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },
