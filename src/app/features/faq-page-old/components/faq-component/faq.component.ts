@@ -2,9 +2,9 @@ import { AfterViewInit, Component, ElementRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Question } from '../../models/question';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, fromEvent } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-faq',
@@ -39,12 +39,30 @@ export class FaqComponent implements AfterViewInit {
   public ngAfterViewInit(): void {
     if (this.hash) {
       const answerElement = this.element.nativeElement.querySelector(`#${this.hash}`);
-      answerElement.scrollIntoView(true);
+      answerElement.scrollIntoView({
+        behavior: 'smooth'
+      });
+      fromEvent(document, 'scroll')
+        .pipe(debounceTime(50), takeUntil(this.destroy$))
+        .subscribe(() => {
+          answerElement.classList.add('questions-container__question_highlight');
+        });
     }
-    return;
   }
 
   public toggleQuestion(question: Question): void {
     question.isActive = !question.isActive;
+  }
+
+  // @ts-ignore
+  public findPosition(obj): number {
+    console.log(obj);
+    let top = 0;
+    if (obj.offsetParent) {
+      do {
+        top += obj.offsetTop;
+      } while ((obj = obj.offsetParent));
+      return top;
+    }
   }
 }

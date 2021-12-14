@@ -907,7 +907,11 @@ export class CrossChainRoutingService {
             'execution reverted: Solarbeam:  TRANSFER_FAILED'
           ];
 
-          if (unsupportedTokenErrors.some(errText => errMessage.includes(errText))) {
+          if (
+            unsupportedTokenErrors.some(errText =>
+              errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
+            )
+          ) {
             throw new UnsupportedTokenCCR();
           }
 

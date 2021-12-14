@@ -76,8 +76,8 @@
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
     "tradingIsNotAvailable": "Торговля недоступна",
     "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
-    "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multichain. Follow the link to learn more.",
-    "rpcError": "An error occurred, click here to know what to do to resolve it."
+    "unsupportedTokenCCR": "При попытке отправить транзакцию произошла ошибка.\n С большой вероятностью, вы пытаетесь продать токен, который в настоящее время не поддерживается в multichain.",
+    "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения"
   },
   "navigation": {
     "about": "О компании",
@@ -274,69 +274,70 @@
     "title": "FAQ",
     "questions": [
       {
-        "title": "What is Rubic?",
-        "answer": "Rubic is a multichain DeFi ecosystem, which features multi-chain swaps, on-chain swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete multi-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as our unique multi-chain feature which gives the opportunity to swap all supported tokens on 1 click!"
+        "title": "Что такое Rubic?",
+        "answer": "Rubic - это multi-chain экосистема DeFi, которая включает multi-chain транзакции, on-chain транзакции и многое другое. Наша цель - предоставить полную децентрализованную торговую платформу ONE-STOP. Платформа Rubic - это место, где пользователи могут выполнять multi-chain транзакции, используя различные решения, где пользователи получат лучшие показатели от всех ведущих протоколов обмена (благодаря реализации агрегатора DEX), а также нашу уникальную multi-chain функцию, которая дает возможность обменять все поддерживаемые токены в 1 клик!"
       },
       {
-        "title": "Who can use our service?",
-        "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete multi-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at app.rubic.exchange"
+        "title": "Кто может использовать наш сервис?",
+        "answer": "Наш сервис может использоваться в любой части мира владельцами криптовалюты, которые хотели бы совершать сделки в разных сетях и выполнять multi-chain транзакции. В наши функции также входят услуги для других проектов: создание настраиваемых мостов и интеграция виджета Rubic Relay, который позволяет пользователям совершать сделки непосредственно на веб-сайте сервиса с помощью Rubic. KYC не требуется для операций на app.rubic.exchange"
       },
       {
-        "title": "How does Rubic unite different DEX platforms? ",
-        "answer": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices. Rubic always analyzes and compares all the variants, and comes up with the best rate. Please notice that while checking all the alternatives we consider the GAS fee. Rubic strives to provide users with the best exchange opportunities. "
+        "title": "Как Rubic объединяет разных DEX провайдеров? ",
+        "answer": "Пользователи смогут выбрать предпочитаемый протокол DEX, чтобы получить лучшие курсы токенов с самыми низкими ценами на газ. Rubic всегда анализирует и сравнивает все варианты и предлагает лучшую оценку. Обратите внимание, что при проверке всех альтернатив мы учитываем плату за газ. Rubic стремится предоставить пользователям лучшие возможности обмена."
       },
       {
-        "title": "Why do we need to make a choice between different providers?",
-        "answer": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to make better trading decisions.\n\nMoreover, Rubic created a routing solution that will allow users to trade any token on different networks. Our self-created routing system for Ethereum has several advantages over the Uniswap routing system. The main advantage is the ability to calculate gas prices and show users the best-optimized solution while paying the least amount of gas.\n\nOur routing system gives users lower prices on their swaps than most DEXs. Users will receive quotes for lower prices in situations where the price difference between different swap outcomes costs more than the ANTICIPATED price difference for the miner’s commission fees. When this difference in swap price is more than the difference in miner’s commission fees, the user will be presented with an option for a cheaper swap route. In situations where this occurs, users will also be given an option with a more expensive gas fee and a longer route to execute the swap, due to potential issues with liquidity."
+        "title": "Почему я должен выбирать между разными DEX провайдерами?",
+        "answer": "Плата за газ и цены на разных протоколах различаются, поэтому возможность выбирать больше опций дает пользователям возможность принимать более обоснованные торговые решения. \n Кроме того, Rubic создал решение для маршрутизации, которое позволит пользователям торговать любым токеном в разных сетях. Наша самостоятельно созданная система маршрутизации для Ethereum имеет несколько преимуществ перед системой маршрутизации Uniswap. Основным преимуществом является возможность рассчитывать цены на газ и показывать пользователям наиболее оптимизированное решение, при этом платя наименьшее количество газа. \n Наша система маршрутизации дает пользователям более низкие цены на транзакции, чем большинство DEX. Пользователи будут получать предложения по более низким ценам в ситуациях, когда разница в цене между различными результатами обмена стоит больше, чем ожидаемая разница в цене для комиссионных сборов майнера. Когда эта разница в цене транзакции превышает разницу в комиссионных сборах майнера, пользователю будет предложен вариант более дешевого маршрута обмена. В ситуациях, когда это происходит, пользователям также будет предоставлена возможность с более высокой платой за газ и более длительным маршрутом для выполнения транзакции из-за потенциальных проблем с ликвидностью."
       },
       {
-        "title": "How To Contact Support?",
-        "answer": "If you need assistance, feel free to contact our support team here by submitting a ticket on our website or on our Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>\n\n Live chat - Contact Rubic team for immediate assistance using chat. Available 24/7.\n\nEmail Support - <a href='mailto:support@rubic.finance'>support@rubic.finance</a>. Message Rubic Support anytime with more complex or technical questions. We're here to help."
+        "title": "Как связаться с поддержкой?",
+        "answer": "Если Вам нужна помощь, пожалуйста, обратитесь в нашу службу поддержки, отправив заявку на сайте в чате в правом нижнем углу, или в телеграмм <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>.\n\nLive chat - Пишите, для быстрого ответа. Мы онлайн 24/7.\n\nEmail support\n <a href='mailto:support@rubic.finance'>support@rubic.finance</a>  - Напишите нам, если вопрос сложный и нужно как следует разобраться.\n"
       },
       {
-        "title": "What is the Rubic Relay widget and how can we integrate it?",
-        "answer": "The Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well.\n\nHere is a detailed instructional guide for the Relay’s integration:\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
+        "title": "Что такое виджет Rubic Relay и как его интегрировать?",
+        "answer": "Rubic Relay - отличное решение низкой текучести пользователей. \nС помощью виджета, благодаря простоте и легкости в использовании, пользователи дольше остаются на Вашем веб-сайте. Relay предлагает пользователям и владельцам проектов функцию покупки и продажи токенов на веб-странице Вашего проекта, что способствует более долгому использованию Вашего сайта юзерами. \nВозможно масштабировать на разных устройствах, а также изменять цвета и размер самого виджета Relay.\n\nВоспользуйтесь простым руководством по интеграции виджета Relay:\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
       },
       {
-        "title": "What should I do when I see the message “Trading is not available“?",
-        "answer": "If you get this message, try the following methods:\n1. Reload the page.\n2. Clear the website cache.\n\n If it didn’t help probably one of the tokens you try to swap doesn’t have enough liquidity for this trade."
+        "title": "Что делать, если я вижу уведомление “Trading is not available“?",
+        "answer": "Если вы получили это сообщение, попробуйте следующие методы:\n 1. Обновите страницу.\n  2. Очистите кеш веб-сайта.\n\n Если это не помогло, вероятно, у одного из токенов, которые вы пытаетесь обменять, недостаточно ликвидности для этой сделки."
       },
       {
-        "title": "Why does my On-Chain swap have a long-lasting “Pending” status?",
-        "answer": "Reason:\nIt’s possible that the gas fee that was set is not enough to process your transaction.\n\n How to solve:\n If the transaction is “Pending”, it is best to accelerate the transaction manually, by changing to the desired value of gas, in order to force the completion of the transaction. It can be done via your wallet. You will be able to pay an additional gas fee.\n\nIf you still need assistance, feel free to contact our support team hereby submitting a ticket or on Telegram <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>"
+        "title": "Почему у моей On-Chain транзакции статус “Pending“?",
+        "answer": "Причина: \nВозможно, что внесенной Вами комиссии за газ недостаточно.\n\nРешение:\nВ случае если транзакция в статусе “Pending“, можно ускорить транзакцию вручную или отменить ее. Ускорить можно в Вашем кошельке, для этого потребуется внести дополнительную комиссию за газ. Отмена так же будет стоить газа."
       },
       {
-        "title": "Why do I get the “Insufficient Balance” error?",
-        "answer": "If you swap a native token and you encounter this error it means that you are trying to send all of your transferable funds out, without leaving enough balance for the transaction fees. If you transfer a non-native token, a value exceeding the available balance has been entered in the “Amount” field. \nAlso, please check that you have connected the proper wallet and you have enough tokens for the swap.\nThe fee is shown on the transfer screen before you confirm the transfer. Deduct this amount from the total amount you're sending out, and your transfer will go through."
+        "title": "Почему возникает ошибка “Insufficient balance“?",
+        "answer": "Данная ошибка означает, что баланса токенов в используемом кошельке недостаточно для выполнения транзакции.\n\nЧтобы продолжить транзакцию, необходимо выполнить одно из следующих действий:\n\n1. Убедитесь, что у вас достаточно баланса соответствующих токенов (если нет, измените сумму транзакции);\n2. Переведите токены на свой кошелек, чтобы у вас был достаточный баланс для выполнения желаемой транзакции;\n3. Если в транзакции используется ETH (например, перевод ETH в другой кошелек или преобразование ETH в другой токен), можно приобрести ETH с помощью кредитной карты у одного из наших рекомендуемых партнеров."
       },
       {
-        "title": "What should I do if I get the “Price Impact Too High” error?",
-        "answer": "Reason:\n This error is caused by low liquidity.\n\nTry trading a smaller amount, or increase slippage tolerance via the settings icon and try again. If that did not help, then the token’s liquidity is too low to swap."
+        "title": "Что делать, если появляется ошибка “Price Impact too High“?",
+        "answer": "Причина:\nДанная ошибка вызвана низкой ликвидностью. \n\nПопробуйте ввести меньшую сумму, повысить коэффициент slippage с помощью значка настроек и попытаться еще раз. Если данные шаги не помогли - ликвидность токена слишком низкая для проведения данной транзакции."
       },
       {
-        "title": "What if my transaction has a “Dropped & Replaced” status on the scanner?",
-        "answer": "Dropped & Replaced\" means the transaction has been replaced by a new one.\n\n There are two possible reasons for that status:\n1. You have accelerated the transaction in your wallet and will receive the desired tokens, you can find out information about the transaction in the “Replaced by Txn Hash\" tab.\n2. You probably cancelled the transaction by mistake. The assets will not be debited from your address, but the gas fee will not be refunded back to you."
+        "title": "Почему  на сканере статус моей транзакции “Dropped & Replaced“?",
+        "answer": "Данный статус \"Dropped & Replaced\" означает, что транзакция была заменена на новую. \nЕсть причины для появления данного статуса:\n1. Вы ускорили транзакцию в вашем кошельке и получите желаемые токены, информацию о транзакции вы можете узнать по новому хешу транзакции, указанному в поле “Replaced by Txn Hash“.\n2. Вы отменили транзакцию. Активы в отмененной транзакции не будут списаны с Вашего адреса, но плата за газ не будет возвращена Вам обратно."
       },
       {
-        "title": "Why did I get the ”Expired” status on the scanner?",
-        "answer": "The transaction was not mined in the time period allotted for it.\n\nIn this scenario, the transaction should be sent again. Note that during the transaction, the gas spent on its execution is burned, but not completely. A gas fee is also charged for conducting the re-sent transaction."
+        "title": "Почему на сканере статус моей транзакции “Expired?“",
+        "answer": "Причина: Транзакция не создалась в отведенный для нее период времени.\n\nВ данном случае, транзакцию следует отправить повторно. \nЗаметьте, что во время проведения транзакции газ, потраченный на ее совершение, сжигается, но не полностью. За проведение повторной транзакции также взимается плата за газ.\n"
       },
       {
-        "title": "Why do I get “Warning! Error Encountered During Contract Execution [Out of Gas]”?",
-        "answer": "Reason:\n There was not enough gas for the transaction.\n\n This scanner error means the gas limit you set was above the minimum but still not sufficient to get the transaction to execute. Please try again with a higher gas limit. Also, we recommend not to change the gas limit manually, your wallet will set the needed amount automatically."
+        "title": "Почему  на сканере у меня ошибка “Warning! Error encountered during contract execution [Out of gas]“?",
+        "answer": "\nУказанного газа было недостаточно для транзакции.\n\nЭта ошибка в сканере означает, что установленный Вами лимит газа был выше минимального, но все еще недостаточен для выполнения транзакции. Повторите, указав более высокий лимит газа. Также, мы не рекомендуем задавать допустимое значение gas вручную, Ваш кошелек автоматически устанавливает значение, необходимое для совершения операции."
       },
       {
-        "title": "Why do I have a long-lasting “Pending” status of a Multi-Chain transaction?",
-        "answer": "Presumably, gas prices increased dramatically during that time. \nIf the above methods did not help, please contact our support team via chat on the website or Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
+        "title": "Почему статус Pending не меняется длительное время в Multi-chain транзакции?",
+        "answer": "Предположительно, цена на газ во время проведения транзакции резко возросла. \nЕсли вышеперечисленные способы не помогли, пожалуйста, свяжитесь с нашей службой поддержки через чат на сайте или Телеграм: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
       },
       {
-        "title": "Why can't I do the multi-chain swap?",
-        "answer": "Unfortunately, we don’t support tokens with an included fee to sell via multi-chain routing. We are working on implementing this feature.\n For now we suggest you to sell these types of tokens for stable or native coins via on-chain swap and then do the multi-chain swap with the token you have bought.",
+        "title": "Почему я не могу провести multi-chain транзакцию?",
+        "answer": "К сожалению, мы не поддерживаем токены со вшитой комиссией для мульти-чейн транзакций. Мы работаем над разработкой данного функционала. На текущий момент рекомендуем продать обменять данный токен на нативный токен сети или stable coin, и провести этот токен через мульти-чейн.",
         "id": "unsupportedTokenCCR"
       },
       {
-        "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
-        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit."
+        "title": "Как устранить ошибку Method execution error: Error: Internal JSON-RPC error.",
+        "answer": "Временная неисправность RPC, используемого в кошельке для выбранной сети. Если эта ошибка возникла, транзакция не была отправлена \u200B\u200Bи деньги не будут списаны с вашего кошелька. ; \\n Попробуйте отправить транзакцию еще раз. Если проблема не исчезла, попробуйте выполнить следующие действия: \n Очистить кэш; \n Очистить куки",
+        "id": "rpcError"
       }
     ]
   },

@@ -70,3 +70,17 @@ tui-loader._loading {
     background-color: var(--rubic-base-01);
   }
 }
+
+.button-error {
+  margin-top: 5px;
+  padding: 5px 10px;
+
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+}

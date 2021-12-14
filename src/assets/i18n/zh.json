@@ -76,8 +76,8 @@
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "tradingIsNotAvailable": "交易不可用",
     "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
-    "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multichain. Follow the link to learn more.",
-    "rpcError": "An error occurred, click here to know what to do to resolve it."
+    "unsupportedTokenCCR": "嘗試發送交易時發生錯誤。\n 您可能正在嘗試出售當前不受多鏈支持的代幣。點擊鏈接了解更多信息。",
+    "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。"
   },
   "navigation": {
     "about": "关于",
@@ -336,7 +336,8 @@
       },
       {
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
-        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit."
+        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
+        "id": "rpcError"
       }
     ]
   },
