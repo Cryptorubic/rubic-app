@@ -30,6 +30,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -141,9 +142,11 @@ export class SwapButtonContainerComponent implements OnInit {
 
   get allowChangeNetwork(): boolean {
     const form = this.formService.inputValue;
+    const walletType = BlockchainsInfo.getBlockchainType(form.fromBlockchain);
     if (
       this.providerConnectorService?.provider.walletName !== WALLET_NAME.METAMASK ||
-      !form.fromBlockchain
+      !form.fromBlockchain ||
+      walletType !== 'ethLike'
     ) {
       return false;
     }
@@ -167,7 +170,10 @@ export class SwapButtonContainerComponent implements OnInit {
 
     switch (true) {
       case err[ERROR_TYPE.WRONG_WALLET]: {
-        translateParams = { key: 'errors.wrongWallet' };
+        translateParams = {
+          key: 'errors.wrongWallet',
+          interpolateParams: { symbol: fromToken.symbol }
+        };
         break;
       }
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:

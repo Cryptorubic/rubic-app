@@ -16,6 +16,7 @@ import { RaydiumService } from '@features/instant-trade/services/instant-trade-s
 import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
 import { EthLikeContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/eth-like-contract-executor';
 import BigNumber from 'bignumber.js';
+import CustomError from '@core/errors/models/custom-error';
 
 @Injectable({
   providedIn: 'root'
@@ -66,31 +67,37 @@ export class CrossChainContractExecutorFacade {
       );
     }
     if (type === 'solana') {
-      // const { transaction, signers } = this.executeSolanaContract(trade, userAddress, null);
-      const { transaction, signers } = await this.solanaContractExecutor.execute(
-        trade,
-        userAddress,
-        toBlockchainInContractNumber,
-        settings,
-        this.targetAddress
-      );
-      const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
-      if (options.onTransactionHash) {
-        options.onTransactionHash(hash);
-      }
-      await new Promise((resolve, reject) => {
-        this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
-          hash,
-          (signatureResult: SignatureResult) => {
-            if (!signatureResult.err) {
-              resolve(hash);
-            } else {
-              reject(signatureResult.err);
-            }
-          }
+      try {
+        const { transaction, signers } = await this.solanaContractExecutor.execute(
+          trade,
+          userAddress,
+          toBlockchainInContractNumber,
+          settings,
+          this.targetAddress
         );
-      });
-      return hash;
+        const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
+        if (options.onTransactionHash) {
+          options.onTransactionHash(hash);
+        }
+        await new Promise((resolve, reject) => {
+          this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
+            hash,
+            (signatureResult: SignatureResult) => {
+              if (!signatureResult.err) {
+                resolve(hash);
+              } else {
+                reject(signatureResult.err);
+              }
+            }
+          );
+        });
+        return hash;
+      } catch (err) {
+        console.debug(err);
+        if ('message' in err) {
+          throw new CustomError(err.message);
+        }
+      }
     }
     return null;
   }

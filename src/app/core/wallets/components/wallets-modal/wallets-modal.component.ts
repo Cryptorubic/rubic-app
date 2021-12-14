@@ -157,13 +157,13 @@ export class WalletsModalComponent implements OnInit {
           }
         )
         .subscribe({
-          next: blockchainName => {
+          next: async blockchainName => {
             if (blockchainName) {
-              this.providerConnectorService.connectProvider(
+              await this.providerConnectorService.connectProvider(
                 provider,
                 BlockchainsInfo.getBlockchainByName(blockchainName).id
               );
-              this.authService.signIn();
+              await this.authService.signIn();
               this.close();
             }
           },

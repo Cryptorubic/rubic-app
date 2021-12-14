@@ -58,8 +58,6 @@ export class WalletConnectorService {
 
   private privateProvider: CommonWalletAdapter;
 
-  private walletConnectWallets: string[];
-
   public get address(): string | undefined {
     return this.provider?.address;
   }
@@ -166,9 +164,6 @@ export class WalletConnectorService {
   public async activate(): Promise<void> {
     await this.provider.activate();
     this.storage.setItem('provider', this.provider.walletName);
-    if (this.provider.walletName === WALLET_NAME.WALLET_LINK) {
-      this.storage.setItem('chainId', this.provider.network.id);
-    }
   }
 
   public async requestPermissions(): Promise<{ parentCapability: string }[]> {
@@ -250,6 +245,7 @@ export class WalletConnectorService {
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService,
+          this.storage,
           chainId
         )
     };

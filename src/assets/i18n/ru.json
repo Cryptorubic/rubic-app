@@ -76,7 +76,7 @@
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
     "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "tradingIsNotAvailable": "Торговля недоступна",
-    "wrongWallet": "Choose Solana network. To use other networks, log in with a suitable wallet.",
+    "wrongWallet": "Please log in with wallet that supports {{symbol}} token",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },
@@ -394,6 +394,9 @@
     "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес"
   },
   "crossChainPage": {
+    "targetAddress": {
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet."
+    },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",

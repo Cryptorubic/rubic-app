@@ -38,7 +38,7 @@ export class TargetNetworkAddressComponent implements AfterViewInit {
     this.address.setValidators(correctAddressValidator(blockchainAdapter));
   }
 
-  private targetBlockchainName: BLOCKCHAIN_NAME;
+  public targetBlockchainName: BLOCKCHAIN_NAME;
 
   @Output() targetAddress: EventEmitter<{
     address: string;

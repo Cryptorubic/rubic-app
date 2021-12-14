@@ -76,7 +76,7 @@
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "tradingIsNotAvailable": "交易不可用",
     "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
-    "wrongWallet": "Choose Solana network. To use other networks, log in with a suitable wallet.",
+    "wrongWallet": "Please log in with wallet that supports {{symbol}} token",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },
@@ -394,6 +394,9 @@
     "getTokens": "您將獲得 {{ toBlockchainName }} 個令牌到所選地址"
   },
   "crossChainPage": {
+    "targetAddress": {
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet."
+    },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",

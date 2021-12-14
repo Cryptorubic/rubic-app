@@ -15,6 +15,7 @@ import { WalletlinkWrongNetwork } from '@core/errors/models/provider/WalletlinkW
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { StoreService } from '@core/services/store/store.service';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
   private isMobileMode: boolean = false;
@@ -38,6 +39,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     onNetworkChanges$: BehaviorSubject<IBlockchain>,
     onAddressChanges$: BehaviorSubject<string>,
     errorService: ErrorsService,
+    private readonly storeService: StoreService,
     blockchainId?: number
   ) {
     super(errorService, onAddressChanges$, onNetworkChanges$);
@@ -98,6 +100,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
       this.isEnabled = true;
       this.onNetworkChanges$.next(chainInfo);
       this.onAddressChanges$.next(address);
+      this.storeService.setItem('chainId', Number(this.selectedChain));
     } catch (error) {
       if (!(error instanceof RubicError)) {
         throw new WalletlinkError();
