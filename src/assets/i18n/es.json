@@ -76,8 +76,8 @@
     "rubicOptimisation": "Liquidez insuficiente para esta operación. Intente deshabilitar la optimización de Rubic.",
     "tradingIsNotAvailable": "El comercio no está disponible",
     "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
-    "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multichain. Follow the link to learn more.",
-    "rpcError": "An error occurred, click here to know what to do to resolve it."
+    "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
+    "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo."
   },
   "navigation": {
     "about": "Información",
@@ -336,7 +336,8 @@
       },
       {
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
-        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit."
+        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
+        "id": "rpcError"
       }
     ]
   },

@@ -1,4 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-rpc-error',
@@ -7,5 +9,12 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RpcErrorComponent {
-  constructor() {}
+  public readonly questionId: string;
+
+  constructor(
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<void, { questionId: string }>
+  ) {
+    this.questionId = context.data.questionId;
+  }
 }
