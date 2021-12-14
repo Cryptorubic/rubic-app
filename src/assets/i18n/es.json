@@ -588,9 +588,16 @@
     }
   },
   "banner": {
-    "defaultText": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 10,000 tokens en Ethereum, BSC, Polygon, Avalanche, MoonRiver y Fantom.",
-    "customText": "Fantom ahora está disponible para intercambios multicadena y en cadena.",
-    "link": "Pruébalo hoy!"
+    "trading": {
+      "defaultText": "¡Se ha lanzado Rubic Multi-Chain! Intercambia entre 10,000 tokens en Ethereum, BSC, Polygon, Avalanche, MoonRiver y Fantom.",
+      "customText": "Fantom ahora está disponible para intercambios multicadena y en cadena.",
+      "link": "Pruébalo hoy!"
+    },
+    "external": {
+      "text": "La apuesta con 80% APY o más comienza el 23 de diciembre.",
+      "link": "¡Suscríbete para participar!"
+    }
+
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
