@@ -28,7 +28,7 @@ import {
 import {
   UniSwapV3InstantTrade,
   UniSwapV3Route
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3InstantTrade';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniSwapV3InstantTrade';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
