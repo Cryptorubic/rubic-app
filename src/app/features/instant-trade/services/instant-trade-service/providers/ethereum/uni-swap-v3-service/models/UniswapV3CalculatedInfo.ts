@@ -1,12 +1,12 @@
-import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Route';
 import BigNumber from 'bignumber.js';
+import { UniSwapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3InstantTrade';
 
-export interface UniswapV3CalculatedInfo {
-  route: UniswapV3Route;
+export interface UniSwapV3CalculatedInfo {
+  route: UniSwapV3Route;
   estimatedGas?: BigNumber;
 }
 
-export interface UniswapV3CalculatedInfoWithProfit extends UniswapV3CalculatedInfo {
+export interface UniSwapV3CalculatedInfoWithProfit extends UniSwapV3CalculatedInfo {
   estimatedGas: BigNumber;
   profit: BigNumber;
 }
