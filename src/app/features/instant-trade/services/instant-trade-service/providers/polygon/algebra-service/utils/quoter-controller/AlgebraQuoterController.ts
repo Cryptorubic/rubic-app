@@ -3,9 +3,9 @@ import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
-import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/liquidity-pool-controller/constants/routerTokens';
-import { algebraContractData } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra-constants';
-import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraRoute';
+import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/routerTokens';
+import { ContractData } from '@shared/models/blockchain/ContractData';
+import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraInstantTrade';
 
 interface RecGraphVisitorOptions {
   routesTokens: SymbolToken[];
@@ -17,8 +17,8 @@ interface RecGraphVisitorOptions {
 /**
  * Works with requests, related to Uniswap v3 liquidity pools.
  */
-export class LiquidityPoolsController {
-  private readonly routerTokens: SymbolToken[];
+export class AlgebraQuoterController {
+  private routerTokens: SymbolToken[];
 
   /**
    * Converts algebra route to encoded bytes string to pass it to contract.
@@ -59,17 +59,20 @@ export class LiquidityPoolsController {
       path: path,
       methodData: {
         methodName: 'quoteExactInput',
-        methodArguments: [LiquidityPoolsController.getEncodedPath(path), fromAmountAbsolute]
+        methodArguments: [AlgebraQuoterController.getEncodedPath(path), fromAmountAbsolute]
       }
     };
   }
 
-  constructor(private readonly web3Public: Web3Public, isTestingMode = false) {
-    if (!isTestingMode) {
-      this.routerTokens = routerTokensNetMode.mainnet;
-    } else {
-      this.routerTokens = routerTokensNetMode.testnet;
-    }
+  constructor(
+    private readonly web3Public: Web3Public,
+    private readonly quoterContract: ContractData
+  ) {
+    this.routerTokens = routerTokensNetMode.mainnet;
+  }
+
+  public setTestingMode(): void {
+    this.routerTokens = routerTokensNetMode.testnet;
   }
 
   /**
@@ -109,8 +112,8 @@ export class LiquidityPoolsController {
 
     return this.web3Public
       .multicallContractMethods<{ 0: string }>(
-        algebraContractData.quoter.address,
-        algebraContractData.quoter.abi,
+        this.quoterContract.address,
+        this.quoterContract.abi,
         quoterMethodsData.map(quoterMethodData => quoterMethodData.methodData)
       )
       .then(results => {
@@ -139,7 +142,7 @@ export class LiquidityPoolsController {
 
     if (path.length === maxTransitTokens + 1) {
       return [
-        LiquidityPoolsController.getQuoterMethodData(path.concat(toToken), fromAmountAbsolute)
+        AlgebraQuoterController.getQuoterMethodData(path.concat(toToken), fromAmountAbsolute)
       ];
     }
 

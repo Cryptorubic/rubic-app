@@ -1,4 +1,4 @@
-import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/models/LiquidityPool';
+import { LiquidityPool } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/LiquidityPool';
 import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 

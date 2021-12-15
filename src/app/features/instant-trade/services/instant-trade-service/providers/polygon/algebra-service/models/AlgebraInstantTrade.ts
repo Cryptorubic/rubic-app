@@ -1,7 +1,17 @@
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraRoute';
+import {
+  UniV3AlgebraInstantTrade,
+  UniV3AlgebraRoute
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/UniV3AlgebraInstantTrade';
+import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 
-export interface AlgebraInstantTrade extends InstantTrade {
+export interface AlgebraRoute extends UniV3AlgebraRoute {
+  /**
+   * List of pools' contract addresses to use in a trade's route.
+   */
+  path: SymbolToken[];
+}
+
+export interface AlgebraInstantTrade extends UniV3AlgebraInstantTrade {
   /**
    * Route info, containing path and output amount.
    */
