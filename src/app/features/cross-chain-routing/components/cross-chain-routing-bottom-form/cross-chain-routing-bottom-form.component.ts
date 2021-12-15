@@ -9,7 +9,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import {
@@ -47,8 +47,8 @@ import { SuccessTxModalService } from 'src/app/features/swaps/services/success-t
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
-import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -77,9 +77,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
-  private readonly networksWithAdditionalAddress = [BLOCKCHAIN_NAME.SOLANA];
-
-  public displayTargetAddressInput: boolean;
+  public readonly displayTargetAddressInput$: Observable<boolean>;
 
   private readonly hiddenTradeData$: BehaviorSubject<{
     toAmount: BigNumber;
@@ -141,8 +139,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly gtmService: GoogleTagManagerService,
     private readonly successTxModalService: SuccessTxModalService,
-    private readonly ccrContractWriterService: CrossChainContractExecutorFacade
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
+    this.displayTargetAddressInput$ = targetNetworkAddressService.displayAddress$;
     this.onCalculateTrade$ = new Subject();
     this.hiddenTradeData$ = new BehaviorSubject(undefined);
   }
@@ -193,9 +192,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.toBlockchain = form.toBlockchain;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
-    this.displayTargetAddressInput =
-      this.networksWithAdditionalAddress.includes(form.fromBlockchain) ||
-      this.networksWithAdditionalAddress.includes(form.toBlockchain);
     this.conditionalCalculate('normal');
   }
 
@@ -490,15 +486,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
       this.createTrade();
     } else {
       this.approveTrade();
-    }
-  }
-
-  public setAddress(address: { address: string; isValid: boolean }): void {
-    if (this.displayTargetAddressInput) {
-      this.ccrContractWriterService.setTargetNetworkAddress(address.address);
-      this.isTargetNetworkValid = address.isValid;
-    } else {
-      this.isTargetNetworkValid = true;
     }
   }
 }

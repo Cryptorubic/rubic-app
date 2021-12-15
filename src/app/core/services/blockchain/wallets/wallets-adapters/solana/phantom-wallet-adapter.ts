@@ -22,14 +22,6 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter {
     super(errorsService, onAddressChanges$, onNetworkChanges$, connection);
   }
 
-  public async signPersonal(message: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
-    const encodedMessage = encoder.encode(message);
-    const { signature } = await this.wallet.signMessage(encodedMessage, 'utf-8');
-    return decoder.decode(signature).replaceAll('\0', '\x00');
-  }
-
   public async activate(): Promise<void> {
     const wallet = typeof window !== 'undefined' && window.solana;
     await this.checkErrors(wallet);

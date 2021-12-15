@@ -71,12 +71,16 @@ export class CrossChainRoutingApiService {
     targetAddress: string,
     secondPath: string[]
   ): Observable<void> {
-    return this.httpService.post('solana-params/', {
-      fromTxHash: transactionHash,
-      network,
-      walletAddress: targetAddress,
-      secondPath
-    });
+    return this.httpService.post(
+      'trades/params',
+      {
+        fromTxHash: transactionHash,
+        network,
+        walletAddress: targetAddress,
+        secondPath
+      },
+      BASE_URL
+    );
   }
 
   /**

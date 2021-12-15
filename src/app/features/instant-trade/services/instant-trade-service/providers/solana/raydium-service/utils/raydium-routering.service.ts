@@ -66,7 +66,6 @@ export class RaydiumRoutingService {
     amount: string,
     slippage: number
   ): SwapOutAmount {
-    this._currentPoolInfo = poolInfo;
     const { coin, pc, fees } = poolInfo;
     const { swapFeeNumerator, swapFeeDenominator } = fees;
     const coinMint =

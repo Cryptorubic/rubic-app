@@ -23,7 +23,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil, tap } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
@@ -31,6 +31,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -66,10 +67,6 @@ export class SwapButtonContainerComponent implements OnInit {
     this.errorType[ERROR_TYPE.NO_AMOUNT] = Boolean(value === null ? true : value?.isNaN());
     // @TODO tests.
     // this.checkInsufficientFundsError();
-  }
-
-  @Input() set isTargetAddressValid(isValid: boolean) {
-    this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = isValid !== undefined && !isValid;
   }
 
   @Input() set minAmount(value: false | number | BigNumber) {
@@ -173,7 +170,7 @@ export class SwapButtonContainerComponent implements OnInit {
         translateParams = {
           key: 'errors.wrongWallet',
           interpolateParams: {
-            network: BlockchainsInfo.getBlockchainByName(fromToken.blockchain).label
+            network: BlockchainsInfo.getBlockchainByName(fromToken?.blockchain)?.label || ''
           }
         };
         break;
@@ -240,7 +237,8 @@ export class SwapButtonContainerComponent implements OnInit {
     private readonly withRoundPipe: WithRoundPipe,
     private readonly iframeService: IframeService,
     private readonly headerStore: HeaderStore,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -257,6 +255,14 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private setupSubscriptions(): void {
+    this.targetNetworkAddressService.targetAddress$
+      .pipe(
+        tap(el => {
+          this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = el && !el.isValid;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
     if (this.iframeService.isIframe) {
       this.needLoginLoading = false;
       this.needLogin = true;
@@ -331,6 +337,7 @@ export class SwapButtonContainerComponent implements OnInit {
     if (!this._fromAmount || !fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
+      return;
     }
 
     if (this.checkWrongBlockchainError()) {

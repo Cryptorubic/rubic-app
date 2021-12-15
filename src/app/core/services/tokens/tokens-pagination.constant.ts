@@ -9,5 +9,5 @@ export const TOKENS_PAGINATION: TokensNetworkState = {
   [BLOCKCHAIN_NAME.AVALANCHE]: { page: 1, maxPage: 1 },
   [BLOCKCHAIN_NAME.MOONRIVER]: { page: 1, maxPage: 1 },
   [BLOCKCHAIN_NAME.FANTOM]: { page: 1, maxPage: 1 },
-  [BLOCKCHAIN_NAME.SOLANA]: { page: 1, maxPage: 1 }
+  [BLOCKCHAIN_NAME.SOLANA]: { page: 1, maxPage: 2 }
 };

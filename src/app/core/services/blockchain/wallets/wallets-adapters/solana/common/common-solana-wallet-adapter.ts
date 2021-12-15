@@ -28,6 +28,14 @@ export abstract class CommonSolanaWalletAdapter extends CommonWalletAdapter<Sola
     this.connection = connection;
   }
 
+  public async signPersonal(message: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const encodedMessage = encoder.encode(message);
+    const { signature } = await this.wallet.signMessage(encodedMessage, 'utf-8');
+
+    return Buffer.from(signature).toString('base64');
+  }
+
   public deActivate(): void {
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);

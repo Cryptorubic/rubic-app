@@ -22,11 +22,10 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
+import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
 import { subtractPercent } from '@shared/utils/utils';
@@ -55,8 +54,7 @@ export class RaydiumService implements ItProvider {
     private readonly priceImpactService: PriceImpactService,
     private readonly tokensService: TokensService,
     private readonly solanaPrivateAdapterService: SolanaPrivateAdapterService,
-    private readonly raydiumRoutingService: RaydiumRoutingService,
-    private readonly swapFormService: SwapFormService
+    private readonly raydiumRoutingService: RaydiumRoutingService
   ) {
     this.blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA];
     this.connection = this.blockchainAdapter.connection;
@@ -118,8 +116,8 @@ export class RaydiumService implements ItProvider {
     const amms = Object.values(directPoolInfos).filter(pool => pool.version === 4);
 
     if (amms?.length) {
-      const { amountOut, priceImpact } = amms.reduce(
-        (acc, pool) => {
+      const { amountOut, priceImpact, bestRoute } = amms.reduce(
+        (acc, pool, index) => {
           const { amountOut: poolAmountOut, priceImpact: poolPriceImpact } =
             this.raydiumRoutingService.getSwapOutAmount(
               pool,
@@ -130,16 +128,18 @@ export class RaydiumService implements ItProvider {
             );
           if (poolAmountOut.gt(acc.amountOut)) {
             this.poolInfo = [pool];
-            return { amountOut: poolAmountOut, priceImpact: poolPriceImpact };
+            return { amountOut: poolAmountOut, priceImpact: poolPriceImpact, bestRoute: index };
           }
           return acc;
         },
         {
           amountOut: new BigNumber(0),
-          priceImpact: 100
+          priceImpact: 100,
+          bestRoute: 0
         }
       );
 
+      this.raydiumRoutingService.currentPoolInfo = amms[bestRoute];
       this.priceImpactService.setPriceImpact(priceImpact);
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     }

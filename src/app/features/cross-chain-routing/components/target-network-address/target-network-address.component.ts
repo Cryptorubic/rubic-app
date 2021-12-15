@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
 import { Validators } from '@angular/forms';
@@ -15,6 +8,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/w
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
 
 function correctAddressValidator(blockchainAdapter: Web3Public | SolanaWeb3Public): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -40,20 +34,15 @@ export class TargetNetworkAddressComponent implements AfterViewInit {
 
   public targetBlockchainName: BLOCKCHAIN_NAME;
 
-  @Output() targetAddress: EventEmitter<{
-    address: string;
-    isValid: boolean;
-  }>;
-
   public address: FormControl<string>;
 
   constructor(
     private readonly blockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.address = new FormControl<string>(null, [Validators.required]);
     this.address.markAsDirty();
-    this.targetAddress = new EventEmitter();
     this.address.valueChanges.pipe(debounceTime(10), distinctUntilChanged()).subscribe(() => {
       if (this.address.valid) {
         this.storeService.setItem('targetAddress', {
@@ -61,8 +50,8 @@ export class TargetNetworkAddressComponent implements AfterViewInit {
           blockchain: this.targetBlockchainName
         });
       }
-      this.targetAddress.emit({
-        address: this.address.value,
+      this.targetNetworkAddressService.setTargetAddress({
+        value: this.address.value,
         isValid: this.address.valid
       });
     });

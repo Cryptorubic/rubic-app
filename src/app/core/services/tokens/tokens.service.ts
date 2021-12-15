@@ -13,7 +13,10 @@ import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain
 import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import {
+  NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+  NATIVE_SOLANA_MINT_ADDRESS
+} from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
@@ -355,8 +358,15 @@ export class TokensService {
    * @param blockchain Blockchain of native token.
    */
   public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
+    let nativeCoinAddress: string;
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    if (blockchainType === 'solana') {
+      nativeCoinAddress = NATIVE_SOLANA_MINT_ADDRESS;
+    } else if (blockchainType === 'ethLike') {
+      nativeCoinAddress = NATIVE_ETH_LIKE_TOKEN_ADDRESS;
+    }
     const nativeCoin = this.tokens.find(token =>
-      TokensService.areTokensEqual(token, { blockchain, address: NATIVE_ETH_LIKE_TOKEN_ADDRESS })
+      TokensService.areTokensEqual(token, { blockchain, address: nativeCoinAddress })
     );
     return this.coingeckoApiService
       .getNativeCoinPrice(blockchain)

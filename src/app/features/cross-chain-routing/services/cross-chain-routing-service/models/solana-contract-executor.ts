@@ -26,10 +26,11 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/private-blockchain-adapter.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
+import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -44,6 +45,7 @@ export class SolanaContractExecutor {
     private readonly raydiumRoutingService: RaydiumRoutingService
   ) {}
 
+  // eslint-disable-next-line complexity
   public async execute(
     trade: CrossChainRoutingTrade,
     address: string,
@@ -56,16 +58,21 @@ export class SolanaContractExecutor {
     const owner = new PublicKey(address);
     const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
+
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
     const amountIn = new BigNumber(trade.tokenInAmount.toString()).multipliedBy(fromDecimals);
+
     const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
     const amountOut = new BigNumber(trade.tokenOutAmount.toString()).multipliedBy(toDecimals);
+
     const middleDecimals = new BigNumber(10).exponentiatedBy(
       transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
     );
-    const amountMiddle = new BigNumber(
-      subtractPercent(trade.firstTransitTokenAmount, settings.slippageTolerance / 100).toString()
-    ).multipliedBy(middleDecimals);
+    const middleIn = subtractPercent(
+      trade.firstTransitTokenAmount,
+      settings.slippageTolerance / 100
+    );
+    const amountMiddle = new BigNumber(middleIn.toString()).multipliedBy(middleDecimals);
 
     const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
     const to = this.tokensService.tokens.find(el => el.address === trade.tokenOut.address);
@@ -87,6 +94,7 @@ export class SolanaContractExecutor {
 
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
+    // @TODO Solana.
     const blockchainUuid: Partial<Record<BLOCKCHAIN_NAME, string>> = {
       [BLOCKCHAIN_NAME.ETHEREUM]: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx',
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '4JCZAgsC5XwXxgexidRmJmdtMCBSAcMqHAUF152x5a71',
@@ -108,8 +116,9 @@ export class SolanaContractExecutor {
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
       tokenInAmount: fromFinalAmount,
-      secondPath: trade.secondPath,
+      secondPath: trade.secondPath.map(el => Web3Public.toChecksumAddress(el)),
       exactRbcTokenOut: middleFinalAmount,
+      // @TODO Solana.
       tokenOutMin: toFinalAmount,
       newAddress: targetAddress,
       swapToCrypto: true,
@@ -117,7 +126,7 @@ export class SolanaContractExecutor {
     };
 
     const { from: fromAccount } =
-      transferType === TransferDataType.NON_TRANSFER_TOKEN
+      transferType !== TransferDataType.NATIVE
         ? await privateBlockchainAdapter.getOrCreatesTokensAccounts(
             mintAccountsAddresses,
             fromMint,
@@ -129,29 +138,30 @@ export class SolanaContractExecutor {
           )
         : { from: { key: PublicKey.default } };
 
+    // @TODO Solana. Fix keys order.
     transaction.add(
       SolanaContractExecutor.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
         new PublicKey(blockchainUuid[trade.toBlockchain]),
         TOKEN_PROGRAM_ID,
-        new PublicKey(poolInfo?.ammId),
-        new PublicKey(poolInfo?.ammAuthority),
-        new PublicKey(poolInfo?.ammOpenOrders),
-        new PublicKey(poolInfo?.ammTargetOrders),
-        new PublicKey(poolInfo?.poolCoinTokenAccount),
-        new PublicKey(poolInfo?.poolPcTokenAccount),
-        new PublicKey(poolInfo?.serumProgramId),
-        new PublicKey(poolInfo?.serumMarket),
-        new PublicKey(poolInfo?.serumBids),
-        new PublicKey(poolInfo?.serumAsks),
-        new PublicKey(poolInfo?.serumEventQueue),
-        new PublicKey(poolInfo?.serumCoinVaultAccount),
-        new PublicKey(poolInfo?.serumPcVaultAccount),
-        new PublicKey(poolInfo?.serumVaultSigner),
+        new PublicKey(poolInfo?.ammId || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.ammAuthority || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.ammOpenOrders || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.ammTargetOrders || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.poolCoinTokenAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.poolPcTokenAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumProgramId || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumMarket || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumBids || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumAsks || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumEventQueue || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumCoinVaultAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumPcVaultAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumVaultSigner || NATIVE_SOL.mintAddress),
         fromAccount.key,
         new PublicKey('6rvuMQ7B3cwpmPHhbMGQFBsfDfkgnxiwmWxxSnkd9FjK'),
         new PublicKey(address),
-        new PublicKey(poolInfo.programId),
+        new PublicKey(poolInfo?.programId || NATIVE_SOL.mintAddress),
         new PublicKey(PDA_DELEGATE),
         new PublicKey(SYSTEM_PROGRAM_ID),
         methodArguments
@@ -198,8 +208,13 @@ export class SolanaContractExecutor {
       transferType: number;
     }
   ): TransactionInstruction {
-    const optionalAccounts = [
-      { pubkey: splProgramId, isSigner: false, isWritable: false },
+    const optionalTransferAccounts = [
+      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: splProgramId, isSigner: false, isWritable: false }
+    ];
+    const optionalNonTransferAccountsAccounts = [
+      ...optionalTransferAccounts,
       { pubkey: ammId, isSigner: false, isWritable: true },
       { pubkey: ammAuthority, isSigner: false, isWritable: false },
       { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
@@ -216,11 +231,9 @@ export class SolanaContractExecutor {
       { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
       { pubkey: raydiumAmm, isSigner: false, isWritable: false }
     ];
-    const keys: Array<AccountMeta> = [
+    const requiredKeys: Array<AccountMeta> = [
       { pubkey: pdaConfig, isSigner: false, isWritable: false },
       { pubkey: pdaBlockchainConfig, isSigner: false, isWritable: false },
-      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
-      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
       { pubkey: userOwner, isSigner: true, isWritable: false },
       { pubkey: pdaDelegate, isSigner: false, isWritable: true },
       { pubkey: systemProgram, isSigner: false, isWritable: false }
@@ -230,11 +243,17 @@ export class SolanaContractExecutor {
     const length = SOLANA_CCR_LAYOUT.encode({ instructionNumber: 1, ...swapParams }, buffer);
     const data = buffer.slice(0, length);
 
+    let keys: AccountMeta[];
+    if (swapParams.transferType === TransferDataType.NATIVE) {
+      keys = [...requiredKeys];
+    } else if (swapParams.transferType === TransferDataType.TRANSFER_TOKEN) {
+      keys = [...requiredKeys, ...optionalTransferAccounts];
+    } else if (swapParams.transferType === TransferDataType.NON_TRANSFER_TOKEN) {
+      keys = [...requiredKeys, ...optionalNonTransferAccountsAccounts];
+    }
+
     return new TransactionInstruction({
-      keys:
-        swapParams.transferType === TransferDataType.NON_TRANSFER_TOKEN
-          ? [...keys, ...optionalAccounts]
-          : keys,
+      keys,
       programId: new PublicKey(SOLANA_CROSS_CHAIN_CONTRACT),
       data
     });

@@ -9,7 +9,7 @@ import { SignatureResult } from '@solana/web3.js';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Injectable } from '@angular/core';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router.info';
+import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
@@ -17,16 +17,19 @@ import { SolanaContractExecutor } from '@features/cross-chain-routing/services/c
 import { EthLikeContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/eth-like-contract-executor';
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrossChainContractExecutorFacade {
-  private targetAddress: string;
-
   private solanaContractExecutor: SolanaContractExecutor;
 
   private ethLikeContractExecutor: EthLikeContractExecutor;
+
+  get targetAddress(): string {
+    return this.targetAddressService.getTargetAddress().value;
+  }
 
   constructor(
     private readonly privateAdapter: PrivateBlockchainAdapterService,
@@ -34,7 +37,8 @@ export class CrossChainContractExecutorFacade {
     private readonly tokensService: TokensService,
     private readonly raydiumRoutingService: RaydiumRoutingService,
     private readonly apiService: CrossChainRoutingApiService,
-    private readonly raydiumService: RaydiumService
+    private readonly raydiumService: RaydiumService,
+    private readonly targetAddressService: TargetNetworkAddressService
   ) {
     this.solanaContractExecutor = new SolanaContractExecutor(
       privateAdapter,
@@ -100,10 +104,6 @@ export class CrossChainContractExecutorFacade {
       }
     }
     return null;
-  }
-
-  public setTargetNetworkAddress(address: string): void {
-    this.targetAddress = address;
   }
 
   public calculateTokenInAmountMax(

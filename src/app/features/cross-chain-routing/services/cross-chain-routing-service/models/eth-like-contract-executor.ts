@@ -16,6 +16,7 @@ import {
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
 import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';
 
 export class EthLikeContractExecutor {
   private readonly contractAbi;
@@ -66,12 +67,14 @@ export class EthLikeContractExecutor {
           transactionHash = hash;
           // @TODO SOLANA KOSTYL.
           if (toBlockchainInContractNumber === 8) {
-            this.apiService.postSolanaCCRdata(
-              transactionHash,
-              TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
-              targetAddress,
-              trade.secondPath
-            );
+            this.apiService
+              .postSolanaCCRdata(
+                transactionHash,
+                TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
+                targetAddress,
+                trade.secondPath
+              )
+              .subscribe();
           }
         }
       },
@@ -140,11 +143,13 @@ export class EthLikeContractExecutor {
         tokenInAmountAbsolute,
         trade.firstPath,
         // @TODO Solana.
-        toBlockchainInContractNumber === 8 ? [] : trade.secondPath,
+        toBlockchainInContractNumber === 8 ? [EMPTY_ADDRESS] : trade.secondPath,
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         // @TODO Solana.
-        toBlockchainInContractNumber === 8 ? '0x1' : walletAddress,
+        toBlockchainInContractNumber === 8
+          ? '0x186915891222aDD6E2108061A554a1F400a25cbD'
+          : walletAddress,
         blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
       ]
     ];
