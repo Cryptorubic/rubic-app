@@ -110,25 +110,23 @@ export class AlgebraQuoterController {
       )
       .flat();
 
-    return this.web3Public
-      .multicallContractMethods<{ 0: string }>(
-        this.quoterContract.address,
-        this.quoterContract.abi,
-        quoterMethodsData.map(quoterMethodData => quoterMethodData.methodData)
-      )
-      .then(results => {
-        return results
-          .map((result, index) => {
-            if (result.success) {
-              return {
-                outputAbsoluteAmount: new BigNumber(result.output[0]),
-                path: quoterMethodsData[index].path
-              };
-            }
-            return null;
-          })
-          .filter(route => route !== null);
-      });
+    const results = await this.web3Public.multicallContractMethods<{ 0: string }>(
+      this.quoterContract.address,
+      this.quoterContract.abi,
+      quoterMethodsData.map(quoterMethodData => quoterMethodData.methodData)
+    );
+
+    return results
+      .map((result, index) => {
+        if (result.success) {
+          return {
+            outputAbsoluteAmount: new BigNumber(result.output[0]),
+            path: quoterMethodsData[index].path
+          };
+        }
+        return null;
+      })
+      .filter(route => route !== null);
   }
 
   /**
