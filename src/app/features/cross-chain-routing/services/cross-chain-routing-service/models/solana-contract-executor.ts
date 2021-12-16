@@ -31,7 +31,7 @@ import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
-import CustomError from '@core/errors/models/custom-error';
+import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -54,11 +54,6 @@ export class SolanaContractExecutor {
     settings: CcrSettingsForm,
     targetAddress: string
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const isBlockchainWorking = await this.checkHealth();
-    if (!isBlockchainWorking) {
-      throw new CustomError('Solana blockchain has low TPS count');
-    }
-
     const transaction = new Transaction();
     const signers: Account[] = [];
     const owner = new PublicKey(address);
@@ -107,10 +102,14 @@ export class SolanaContractExecutor {
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
     // @TODO Solana.
-    const blockchainUuid: Partial<Record<BLOCKCHAIN_NAME, string>> = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx',
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: '4JCZAgsC5XwXxgexidRmJmdtMCBSAcMqHAUF152x5a71',
-      [BLOCKCHAIN_NAME.POLYGON]: 'CaXfJCA4ccnvmMDFxf9V57SxjAXDe9JC1TgYWXcuyxs1'
+    const blockchainUuid: Partial<Record<number, string>> = {
+      2: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx',
+      1: '4JCZAgsC5XwXxgexidRmJmdtMCBSAcMqHAUF152x5a71',
+      3: 'CaXfJCA4ccnvmMDFxf9V57SxjAXDe9JC1TgYWXcuyxs1',
+      4: '4TLPWsYu3m8eSJQoF4Q9kk7RL59Q1Me6TpnnUsFktnYu',
+      5: 'HrZBcgtD2uzVxays2pEYmBg5UVCYtvmodw2b8oLZJD1B',
+      6: '3TTcYbjj879vMa8XGt6pcPBTFzAkdhYNEpq4K9YCR7eo',
+      7: '2q7db16qoCbGfqEgQ5A8WMnqi9p1vgecL7V2DotDoPPu'
     };
 
     const isTransfer =
@@ -154,7 +153,7 @@ export class SolanaContractExecutor {
     transaction.add(
       SolanaContractExecutor.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
-        new PublicKey(blockchainUuid[trade.toBlockchain]),
+        new PublicKey(blockchainUuid[toBlockchainInContractNumber]),
         TOKEN_PROGRAM_ID,
         new PublicKey(poolInfo?.ammId || NATIVE_SOL.mintAddress),
         new PublicKey(poolInfo?.ammAuthority || NATIVE_SOL.mintAddress),
@@ -272,10 +271,11 @@ export class SolanaContractExecutor {
   /**
    * Checks if TPS greater then minimum limit.
    */
-  private async checkHealth(): Promise<boolean> {
+  public static async checkHealth(
+    solanaPrivateAdapterService: SolanaPrivateAdapterService
+  ): Promise<boolean> {
     const samplesAmount = 10; // Performance samples are taken every 60 seconds.
-    const privateAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
-    const samples = await privateAdapter.getRecentPerformanceSamples(samplesAmount);
+    const samples = await solanaPrivateAdapterService.getRecentPerformanceSamples(samplesAmount);
     const totalTransactionsCount = samples.reduce((acc, curr) => acc + curr.numTransactions, 0);
     const averageTPS = totalTransactionsCount / samplesAmount / 60;
     const minimumTPSLimit = 1200;

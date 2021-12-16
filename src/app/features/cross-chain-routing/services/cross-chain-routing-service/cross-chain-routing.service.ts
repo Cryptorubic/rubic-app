@@ -54,6 +54,9 @@ import { RaydiumService } from '@features/instant-trade/services/instant-trade-s
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
+import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
+import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
+import CustomError from '@core/errors/models/custom-error';
 
 interface PathAndToAmount {
   path: string[];
@@ -128,7 +131,8 @@ export class CrossChainRoutingService {
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly iframeService: IframeService,
     private readonly gasService: GasService,
-    private readonly ccrContractExecutorFacade: CrossChainContractExecutorFacade
+    private readonly ccrContractExecutorFacade: CrossChainContractExecutorFacade,
+    private readonly solanaPrivateAdapter: SolanaPrivateAdapterService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
@@ -669,6 +673,15 @@ export class CrossChainRoutingService {
     );
     if (isToPaused) {
       throw new CrossChainIsUnavailableWarning();
+    }
+
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      const isSolanaWorking = await SolanaContractExecutor.checkHealth(this.solanaPrivateAdapter);
+      if (!isSolanaWorking) {
+        throw new CustomError(
+          'Solana blockchain mainnet is not stable right now. Please, try again later.'
+        );
+      }
     }
   }
 

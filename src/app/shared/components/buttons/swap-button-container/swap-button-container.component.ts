@@ -194,9 +194,7 @@ export class SwapButtonContainerComponent implements OnInit {
         };
         break;
       case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
-        if (this.formService.outputValue.toAmount?.isFinite()) {
-          translateParams = { key: 'errors.InsufficientBalance' };
-        }
+        translateParams = { key: 'errors.InsufficientBalance' };
         break;
       case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
         translateParams = { key: 'errors.multichainWallet' };
@@ -220,7 +218,11 @@ export class SwapButtonContainerComponent implements OnInit {
       default:
     }
 
-    if (!translateParams) {
+    const hasErrors = Object.values(err).filter(Boolean).length;
+    if (hasErrors && !translateParams) {
+      translateParams = { key: 'errors.unknown' };
+    }
+    if (!hasErrors && !translateParams) {
       return of(null);
     }
     return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
@@ -336,7 +338,7 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private async checkInsufficientFundsError(): Promise<void> {
-    const { fromToken } = this.formService.inputValue;
+    const { fromToken, fromAmount } = this.formService.inputValue;
     if (!this._fromAmount || !fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
@@ -355,7 +357,7 @@ export class SwapButtonContainerComponent implements OnInit {
           fromToken.decimals
         )
       : fromToken.amount;
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
+    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(fromAmount);
     this.cdr.detectChanges();
   }
 

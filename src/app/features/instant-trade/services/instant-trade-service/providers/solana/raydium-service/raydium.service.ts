@@ -29,6 +29,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
 import { subtractPercent } from '@shared/utils/utils';
+import CustomError from '@core/errors/models/custom-error';
 
 @Injectable({
   providedIn: 'root'
@@ -196,68 +197,74 @@ export class RaydiumService implements ItProvider {
     trade: InstantTrade,
     options: { onConfirm?: (hash: string) => Promise<void> }
   ): Promise<Partial<TransactionReceipt>> {
-    const solanaTokens = this.tokensService.tokens.filter(
-      el => el.blockchain === BLOCKCHAIN_NAME.SOLANA
-    );
-    // @TODO Solana.
-    // eslint-disable-next-line no-nested-ternary
-    const isWrap = this.isWrap(trade.from.token.address, trade.to.token.address);
-    const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS;
+    try {
+      const solanaTokens = this.tokensService.tokens.filter(
+        el => el.blockchain === BLOCKCHAIN_NAME.SOLANA
+      );
+      // @TODO Solana.
+      // eslint-disable-next-line no-nested-ternary
+      const isWrap = this.isWrap(trade.from.token.address, trade.to.token.address);
+      const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS;
 
-    let transaction;
-    let signers;
-    if (isWrap) {
-      const wrapResult = fromNativeSol
-        ? await this.swapManager.wrapSol(trade, this.walletConnectorService.address, solanaTokens)
-        : await this.swapManager.unwrapSol(this.walletConnectorService.address);
-      transaction = wrapResult.transaction;
-      signers = wrapResult.signers;
-    } else {
-      const swapResult =
-        trade.path.length > 2
-          ? await this.swapManager.createRouteSwap(
-              this.poolInfo[0],
-              this.poolInfo[1],
-              this.raydiumRoutingService.routerInfo,
-              trade.from.token,
-              trade.to.token,
-              trade.from.amount,
-              trade.to.amount,
-              this.walletConnectorService.address,
-              trade.from.token.decimals,
-              trade.to.token.decimals
-            )
-          : await this.swapManager.createSwapTransaction(
-              this.poolInfo[0],
-              trade.from.token.address,
-              trade.to.token.address,
-              trade.from.amount,
-              subtractPercent(trade.to.amount, this.settings.slippageTolerance),
-              trade.from.token.decimals,
-              trade.to.token.decimals,
-              this.walletConnectorService.address,
-              solanaTokens
-            );
-      transaction = swapResult.transaction;
-      signers = swapResult.signers;
-    }
+      let transaction;
+      let signers;
+      if (isWrap) {
+        const wrapResult = fromNativeSol
+          ? await this.swapManager.wrapSol(trade, this.walletConnectorService.address, solanaTokens)
+          : await this.swapManager.unwrapSol(this.walletConnectorService.address);
+        transaction = wrapResult.transaction;
+        signers = wrapResult.signers;
+      } else {
+        const swapResult =
+          trade.path.length > 2
+            ? await this.swapManager.createRouteSwap(
+                this.poolInfo[0],
+                this.poolInfo[1],
+                this.raydiumRoutingService.routerInfo,
+                trade.from.token,
+                trade.to.token,
+                trade.from.amount,
+                trade.to.amount,
+                this.walletConnectorService.address,
+                trade.from.token.decimals,
+                trade.to.token.decimals
+              )
+            : await this.swapManager.createSwapTransaction(
+                this.poolInfo[0],
+                trade.from.token.address,
+                trade.to.token.address,
+                trade.from.amount,
+                subtractPercent(trade.to.amount, this.settings.slippageTolerance),
+                trade.from.token.decimals,
+                trade.to.token.decimals,
+                this.walletConnectorService.address,
+                solanaTokens
+              );
+        transaction = swapResult.transaction;
+        signers = swapResult.signers;
+      }
 
-    const hash = await this.addMetaAndSend(transaction, signers);
+      const hash = await this.addMetaAndSend(transaction, signers);
 
-    await options.onConfirm(hash);
-    await new Promise((resolve, reject) => {
-      this.connection.onSignature(hash, (signatureResult: SignatureResult) => {
-        if (!signatureResult.err) {
-          resolve(hash);
-        } else {
-          reject(signatureResult.err);
-        }
+      await options.onConfirm(hash);
+      await new Promise((resolve, reject) => {
+        this.connection.onSignature(hash, (signatureResult: SignatureResult) => {
+          if (!signatureResult.err) {
+            resolve(hash);
+          } else {
+            reject(signatureResult.err);
+          }
+        });
       });
-    });
-    return {
-      from: this.walletConnectorService.address,
-      transactionHash: hash
-    };
+      return {
+        from: this.walletConnectorService.address,
+        transactionHash: hash
+      };
+    } catch (err) {
+      if ('message' in err) {
+        throw new CustomError(err.message);
+      }
+    }
   }
 
   public async addMetaAndSend(transaction: Transaction, signers: Account[]): Promise<string> {
