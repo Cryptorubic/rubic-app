@@ -178,19 +178,13 @@ export class EthLikeContractExecutor {
     transactionHash: string,
     targetAddress: string
   ): void {
-    const pool = this.raydiumRoutingService.currentPoolInfo;
-    const { coin, pc } =
-      pool.coin.symbol === trade.tokenIn.symbol
-        ? { coin: pool.poolCoinTokenAccount, pc: pool.poolPcTokenAccount }
-        : { coin: pool.poolPcTokenAccount, pc: pool.poolCoinTokenAccount };
     this.apiService
       .postSolanaCCRdata(
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
         targetAddress,
         trade.secondPath,
-        coin,
-        pc
+        this.raydiumRoutingService.currentPoolInfo
       )
       .subscribe();
   }

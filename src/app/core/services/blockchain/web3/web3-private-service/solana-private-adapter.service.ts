@@ -3,6 +3,7 @@ import {
   AccountInfo,
   Commitment,
   Connection,
+  PerfSample,
   PublicKey,
   SystemProgram,
   Transaction,
@@ -550,5 +551,9 @@ export class SolanaPrivateAdapterService {
       throw new Error(resp.error.message);
     }
     return resp.result;
+  }
+
+  public async getRecentPerformanceSamples(limit?: number): Promise<PerfSample[]> {
+    return this._connection.getRecentPerformanceSamples(limit);
   }
 }

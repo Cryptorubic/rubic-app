@@ -261,6 +261,7 @@ export class SwapButtonContainerComponent implements OnInit {
           const { fromBlockchain, toBlockchain } = this.formService.inputValue;
           this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
             fromBlockchain !== toBlockchain && el && !el.isValid;
+          this.cdr.detectChanges();
         }),
         takeUntil(this.destroy$)
       )
