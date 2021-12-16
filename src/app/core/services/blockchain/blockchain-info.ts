@@ -3,6 +3,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import networks from '../../../shared/constants/blockchain/networks';
 import CustomError from '@core/errors/models/custom-error';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export class BlockchainsInfo {
   static getBlockchainById(id: number | string): IBlockchain {
@@ -13,7 +14,7 @@ export class BlockchainsInfo {
     return networks.find(network => network.name === name) as IBlockchain;
   }
 
-  static getBlockchainType(name: BLOCKCHAIN_NAME): 'solana' | 'ethLike' {
+  static getBlockchainType(name: BLOCKCHAIN_NAME): BlockchainType {
     if (WEB3_SUPPORTED_BLOCKCHAINS.some(el => el === name)) {
       return 'ethLike';
     }

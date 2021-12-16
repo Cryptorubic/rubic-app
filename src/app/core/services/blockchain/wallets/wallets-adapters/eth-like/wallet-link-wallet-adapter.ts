@@ -16,6 +16,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import { StoreService } from '@core/services/store/store.service';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
   private isMobileMode: boolean = false;
@@ -26,7 +27,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     return false;
   }
 
-  get walletType(): 'solana' | 'ethLike' {
+  get walletType(): BlockchainType {
     return 'ethLike';
   }
 

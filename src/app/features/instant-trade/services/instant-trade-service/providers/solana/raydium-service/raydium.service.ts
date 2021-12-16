@@ -103,7 +103,12 @@ export class RaydiumService implements ItProvider {
       this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
       false
     );
-    const amms = Object.values(directPoolInfos).filter(pool => pool.version === 4);
+
+    // @TODO Solana. Remove filter by serum.
+    const amms = Object.values(directPoolInfos).filter(
+      pool =>
+        pool.version === 4 && pool.serumBids !== '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD'
+    );
 
     if (amms?.length) {
       const { amountOut, priceImpact, bestRoute } = amms.reduce(
@@ -134,6 +139,7 @@ export class RaydiumService implements ItProvider {
       return this.swapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     }
 
+    // @TODO Solana routing.
     // const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
     // if (fromBlockchain !== toBlockchain) {
     //   const poolInfos = await this.liquidityManager.requestInfos(
@@ -179,7 +185,6 @@ export class RaydiumService implements ItProvider {
     //   }
     // }
     throw new InsufficientLiquidityError('CrossChainRouting');
-    // return null;
   }
 
   public async createTrade(

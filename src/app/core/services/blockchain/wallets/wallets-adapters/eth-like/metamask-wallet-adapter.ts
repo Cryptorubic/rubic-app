@@ -12,13 +12,14 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export class MetamaskWalletAdapter extends CommonWalletAdapter {
   public get isMultiChainWallet(): boolean {
     return false;
   }
 
-  get walletType(): 'solana' | 'ethLike' {
+  get walletType(): BlockchainType {
     return 'ethLike';
   }
 

@@ -7,6 +7,7 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/provi
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   protected selectedAddress: string;
@@ -24,7 +25,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     return Boolean(this.wallet);
   }
 
-  abstract get walletType(): 'solana' | 'ethLike';
+  abstract get walletType(): BlockchainType;
 
   /**
    * is the blockchain provider activated

@@ -6,13 +6,14 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export abstract class CommonSolanaWalletAdapter extends CommonWalletAdapter<SolanaWallet | null> {
   public get isMultiChainWallet(): boolean {
     return false;
   }
 
-  get walletType(): 'solana' | 'ethLike' {
+  get walletType(): BlockchainType {
     return 'solana';
   }
 
