@@ -16,6 +16,7 @@ import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { compareAddresses } from '@shared/utils/utils';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,10 @@ export class EthWethSwapProviderService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    if (blockchainType !== 'ethLike') {
+      return false;
+    }
     const wethAddress = this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain];
 
     return (

@@ -80,8 +80,23 @@ export class RaydiumService implements ItProvider {
     );
   }
 
-  public async getFromAmount(): Promise<BigNumber> {
-    return new BigNumber(Infinity);
+  public async getFromAmount(
+    fromToken: InstantTradeToken,
+    toToken: InstantTradeToken,
+    aIn: BigNumber
+  ): Promise<BigNumber> {
+    const pool = this.raydiumRoutingService.currentPoolInfo;
+    const { amountOut } = this.raydiumRoutingService.getSwapOutAmount(
+      pool,
+      fromToken.address,
+      toToken.address,
+      aIn.toString(),
+      this.settings.slippageTolerance
+    );
+    return new BigNumber(aIn)
+      .multipliedBy(100)
+      .dividedBy(amountOut)
+      .multipliedBy(10 ** fromToken.decimals);
   }
 
   public approve(): Promise<void> {

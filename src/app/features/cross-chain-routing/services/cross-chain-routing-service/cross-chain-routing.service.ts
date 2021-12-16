@@ -659,7 +659,7 @@ export class CrossChainRoutingService {
     const fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
     const isFromPaused = await new CrossChainContractReader(fromBlockchainAdapter).isPaused(
       fromContractAddress,
-      fromContractIndex
+      this.numOfBlockchainsInContract[toBlockchain][fromContractIndex]
     );
     if (isFromPaused) {
       throw new CrossChainIsUnavailableWarning();
@@ -669,7 +669,7 @@ export class CrossChainRoutingService {
     const toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
     const isToPaused = await new CrossChainContractReader(toBlockchainAdapter).isPaused(
       toContractAddress,
-      toContractIndex
+      this.numOfBlockchainsInContract[toBlockchain][toContractIndex]
     );
     if (isToPaused) {
       throw new CrossChainIsUnavailableWarning();

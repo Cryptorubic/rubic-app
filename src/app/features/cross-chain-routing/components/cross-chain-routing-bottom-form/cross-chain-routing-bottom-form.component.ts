@@ -49,6 +49,7 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -235,8 +236,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromAmount } = this.swapFormService.inputValue;
-          const calculateNeedApprove = !!this.authService.userAddress;
+          const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+          const blockchainType = BlockchainsInfo.getBlockchainType(fromBlockchain);
+          const calculateNeedApprove =
+            !!this.authService.userAddress && blockchainType === 'ethLike';
           const crossChainTrade$ = from(
             this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
           );

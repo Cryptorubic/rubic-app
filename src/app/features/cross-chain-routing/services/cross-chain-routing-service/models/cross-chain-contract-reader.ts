@@ -64,10 +64,11 @@ export class CrossChainContractReader {
     numOfBlockchainInContract: number
   ): Promise<string> {
     if (this.blockchainAdapter instanceof SolanaWeb3Public) {
-      const account = new PublicKey(BLOCKCHAIN_UUID[numOfBlockchainInContract]);
-      const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
-      const blockchainData = BlockchainLayout.decode(data) as SolanaBlockchainConfig;
-      return blockchainData.fee_amount.toString();
+      const { data } = await this.blockchainAdapter.connection.getAccountInfo(
+        new PublicKey(PDA_CONFIG)
+      );
+      const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
+      return bridgeData.fee_amount_of_blockchain.toString();
     }
     if (this.blockchainAdapter instanceof Web3Public) {
       return await this.blockchainAdapter.callContractMethod(
