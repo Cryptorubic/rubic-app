@@ -8,7 +8,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/w
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
-import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 function correctAddressValidator(blockchainAdapter: Web3Public | SolanaWeb3Public): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {

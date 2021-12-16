@@ -31,7 +31,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -258,7 +258,9 @@ export class SwapButtonContainerComponent implements OnInit {
     this.targetNetworkAddressService.targetAddress$
       .pipe(
         tap(el => {
-          this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] = el && !el.isValid;
+          const { fromBlockchain, toBlockchain } = this.formService.inputValue;
+          this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
+            fromBlockchain !== toBlockchain && el && !el.isValid;
         }),
         takeUntil(this.destroy$)
       )

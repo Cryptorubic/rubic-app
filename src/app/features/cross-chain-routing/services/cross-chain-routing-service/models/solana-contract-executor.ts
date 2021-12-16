@@ -14,7 +14,6 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
 import { transitTokensWithMode } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
-import { subtractPercent } from '@shared/utils/utils';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -31,6 +30,7 @@ import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -60,19 +60,25 @@ export class SolanaContractExecutor {
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
-    const amountIn = new BigNumber(trade.tokenInAmount.toString()).multipliedBy(fromDecimals);
+    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
+      trade,
+      settings
+    );
+    const amountIn = new BigNumber(tokenInAmountMax.toString()).multipliedBy(fromDecimals);
 
     const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
-    const amountOut = new BigNumber(trade.tokenOutAmount.toString()).multipliedBy(toDecimals);
+    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
+      trade,
+      settings
+    );
+    const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
 
     const middleDecimals = new BigNumber(10).exponentiatedBy(
       transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
     );
-    const middleIn = subtractPercent(
-      trade.firstTransitTokenAmount,
-      settings.slippageTolerance / 100
+    const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
+      middleDecimals
     );
-    const amountMiddle = new BigNumber(middleIn.toString()).multipliedBy(middleDecimals);
 
     const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
     const to = this.tokensService.tokens.find(el => el.address === trade.tokenOut.address);
@@ -167,8 +173,6 @@ export class SolanaContractExecutor {
         methodArguments
       )
     );
-    // @TODO Solana.
-    // this.closeAccounts({ from: fromAccount, to: toAccount }, transaction, owner);
 
     return { transaction, signers };
   }

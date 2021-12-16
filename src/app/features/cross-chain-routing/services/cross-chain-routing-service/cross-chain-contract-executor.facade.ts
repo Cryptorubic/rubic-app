@@ -17,7 +17,7 @@ import { SolanaContractExecutor } from '@features/cross-chain-routing/services/c
 import { EthLikeContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/eth-like-contract-executor';
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
-import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +48,8 @@ export class CrossChainContractExecutorFacade {
     this.ethLikeContractExecutor = new EthLikeContractExecutor(
       privateAdapter,
       apiService,
-      publicBlockchainAdapterService
+      publicBlockchainAdapterService,
+      raydiumRoutingService
     );
   }
 
@@ -110,14 +111,17 @@ export class CrossChainContractExecutorFacade {
     currentCrossChainTrade: CrossChainRoutingTrade,
     settings: CcrSettingsForm
   ): BigNumber {
-    return this.ethLikeContractExecutor.calculateTokenInAmountMax(currentCrossChainTrade, settings);
+    return CrossChainContractExecutorFacade.calculateTokenInAmountMax(
+      currentCrossChainTrade,
+      settings
+    );
   }
 
   public calculateTokenOutAmountMin(
     currentCrossChainTrade: CrossChainRoutingTrade,
     settings: CcrSettingsForm
   ): BigNumber {
-    return this.ethLikeContractExecutor.calculateTokenOutAmountMin(
+    return CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
       currentCrossChainTrade,
       settings
     );
@@ -140,5 +144,33 @@ export class CrossChainContractExecutorFacade {
       settings,
       numOfBlockchainsInContractElementElement
     );
+  }
+
+  /**
+   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
+   */
+  public static calculateTokenInAmountMax(
+    trade: CrossChainRoutingTrade,
+    settings: CcrSettingsForm
+  ): BigNumber {
+    if (trade.firstPath.length === 1) {
+      return trade.tokenInAmount;
+    }
+    const slippageTolerance = settings.slippageTolerance / 100;
+    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
+  }
+
+  /**
+   * Calculates minimum received amount of token-out, based on tokens route and slippage.
+   */
+  public static calculateTokenOutAmountMin(
+    trade: CrossChainRoutingTrade,
+    settings: CcrSettingsForm
+  ): BigNumber {
+    if (trade.secondPath.length === 1) {
+      return trade.tokenOutAmount;
+    }
+    const slippageTolerance = settings.slippageTolerance / 100;
+    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
   }
 }

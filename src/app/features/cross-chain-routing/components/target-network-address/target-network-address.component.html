@@ -1,5 +1,5 @@
 <div class="network-container">
-  <div class="network-container__row">
+  <div *noFrame class="network-container__row">
     <label class="network-container__label">Wallet address to target network</label>
     <div
       class="network-container__hint"
@@ -8,15 +8,28 @@
     ></div>
   </div>
 
-  <!-- @TODO Solana. Get i18n -->
   <tui-input
+    *noFrame
     [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
     tuiTextfieldSize="m"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
     [pseudoFocused]="!!address.value"
     [pseudoInvalid]="(address.touch$ | async) !== undefined && address.invalid"
-    >Enter or past address</tui-input
+  >
+    {{ 'crossChainPage.targetAddress.placeholder' | translate }}
+  </tui-input>
+
+  <tui-input
+    *onlyFrame
+    class="network-container__iframe-input"
+    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
+    tuiTextfieldSize="s"
+    [formControl]="address"
+    [tuiTextfieldLabelOutside]="true"
+    [pseudoFocused]="!!address.value"
+    [pseudoInvalid]="(address.touch$ | async) !== undefined && address.invalid"
+    >{{ 'crossChainPage.targetAddress.placeholder' | translate }}</tui-input
   >
   <ng-template #success>
     <div

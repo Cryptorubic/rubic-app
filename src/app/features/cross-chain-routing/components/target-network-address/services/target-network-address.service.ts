@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
-import { map } from 'rxjs/operators';
+import { startWith } from 'rxjs/operators';
 
 interface TargetAddress {
   value: string;
@@ -19,18 +19,19 @@ export class TargetNetworkAddressService {
 
   public readonly targetAddress$ = this._targetNetworkAddress$.asObservable();
 
-  public readonly displayAddress$: Observable<boolean>;
+  private readonly _displayAddress$ = new BehaviorSubject<boolean>(false);
+
+  public readonly displayAddress$ = this._displayAddress$.asObservable();
 
   constructor(private readonly formService: SwapFormService) {
-    this.displayAddress$ = this.formService.input.valueChanges.pipe(
-      map(form => {
-        console.log(formService.inputValue);
-        return (
+    this.formService.input.valueChanges
+      .pipe(startWith(this.formService.inputValue))
+      .subscribe(form => {
+        this._displayAddress$.next(
           this.networksRequiresAddress.includes(form.fromBlockchain) ||
-          this.networksRequiresAddress.includes(form.toBlockchain)
+            this.networksRequiresAddress.includes(form.toBlockchain)
         );
-      })
-    );
+      });
   }
 
   public getTargetAddress(): TargetAddress {

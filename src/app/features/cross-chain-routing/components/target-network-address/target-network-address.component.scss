@@ -1,38 +1,68 @@
-:host ::ng-deep .network-container {
-  &__input-status-icon {
-    width: 26px;
-    height: 26px;
+@import 'src/scss/mixins';
+
+:host {
+  @include iframe-vertical {
+    position: absolute;
+    top: 100px;
+    right: 0;
   }
 
-  tui-wrapper[data-appearance='textfield'] {
-    --tui-base-01: var(--rubic-base-18);
-    border-radius: 50px;
-    box-shadow: none;
+  @include iframe-horizontal {
+    position: absolute;
+    top: 56px;
+    right: 0;
+  }
 
-    input {
-      border-left-width: 18px !important;
+  ::ng-deep .network-container {
+    &__input-status-icon {
+      width: 26px;
+      height: 26px;
     }
 
-    .content {
-      padding-left: 18px !important;
+    &__iframe-input {
+      width: 200px;
     }
-  }
 
-  &__row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
+    tui-wrapper[data-appearance='textfield'] {
+      --tui-base-01: var(--rubic-base-18);
+      border-radius: 50px;
+      box-shadow: none;
 
-  &__hint {
-    display: flex;
-    margin-left: 10px;
+      @include iframe {
+        --tui-base-01: var(--main-background);
+        border-radius: 10px;
+        box-shadow: none;
 
-    cursor: pointer;
+        &::after {
+          border: none;
+        }
+      }
 
-    svg {
-      width: 21px;
-      height: 21px;
+      input {
+        border-left-width: 18px !important;
+      }
+
+      .content {
+        padding-left: 18px !important;
+      }
+    }
+
+    &__row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    &__hint {
+      display: flex;
+      margin-left: 10px;
+
+      cursor: pointer;
+
+      svg {
+        width: 21px;
+        height: 21px;
+      }
     }
   }
 }

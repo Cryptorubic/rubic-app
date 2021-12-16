@@ -69,7 +69,9 @@ export class CrossChainRoutingApiService {
     transactionHash: string,
     network: string,
     targetAddress: string,
-    secondPath: string[]
+    secondPath: string[],
+    poolCoinTokenAccount: string,
+    poolPcTokenAccount: string
   ): Observable<void> {
     return this.httpService.post(
       'trades/params',
@@ -77,7 +79,9 @@ export class CrossChainRoutingApiService {
         fromTxHash: transactionHash,
         network,
         walletAddress: targetAddress,
-        secondPath
+        secondPath,
+        poolCoinTokenAccount,
+        poolPcTokenAccount
       },
       BASE_URL
     );

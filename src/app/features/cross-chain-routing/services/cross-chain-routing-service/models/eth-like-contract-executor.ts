@@ -17,6 +17,8 @@ import {
 import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';
+import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
+import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 
 export class EthLikeContractExecutor {
   private readonly contractAbi;
@@ -28,7 +30,8 @@ export class EthLikeContractExecutor {
   constructor(
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly apiService: CrossChainRoutingApiService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly raydiumRoutingService: RaydiumRoutingService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
     this.contractAddresses = crossChainSwapContractAddresses;
@@ -65,16 +68,8 @@ export class EthLikeContractExecutor {
             options.onTransactionHash(hash);
           }
           transactionHash = hash;
-          // @TODO SOLANA KOSTYL.
           if (toBlockchainInContractNumber === 8) {
-            this.apiService
-              .postSolanaCCRdata(
-                transactionHash,
-                TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
-                targetAddress,
-                trade.secondPath
-              )
-              .subscribe();
+            this.sendSolanaData(trade, transactionHash, targetAddress);
           }
         }
       },
@@ -127,9 +122,16 @@ export class EthLikeContractExecutor {
       ? CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_CRYPTO
       : CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_TOKENS;
 
-    const tokenInAmountMax = this.calculateTokenInAmountMax(trade, settings);
+    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
+      trade,
+      settings
+    );
     const tokenInAmountAbsolute = Web3Public.toWei(tokenInAmountMax, trade.tokenIn.decimals);
-    const tokenOutAmountMin = this.calculateTokenOutAmountMin(trade, settings);
+
+    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
+      trade,
+      settings
+    );
     const tokenOutMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const firstTransitTokenAmountAbsolute = Web3Public.toWei(
@@ -147,9 +149,7 @@ export class EthLikeContractExecutor {
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         // @TODO Solana.
-        toBlockchainInContractNumber === 8
-          ? '0x186915891222aDD6E2108061A554a1F400a25cbD'
-          : walletAddress,
+        toBlockchainInContractNumber === 8 ? EMPTY_ADDRESS : walletAddress,
         blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
       ]
     ];
@@ -168,30 +168,30 @@ export class EthLikeContractExecutor {
   }
 
   /**
-   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
+   * Solana addresses has not supported by eth like blockchain contracts. Sends transaction details via http.
+   * @param trade Cross-chain trade.
+   * @param transactionHash Source transaction hash.
+   * @param targetAddress Target network wallet address.
    */
-  public calculateTokenInAmountMax(
+  private sendSolanaData(
     trade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
-    if (trade.firstPath.length === 1) {
-      return trade.tokenInAmount;
-    }
-    const slippageTolerance = settings.slippageTolerance / 100;
-    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
-  }
-
-  /**
-   * Calculates minimum received amount of token-out, based on tokens route and slippage.
-   */
-  public calculateTokenOutAmountMin(
-    trade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
-    if (trade.secondPath.length === 1) {
-      return trade.tokenOutAmount;
-    }
-    const slippageTolerance = settings.slippageTolerance / 100;
-    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
+    transactionHash: string,
+    targetAddress: string
+  ): void {
+    const pool = this.raydiumRoutingService.currentPoolInfo;
+    const { coin, pc } =
+      pool.coin.symbol === trade.tokenIn.symbol
+        ? { coin: pool.poolCoinTokenAccount, pc: pool.poolPcTokenAccount }
+        : { coin: pool.poolPcTokenAccount, pc: pool.poolCoinTokenAccount };
+    this.apiService
+      .postSolanaCCRdata(
+        transactionHash,
+        TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
+        targetAddress,
+        trade.secondPath,
+        coin,
+        pc
+      )
+      .subscribe();
   }
 }

@@ -521,6 +521,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.tradeStatus = TRADE_STATUS.DISABLED;
       this.instantTradeInfoChange.emit(null);
       this.swapInfoService.emitInfoCalculated();
+      if (this.providerControllers.length === 1) {
+        this.selectedProvider = null;
+      }
     }
     this.cdr.detectChanges();
   }

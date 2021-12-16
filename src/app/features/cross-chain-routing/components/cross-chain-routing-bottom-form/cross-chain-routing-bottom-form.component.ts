@@ -48,7 +48,7 @@ import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notifi
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
-import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/target-network-address.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
