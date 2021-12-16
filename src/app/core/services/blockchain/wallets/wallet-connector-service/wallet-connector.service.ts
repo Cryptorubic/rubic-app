@@ -26,7 +26,7 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
-import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Connection } from '@solana/web3.js';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
 

@@ -13,13 +13,13 @@ import {
 } from '@features/swaps/services/settings-service/settings.service';
 import { HttpClient } from '@angular/common/http';
 import { startWith } from 'rxjs/operators';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { RaydiumLiquidityManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-liquidity-manager';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
-import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
+import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
@@ -54,7 +54,7 @@ export class RaydiumService implements ItProvider {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly priceImpactService: PriceImpactService,
     private readonly tokensService: TokensService,
-    private readonly solanaPrivateAdapterService: SolanaPrivateAdapterService,
+    private readonly solanaPrivateAdapterService: SolanaWeb3PrivateService,
     private readonly raydiumRoutingService: RaydiumRoutingService
   ) {
     this.blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA];
@@ -80,23 +80,12 @@ export class RaydiumService implements ItProvider {
     );
   }
 
-  public async getFromAmount(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    toAmount: BigNumber
-  ): Promise<BigNumber> {
-    // @TODO Solana.
-    console.log(fromToken, toToken, toAmount);
-    return null;
-    // return this.calculateTrade(fromToken, toToken)
+  public async getFromAmount(): Promise<BigNumber> {
+    return new BigNumber(Infinity);
   }
 
-  public approve(
-    tokenAddress: string,
-    options: { onTransactionHash?: (hash: string) => void }
-  ): Promise<void> {
-    console.log(tokenAddress, options);
-    return Promise.resolve(undefined);
+  public approve(): Promise<void> {
+    return;
   }
 
   public async calculateTrade(
@@ -201,8 +190,6 @@ export class RaydiumService implements ItProvider {
       const solanaTokens = this.tokensService.tokens.filter(
         el => el.blockchain === BLOCKCHAIN_NAME.SOLANA
       );
-      // @TODO Solana.
-      // eslint-disable-next-line no-nested-ternary
       const isWrap = this.isWrap(trade.from.token.address, trade.to.token.address);
       const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS;
 

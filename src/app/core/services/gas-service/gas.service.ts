@@ -6,7 +6,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,

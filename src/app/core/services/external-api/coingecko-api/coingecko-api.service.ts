@@ -4,7 +4,7 @@ import { catchError, map, timeout } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Cacheable } from 'ts-cacheable';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,

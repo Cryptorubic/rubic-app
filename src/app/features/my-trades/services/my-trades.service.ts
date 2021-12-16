@@ -38,7 +38,7 @@ import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS
 import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
-import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { TuiNotification } from '@taiga-ui/core';

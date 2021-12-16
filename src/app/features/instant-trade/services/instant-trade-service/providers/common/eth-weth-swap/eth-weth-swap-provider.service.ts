@@ -5,11 +5,11 @@ import {
   wethContractAddressesNetMode,
   SupportedEthWethSwapBlockchain
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAddressesNetMode';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { TransactionReceipt } from 'web3-eth';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
@@ -27,7 +27,7 @@ export class EthWethSwapProviderService {
 
   constructor(
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: PrivateAdapterService,
+    private readonly web3PrivateService: Web3PrivateService,
     private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService

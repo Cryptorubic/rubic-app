@@ -16,12 +16,12 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil, tap } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -306,7 +306,6 @@ export class SwapButtonContainerComponent implements OnInit {
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
         const { fromToken, toToken } = form;
-        // @TODO Solana.
         this.errorType[ERROR_TYPE.SOL_SWAP] =
           fromToken &&
           toToken &&

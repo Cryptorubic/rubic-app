@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import ConnectionLink from 'src/app/core/services/blockchain/models/ConnectionLink';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+import ConnectionLink from '@core/services/blockchain/models/ConnectionLink';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import networks from '@shared/constants/blockchain/networks';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { Connection } from '@solana/web3.js';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
@@ -61,7 +61,6 @@ export class PublicBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Web3Public = null;
 
-  // @TODO SOLANA.
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 
   constructor(

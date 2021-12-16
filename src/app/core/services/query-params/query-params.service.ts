@@ -17,7 +17,7 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 interface QuerySlippage {

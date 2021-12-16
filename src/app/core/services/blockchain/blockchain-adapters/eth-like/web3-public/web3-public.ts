@@ -2,32 +2,32 @@ import Web3 from 'web3';
 import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
 import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BlockchainTokenExtended } from 'src/app/shared/models/tokens/BlockchainTokenExtended';
+import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
 import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
-import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { UndefinedError } from '@core/errors/models/undefined.error';
+import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
 import { from, Observable, of } from 'rxjs';
-import { HEALTHCHECK } from 'src/app/core/services/blockchain/constants/healthcheck';
+import { HEALTHCHECK } from '@core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
-import { Web3SupportedBlockchains } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { Web3SupportedBlockchains } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { HttpClient } from '@angular/common/http';
-import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
-import { RpcResponse } from 'src/app/core/services/blockchain/models/RpcResponse';
+import { BatchCall } from '@core/services/blockchain/models/BatchCall';
+import { RpcResponse } from '@core/services/blockchain/models/RpcResponse';
 import { Cacheable } from 'ts-cacheable';
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
-import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
-import MULTICALL_ABI from 'src/app/core/services/blockchain/constants/multicall-abi';
-import { Call } from 'src/app/core/services/blockchain/models/call';
+import { MethodData } from '@shared/models/blockchain/MethodData';
+import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
+import MULTICALL_ABI from '@core/services/blockchain/constants/multicall-abi';
+import { Call } from '@core/services/blockchain/models/call';
 import {
   MULTICALL_ADDRESSES,
   MULTICALL_ADDRESSES_TESTNET
-} from 'src/app/core/services/blockchain/constants/multicall-addresses';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
+} from '@core/services/blockchain/constants/multicall-addresses';
+import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 
 interface MulticallResponse {
@@ -121,7 +121,7 @@ export class Web3Public {
   };
 
   /**
-   * set new web3 provider
+   * set new blockchain-adapters provider
    * @param provider
    */
   public setProvider(provider: Provider): void {
@@ -239,7 +239,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the average price per unit of gas according to web3
+   * calculates the average price per unit of gas according to blockchain-adapters
    * @return average gas price in Wei
    */
   public async getGasPrice(): Promise<string> {
@@ -247,7 +247,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the average price per unit of gas according to web3
+   * calculates the average price per unit of gas according to blockchain-adapters
    * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
@@ -256,7 +256,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko
+   * calculates the gas fee using average price per unit of gas according to blockchain-adapters and Eth price according to coingecko
    * @param gasLimit gas limit
    * @param etherPrice price of Eth unit
    * @return gas fee in usd$
@@ -647,7 +647,7 @@ export class Web3Public {
   }
 
   /**
-   * Sends batch request via web3.
+   * Sends batch request via blockchain-adapters.
    * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
    * @param calls Web3 method calls
    * @param callsParams ethereum method transaction parameters
@@ -705,7 +705,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the average price per unit of gas according to web3
+   * calculates the average price per unit of gas according to blockchain-adapters
    * @return average gas price in Wei
    */
   @Cacheable({ maxAge: 10000 })

@@ -4,8 +4,8 @@ import {
   NATIVE_ETH_LIKE_TOKEN_ADDRESS,
   NATIVE_SOLANA_MINT_ADDRESS
 } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
-import InsufficientFundsError from 'src/app/core/errors/models/instant-trade/InsufficientFundsError';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
 
 import {
   Account,
@@ -20,6 +20,25 @@ import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+
+type ReturnValue = Promise<{
+  result: RpcResponseAndContext<
+    Array<{
+      pubkey: PublicKey;
+      account: AccountInfo<{
+        parsed: {
+          info: {
+            tokenAmount: {
+              amount: number;
+              decimals: number;
+            };
+            mint: string;
+          };
+        };
+      }>;
+    }>
+  >;
+}>;
 
 export class SolanaWeb3Public {
   public readonly connection: Connection;
@@ -45,7 +64,6 @@ export class SolanaWeb3Public {
   }
 
   /**
-   * @TODO Solana. Rename approve to preswap.
    * Gets allowance.
    */
   public async getAllowance(): Promise<BigNumber> {
@@ -57,7 +75,6 @@ export class SolanaWeb3Public {
    * @param address The address to check validity.
    */
   public isAddressCorrect(address: string): boolean {
-    // @TODO Solana.
     try {
       return Boolean(new PublicKey(address)?.toBase58());
     } catch {
@@ -106,7 +123,6 @@ export class SolanaWeb3Public {
   }
 
   /**
-   * @TODO SOLANA.
    * Predicts the volume of gas required to execute the contract method
    */
   public async getEstimatedGas(): Promise<BigNumber> {
@@ -145,31 +161,11 @@ export class SolanaWeb3Public {
   }
 
   /**
-   * @TODO SOLANA.
    * get balance of multiple tokens via multicall.
    * @param address wallet address
    * @param tokensAddresses tokens addresses
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
-    // @TODO Solana.
-    type ReturnValue = Promise<{
-      result: RpcResponseAndContext<
-        Array<{
-          pubkey: PublicKey;
-          account: AccountInfo<{
-            parsed: {
-              info: {
-                tokenAmount: {
-                  amount: number;
-                  decimals: number;
-                };
-                mint: string;
-              };
-            };
-          }>;
-        }>
-      >;
-    }>;
     const resp = await (
       this.connection as Connection & {
         _rpcRequest: (owner: string, data: unknown[]) => ReturnValue;
@@ -262,7 +258,7 @@ export class SolanaWeb3Public {
     fromAddress: string,
     options: TransactionOptions = {} */
   Promise<void | never> {
-    // const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+    // const contract = new this.blockchain-adapters.eth.Contract(contractAbi, contractAddress);
     //
     // try {
     //   await contract.methods[methodName](...methodArguments).call({

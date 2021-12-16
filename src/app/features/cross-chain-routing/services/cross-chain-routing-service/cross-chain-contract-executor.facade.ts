@@ -1,7 +1,7 @@
-import { PrivateBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/private-blockchain-adapter.service';
+import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { SignatureResult } from '@solana/web3.js';

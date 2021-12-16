@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
-import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
-import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
 import { PublicKey } from '@solana/web3.js';
 import {

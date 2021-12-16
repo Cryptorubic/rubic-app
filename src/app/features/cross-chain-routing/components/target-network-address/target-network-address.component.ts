@@ -2,9 +2,9 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angul
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
 import { Validators } from '@angular/forms';
-import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
-import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';

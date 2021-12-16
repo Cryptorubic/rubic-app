@@ -3,12 +3,12 @@ import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { WrongToken } from 'src/app/core/errors/models/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -67,7 +67,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly web3PrivateService: PrivateAdapterService,
+    private readonly web3PrivateService: Web3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
@@ -203,8 +203,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
     const { token } = bridgeTrade;
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Wrong blockchain error');
     }
     const web3Public = this.publicBlockchainAdapterService[
       bridgeTrade.fromBlockchain
@@ -275,8 +274,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
     const onApprove = bridgeTrade.onTransactionHash;
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Wrong blockchain error');
     }
     await this.provideAllowance(trade, web3Public as Web3Public, onApprove);
 

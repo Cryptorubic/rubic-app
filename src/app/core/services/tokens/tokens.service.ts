@@ -9,8 +9,8 @@ import { TokensApiService } from 'src/app/core/services/backend/tokens-api/token
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
@@ -567,7 +567,7 @@ export class TokensService {
   }
 
   /**
-   * Gets symbol of token, using currently stored tokens or web3 request.
+   * Gets symbol of token, using currently stored tokens or blockchain-adapters request.
    */
   public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
     const foundToken = this.tokens.find(
@@ -577,8 +577,7 @@ export class TokensService {
       return foundToken?.symbol;
     }
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Wrong blockchain error');
     }
     const web3Public = this.publicBlockchainAdapterService[blockchain] as Web3Public;
     return web3Public.getTokenSymbol(tokenAddress);

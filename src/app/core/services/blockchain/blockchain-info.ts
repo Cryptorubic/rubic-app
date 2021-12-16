@@ -1,7 +1,8 @@
 import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import networks from '../../../shared/constants/blockchain/networks';
+import CustomError from '@core/errors/models/custom-error';
 
 export class BlockchainsInfo {
   static getBlockchainById(id: number | string): IBlockchain {
@@ -16,6 +17,9 @@ export class BlockchainsInfo {
     if (WEB3_SUPPORTED_BLOCKCHAINS.some(el => el === name)) {
       return 'ethLike';
     }
-    return 'solana';
+    if (name === BLOCKCHAIN_NAME.SOLANA) {
+      return 'solana';
+    }
+    throw new CustomError('Unknown network');
   }
 }

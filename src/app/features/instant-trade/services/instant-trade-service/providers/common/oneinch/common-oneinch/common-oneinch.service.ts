@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { from, Observable, of } from 'rxjs';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import networks from 'src/app/shared/constants/blockchain/networks';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
@@ -58,7 +58,7 @@ export class CommonOneinchService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3Private: PrivateAdapterService,
+    private readonly web3Private: Web3PrivateService,
     private readonly settingsService: SettingsService,
     private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
@@ -125,8 +125,7 @@ export class CommonOneinchService {
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Wrong blockchain error');
     }
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as Web3Public;
     if (blockchainAdapter.isNativeAddress(tokenAddress)) {
@@ -197,8 +196,7 @@ export class CommonOneinchService {
     }
 
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Wrong blockchain error');
     }
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as Web3Public;
     const gasPrice = await blockchainAdapter.getGasPrice();

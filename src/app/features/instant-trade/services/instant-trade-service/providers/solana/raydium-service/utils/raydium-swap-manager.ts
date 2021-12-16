@@ -23,12 +23,12 @@ import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
-import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
+import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { getBigNumber } from '@shared/utils/utils';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
-import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
@@ -49,7 +49,7 @@ export type TokenAccounts = {
 
 export class RaydiumSwapManager {
   constructor(
-    private readonly privateBlockchainAdapter: SolanaPrivateAdapterService,
+    private readonly privateBlockchainAdapter: SolanaWeb3PrivateService,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
     private readonly connection: Connection
   ) {}

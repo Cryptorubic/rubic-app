@@ -7,8 +7,8 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { from, Observable, of } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
@@ -16,7 +16,7 @@ import {
   uniSwapV3ContractData,
   wethAddressNetMode
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import {
   ItSettingsForm,
@@ -44,7 +44,7 @@ import {
   UniswapV3CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
-import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
+import { Web3Pure } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-pure/web3-pure';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import CustomError from '@core/errors/models/custom-error';
@@ -84,7 +84,7 @@ export class UniSwapV3Service implements ItProvider {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly web3PrivateService: PrivateAdapterService,
+    private readonly web3PrivateService: Web3PrivateService,
     private readonly settingsService: SettingsService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly tokensService: TokensService,

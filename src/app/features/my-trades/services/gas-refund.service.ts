@@ -8,8 +8,8 @@ import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
@@ -20,7 +20,7 @@ import {
 } from '@features/my-trades/constants/REFUND_ADDRESS';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
-import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import CustomError from '@core/errors/models/custom-error';
 
@@ -43,7 +43,7 @@ export class GasRefundService {
   constructor(
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly authService: AuthService,
-    private readonly web3Private: PrivateAdapterService,
+    private readonly web3Private: Web3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly providerConnector: WalletConnectorService,
     private readonly testingModeService: UseTestingModeService
@@ -168,8 +168,7 @@ export class GasRefundService {
   ): Promise<TransactionReceipt> {
     const address = this.authService.userAddress;
     if (BlockchainsInfo.getBlockchainType(this.refundBlockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Non eth like blockchain error');
+      throw new CustomError('Wrong blockchain error');
     }
     const blockchainAdapter = this.publicBlockchainAdapterService[
       this.refundBlockchain

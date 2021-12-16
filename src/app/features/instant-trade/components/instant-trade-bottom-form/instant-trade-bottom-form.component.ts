@@ -22,7 +22,7 @@ import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription 
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';

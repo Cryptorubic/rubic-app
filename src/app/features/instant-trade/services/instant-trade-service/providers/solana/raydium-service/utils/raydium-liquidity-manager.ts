@@ -1,6 +1,6 @@
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { HttpClient } from '@angular/common/http';
-import { SolanaWeb3Public } from '@core/services/blockchain/web3/web3-public-service/SolanaWeb3Public';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import {
   LIQUIDITY_POOLS,
   LiquidityPoolInfo
@@ -15,7 +15,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import BigNumber from 'bignumber.js';
 import { getBigNumber } from '@shared/utils/utils';
-import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
+import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { OpenOrders } from '@project-serum/serum';
 import {
   LP_TOKENS,
@@ -44,7 +44,7 @@ export class RaydiumLiquidityManager {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
-    private readonly privateBlockchainAdapter: SolanaPrivateAdapterService
+    private readonly privateBlockchainAdapter: SolanaWeb3PrivateService
   ) {}
 
   public getAddressForWhat(address: string, pools: LiquidityPoolInfo[]): Partial<LpAddress> {

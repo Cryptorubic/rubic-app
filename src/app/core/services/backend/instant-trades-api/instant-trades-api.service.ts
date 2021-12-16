@@ -13,7 +13,7 @@ import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';

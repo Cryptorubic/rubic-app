@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
   ItSettingsForm,
@@ -43,7 +43,7 @@ import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import defaultUniswapV2Abi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
@@ -93,7 +93,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   // Injected services
   private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
 
-  private readonly web3PrivateService = inject(PrivateAdapterService);
+  private readonly web3PrivateService = inject(Web3PrivateService);
 
   private readonly providerConnectorService = inject(WalletConnectorService);
 
@@ -132,8 +132,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
     this.blockchain = uniswapConstants.blockchain;
     if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
-      // @TODO Solana.
-      throw new CustomError('Solana error');
+      throw new CustomError('Wrong blockchain error');
     }
     this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
@@ -145,8 +144,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
-          // @TODO Solana.
-          throw new CustomError('Solana error');
+          throw new CustomError('Wrong blockchain error');
         }
         this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
 

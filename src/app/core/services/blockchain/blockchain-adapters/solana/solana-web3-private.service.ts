@@ -15,14 +15,14 @@ import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
 import {
   ACCOUNT_LAYOUT,
   MINT_LAYOUT
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
+} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   RENT_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
-import { TOKENS } from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
+import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
 import { Layout } from '@project-serum/borsh';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
@@ -33,7 +33,7 @@ import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_
 @Injectable({
   providedIn: 'root'
 })
-export class SolanaPrivateAdapterService {
+export class SolanaWeb3PrivateService {
   private _connection: Connection;
 
   set connection(connection: Connection) {

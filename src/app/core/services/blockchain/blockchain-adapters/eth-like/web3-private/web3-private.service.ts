@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
-import TransactionRevertedError from 'src/app/core/errors/models/common/transaction-reverted.error';
-import CustomError from 'src/app/core/errors/models/custom-error';
-import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
-import ERC20_TOKEN_ABI from 'src/app/core/services/blockchain/constants/erc-20-abi';
-import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
-import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { LowGasError } from 'src/app/core/errors/models/provider/LowGasError';
-import { GasApiService } from 'src/app/core/services/backend/gas-api/gas-api.service';
+import TransactionRevertedError from '@core/errors/models/common/transaction-reverted.error';
+import CustomError from '@core/errors/models/custom-error';
+import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/FailedToCheckForTransactionReceiptError';
+import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
+import { UserRejectError } from '@core/errors/models/provider/UserRejectError';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { LowGasError } from '@core/errors/models/provider/LowGasError';
+import { GasApiService } from '@core/services/backend/gas-api/gas-api.service';
 
 type Web3Error = {
   message: string;
@@ -21,7 +21,7 @@ type Web3Error = {
 @Injectable({
   providedIn: 'root'
 })
-export class PrivateAdapterService {
+export class Web3PrivateService {
   private defaultMockGas: string;
 
   private readonly web3: Web3;
@@ -35,7 +35,6 @@ export class PrivateAdapterService {
     private readonly gasApiService: GasApiService
   ) {
     this.web3 = providerConnector.web3;
-    // this.defaultMockGas = '400000';
   }
 
   private static parseError(err: Web3Error): Error {
@@ -109,7 +108,7 @@ export class PrivateAdapterService {
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(PrivateAdapterService.parseError(err));
+          reject(Web3PrivateService.parseError(err));
         });
     });
   }
@@ -136,7 +135,7 @@ export class PrivateAdapterService {
         .on('transactionHash', (hash: string) => resolve(hash))
         .on('error', (err: Web3Error) => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(PrivateAdapterService.parseError(err));
+          reject(Web3PrivateService.parseError(err));
         });
     });
   }
@@ -174,7 +173,7 @@ export class PrivateAdapterService {
       return this.sendTransaction(toAddress, value, options);
     } catch (err) {
       console.error('Send transaction error', err);
-      throw PrivateAdapterService.parseError(err);
+      throw Web3PrivateService.parseError(err);
     }
   }
 
@@ -216,7 +215,7 @@ export class PrivateAdapterService {
         .on('receipt', receipt => resolve(receipt))
         .on('error', err => {
           console.error('Send transaction error', err);
-          reject(PrivateAdapterService.parseError(err as unknown as Web3Error));
+          reject(Web3PrivateService.parseError(err as unknown as Web3Error));
         });
     });
   }
@@ -248,7 +247,7 @@ export class PrivateAdapterService {
         .on('transactionHash', hash => resolve(hash))
         .on('error', err => {
           console.error(`Tokens transfer error. ${err}`);
-          reject(PrivateAdapterService.parseError(err as unknown as Web3Error));
+          reject(Web3PrivateService.parseError(err as unknown as Web3Error));
         });
     });
   }
@@ -292,7 +291,7 @@ export class PrivateAdapterService {
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Tokens approve error. ${err}`);
-          reject(PrivateAdapterService.parseError(err));
+          reject(Web3PrivateService.parseError(err));
         });
     });
   }
@@ -345,7 +344,7 @@ export class PrivateAdapterService {
         );
       }
       console.error('Method execution error:', err);
-      throw PrivateAdapterService.parseError(err);
+      throw Web3PrivateService.parseError(err);
     }
   }
 
@@ -385,7 +384,7 @@ export class PrivateAdapterService {
         .on('receipt', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Method execution error:`, err);
-          reject(PrivateAdapterService.parseError(err));
+          reject(Web3PrivateService.parseError(err));
         });
     });
   }
@@ -416,7 +415,7 @@ export class PrivateAdapterService {
         .on('transactionHash', resolve)
         .on('error', (err: Web3Error) => {
           console.error(`Tokens approve error. ${err}`);
-          reject(PrivateAdapterService.parseError(err));
+          reject(Web3PrivateService.parseError(err));
         });
     });
   }

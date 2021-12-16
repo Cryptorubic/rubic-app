@@ -6,10 +6,10 @@ import {
   CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import { from, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
@@ -55,7 +55,7 @@ import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
-import { SolanaPrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/solana-private-adapter.service';
+import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import CustomError from '@core/errors/models/custom-error';
 
 interface PathAndToAmount {
@@ -125,14 +125,14 @@ export class CrossChainRoutingService {
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: PrivateAdapterService,
+    private readonly web3PrivateService: Web3PrivateService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly iframeService: IframeService,
     private readonly gasService: GasService,
     private readonly ccrContractExecutorFacade: CrossChainContractExecutorFacade,
-    private readonly solanaPrivateAdapter: SolanaPrivateAdapterService
+    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 

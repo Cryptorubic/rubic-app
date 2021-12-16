@@ -3,8 +3,8 @@ import { List } from 'immutable';
 import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { first, tap, timeout } from 'rxjs/operators';
-import { PublicBlockchainAdapterService } from 'src/app/core/services/blockchain/web3/web3-public-service/public-blockchain-adapter.service';
-import { PrivateAdapterService } from '@core/services/blockchain/web3/web3-private-service/private-adapter.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
@@ -16,13 +16,13 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import posRootChainManagerAbi from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAbi';
 import posRootChainManagerAddress from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/posRootChainManagerContract/posRootChainManagerAddress';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PCacheable } from 'ts-cacheable';
 import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
-import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
+import { Web3Pure } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-pure/web3-pure';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
 
 interface PolygonGraphToken {
@@ -51,7 +51,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   constructor(
     private readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: PrivateAdapterService,
+    private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly tokensService: TokensService,
     private readonly authService: AuthService
