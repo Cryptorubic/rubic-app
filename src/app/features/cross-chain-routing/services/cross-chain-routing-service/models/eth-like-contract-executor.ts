@@ -13,7 +13,7 @@ import { crossChainSwapContractAddresses } from '@features/cross-chain-routing/s
 import {
   TransitTokens,
   transitTokensWithMode
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';

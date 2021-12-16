@@ -6,11 +6,11 @@ import { PublicKey } from '@solana/web3.js';
 import {
   BridgeConfig,
   BridgeConfigData
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import {
   PDA_CONFIG,
   PDA_POOL
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-constants';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 
 export class CrossChainContractReader {
   private readonly ethContractAbi: AbiItem[];

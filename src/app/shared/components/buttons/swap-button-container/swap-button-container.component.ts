@@ -65,8 +65,7 @@ export class SwapButtonContainerComponent implements OnInit {
   @Input() set fromAmount(value: BigNumber | null) {
     this._fromAmount = value;
     this.errorType[ERROR_TYPE.NO_AMOUNT] = Boolean(value === null ? true : value?.isNaN());
-    // @TODO tests.
-    // this.checkInsufficientFundsError();
+    this.checkInsufficientFundsError();
   }
 
   @Input() set minAmount(value: false | number | BigNumber) {

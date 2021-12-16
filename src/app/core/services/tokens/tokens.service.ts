@@ -567,7 +567,7 @@ export class TokensService {
   }
 
   /**
-   * Gets symbol of token, using currently stored tokens or blockchain-adapters request.
+   * Gets symbol of token, using currently stored tokens or blockchain request.
    */
   public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
     const foundToken = this.tokens.find(

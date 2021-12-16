@@ -82,6 +82,7 @@ export class PublicBlockchainAdapterService {
       this.addWeb3(connection.rpcLink, connection.blockchainName)
     );
 
+    // @TODO Solana. remove hardcode.
     const solanaRpc = {
       free: { url: 'https://free.rpcpool.com', weight: 10 },
       mainnet: { url: 'https://mainnet.rpcpool.com', weight: 10 },

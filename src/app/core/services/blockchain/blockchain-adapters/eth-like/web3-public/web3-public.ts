@@ -89,8 +89,8 @@ export class Web3Public {
   }
 
   /**
-   * checks if a given address is a valid Ethereum address
-   * @param address the address to check validity
+   * Checks if a given address is a valid Ethereum address.
+   * @param address The address to check validity.
    */
   public isAddressCorrect(address: string): boolean {
     return isAddress(address);
@@ -113,16 +113,16 @@ export class Web3Public {
   }
 
   /**
-   * checks if address is Ether native address
-   * @param address address to check
+   * Checks if address is Ether native address.
+   * @param address Address to check.
    */
   public isNativeAddress = (address: string): boolean => {
     return address === NATIVE_ETH_LIKE_TOKEN_ADDRESS;
   };
 
   /**
-   * set new blockchain-adapters provider
-   * @param provider
+   * Sets new provider.
+   * @param provider Provider to set.
    */
   public setProvider(provider: Provider): void {
     this.web3.setProvider(provider);
@@ -239,7 +239,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the average price per unit of gas according to blockchain-adapters
+   * Calculates the average price per unit of gas according to web3.
    * @return average gas price in Wei
    */
   public async getGasPrice(): Promise<string> {
@@ -247,7 +247,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the average price per unit of gas according to blockchain-adapters
+   * Calculates the average price per unit of gas according to web3
    * @return average gas price in ETH
    */
   public async getGasPriceInETH(): Promise<BigNumber> {
@@ -256,7 +256,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the gas fee using average price per unit of gas according to blockchain-adapters and Eth price according to coingecko
+   * Calculates the gas fee using average price per unit of gas according to web3 and Eth price according to coingecko.
    * @param gasLimit gas limit
    * @param etherPrice price of Eth unit
    * @return gas fee in usd$
@@ -647,7 +647,7 @@ export class Web3Public {
   }
 
   /**
-   * Sends batch request via blockchain-adapters.
+   * Sends batch request via web3.
    * @see {@link https://web3js.readthedocs.io/en/v1.3.0/web3-eth.html#batchrequest|Web3BatchRequest}
    * @param calls Web3 method calls
    * @param callsParams ethereum method transaction parameters
@@ -705,7 +705,7 @@ export class Web3Public {
   }
 
   /**
-   * calculates the average price per unit of gas according to blockchain-adapters
+   * calculates the average price per unit of gas according to web3
    * @return average gas price in Wei
    */
   @Cacheable({ maxAge: 10000 })

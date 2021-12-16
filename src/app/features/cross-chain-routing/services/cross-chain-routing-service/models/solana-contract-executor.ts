@@ -13,12 +13,12 @@ import {
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
-import { transitTokensWithMode } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
+import { transitTokensWithMode } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
   SOLANA_CROSS_CHAIN_CONTRACT
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-constants';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 import {
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
@@ -27,7 +27,7 @@ import { PrivateBlockchainAdapterService } from '@core/services/blockchain/block
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Buffer } from 'buffer';
-import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana-sctuct';
+import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';

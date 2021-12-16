@@ -34,7 +34,7 @@ import {
 import {
   TransitTokens,
   transitTokensWithMode
-} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/transitTokens';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
