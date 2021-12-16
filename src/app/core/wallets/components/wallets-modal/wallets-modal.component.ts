@@ -97,7 +97,7 @@ export class WalletsModalComponent implements OnInit {
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: Window,
     private readonly translateService: TranslateService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
@@ -159,7 +159,7 @@ export class WalletsModalComponent implements OnInit {
         .subscribe({
           next: async blockchainName => {
             if (blockchainName) {
-              await this.providerConnectorService.connectProvider(
+              await this.walletConnectorService.connectProvider(
                 provider,
                 BlockchainsInfo.getBlockchainByName(blockchainName).id
               );
@@ -173,7 +173,7 @@ export class WalletsModalComponent implements OnInit {
     }
 
     try {
-      const connectionSuccessful = await this.providerConnectorService.connectProvider(provider);
+      const connectionSuccessful = await this.walletConnectorService.connectProvider(provider);
       if (connectionSuccessful) {
         await this.authService.signIn();
       }

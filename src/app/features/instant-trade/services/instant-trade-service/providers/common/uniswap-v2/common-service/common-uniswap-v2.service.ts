@@ -95,7 +95,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private readonly web3PrivateService = inject(Web3PrivateService);
 
-  private readonly providerConnectorService = inject(WalletConnectorService);
+  private readonly walletConnectorService = inject(WalletConnectorService);
 
   private readonly authService = inject(AuthService);
 
@@ -182,7 +182,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   }
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
-    this.providerConnectorService.checkSettings(this.blockchain);
+    this.walletConnectorService.checkSettings(this.blockchain);
     await this.web3PrivateService.approveTokens(
       tokenAddress,
       this.contractAddress,
@@ -613,7 +613,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
-    this.providerConnectorService.checkSettings(trade.blockchain);
+    this.walletConnectorService.checkSettings(trade.blockchain);
     await this.blockchainAdapter.checkBalance(
       trade.from.token,
       trade.from.amount,

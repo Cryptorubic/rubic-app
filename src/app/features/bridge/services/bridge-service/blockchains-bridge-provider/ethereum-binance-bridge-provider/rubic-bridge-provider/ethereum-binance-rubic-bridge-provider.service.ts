@@ -71,7 +71,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService
   ) {
     super();
@@ -187,7 +187,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
           this.bridgeApiService.notifyBridgeBot(
             bridgeTrade,
             receipt.transactionHash,
-            this.providerConnectorService.address
+            this.walletConnectorService.address
           );
           subscriber.next(receipt);
         })
@@ -217,7 +217,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     return from(
       web3Public.getAllowance(
         this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
-        this.providerConnectorService.address,
+        this.walletConnectorService.address,
         this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress
       )
     ).pipe(
@@ -288,7 +288,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
         bridgeTrade.fromBlockchain,
         hash,
         trade.amount.toFixed(),
-        this.providerConnectorService.address
+        this.walletConnectorService.address
       );
     };
 
@@ -310,7 +310,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
   ): Promise<void> {
     const allowance = await web3Public.getAllowance(
       trade.token.address,
-      this.providerConnectorService.address,
+      this.walletConnectorService.address,
       trade.swapContractAddress
     );
     if (trade.amount.gt(allowance)) {

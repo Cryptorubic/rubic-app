@@ -49,7 +49,7 @@ export class BridgeService {
     // bridge providers end
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService
   ) {
@@ -198,7 +198,7 @@ export class BridgeService {
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
-          this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
+          this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
 
           const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
           await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
@@ -236,7 +236,7 @@ export class BridgeService {
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
-        this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
+        this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
 
         const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
         await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);

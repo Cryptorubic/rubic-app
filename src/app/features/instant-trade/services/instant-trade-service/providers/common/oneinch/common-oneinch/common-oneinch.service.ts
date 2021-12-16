@@ -60,7 +60,7 @@ export class CommonOneinchService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3Private: Web3PrivateService,
     private readonly settingsService: SettingsService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService
   ) {
@@ -143,7 +143,7 @@ export class CommonOneinchService {
     tokenAddress: string,
     options: TransactionOptions
   ): Promise<void> {
-    this.providerConnectorService.checkSettings(blockchain);
+    this.walletConnectorService.checkSettings(blockchain);
 
     const approveAddress = await this.loadApproveAddress(
       BlockchainsInfo.getBlockchainByName(blockchain).id
@@ -321,7 +321,7 @@ export class CommonOneinchService {
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
     const { blockchain } = trade;
-    this.providerConnectorService.checkSettings(blockchain);
+    this.walletConnectorService.checkSettings(blockchain);
 
     const web3Public = this.publicBlockchainAdapterService[trade.blockchain];
     await web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);

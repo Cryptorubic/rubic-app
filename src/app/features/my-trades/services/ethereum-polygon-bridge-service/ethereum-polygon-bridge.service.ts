@@ -16,7 +16,7 @@ export class EthereumPolygonBridgeService {
   constructor(
     private readonly bridgeApiService: BridgeApiService,
     private readonly authService: AuthService,
-    private readonly providerConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public depositTradeAfterCheckpoint(
@@ -27,7 +27,7 @@ export class EthereumPolygonBridgeService {
       network: 'mainnet',
       version: 'v1',
       maticProvider: networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink,
-      parentProvider: this.providerConnectorService.web3
+      parentProvider: this.walletConnectorService.web3
     });
     const walletAddress = this.authService.userAddress;
 

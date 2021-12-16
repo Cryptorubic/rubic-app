@@ -69,7 +69,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private headerStore: HeaderStore,
     private authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private translateService: TranslateService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly queryParamsService: QueryParamsService,
@@ -88,11 +88,11 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public ngAfterViewInit(): void {
     this.cdr.detectChanges();
-    this._onNetworkChanges$ = this.providerConnectorService.networkChange$.subscribe(network => {
+    this._onNetworkChanges$ = this.walletConnectorService.networkChange$.subscribe(network => {
       this.currentBlockchain = network;
       this.cdr.detectChanges();
     });
-    this._onAddressChanges$ = this.providerConnectorService.addressChange$.subscribe(() =>
+    this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(() =>
       this.cdr.detectChanges()
     );
   }

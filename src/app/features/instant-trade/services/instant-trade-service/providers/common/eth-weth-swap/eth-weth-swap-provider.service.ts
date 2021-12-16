@@ -28,7 +28,7 @@ export class EthWethSwapProviderService {
   constructor(
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: Web3PrivateService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService
   ) {
@@ -61,7 +61,7 @@ export class EthWethSwapProviderService {
     const fromToken = trade.from.token;
     const fromAmount = trade.from.amount;
 
-    this.providerConnectorService.checkSettings(blockchain);
+    this.walletConnectorService.checkSettings(blockchain);
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
     await blockchainAdapter.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 

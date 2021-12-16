@@ -67,7 +67,7 @@ export class MyTradesService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -88,7 +88,7 @@ export class MyTradesService {
       .pipe(
         debounceTime(500),
         filter(
-          () => this.router.url === '/my-trades' && Boolean(this.providerConnectorService.address)
+          () => this.router.url === '/my-trades' && Boolean(this.walletConnectorService.address)
         )
       )
       .subscribe(() => {
@@ -285,7 +285,7 @@ export class MyTradesService {
     onTransactionHash: (hash: string) => void
   ): Observable<TransactionReceipt> {
     try {
-      this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
+      this.walletConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
     } catch (err) {
       return throwError(err);
     }

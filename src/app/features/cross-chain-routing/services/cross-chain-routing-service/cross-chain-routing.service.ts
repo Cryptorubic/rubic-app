@@ -121,7 +121,7 @@ export class CrossChainRoutingService {
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly raydiumService: RaydiumService,
     // Providers end.
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -784,7 +784,7 @@ export class CrossChainRoutingService {
           transactionHash = await this.ccrContractExecutorFacade.executeCCRContract(
             this.currentCrossChainTrade,
             options,
-            this.providerConnectorService.address,
+            this.walletConnectorService.address,
             this.settings,
             this.numOfBlockchainsInContract[this.currentCrossChainTrade.toBlockchain][
               this.currentCrossChainTrade.fromContractIndex

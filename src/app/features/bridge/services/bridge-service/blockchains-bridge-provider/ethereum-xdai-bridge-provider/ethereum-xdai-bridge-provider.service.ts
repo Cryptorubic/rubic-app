@@ -50,7 +50,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   constructor(
     private readonly web3PrivateService: Web3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
-    private readonly providerConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     super();
 
@@ -92,7 +92,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
         this.bridgeApiService.notifyBridgeBot(
           bridgeTrade,
           receipt.transactionHash,
-          this.providerConnectorService.address
+          this.walletConnectorService.address
         );
       })
     );

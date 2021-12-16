@@ -71,7 +71,7 @@ export class ZrxService implements ItProvider {
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly web3PrivateService: Web3PrivateService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly httpService: HttpService,
@@ -150,7 +150,7 @@ export class ZrxService implements ItProvider {
   }
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
-    this.providerConnectorService.checkSettings(this.blockchain);
+    this.walletConnectorService.checkSettings(this.blockchain);
     await this.web3PrivateService.approveTokens(
       tokenAddress,
       this.currentTradeData.allowanceTarget,
@@ -222,7 +222,7 @@ export class ZrxService implements ItProvider {
     trade: InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
-    this.providerConnectorService.checkSettings(trade.blockchain);
+    this.walletConnectorService.checkSettings(trade.blockchain);
 
     const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
     await this.fromBlockchainAdapter.checkBalance(trade.from.token, amount, this.walletAddress);

@@ -140,7 +140,7 @@ export class SwapButtonContainerComponent implements OnInit {
     const form = this.formService.inputValue;
     const walletType = BlockchainsInfo.getBlockchainType(form.fromBlockchain);
     if (
-      this.providerConnectorService?.provider.walletName !== WALLET_NAME.METAMASK ||
+      this.walletConnectorService?.provider.walletName !== WALLET_NAME.METAMASK ||
       !form.fromBlockchain ||
       walletType !== 'ethLike'
     ) {
@@ -230,7 +230,7 @@ export class SwapButtonContainerComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,
@@ -315,7 +315,7 @@ export class SwapButtonContainerComponent implements OnInit {
         this.cdr.markForCheck();
       });
 
-    this.providerConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.walletConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.checkWrongBlockchainError();
     });
   }
@@ -360,11 +360,11 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private checkWrongBlockchainError(): boolean {
-    if (this.providerConnectorService.provider) {
-      const userBlockchain = this.providerConnectorService.network?.name;
+    if (this.walletConnectorService.provider) {
+      const userBlockchain = this.walletConnectorService.network?.name;
       const { fromBlockchain } = this.formService.inputValue;
 
-      const { isMultiChainWallet } = this.providerConnectorService.provider;
+      const { isMultiChainWallet } = this.walletConnectorService.provider;
       this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
         isMultiChainWallet && fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
 
@@ -390,7 +390,7 @@ export class SwapButtonContainerComponent implements OnInit {
     this.status = TRADE_STATUS.LOADING;
     const { fromBlockchain } = this.formService.inputValue;
     try {
-      await this.providerConnectorService.switchChain(fromBlockchain);
+      await this.walletConnectorService.switchChain(fromBlockchain);
     } finally {
       this.status = currentStatus;
     }
@@ -400,8 +400,8 @@ export class SwapButtonContainerComponent implements OnInit {
     const blockchainAdapter =
       this.publicBlockchainAdapterService[this.formService.inputValue.fromBlockchain];
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
-      Boolean(this.providerConnectorService.address) &&
-      !blockchainAdapter.isAddressCorrect(this.providerConnectorService.address);
+      Boolean(this.walletConnectorService.address) &&
+      !blockchainAdapter.isAddressCorrect(this.walletConnectorService.address);
     this.cdr.detectChanges();
     return this.errorType[ERROR_TYPE.WRONG_WALLET];
   }

@@ -24,7 +24,7 @@ export class CounterNotificationsService {
   }
 
   constructor(
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly myTradesService: MyTradesService,
     private readonly storeService: StoreService

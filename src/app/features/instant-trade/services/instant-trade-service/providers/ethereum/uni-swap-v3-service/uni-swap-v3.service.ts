@@ -82,7 +82,7 @@ export class UniSwapV3Service implements ItProvider {
 
   constructor(
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly providerConnectorService: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly settingsService: SettingsService,
@@ -136,7 +136,7 @@ export class UniSwapV3Service implements ItProvider {
   }
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
-    this.providerConnectorService.checkSettings(this.blockchain);
+    this.walletConnectorService.checkSettings(this.blockchain);
     await this.web3PrivateService.approveTokens(
       tokenAddress,
       uniSwapV3ContractData.swapRouter.address,
@@ -443,7 +443,7 @@ export class UniSwapV3Service implements ItProvider {
     trade: UniswapV3InstantTrade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
-    this.providerConnectorService.checkSettings(this.blockchain);
+    this.walletConnectorService.checkSettings(this.blockchain);
     await this.blockchainAdapter.checkBalance(
       trade.from.token,
       trade.from.amount,
