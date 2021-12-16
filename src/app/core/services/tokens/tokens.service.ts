@@ -14,9 +14,9 @@ import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-li
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
-  NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+  NATIVE_TOKEN_ADDRESS,
   NATIVE_SOLANA_MINT_ADDRESS
-} from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+} from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
@@ -363,7 +363,7 @@ export class TokensService {
     if (blockchainType === 'solana') {
       nativeCoinAddress = NATIVE_SOLANA_MINT_ADDRESS;
     } else if (blockchainType === 'ethLike') {
-      nativeCoinAddress = NATIVE_ETH_LIKE_TOKEN_ADDRESS;
+      nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
     }
     const nativeCoin = this.tokens.find(token =>
       TokensService.areTokensEqual(token, { blockchain, address: nativeCoinAddress })

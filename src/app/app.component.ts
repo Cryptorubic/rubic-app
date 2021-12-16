@@ -6,7 +6,6 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from './core/services/query-params/models/query-params';
 import { QueryParamsService } from './core/services/query-params/query-params.service';
@@ -29,8 +28,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     healthcheckService: HealthcheckService,
     queryParamsService: QueryParamsService,
     activatedRoute: ActivatedRoute,
-    errorService: ErrorsService,
-    private readonly publicBlockchainAdapter: PublicBlockchainAdapterService
+    errorService: ErrorsService
   ) {
     const queryParamsSubscription$ = activatedRoute.queryParams.subscribe(
       (queryParams: QueryParams) => {

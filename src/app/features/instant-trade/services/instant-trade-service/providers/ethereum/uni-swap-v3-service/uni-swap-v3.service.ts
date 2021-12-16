@@ -26,7 +26,7 @@ import { LiquidityPoolsController } from 'src/app/features/instant-trade/service
 
 import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Route';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UniswapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3InstantTrade';
 import { startWith } from 'rxjs/operators';
@@ -499,7 +499,7 @@ export class UniSwapV3Service implements ItProvider {
           route,
           fromAmountAbsolute,
           toTokenAddress,
-          NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+          NATIVE_TOKEN_ADDRESS,
           deadline
         );
       const exactInputMethodEncoded = await Web3Pure.encodeFunctionCall(

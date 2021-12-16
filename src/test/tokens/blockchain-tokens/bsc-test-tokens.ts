@@ -1,6 +1,6 @@
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
 import BigNumber from 'bignumber.js';
 
@@ -8,7 +8,7 @@ const BNB: TokenAmount = {
   name: 'Binance Coin',
   symbol: 'BNB',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+  address: NATIVE_TOKEN_ADDRESS,
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.HIGH,

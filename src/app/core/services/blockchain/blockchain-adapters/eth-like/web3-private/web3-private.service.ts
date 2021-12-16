@@ -27,14 +27,14 @@ export class Web3PrivateService {
   private readonly web3: Web3;
 
   private get address(): string {
-    return this.providerConnector.address;
+    return this.walletConnectorService.address;
   }
 
   constructor(
-    private readonly providerConnector: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly gasApiService: GasApiService
   ) {
-    this.web3 = providerConnector.web3;
+    this.web3 = walletConnectorService.web3;
   }
 
   private static parseError(err: Web3Error): Error {
@@ -64,7 +64,7 @@ export class Web3PrivateService {
    * @param gasPrice Current gas price.
    */
   private async calculateGasPrice(gasPrice?: string): Promise<string | undefined> {
-    const blockchain = this.providerConnector.networkName;
+    const blockchain = this.walletConnectorService.networkName;
     const minGasPrice = await this.gasApiService.getMinGasPriceInBlockchain(blockchain).toPromise();
     if (!minGasPrice?.isFinite() || minGasPrice.eq(0)) {
       return gasPrice;
@@ -453,7 +453,7 @@ export class Web3PrivateService {
    */
   private emitTransaction(): void {
     setTimeout(() => {
-      this.providerConnector.emitTransaction();
+      this.walletConnectorService.emitTransaction();
     }, 500);
   }
 }

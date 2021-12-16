@@ -33,8 +33,6 @@ export class PublicBlockchainAdapterService {
 
   private readonly connectionLinks: ConnectionLink[];
 
-  private readonly defaultConnectionLinks: ConnectionLink[];
-
   public [BLOCKCHAIN_NAME.ETHEREUM]: Web3Public;
 
   public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Web3Public;
@@ -68,16 +66,13 @@ export class PublicBlockchainAdapterService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpClient: HttpClient
   ) {
-    this.defaultConnectionLinks = networks
+    this.connectionLinks = networks
       .filter(network => WEB3_SUPPORTED_BLOCKCHAINS.some(el => el === network.name))
       .map(network => ({
         blockchainName: network.name as Web3SupportedBlockchains,
         rpcLink: network.rpcLink,
         additionalRpcLink: network.additionalRpcLink
       }));
-    this.connectionLinks = this.defaultConnectionLinks.filter(connection =>
-      WEB3_SUPPORTED_BLOCKCHAINS.includes(connection.blockchainName)
-    );
     this.connectionLinks.forEach(connection =>
       this.addWeb3(connection.rpcLink, connection.blockchainName)
     );
@@ -101,7 +96,7 @@ export class PublicBlockchainAdapterService {
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.connectionLinks.forEach(connection => {
-          const testingConnection = this.defaultConnectionLinks.find(
+          const testingConnection = this.connectionLinks.find(
             c => c.blockchainName === `${connection.blockchainName}_TESTNET`
           );
           if (!testingConnection) {

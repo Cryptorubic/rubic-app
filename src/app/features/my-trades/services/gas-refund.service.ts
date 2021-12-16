@@ -45,7 +45,7 @@ export class GasRefundService {
     private readonly authService: AuthService,
     private readonly web3Private: Web3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly providerConnector: WalletConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly testingModeService: UseTestingModeService
   ) {
     this.userPromotions$ = this._userPromotions$.asObservable();
@@ -146,8 +146,8 @@ export class GasRefundService {
    * @return is the correct network selected as a result.
    */
   private checkChain(): Promise<boolean> {
-    if (this.providerConnector.networkName !== this.refundBlockchain) {
-      return this.providerConnector.switchChain(this.refundBlockchain);
+    if (this.walletConnectorService.networkName !== this.refundBlockchain) {
+      return this.walletConnectorService.switchChain(this.refundBlockchain);
     }
     return Promise.resolve(true);
   }

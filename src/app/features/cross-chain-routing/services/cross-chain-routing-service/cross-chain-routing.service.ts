@@ -235,9 +235,7 @@ export class CrossChainRoutingService {
       toToken
     );
 
-    const cryptoFee = Web3Public.fromWei(
-      await this.getCryptoFee(fromBlockchain, toBlockchain)
-    ).toNumber();
+    const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -660,7 +658,8 @@ export class CrossChainRoutingService {
     const fromContractAddress = this.contractAddresses[fromBlockchain][fromContractIndex];
     const fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
     const isFromPaused = await new CrossChainContractReader(fromBlockchainAdapter).isPaused(
-      fromContractAddress
+      fromContractAddress,
+      fromContractIndex
     );
     if (isFromPaused) {
       throw new CrossChainIsUnavailableWarning();
@@ -669,7 +668,8 @@ export class CrossChainRoutingService {
     const toContractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
     const isToPaused = await new CrossChainContractReader(toBlockchainAdapter).isPaused(
-      toContractAddress
+      toContractAddress,
+      toContractIndex
     );
     if (isToPaused) {
       throw new CrossChainIsUnavailableWarning();

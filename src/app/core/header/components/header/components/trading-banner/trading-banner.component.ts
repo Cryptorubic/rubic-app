@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import BigNumber from 'bignumber.js';
 import { TokenInfo } from '@shared/components/buy-token/buy-token.component';
 
@@ -29,13 +29,13 @@ export class TradingBannerComponent {
     this.bannerTokens = {
       from: {
         blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-        address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+        address: NATIVE_TOKEN_ADDRESS,
         symbol: 'ETH',
         amount: new BigNumber(1)
       },
       to: {
         blockchain: BLOCKCHAIN_NAME.MOONRIVER,
-        address: NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+        address: NATIVE_TOKEN_ADDRESS,
         symbol: 'MOVR'
       }
     };

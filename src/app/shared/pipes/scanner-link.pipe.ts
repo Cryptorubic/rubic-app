@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME, DEPRECATED_BLOCKCHAIN_NAME } from '../models/blockchain/BLOCKCHAIN_NAME';
@@ -153,7 +153,7 @@ export class ScannerLinkPipe implements PipeTransform {
         ? blockchainsScanners[blockchainName].baseUrl
         : blockchainsScanners[`${blockchainName}_TESTNET` as BLOCKCHAIN_NAME].baseUrl;
 
-    if (address === NATIVE_ETH_LIKE_TOKEN_ADDRESS) {
+    if (address === NATIVE_TOKEN_ADDRESS) {
       return baseUrl + blockchainsScanners[blockchainName].nativeCoinUrl;
     }
     return baseUrl + blockchainsScanners[blockchainName][type] + address;

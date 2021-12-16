@@ -46,7 +46,7 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
@@ -248,8 +248,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.toToken = form.toToken;
 
     this.isEth = {
-      from: this.fromToken?.address === NATIVE_ETH_LIKE_TOKEN_ADDRESS,
-      to: this.toToken?.address === NATIVE_ETH_LIKE_TOKEN_ADDRESS
+      from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
+      to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
     if (this.instantTradeService.getEthAndWethTrade()) {

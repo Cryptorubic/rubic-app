@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { toChecksumAddress } from 'web3-utils';
 import {
-  NATIVE_ETH_LIKE_TOKEN_ADDRESS,
+  NATIVE_TOKEN_ADDRESS,
   NATIVE_SOLANA_MINT_ADDRESS
-} from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+} from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
 
@@ -48,7 +48,7 @@ export class SolanaWeb3Public {
   }
 
   static get nativeTokenAddress(): string {
-    return NATIVE_ETH_LIKE_TOKEN_ADDRESS;
+    return NATIVE_TOKEN_ADDRESS;
   }
 
   static toWei(amount: BigNumber | string | number, decimals = 18): string {

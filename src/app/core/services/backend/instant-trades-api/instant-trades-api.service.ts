@@ -19,11 +19,14 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
+
+type HashObject = { hash: string } | { signature: string };
 
 const instantTradesApiRoutes = {
-  createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
-  editData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
-  getData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`
+  createData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`,
+  editData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`,
+  getData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`
 };
 
 @Injectable({
@@ -32,10 +35,18 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
+  private static getHashObject(blockchain: BLOCKCHAIN_NAME, hash: string): HashObject {
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    return {
+      ...(blockchainType === 'ethLike' && { hash }),
+      ...(blockchainType === 'solana' && { signature: hash })
+    };
+  }
+
   constructor(
     private httpService: HttpService,
     private useTestingModeService: UseTestingModeService,
-    private readonly walletConnnctorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
   }
@@ -70,11 +81,7 @@ export class InstantTradesApiService {
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
-    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
-    const hashObject = {
-      ...(blockchainType === 'ethLike' && { hash }),
-      ...(blockchainType === 'solana' && { signature: hash })
-    };
+    const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain],
       provider,
@@ -89,7 +96,7 @@ export class InstantTradesApiService {
       tradeInfo.network = 'ethereum-test';
     }
 
-    const url = instantTradesApiRoutes.createData(this.walletConnnctorService.provider.walletType);
+    const url = instantTradesApiRoutes.createData(this.walletConnectorService.provider.walletType);
     return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
   }
 
@@ -100,9 +107,12 @@ export class InstantTradesApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
-    const isSolana = this.walletConnnctorService.provider.walletType === 'solana';
-    const body = { success, ...(isSolana ? { signature: hash } : { hash }) };
-    const url = instantTradesApiRoutes.editData(this.walletConnnctorService.provider.walletType);
+    const blockchain =
+      this.walletConnectorService.provider.walletType === 'solana'
+        ? BLOCKCHAIN_NAME.SOLANA
+        : BLOCKCHAIN_NAME.ETHEREUM;
+    const body = { success, ...InstantTradesApiService.getHashObject(blockchain, hash) };
+    const url = instantTradesApiRoutes.editData(this.walletConnectorService.provider.walletType);
     return this.httpService.patch(url, body);
   }
 
@@ -116,7 +126,7 @@ export class InstantTradesApiService {
     walletAddress: string,
     errorCallback?: (error: unknown) => void
   ): Observable<TableTrade[]> {
-    const url = instantTradesApiRoutes.getData(this.walletConnnctorService.provider.walletType);
+    const url = instantTradesApiRoutes.getData(this.walletConnectorService.provider.walletType);
     return this.httpService.get(url, { user: walletAddress }).pipe(
       map((swaps: InstantTradesResponseApi[]) =>
         swaps.map(swap => this.parseTradeApiToTableTrade(swap))

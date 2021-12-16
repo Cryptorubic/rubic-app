@@ -34,7 +34,7 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Token } from '@solana/spl-token';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 
 export type TokenAccounts = {
   from: {

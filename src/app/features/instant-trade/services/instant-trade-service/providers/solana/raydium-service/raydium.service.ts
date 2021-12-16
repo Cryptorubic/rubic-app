@@ -26,7 +26,7 @@ import { RaydiumRoutingService } from '@features/instant-trade/services/instant-
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
 import { subtractPercent } from '@shared/utils/utils';
 import CustomError from '@core/errors/models/custom-error';

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { HttpClient } from '@angular/common/http';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 
@@ -22,42 +20,31 @@ export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number]
   providedIn: 'root'
 })
 export class PrivateBlockchainAdapterService {
-  public [BLOCKCHAIN_NAME.ETHEREUM]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.ETHEREUM]: Web3PrivateService = null;
 
-  public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Web3PrivateService = null;
 
-  public [BLOCKCHAIN_NAME.POLYGON]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.POLYGON]: Web3PrivateService = null;
 
-  public [BLOCKCHAIN_NAME.HARMONY]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.HARMONY]: Web3PrivateService = null;
 
-  public [BLOCKCHAIN_NAME.AVALANCHE]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.AVALANCHE]: Web3PrivateService = null;
 
-  public [BLOCKCHAIN_NAME.MOONRIVER]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.MOONRIVER]: Web3PrivateService = null;
 
-  public [BLOCKCHAIN_NAME.FANTOM]: Web3PrivateService;
+  public readonly [BLOCKCHAIN_NAME.FANTOM]: Web3PrivateService = null;
 
   public readonly [BLOCKCHAIN_NAME.XDAI]: Web3PrivateService = null;
-
-  public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Web3PrivateService = null;
-
-  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: Web3PrivateService = null;
-
-  public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: Web3PrivateService = null;
-
-  public readonly [BLOCKCHAIN_NAME.HARMONY_TESTNET]: Web3PrivateService = null;
-
-  public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Web3PrivateService = null;
 
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3PrivateService = null;
 
   constructor(
     private useTestingModeService: UseTestingModeService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly httpClient: HttpClient,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly solanaWeb3PrivateService: SolanaWeb3PrivateService
   ) {
     WEB3_SUPPORTED_BLOCKCHAINS.forEach(blockchain => {
+      // @ts-ignore. Cant assign to readonly property in cycle.
       this[blockchain] = web3PrivateService;
     });
     this[BLOCKCHAIN_NAME.SOLANA] = solanaWeb3PrivateService;

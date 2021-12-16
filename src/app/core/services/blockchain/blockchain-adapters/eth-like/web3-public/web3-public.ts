@@ -7,7 +7,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
 import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
-import { NATIVE_ETH_LIKE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
@@ -60,7 +60,7 @@ export class Web3Public {
   }
 
   static get nativeTokenAddress(): string {
-    return NATIVE_ETH_LIKE_TOKEN_ADDRESS;
+    return NATIVE_TOKEN_ADDRESS;
   }
 
   static calculateGasMargin(amount: BigNumber | string | number, percent: number): string {
@@ -117,7 +117,7 @@ export class Web3Public {
    * @param address Address to check.
    */
   public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_ETH_LIKE_TOKEN_ADDRESS;
+    return address === NATIVE_TOKEN_ADDRESS;
   };
 
   /**

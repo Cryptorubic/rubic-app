@@ -16,8 +16,7 @@ export const BridgeConfig = struct([
   u64('min_confirmation'),
   u64('min_token_amount'),
   u64('max_token_amount'),
-  u64('refund_slippage'),
-  bool('is_paused')
+  u64('refund_slippage')
 ]) as Layout<unknown>;
 
 export type BridgeConfigData = {
@@ -32,8 +31,23 @@ export type BridgeConfigData = {
   min_token_amount: BigNumber;
   max_token_amount: BigNumber;
   refund_slippage: BigNumber;
-  is_paused: boolean;
 };
+
+export const BlockchainLayout = struct([
+  u8('key'),
+  str('rubic_address'),
+  u64('fee_amount'),
+  u64('crypto_fee'),
+  bool('is_active')
+]);
+
+export interface SolanaBlockchainConfig {
+  key: number;
+  rubic_address: string;
+  fee_amount: BigNumber;
+  crypto_fee: BigNumber;
+  is_active: boolean;
+}
 
 export const SOLANA_CCR_LAYOUT = struct([
   u8('instructionNumber'),

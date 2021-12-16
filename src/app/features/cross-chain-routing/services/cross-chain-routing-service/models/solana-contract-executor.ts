@@ -28,10 +28,11 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_ETH_LIKE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
+import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -40,147 +41,6 @@ enum TransferDataType {
 }
 
 export class SolanaContractExecutor {
-  constructor(
-    private readonly privateAdapter: PrivateBlockchainAdapterService,
-    private readonly tokensService: TokensService,
-    private readonly raydiumRoutingService: RaydiumRoutingService
-  ) {}
-
-  // eslint-disable-next-line complexity
-  public async execute(
-    trade: CrossChainRoutingTrade,
-    address: string,
-    toBlockchainInContractNumber: number,
-    settings: CcrSettingsForm,
-    targetAddress: string
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const owner = new PublicKey(address);
-    const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
-    const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
-
-    const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
-    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
-      trade,
-      settings
-    );
-    const amountIn = new BigNumber(tokenInAmountMax.toString()).multipliedBy(fromDecimals);
-
-    const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
-    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
-      trade,
-      settings
-    );
-    const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
-
-    const middleDecimals = new BigNumber(10).exponentiatedBy(
-      transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
-    );
-    const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
-      middleDecimals
-    );
-
-    const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
-    const to = this.tokensService.tokens.find(el => el.address === trade.tokenOut.address);
-
-    if (!from || !to) {
-      throw new Error('Miss token info');
-    }
-
-    const fromMint =
-      trade.tokenIn.address === NATIVE_SOL.mintAddress
-        ? TOKENS.WSOL.mintAddress
-        : trade.tokenIn.address;
-    const toRouteMint = trade.firstPath[trade.firstPath.length - 1];
-    const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
-
-    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const toFinalAmount = Math.floor(parseFloat(amountOut.toFixed()));
-    const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toFixed()));
-
-    const poolInfo = this.raydiumRoutingService.currentPoolInfo;
-
-    // @TODO Solana. Replace by seeds.
-    const blockchainUuid: Partial<Record<number, string>> = {
-      2: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx',
-      1: '4JCZAgsC5XwXxgexidRmJmdtMCBSAcMqHAUF152x5a71',
-      3: 'CaXfJCA4ccnvmMDFxf9V57SxjAXDe9JC1TgYWXcuyxs1',
-      4: '4TLPWsYu3m8eSJQoF4Q9kk7RL59Q1Me6TpnnUsFktnYu',
-      5: 'HrZBcgtD2uzVxays2pEYmBg5UVCYtvmodw2b8oLZJD1B',
-      6: '3TTcYbjj879vMa8XGt6pcPBTFzAkdhYNEpq4K9YCR7eo',
-      7: '2q7db16qoCbGfqEgQ5A8WMnqi9p1vgecL7V2DotDoPPu'
-    };
-
-    const isTransfer =
-      trade.tokenIn.address === transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].address;
-    const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
-    let transferType;
-    if (fromNative) {
-      transferType = TransferDataType.NATIVE;
-    } else if (isTransfer) {
-      transferType = TransferDataType.TRANSFER_TOKEN;
-    } else {
-      transferType = TransferDataType.NON_TRANSFER_TOKEN;
-    }
-
-    const methodArguments = {
-      blockchain: toBlockchainInContractNumber,
-      tokenInAmount: fromFinalAmount,
-      secondPath: trade.secondPath.map(el => Web3Public.toChecksumAddress(el)),
-      exactRbcTokenOut: middleFinalAmount,
-      tokenOutMin: toFinalAmount,
-      newAddress: targetAddress,
-      swapToCrypto: true,
-      transferType
-    };
-
-    const { from: fromAccount } =
-      transferType !== TransferDataType.NATIVE
-        ? await privateBlockchainAdapter.getOrCreatesTokensAccounts(
-            mintAccountsAddresses,
-            fromMint,
-            toMint,
-            owner,
-            fromFinalAmount,
-            transaction,
-            signers
-          )
-        : { from: { key: PublicKey.default } };
-
-    // @TODO Solana. Fix keys order.
-    transaction.add(
-      SolanaContractExecutor.createSolanaInstruction(
-        new PublicKey(PDA_CONFIG),
-        new PublicKey(blockchainUuid[toBlockchainInContractNumber]),
-        TOKEN_PROGRAM_ID,
-        new PublicKey(poolInfo?.ammId || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.ammAuthority || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.ammOpenOrders || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.ammTargetOrders || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.poolCoinTokenAccount || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.poolPcTokenAccount || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumProgramId || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumMarket || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumBids || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumAsks || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumEventQueue || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumCoinVaultAccount || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumPcVaultAccount || NATIVE_SOL.mintAddress),
-        new PublicKey(poolInfo?.serumVaultSigner || NATIVE_SOL.mintAddress),
-        fromAccount.key,
-        new PublicKey('6rvuMQ7B3cwpmPHhbMGQFBsfDfkgnxiwmWxxSnkd9FjK'),
-        new PublicKey(address),
-        new PublicKey(poolInfo?.programId || NATIVE_SOL.mintAddress),
-        new PublicKey(PDA_DELEGATE),
-        new PublicKey(SYSTEM_PROGRAM_ID),
-        methodArguments
-      )
-    );
-
-    return { transaction, signers };
-  }
-
   private static createSolanaInstruction(
     pdaConfig: PublicKey,
     pdaBlockchainConfig: PublicKey,
@@ -279,5 +139,135 @@ export class SolanaContractExecutor {
     const averageTPS = totalTransactionsCount / samplesAmount / 60;
     const minimumTPSLimit = 1200;
     return averageTPS >= minimumTPSLimit;
+  }
+
+  constructor(
+    private readonly privateAdapter: PrivateBlockchainAdapterService,
+    private readonly tokensService: TokensService,
+    private readonly raydiumRoutingService: RaydiumRoutingService
+  ) {}
+
+  // eslint-disable-next-line complexity
+  public async execute(
+    trade: CrossChainRoutingTrade,
+    address: string,
+    toBlockchainInContractNumber: number,
+    settings: CcrSettingsForm,
+    targetAddress: string
+  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+    const transaction = new Transaction();
+    const signers: Account[] = [];
+    const owner = new PublicKey(address);
+    const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
+    const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
+
+    const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
+    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
+      trade,
+      settings
+    );
+    const amountIn = new BigNumber(tokenInAmountMax.toString()).multipliedBy(fromDecimals);
+
+    const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
+    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
+      trade,
+      settings
+    );
+    const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
+
+    const middleDecimals = new BigNumber(10).exponentiatedBy(
+      transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
+    );
+    const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
+      middleDecimals
+    );
+
+    const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
+    const to = this.tokensService.tokens.find(el => el.address === trade.tokenOut.address);
+
+    if (!from || !to) {
+      throw new Error('Miss token info');
+    }
+
+    const fromMint =
+      trade.tokenIn.address === NATIVE_SOL.mintAddress
+        ? TOKENS.WSOL.mintAddress
+        : trade.tokenIn.address;
+    const toRouteMint = trade.firstPath[trade.firstPath.length - 1];
+    const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
+
+    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
+    const toFinalAmount = Math.floor(parseFloat(amountOut.toFixed()));
+    const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toFixed()));
+
+    const poolInfo = this.raydiumRoutingService.currentPoolInfo;
+
+    const isTransfer =
+      trade.tokenIn.address === transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].address;
+    const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
+    let transferType;
+    if (fromNative) {
+      transferType = TransferDataType.NATIVE;
+    } else if (isTransfer) {
+      transferType = TransferDataType.TRANSFER_TOKEN;
+    } else {
+      transferType = TransferDataType.NON_TRANSFER_TOKEN;
+    }
+
+    const methodArguments = {
+      blockchain: toBlockchainInContractNumber,
+      tokenInAmount: fromFinalAmount,
+      secondPath: trade.secondPath.map(el => Web3Public.toChecksumAddress(el)),
+      exactRbcTokenOut: middleFinalAmount,
+      tokenOutMin: toFinalAmount,
+      newAddress: targetAddress,
+      swapToCrypto: true,
+      transferType
+    };
+
+    const { from: fromAccount } =
+      transferType !== TransferDataType.NATIVE
+        ? await privateBlockchainAdapter.getOrCreatesTokensAccounts(
+            mintAccountsAddresses,
+            fromMint,
+            toMint,
+            owner,
+            fromFinalAmount,
+            transaction,
+            signers
+          )
+        : { from: { key: PublicKey.default } };
+
+    // @TODO Solana. Fix keys order.
+    transaction.add(
+      SolanaContractExecutor.createSolanaInstruction(
+        new PublicKey(PDA_CONFIG),
+        new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContractNumber]),
+        TOKEN_PROGRAM_ID,
+        new PublicKey(poolInfo?.ammId || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.ammAuthority || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.ammOpenOrders || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.ammTargetOrders || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.poolCoinTokenAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.poolPcTokenAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumProgramId || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumMarket || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumBids || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumAsks || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumEventQueue || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumCoinVaultAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumPcVaultAccount || NATIVE_SOL.mintAddress),
+        new PublicKey(poolInfo?.serumVaultSigner || NATIVE_SOL.mintAddress),
+        fromAccount.key,
+        new PublicKey('6rvuMQ7B3cwpmPHhbMGQFBsfDfkgnxiwmWxxSnkd9FjK'),
+        new PublicKey(address),
+        new PublicKey(poolInfo?.programId || NATIVE_SOL.mintAddress),
+        new PublicKey(PDA_DELEGATE),
+        new PublicKey(SYSTEM_PROGRAM_ID),
+        methodArguments
+      )
+    );
+
+    return { transaction, signers };
   }
 }
