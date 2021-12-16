@@ -16,7 +16,8 @@ export const BridgeConfig = struct([
   u64('min_confirmation'),
   u64('min_token_amount'),
   u64('max_token_amount'),
-  u64('refund_slippage')
+  u64('refund_slippage'),
+  bool('is_paused')
 ]) as Layout<unknown>;
 
 export type BridgeConfigData = {
@@ -31,6 +32,7 @@ export type BridgeConfigData = {
   min_token_amount: BigNumber;
   max_token_amount: BigNumber;
   refund_slippage: BigNumber;
+  is_paused: boolean;
 };
 
 export const BlockchainLayout = struct([

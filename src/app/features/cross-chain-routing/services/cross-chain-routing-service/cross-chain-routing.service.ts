@@ -54,8 +54,8 @@ import { RaydiumService } from '@features/instant-trade/services/instant-trade-s
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
-import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
+import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
 import CustomError from '@core/errors/models/custom-error';
 
 interface PathAndToAmount {
@@ -658,8 +658,7 @@ export class CrossChainRoutingService {
     const fromContractAddress = this.contractAddresses[fromBlockchain][fromContractIndex];
     const fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
     const isFromPaused = await new CrossChainContractReader(fromBlockchainAdapter).isPaused(
-      fromContractAddress,
-      this.numOfBlockchainsInContract[toBlockchain][fromContractIndex]
+      fromContractAddress
     );
     if (isFromPaused) {
       throw new CrossChainIsUnavailableWarning();
@@ -668,8 +667,7 @@ export class CrossChainRoutingService {
     const toContractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
     const isToPaused = await new CrossChainContractReader(toBlockchainAdapter).isPaused(
-      toContractAddress,
-      this.numOfBlockchainsInContract[toBlockchain][toContractIndex]
+      toContractAddress
     );
     if (isToPaused) {
       throw new CrossChainIsUnavailableWarning();

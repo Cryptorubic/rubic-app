@@ -109,12 +109,13 @@ export class CrossChainContractReader {
     return Web3Public.fromWei(fee, decimals).toNumber();
   }
 
-  public async isPaused(contractAddress: string, toBlockchain: number): Promise<boolean> {
+  public async isPaused(contractAddress: string): Promise<boolean> {
     if (this.blockchainAdapter instanceof SolanaWeb3Public) {
-      const account = new PublicKey(BLOCKCHAIN_UUID[toBlockchain]);
-      const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
-      const blockchainData = BlockchainLayout.decode(data) as SolanaBlockchainConfig;
-      return !blockchainData.is_active;
+      const { data } = await this.blockchainAdapter.connection.getAccountInfo(
+        new PublicKey(PDA_CONFIG)
+      );
+      const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
+      return bridgeData?.is_paused || false;
     }
     if (this.blockchainAdapter instanceof Web3Public) {
       return await this.blockchainAdapter.callContractMethod<boolean>(
