@@ -218,7 +218,7 @@ export class SolanaContractExecutor {
       tokenInAmount: fromFinalAmount,
       secondPath: trade.secondPath.map(el => EthLikeWeb3Public.toChecksumAddress(el)),
       exactRbcTokenOut: middleFinalAmount,
-      tokenOutMin: amountOut.toFixed(),
+      tokenOutMin: amountOut.toFixed(0),
       newAddress: targetAddress,
       swapToCrypto: true,
       transferType
