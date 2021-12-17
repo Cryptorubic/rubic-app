@@ -29,6 +29,22 @@ import {
 } from '@core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
+
+type AllowanceParams = {
+  /**
+   * Address of the smart-contract corresponding to the token.
+   */
+  tokenAddress: string;
+  /**
+   * Wallet address to spend from.
+   */
+  ownerAddress: string;
+  /**
+   * Wallet or contract address, allowed to spend.
+   */
+  spenderAddress: string;
+};
 
 interface MulticallResponse {
   success: boolean;
@@ -41,7 +57,7 @@ type TokenField = typeof supportedTokenFields[number];
 
 type TokenFields = Partial<Record<TokenField, string>>;
 
-export class Web3Public {
+export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> {
   private multicallAddresses: { [k in BLOCKCHAIN_NAME]?: string };
 
   constructor(
@@ -50,6 +66,7 @@ export class Web3Public {
     useTestingModeService: UseTestingModeService,
     private readonly httpClient: HttpClient
   ) {
+    super();
     this.multicallAddresses = MULTICALL_ADDRESSES;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
@@ -169,7 +186,7 @@ export class Web3Public {
    */
   public async getBalance(address: string, options: { inWei?: boolean } = {}): Promise<BigNumber> {
     const balance = await this.web3.eth.getBalance(address);
-    return new BigNumber(options.inWei ? balance : Web3Public.weiToEth(balance));
+    return new BigNumber(options.inWei ? balance : EthLikeWeb3Public.weiToEth(balance));
   }
 
   /**
@@ -267,17 +284,12 @@ export class Web3Public {
   }
 
   /**
-   * executes allowance method in ERC-20 token contract
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param ownerAddress wallet address to spend from
-   * @param spenderAddress wallet or contract address, allowed to spend
-   * @return tokens amount, allowed to be spent
+   * Executes allowance method in ERC-20 token contract.
+   * @param params {@link AllowanceParams}.
+   * @return tokens Amount, allowed to be spent
    */
-  public async getAllowance(
-    tokenAddress: string,
-    ownerAddress: string,
-    spenderAddress: string
-  ): Promise<BigNumber> {
+  public async getAllowance(params: AllowanceParams): Promise<BigNumber> {
+    const { tokenAddress, ownerAddress, spenderAddress } = params;
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
 
     const allowance = await contract.methods
@@ -589,9 +601,9 @@ export class Web3Public {
       balance = await this.getTokenBalance(userAddress, token.address);
     }
 
-    const amountAbsolute = Web3Public.toWei(amount, token.decimals);
+    const amountAbsolute = EthLikeWeb3Public.toWei(amount, token.decimals);
     if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = Web3Public.fromWei(balance, token.decimals).toFormat(
+      const formattedTokensBalance = EthLikeWeb3Public.fromWei(balance, token.decimals).toFormat(
         BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(

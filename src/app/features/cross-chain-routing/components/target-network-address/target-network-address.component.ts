@@ -3,14 +3,16 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { AbstractControl, FormControl, ValidatorFn } from '@ngneat/reactive-forms';
 import { Validators } from '@angular/forms';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { ValidationErrors } from '@ngneat/reactive-forms/lib/types';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
-function correctAddressValidator(blockchainAdapter: Web3Public | SolanaWeb3Public): ValidatorFn {
+function correctAddressValidator(
+  blockchainAdapter: EthLikeWeb3Public | SolanaWeb3Public
+): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const isAddressCorrect = blockchainAdapter.isAddressCorrect(control.value);
     return isAddressCorrect ? null : { wrongAddress: control.value };

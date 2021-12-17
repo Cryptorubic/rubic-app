@@ -1,9 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { toChecksumAddress } from 'web3-utils';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  NATIVE_SOLANA_MINT_ADDRESS
-} from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
 
@@ -20,6 +16,8 @@ import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<
@@ -40,27 +38,12 @@ type ReturnValue = Promise<{
   >;
 }>;
 
-export class SolanaWeb3Public {
+export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   public readonly connection: Connection;
 
   constructor(connection: Connection) {
+    super();
     this.connection = connection;
-  }
-
-  static get nativeTokenAddress(): string {
-    return NATIVE_TOKEN_ADDRESS;
-  }
-
-  static toWei(amount: BigNumber | string | number, decimals = 18): string {
-    return new BigNumber(amount || 0).times(new BigNumber(10).pow(decimals)).toFixed(0);
-  }
-
-  static fromWei(amountInWei: BigNumber | string | number, decimals = 18): BigNumber {
-    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
-  }
-
-  static toChecksumAddress(address: string): string {
-    return toChecksumAddress(address);
   }
 
   /**
@@ -225,10 +208,10 @@ export class SolanaWeb3Public {
     userAddress: string
   ): Promise<void> {
     const balance = await this.getTokenBalance(userAddress, token.address);
-    const amountAbsolute = SolanaWeb3Public.toWei(amount, token.decimals);
+    const amountAbsolute = EthLikeWeb3Public.toWei(amount, token.decimals);
 
     if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = SolanaWeb3Public.fromWei(balance, token.decimals).toFormat(
+      const formattedTokensBalance = EthLikeWeb3Public.fromWei(balance, token.decimals).toFormat(
         BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(
@@ -237,41 +220,5 @@ export class SolanaWeb3Public {
         amount.toFormat(BIG_NUMBER_FORMAT)
       );
     }
-  }
-
-  /**
-   * Tries to execute method of smart-contract.
-   * @param contractAddress Address of smart-contract which method is to be executed.
-   * @param contractAbi Abi of smart-contract which method is to be executed.
-   * @param methodName Method to execute.
-   * @param methodArguments Method's arguments.
-   * @param fromAddress Address, from which transaction will be sent.
-   * @param [options] Additional options.
-   * @param [options.value] Value in Wei to be attached to the transaction.
-   * @param [options.gas] Gas limit to be attached to the transaction.
-   */
-  public async tryExecuteContractMethod(): /*
-    contractAddress: string,
-    contractAbi: AbiItem[],
-    methodName: string,
-    methodArguments: unknown[],
-    fromAddress: string,
-    options: TransactionOptions = {} */
-  Promise<void | never> {
-    // const contract = new this.blockchain-adapters.eth.Contract(contractAbi, contractAddress);
-    //
-    // try {
-    //   await contract.methods[methodName](...methodArguments).call({
-    //     from: fromAddress,
-    //     ...(options.value && { value: options.value }),
-    //     ...(options.gas && { gas: options.gas })
-    //     // ...(options.gasPrice && { gasPrice: options.gasPrice }) doesn't work on mobile
-    //   });
-    //   return;
-    // } catch (err) {
-    //   console.error('Method execution error:', err);
-    //   throw err;
-    // }
-    return null;
   }
 }

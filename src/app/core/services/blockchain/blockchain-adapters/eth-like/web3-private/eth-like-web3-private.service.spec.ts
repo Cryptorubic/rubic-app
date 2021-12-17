@@ -6,18 +6,18 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslateModule } from '@ngx-translate/core';
 import providerServiceStub from '@core/services/blockchain/wallets/wallets-adapters/eth-like/tests/metamask-provider.stub';
 import { WEENUS } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import * as config from 'src/test/enviroment.test.json';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
 
 describe('Web3PrivateService', () => {
   let originalTimeout: number;
 
   const bobAddress = config.testReceiverAddress;
-  let service: Web3PrivateService;
-  let web3PublicEth: Web3Public;
+  let service: EthLikeWeb3PrivateService;
+  let web3PublicEth: EthLikeWeb3Public;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,7 +33,7 @@ describe('Web3PrivateService', () => {
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
     web3PublicEth = TestBed.inject(PublicBlockchainAdapterService)[BLOCKCHAIN_NAME.ETHEREUM];
-    service = TestBed.inject(Web3PrivateService);
+    service = TestBed.inject(EthLikeWeb3PrivateService);
   });
 
   afterEach(() => {

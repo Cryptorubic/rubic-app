@@ -1,10 +1,10 @@
 import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CROSS_CHAIN_ROUTING_SWAP_METHOD';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import BigNumber from 'bignumber.js';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
@@ -54,7 +54,7 @@ export class EthLikeContractExecutor {
     );
     let transactionHash;
     await (
-      this.privateAdapter[trade.fromBlockchain] as Web3PrivateService
+      this.privateAdapter[trade.fromBlockchain] as EthLikeWeb3PrivateService
     ).tryExecuteContractMethod(
       contractAddress,
       this.contractAbi,
@@ -126,15 +126,15 @@ export class EthLikeContractExecutor {
       trade,
       settings
     );
-    const tokenInAmountAbsolute = Web3Public.toWei(tokenInAmountMax, trade.tokenIn.decimals);
+    const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(tokenInAmountMax, trade.tokenIn.decimals);
 
     const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
       trade,
       settings
     );
-    const tokenOutMinAbsolute = Web3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+    const tokenOutMinAbsolute = EthLikeWeb3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const firstTransitTokenAmountAbsolute = Web3Public.toWei(
+    const firstTransitTokenAmountAbsolute = EthLikeWeb3Public.toWei(
       trade.firstTransitTokenAmount,
       this.transitTokens[trade.fromBlockchain].decimals
     );
@@ -154,7 +154,7 @@ export class EthLikeContractExecutor {
       ]
     ];
 
-    const blockchainCryptoFee = Web3Public.toWei(trade.cryptoFee);
+    const blockchainCryptoFee = EthLikeWeb3Public.toWei(trade.cryptoFee);
     const value = new BigNumber(blockchainCryptoFee)
       .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
       .toFixed(0);

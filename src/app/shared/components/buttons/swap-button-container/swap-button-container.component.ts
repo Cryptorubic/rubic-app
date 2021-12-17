@@ -21,7 +21,7 @@ import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil, tap } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -347,7 +347,7 @@ export class SwapButtonContainerComponent implements OnInit {
       return;
     }
     const balance = !fromToken.amount.isFinite()
-      ? Web3Public.fromWei(
+      ? EthLikeWeb3Public.fromWei(
           await this.publicBlockchainAdapterService[fromToken.blockchain].getTokenOrNativeBalance(
             this.authService.user.address,
             fromToken.address

@@ -57,7 +57,7 @@ export const SOLANA_CCR_LAYOUT = struct([
   bufferLayout.nu64('tokenInAmount'),
   vec(str(), 'secondPath'),
   bufferLayout.nu64('exactRbcTokenOut'),
-  bufferLayout.nu64('tokenOutMin'),
+  str('tokenOutMin'),
   str('newAddress'),
   bool('swapToCrypto'),
   u8('transferType')

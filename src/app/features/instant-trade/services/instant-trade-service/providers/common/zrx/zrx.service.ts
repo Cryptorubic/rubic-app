@@ -6,10 +6,10 @@ import {
   ItOptions,
   ItProvider
 } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   ItSettingsForm,
@@ -43,9 +43,9 @@ const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 export class ZrxService implements ItProvider {
   private readonly gasMargin: number;
 
-  private fromBlockchainAdapter: Web3Public;
+  private fromBlockchainAdapter: EthLikeWeb3Public;
 
-  private toBlockchainAdapter: Web3Public;
+  private toBlockchainAdapter: EthLikeWeb3Public;
 
   private settings: ItSettingsForm;
 
@@ -70,7 +70,7 @@ export class ZrxService implements ItProvider {
   constructor(
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
@@ -116,8 +116,12 @@ export class ZrxService implements ItProvider {
       console.debug('0x wallet error');
       return;
     }
-    this.fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain] as Web3Public;
-    this.toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain] as Web3Public;
+    this.fromBlockchainAdapter = this.publicBlockchainAdapterService[
+      fromBlockchain
+    ] as EthLikeWeb3Public;
+    this.toBlockchainAdapter = this.publicBlockchainAdapterService[
+      toBlockchain
+    ] as EthLikeWeb3Public;
 
     let blockchain: BLOCKCHAIN_NAME;
     if (this.isTestingMode) {
@@ -140,11 +144,11 @@ export class ZrxService implements ItProvider {
       first(),
       mergeMap(() => {
         this.tradeDataIsUpdated$.next(false);
-        return this.fromBlockchainAdapter.getAllowance(
+        return this.fromBlockchainAdapter.getAllowance({
           tokenAddress,
-          this.walletAddress,
-          this.currentTradeData?.allowanceTarget
-        );
+          ownerAddress: this.walletAddress,
+          spenderAddress: this.currentTradeData?.allowanceTarget
+        });
       })
     );
   }
@@ -178,7 +182,7 @@ export class ZrxService implements ItProvider {
     const params: ZrxCalculateTradeParams = {
       sellToken: fromTokenClone.address,
       buyToken: toTokenClone.address,
-      sellAmount: Web3Public.toWei(fromAmount, fromToken.decimals),
+      sellAmount: EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals),
       slippagePercentage: this.settings.slippageTolerance.toString()
     };
     if (AFFILIATE_ADDRESS) {
@@ -191,19 +195,22 @@ export class ZrxService implements ItProvider {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       from: {
         token: fromToken,
-        amount: Web3Public.fromWei(this.currentTradeData.sellAmount, fromToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(this.currentTradeData.sellAmount, fromToken.decimals)
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
       }
     };
     if (!shouldCalculateGas) {
       return trade;
     }
 
-    const estimatedGas = Web3Public.calculateGasMargin(this.currentTradeData.gas, this.gasMargin);
-    const gasPriceInEth = Web3Public.fromWei(this.currentTradeData.gasPrice);
+    const estimatedGas = EthLikeWeb3Public.calculateGasMargin(
+      this.currentTradeData.gas,
+      this.gasMargin
+    );
+    const gasPriceInEth = EthLikeWeb3Public.fromWei(this.currentTradeData.gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
@@ -224,7 +231,7 @@ export class ZrxService implements ItProvider {
   ): Promise<TransactionReceipt> {
     this.walletConnectorService.checkSettings(trade.blockchain);
 
-    const amount = Web3Public.fromWei(trade.from.amount, trade.from.token.decimals);
+    const amount = EthLikeWeb3Public.fromWei(trade.from.amount, trade.from.token.decimals);
     await this.fromBlockchainAdapter.checkBalance(trade.from.token, amount, this.walletAddress);
 
     return this.web3PrivateService.trySendTransaction(

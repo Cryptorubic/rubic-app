@@ -21,7 +21,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -508,7 +508,7 @@ export class TokensSelectComponent implements OnInit {
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]
-    }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
+    }/assets/${EthLikeWeb3Public.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient
       .get(image)

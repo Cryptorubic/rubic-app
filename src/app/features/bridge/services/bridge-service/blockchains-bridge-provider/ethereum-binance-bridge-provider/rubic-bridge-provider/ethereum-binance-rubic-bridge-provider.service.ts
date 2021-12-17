@@ -3,12 +3,12 @@ import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { WrongToken } from 'src/app/core/errors/models/provider/WrongToken';
 import { TransactionReceipt } from 'web3-eth';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -67,7 +67,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly useTestingMode: UseTestingModeService,
@@ -207,7 +207,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     }
     const web3Public = this.publicBlockchainAdapterService[
       bridgeTrade.fromBlockchain
-    ] as Web3Public;
+    ] as EthLikeWeb3Public;
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
 
     if (token.symbol !== 'RBC') {
@@ -215,11 +215,13 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     }
 
     return from(
-      web3Public.getAllowance(
-        this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
-        this.walletConnectorService.address,
-        this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress
-      )
+      web3Public.getAllowance({
+        tokenAddress:
+          this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
+        ownerAddress: this.walletConnectorService.address,
+        spenderAddress:
+          this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].swapContractAddress
+      })
     ).pipe(
       map(allowance => bridgeTrade.amount.multipliedBy(10 ** tokenFrom.decimals).gt(allowance))
     );
@@ -276,7 +278,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    await this.provideAllowance(trade, web3Public as Web3Public, onApprove);
+    await this.provideAllowance(trade, web3Public as EthLikeWeb3Public, onApprove);
 
     const blockchain = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;
 
@@ -305,14 +307,14 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
   private async provideAllowance(
     trade: RubicTrade,
-    web3Public: Web3Public,
+    web3Public: EthLikeWeb3Public,
     onApprove: (hash: string) => void
   ): Promise<void> {
-    const allowance = await web3Public.getAllowance(
-      trade.token.address,
-      this.walletConnectorService.address,
-      trade.swapContractAddress
-    );
+    const allowance = await web3Public.getAllowance({
+      tokenAddress: trade.token.address,
+      ownerAddress: this.walletConnectorService.address,
+      spenderAddress: trade.swapContractAddress
+    });
     if (trade.amount.gt(allowance)) {
       const uintInfinity = new BigNumber(2).pow(256).minus(1);
       await this.web3PrivateService.approveTokens(

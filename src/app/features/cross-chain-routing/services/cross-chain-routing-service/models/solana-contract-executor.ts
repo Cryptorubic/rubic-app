@@ -29,7 +29,7 @@ import { RaydiumRoutingService } from '@features/instant-trade/services/instant-
 import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
@@ -70,7 +70,7 @@ export class SolanaContractExecutor {
       tokenInAmount: number;
       secondPath: string[];
       exactRbcTokenOut: number;
-      tokenOutMin: number;
+      tokenOutMin: string;
       newAddress: string;
       swapToCrypto: boolean;
       transferType: number;
@@ -197,7 +197,6 @@ export class SolanaContractExecutor {
     const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const toFinalAmount = Math.floor(parseFloat(amountOut.toFixed()));
     const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toFixed()));
 
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
@@ -217,9 +216,9 @@ export class SolanaContractExecutor {
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
       tokenInAmount: fromFinalAmount,
-      secondPath: trade.secondPath.map(el => Web3Public.toChecksumAddress(el)),
+      secondPath: trade.secondPath.map(el => EthLikeWeb3Public.toChecksumAddress(el)),
       exactRbcTokenOut: middleFinalAmount,
-      tokenOutMin: toFinalAmount,
+      tokenOutMin: amountOut.toString(),
       newAddress: targetAddress,
       swapToCrypto: true,
       transferType

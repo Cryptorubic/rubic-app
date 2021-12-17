@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 
-export class Web3Pure {
+export class EthLikeWeb3Pure {
   private static readonly web3 = new Web3();
 
   /**
@@ -20,7 +20,10 @@ export class Web3Pure {
     if (methodSignature === undefined) {
       throw Error('No such method in abi');
     }
-    return Web3Pure.web3.eth.abi.encodeFunctionCall(methodSignature, methodArguments as string[]);
+    return EthLikeWeb3Pure.web3.eth.abi.encodeFunctionCall(
+      methodSignature,
+      methodArguments as string[]
+    );
   }
 
   /**
@@ -30,6 +33,6 @@ export class Web3Pure {
    * @return string Encoded parameter.
    */
   public static async encodeParameter(type: 'uint256', parameter: unknown): Promise<string> {
-    return Web3Pure.web3.eth.abi.encodeParameter(type, parameter);
+    return EthLikeWeb3Pure.web3.eth.abi.encodeParameter(type, parameter);
   }
 }

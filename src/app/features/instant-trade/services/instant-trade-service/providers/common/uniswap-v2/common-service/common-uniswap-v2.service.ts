@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
   ItSettingsForm,
@@ -77,7 +77,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  protected blockchainAdapter: Web3Public;
+  protected blockchainAdapter: EthLikeWeb3Public;
 
   // Uniswap constants
   private blockchain: BLOCKCHAIN_NAME;
@@ -93,7 +93,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   // Injected services
   private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
 
-  private readonly web3PrivateService = inject(Web3PrivateService);
+  private readonly web3PrivateService = inject(EthLikeWeb3PrivateService);
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
@@ -134,7 +134,9 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
+    this.blockchainAdapter = this.publicBlockchainAdapterService[
+      this.blockchain
+    ] as EthLikeWeb3Public;
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
 
     this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
@@ -146,7 +148,9 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
           throw new CustomError('Wrong blockchain error');
         }
-        this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain] as Web3Public;
+        this.blockchainAdapter = this.publicBlockchainAdapterService[
+          this.blockchain
+        ] as EthLikeWeb3Public;
 
         this.contractAddress = uniswapConstants.contractAddressNetMode.testnet;
         this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
@@ -177,7 +181,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       return of(new BigNumber(Infinity));
     }
     return from(
-      this.blockchainAdapter.getAllowance(tokenAddress, this.walletAddress, this.contractAddress)
+      this.blockchainAdapter.getAllowance({
+        tokenAddress,
+        ownerAddress: this.walletAddress,
+        spenderAddress: this.contractAddress
+      })
     );
   }
 
@@ -351,7 +359,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
     }
 
-    const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
@@ -378,7 +386,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       path: route.path
     };
@@ -387,14 +395,14 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       return instantTrade;
     }
 
-    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const increasedGas = EthLikeWeb3Public.calculateGasMargin(estimatedGas, this.gasMargin);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
     const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 
     return {
       ...instantTrade,
       gasLimit: increasedGas,
-      gasPrice: Web3Public.toWei(gasPriceInEth),
+      gasPrice: EthLikeWeb3Public.toWei(gasPriceInEth),
       gasFeeInUsd,
       gasFeeInEth
     };
@@ -452,7 +460,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       const routesWithProfit: UniswapV2CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
-        const profit = Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        const profit = EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
           .multipliedBy(toToken.price)
           .minus(gasFeeInUsd);
 
@@ -602,7 +610,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       toTokenClone.address = this.wethAddress;
     }
 
-    const toAmountAbsolute = Web3Public.toWei(toAmount, toToken.decimals);
+    const toAmountAbsolute = EthLikeWeb3Public.toWei(toAmount, toToken.decimals);
     const routes = (
       await this.getAllRoutes(fromTokenClone, toTokenClone, toAmountAbsolute, 'getAmountsIn')
     ).sort((a, b) => a.outputAbsoluteAmount.comparedTo(b.outputAbsoluteAmount));
@@ -621,8 +629,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     );
 
     const uniswapV2Trade: UniswapV2Trade = {
-      amountIn: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
-      amountOutMin: Web3Public.toWei(
+      amountIn: EthLikeWeb3Public.toWei(trade.from.amount, trade.from.token.decimals),
+      amountOutMin: EthLikeWeb3Public.toWei(
         subtractPercent(trade.to.amount, this.settings.slippageTolerance),
         trade.to.token.decimals
       ),

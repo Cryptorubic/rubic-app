@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { ethToXDaiDepositWallet } from 'src/app/shared/constants/bridge/deposit-wallets';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
@@ -48,7 +48,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
   ];
 
   constructor(
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly walletConnectorService: WalletConnectorService
   ) {

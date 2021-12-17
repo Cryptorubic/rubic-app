@@ -10,7 +10,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
@@ -273,7 +273,7 @@ export class TokensService {
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
-              amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
+              amount: EthLikeWeb3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
             }))
             .toArray();
         }
@@ -448,7 +448,7 @@ export class TokensService {
       if (!foundToken) {
         return new BigNumber(NaN);
       }
-      const balance = Web3Public.fromWei(balanceInWei, foundToken.decimals);
+      const balance = EthLikeWeb3Public.fromWei(balanceInWei, foundToken.decimals);
       if (!foundToken.amount.eq(balance)) {
         const newToken = {
           ...foundToken,
@@ -579,7 +579,7 @@ export class TokensService {
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const web3Public = this.publicBlockchainAdapterService[blockchain] as Web3Public;
+    const web3Public = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
     return web3Public.getTokenSymbol(tokenAddress);
   }
 }

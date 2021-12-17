@@ -5,7 +5,7 @@ import { first, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import ConnectionLink from '@core/services/blockchain/models/ConnectionLink';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import networks from '@shared/constants/blockchain/networks';
@@ -33,31 +33,31 @@ export class PublicBlockchainAdapterService {
 
   private readonly connectionLinks: ConnectionLink[];
 
-  public [BLOCKCHAIN_NAME.ETHEREUM]: Web3Public;
+  public [BLOCKCHAIN_NAME.ETHEREUM]: EthLikeWeb3Public;
 
-  public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: Web3Public;
+  public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: EthLikeWeb3Public;
 
-  public [BLOCKCHAIN_NAME.POLYGON]: Web3Public;
+  public [BLOCKCHAIN_NAME.POLYGON]: EthLikeWeb3Public;
 
-  public [BLOCKCHAIN_NAME.HARMONY]: Web3Public;
+  public [BLOCKCHAIN_NAME.HARMONY]: EthLikeWeb3Public;
 
-  public [BLOCKCHAIN_NAME.AVALANCHE]: Web3Public;
+  public [BLOCKCHAIN_NAME.AVALANCHE]: EthLikeWeb3Public;
 
-  public [BLOCKCHAIN_NAME.MOONRIVER]: Web3Public;
+  public [BLOCKCHAIN_NAME.MOONRIVER]: EthLikeWeb3Public;
 
-  public [BLOCKCHAIN_NAME.FANTOM]: Web3Public;
+  public [BLOCKCHAIN_NAME.FANTOM]: EthLikeWeb3Public;
 
-  public readonly [BLOCKCHAIN_NAME.XDAI]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.XDAI]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.HARMONY_TESTNET]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.HARMONY_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Web3Public = null;
+  public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: EthLikeWeb3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 
@@ -103,7 +103,7 @@ export class PublicBlockchainAdapterService {
             return;
           }
 
-          this[connection.blockchainName as Web3SupportedBlockchains] = new Web3Public(
+          this[connection.blockchainName as Web3SupportedBlockchains] = new EthLikeWeb3Public(
             new Web3(testingConnection.rpcLink),
             BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName),
             this.useTestingModeService,
@@ -124,7 +124,7 @@ export class PublicBlockchainAdapterService {
   private checkAllRpcProviders(timeout?: number): void {
     const web3List = WEB3_SUPPORTED_BLOCKCHAINS.map(key => this[key]).filter(i => i);
 
-    const checkNode$ = (web3Public: Web3Public) =>
+    const checkNode$ = (web3Public: EthLikeWeb3Public) =>
       web3Public.healthCheck(timeout).pipe(
         tap(isNodeWorks => {
           if (isNodeWorks === null) {
@@ -149,7 +149,7 @@ export class PublicBlockchainAdapterService {
   }
 
   private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains): void {
-    const web3Public = new Web3Public(
+    const web3Public = new EthLikeWeb3Public(
       new Web3(rpcLink),
       BlockchainsInfo.getBlockchainByName(blockchainName),
       this.useTestingModeService,
@@ -159,7 +159,7 @@ export class PublicBlockchainAdapterService {
     const nodesChecked$ = this._nodesChecked$.asObservable();
 
     this[blockchainName] = new Proxy(web3Public, {
-      get(target: Web3Public, prop: keyof Web3Public): unknown {
+      get(target: EthLikeWeb3Public, prop: keyof EthLikeWeb3Public): unknown {
         if (prop === 'healthCheck' || prop === 'setProvider') {
           return target[prop].bind(target);
         }

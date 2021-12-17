@@ -6,10 +6,10 @@ import {
   CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { from, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
@@ -125,7 +125,7 @@ export class CrossChainRoutingService {
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
@@ -184,7 +184,11 @@ export class CrossChainRoutingService {
 
     const contractAddress = this.contractAddresses[fromBlockchain][contractIndex];
     return blockchainAdapter
-      .getAllowance(fromToken.address, this.authService.userAddress, contractAddress)
+      .getAllowance({
+        tokenAddress: fromToken.address,
+        ownerAddress: this.authService.userAddress,
+        spenderAddress: contractAddress
+      })
       .then(allowance => allowance.eq(0));
   }
 
@@ -410,7 +414,7 @@ export class CrossChainRoutingService {
         type === 'minAmount'
           ? await contractFacade.minTokenAmount(fromContractAddress)
           : await contractFacade.maxTokenAmount(fromContractAddress);
-      const firstTransitTokenAmount = Web3Public.fromWei(
+      const firstTransitTokenAmount = EthLikeWeb3Public.fromWei(
         firstTransitTokenAmountAbsolute,
         firstTransitToken.decimals
       );
@@ -458,7 +462,7 @@ export class CrossChainRoutingService {
           transitTokenAmount
         )
       : 0;
-    return Web3Public.fromWei(amountAbsolute, fromToken.decimals);
+    return EthLikeWeb3Public.fromWei(amountAbsolute, fromToken.decimals);
   }
 
   /**
@@ -549,7 +553,7 @@ export class CrossChainRoutingService {
         walletAddress,
         value
       );
-      const gasPrice = Web3Public.toWei(
+      const gasPrice = EthLikeWeb3Public.toWei(
         await this.gasService.getGasPriceInEthUnits(fromBlockchain)
       );
 
@@ -588,7 +592,7 @@ export class CrossChainRoutingService {
     const fee = feePercent / 100;
     const feeAmount = trade.secondTransitTokenAmount.multipliedBy(fee).dividedBy(1 - fee);
 
-    const estimatedGas = trade.gasLimit?.multipliedBy(Web3Public.fromWei(trade.gasPrice));
+    const estimatedGas = trade.gasLimit?.multipliedBy(EthLikeWeb3Public.fromWei(trade.gasPrice));
 
     const [priceImpactFrom, priceImpactTo] = await Promise.all([
       this.calculatePriceImpact(
@@ -701,7 +705,7 @@ export class CrossChainRoutingService {
       this.contractAbi,
       'maxGasPrice'
     );
-    const currentGasPrice = Web3Public.toWei(
+    const currentGasPrice = EthLikeWeb3Public.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
     );
     if (new BigNumber(maxGasPrice).lt(currentGasPrice)) {
@@ -739,7 +743,7 @@ export class CrossChainRoutingService {
       poolAddress,
       secondTransitToken.address
     );
-    const poolBalance = Web3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
+    const poolBalance = EthLikeWeb3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
 
     if (secondTransitTokenAmount.gt(poolBalance)) {
       throw new CrossChainIsUnavailableWarning();

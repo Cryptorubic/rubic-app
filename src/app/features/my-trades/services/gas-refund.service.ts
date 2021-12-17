@@ -8,7 +8,7 @@ import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
-import { Web3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
 import { UnknownError } from '@core/errors/models/unknown.error';
@@ -20,7 +20,7 @@ import {
 } from '@features/my-trades/constants/REFUND_ADDRESS';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/web3-public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import CustomError from '@core/errors/models/custom-error';
 
@@ -43,7 +43,7 @@ export class GasRefundService {
   constructor(
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly authService: AuthService,
-    private readonly web3Private: Web3PrivateService,
+    private readonly web3Private: EthLikeWeb3PrivateService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly testingModeService: UseTestingModeService
@@ -172,7 +172,7 @@ export class GasRefundService {
     }
     const blockchainAdapter = this.publicBlockchainAdapterService[
       this.refundBlockchain
-    ] as Web3Public;
+    ] as EthLikeWeb3Public;
     const hexRootFromContract = await blockchainAdapter.callContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,
