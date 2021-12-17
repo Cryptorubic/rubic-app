@@ -1,4 +1,4 @@
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { Connection } from '@solana/web3.js';
 import { BehaviorSubject } from 'rxjs';
@@ -8,7 +8,9 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
-export abstract class CommonSolanaWalletAdapter extends CommonWalletAdapter<SolanaWallet | null> {
+export abstract class CommonSolanaWalletAdapter<
+  T extends SolanaWallet
+> extends CommonWalletAdapter<T | null> {
   public get isMultiChainWallet(): boolean {
     return false;
   }
@@ -17,16 +19,13 @@ export abstract class CommonSolanaWalletAdapter extends CommonWalletAdapter<Sola
     return 'solana';
   }
 
-  public readonly connection: Connection;
-
   protected constructor(
     errorsService: ErrorsService,
     onAddressChanges$: BehaviorSubject<string>,
     onNetworkChanges$: BehaviorSubject<IBlockchain>,
-    connection: Connection
+    public readonly connection: Connection
   ) {
     super(errorsService, onAddressChanges$, onNetworkChanges$);
-    this.connection = connection;
   }
 
   public async signPersonal(message: string): Promise<string> {

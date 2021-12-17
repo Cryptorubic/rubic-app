@@ -12,7 +12,7 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/provi
 import Web3 from 'web3';
 import networks from '@shared/constants/blockchain/networks';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 
 export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   protected isEnabled: boolean;
@@ -57,7 +57,6 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     providerConfig: IWalletConnectProviderOptions
   ) {
     super(errorsService, accountChange$, chainChange$);
-    this.isEnabled = false;
     this.core = new WalletConnect({
       rpc: this.getNetworksProviders(),
       ...providerConfig

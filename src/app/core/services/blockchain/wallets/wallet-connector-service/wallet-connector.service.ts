@@ -22,7 +22,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
 import { map } from 'rxjs/operators';
 import { TUI_IS_IOS } from '@taiga-ui/cdk';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
@@ -258,7 +258,7 @@ export class WalletConnectorService {
       this.networkChangeSubject$,
       this.addressChangeSubject$,
       this.errorService
-    ) as CommonWalletAdapter;
+    );
     this.providerName = WALLET_NAME.METAMASK;
   }
 

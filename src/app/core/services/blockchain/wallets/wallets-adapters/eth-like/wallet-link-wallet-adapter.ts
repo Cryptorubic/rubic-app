@@ -13,7 +13,7 @@ import BigNumber from 'bignumber.js';
 import { RubicError } from '@core/errors/models/RubicError';
 import { WalletlinkWrongNetwork } from '@core/errors/models/provider/WalletlinkWrongNetwork';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
 import { StoreService } from '@core/services/store/store.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
@@ -44,7 +44,6 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     blockchainId?: number
   ) {
     super(errorService, onAddressChanges$, onNetworkChanges$);
-    this.isEnabled = false;
     this.wallet = this.getWallet(blockchainId);
     web3.setProvider(this.wallet);
   }

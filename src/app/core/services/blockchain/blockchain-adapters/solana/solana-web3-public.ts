@@ -15,7 +15,7 @@ import {
 import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 

@@ -769,7 +769,7 @@ export class CrossChainRoutingService {
     await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkPoolBalance()]);
 
     const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
-    const tokenInAmountMax = this.ccrContractExecutorFacade.calculateTokenInAmountMax(
+    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
       this.currentCrossChainTrade,
       this.settings
     );
@@ -829,14 +829,14 @@ export class CrossChainRoutingService {
   }
 
   public calculateTokenOutAmountMin(): BigNumber {
-    return this.ccrContractExecutorFacade.calculateTokenOutAmountMin(
+    return CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
       this.currentCrossChainTrade,
       this.settings
     );
   }
 
   public calculateTokenInAmountMax(): BigNumber {
-    return this.ccrContractExecutorFacade.calculateTokenInAmountMax(
+    return CrossChainContractExecutorFacade.calculateTokenInAmountMax(
       this.currentCrossChainTrade,
       this.settings
     );

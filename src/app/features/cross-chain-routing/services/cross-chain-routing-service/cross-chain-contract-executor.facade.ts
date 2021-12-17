@@ -28,7 +28,35 @@ export class CrossChainContractExecutorFacade {
   private ethLikeContractExecutor: EthLikeContractExecutor;
 
   get targetAddress(): string {
-    return this.targetAddressService.getTargetAddress().value;
+    return this.targetAddressService.targetAddress.value;
+  }
+
+  /**
+   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
+   */
+  public static calculateTokenInAmountMax(
+    trade: CrossChainRoutingTrade,
+    settings: CcrSettingsForm
+  ): BigNumber {
+    if (trade.firstPath.length === 1) {
+      return trade.tokenInAmount;
+    }
+    const slippageTolerance = settings.slippageTolerance / 100;
+    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
+  }
+
+  /**
+   * Calculates minimum received amount of token-out, based on tokens route and slippage.
+   */
+  public static calculateTokenOutAmountMin(
+    trade: CrossChainRoutingTrade,
+    settings: CcrSettingsForm
+  ): BigNumber {
+    if (trade.secondPath.length === 1) {
+      return trade.tokenOutAmount;
+    }
+    const slippageTolerance = settings.slippageTolerance / 100;
+    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
   }
 
   constructor(
@@ -107,26 +135,6 @@ export class CrossChainContractExecutorFacade {
     return null;
   }
 
-  public calculateTokenInAmountMax(
-    currentCrossChainTrade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
-    return CrossChainContractExecutorFacade.calculateTokenInAmountMax(
-      currentCrossChainTrade,
-      settings
-    );
-  }
-
-  public calculateTokenOutAmountMin(
-    currentCrossChainTrade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
-    return CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
-      currentCrossChainTrade,
-      settings
-    );
-  }
-
   public async getContractData(
     trade: CrossChainRoutingTrade,
     walletAddress: string,
@@ -144,33 +152,5 @@ export class CrossChainContractExecutorFacade {
       settings,
       numOfBlockchainsInContractElementElement
     );
-  }
-
-  /**
-   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
-   */
-  public static calculateTokenInAmountMax(
-    trade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
-    if (trade.firstPath.length === 1) {
-      return trade.tokenInAmount;
-    }
-    const slippageTolerance = settings.slippageTolerance / 100;
-    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
-  }
-
-  /**
-   * Calculates minimum received amount of token-out, based on tokens route and slippage.
-   */
-  public static calculateTokenOutAmountMin(
-    trade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
-    if (trade.secondPath.length === 1) {
-      return trade.tokenOutAmount;
-    }
-    const slippageTolerance = settings.slippageTolerance / 100;
-    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
   }
 }

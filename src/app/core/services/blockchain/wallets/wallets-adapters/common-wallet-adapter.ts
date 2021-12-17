@@ -73,7 +73,21 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     return this.getNetwork();
   }
 
-  public errorsService: ErrorsService;
+  /**
+   * current selected network name
+   * @return current selected network name or undefined if isActive is false
+   */
+  get networkName(): BLOCKCHAIN_NAME {
+    return this.network?.name;
+  }
+
+  protected constructor(
+    protected readonly errorsService: ErrorsService,
+    protected readonly onAddressChanges$: BehaviorSubject<string>,
+    protected readonly onNetworkChanges$: BehaviorSubject<IBlockchain>
+  ) {
+    this.isEnabled = false;
+  }
 
   protected getAddress(): string | null {
     if (this.isEnabled) {
@@ -92,29 +106,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     return null;
   }
 
-  protected readonly onAddressChanges$: BehaviorSubject<string>;
-
-  protected readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
-
-  protected constructor(
-    errorsService: ErrorsService,
-    onAddressChanges$: BehaviorSubject<string>,
-    onNetworkChanges$: BehaviorSubject<IBlockchain>
-  ) {
-    this.errorsService = errorsService;
-    this.onAddressChanges$ = onAddressChanges$;
-    this.onNetworkChanges$ = onNetworkChanges$;
-  }
-
   public abstract signPersonal(message: string): Promise<string>;
-
-  /**
-   * current selected network name
-   * @return current selected network name or undefined if isActive is false
-   */
-  get networkName(): BLOCKCHAIN_NAME {
-    return this.network?.name;
-  }
 
   /**
    * activate the blockchain provider

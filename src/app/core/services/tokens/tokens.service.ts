@@ -438,8 +438,8 @@ export class TokensService {
     }
 
     try {
-      const web3Public = this.publicBlockchainAdapterService[token.blockchain];
-      const balanceInWei = await web3Public.getTokenOrNativeBalance(
+      const blockchainAdapter = this.publicBlockchainAdapterService[token.blockchain];
+      const balanceInWei = await blockchainAdapter.getTokenOrNativeBalance(
         this.userAddress,
         token.address
       );
@@ -579,7 +579,7 @@ export class TokensService {
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const web3Public = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
-    return web3Public.getTokenSymbol(tokenAddress);
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    return blockchainAdapter.getTokenSymbol(tokenAddress);
   }
 }

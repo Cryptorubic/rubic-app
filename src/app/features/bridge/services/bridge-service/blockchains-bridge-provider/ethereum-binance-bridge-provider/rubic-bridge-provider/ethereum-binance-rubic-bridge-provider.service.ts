@@ -205,7 +205,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const web3Public = this.publicBlockchainAdapterService[
+    const blockchainAdapter = this.publicBlockchainAdapterService[
       bridgeTrade.fromBlockchain
     ] as EthLikeWeb3Public;
     const tokenFrom = token.tokenByBlockchain[bridgeTrade.fromBlockchain];
@@ -215,7 +215,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     }
 
     return from(
-      web3Public.getAllowance({
+      blockchainAdapter.getAllowance({
         tokenAddress:
           this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeBlockchains].rubicTokenAddress,
         ownerAddress: this.walletConnectorService.address,
@@ -259,7 +259,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       throw new WrongToken();
     }
 
-    const web3Public = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
+    const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
     const trade: RubicTrade = {
       token: {
         address:
@@ -278,7 +278,7 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     if (BlockchainsInfo.getBlockchainType(bridgeTrade.fromBlockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    await this.provideAllowance(trade, web3Public as EthLikeWeb3Public, onApprove);
+    await this.provideAllowance(trade, blockchainAdapter as EthLikeWeb3Public, onApprove);
 
     const blockchain = bridgeTrade.fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM ? 1 : 2;
 

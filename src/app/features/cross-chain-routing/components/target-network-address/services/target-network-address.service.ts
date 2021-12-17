@@ -23,6 +23,14 @@ export class TargetNetworkAddressService {
 
   public readonly displayAddress$ = this._displayAddress$.asObservable();
 
+  public get targetAddress(): TargetAddress {
+    return this._targetNetworkAddress$.value;
+  }
+
+  public set targetAddress(targetAddress: TargetAddress) {
+    this._targetNetworkAddress$.next(targetAddress);
+  }
+
   constructor(private readonly formService: SwapFormService) {
     this.formService.input.valueChanges
       .pipe(startWith(this.formService.inputValue))
@@ -32,13 +40,5 @@ export class TargetNetworkAddressService {
             this.networksRequiresAddress.includes(form.toBlockchain)
         );
       });
-  }
-
-  public getTargetAddress(): TargetAddress {
-    return this._targetNetworkAddress$.value;
-  }
-
-  public setTargetAddress(targetAddress: TargetAddress): void {
-    this._targetNetworkAddress$.next(targetAddress);
   }
 }

@@ -31,6 +31,7 @@ export class CrossChainContractReader {
       const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
       return bridgeData.min_token_amount.toString();
     }
+
     if (this.blockchainAdapter instanceof EthLikeWeb3Public) {
       return this.blockchainAdapter.callContractMethod<string>(
         fromContractAddress,
@@ -49,6 +50,7 @@ export class CrossChainContractReader {
       const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
       return bridgeData.max_token_amount.toString();
     }
+
     if (this.blockchainAdapter instanceof EthLikeWeb3Public) {
       return this.blockchainAdapter.callContractMethod<string>(
         fromContractAddress,
@@ -70,6 +72,7 @@ export class CrossChainContractReader {
       const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
       return bridgeData.fee_amount_of_blockchain.toString();
     }
+
     if (this.blockchainAdapter instanceof EthLikeWeb3Public) {
       return await this.blockchainAdapter.callContractMethod(
         contractAddress,
@@ -95,6 +98,7 @@ export class CrossChainContractReader {
       fee = blockchainData.crypto_fee.toNumber();
       decimals = NATIVE_SOL.decimals;
     }
+
     if (this.blockchainAdapter instanceof EthLikeWeb3Public) {
       fee = await this.blockchainAdapter.callContractMethod(
         contractAddress,
@@ -117,6 +121,7 @@ export class CrossChainContractReader {
       const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
       return bridgeData?.is_paused || false;
     }
+
     if (this.blockchainAdapter instanceof EthLikeWeb3Public) {
       return await this.blockchainAdapter.callContractMethod<boolean>(
         contractAddress,
@@ -131,6 +136,7 @@ export class CrossChainContractReader {
     if (this.blockchainAdapter instanceof SolanaWeb3Public) {
       return PDA_POOL;
     }
+
     if (this.blockchainAdapter instanceof EthLikeWeb3Public) {
       return await this.blockchainAdapter.callContractMethod(
         contractAddress,

@@ -171,8 +171,8 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchAvalancheGas(): Observable<number | null> {
-    const web3Public = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.AVALANCHE];
-    return from(web3Public.getGasPrice()).pipe(
+    const blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.AVALANCHE];
+    return from(blockchainAdapter.getGasPrice()).pipe(
       map(gasPriceInWei => {
         return new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toNumber();
       })

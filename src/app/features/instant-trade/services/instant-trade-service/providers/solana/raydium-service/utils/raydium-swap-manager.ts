@@ -25,7 +25,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { getBigNumber } from '@shared/utils/utils';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/common-wallet-adapter';
+import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
@@ -549,7 +549,7 @@ export class RaydiumSwapManager {
 
   private async wrap(
     trade: InstantTrade,
-    walletAdapter: CommonSolanaWalletAdapter
+    walletAdapter: CommonSolanaWalletAdapter<SolanaWallet>
   ): Promise<string> {
     const transaction = new Transaction();
     const signers: Account[] = [];

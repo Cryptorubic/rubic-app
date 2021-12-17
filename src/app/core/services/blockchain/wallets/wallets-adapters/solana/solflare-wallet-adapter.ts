@@ -9,7 +9,7 @@ import { SolflareWallet } from '@core/services/blockchain/wallets/wallets-adapte
 import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 
-export class SolflareWalletAdapter extends CommonSolanaWalletAdapter {
+export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWallet> {
   public get walletName(): WALLET_NAME {
     return WALLET_NAME.SOLFLARE;
   }
