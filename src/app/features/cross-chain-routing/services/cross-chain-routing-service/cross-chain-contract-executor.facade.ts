@@ -28,7 +28,7 @@ export class CrossChainContractExecutorFacade {
   private ethLikeContractExecutor: EthLikeContractExecutor;
 
   get targetAddress(): string {
-    return this.targetAddressService.targetAddress.value;
+    return this.targetAddressService.targetAddress?.value;
   }
 
   /**

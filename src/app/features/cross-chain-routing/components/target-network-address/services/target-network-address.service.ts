@@ -23,11 +23,11 @@ export class TargetNetworkAddressService {
 
   public readonly displayAddress$ = this._displayAddress$.asObservable();
 
-  public get targetAddress(): TargetAddress {
+  public get targetAddress(): TargetAddress | null {
     return this._targetNetworkAddress$.value;
   }
 
-  public set targetAddress(targetAddress: TargetAddress) {
+  public set targetAddress(targetAddress: TargetAddress | null) {
     this._targetNetworkAddress$.next(targetAddress);
   }
 
