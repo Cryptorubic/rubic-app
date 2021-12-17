@@ -197,7 +197,7 @@ export class SolanaContractExecutor {
     const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toFixed()));
+    const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toString()));
 
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
@@ -218,7 +218,7 @@ export class SolanaContractExecutor {
       tokenInAmount: fromFinalAmount,
       secondPath: trade.secondPath.map(el => EthLikeWeb3Public.toChecksumAddress(el)),
       exactRbcTokenOut: middleFinalAmount,
-      tokenOutMin: amountOut.toString(),
+      tokenOutMin: amountOut.toFixed(),
       newAddress: targetAddress,
       swapToCrypto: true,
       transferType
