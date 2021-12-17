@@ -124,17 +124,12 @@ export class SolanaWeb3PrivateService {
     account: string | undefined | null | PublicKey,
     owner: PublicKey,
     mintAddress: string,
-
     transaction: Transaction,
     atas: string[] = []
   ): Promise<PublicKey> {
-    let publicKey;
-    if (account) {
-      publicKey = new PublicKey(account);
-    }
-
+    console.debug(account);
     const mint = new PublicKey(mintAddress);
-    // @ts-ignore without ts ignore, yarn build will failed
+
     const ata = await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
@@ -142,8 +137,9 @@ export class SolanaWeb3PrivateService {
       owner,
       true
     );
+    const accountInfo = await this._connection.getAccountInfo(ata);
 
-    if ((!publicKey || !ata.equals(publicKey)) && !atas.includes(ata.toBase58())) {
+    if (!accountInfo) {
       transaction.add(
         Token.createAssociatedTokenAccountInstruction(
           ASSOCIATED_TOKEN_PROGRAM_ID,
