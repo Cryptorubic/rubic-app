@@ -1,32 +1,24 @@
-<tui-select class="token__select" [formControl]="selectedToken" [valueContent]="valueContent">
-  <div tuiHint="1" [tuiHintDirection]="'bottom-left'"></div>
+<tui-select [formControl]="tokenFormControl" [valueContent]="selectedValueTpl" class="select-token">
   <tui-data-list-wrapper
     *tuiDataList
-    [items]="stakingTokens"
-    [itemContent]="optionContent"
+    [items]="availableTokens"
+    [itemContent]="optionTpl"
   ></tui-data-list-wrapper>
 </tui-select>
 
-<ng-template #valueContent let-item>
-  <img
-    class="token__select-img"
-    src="assets/images/icons/staking/rbc.svg"
-    width="20"
-    height="23"
-    [alt]="item.symbol"
-  />
-  <span class="token__select-symbol">{{ item.symbol }}</span>
+<ng-template #selectedValueTpl let-item>
+  <div class="selected-option">
+    <img class="selected-option__icon" [src]="item.image" [alt]="item.symbol" />
+    <span class="selected-option__symbol">{{ item.symbol }}</span>
+  </div>
 </ng-template>
 
-<ng-template #optionContent let-item>
-  <div
-    class="token__option"
-    [ngClass]="{ token__option_active: item.address === selectedToken.value.address }"
-  >
-    <img class="token__option-img" [src]="item.img" width="44" height="44" [alt]="item.symbol" />
-    <div>
-      <div>{{ item.symbol }}</div>
-      <div>{{ item.name }}</div>
+<ng-template #optionTpl let-item>
+  <div class="option">
+    <img class="option__icon" [src]="item.image" [alt]="item.symbol" />
+    <div class="option__desc">
+      <div class="option__symbol">{{ item.symbol }}</div>
+      <div class="option__name">{{ item.name }}</div>
     </div>
   </div>
 </ng-template>

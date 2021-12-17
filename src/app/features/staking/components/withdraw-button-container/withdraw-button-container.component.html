@@ -1,0 +1,28 @@
+<app-rubic-button
+  *ngIf="needLogin; else withdrawButton"
+  appearance="secondary"
+  (onClick)="onLogin.emit()"
+>
+  {{ 'navigation.login' | translate }}
+</app-rubic-button>
+
+<ng-template #withdrawButton>
+  <app-rubic-button
+    *ngLet="errorType$ | async as errorType"
+    [disabled]="errorType | falsy"
+    appearance="secondary"
+    (onClick)="onWithdraw.emit()"
+  >
+    <ng-container [ngSwitch]="errorType">
+      <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
+        {{ 'errors.InsufficientBalance' | translate }}
+      </ng-container>
+      <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
+        {{ 'errors.noEnteredAmount' | translate }}
+      </ng-container>
+      <ng-container *ngSwitchCase="null">
+        {{ 'staking.stake.withdraw' | translate }}
+      </ng-container>
+    </ng-container>
+  </app-rubic-button>
+</ng-template>

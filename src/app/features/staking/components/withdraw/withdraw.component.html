@@ -1,43 +1,46 @@
-<form class="stake">
-  <div class="stake__wrapper">
-    <app-staking-tokens class="stake__select"></app-staking-tokens>
-
+<div class="withdraw">
+  <div class="withdraw__stake-token">
+    <div class="token">
+      <img class="token__icon" src="assets/images/icons/staking/brbc-bsc.svg" alt="xBRBC" />
+      xBRBC
+    </div>
     <input
       autocomplete="off"
-      class="stake__input"
+      class="withdraw__input"
       name="token-amount"
-      placeholder="100,000"
+      placeholder="0.0"
+      [decimals]="DEFAULT_DECIMALS"
       appTokenAmount
+      [formControl]="amount"
     />
-
-    <div class="stake__balance">
-      You have 143,000
-      <button class="stake__balance-max">MAX</button>
+    <div class="withdraw__balance" *ngIf="stakingTokenBalance$ | async as stakingTokenBalance">
+      {{ 'staking.stake.balance' | translate: { amount: stakingTokenBalance | bigNumberFormat } }}
+      <span>MAX</span>
     </div>
-
-    <div class="stake__price">$22,379.00</div>
+    <app-usd-price-container></app-usd-price-container>
   </div>
-  <hr class="stake__line" />
-  <div class="stake__wrapper">
-    <app-staking-tokens class="stake__select"></app-staking-tokens>
 
+  <hr class="withdraw__divider" />
+
+  <div class="withdraw__staked-token">
+    <div class="token">
+      <img class="token__icon" src="assets/images/icons/staking/brbc-bsc.svg" alt="xBRBC" />
+      BRBC
+    </div>
     <input
-      autocomplete="off"
-      class="stake__input"
-      name="token-amount"
-      placeholder="100,000"
-      appTokenAmount
+      [value]="(canReceive$ | async | bigNumberFormat) || 0"
+      disabled
+      class="withdraw__reward"
     />
-
-    <div class="stake__balance">
-      You have 143,000
-      <button class="stake__balance-max">MAX</button>
-    </div>
-
-    <div class="stake__price">$22,379.00</div>
+    <div></div>
+    <app-usd-price-container></app-usd-price-container>
   </div>
 
-  <app-rubic-button class="stake__button" appearance="secondary">
-    {{ 'staking.withdraw.button' | translate }}
-  </app-rubic-button>
-</form>
+  <app-withdraw-button-container
+    [needLogin]="needLogin$ | async"
+    [balance]="stakingTokenBalance$ | async"
+    [amount]="amount.value"
+    (onLogin)="login()"
+    (onWithdraw)="withdraw()"
+  ></app-withdraw-button-container>
+</div>

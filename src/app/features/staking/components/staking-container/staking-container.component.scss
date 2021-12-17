@@ -1,13 +1,28 @@
-:host {
-  padding: 8px;
+@import 'src/scss/vars';
+@import 'src/styles';
 
-  background-color: #202320;
-  border-radius: 22px;
+:host {
+  
+  padding: 26px;
+
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 36px;
+
+  @include b($tablet) {
+
+    padding: 0;
+
+    background: none;
+  }
 }
 
 .staking-container {
-  border-radius: 22px;
+  padding: 8px;
 
+  background: #202320;
+  border-radius: 22px;
+  box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
+  
   &__tabs {
     font-weight: 700;
     font-size: 20px;
@@ -41,11 +56,23 @@
 
     &_first {
       border-bottom-left-radius: 0;
+
+      @include b($tablet) {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+      }
     }
 
     &_last {
       border-top-left-radius: 0;
       border-bottom-right-radius: 0;
+
+      @include b($tablet) {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+      }
 
       &._active {
         border-top-left-radius: 22px;
@@ -72,4 +99,53 @@
   &__withdraw {
     border-top-right-radius: 0;
   }
+}
+
+
+.global-update,
+.get-brbc,
+.calculate-profitability {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 26px;
+
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.global-update {
+  margin-top: 22px;
+
+  &__time {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+  }
+}
+
+.global-update__icon,
+.get-brbc__icon {
+  display: flex;
+  align-items: center;
+  margin-left: 14px;
+}
+
+.global-update__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.get-brbc__icon {
+  width: 15px;
+  height: 15px;
+}
+
+.get-brbc,
+ 
+.calculate-profitability {
+  color: $rubic-primary;
+
+  cursor: pointer;
 }

@@ -1,1 +1,86 @@
-@import '../../styles/styles';
+@import 'src/scss/vars';
+
+.withdraw {
+  padding: 36px 28px 28px;
+
+  &__stake-token,
+  &__staked-token {
+    display: grid;
+    grid-row-gap: 13px;
+    grid-template-rows: 1fr min-content;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__reward {
+    height: 42px;
+    padding-left: 8px;
+
+    color: var(--form-bright-text-color);
+    font-weight: 400;
+    font-size: 30px;
+    letter-spacing: 0.1em;
+    text-align: right;
+
+    background-color: transparent;
+
+    border: none;
+  }
+
+  &__balance {
+
+    color: #bdbebd;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    letter-spacing: -0.03em;
+
+    span {
+      margin-left: 12px;
+
+      color: $rubic-primary;
+    }
+  }
+
+  &__divider {
+    margin: 20px 0;
+  }
+
+  &__input {
+    width: 100%;
+    height: 42px;
+  
+    color: var(--form-bright-text-color);
+    font-weight: 400;
+    font-size: 30px;
+    letter-spacing: 0.1em;
+    text-align: right;
+  
+    background-color: transparent;
+  
+    border: none;
+  }
+}
+
+.token {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 136px;
+  height: 43px;
+  padding: 9px 20px;
+
+  color: #fff;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.03em;
+
+  background: #2c2c2c;
+  border-radius: 21.5px;
+
+  &__icon {
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+  }
+}

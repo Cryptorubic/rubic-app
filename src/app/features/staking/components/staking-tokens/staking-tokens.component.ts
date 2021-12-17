@@ -1,5 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { startWith, takeUntil } from 'rxjs/operators';
+
+import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
+import { StakingService } from '../../services/staking.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-staking-tokens',
@@ -8,28 +14,21 @@ import { FormControl } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingTokensComponent {
-  public stakingTokens = [
-    {
-      symbol: 'RBC',
-      name: 'Rubic',
-      img: 'assets/images/icons/staking/rbc-eth.svg',
-      address: '0x000'
-    },
-    {
-      symbol: 'BRBC',
-      name: 'Rubic',
-      img: 'assets/images/icons/staking/brbc-bsc.svg',
-      address: '0x111'
-    },
-    {
-      symbol: 'RBC',
-      name: 'Rubic (PoS)',
-      img: 'assets/images/icons/staking/rbc-pos.svg',
-      address: '0x222'
-    }
-  ];
+  @Input() tokenFormControl: FormControl;
 
-  public selectedToken = new FormControl(this.stakingTokens[0]);
+  public readonly availableTokens = STAKING_TOKENS;
 
-  constructor() {}
+  constructor(
+    private readonly stakingService: StakingService,
+    private readonly tokensService: TokensService,
+    private readonly destroy$: TuiDestroyService
+  ) {}
+
+  public ngOnInit() {
+    this.tokenFormControl.valueChanges
+      .pipe(startWith(this.tokenFormControl.value), takeUntil(this.destroy$))
+      .subscribe(token => {
+        this.stakingService.setToken(token);
+      });
+  }
 }

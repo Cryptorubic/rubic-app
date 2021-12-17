@@ -1,0 +1,45 @@
+@import 'src/styles';
+
+:host {
+  display: grid;
+  grid-template: 'stats stats' 1fr
+    'container features';
+  width: 100%;
+  max-width: 985px;
+  margin: 0 auto;
+  padding-top: 16px;
+
+  @include b($tablet) {
+    grid-template: 'stats'
+      'container'
+      'features';
+  }
+}
+
+app-staking-statistics {
+  grid-area: stats;
+  margin-bottom: 20px;
+
+  @include b($tablet) {
+    margin-bottom: 18px;
+  }
+}
+
+app-staking-container {
+  grid-area: container;
+  height: fit-content;
+  margin-right: 8px;
+
+  @include b($tablet) {
+    margin-bottom: 18px;
+  }
+}
+
+app-staking-info {
+  grid-area: features;
+  width: 432px;
+
+  @include b($tablet) {
+    width: 100%;
+  }
+}

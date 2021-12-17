@@ -484,21 +484,36 @@
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
   "staking": {
-    "balance": "You have",
     "stake": {
-      "button": "Confirm stake",
-      "warning": "One stake limits 1,000 BRBC to 100,000 BRBC"
-    },
-    "withdraw": {
-      "button": "Unstake"
+      "stake": "Stake",
+      "withdraw": "Withdraw",
+      "balance": "You have {{amount}}",
+      "confirmStake": "Confirm stake",
+      "unstake": "Unstake",
+      "overLimit": "One stake limits 1,000 - 100,000 BRBC",
+      "globalUpdate": "Global Update",
+      "globalUpdateHint": "about global update",
+      "getBrbc": "Get BRBC",
+      "calculateProfitability": "Calculate profitability"
     },
     "stats": {
       "profitTime": "Yesterday's APY",
       "calc": "Calculate",
       "balance": "Balance",
-      "receive": "Can receive",
-      "usersTotal": "Users total staked",
-      "total": "Total staked"
+      "canReceive": "Amount with Rewards",
+      "rewards": "Earned Rewards",
+      "apr": "APR",
+      "usersTotal": "You total staked",
+      "total": "Total staked",
+      "connectWallet": "Connect wallet to receive info"
+    },
+    "features": {
+      "highApr": "High APR",
+      "minimumApr": "Minimum APR ~ 80%.",
+      "brbcRewards": "BRBC rewards",
+      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
+      "teamBuybacks": "Team Buybacks",
+      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
     }
   },
   "maintenance": {

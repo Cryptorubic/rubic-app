@@ -3,7 +3,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
-interface MinimalToken {
+export interface MinimalToken {
   address: string;
   blockchain: BLOCKCHAIN_NAME;
 }

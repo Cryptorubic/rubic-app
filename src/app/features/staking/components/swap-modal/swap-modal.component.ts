@@ -1,3 +1,4 @@
+// TODO refactor
 import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
