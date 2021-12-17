@@ -1,8 +1,11 @@
-<app-banner
+<app-external-link-banner
   *noFrame
-  [type]="advertisementType"
-  (handleLinkClick)="navigateToBridgeOrCrossChain('cross-chain')"
-></app-banner>
+  href="https://rubic.exchange/staking"
+  appBanner="linear-gradient(90deg, #4AA956 0%, #00A2FF 100%)"
+  color="white"
+  linkColor="rgb(14, 14, 14)"
+>
+</app-external-link-banner>
 
 <header class="rubic-header">
   <a *noFrame class="rubic-header__logo" routerLink="/">
