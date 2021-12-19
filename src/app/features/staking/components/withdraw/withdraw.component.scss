@@ -12,13 +12,15 @@
   }
 
   &__reward {
+    display: flex;
+    width: 100%;
     height: 42px;
-    padding-left: 8px;
 
     color: var(--form-bright-text-color);
     font-weight: 400;
-    font-size: 30px;
-    letter-spacing: 0.1em;
+    font-size: 40px;
+    line-height: 48px;
+    letter-spacing: 0.06em;
     text-align: right;
 
     background-color: transparent;
@@ -46,17 +48,19 @@
   }
 
   &__input {
+    display: flex;
     width: 100%;
     height: 42px;
-  
+
     color: var(--form-bright-text-color);
     font-weight: 400;
-    font-size: 30px;
-    letter-spacing: 0.1em;
+    font-size: 40px;
+    line-height: 48px;
+    letter-spacing: 0.06em;
     text-align: right;
-  
+
     background-color: transparent;
-  
+
     border: none;
   }
 }

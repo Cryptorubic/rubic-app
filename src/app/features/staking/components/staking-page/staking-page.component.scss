@@ -1,9 +1,10 @@
 @import 'src/styles';
 
+/* stylelint-disable */
 :host {
   display: grid;
   grid-template: 'stats stats' 1fr
-    'container features';
+                 'container features';
   width: 100%;
   max-width: 985px;
   margin: 0 auto;
@@ -11,10 +12,11 @@
 
   @include b($tablet) {
     grid-template: 'stats'
-      'container'
-      'features';
+                   'container'
+                   'features';
   }
 }
+/* stylelint-enable */
 
 app-staking-statistics {
   grid-area: stats;
@@ -31,7 +33,7 @@ app-staking-container {
   margin-right: 8px;
 
   @include b($tablet) {
-    margin-bottom: 18px;
+    margin: 0 0 18px;
   }
 }
 
