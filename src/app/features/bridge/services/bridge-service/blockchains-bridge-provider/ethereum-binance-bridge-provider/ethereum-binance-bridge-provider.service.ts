@@ -8,7 +8,7 @@ import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { EthereumBinanceRubicBridgeProviderService } from './rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
-import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
+import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 
 @Injectable()
 export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvider {
