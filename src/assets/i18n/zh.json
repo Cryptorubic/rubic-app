@@ -77,7 +77,8 @@
     "tradingIsNotAvailable": "交易不可用",
     "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
     "unsupportedTokenCCR": "嘗試發送交易時發生錯誤。\n 您可能正在嘗試出售當前不受多鏈支持的代幣。點擊鏈接了解更多信息。",
-    "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。"
+    "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。",
+    "buttonLink": "學到更多"
   },
   "navigation": {
     "about": "关于",

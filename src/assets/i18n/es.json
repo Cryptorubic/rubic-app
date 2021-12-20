@@ -77,7 +77,8 @@
     "tradingIsNotAvailable": "El comercio no está disponible",
     "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
-    "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo."
+    "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
+    "buttonLink": "Aprende más"
   },
   "navigation": {
     "about": "Información",

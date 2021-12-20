@@ -77,7 +77,8 @@
     "tradingIsNotAvailable": "Trading is not available",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multi-chain.",
-    "rpcError": "An error occurred, to know what to do to resolve it follow the link below."
+    "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
+    "buttonLink": "Learn more"
   },
   "navigation": {
     "about": "About",
