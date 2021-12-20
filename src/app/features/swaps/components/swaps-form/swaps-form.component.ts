@@ -19,6 +19,9 @@ import { InstantTradeService } from 'src/app/features/instant-trade/services/ins
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 import BigNumber from 'bignumber.js';
+import { TuiNotification } from '@taiga-ui/core';
+import { TranslateService } from '@ngx-translate/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 type TokenType = 'from' | 'to';
 
@@ -114,7 +117,9 @@ export class SwapsFormComponent implements OnInit {
     private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly translateService: TranslateService,
+    private readonly notificationsService: NotificationsService
   ) {
     this.availableTokens = {
       from: [],
@@ -147,6 +152,14 @@ export class SwapsFormComponent implements OnInit {
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
+        if (
+          (this.fromBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
+            form.fromBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
+          (this.toBlockchain !== BLOCKCHAIN_NAME.SOLANA &&
+            form.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
+        ) {
+          this.notifyBeta();
+        }
         this.setFormValues(form);
       });
   }
@@ -362,5 +375,13 @@ export class SwapsFormComponent implements OnInit {
     }
     // Remove null control values.
     formControls.input.patchValue(revertData);
+  }
+
+  private notifyBeta(): void {
+    const message = this.translateService.instant('notifications.solanaBeta');
+    this.notificationsService.show(message, {
+      status: TuiNotification.Warning,
+      autoClose: 10000
+    });
   }
 }

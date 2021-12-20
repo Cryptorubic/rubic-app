@@ -12,7 +12,6 @@ import { ProvidersPanelsContainerComponent } from './components/providers-panels
     ProvidersPanelsContainerComponent
   ],
   exports: [InstantTradeBottomFormComponent],
-  imports: [CommonModule, SharedModule],
-  providers: []
+  imports: [CommonModule, SharedModule]
 })
 export class InstantTradeModule {}

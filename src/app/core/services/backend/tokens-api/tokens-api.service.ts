@@ -12,12 +12,12 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
   BackendToken,
   DEFAULT_PAGE_SIZE,
-  TokensListResponse,
-  TokensBackendResponse,
-  TokensRequestQueryOptions,
-  TokensRequestNetworkOptions,
   ENDPOINTS,
-  FavoriteTokenRequestParams
+  FavoriteTokenRequestParams,
+  TokensBackendResponse,
+  TokensListResponse,
+  TokensRequestNetworkOptions,
+  TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
@@ -119,7 +119,7 @@ export class TokensApiService {
    * Fetches static tokens for bridges.
    * @return BackendToken[] Static tokens for bridge.
    */
-  private fetchStaticTokens(): BackendToken[] {
+  private static fetchStaticTokens(): BackendToken[] {
     return [
       {
         address: NATIVE_TOKEN_ADDRESS,
@@ -149,7 +149,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.HARMONY,
       BLOCKCHAIN_NAME.AVALANCHE,
       BLOCKCHAIN_NAME.MOONRIVER,
-      BLOCKCHAIN_NAME.FANTOM
+      BLOCKCHAIN_NAME.FANTOM,
+      BLOCKCHAIN_NAME.SOLANA
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
     const requests$ = blockchainsToFetch.map(network =>
@@ -158,7 +159,7 @@ export class TokensApiService {
     return forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
-        const staticTokens = this.fetchStaticTokens();
+        const staticTokens = TokensApiService.fetchStaticTokens();
         return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
       })
     );

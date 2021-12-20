@@ -22,7 +22,7 @@ import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription 
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
@@ -46,13 +46,15 @@ import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -168,12 +170,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly iframeService: IframeService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly swapInfoService: SwapInfoService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
@@ -380,7 +384,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
               this.setupControllers(tradeData, approveData);
               this.hiddenDataAmounts$.next(
                 (tradeData as CalculationResult[]).map((trade, index) => {
-                  if (trade.status === 'fulfilled') {
+                  if (trade.status === 'fulfilled' && trade.value) {
                     return {
                       amount: trade.value.to.amount,
                       name: providersNames[index]
@@ -515,6 +519,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.setSlippageTolerance(this.selectedProvider);
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
+      this.instantTradeInfoChange.emit(null);
+      this.swapInfoService.emitInfoCalculated();
+      if (this.providerControllers.length === 1) {
+        this.selectedProvider = null;
+      }
     }
     this.cdr.detectChanges();
   }

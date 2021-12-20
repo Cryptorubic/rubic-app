@@ -10,10 +10,9 @@ import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/Br
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { RubicError } from 'src/app/core/errors/models/RubicError';
@@ -49,8 +48,8 @@ export class BridgeService {
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     // bridge providers end
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService
   ) {
@@ -199,7 +198,7 @@ export class BridgeService {
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
-          this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
+          this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
 
           const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
           await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
@@ -237,7 +236,7 @@ export class BridgeService {
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
-        this.providerConnectorService.checkSettings(bridgeTrade.fromBlockchain);
+        this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
 
         const token = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
         await this.checkBalance(bridgeTrade.fromBlockchain, token, bridgeTrade.amount);
@@ -261,7 +260,7 @@ export class BridgeService {
     token: BlockchainToken,
     amount: BigNumber
   ): Promise<void> {
-    const web3Public: Web3Public = this.web3PublicService[fromBlockchain];
-    return web3Public.checkBalance(token, amount, this.authService.user.address);
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
   }
 }

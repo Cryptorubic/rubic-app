@@ -6,7 +6,7 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -97,7 +97,7 @@ export class WalletsModalComponent implements OnInit {
     @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: Window,
     private readonly translateService: TranslateService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
@@ -157,13 +157,13 @@ export class WalletsModalComponent implements OnInit {
           }
         )
         .subscribe({
-          next: blockchainName => {
+          next: async blockchainName => {
             if (blockchainName) {
-              this.providerConnectorService.connectProvider(
+              await this.walletConnectorService.connectProvider(
                 provider,
                 BlockchainsInfo.getBlockchainByName(blockchainName).id
               );
-              this.authService.signIn();
+              await this.authService.signIn();
               this.close();
             }
           },
@@ -173,7 +173,7 @@ export class WalletsModalComponent implements OnInit {
     }
 
     try {
-      const connectionSuccessful = await this.providerConnectorService.connectProvider(provider);
+      const connectionSuccessful = await this.walletConnectorService.connectProvider(provider);
       if (connectionSuccessful) {
         await this.authService.signIn();
       }

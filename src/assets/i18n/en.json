@@ -74,8 +74,11 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Oops, something went wrong, please try to reload the page. Contact our support if you still have this issue after reloading.",
     "rubicOptimisation": "Insufficient liquidity for this trade. Try to disable rubic optimisation.",
+    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Trading is not available",
-    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains."
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
+    "invalidTargetAddress": "Invalid target network address",
+    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
   },
   "navigation": {
     "about": "About",
@@ -389,6 +392,10 @@
     "getTokens": "You will get {{ toBlockchainName }} tokens to this address"
   },
   "crossChainPage": {
+    "targetAddress": {
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "placeholder": "Enter or past address"
+    },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
@@ -610,7 +617,8 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
-    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
   },
   "buyTokens": {
     "default": "Buy RBC",
