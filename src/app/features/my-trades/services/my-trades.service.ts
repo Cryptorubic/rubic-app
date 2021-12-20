@@ -138,11 +138,11 @@ export class MyTradesService {
 
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
-      mergeMap(trades => {
-        const filteredTrades = trades
-          .map(trade => this.prepareBridgeData(trade))
-          .filter(trade => !!trade);
-        const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
+      switchMap(async trades =>
+        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(Boolean)
+      ),
+      mergeMap(bridgeTrades => {
+        const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {
           return of({
             fromTransactionHash: trade.fromTransactionHash,
             toTransactionHash: trade.toTransactionHash
@@ -151,7 +151,7 @@ export class MyTradesService {
         return forkJoin(sources).pipe(
           map((txHashes: HashPair[]) =>
             txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
-              ...filteredTrades[index],
+              ...bridgeTrades[index],
               fromTransactionHash,
               toTransactionHash
             }))
@@ -167,20 +167,25 @@ export class MyTradesService {
     );
   }
 
-  private prepareBridgeData(trade: TableTrade): TableTrade {
+  private async prepareBridgeData(trade: TableTrade): Promise<TableTrade> {
     let fromSymbol = trade.fromToken.symbol;
     let toSymbol = trade.toToken.symbol;
+
     if (trade.provider === 'polygon') {
-      fromSymbol = this.tokens.find(
-        token =>
-          token.blockchain === trade.fromToken.blockchain &&
-          token.address.toLowerCase() === fromSymbol.toLowerCase()
-      )?.symbol;
-      toSymbol = this.tokens.find(
-        token =>
-          token.blockchain === trade.toToken.blockchain &&
-          token.address.toLowerCase() === toSymbol.toLowerCase()
-      )?.symbol;
+      [fromSymbol, toSymbol] = await Promise.all([
+        (
+          await this.tokensService.getTokenByAddress({
+            address: fromSymbol,
+            blockchain: trade.fromToken.blockchain as BLOCKCHAIN_NAME
+          })
+        ).symbol,
+        (
+          await this.tokensService.getTokenByAddress({
+            address: toSymbol,
+            blockchain: trade.toToken.blockchain as BLOCKCHAIN_NAME
+          })
+        ).symbol
+      ]);
 
       if (!fromSymbol || !toSymbol) {
         return null;
