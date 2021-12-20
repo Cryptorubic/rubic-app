@@ -108,6 +108,25 @@ export const swapRouterContractAbi = [
   {
     inputs: [
       {
+        internalType: 'bytes[]',
+        name: 'data',
+        type: 'bytes[]'
+      }
+    ],
+    name: 'multicall',
+    outputs: [
+      {
+        internalType: 'bytes[]',
+        name: 'results',
+        type: 'bytes[]'
+      }
+    ],
+    stateMutability: 'payable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: 'amountMinimum',
         type: 'uint256'
