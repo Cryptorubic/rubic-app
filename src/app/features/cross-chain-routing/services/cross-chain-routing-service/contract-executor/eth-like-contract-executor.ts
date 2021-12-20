@@ -52,6 +52,7 @@ export class EthLikeContractExecutor {
       settings,
       toBlockchainInContractNumber
     );
+
     let transactionHash;
     await (
       this.privateAdapter[trade.fromBlockchain] as EthLikeWeb3PrivateService
@@ -84,6 +85,7 @@ export class EthLikeContractExecutor {
         return includesErrCode && includesPhrase;
       }
     );
+
     return transactionHash;
   }
 

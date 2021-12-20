@@ -36,10 +36,12 @@ type AllowanceParams = {
    * Address of the smart-contract corresponding to the token.
    */
   tokenAddress: string;
+
   /**
    * Wallet address to spend from.
    */
   ownerAddress: string;
+
   /**
    * Wallet or contract address, allowed to spend.
    */

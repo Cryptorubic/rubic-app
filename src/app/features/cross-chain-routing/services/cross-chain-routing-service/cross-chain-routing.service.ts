@@ -51,12 +51,12 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-reader/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor.facade';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor';
 import CustomError from '@core/errors/models/custom-error';
+import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/contract-data';
 
 interface PathAndToAmount {
   path: string[];
@@ -70,20 +70,6 @@ interface IndexedPathAndToAmount {
 
 const CACHEABLE_MAX_AGE = 15_000;
 
-interface minimalProvider {
-  calculateTrade: (
-    fromToken: InstantTradeToken,
-    fromAmount: BigNumber,
-    toToken: InstantTradeToken,
-    shouldCalculateGas: boolean
-  ) => Promise<InstantTrade>;
-  getFromAmount: (
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    toAmount: BigNumber
-  ) => Promise<BigNumber>;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -94,9 +80,7 @@ export class CrossChainRoutingService {
 
   private readonly transitTokens: TransitTokens;
 
-  private swapProviders: Record<SupportedCrossChainSwapBlockchain, minimalProvider[]>;
-
-  private numOfBlockchainsInContract: Record<SupportedCrossChainSwapBlockchain, number[]>;
+  private contractsData: Record<SupportedCrossChainSwapBlockchain, CrossChainContractData[]>;
 
   private settings: CcrSettingsForm;
 
@@ -136,8 +120,7 @@ export class CrossChainRoutingService {
   ) {
     this.contractAbi = crossChainSwapContractAbi;
 
-    this.setProviders();
-    this.setToBlockchainsInContract();
+    this.setContractsData();
     this.contractAddresses = crossChainSwapContractAddresses;
     this.transitTokens = transitTokensWithMode;
 
@@ -148,27 +131,20 @@ export class CrossChainRoutingService {
       });
   }
 
-  private setProviders(): void {
-    this.swapProviders = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: [this.uniSwapV2Service],
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [this.pancakeSwapService],
-      [BLOCKCHAIN_NAME.POLYGON]: [this.quickSwapService],
-      [BLOCKCHAIN_NAME.AVALANCHE]: [this.pangolinAvalancheService, this.joeAvalancheService],
-      [BLOCKCHAIN_NAME.MOONRIVER]: [this.solarBeamMoonRiverService],
-      [BLOCKCHAIN_NAME.FANTOM]: [this.spookySwapFantomService],
-      [BLOCKCHAIN_NAME.SOLANA]: [this.raydiumService]
-    };
-  }
-
-  private setToBlockchainsInContract(): void {
-    this.numOfBlockchainsInContract = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: [2],
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [1],
-      [BLOCKCHAIN_NAME.POLYGON]: [3],
-      [BLOCKCHAIN_NAME.AVALANCHE]: [4, 5],
-      [BLOCKCHAIN_NAME.MOONRIVER]: [6],
-      [BLOCKCHAIN_NAME.FANTOM]: [7],
-      [BLOCKCHAIN_NAME.SOLANA]: [8]
+  private setContractsData(): void {
+    this.contractsData = {
+      [BLOCKCHAIN_NAME.ETHEREUM]: [new CrossChainContractData(this.uniSwapV2Service, 2)],
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
+        new CrossChainContractData(this.pancakeSwapService, 1)
+      ],
+      [BLOCKCHAIN_NAME.POLYGON]: [new CrossChainContractData(this.quickSwapService, 3)],
+      [BLOCKCHAIN_NAME.AVALANCHE]: [
+        new CrossChainContractData(this.pangolinAvalancheService, 4, true),
+        new CrossChainContractData(this.joeAvalancheService, 5, true)
+      ],
+      [BLOCKCHAIN_NAME.MOONRIVER]: [new CrossChainContractData(this.solarBeamMoonRiverService, 6)],
+      [BLOCKCHAIN_NAME.FANTOM]: [new CrossChainContractData(this.spookySwapFantomService, 7)],
+      [BLOCKCHAIN_NAME.SOLANA]: [new CrossChainContractData(this.raydiumService, 8)]
     };
   }
 
@@ -328,12 +304,9 @@ export class CrossChainRoutingService {
   ): Promise<PathAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
-        const instantTrade = await this.swapProviders[blockchain][contractIndex].calculateTrade(
-          fromToken,
-          fromAmount,
-          toToken,
-          false
-        );
+        const instantTrade = await this.contractsData[blockchain][
+          contractIndex
+        ].provider.calculateTrade(fromToken, fromAmount, toToken, false);
         return {
           path: instantTrade.path.map(token => token.address),
           toAmount: instantTrade.to.amount
@@ -456,7 +429,7 @@ export class CrossChainRoutingService {
     }
 
     const amountAbsolute = transitTokenAmount.gt(0)
-      ? await this.swapProviders[fromToken.blockchain][contractIndex].getFromAmount(
+      ? await this.contractsData[fromToken.blockchain][contractIndex].provider.getFromAmount(
           fromToken,
           transitToken,
           transitTokenAmount
@@ -490,7 +463,7 @@ export class CrossChainRoutingService {
   private async getFeeInPercents(toBlockchain: SupportedCrossChainSwapBlockchain): Promise<number> {
     // fee is equal in all contracts
     const contractAddress = this.contractAddresses[toBlockchain][0];
-    const numOfBlockchainInContract = this.numOfBlockchainsInContract[toBlockchain][0];
+    const numOfBlockchainInContract = this.contractsData[toBlockchain][0].contractNumber;
 
     const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
     const feeOfToBlockchainAbsolute = await new CrossChainContractReader(
@@ -510,7 +483,7 @@ export class CrossChainRoutingService {
     toBlockchain: SupportedCrossChainSwapBlockchain
   ): Promise<number> {
     // crypto fee is equal in all contracts
-    const toBlockchainInContract = this.numOfBlockchainsInContract[toBlockchain][0];
+    const toBlockchainInContract = this.contractsData[toBlockchain][0].contractNumber;
     const contractAddress = this.contractAddresses[fromBlockchain][0];
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
@@ -539,9 +512,9 @@ export class CrossChainRoutingService {
           trade,
           walletAddress,
           this.settings,
-          this.numOfBlockchainsInContract[this.currentCrossChainTrade.toBlockchain][
+          this.contractsData[this.currentCrossChainTrade.toBlockchain][
             this.currentCrossChainTrade.fromContractIndex
-          ]
+          ].contractNumber
         );
 
       const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
@@ -781,6 +754,7 @@ export class CrossChainRoutingService {
     return from(
       (async () => {
         await this.checkTradeWorking();
+
         let transactionHash;
         try {
           transactionHash = await this.ccrContractExecutorFacade.executeCCRContract(
@@ -788,9 +762,9 @@ export class CrossChainRoutingService {
             options,
             this.walletConnectorService.address,
             this.settings,
-            this.numOfBlockchainsInContract[this.currentCrossChainTrade.toBlockchain][
+            this.contractsData[this.currentCrossChainTrade.toBlockchain][
               this.currentCrossChainTrade.toContractIndex
-            ]
+            ].contractNumber
           );
 
           await this.postCrossChainTrade(transactionHash);

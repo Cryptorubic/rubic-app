@@ -89,6 +89,7 @@ export class CrossChainContractExecutorFacade {
     toBlockchainInContractNumber: number
   ): Promise<string> {
     const type = BlockchainsInfo.getBlockchainType(trade.fromBlockchain);
+
     if (type === 'ethLike') {
       return this.ethLikeContractExecutor.execute(
         trade,
@@ -99,6 +100,7 @@ export class CrossChainContractExecutorFacade {
         this.targetAddress
       );
     }
+
     if (type === 'solana') {
       try {
         const isToNative = this.publicBlockchainAdapterService[trade.toBlockchain].isNativeAddress(
@@ -136,6 +138,7 @@ export class CrossChainContractExecutorFacade {
         }
       }
     }
+
     return null;
   }
 
