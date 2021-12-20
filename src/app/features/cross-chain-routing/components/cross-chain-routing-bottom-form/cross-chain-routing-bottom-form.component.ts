@@ -9,7 +9,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import {
@@ -48,6 +48,8 @@ import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notifi
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -76,6 +78,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
+  public readonly displayTargetAddressInput$: Observable<boolean>;
+
   private readonly hiddenTradeData$: BehaviorSubject<{
     toAmount: BigNumber;
   }>;
@@ -103,6 +107,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   private hiddenCalculateTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
+
+  public isTargetNetworkValid: boolean;
 
   get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
@@ -133,8 +139,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly successTxModalService: SuccessTxModalService
+    private readonly successTxModalService: SuccessTxModalService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
+    this.displayTargetAddressInput$ = targetNetworkAddressService.displayAddress$;
     this.onCalculateTrade$ = new Subject();
     this.hiddenTradeData$ = new BehaviorSubject(undefined);
   }
@@ -185,7 +193,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.toBlockchain = form.toBlockchain;
     this.fromAmount = form.fromAmount;
     this.cdr.detectChanges();
-
     this.conditionalCalculate('normal');
   }
 
@@ -229,8 +236,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
-          const { fromAmount } = this.swapFormService.inputValue;
-          const calculateNeedApprove = !!this.authService.userAddress;
+          const { fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+          const blockchainType = BlockchainsInfo.getBlockchainType(fromBlockchain);
+          const calculateNeedApprove =
+            !!this.authService.userAddress && blockchainType === 'ethLike';
           const crossChainTrade$ = from(
             this.crossChainRoutingService.calculateTrade(calculateNeedApprove)
           );

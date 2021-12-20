@@ -74,7 +74,11 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요.",
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
+    "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "tradingIsNotAvailable": "거래 불가",
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
+    "invalidTargetAddress": "Invalid target network address",
+    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
     "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
     "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
@@ -352,6 +356,10 @@
     "getTokens": "선택한 주소로 {{ toBlockchainName }} 토큰을 받게됩니다"
   },
   "crossChainPage": {
+    "targetAddress": {
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "placeholder": "Enter or past address"
+    },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
@@ -573,7 +581,8 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
-    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
   },
   "buyTokens": {
     "default": "RBC 구매",

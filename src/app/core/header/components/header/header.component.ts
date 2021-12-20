@@ -196,4 +196,11 @@ export class HeaderComponent implements AfterViewInit {
       queryParamsHandling: 'merge'
     });
   }
+
+  /**
+   * Navigate to staking page.
+   */
+  public navigateToStaking(): void {
+    this.window.open('https://rubic.exchange/staking', '_blank');
+  }
 }

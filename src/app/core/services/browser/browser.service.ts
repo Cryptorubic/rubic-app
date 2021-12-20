@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class BrowserService {
   }
 
   constructor(
-    @Inject(WINDOW) private window: Window,
+    @Inject(WINDOW) private window: RubicWindow,
     private readonly iframeService: IframeService
   ) {}
 }

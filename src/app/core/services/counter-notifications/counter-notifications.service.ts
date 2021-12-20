@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
@@ -24,7 +23,6 @@ export class CounterNotificationsService {
   }
 
   constructor(
-    private readonly providerConnectorService: ProviderConnectorService,
     private readonly authService: AuthService,
     private readonly myTradesService: MyTradesService,
     private readonly storeService: StoreService

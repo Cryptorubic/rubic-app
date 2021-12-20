@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { from, Observable, of } from 'rxjs';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import BigNumber from 'bignumber.js';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import networks from 'src/app/shared/constants/blockchain/networks';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import {
   ItSettingsForm,
   SettingsService
@@ -57,10 +57,10 @@ export class CommonOneinchService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3Private: Web3PrivateService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly web3Private: EthLikeWeb3PrivateService,
     private readonly settingsService: SettingsService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService
   ) {
@@ -124,12 +124,23 @@ export class CommonOneinchService {
   }
 
   public getAllowance(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Observable<BigNumber> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+      throw new CustomError('Wrong blockchain error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    if (blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return this.loadApproveAddress(BlockchainsInfo.getBlockchainByName(blockchain).id).pipe(
-      switchMap(address => from(web3Public.getAllowance(tokenAddress, this.walletAddress, address)))
+      switchMap(address =>
+        from(
+          blockchainAdapter.getAllowance({
+            tokenAddress,
+            ownerAddress: this.walletAddress,
+            spenderAddress: address
+          })
+        )
+      )
     );
   }
 
@@ -138,7 +149,7 @@ export class CommonOneinchService {
     tokenAddress: string,
     options: TransactionOptions
   ): Promise<void> {
-    this.providerConnectorService.checkSettings(blockchain);
+    this.walletConnectorService.checkSettings(blockchain);
 
     const approveAddress = await this.loadApproveAddress(
       BlockchainsInfo.getBlockchainByName(blockchain).id
@@ -166,7 +177,7 @@ export class CommonOneinchService {
       throw new OneinchNotSupportedTokens();
     }
 
-    const amountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    const amountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
     const { estimatedGas, toTokenAmount, path } = await this.getTradeInfo(
       blockchain,
       fromTokenAddress,
@@ -182,7 +193,7 @@ export class CommonOneinchService {
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(toTokenAmount, toToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(toTokenAmount, toToken.decimals)
       },
       path
     };
@@ -190,9 +201,12 @@ export class CommonOneinchService {
       return instantTrade;
     }
 
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    const gasPrice = await web3Public.getGasPrice();
-    const gasPriceInEth = Web3Public.fromWei(gasPrice);
+    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+      throw new CustomError('Wrong blockchain error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    const gasPrice = await blockchainAdapter.getGasPrice();
+    const gasPriceInEth = EthLikeWeb3Public.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
@@ -313,9 +327,9 @@ export class CommonOneinchService {
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
     const { blockchain } = trade;
-    this.providerConnectorService.checkSettings(blockchain);
+    this.walletConnectorService.checkSettings(blockchain);
 
-    const web3Public: Web3Public = this.web3PublicService[trade.blockchain];
+    const web3Public = this.publicBlockchainAdapterService[trade.blockchain];
     await web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
 
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
@@ -323,7 +337,10 @@ export class CommonOneinchService {
       trade.to.token.address
     );
 
-    const fromAmountAbsolute = Web3Public.toWei(trade.from.amount, trade.from.token.decimals);
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(
+      trade.from.amount,
+      trade.from.token.decimals
+    );
 
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
     const swapTradeParams: OneinchSwapRequest = {

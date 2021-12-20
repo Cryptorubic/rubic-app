@@ -74,7 +74,11 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
+    "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "tradingIsNotAvailable": "Торговля недоступна",
+    "wrongWallet": "Please log in with wallet that supports {{network}} network",
+    "invalidTargetAddress": "Invalid target network address",
+    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
     "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "unsupportedTokenCCR": "При попытке отправить транзакцию произошла ошибка.\n С большой вероятностью, вы пытаетесь продать токен, который в настоящее время не поддерживается в multichain.",
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
@@ -352,6 +356,10 @@
     "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес"
   },
   "crossChainPage": {
+    "targetAddress": {
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "placeholder": "Enter or past address"
+    },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
@@ -573,7 +581,8 @@
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
-    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance."
+    "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
   },
   "buyTokens": {
     "default": "Купить RBC",
