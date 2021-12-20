@@ -10,6 +10,13 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
     return WALLET_NAME.WALLET_CONNECT;
   }
 
+  /**
+   * Gets detailed provider name with peer meta information.
+   */
+  public get detailedWalletName(): string {
+    return `${this.name} (${this.core.connector.peerMeta.name})`;
+  }
+
   constructor(
     web3: Web3,
     onNetworkChanges$: BehaviorSubject<IBlockchain>,
@@ -25,12 +32,5 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
       }
     };
     super(web3, onNetworkChanges$, onAddressChanges$, errorsService, providerConfig);
-  }
-
-  /**
-   * Gets detailed provider name with peer meta information.
-   */
-  public get detailedWalletName(): string {
-    return `${this.name} (${this.core.connector.peerMeta.name})`;
   }
 }
