@@ -66,11 +66,12 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
 
   protected constructor(uniswapV3Constants: UniV3AlgebraConstants) {
     this.blockchain = uniswapV3Constants.blockchain;
-    BlockchainsInfo.checkIsEthLike(this.blockchain);
 
+    BlockchainsInfo.checkIsEthLike(this.blockchain);
     this.blockchainAdapter = this.publicBlockchainAdapterService[
       this.blockchain
     ] as EthLikeWeb3Public;
+
     this.wethAddress = uniswapV3Constants.wethAddressNetMode.mainnet;
     this.swapRouterContract = uniswapV3Constants.swapRouterContract;
     this.isAlgebra = uniswapV3Constants.isAlgebra;
