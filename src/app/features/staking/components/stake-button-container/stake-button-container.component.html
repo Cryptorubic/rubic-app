@@ -21,7 +21,9 @@
         {{ 'errors.noEnteredAmount' | translate }}
       </ng-container>
       <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
-        <span class="error">{{ 'staking.stake.overLimit' | translate }}</span>
+        <span class="error">{{
+          'staking.stake.overLimit' | translate: { availableAmount: limit }
+        }}</span>
       </ng-container>
       <ng-container *ngSwitchCase="null">
         {{ 'staking.stake.confirmStake' | translate }}

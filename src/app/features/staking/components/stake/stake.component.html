@@ -23,6 +23,7 @@
   <app-stake-button-container
     [amount]="amount.value"
     [balance]="selectedTokenBalance$ | async"
+    [limit]="userEnteredAmount$ | async"
     [needLogin]="needLogin$ | async"
     (onConfirmStake)="confirmStake()"
     (onLogin)="login()"

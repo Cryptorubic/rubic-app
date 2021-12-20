@@ -24,7 +24,7 @@
       [inlineSVG]="'/assets/images/icons/hint-question.svg'"
       [tuiHint]="'staking.stake.globalUpdateHint' | translate"
     ></div>
-    <span class="global-update__time">19 hours 23 minutes</span>
+    <span class="global-update__time">{{ refillTime$ | async | date: 'hh mm' }}</span>
   </div>
   <div class="get-brbc" (click)="navigateToSwaps()">
     {{ 'staking.stake.getBrbc' | translate }}

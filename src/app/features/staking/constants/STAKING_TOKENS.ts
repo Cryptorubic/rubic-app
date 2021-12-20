@@ -13,13 +13,13 @@ export const STAKING_TOKENS = [
     symbol: 'RBC',
     image: 'assets/images/icons/staking/rbc-eth.svg',
     address: '',
-    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM_TESTNET
   },
   {
     name: 'Rubic (PoS)',
     symbol: 'RBC',
     image: 'assets/images/icons/staking/rbc-pos.svg',
     address: '',
-    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET
+    blockchain: BLOCKCHAIN_NAME.POLYGON_TESTNET
   }
 ];

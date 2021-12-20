@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
 import { StakingService } from '@features/staking/services/staking.service';
-import { startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-withdraw',
@@ -13,14 +14,15 @@ import { WalletsModalService } from '@core/wallets/services/wallets-modal.servic
 export class WithdrawComponent {
   public readonly DEFAULT_DECIMALS = 18;
 
-  public amount = new FormControl<string>('');
+  public readonly amount = new FormControl<string>('');
 
-  public needLogin$ = this.stakingService.needLogin$;
+  public readonly needLogin$ = this.stakingService.needLogin$;
 
-  public stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
+  public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
-  public canReceive$ = this.amount.valueChanges.pipe(
+  public readonly canReceive$ = this.amount.valueChanges.pipe(
     startWith(this.amount.value),
+    map(value => (value ? new BigNumber(value.split(',').join('')) : new BigNumber(0))),
     switchMap(amount => this.stakingService.calculateLeaveReward(amount))
   );
 
@@ -30,7 +32,7 @@ export class WithdrawComponent {
   ) {}
 
   public withdraw(): void {
-    this.stakingService.leaveStake(this.amount.value).subscribe(console.log);
+    this.stakingService.leaveStake(new BigNumber(this.amount.value)).subscribe(console.log);
   }
 
   public login(): void {

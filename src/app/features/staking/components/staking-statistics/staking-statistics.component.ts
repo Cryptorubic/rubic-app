@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StakingService } from '@features/staking/services/staking.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-staking-statistics',
@@ -9,13 +8,13 @@ import { BehaviorSubject } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingStatisticsComponent implements OnInit {
-  public readonly loading$ = new BehaviorSubject<boolean>(false);
+  public readonly loading$ = this.stakingService.dataReloading$;
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
   public readonly apr$ = this.stakingService.apr$;
 
-  public readonly canReceiveAmount$ = this.stakingService.canReceiveAmount$;
+  public readonly amountWithRewards$ = this.stakingService.amountWithRewards$;
 
   public readonly earnedRewards$ = this.stakingService.earnedRewards$;
 

@@ -1,15 +1,13 @@
-@import 'src/scss/vars';
-@import 'src/styles';
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
 
 :host {
-  
   padding: 26px;
 
   background: rgba(0, 0, 0, 0.6);
   border-radius: 36px;
 
-  @include b($tablet) {
-
+  @include mixins.b(vars.$tablet) {
     padding: 0;
 
     background: none;
@@ -22,7 +20,7 @@
   background: #202320;
   border-radius: 22px;
   box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
-  
+
   &__tabs {
     font-weight: 700;
     font-size: 20px;
@@ -57,7 +55,7 @@
     &_first {
       border-bottom-left-radius: 0;
 
-      @include b($tablet) {
+      @include mixins.b(vars.$tablet) {
         font-weight: 600;
         font-size: 14px;
         line-height: 17px;
@@ -68,7 +66,7 @@
       border-top-left-radius: 0;
       border-bottom-right-radius: 0;
 
-      @include b($tablet) {
+      @include mixins.b(vars.$tablet) {
         font-weight: 600;
         font-size: 14px;
         line-height: 17px;
@@ -143,9 +141,8 @@
 }
 
 .get-brbc,
- 
 .calculate-profitability {
-  color: $rubic-primary;
+  color: vars.$rubic-primary;
 
   cursor: pointer;
 }

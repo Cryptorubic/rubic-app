@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { StakingService } from '@features/staking/services/staking.service';
 
-enum StakingNavEnum {
+enum STAKING_NAV_ENUM {
   STAKE = 0,
   WITHDRAW = 1
 }
@@ -14,11 +15,14 @@ enum StakingNavEnum {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingContainerComponent {
-  public activeItemIndex = StakingNavEnum.STAKE;
+  public activeItemIndex = STAKING_NAV_ENUM.STAKE;
+
+  public readonly refillTime$ = this.stakingService.refillTime$;
 
   constructor(
     private readonly router: Router,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly stakingService: StakingService
   ) {}
 
   public navigateToSwaps(): void {

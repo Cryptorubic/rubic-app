@@ -1,28 +1,29 @@
 <div class="swap-modal">
   <h2 class="swap-modal__title">
-    {{ 'modals.stakingSwapModal.title1' | translate }}
-    <span class="highlight">RBC</span>
-    {{ 'modals.stakingSwapModal.title2' | translate }}
-    <span class="highlight">BRBC</span>
+    {{ 'modals.stakingSwapModal.title' | translate }}
   </h2>
 
-  <div class="swap-modal__way">
-    <div class="swap-modal__circle swap-modal__circle_filled">1</div>
+  <div class="swap-modal__steps">
+    <div class="step">
+      <div class="step__circle">1</div>
+      <div class="step__caption">{{ 'common.bridge' | translate }}</div>
+    </div>
     <div class="swap-modal__line"></div>
-    <div class="swap-modal__circle">2</div>
+    <div class="step">
+      <div class="step__circle">2</div>
+      <div class="step__caption">{{ 'navigation.staking' | translate }}</div>
+    </div>
   </div>
 
-  <p class="swap-modal__desc">
-    <b>{{ 'modals.stakingSwapModal.subtitle' | translate }}</b> <br />
-    {{ 'modals.stakingSwapModal.text' | translate }}
-  </p>
+  <p class="swap-modal__desc" [innerHTML]="'modals.stakingSwapModal.aboutSwap' | translate"></p>
 
   <div class="swap-modal__buttons">
-    <app-rubic-button appearance="secondary" size="l">
-      {{ 'modals.stakingSwapModal.button1' | translate }}
-    </app-rubic-button>
     <app-rubic-button appearance="outline" size="l">
-      {{ 'modals.stakingSwapModal.button2' | translate }}
+      {{ 'modals.stakingSwapModal.swapMyself' | translate }}
+      <img src="assets/images/icons/external-link.svg" />
+    </app-rubic-button>
+    <app-rubic-button appearance="secondary" size="l">
+      {{ 'modals.stakingSwapModal.agree' | translate }}
     </app-rubic-button>
   </div>
 </div>

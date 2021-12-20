@@ -1,133 +1,153 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
+import { TuiDialogService } from '@taiga-ui/core';
 
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { Web3PublicService } from '@app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Web3Public } from '@app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
 import { Web3PrivateService } from '@app/core/services/blockchain/web3/web3-private-service/web3-private.service';
-import { switchIif } from '@app/shared/utils/utils';
-import { StakingApiService } from '@core/services/backend/staking-api/staking-api.service';
-import { MinimalToken } from '@shared/utils/utils';
+import { StakingApiService } from '@features/staking/services/staking-api.service';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
+import { switchIif } from '@shared/utils/utils';
 
 @Injectable()
 export class StakingService {
   private readonly stakingContractAddress = '0x2C85DAf343e31fB871Bae1b1BFBD790d81BAE855'; //xBRBC testnet
 
-  private _canReceiveAmount$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  public readonly needLogin$ = this.authService.getCurrentUser().pipe(map(user => !user?.address));
 
-  private _apr$ = new BehaviorSubject<number>(undefined);
+  private readonly _amountWithRewards$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
-  private _userEnteredAmount$ = new BehaviorSubject<number>(0);
+  public readonly amountWithRewards$ = this._amountWithRewards$.asObservable();
 
-  private _totalRBCEntered$ = new BehaviorSubject<number>(0);
+  private readonly _apr$ = new BehaviorSubject<number>(undefined);
 
-  private _stakingTokenBalance$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  public readonly apr$ = this._apr$.asObservable();
 
-  private _earnedRewards$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  private readonly _refillTime$ = new BehaviorSubject<string>(undefined);
 
-  private _selectedToken$ = new BehaviorSubject<MinimalToken>(undefined);
+  public readonly refillTime$ = this._refillTime$.asObservable();
+
+  private readonly _userEnteredAmount$ = new BehaviorSubject<number>(0);
+
+  public readonly userEnteredAmount$ = this._userEnteredAmount$.asObservable();
+
+  private readonly _totalRBCEntered$ = new BehaviorSubject<number>(0);
+
+  public readonly totalRBCEntered$ = this._totalRBCEntered$
+    .asObservable()
+    .pipe(map(amount => Web3Public.fromWei(amount, 18).toNumber()));
+
+  private readonly _stakingTokenBalance$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+
+  public readonly stakingTokenBalance$ = this._stakingTokenBalance$.asObservable();
+
+  private readonly _earnedRewards$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+
+  private readonly _selectedToken$ = new BehaviorSubject<MinimalToken>(undefined);
+
+  public readonly selectedToken$ = this._selectedToken$.asObservable();
+
+  public readonly selectedTokenBalance$ = this.needLogin$.pipe(
+    switchMap(needLogin => {
+      if (needLogin) {
+        return of(new BigNumber(0));
+      }
+      return this.getSelectedTokenBalance(this.selectedToken.address);
+    })
+  );
 
   private walletAddress: string;
-
-  get userEnteredAmount$(): Observable<number> {
-    return this._userEnteredAmount$
-      .asObservable()
-      .pipe(map(amount => Web3Public.fromWei(amount, 18).toNumber()));
-  }
-
-  get totalRBCEntered$(): Observable<number> {
-    return this._totalRBCEntered$
-      .asObservable()
-      .pipe(map(amount => Web3Public.fromWei(amount, 18).toNumber()));
-  }
-
-  get apr$(): Observable<number> {
-    return this._apr$.asObservable();
-  }
-
-  get canReceiveAmount$(): Observable<BigNumber> {
-    return this._canReceiveAmount$.asObservable();
-  }
-
-  get stakingTokenBalance$(): Observable<BigNumber> {
-    return this._stakingTokenBalance$.asObservable();
-  }
-
-  get earnedRewards$(): Observable<BigNumber> {
-    return this._earnedRewards$.asObservable();
-  }
-
-  get needLogin$(): Observable<boolean> {
-    return this.authService.getCurrentUser().pipe(map(user => !user?.address));
-  }
-
-  get selectedToken$(): Observable<MinimalToken> {
-    return this._selectedToken$;
-  }
 
   get selectedToken(): MinimalToken {
     return this._selectedToken$.getValue();
   }
 
-  get selectedTokenBalance$(): Observable<BigNumber> {
-    return this.needLogin$.pipe(
-      switchMap(needLogin => {
-        if (needLogin) {
-          return of(new BigNumber(0));
-        }
-        return this.getSelectedTokenBalance(this.selectedToken.address);
-      })
-    );
-  }
+  private readonly _usersTotalDeposit$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+
+  public readonly earnedRewards$ = combineLatest([
+    this._usersTotalDeposit$,
+    this._amountWithRewards$
+  ]).pipe(
+    map(([usersDeposit, amountWithRewards]) => amountWithRewards.minus(usersDeposit)),
+    tap(earnedRewards => this._earnedRewards$.next(earnedRewards))
+  );
+
+  public readonly dataReloading$ = new BehaviorSubject<boolean>(true);
 
   constructor(
     private readonly web3PublicService: Web3PublicService,
     private readonly web3PrivateService: Web3PrivateService,
     private readonly authService: AuthService,
-    private readonly stakingApiService: StakingApiService
+    private readonly stakingApiService: StakingApiService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector
   ) {
+    forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]).subscribe(() => {
+      this.dataReloading$.next(false);
+    });
+
     this.authService
       .getCurrentUser()
-      .pipe(filter(Boolean))
-      .subscribe(({ address }) => (this.walletAddress = address));
+      .pipe(
+        filter(Boolean),
+        tap(({ address }) => (this.walletAddress = address)),
+        switchMap(() => {
+          return forkJoin([
+            this.getAmountWithRewards(),
+            // this.getUsersDeposit(),
+            this.getUserEnteredAmount()
+          ]);
+        })
+      )
+      .subscribe();
   }
 
   public setToken(token: MinimalToken): void {
     this._selectedToken$.next(token);
   }
 
-  public enterStake(amount: BigNumber): Observable<TransactionReceipt> {
-    const enterStake$ = from(
-      this.web3PrivateService.tryExecuteContractMethod(
-        this.stakingContractAddress,
-        STAKING_CONTRACT_ABI,
-        'enter',
-        [Web3Public.toWei(amount, 18)]
-      )
-    );
+  public enterStake(amount: BigNumber): Observable<TransactionReceipt | unknown> {
+    const needSwap =
+      this._selectedToken$.getValue().blockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET;
 
-    return this.needApprove(amount).pipe(
-      take(1),
-      switchIif(
-        needApprove => Boolean(needApprove),
-        () => this.approve().pipe(switchMap(() => enterStake$)),
-        () => enterStake$
-      )
-    );
+    if (needSwap) {
+      return this.openSwapModal();
+    } else {
+      const enterStake$ = from(
+        this.web3PrivateService.tryExecuteContractMethod(
+          this.stakingContractAddress,
+          STAKING_CONTRACT_ABI,
+          'enter',
+          [Web3Public.toWei(amount, 18)]
+        )
+      );
+
+      return this.needApprove(amount).pipe(
+        take(1),
+        switchIif(
+          needApprove => Boolean(needApprove),
+          () => this.approve().pipe(switchMap(() => enterStake$)),
+          () => enterStake$
+        )
+      );
+    }
   }
 
-  public leaveStake(amount: string): Observable<TransactionReceipt> {
+  public leaveStake(amount: BigNumber): Observable<TransactionReceipt> {
     return from(
       this.web3PrivateService.tryExecuteContractMethod(
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'leave',
-        [Web3Public.toWei(new BigNumber(amount.split(',').join('')), 18)]
+        [Web3Public.toWei(amount, 18)]
       )
     );
   }
@@ -161,78 +181,104 @@ export class StakingService {
     ).pipe(map(balance => Web3Public.fromWei(balance, 18)));
   }
 
-  // public getAllStatistics() {}
-
   public getStakingTokenBalance(): void {
     this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
       .getTokenBalance(this.walletAddress, this.stakingContractAddress)
       .then(balance => this._stakingTokenBalance$.next(Web3Public.fromWei(balance, 18)));
   }
 
-  private getCanReceiveAmount(): void {
-    this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
-      .callContractMethod(this.stakingContractAddress, STAKING_CONTRACT_ABI, 'canReceive', {
-        methodArguments: [Web3Public.toWei(this._stakingTokenBalance$.getValue(), 18)],
-        from: this.walletAddress
-      })
-      .then(canReceiveAmount =>
-        this._canReceiveAmount$.next(Web3Public.fromWei(canReceiveAmount, 18))
-      );
-  }
-
-  // public getApr() {
-  //   this.stakingApiService.getApr();
-  // }
-
-  public loadTotalRbcEntered(): void {
-    this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
-      .callContractMethod(this.stakingContractAddress, STAKING_CONTRACT_ABI, 'totalRBCEntered')
-      .then(totalRbcEntered => {
-        this._totalRBCEntered$.next(+totalRbcEntered);
-      });
-  }
-
-  public loadUserEnteredAmount(): void {
-    this.needLogin$.pipe(distinctUntilChanged()).subscribe(needLogin => {
-      if (!needLogin) {
-        this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
-          .callContractMethod(
-            this.stakingContractAddress,
-            STAKING_CONTRACT_ABI,
-            'userEnteredAmount',
-            {
-              methodArguments: [this.walletAddress]
-            }
-          )
-          .catch(error => console.error('userEnteredAmount', error))
-          .then(userEnteredAmount => this._userEnteredAmount$.next(+userEnteredAmount));
-      }
-    });
-  }
-
-  public reloadStakingProgress(): Observable<boolean> {
-    this.loadTotalRbcEntered();
-    return this.needLogin$.pipe(
-      take(1),
-      tap(needLogin => {
-        if (!needLogin) {
-          this.loadUserEnteredAmount();
+  private getAmountWithRewards(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.stakingContractAddress,
+        STAKING_CONTRACT_ABI,
+        'actualBalanceOf',
+        {
+          methodArguments: [this.walletAddress],
+          from: this.walletAddress
         }
-      })
+      )
+    ).pipe(
+      map(actualBalance => Web3Public.fromWei(actualBalance, 18)),
+      tap(actualBalance => this._amountWithRewards$.next(actualBalance))
     );
   }
 
-  public calculateLeaveReward(amount: string): Observable<number | BigNumber> {
-    if (!amount) {
-      return of(0);
+  getEarnedRewards(): Observable<BigNumber> {
+    return combineLatest([this.getUsersDeposit(), this._amountWithRewards$]).pipe(
+      map(([usersDeposit, amountWithRewards]) => amountWithRewards.minus(usersDeposit)),
+      tap(earnedRewards => this._earnedRewards$.next(earnedRewards))
+    );
+  }
+
+  private getUserEnteredAmount(): Observable<number> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.stakingContractAddress,
+        STAKING_CONTRACT_ABI,
+        'userEnteredAmount',
+        {
+          methodArguments: [this.walletAddress]
+        }
+      )
+    ).pipe(
+      map(amount => Web3Public.fromWei(amount, 18).toNumber()),
+      tap(userEnteredAmount => this._userEnteredAmount$.next(userEnteredAmount))
+    );
+  }
+
+  public getTotalRBCEntered(): Observable<string> {
+    return from(
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        this.stakingContractAddress,
+        STAKING_CONTRACT_ABI,
+        'totalRBCEntered'
+      )
+    ).pipe(tap(totalRbcEntered => this._totalRBCEntered$.next(+totalRbcEntered)));
+  }
+
+  private getApr(): Observable<number> {
+    return this.stakingApiService.getApr().pipe(tap(apr => this._apr$.next(apr)));
+  }
+
+  private getRefillTime(): Observable<string> {
+    return this.stakingApiService
+      .getRefillTime()
+      .pipe(tap(refillTime => this._refillTime$.next(refillTime)));
+  }
+
+  public calculateLeaveReward(amount: BigNumber): Observable<BigNumber> {
+    if (amount.isZero()) {
+      return of(amount);
     }
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'canReceive',
-        { methodArguments: [new BigNumber(amount.split(',').join(''))], from: this.walletAddress }
+        { methodArguments: [amount], from: this.walletAddress }
       )
     ).pipe(map(res => Web3Public.fromWei(res, 18)));
+  }
+
+  private getUsersDeposit(): Observable<number> {
+    return this.stakingApiService
+      .getUsersDeposit()
+      .pipe(tap(deposit => this._usersTotalDeposit$.next(new BigNumber(deposit))));
+  }
+
+  private updateUsersDeposit(amount: number): Observable<number> {
+    return this.stakingApiService.updateUsersDeposit(amount).pipe(
+      tap(deposit => this._usersTotalDeposit$.next(new BigNumber(deposit)))
+      // switchMap(() => {
+      //   return forkJoin([]);
+      // })
+    );
+  }
+
+  private openSwapModal(): Observable<unknown> {
+    return this.dialogService.open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
+      size: 'l'
+    });
   }
 }

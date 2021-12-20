@@ -1,7 +1,8 @@
-@import 'src/scss/vars';
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
 
 .withdraw {
-  padding: 36px 28px 28px;
+  padding: 36px 22px 22px;
 
   &__stake-token,
   &__staked-token {
@@ -26,6 +27,11 @@
     background-color: transparent;
 
     border: none;
+
+    @include mixins.b(vars.$tablet) {
+      font-size: 36px;
+      line-height: 43px;
+    }
   }
 
   &__balance {
@@ -36,10 +42,19 @@
     line-height: 21px;
     letter-spacing: -0.03em;
 
+    @include mixins.b(vars.$tablet) {
+      font-size: 14px;
+      line-height: 19px;
+
+      span {
+        font-size: 16px;
+      }
+    }
+
     span {
       margin-left: 12px;
 
-      color: $rubic-primary;
+      color: vars.$rubic-primary;
     }
   }
 
@@ -62,6 +77,11 @@
     background-color: transparent;
 
     border: none;
+
+    @include mixins.b(vars.$tablet) {
+      font-size: 36px;
+      line-height: 43px;
+    }
   }
 }
 

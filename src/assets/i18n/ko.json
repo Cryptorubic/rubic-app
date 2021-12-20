@@ -32,7 +32,8 @@
     "swap": "교환",
     "approve": "승인",
     "switchTo": "{{ networkName }} 네트워크로 전환",
-    "tradeVia": "무역을 통해 "
+    "tradeVia": "무역을 통해 ",
+    "bridge": "Bridge"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -492,7 +493,7 @@
       "balance": "You have {{amount}}",
       "confirmStake": "Confirm stake",
       "unstake": "Unstake",
-      "overLimit": "One stake limits 1,000 - 100,000 BRBC",
+      "overLimit": "One stake limits 1,000 - {{availableAmount}} BRBC",
       "globalUpdate": "Global Update",
       "globalUpdateHint": "about global update",
       "getBrbc": "Get BRBC",
@@ -558,12 +559,10 @@
       "link": "My Trades"
     },
     "stakingSwapModal": {
-      "title1": "For",
-      "title2": "staking, you need to swap in",
-      "subtitle": "We’ll do everything automatically",
-      "text": "The transaction will take ~7 minutes. But you can swap tokens yourself.",
-      "button1": "Ok, I agree",
-      "button2": "I swap myself"
+      "title": "For RBC staking, you need to swap in BRBC",
+      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes. But you can swap tokens yourself.",
+      "agree": "Ok, I agree",
+      "swapMyself": "I swap myself"
     }
   },
   "settings": {

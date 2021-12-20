@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StakingService } from '@features/staking/services/staking.service';
 
 import { BRBC_TOTAL } from '@features/staking/constants/BRBC_TOTAL';
 import { STAKE_LIMIT_MAX } from '@features/staking/constants/STACKING_LIMITS';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-staking-info',
@@ -11,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./staking-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingInfoComponent implements OnInit {
+export class StakingInfoComponent {
   public readonly BRBCTotal = BRBC_TOTAL;
 
   public readonly stakeLimitMax = STAKE_LIMIT_MAX;
@@ -22,17 +21,11 @@ export class StakingInfoComponent implements OnInit {
 
   public readonly needLogin$ = this.stakingService.needLogin$;
 
-  public readonly loading$ = new BehaviorSubject<boolean>(false);
+  public readonly loading$ = this.stakingService.dataReloading$;
 
   constructor(private readonly stakingService: StakingService) {}
 
-  public ngOnInit(): void {
-    this.stakingService.loadTotalRbcEntered();
-    this.stakingService.loadUserEnteredAmount();
-  }
-
   public reloadStakingProgress(): void {
-    this.loading$.next(true);
-    this.stakingService.reloadStakingProgress().subscribe(() => this.loading$.next(false));
+    alert('will be implemented');
   }
 }

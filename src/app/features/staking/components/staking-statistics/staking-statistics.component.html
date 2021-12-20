@@ -4,15 +4,15 @@
     <div class="statistics__caption">{{ 'staking.stats.balance' | translate }}</div>
   </div>
   <div class="statistics__item">
-    <div class="statistics__value">0 BRBC</div>
+    <div class="statistics__value">{{ amountWithRewards$ | async | bigNumberFormat }}</div>
     <div class="statistics__caption">{{ 'staking.stats.canReceive' | translate }}</div>
   </div>
   <div class="statistics__item">
-    <div class="statistics__value">0 BRBC</div>
+    <div class="statistics__value">{{ earnedRewards$ | async | bigNumberFormat }}</div>
     <div class="statistics__caption">{{ 'staking.stats.rewards' | translate }}</div>
   </div>
   <div class="statistics__item">
-    <div class="statistics__value">85,43%</div>
+    <div class="statistics__value">{{ apr$ | async | percent }}</div>
     <div class="statistics__caption">{{ 'staking.stats.apr' | translate }}</div>
   </div>
   <img src="assets/images/icons/reload.svg" alt="Reload" class="statistics__reload" />

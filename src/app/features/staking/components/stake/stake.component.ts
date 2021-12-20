@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Inject, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
 
@@ -13,26 +13,29 @@ import { BehaviorSubject } from 'rxjs';
   selector: 'app-stake',
   templateUrl: './stake.component.html',
   styleUrls: ['./stake.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class StakeComponent {
   public readonly DEFAULT_DECIMALS = 18;
 
-  public loading$ = new BehaviorSubject<boolean>(false);
+  public readonly loading$ = new BehaviorSubject<boolean>(false);
 
-  public needLogin$ = this.stakingService.needLogin$;
+  public readonly needLogin$ = this.stakingService.needLogin$;
 
-  public amount = new FormControl('');
+  public readonly amount = new FormControl('');
 
-  public token = new FormControl(STAKING_TOKENS[0]);
+  public readonly token = new FormControl(STAKING_TOKENS[0]);
 
-  public selectedTokenBalance$ = this.stakingService.selectedTokenBalance$;
+  public readonly selectedTokenBalance$ = this.stakingService.selectedTokenBalance$;
+
+  public readonly userEnteredAmount$ = this.stakingService.userEnteredAmount$;
 
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly stakingService: StakingService,
-    private readonly destroy$: TuiDestroyService,
     private readonly walletsModalService: WalletsModalService
   ) {}
 
@@ -45,17 +48,4 @@ export class StakeComponent {
   public login(): void {
     this.walletsModalService.open().subscribe();
   }
-
-  // public openSwapModal(): void {
-  //   console.log('work');
-  //   this.dialogService
-  //     .open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
-  //       size: 'l'
-  //     })
-  //     .subscribe((confirm: boolean) => {
-  //       if (confirm) {
-  //         console.log('work');
-  //       }
-  //     });
-  // }
 }

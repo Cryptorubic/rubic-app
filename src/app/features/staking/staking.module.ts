@@ -1,14 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TuiDataListWrapperModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit';
+import {
+  TuiDataListWrapperModule,
+  TuiProgressModule,
+  TuiSelectModule,
+  TuiTabsModule
+} from '@taiga-ui/kit';
 import {
   TuiHintControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiProgressModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 
 import { SharedModule } from '@shared/shared.module';
@@ -24,7 +28,7 @@ import { StakeButtonContainerComponent } from './components/stake-button-contain
 import { WithdrawButtonContainerComponent } from './components/withdraw-button-container/withdraw-button-container.component';
 import { StakingPageComponent } from './components/staking-page/staking-page.component';
 import { StakingService } from './services/staking.service';
-import { StakingApiService } from '@core/services/backend/staking-api/staking-api.service';
+import { StakingApiService } from './services/staking-api.service';
 
 @NgModule({
   declarations: [

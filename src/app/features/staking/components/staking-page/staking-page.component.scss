@@ -1,4 +1,5 @@
-@import 'src/styles';
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
 
 /* stylelint-disable */
 :host {
@@ -10,7 +11,7 @@
   margin: 0 auto;
   padding-top: 16px;
 
-  @include b($tablet) {
+  @include mixins.b(vars.$tablet) {
     grid-template: 'stats'
                    'container'
                    'features';
@@ -22,7 +23,7 @@ app-staking-statistics {
   grid-area: stats;
   margin-bottom: 20px;
 
-  @include b($tablet) {
+  @include mixins.b(vars.$tablet) {
     margin-bottom: 18px;
   }
 }
@@ -32,7 +33,7 @@ app-staking-container {
   height: fit-content;
   margin-right: 8px;
 
-  @include b($tablet) {
+  @include mixins.b(vars.$tablet) {
     margin: 0 0 18px;
   }
 }
@@ -41,7 +42,7 @@ app-staking-info {
   grid-area: features;
   width: 432px;
 
-  @include b($tablet) {
+  @include mixins.b(vars.$laptop) {
     width: 100%;
   }
 }

@@ -1,5 +1,5 @@
-@import 'src/scss/vars';
+@use 'src/scss/vars';
 
 .error {
-  color: $rubic-text-error;
+  color: vars.$rubic-text-error;
 }

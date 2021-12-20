@@ -1,32 +1,30 @@
 <div class="total">
-  <div class="total__total-staked">
+  <div class="total__total-staked" *ngLet="totalRBCEntered$ | async as totalRbcEntered">
     <div class="total__title">{{ 'staking.stats.total' | translate }}</div>
     <div class="total__amount">
-      {{ totalRBCEntered$ | async | bigNumberFormat }} BRBC of
-      {{ BRBCTotal | bigNumberFormat }} BRBC
+      {{ totalRbcEntered | bigNumberFormat }} BRBC of {{ BRBCTotal | bigNumberFormat }} BRBC
     </div>
     <progress
       tuiProgressBar
       [max]="BRBCTotal"
-      [value]="totalRBCEntered$ | async"
+      [value]="totalRbcEntered"
       class="total__progress"
     ></progress>
   </div>
-  <div class="total__you-total-staked">
+  <div class="total__you-total-staked" *ngLet="userEnteredAmount$ | async as userEnteredAmount">
     <div class="total__title">{{ 'staking.stats.usersTotal' | translate }}</div>
     <div class="total__amount">
       <ng-container *ngIf="needLogin$ | async; else userTotalStaked">
         {{ 'staking.stats.connectWallet' | translate }}
       </ng-container>
       <ng-template #userTotalStaked>
-        {{ userEnteredAmount$ | async | bigNumberFormat }} BRBC of
-        {{ stakeLimitMax | bigNumberFormat }} BRBC
+        {{ userEnteredAmount | bigNumberFormat }} BRBC of {{ stakeLimitMax | bigNumberFormat }} BRBC
       </ng-template>
     </div>
     <progress
       tuiProgressBar
       [max]="stakeLimitMax"
-      [value]="userEnteredAmount$ | async"
+      [value]="userEnteredAmount"
       class="total__progress"
     ></progress>
   </div>
@@ -46,7 +44,7 @@
   <div class="feature">
     <img
       src="assets/images/icons/staking/top-1.svg"
-      alt="High APY"
+      alt="High APR"
       class="feature__icon feature__icon--top"
     />
     <div class="feature__content">

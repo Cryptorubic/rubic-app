@@ -32,7 +32,8 @@
     "swap": "Обменять",
     "approve": "Утвердить",
     "switchTo": "Переключиться на сеть {{ networkName }}",
-    "tradeVia": "Торговать через "
+    "tradeVia": "Торговать через ",
+    "bridge": "Bridge"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -492,7 +493,7 @@
       "balance": "You have {{amount}}",
       "confirmStake": "Confirm stake",
       "unstake": "Unstake",
-      "overLimit": "One stake limits 1,000 - 100,000 BRBC",
+      "overLimit": "One stake limits 1,000 - {{availableAmount}} BRBC",
       "globalUpdate": "Global Update",
       "globalUpdateHint": "about global update",
       "getBrbc": "Get BRBC",
@@ -558,12 +559,10 @@
       "link": "My Trades"
     },
     "stakingSwapModal": {
-      "title1": "For",
-      "title2": "staking, you need to swap in",
-      "subtitle": "We’ll do everything automatically",
-      "text": "The transaction will take ~7 minutes. But you can swap tokens yourself.",
-      "button1": "Ok, I agree",
-      "button2": "I swap myself"
+      "title": "For RBC staking, you need to swap in BRBC",
+      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes. But you can swap tokens yourself.",
+      "agree": "Ok, I agree",
+      "swapMyself": "I swap myself"
     }
   },
   "settings": {

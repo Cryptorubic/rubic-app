@@ -1,12 +1,13 @@
-@import 'src/styles';
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
 
 .select-token {
   width: 161px;
 
-  @include b($tablet) {
+  @include mixins.b(vars.$tablet) {
     width: 145px;
   }
-  
+
   ::ng-deep {
     --tui-height-l: 43px;
     --tui-radius-m: 22px;
@@ -42,7 +43,7 @@
     font-size: 20px;
     line-height: 24px;
 
-    @include b($tablet) {
+    @include mixins.b(vars.$tablet) {
       font-size: 18px;
       line-height: 21px;
       letter-spacing: -0.03em;

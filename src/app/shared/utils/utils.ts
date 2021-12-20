@@ -1,12 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { map, switchMap } from 'rxjs/operators';
-import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-
-export interface MinimalToken {
-  address: string;
-  blockchain: BLOCKCHAIN_NAME;
-}
+import { defer, iif, Observable, of, OperatorFunction } from 'rxjs';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
  * Compares two objects for equality.
