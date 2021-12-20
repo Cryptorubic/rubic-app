@@ -52,10 +52,10 @@ import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
-import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
+import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-reader/cross-chain-contract-reader';
+import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor.facade';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
+import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor';
 import CustomError from '@core/errors/models/custom-error';
 
 interface PathAndToAmount {

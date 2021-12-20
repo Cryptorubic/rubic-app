@@ -13,8 +13,8 @@ import { RaydiumRoutingService } from '@features/instant-trade/services/instant-
 
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/solana-contract-executor';
-import { EthLikeContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/eth-like-contract-executor';
+import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor';
+import { EthLikeContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor';
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';

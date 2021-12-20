@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
 import { PublicKey } from '@solana/web3.js';
 import {
@@ -24,6 +24,12 @@ export class CrossChainContractReader {
     this.ethContractAbi = crossChainSwapContractAbi;
   }
 
+  private isSolana(
+    blockchainAdapter: Web3Public<unknown, unknown>
+  ): blockchainAdapter is SolanaWeb3Public {
+    return this.blockchainAdapter instanceof SolanaWeb3Public;
+  }
+
   public async minTokenAmount(fromContractAddress: string): Promise<string> {
     if (this.isSolana(this.blockchainAdapter)) {
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(
@@ -33,26 +39,12 @@ export class CrossChainContractReader {
       return bridgeData.min_token_amount.toString();
     }
 
-    if (this.isEthLike(this.blockchainAdapter)) {
-      return this.blockchainAdapter.callContractMethod<string>(
-        fromContractAddress,
-        this.ethContractAbi,
-        'minTokenAmount'
-      );
-    }
-    return null;
-  }
-
-  private isSolana(
-    blockchainAdapter: Web3Public<unknown, unknown>
-  ): blockchainAdapter is SolanaWeb3Public {
-    return this.blockchainAdapter instanceof SolanaWeb3Public;
-  }
-
-  private isEthLike(
-    blockchainAdapter: Web3Public<unknown, unknown>
-  ): blockchainAdapter is EthLikeWeb3Public {
-    return this.blockchainAdapter instanceof EthLikeWeb3Public;
+    // isEthLike
+    return this.blockchainAdapter.callContractMethod<string>(
+      fromContractAddress,
+      this.ethContractAbi,
+      'minTokenAmount'
+    );
   }
 
   public async maxTokenAmount(fromContractAddress: string): Promise<string> {
@@ -64,14 +56,12 @@ export class CrossChainContractReader {
       return bridgeData.max_token_amount.toString();
     }
 
-    if (this.isEthLike(this.blockchainAdapter)) {
-      return this.blockchainAdapter.callContractMethod<string>(
-        fromContractAddress,
-        this.ethContractAbi,
-        'maxTokenAmount'
-      );
-    }
-    return null;
+    // isEthLike
+    return this.blockchainAdapter.callContractMethod<string>(
+      fromContractAddress,
+      this.ethContractAbi,
+      'maxTokenAmount'
+    );
   }
 
   public async feeAmountOfBlockchain(
@@ -86,17 +76,15 @@ export class CrossChainContractReader {
       return bridgeData.fee_amount_of_blockchain.toString();
     }
 
-    if (this.isEthLike(this.blockchainAdapter)) {
-      return await this.blockchainAdapter.callContractMethod(
-        contractAddress,
-        this.ethContractAbi,
-        'feeAmountOfBlockchain',
-        {
-          methodArguments: [numOfBlockchainInContract]
-        }
-      );
-    }
-    return null;
+    // isEthLike
+    return this.blockchainAdapter.callContractMethod(
+      contractAddress,
+      this.ethContractAbi,
+      'feeAmountOfBlockchain',
+      {
+        methodArguments: [numOfBlockchainInContract]
+      }
+    );
   }
 
   public async blockchainCryptoFee(
@@ -104,15 +92,15 @@ export class CrossChainContractReader {
     toBlockchainInContract: number
   ): Promise<number> {
     let fee, decimals;
+
     if (this.isSolana(this.blockchainAdapter)) {
       const account = new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContract]);
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
       const blockchainData = BlockchainLayout.decode(data) as SolanaBlockchainConfig;
       fee = blockchainData.crypto_fee.toNumber();
       decimals = NATIVE_SOL.decimals;
-    }
-
-    if (this.isEthLike(this.blockchainAdapter)) {
+    } else {
+      // isEthLike
       fee = await this.blockchainAdapter.callContractMethod(
         contractAddress,
         this.ethContractAbi,
@@ -123,6 +111,7 @@ export class CrossChainContractReader {
       );
       decimals = 18;
     }
+
     return EthLikeWeb3Public.fromWei(fee, decimals).toNumber();
   }
 
@@ -135,14 +124,12 @@ export class CrossChainContractReader {
       return bridgeData?.is_paused || false;
     }
 
-    if (this.isEthLike(this.blockchainAdapter)) {
-      return await this.blockchainAdapter.callContractMethod<boolean>(
-        contractAddress,
-        this.ethContractAbi,
-        'paused'
-      );
-    }
-    return null;
+    // isEthLike
+    return this.blockchainAdapter.callContractMethod<boolean>(
+      contractAddress,
+      this.ethContractAbi,
+      'paused'
+    );
   }
 
   public async blockchainPool(contractAddress: string): Promise<string> {
@@ -150,13 +137,11 @@ export class CrossChainContractReader {
       return PDA_POOL;
     }
 
-    if (this.isEthLike(this.blockchainAdapter)) {
-      return await this.blockchainAdapter.callContractMethod(
-        contractAddress,
-        this.ethContractAbi,
-        'blockchainPool'
-      );
-    }
-    return null;
+    // isEthLike
+    return this.blockchainAdapter.callContractMethod(
+      contractAddress,
+      this.ethContractAbi,
+      'blockchainPool'
+    );
   }
 }
