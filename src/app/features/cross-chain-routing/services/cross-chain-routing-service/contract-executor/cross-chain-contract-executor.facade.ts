@@ -101,12 +101,16 @@ export class CrossChainContractExecutorFacade {
     }
     if (type === 'solana') {
       try {
+        const isToNative = this.publicBlockchainAdapterService[trade.toBlockchain].isNativeAddress(
+          trade.tokenOut.address
+        );
         const { transaction, signers } = await this.solanaContractExecutor.execute(
           trade,
           userAddress,
           toBlockchainInContractNumber,
           settings,
-          this.targetAddress
+          this.targetAddress,
+          isToNative
         );
         const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
         if (options.onTransactionHash) {

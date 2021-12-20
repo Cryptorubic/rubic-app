@@ -789,7 +789,7 @@ export class CrossChainRoutingService {
             this.walletConnectorService.address,
             this.settings,
             this.numOfBlockchainsInContract[this.currentCrossChainTrade.toBlockchain][
-              this.currentCrossChainTrade.fromContractIndex
+              this.currentCrossChainTrade.toContractIndex
             ]
           );
 
