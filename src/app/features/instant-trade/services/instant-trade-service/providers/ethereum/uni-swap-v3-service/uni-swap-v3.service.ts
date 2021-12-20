@@ -7,16 +7,16 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { from, Observable, of } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
   maxTransitPools,
   uniSwapV3ContractData,
   wethAddressNetMode
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import {
   ItSettingsForm,
@@ -26,7 +26,7 @@ import { LiquidityPoolsController } from 'src/app/features/instant-trade/service
 
 import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Route';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { UniswapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3InstantTrade';
 import { startWith } from 'rxjs/operators';
@@ -44,8 +44,10 @@ import {
   UniswapV3CalculatedInfoWithProfit
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3CalculatedInfo';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
-import { Web3Pure } from 'src/app/core/services/blockchain/web3/web3-pure/web3-pure';
+import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 
 /**
  * Shows whether Eth is used as from or to token.
@@ -68,7 +70,7 @@ export class UniSwapV3Service implements ItProvider {
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  private web3Public: Web3Public;
+  private blockchainAdapter: EthLikeWeb3Public;
 
   private liquidityPoolsController: LiquidityPoolsController;
 
@@ -79,10 +81,10 @@ export class UniSwapV3Service implements ItProvider {
   private walletAddress: string;
 
   constructor(
-    private readonly web3PublicService: Web3PublicService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
     private readonly settingsService: SettingsService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly tokensService: TokensService,
@@ -91,8 +93,8 @@ export class UniSwapV3Service implements ItProvider {
     this.gasMargin = 1.2;
 
     this.blockchain = BLOCKCHAIN_NAME.ETHEREUM;
-    this.web3Public = this.web3PublicService[this.blockchain];
-    this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public);
+    this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
+    this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainAdapter);
     this.wethAddress = wethAddressNetMode.mainnet;
 
     this.settingsService.instantTradeValueChanges
@@ -110,28 +112,33 @@ export class UniSwapV3Service implements ItProvider {
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.web3Public = this.web3PublicService[this.blockchain];
-        this.liquidityPoolsController = new LiquidityPoolsController(this.web3Public, true);
+        if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
+          throw new CustomError('wrong wallet: solana');
+        }
+        this.blockchainAdapter = this.publicBlockchainAdapterService[
+          this.blockchain
+        ] as EthLikeWeb3Public;
+        this.liquidityPoolsController = new LiquidityPoolsController(this.blockchainAdapter, true);
         this.wethAddress = wethAddressNetMode.testnet;
       }
     });
   }
 
   public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    if (Web3Public.isNativeAddress(tokenAddress)) {
+    if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
     return from(
-      this.web3Public.getAllowance(
+      this.blockchainAdapter.getAllowance({
         tokenAddress,
-        this.walletAddress,
-        uniSwapV3ContractData.swapRouter.address
-      )
+        ownerAddress: this.walletAddress,
+        spenderAddress: uniSwapV3ContractData.swapRouter.address
+      })
     );
   }
 
   public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
-    this.providerConnectorService.checkSettings(this.blockchain);
+    this.walletConnectorService.checkSettings(this.blockchain);
     await this.web3PrivateService.approveTokens(
       tokenAddress,
       uniSwapV3ContractData.swapRouter.address,
@@ -148,7 +155,7 @@ export class UniSwapV3Service implements ItProvider {
   ): Promise<UniswapV3InstantTrade> {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
-    const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
@@ -189,7 +196,7 @@ export class UniSwapV3Service implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       path,
       route
@@ -198,14 +205,14 @@ export class UniSwapV3Service implements ItProvider {
       return trade;
     }
 
-    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const increasedGas = EthLikeWeb3Public.calculateGasMargin(estimatedGas, this.gasMargin);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
     const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 
     return {
       ...trade,
       gasLimit: increasedGas,
-      gasPrice: Web3Public.toWei(gasPriceInEth),
+      gasPrice: EthLikeWeb3Public.toWei(gasPriceInEth),
       gasFeeInEth,
       gasFeeInUsd
     };
@@ -227,11 +234,11 @@ export class UniSwapV3Service implements ItProvider {
     const fromTokenWrapped = { ...fromToken };
     const toTokenWrapped = { ...toToken };
     const isEth: IsEthFromOrTo = {} as IsEthFromOrTo;
-    if (Web3Public.isNativeAddress(fromToken.address)) {
+    if (this.blockchainAdapter.isNativeAddress(fromToken.address)) {
       fromTokenWrapped.address = this.wethAddress;
       isEth.from = true;
     }
-    if (Web3Public.isNativeAddress(toToken.address)) {
+    if (this.blockchainAdapter.isNativeAddress(toToken.address)) {
       toTokenWrapped.address = this.wethAddress;
       isEth.to = true;
     }
@@ -293,7 +300,7 @@ export class UniSwapV3Service implements ItProvider {
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
+        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
           uniSwapV3ContractData.swapRouter.abi,
           uniSwapV3ContractData.swapRouter.address,
           this.walletAddress,
@@ -309,7 +316,7 @@ export class UniSwapV3Service implements ItProvider {
       const calculatedProfits: UniswapV3CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
-        const profit = Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        const profit = EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
           .multipliedBy(toToken.price)
           .minus(gasFeeInUsd);
         return {
@@ -330,7 +337,7 @@ export class UniSwapV3Service implements ItProvider {
       isEth,
       deadline
     );
-    const estimatedGas = await this.web3Public
+    const estimatedGas = await this.blockchainAdapter
       .getEstimatedGas(
         uniSwapV3ContractData.swapRouter.abi,
         uniSwapV3ContractData.swapRouter.address,
@@ -438,12 +445,19 @@ export class UniSwapV3Service implements ItProvider {
     trade: UniswapV3InstantTrade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
-    this.providerConnectorService.checkSettings(this.blockchain);
-    await this.web3Public.checkBalance(trade.from.token, trade.from.amount, this.walletAddress);
+    this.walletConnectorService.checkSettings(this.blockchain);
+    await this.blockchainAdapter.checkBalance(
+      trade.from.token,
+      trade.from.amount,
+      this.walletAddress
+    );
 
     const fromToken = trade.from.token;
     const toToken = trade.to.token;
-    const fromAmountAbsolute = Web3Public.toWei(trade.from.amount, trade.from.token.decimals);
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(
+      trade.from.amount,
+      trade.from.token.decimals
+    );
     const { toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
     return this.swapTokens(trade, fromAmountAbsolute, toTokenWrapped.address, isEth, options);
@@ -493,12 +507,12 @@ export class UniSwapV3Service implements ItProvider {
           NATIVE_TOKEN_ADDRESS,
           deadline
         );
-      const exactInputMethodEncoded = await Web3Pure.encodeFunctionCall(
+      const exactInputMethodEncoded = await EthLikeWeb3Pure.encodeFunctionCall(
         uniSwapV3ContractData.swapRouter.abi,
         exactInputMethodName,
         exactInputMethodArguments
       );
-      const unwrapWETHMethodEncoded = await Web3Pure.encodeFunctionCall(
+      const unwrapWETHMethodEncoded = await EthLikeWeb3Pure.encodeFunctionCall(
         uniSwapV3ContractData.swapRouter.abi,
         'unwrapWETH9',
         [amountOutMin, this.walletAddress]

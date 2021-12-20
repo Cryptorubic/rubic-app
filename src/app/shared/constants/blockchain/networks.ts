@@ -1,4 +1,4 @@
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
 
 interface NativeCoin {
@@ -230,6 +230,22 @@ export default [
       name: 'AVAX',
       symbol: 'AVAX',
       decimals: 18
+    }
+  },
+  {
+    id: NaN,
+    name: BLOCKCHAIN_NAME.SOLANA,
+    label: 'Solana',
+    scannerUrl: 'https://explorer.solana.com',
+    rpcLink: 'https:/https://api.mainnet-beta.solana.com',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/solana.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.SOLANA,
+      address: 'SOLANA_NATIVE_TOKEN_ADDRESS',
+      name: 'SOL',
+      symbol: 'SOL',
+      decimals: 9
     }
   }
 ] as ReadonlyArray<Network>;

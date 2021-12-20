@@ -15,6 +15,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 import { combineLatest } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -58,7 +59,8 @@ export class CrossChainSwapInfoComponent implements OnInit {
     private readonly swapFormService: SwapFormService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.blockchainLabels = {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'Ethereum',
@@ -81,14 +83,17 @@ export class CrossChainSwapInfoComponent implements OnInit {
       this.swapFormService.input.controls.toBlockchain.valueChanges.pipe(
         startWith(this.swapFormService.inputValue.toBlockchain)
       ),
-      this.authService.getCurrentUser()
+      this.authService.getCurrentUser(),
+      this.targetNetworkAddressService.displayAddress$,
+      this.targetNetworkAddressService.targetAddress$
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([toBlockchain, user]) => {
+      .subscribe(([toBlockchain, user, displayTargetAddress, targetAddress]) => {
         this.toBlockchain = toBlockchain as SupportedBlockchain;
-        this.toWalletAddress = user?.address;
+        const targetAddressExact = targetAddress?.isValid ? targetAddress.value : null;
+        this.toWalletAddress = displayTargetAddress ? targetAddressExact : user?.address;
 
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
       });
   }
 

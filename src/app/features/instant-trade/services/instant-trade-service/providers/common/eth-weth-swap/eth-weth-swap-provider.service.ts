@@ -5,17 +5,18 @@ import {
   wethContractAddressesNetMode,
   SupportedEthWethSwapBlockchain
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAddressesNetMode';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TransactionReceipt } from 'web3-eth';
-import { Web3PrivateService } from 'src/app/core/services/blockchain/web3/web3-private-service/web3-private.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { compareAddresses } from '@shared/utils/utils';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 @Injectable({
   providedIn: 'root'
@@ -26,9 +27,9 @@ export class EthWethSwapProviderService {
   private contractAddresses: Record<SupportedEthWethSwapBlockchain, string>;
 
   constructor(
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3PrivateService: Web3PrivateService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService
   ) {
@@ -46,6 +47,10 @@ export class EthWethSwapProviderService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): boolean {
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    if (blockchainType !== 'ethLike') {
+      return false;
+    }
     const wethAddress = this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain];
 
     return (
@@ -60,12 +65,12 @@ export class EthWethSwapProviderService {
     const fromToken = trade.from.token;
     const fromAmount = trade.from.amount;
 
-    this.providerConnectorService.checkSettings(blockchain);
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
-    await web3Public.checkBalance(fromToken, fromAmount, this.authService.userAddress);
+    this.walletConnectorService.checkSettings(blockchain);
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
+    await blockchainAdapter.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
-    const fromAmountAbsolute = Web3Public.toWei(fromAmount);
-    const swapMethod = Web3Public.isNativeAddress(fromToken.address)
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount);
+    const swapMethod = blockchainAdapter.isNativeAddress(fromToken.address)
       ? this.swapEthToWeth
       : this.swapWethToEth;
     return swapMethod.bind(this)(blockchain, fromAmountAbsolute, options);

@@ -1,7 +1,7 @@
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { Web3SupportedBlockchains } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 export default interface ConnectionLink {
-  blockchainName: BLOCKCHAIN_NAME;
+  blockchainName: Web3SupportedBlockchains;
   rpcLink: string;
   additionalRpcLink: string;
 }

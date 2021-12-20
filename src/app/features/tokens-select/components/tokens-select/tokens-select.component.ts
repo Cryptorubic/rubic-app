@@ -20,8 +20,8 @@ import {
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
 import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
 import { FormGroup } from '@ngneat/reactive-forms';
@@ -199,7 +199,7 @@ export class TokensSelectComponent implements OnInit {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: ComponentContext,
     private readonly cdr: ChangeDetectorRef,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
@@ -455,13 +455,12 @@ export class TokensSelectComponent implements OnInit {
    */
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     if (this.searchQuery) {
-      const web3Public: Web3Public = this.web3PublicService[this.blockchain];
-
-      if (!Web3Public.isAddressCorrect(this.searchQuery)) {
+      const publicBlockchain = this.publicBlockchainAdapterService[this.blockchain];
+      if (!publicBlockchain.isAddressCorrect(this.searchQuery)) {
         return null;
       }
 
-      const blockchainToken: BlockchainToken = await web3Public
+      const blockchainToken: BlockchainToken = await publicBlockchain
         .getTokenInfo(this.searchQuery)
         .catch(() => null);
 
@@ -509,7 +508,7 @@ export class TokensSelectComponent implements OnInit {
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]
-    }/assets/${Web3Public.toChecksumAddress(token.address)}/logo.png`;
+    }/assets/${EthLikeWeb3Public.toChecksumAddress(token.address)}/logo.png`;
 
     return this.httpClient
       .get(image)
