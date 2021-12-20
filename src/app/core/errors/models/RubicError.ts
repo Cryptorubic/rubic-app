@@ -18,8 +18,6 @@ export abstract class RubicError<T extends ERROR_TYPE> extends Error {
 
   public code?: number;
 
-  public questionId?: string;
-
   protected constructor(
     contentProvider: T extends ERROR_TYPE.TEXT
       ? TranslationKey

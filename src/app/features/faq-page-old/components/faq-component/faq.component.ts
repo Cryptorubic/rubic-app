@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Self } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Question } from '../../models/question';
 import { ActivatedRoute } from '@angular/router';
@@ -9,7 +9,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-faq',
   templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.scss']
+  styleUrls: ['./faq.component.scss'],
+  providers: [TuiDestroyService]
 })
 export class FaqComponent implements AfterViewInit {
   public questions: Question[] = [];
@@ -20,7 +21,7 @@ export class FaqComponent implements AfterViewInit {
     private readonly translateService: TranslateService,
     private readonly route: ActivatedRoute,
     private readonly element: ElementRef,
-    private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     combineLatest([this.route.fragment, this.translateService.stream('faqPage.questions')])
       .pipe(takeUntil(this.destroy$))
@@ -39,6 +40,9 @@ export class FaqComponent implements AfterViewInit {
   public ngAfterViewInit(): void {
     if (this.hash) {
       const answerElement = this.element.nativeElement.querySelector(`#${this.hash}`);
+
+      if (!answerElement) return;
+
       answerElement.scrollIntoView({
         behavior: 'smooth'
       });
