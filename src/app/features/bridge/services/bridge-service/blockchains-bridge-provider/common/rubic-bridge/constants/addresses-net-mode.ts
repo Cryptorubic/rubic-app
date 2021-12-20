@@ -1,10 +1,6 @@
 import { ContractAddressesNetMode } from '@shared/models/blockchain/NetMode';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-
-export type RubicBridgeSupportedBlockchains =
-  | BLOCKCHAIN_NAME.ETHEREUM
-  | BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-  | BLOCKCHAIN_NAME.POLYGON;
+import { RubicBridgeSupportedBlockchains } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/models/types';
 
 export const rubicBridgeContractAddressesNetMode: ContractAddressesNetMode<RubicBridgeSupportedBlockchains> =
   {

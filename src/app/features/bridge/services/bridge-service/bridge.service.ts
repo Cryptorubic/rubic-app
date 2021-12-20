@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
-import { EthereumBinanceRubicBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { EthereumPolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
@@ -23,6 +22,7 @@ import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair'
 import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
+import { BinancePolygonBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 
 @Injectable()
 export class BridgeService {
@@ -43,9 +43,9 @@ export class BridgeService {
   constructor(
     // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
-    private readonly rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
     private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
+    private readonly binancePolygonBridgeProviderService: BinancePolygonBridgeProviderService,
     // bridge providers end
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -74,10 +74,12 @@ export class BridgeService {
         [BLOCKCHAIN_NAME.XDAI]: this.ethereumXdaiBridgeProviderService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService
+        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService,
+        [BLOCKCHAIN_NAME.POLYGON]: this.binancePolygonBridgeProviderService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService
+        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService,
+        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.binancePolygonBridgeProviderService
       }
     };
   }
