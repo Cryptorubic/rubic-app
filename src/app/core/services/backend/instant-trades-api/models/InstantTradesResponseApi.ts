@@ -6,10 +6,18 @@ interface InstantTradesBlockchainNetwork {
   title: string;
 }
 
-interface InstantTradesContract {
+interface InstantTradesEthLikeContract {
   name: INSTANT_TRADES_PROVIDER | 'pancakeswap_old';
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
+}
+
+interface SolanaITContract {
+  name: INSTANT_TRADES_PROVIDER;
+  address: string;
+  blockchain_network: {
+    title: 'solana';
+  };
 }
 
 interface InstantTradesTokenApi extends InputToken {
@@ -18,9 +26,7 @@ interface InstantTradesTokenApi extends InputToken {
   usd_price: number;
 }
 
-export interface InstantTradesResponseApi {
-  hash: string;
-  contract: InstantTradesContract;
+export type InstantTradesResponseApi = {
   user: { username: string };
   from_token: InstantTradesTokenApi;
   to_token: InstantTradesTokenApi;
@@ -30,4 +36,13 @@ export interface InstantTradesResponseApi {
   gas_limit: string;
   status: TRANSACTION_STATUS;
   status_updated_at: string;
-}
+} & (
+  | {
+      contract: InstantTradesEthLikeContract;
+      hash: string;
+    }
+  | {
+      program: SolanaITContract;
+      signature: string;
+    }
+);

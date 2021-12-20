@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/UniSwapV3QuoterController';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
 import {
   swapEstimatedGas,
-  WethToEthEstimatedGas
+  wethToEthEstimatedGas
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/estimatedGas';
 import {
   UniSwapV3CalculatedInfo,
@@ -29,6 +28,7 @@ import {
   UniSwapV3InstantTrade,
   UniSwapV3Route
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniSwapV3InstantTrade';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
@@ -46,7 +46,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
   ) {
     super(uniSwapV3Constants);
 
-    this.quoterController = new UniSwapV3QuoterController(this.web3Public, quoterContract);
+    this.quoterController = new UniSwapV3QuoterController(this.blockchainAdapter, quoterContract);
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -63,7 +63,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
   ): Promise<UniSwapV3InstantTrade> {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
-    const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
@@ -104,7 +104,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       path,
       route
@@ -113,14 +113,14 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       return trade;
     }
 
-    const increasedGas = Web3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const increasedGas = EthLikeWeb3Public.calculateGasMargin(estimatedGas, this.gasMargin);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
     const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 
     return {
       ...trade,
       gasLimit: increasedGas,
-      gasPrice: Web3Public.toWei(gasPriceInEth),
+      gasPrice: EthLikeWeb3Public.toWei(gasPriceInEth),
       gasFeeInEth,
       gasFeeInUsd
     };
@@ -177,7 +177,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       const gasLimits = gasRequests.map(item => item.defaultGasLimit);
 
       if (this.walletAddress) {
-        const estimatedGasLimits = await this.web3Public.batchEstimatedGas(
+        const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
           this.swapRouterContract.abi,
           this.swapRouterContract.address,
           this.walletAddress,
@@ -193,7 +193,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       const calculatedProfits: UniSwapV3CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
-        const profit = Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        const profit = EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
           .multipliedBy(toToken.price)
           .minus(gasFeeInUsd);
         return {
@@ -214,7 +214,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       isEth,
       deadline
     );
-    const estimatedGas = await this.web3Public
+    const estimatedGas = await this.blockchainAdapter
       .getEstimatedGas(
         this.swapRouterContract.abi,
         this.swapRouterContract.address,
@@ -246,7 +246,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
     deadline: number
   ): { callData: BatchCall; defaultGasLimit: BigNumber } {
     const defaultEstimatedGas = swapEstimatedGas[route.poolsPath.length - 1].plus(
-      isEth.to ? WethToEthEstimatedGas : 0
+      isEth.to ? wethToEthEstimatedGas : 0
     );
 
     const { methodName, methodArguments } = this.getSwapRouterMethodData(

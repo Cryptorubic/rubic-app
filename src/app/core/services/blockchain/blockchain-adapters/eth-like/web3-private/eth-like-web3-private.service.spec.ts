@@ -1,0 +1,144 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import BigNumber from 'bignumber.js';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { CookieService } from 'ngx-cookie-service';
+import { TranslateModule } from '@ngx-translate/core';
+import providerServiceStub from '@core/services/blockchain/wallets/wallets-adapters/eth-like/tests/metamask-provider.stub';
+import { WEENUS } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
+import * as config from 'src/test/enviroment.test.json';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
+
+describe('Web3PrivateService', () => {
+  let originalTimeout: number;
+
+  const bobAddress = config.testReceiverAddress;
+  let service: EthLikeWeb3PrivateService;
+  let web3PublicEth: EthLikeWeb3Public;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        HttpClient,
+        HttpHandler,
+        { provide: MetamaskWalletAdapter, useValue: providerServiceStub() },
+        PublicBlockchainAdapterService,
+        CookieService
+      ],
+      imports: [TranslateModule.forRoot()]
+    });
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+    web3PublicEth = TestBed.inject(PublicBlockchainAdapterService)[BLOCKCHAIN_NAME.ETHEREUM];
+    service = TestBed.inject(EthLikeWeb3PrivateService);
+  });
+
+  afterEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+    // @ts-ignore
+    expect(service.address).toBeTruthy();
+  });
+
+  it('should use Kovan network id', () => {
+    // const { network } = service;
+    // expect(network).toBeTruthy();
+    // expect(network.id).toBe(42);
+  });
+
+  it('send transaction', async done => {
+    const amount = new BigNumber(0.001);
+    const bobStartBalance = await web3PublicEth.getBalance(bobAddress);
+    const callbackObject = {
+      onTransactionHash: (_hash: string) => {}
+    };
+    spyOn(callbackObject, 'onTransactionHash');
+
+    const receipt = await service.sendTransaction(bobAddress, amount, {
+      onTransactionHash: callbackObject.onTransactionHash.bind(callbackObject)
+    });
+
+    expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(
+      jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
+    );
+
+    expect(receipt).not.toBe(undefined);
+    expect(receipt.blockNumber).toBeGreaterThan(0);
+    const bobNewBalance = await web3PublicEth.getBalance(bobAddress);
+
+    expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
+    done();
+  });
+
+  it('send tokens', async done => {
+    const amount = new BigNumber(3).multipliedBy(10 ** WEENUS.decimals);
+    const bobStartBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
+    const callbackObject = {
+      onTransactionHash: (_hash: string) => {}
+    };
+    spyOn(callbackObject, 'onTransactionHash');
+
+    const receipt = await service.transferTokens(WEENUS.address, bobAddress, amount, {
+      onTransactionHash: callbackObject.onTransactionHash.bind(callbackObject)
+    });
+
+    expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(
+      jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
+    );
+
+    expect(receipt).not.toBe(undefined);
+    expect(receipt.blockNumber).toBeGreaterThan(0);
+    const bobNewBalance = await web3PublicEth.getTokenBalance(bobAddress, WEENUS.address);
+
+    expect(bobNewBalance.minus(bobStartBalance).toString()).toBe(amount.toString());
+    done();
+  });
+
+  it('approve', async done => {
+    const amount = new BigNumber(2.39).multipliedBy(10 ** WEENUS.decimals);
+    const callbackObject = {
+      onTransactionHash: (_hash: string) => {}
+    };
+    spyOn(callbackObject, 'onTransactionHash');
+
+    const receipt = await service.approveTokens(WEENUS.address, bobAddress, amount, {
+      onTransactionHash: callbackObject.onTransactionHash.bind(callbackObject)
+    });
+
+    expect(callbackObject.onTransactionHash).toHaveBeenCalledWith(
+      jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
+    );
+
+    expect(receipt).not.toBe(undefined);
+    expect(receipt.blockNumber).toBeGreaterThan(0);
+    const bobNewAllowance = await web3PublicEth.getAllowance(
+      WEENUS.address,
+      // @ts-ignore
+      service.address,
+      bobAddress
+    );
+
+    expect(bobNewAllowance.toString()).toBe(amount.toString());
+    done();
+  });
+
+  it('unApprove', async done => {
+    await service.unApprove(WEENUS.address, bobAddress);
+
+    const allowance = await web3PublicEth.getAllowance(
+      WEENUS.address,
+      // @ts-ignore
+      service.address,
+      bobAddress
+    );
+
+    expect(allowance.eq(0)).toBeTruthy();
+    done();
+  });
+});

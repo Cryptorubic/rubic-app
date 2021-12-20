@@ -1,4 +1,3 @@
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
@@ -6,6 +5,7 @@ import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/routerTokens';
 import { ContractData } from '@shared/models/blockchain/ContractData';
 import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraInstantTrade';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 interface RecGraphVisitorOptions {
   routesTokens: SymbolToken[];
@@ -65,7 +65,7 @@ export class AlgebraQuoterController {
   }
 
   constructor(
-    private readonly web3Public: Web3Public,
+    private readonly web3Public: EthLikeWeb3Public,
     private readonly quoterContract: ContractData
   ) {
     this.routerTokens = routerTokensNetMode.mainnet;

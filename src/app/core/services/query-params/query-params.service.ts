@@ -17,8 +17,7 @@ import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
-import { Web3PublicService } from '../blockchain/web3/web3-public-service/web3-public.service';
-import { Web3Public } from '../blockchain/web3/web3-public-service/Web3Public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 
 interface QuerySlippage {
@@ -78,7 +77,7 @@ export class QueryParamsService {
 
   constructor(
     private readonly tokensService: TokensService,
-    private readonly web3Public: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
     private readonly swapFormService: SwapFormService,
@@ -236,6 +235,13 @@ export class QueryParamsService {
     );
   }
 
+  /**
+   * Gets tokens by symbol or address.
+   * @param tokens Tokens list to search.
+   * @param token Token symbol or address.
+   * @param chain Token chain.
+   * @return Observable<TokenAmount> Founded token.
+   */
   private getTokenBySymbolOrAddress(
     tokens: List<TokenAmount>,
     token: string,
@@ -244,8 +250,9 @@ export class QueryParamsService {
     if (!token) {
       return of(null);
     }
+    const blockchainAdapter = this.publicBlockchainAdapterService[chain];
 
-    return Web3Public.isAddressCorrect(token)
+    return blockchainAdapter.isAddressCorrect(token)
       ? this.searchTokenByAddress(tokens, token, chain)
       : this.searchTokenBySymbol(tokens, token, chain);
   }

@@ -11,23 +11,27 @@ import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil, tap } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
+import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -36,7 +40,10 @@ enum ERROR_TYPE {
   LESS_THAN_MINIMUM = 'Entered amount less than minimum',
   MORE_THAN_MAXIMUM = 'Entered amount more than maximum',
   MULTICHAIN_WALLET = 'Multichain wallets are not supported',
-  NO_AMOUNT = 'From amount was not entered'
+  NO_AMOUNT = 'From amount was not entered',
+  WRONG_WALLET = 'Wrong wallet',
+  INVALID_TARGET_ADDRESS = 'Invalid target network address',
+  SOL_SWAP = 'Wrap SOL firstly'
 }
 
 @Component({
@@ -131,9 +138,11 @@ export class SwapButtonContainerComponent implements OnInit {
 
   get allowChangeNetwork(): boolean {
     const form = this.formService.inputValue;
+    const walletType = BlockchainsInfo.getBlockchainType(form.fromBlockchain);
     if (
-      this.providerConnectorService?.providerName !== WALLET_NAME.METAMASK ||
-      !form.fromBlockchain
+      this.walletConnectorService?.provider.walletName !== WALLET_NAME.METAMASK ||
+      !form.fromBlockchain ||
+      walletType !== 'ethLike'
     ) {
       return false;
     }
@@ -156,6 +165,15 @@ export class SwapButtonContainerComponent implements OnInit {
     const { fromToken, fromBlockchain } = this.formService.inputValue;
 
     switch (true) {
+      case err[ERROR_TYPE.WRONG_WALLET]: {
+        translateParams = {
+          key: 'errors.wrongWallet',
+          interpolateParams: {
+            network: BlockchainsInfo.getBlockchainByName(fromToken?.blockchain)?.label || ''
+          }
+        };
+        break;
+      }
       case err[ERROR_TYPE.NOT_SUPPORTED_BRIDGE]:
         translateParams = { key: 'errors.chooseSupportedBridge' };
         break;
@@ -175,9 +193,7 @@ export class SwapButtonContainerComponent implements OnInit {
         };
         break;
       case err[ERROR_TYPE.INSUFFICIENT_FUNDS]:
-        if (this.formService.outputValue.toAmount?.isFinite()) {
-          translateParams = { key: 'errors.InsufficientBalance' };
-        }
+        translateParams = { key: 'errors.InsufficientBalance' };
         break;
       case err[ERROR_TYPE.MULTICHAIN_WALLET]: {
         translateParams = { key: 'errors.multichainWallet' };
@@ -190,10 +206,22 @@ export class SwapButtonContainerComponent implements OnInit {
         };
         break;
       }
+      case err[ERROR_TYPE.INVALID_TARGET_ADDRESS]: {
+        translateParams = { key: 'errors.invalidTargetAddress' };
+        break;
+      }
+      case err[ERROR_TYPE.SOL_SWAP]: {
+        translateParams = { key: 'errors.solSwap' };
+        break;
+      }
       default:
     }
 
-    if (!translateParams) {
+    const hasErrors = Object.values(err).filter(Boolean).length;
+    if (hasErrors && !translateParams) {
+      translateParams = { key: 'errors.unknown' };
+    }
+    if (!hasErrors && !translateParams) {
       return of(null);
     }
     return this.translateService.stream(translateParams.key, translateParams.interpolateParams);
@@ -202,15 +230,16 @@ export class SwapButtonContainerComponent implements OnInit {
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly walletsModalService: WalletsModalService,
     private readonly translateService: TranslateService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly iframeService: IframeService,
     private readonly headerStore: HeaderStore,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.errorType = Object.values(ERROR_TYPE).reduce(
       (acc, key) => ({
@@ -227,6 +256,17 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private setupSubscriptions(): void {
+    this.targetNetworkAddressService.targetAddress$
+      .pipe(
+        tap(el => {
+          const { fromBlockchain, toBlockchain } = this.formService.inputValue;
+          this.errorType[ERROR_TYPE.INVALID_TARGET_ADDRESS] =
+            fromBlockchain !== toBlockchain && el && !el.isValid;
+          this.cdr.detectChanges();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
     if (this.iframeService.isIframe) {
       this.needLoginLoading = false;
       this.needLogin = true;
@@ -264,11 +304,18 @@ export class SwapButtonContainerComponent implements OnInit {
     this.formService.inputValueChanges
       .pipe(startWith(this.formService.inputValue), takeUntil(this.destroy$))
       .subscribe(form => {
+        const { fromToken, toToken } = form;
+        this.errorType[ERROR_TYPE.SOL_SWAP] =
+          fromToken &&
+          toToken &&
+          fromToken.address === TOKENS.WSOL.mintAddress &&
+          toToken.address !== NATIVE_SOLANA_MINT_ADDRESS;
+
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
 
-    this.providerConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.walletConnectorService.networkChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.checkWrongBlockchainError();
     });
   }
@@ -284,39 +331,40 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private async checkErrors(): Promise<void> {
+    this.checkWalletError();
     await this.checkInsufficientFundsError();
-    this.checkWrongBlockchainError();
   }
 
   private async checkInsufficientFundsError(): Promise<void> {
-    const { fromToken } = this.formService.inputValue;
+    const { fromToken, fromAmount } = this.formService.inputValue;
     if (!this._fromAmount || !fromToken || !this.authService.userAddress) {
       this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       this.cdr.detectChanges();
       return;
     }
 
-    let balance = fromToken.amount;
-    if (!fromToken.amount.isFinite()) {
-      balance = Web3Public.fromWei(
-        await this.web3PublicService[fromToken.blockchain].getTokenOrNativeBalance(
-          this.authService.user.address,
-          fromToken.address
-        ),
-        fromToken.decimals
-      );
+    if (this.checkWrongBlockchainError()) {
+      return;
     }
-
-    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(this._fromAmount);
+    const balance = !fromToken.amount.isFinite()
+      ? EthLikeWeb3Public.fromWei(
+          await this.publicBlockchainAdapterService[fromToken.blockchain].getTokenOrNativeBalance(
+            this.authService.user.address,
+            fromToken.address
+          ),
+          fromToken.decimals
+        )
+      : fromToken.amount;
+    this.errorType[ERROR_TYPE.INSUFFICIENT_FUNDS] = balance.lt(fromAmount);
     this.cdr.detectChanges();
   }
 
-  private checkWrongBlockchainError(): void {
-    if (this.providerConnectorService.provider) {
-      const userBlockchain = this.providerConnectorService.network?.name;
+  private checkWrongBlockchainError(): boolean {
+    if (this.walletConnectorService.provider) {
+      const userBlockchain = this.walletConnectorService.network?.name;
       const { fromBlockchain } = this.formService.inputValue;
 
-      const { isMultiChainWallet } = this.providerConnectorService.provider;
+      const { isMultiChainWallet } = this.walletConnectorService.provider;
       this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] =
         isMultiChainWallet && fromBlockchain !== BLOCKCHAIN_NAME.ETHEREUM;
 
@@ -326,7 +374,11 @@ export class SwapButtonContainerComponent implements OnInit {
         (!this.isTestingMode || `${fromBlockchain}_TESTNET` !== userBlockchain);
 
       this.cdr.detectChanges();
+      return (
+        this.errorType[ERROR_TYPE.MULTICHAIN_WALLET] || this.errorType[ERROR_TYPE.WRONG_BLOCKCHAIN]
+      );
     }
+    return false;
   }
 
   public onLogin(): void {
@@ -338,9 +390,19 @@ export class SwapButtonContainerComponent implements OnInit {
     this.status = TRADE_STATUS.LOADING;
     const { fromBlockchain } = this.formService.inputValue;
     try {
-      await this.providerConnectorService.switchChain(fromBlockchain);
+      await this.walletConnectorService.switchChain(fromBlockchain);
     } finally {
       this.status = currentStatus;
     }
+  }
+
+  private checkWalletError(): boolean {
+    const blockchainAdapter =
+      this.publicBlockchainAdapterService[this.formService.inputValue.fromBlockchain];
+    this.errorType[ERROR_TYPE.WRONG_WALLET] =
+      Boolean(this.walletConnectorService.address) &&
+      !blockchainAdapter.isAddressCorrect(this.walletConnectorService.address);
+    this.cdr.detectChanges();
+    return this.errorType[ERROR_TYPE.WRONG_WALLET];
   }
 }

@@ -20,6 +20,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.FANTOM]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
+  [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
 };
 
 type DeprecatedBlockchains = {
@@ -86,5 +87,10 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
     name: 'Avalanche',
     img: `${imageBaseSrc}avalanche-testnet.svg`
+  },
+  [BLOCKCHAIN_NAME.SOLANA]: {
+    key: BLOCKCHAIN_NAME.SOLANA,
+    name: 'Solana',
+    img: `${imageBaseSrc}solana.svg`
   }
 };

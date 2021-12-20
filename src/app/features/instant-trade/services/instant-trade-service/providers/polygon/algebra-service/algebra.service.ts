@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/AlgebraQuoterController';
@@ -15,6 +14,7 @@ import {
   AlgebraRoute
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraInstantTrade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
   constructor() {
     super(algebraV3Constants);
 
-    this.quoterController = new AlgebraQuoterController(this.web3Public, quoterContract);
+    this.quoterController = new AlgebraQuoterController(this.blockchainAdapter, quoterContract);
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -40,7 +40,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
     toToken: InstantTradeToken
   ): Promise<AlgebraInstantTrade> {
     const { fromTokenWrapped, toTokenWrapped } = this.getWrappedTokens(fromToken, toToken);
-    const fromAmountAbsolute = Web3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
 
     const route = await this.getRoute(fromTokenWrapped, fromAmountAbsolute, toTokenWrapped);
 
@@ -52,7 +52,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
       },
       to: {
         token: toToken,
-        amount: Web3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       route
     };

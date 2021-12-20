@@ -1,5 +1,6 @@
 import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 export interface Store {
   /**
@@ -31,4 +32,12 @@ export interface Store {
    * User favorite tokens.
    */
   favoriteTokens: LocalToken[];
+
+  /**
+   * Wallet target address for cross-chain trade.
+   */
+  targetAddress: {
+    address: string;
+    blockchain: BLOCKCHAIN_NAME;
+  };
 }
