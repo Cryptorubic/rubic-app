@@ -1,5 +1,4 @@
 import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
-import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import {
   Account,
   AccountMeta,
@@ -152,7 +151,6 @@ export class SolanaContractExecutor {
     trade: CrossChainRoutingTrade,
     address: string,
     toBlockchainInContractNumber: number,
-    settings: CcrSettingsForm,
     targetAddress: string,
     isToNative: boolean
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
@@ -163,17 +161,11 @@ export class SolanaContractExecutor {
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
-    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
-      trade,
-      settings
-    );
+    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(trade);
     const amountIn = new BigNumber(tokenInAmountMax.toString()).multipliedBy(fromDecimals);
 
     const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
-    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
-      trade,
-      settings
-    );
+    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(trade);
     const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
 
     const middleDecimals = new BigNumber(10).exponentiatedBy(

@@ -10,6 +10,7 @@ export interface CrossChainRoutingTrade {
   tokenInAmount: BigNumber;
   firstTransitTokenAmount: BigNumber;
   firstPath: string[];
+  fromSlippage: number;
 
   // to blockchain data
   toBlockchain: SupportedCrossChainSwapBlockchain;
@@ -18,6 +19,7 @@ export interface CrossChainRoutingTrade {
   tokenOut: TokenAmount;
   tokenOutAmount: BigNumber;
   secondPath: string[];
+  toSlippage: number;
 
   // fee data
   transitTokenFee: number; // in percents

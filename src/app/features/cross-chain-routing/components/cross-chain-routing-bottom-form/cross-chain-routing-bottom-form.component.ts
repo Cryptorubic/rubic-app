@@ -100,8 +100,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public errorText: string;
 
-  public slippageTolerance: number;
-
   private calculateTradeSubscription$: Subscription;
 
   private hiddenCalculateTradeSubscription$: Subscription;
@@ -170,8 +168,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
     this.settingsService.crossChainRoutingValueChanges
       .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
-      .subscribe(settings => {
-        this.slippageTolerance = settings.slippageTolerance;
+      .subscribe(() => {
+        this.conditionalCalculate('normal');
       });
 
     this.authService

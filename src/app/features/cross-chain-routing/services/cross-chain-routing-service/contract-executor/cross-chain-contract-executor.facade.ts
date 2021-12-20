@@ -2,15 +2,12 @@ import { PrivateBlockchainAdapterService } from '@core/services/blockchain/block
 import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { SignatureResult } from '@solana/web3.js';
-
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Injectable } from '@angular/core';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
-
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { SolanaContractExecutor } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor';
@@ -34,29 +31,31 @@ export class CrossChainContractExecutorFacade {
   /**
    * Calculates maximum sent amount of token-in, based on tokens route and slippage.
    */
-  public static calculateTokenInAmountMax(
-    trade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
+  public static calculateTokenInAmountMax(trade: CrossChainRoutingTrade): BigNumber {
     if (trade.firstPath.length === 1) {
       return trade.tokenInAmount;
     }
-    const slippageTolerance = settings.slippageTolerance / 100;
-    return trade.tokenInAmount.multipliedBy(1 + slippageTolerance);
+    return trade.tokenInAmount.multipliedBy(2 - trade.fromSlippage);
+  }
+
+  /**
+   * Calculates minimum received amount of transit token, based on tokens route and slippage.
+   */
+  public static calculateFirstTransitTokenAmountMin(trade: CrossChainRoutingTrade): BigNumber {
+    if (trade.firstPath.length === 1) {
+      return trade.firstTransitTokenAmount;
+    }
+    return trade.firstTransitTokenAmount.multipliedBy(trade.fromSlippage);
   }
 
   /**
    * Calculates minimum received amount of token-out, based on tokens route and slippage.
    */
-  public static calculateTokenOutAmountMin(
-    trade: CrossChainRoutingTrade,
-    settings: CcrSettingsForm
-  ): BigNumber {
+  public static calculateTokenOutAmountMin(trade: CrossChainRoutingTrade): BigNumber {
     if (trade.secondPath.length === 1) {
       return trade.tokenOutAmount;
     }
-    const slippageTolerance = settings.slippageTolerance / 100;
-    return trade.tokenOutAmount.multipliedBy(1 - slippageTolerance);
+    return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
   }
 
   constructor(
@@ -85,7 +84,6 @@ export class CrossChainContractExecutorFacade {
     trade: CrossChainRoutingTrade,
     options: TransactionOptions,
     userAddress: string,
-    settings: CcrSettingsForm,
     toBlockchainInContractNumber: number
   ): Promise<string> {
     const type = BlockchainsInfo.getBlockchainType(trade.fromBlockchain);
@@ -95,7 +93,6 @@ export class CrossChainContractExecutorFacade {
         trade,
         options,
         userAddress,
-        settings,
         toBlockchainInContractNumber,
         this.targetAddress
       );
@@ -110,7 +107,6 @@ export class CrossChainContractExecutorFacade {
           trade,
           userAddress,
           toBlockchainInContractNumber,
-          settings,
           this.targetAddress,
           isToNative
         );
@@ -145,7 +141,6 @@ export class CrossChainContractExecutorFacade {
   public async getContractData(
     trade: CrossChainRoutingTrade,
     walletAddress: string,
-    settings: CcrSettingsForm,
     numOfBlockchainsInContractElementElement: number
   ): Promise<{
     contractAddress: string;
@@ -156,7 +151,6 @@ export class CrossChainContractExecutorFacade {
     return this.ethLikeContractExecutor.getContractData(
       trade,
       walletAddress,
-      settings,
       numOfBlockchainsInContractElementElement
     );
   }

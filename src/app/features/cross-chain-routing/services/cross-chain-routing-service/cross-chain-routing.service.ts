@@ -2,16 +2,12 @@ import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
-import {
-  CcrSettingsForm,
-  SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
+import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { from, Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
@@ -74,6 +70,14 @@ const CACHEABLE_MAX_AGE = 15_000;
   providedIn: 'root'
 })
 export class CrossChainRoutingService {
+  public static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedCrossChainSwapBlockchain {
+    return !!supportedCrossChainSwapBlockchains.find(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
+  }
+
   private readonly contractAbi: AbiItem[];
 
   private readonly contractAddresses: Record<SupportedCrossChainSwapBlockchain, string[]>;
@@ -82,16 +86,13 @@ export class CrossChainRoutingService {
 
   private contractsData: Record<SupportedCrossChainSwapBlockchain, CrossChainContractData[]>;
 
-  private settings: CcrSettingsForm;
-
   private currentCrossChainTrade: CrossChainRoutingTrade;
 
-  public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
-  ): blockchain is SupportedCrossChainSwapBlockchain {
-    return !!supportedCrossChainSwapBlockchains.find(
-      supportedBlockchain => supportedBlockchain === blockchain
-    );
+  /**
+   * Gets slippage, selected in settings, divided by 100%.
+   */
+  private get slippageTolerance(): number {
+    return this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
   }
 
   constructor(
@@ -123,12 +124,6 @@ export class CrossChainRoutingService {
     this.setContractsData();
     this.contractAddresses = crossChainSwapContractAddresses;
     this.transitTokens = transitTokensWithMode;
-
-    this.settingsService.crossChainRoutingValueChanges
-      .pipe(startWith(this.settingsService.crossChainRoutingValue))
-      .subscribe(settings => {
-        this.settings = settings;
-      });
   }
 
   private setContractsData(): void {
@@ -195,6 +190,9 @@ export class CrossChainRoutingService {
     const firstTransitToken = this.transitTokens[fromBlockchain];
     const secondTransitToken = this.transitTokens[toBlockchain];
 
+    const fromSlippage = 1 - this.slippageTolerance / 2;
+    const toSlippage = 1 - this.slippageTolerance / 2;
+
     const {
       contractIndex: fromContractIndex,
       pathAndToAmount: { path: firstPath, toAmount: firstTransitTokenAmount }
@@ -202,7 +200,9 @@ export class CrossChainRoutingService {
 
     const { secondTransitTokenAmount, feeInPercents } = await this.getSecondTransitTokenAmount(
       toBlockchain,
-      firstTransitTokenAmount
+      firstTransitTokenAmount,
+      firstPath.length === 1,
+      fromSlippage
     );
 
     const {
@@ -224,6 +224,7 @@ export class CrossChainRoutingService {
       tokenInAmount: fromAmount,
       firstTransitTokenAmount,
       firstPath,
+      fromSlippage,
 
       toBlockchain,
       toContractIndex,
@@ -231,6 +232,7 @@ export class CrossChainRoutingService {
       tokenOut: toToken,
       tokenOutAmount: toAmount,
       secondPath,
+      toSlippage,
 
       transitTokenFee: feeInPercents,
       cryptoFee
@@ -274,6 +276,7 @@ export class CrossChainRoutingService {
         toToken
       )
     }));
+
     return Promise.allSettled(promises).then(results => {
       const sortedResults = results
         .filter(result => result.status === 'fulfilled')
@@ -331,9 +334,9 @@ export class CrossChainRoutingService {
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
-    const { fromBlockchain, firstTransitTokenAmount } = trade;
+    const { fromBlockchain, firstTransitTokenAmount, fromSlippage } = trade;
     const { minAmount: minTransitTokenAmount, maxAmount: maxTransitTokenAmount } =
-      await this.getMinMaxTransitTokenAmounts(fromBlockchain);
+      await this.getMinMaxTransitTokenAmounts(fromBlockchain, fromSlippage);
 
     if (firstTransitTokenAmount.lt(minTransitTokenAmount)) {
       const minAmount = await this.getFromTokenAmount(
@@ -368,9 +371,11 @@ export class CrossChainRoutingService {
   /**
    * Gets min and max permitted amounts of transit token in source and target blockchain.
    * @param fromBlockchain Source blockchain.
+   * @param fromSlippage Slippage in source blockchain.
    */
   private async getMinMaxTransitTokenAmounts(
-    fromBlockchain: SupportedCrossChainSwapBlockchain
+    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    fromSlippage: number
   ): Promise<{
     minAmount: BigNumber;
     maxAmount: BigNumber;
@@ -393,7 +398,7 @@ export class CrossChainRoutingService {
       );
 
       if (type === 'minAmount') {
-        return firstTransitTokenAmount;
+        return firstTransitTokenAmount.dividedBy(fromSlippage);
       }
       return firstTransitTokenAmount.minus(1);
     };
@@ -442,16 +447,26 @@ export class CrossChainRoutingService {
    * Calculates transit token's amount in target blockchain, based on transit token's amount is source blockchain.
    * @param toBlockchain Target blockchain
    * @param firstTransitTokenAmount Amount of transit token in source blockchain.
+   * @param isDirectTrade True, if first transit token is traded directrly.
+   * @param fromSlippage Slippage in source blockchain.
    */
   private async getSecondTransitTokenAmount(
     toBlockchain: SupportedCrossChainSwapBlockchain,
-    firstTransitTokenAmount: BigNumber
+    firstTransitTokenAmount: BigNumber,
+    isDirectTrade: boolean,
+    fromSlippage: number
   ): Promise<{ secondTransitTokenAmount: BigNumber; feeInPercents: number }> {
     const feeInPercents = await this.getFeeInPercents(toBlockchain);
+    let secondTransitTokenAmount = firstTransitTokenAmount
+      .multipliedBy(100 - feeInPercents)
+      .dividedBy(100);
+
+    if (!isDirectTrade) {
+      secondTransitTokenAmount = secondTransitTokenAmount.multipliedBy(fromSlippage);
+    }
+
     return {
-      secondTransitTokenAmount: firstTransitTokenAmount
-        .multipliedBy(100 - feeInPercents)
-        .dividedBy(100),
+      secondTransitTokenAmount,
       feeInPercents
     };
   }
@@ -511,7 +526,6 @@ export class CrossChainRoutingService {
         await this.ccrContractExecutorFacade.getContractData(
           trade,
           walletAddress,
-          this.settings,
           this.contractsData[this.currentCrossChainTrade.toBlockchain][
             this.currentCrossChainTrade.fromContractIndex
           ].contractNumber
@@ -687,67 +701,42 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Gets pool's address in target network.
-   */
-  @PCacheable({
-    maxAge: CACHEABLE_MAX_AGE
-  })
-  private getPoolAddressInTargetNetwork(): Promise<string> {
-    const { toBlockchain, toContractIndex } = this.currentCrossChainTrade;
-
-    const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
-    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
-    return new CrossChainContractReader(blockchainAdapter).blockchainPool(contractAddress);
-  }
-
-  /**
    * Checks that in target blockchain tokens' pool's balance is enough.
    */
   @PCacheable({
     maxAge: CACHEABLE_MAX_AGE
   })
-  private async checkPoolBalance(): Promise<void | never> {
-    const { toBlockchain, secondTransitTokenAmount } = this.currentCrossChainTrade;
+  private async checkContractBalance(): Promise<void | never> {
+    const { toBlockchain, toContractIndex, secondTransitTokenAmount } = this.currentCrossChainTrade;
+    const contractAddress = this.contractAddresses[toBlockchain][toContractIndex];
     const secondTransitToken = this.transitTokens[toBlockchain];
     const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
 
-    const poolAddress = await this.getPoolAddressInTargetNetwork();
-    const poolBalanceAbsolute = await blockchainAdapter.getTokenBalance(
-      poolAddress,
+    const contractBalanceAbsolute = await blockchainAdapter.getTokenBalance(
+      contractAddress,
       secondTransitToken.address
     );
-    const poolBalance = EthLikeWeb3Public.fromWei(poolBalanceAbsolute, secondTransitToken.decimals);
+    const contractBalance = EthLikeWeb3Public.fromWei(
+      contractBalanceAbsolute,
+      secondTransitToken.decimals
+    );
 
-    if (secondTransitTokenAmount.gt(poolBalance)) {
+    if (secondTransitTokenAmount.gt(contractBalance)) {
       throw new CrossChainIsUnavailableWarning();
     }
-  }
-
-  /**
-   * Returns true, if amount of token-in must be multiplied on slippage to calculate maximum sent amount.
-   */
-  public isTokenInAmountMaxWithSlippage(): boolean {
-    const { fromToken, fromBlockchain } = this.swapFormService.inputValue;
-    if (!CrossChainRoutingService.isSupportedBlockchain(fromBlockchain)) {
-      throw Error('Not supported blockchain');
-    }
-    const firstTransitToken = this.transitTokens[fromBlockchain];
-    return !compareAddresses(fromToken.address, firstTransitToken.address);
   }
 
   /**
    * Checks contracts' state and user's balance.
    */
   private async checkTradeWorking(): Promise<void | never> {
-    await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkPoolBalance()]);
+    this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
 
-    const { fromBlockchain, tokenIn } = this.currentCrossChainTrade;
-    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
-      this.currentCrossChainTrade,
-      this.settings
-    );
+    await Promise.all([this.checkWorking(), this.checkGasPrice(), this.checkContractBalance()]);
+
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    await blockchainAdapter.checkBalance(tokenIn, tokenInAmountMax, this.authService.userAddress);
+    await blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress);
   }
 
   public createTrade(options: TransactionOptions = {}): Observable<void> {
@@ -760,8 +749,7 @@ export class CrossChainRoutingService {
           transactionHash = await this.ccrContractExecutorFacade.executeCCRContract(
             this.currentCrossChainTrade,
             options,
-            this.walletConnectorService.address,
-            this.settings,
+            this.authService.userAddress,
             this.contractsData[this.currentCrossChainTrade.toBlockchain][
               this.currentCrossChainTrade.toContractIndex
             ].contractNumber
@@ -795,24 +783,15 @@ export class CrossChainRoutingService {
    * @param transactionHash Hash of checked transaction.
    */
   private async postCrossChainTrade(transactionHash: string): Promise<void> {
+    const settings = this.settingsService.crossChainRoutingValue;
     await this.crossChainRoutingApiService.postTrade(
       transactionHash,
       this.currentCrossChainTrade.fromBlockchain,
-      this.settings.promoCode?.status === 'accepted' ? this.settings.promoCode.text : undefined
+      settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
   }
 
   public calculateTokenOutAmountMin(): BigNumber {
-    return CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
-      this.currentCrossChainTrade,
-      this.settings
-    );
-  }
-
-  public calculateTokenInAmountMax(): BigNumber {
-    return CrossChainContractExecutorFacade.calculateTokenInAmountMax(
-      this.currentCrossChainTrade,
-      this.settings
-    );
+    return CrossChainContractExecutorFacade.calculateTokenOutAmountMin(this.currentCrossChainTrade);
   }
 }

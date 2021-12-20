@@ -1,6 +1,5 @@
 import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
-import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CROSS_CHAIN_ROUTING_SWAP_METHOD';
@@ -42,14 +41,12 @@ export class EthLikeContractExecutor {
     trade: CrossChainRoutingTrade,
     options: TransactionOptions,
     userAddress: string,
-    settings: CcrSettingsForm,
     toBlockchainInContractNumber: number,
     targetAddress: string
   ): Promise<string> {
     const { contractAddress, methodName, methodArguments, value } = await this.getContractData(
       trade,
       userAddress,
-      settings,
       toBlockchainInContractNumber
     );
 
@@ -93,7 +90,6 @@ export class EthLikeContractExecutor {
    * Returns contract's method's data to execute trade.
    * @param trade Cross chain trade.
    * @param walletAddress Wallet address.
-   * @param settings Cross-chain form settings.
    * @param toBlockchainInContractNumber Number of blockchain.
    * @return string contractAddress
    * Contract address in source network.
@@ -107,7 +103,6 @@ export class EthLikeContractExecutor {
   public async getContractData(
     trade: CrossChainRoutingTrade,
     walletAddress: string,
-    settings: CcrSettingsForm,
     toBlockchainInContractNumber: number
   ): Promise<{
     contractAddress: string;
@@ -124,20 +119,20 @@ export class EthLikeContractExecutor {
       ? CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_CRYPTO
       : CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_TOKENS;
 
-    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
-      trade,
-      settings
+    const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(
+      trade.tokenInAmount,
+      trade.tokenIn.decimals
     );
-    const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(tokenInAmountMax, trade.tokenIn.decimals);
-
-    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(
-      trade,
-      settings
+    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(trade);
+    const tokenOutAmountMinAbsolute = EthLikeWeb3Public.toWei(
+      tokenOutAmountMin,
+      trade.tokenOut.decimals
     );
-    const tokenOutMinAbsolute = EthLikeWeb3Public.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const firstTransitTokenAmountAbsolute = EthLikeWeb3Public.toWei(
-      trade.firstTransitTokenAmount,
+    const firstTransitTokenAmountMin =
+      CrossChainContractExecutorFacade.calculateFirstTransitTokenAmountMin(trade);
+    const firstTransitTokenAmountMinAbsolute = EthLikeWeb3Public.toWei(
+      firstTransitTokenAmountMin,
       this.transitTokens[trade.fromBlockchain].decimals
     );
 
@@ -148,11 +143,12 @@ export class EthLikeContractExecutor {
         trade.firstPath,
         // @TODO Solana. Remove hardcode.
         toBlockchainInContractNumber === 8 ? [EMPTY_ADDRESS] : trade.secondPath,
-        firstTransitTokenAmountAbsolute,
-        tokenOutMinAbsolute,
+        firstTransitTokenAmountMinAbsolute,
+        tokenOutAmountMinAbsolute,
         // @TODO Solana. Remove hardcode.
         toBlockchainInContractNumber === 8 ? EMPTY_ADDRESS : walletAddress,
-        blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
+        blockchainToAdapter.isNativeAddress(trade.tokenOut.address),
+        true
       ]
     ];
 
