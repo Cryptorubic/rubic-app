@@ -201,6 +201,6 @@ export class HeaderComponent implements AfterViewInit {
    * Navigate to staking page.
    */
   public navigateToStaking(): void {
-    window.open('https://rubic.exchange/staking', '_blank');
+    this.window.open('https://rubic.exchange/staking', '_blank');
   }
 }
