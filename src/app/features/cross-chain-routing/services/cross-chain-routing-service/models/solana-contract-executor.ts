@@ -153,7 +153,8 @@ export class SolanaContractExecutor {
     address: string,
     toBlockchainInContractNumber: number,
     settings: CcrSettingsForm,
-    targetAddress: string
+    targetAddress: string,
+    isToNative: boolean
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
     const transaction = new Transaction();
     const signers: Account[] = [];
@@ -220,7 +221,7 @@ export class SolanaContractExecutor {
       exactRbcTokenOut: middleFinalAmount,
       tokenOutMin: amountOut.toFixed(0),
       newAddress: targetAddress,
-      swapToCrypto: true,
+      swapToCrypto: !isToNative,
       transferType
     };
 
