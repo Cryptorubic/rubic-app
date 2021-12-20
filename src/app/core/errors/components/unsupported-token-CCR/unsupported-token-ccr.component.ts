@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Inject, HostListener } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { Router } from '@angular/router';
@@ -12,15 +12,15 @@ import { Router } from '@angular/router';
 export class UnsupportedTokenCCRComponent {
   public readonly questionId: string;
 
-  @HostListener('click') redirectToFaq(): void {
-    this.router.navigateByUrl(`faq#${this.questionId}`);
-  }
-
   constructor(
     private router: Router,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { questionId: string }>
   ) {
     this.questionId = context.data.questionId;
+  }
+
+  public navigateToFaq(): void {
+    window.open(`faq#${this.questionId}`);
   }
 }
