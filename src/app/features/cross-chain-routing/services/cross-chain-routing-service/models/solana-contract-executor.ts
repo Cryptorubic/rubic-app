@@ -221,7 +221,7 @@ export class SolanaContractExecutor {
       exactRbcTokenOut: middleFinalAmount,
       tokenOutMin: amountOut.toFixed(0),
       newAddress: targetAddress,
-      swapToCrypto: !isToNative,
+      swapToCrypto: isToNative,
       transferType
     };
 
