@@ -469,6 +469,32 @@ export class TokensService {
   }
 
   /**
+   * Gets token by address.
+   * @param token Token's data to find it by.
+   * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
+   */
+  public async getTokenByAddress(
+    token: {
+      address: string;
+      blockchain: BLOCKCHAIN_NAME;
+    },
+    searchBackend = true
+  ): Promise<Token> {
+    const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+    if (foundToken) {
+      return foundToken;
+    }
+
+    if (searchBackend) {
+      return this.fetchQueryTokens(token.address, token.blockchain as PAGINATED_BLOCKCHAIN_NAME)
+        .pipe(map(backendTokens => backendTokens.get(0)))
+        .toPromise();
+    }
+
+    return null;
+  }
+
+  /**
    * Updates pagination state for current network.
    * @param network Blockchain name.
    * @param next Have next page or not.
