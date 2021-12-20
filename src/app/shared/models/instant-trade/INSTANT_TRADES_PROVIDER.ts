@@ -11,5 +11,6 @@ export enum INSTANT_TRADES_PROVIDER {
   SOLARBEAM = 'solarbeam',
   SPOOKYSWAP = 'spookyswap',
   SPIRITSWAP = 'spiritswap',
-  WRAPPED = 'wrapped'
+  WRAPPED = 'wrapped',
+  RAYDIUM = 'raydium'
 }

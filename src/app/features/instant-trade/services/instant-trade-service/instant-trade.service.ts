@@ -9,7 +9,7 @@ import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instan
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-pol.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
@@ -43,6 +43,8 @@ import { SpiritSwapFantomService } from 'src/app/features/instant-trade/services
 import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -83,18 +85,20 @@ export class InstantTradeService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
+    private readonly raydiumService: RaydiumService,
     // Providers end
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
     private readonly swapFormService: SwapFormService,
-    private readonly web3Public: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
@@ -135,6 +139,9 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
         [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: this.spookySwapFantomService,
         [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService
+      },
+      [BLOCKCHAIN_NAME.SOLANA]: {
+        [INSTANT_TRADES_PROVIDER.RAYDIUM]: this.raydiumService
       }
     };
   }
@@ -240,16 +247,16 @@ export class InstantTradeService {
     provider: INSTANT_TRADES_PROVIDER,
     trade: InstantTrade
   ): Promise<void> {
-    const web3Public = this.web3Public[trade.blockchain];
-    await web3Public.getTransactionByHash(hash, 0, 60, 1000);
-    timer(1000)
+    const publicBlockchainAdapter = this.publicBlockchainAdapterService[trade.blockchain];
+    await publicBlockchainAdapter.getTransactionByHash(hash, 0, 60, 1000);
+    await timer(1000)
       .pipe(
         switchMap(() =>
           this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
         ),
         catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
-      .subscribe();
+      .toPromise();
   }
 
   /**

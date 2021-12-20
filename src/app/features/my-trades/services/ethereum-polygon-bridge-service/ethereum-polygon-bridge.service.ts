@@ -7,7 +7,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
 import { MaticPOSClient } from 'rubic-app-maticjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class EthereumPolygonBridgeService {
   constructor(
     private readonly bridgeApiService: BridgeApiService,
     private readonly authService: AuthService,
-    private readonly providerConnectorService: ProviderConnectorService
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public depositTradeAfterCheckpoint(
@@ -27,7 +27,7 @@ export class EthereumPolygonBridgeService {
       network: 'mainnet',
       version: 'v1',
       maticProvider: networks.find(n => n.name === BLOCKCHAIN_NAME.POLYGON).rpcLink,
-      parentProvider: this.providerConnectorService.web3
+      parentProvider: this.walletConnectorService.web3
     });
     const walletAddress = this.authService.userAddress;
 
