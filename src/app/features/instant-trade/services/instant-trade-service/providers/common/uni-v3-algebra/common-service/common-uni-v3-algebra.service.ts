@@ -20,13 +20,13 @@ import { subtractPercent } from 'src/app/shared/utils/utils';
 import {
   UniV3AlgebraInstantTrade,
   UniV3AlgebraRoute
-} from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/UniV3AlgebraInstantTrade';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-instant-trade';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/UniV3AlgebraConstants';
+import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
 import { ContractData } from '@shared/models/blockchain/ContractData';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import { MethodData } from '@shared/models/blockchain/MethodData';
-import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/isEthFromOrTo';
+import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 

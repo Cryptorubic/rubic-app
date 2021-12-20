@@ -3,16 +3,16 @@ import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
-import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/AlgebraQuoterController';
+import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import {
-  algebraV3Constants,
+  algebraConstants,
   maxTransitTokens,
   quoterContract
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra-constants';
 import {
   AlgebraInstantTrade,
   AlgebraRoute
-} from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraInstantTrade';
+} from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
@@ -23,7 +23,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
   private readonly quoterController: AlgebraQuoterController;
 
   constructor() {
-    super(algebraV3Constants);
+    super(algebraConstants);
 
     this.quoterController = new AlgebraQuoterController(this.blockchainAdapter, quoterContract);
 

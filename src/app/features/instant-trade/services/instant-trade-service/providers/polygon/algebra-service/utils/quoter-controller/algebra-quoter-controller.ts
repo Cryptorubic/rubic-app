@@ -2,9 +2,9 @@ import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
-import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/routerTokens';
+import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/router-tokens';
 import { ContractData } from '@shared/models/blockchain/ContractData';
-import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/AlgebraInstantTrade';
+import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 interface RecGraphVisitorOptions {

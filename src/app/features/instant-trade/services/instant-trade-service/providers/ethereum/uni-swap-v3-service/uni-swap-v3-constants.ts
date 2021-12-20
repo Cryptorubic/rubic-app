@@ -1,13 +1,13 @@
 import {
   swapRouterContractAbi,
   swapRouterContractAddress
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/swapRouterContractData';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/swap-router-contract-data';
 import {
   quoterContractAbi,
   quoterContractAddress
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/quoterContractData';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/quoter-contract-data';
 import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
-import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/UniV3AlgebraConstants';
+import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ContractData } from '@shared/models/blockchain/ContractData';
 

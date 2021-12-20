@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
-import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/UniSwapV3QuoterController';
+import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
 import {
   swapEstimatedGas,
   wethToEthEstimatedGas
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/estimatedGas';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/constants/estimated-gas';
 import {
   UniSwapV3CalculatedInfo,
   UniSwapV3CalculatedInfoWithProfit
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniSwapV3CalculatedInfo';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-calculated-info';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
-import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/isEthFromOrTo';
+import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import {
@@ -27,7 +27,7 @@ import {
 import {
   UniSwapV3InstantTrade,
   UniSwapV3Route
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniSwapV3InstantTrade';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;

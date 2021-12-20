@@ -2,23 +2,23 @@ import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-a
 import {
   routerLiquidityPoolsWithMode,
   routerTokensNetMode
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/routerLiqudityPools';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/router-liqudity-pools';
 import {
   FeeAmount,
   LiquidityPool
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/LiquidityPool';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/liquidity-pool';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/blockchain/EMPTY_ADDRESS';
 import {
   factoryContractAbi,
   factoryContractAddress
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/factoryContractData';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/factory-contract-data';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { PCacheable } from 'ts-cacheable';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { ContractData } from '@shared/models/blockchain/ContractData';
-import { UniSwapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniSwapV3InstantTrade';
+import { UniSwapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
