@@ -53,16 +53,4 @@ export class FaqComponent implements AfterViewInit {
   public toggleQuestion(question: Question): void {
     question.isActive = !question.isActive;
   }
-
-  // @ts-ignore
-  public findPosition(obj): number {
-    console.log(obj);
-    let top = 0;
-    if (obj.offsetParent) {
-      do {
-        top += obj.offsetTop;
-      } while ((obj = obj.offsetParent));
-      return top;
-    }
-  }
 }
