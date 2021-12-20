@@ -139,9 +139,7 @@ export class MyTradesService {
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
       switchMap(async trades =>
-        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(
-          trade => !!trade
-        )
+        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(Boolean)
       ),
       mergeMap(bridgeTrades => {
         const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {

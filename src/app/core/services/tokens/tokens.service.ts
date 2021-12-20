@@ -29,6 +29,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import CustomError from '@core/errors/models/custom-error';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -473,13 +474,7 @@ export class TokensService {
    * @param token Token's data to find it by.
    * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
    */
-  public async getTokenByAddress(
-    token: {
-      address: string;
-      blockchain: BLOCKCHAIN_NAME;
-    },
-    searchBackend = true
-  ): Promise<Token> {
+  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Token> {
     const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
     if (foundToken) {
       return foundToken;
