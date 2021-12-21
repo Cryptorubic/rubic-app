@@ -9,7 +9,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { from, Observable } from 'rxjs';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
@@ -19,16 +19,16 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import {
-  SupportedCrossChainSwapBlockchain,
-  supportedCrossChainSwapBlockchains
-} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+  SupportedCrossChainBlockchain,
+  supportedCrossChainBlockchains
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
 import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
-import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainTradeInfo';
+import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-reader/cross-chain-contract-reader';
@@ -37,7 +37,7 @@ import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-a
 import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
 import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
-import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 
 interface PathAndToAmount {
   path: string[];
@@ -57,8 +57,8 @@ const CACHEABLE_MAX_AGE = 15_000;
 export class CrossChainRoutingService {
   public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
-  ): blockchain is SupportedCrossChainSwapBlockchain {
-    return !!supportedCrossChainSwapBlockchains.find(
+  ): blockchain is SupportedCrossChainBlockchain {
+    return !!supportedCrossChainBlockchains.find(
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
@@ -67,7 +67,7 @@ export class CrossChainRoutingService {
 
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
-  private currentCrossChainTrade: CrossChainRoutingTrade;
+  private currentCrossChainTrade: CrossChainTrade;
 
   /**
    * Gets slippage, selected in settings, divided by 100%.
@@ -92,7 +92,7 @@ export class CrossChainRoutingService {
   ) {}
 
   private async needApprove(
-    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    fromBlockchain: SupportedCrossChainBlockchain,
     fromToken: BlockchainToken
   ): Promise<boolean> {
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
@@ -206,7 +206,7 @@ export class CrossChainRoutingService {
    * Gets the best provider index in blockchain, based on profit of uniswap provider.
    */
   private async getBestProviderIndex(
-    blockchain: SupportedCrossChainSwapBlockchain,
+    blockchain: SupportedCrossChainBlockchain,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken
@@ -244,7 +244,7 @@ export class CrossChainRoutingService {
    * @param toToken To token.
    */
   private async getPathAndToAmount(
-    blockchain: SupportedCrossChainSwapBlockchain,
+    blockchain: SupportedCrossChainBlockchain,
     providerIndex: number,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
@@ -275,7 +275,7 @@ export class CrossChainRoutingService {
   /**
    * Compares min and max amounts, permitted in source contract, with current trade's value.
    */
-  private async checkMinMaxErrors(trade: CrossChainRoutingTrade): Promise<{
+  private async checkMinMaxErrors(trade: CrossChainTrade): Promise<{
     minAmountError?: BigNumber;
     maxAmountError?: BigNumber;
   }> {
@@ -319,7 +319,7 @@ export class CrossChainRoutingService {
    * @param fromSlippage Slippage in source blockchain.
    */
   private async getMinMaxTransitTokenAmounts(
-    fromBlockchain: SupportedCrossChainSwapBlockchain,
+    fromBlockchain: SupportedCrossChainBlockchain,
     fromSlippage: number
   ): Promise<{
     minAmount: BigNumber;
@@ -362,7 +362,7 @@ export class CrossChainRoutingService {
    * @param transitTokenAmount Output amount of transit token.
    */
   private async getFromTokenAmount(
-    blockchain: SupportedCrossChainSwapBlockchain,
+    blockchain: SupportedCrossChainBlockchain,
     providerIndex: number,
     fromToken: BlockchainToken,
     transitTokenAmount: BigNumber
@@ -392,7 +392,7 @@ export class CrossChainRoutingService {
    * @param fromSlippage Slippage in source blockchain.
    */
   private async getSecondTransitTokenAmount(
-    toBlockchain: SupportedCrossChainSwapBlockchain,
+    toBlockchain: SupportedCrossChainBlockchain,
     firstTransitTokenAmount: BigNumber,
     isDirectTrade: boolean,
     fromSlippage: number
@@ -416,7 +416,7 @@ export class CrossChainRoutingService {
    * Gets fee amount of transit token in percents in target blockchain.
    * @param toBlockchain Target blockchain.
    */
-  private async getFeeInPercents(toBlockchain: SupportedCrossChainSwapBlockchain): Promise<number> {
+  private async getFeeInPercents(toBlockchain: SupportedCrossChainBlockchain): Promise<number> {
     const contractAddress = this.contracts[toBlockchain].address;
     const numOfBlockchain = this.contracts[toBlockchain].numOfBlockchain;
 
@@ -434,8 +434,8 @@ export class CrossChainRoutingService {
    * @return Promise<number> Crypto fee in Wei.
    */
   private async getCryptoFee(
-    fromBlockchain: SupportedCrossChainSwapBlockchain,
-    toBlockchain: SupportedCrossChainSwapBlockchain
+    fromBlockchain: SupportedCrossChainBlockchain,
+    toBlockchain: SupportedCrossChainBlockchain
   ): Promise<number> {
     const contractAddress = this.contracts[fromBlockchain].address;
     const toNumOfBlockchain = this.contracts[toBlockchain].numOfBlockchain;
@@ -450,7 +450,7 @@ export class CrossChainRoutingService {
   /**
    * Calculates gas limit and gas price in source network, if possible to calculate.
    */
-  private async getGasData(trade: CrossChainRoutingTrade): Promise<{
+  private async getGasData(trade: CrossChainTrade): Promise<{
     gasLimit: BigNumber;
     gasPrice: string;
   }> {

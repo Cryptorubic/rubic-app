@@ -7,7 +7,7 @@ import { JoeAvalancheService } from '@features/instant-trade/services/instant-tr
 import { SolarBeamMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contract-data';
 
@@ -26,10 +26,7 @@ export class CrossChainContractsDataService {
     private readonly raydiumService: RaydiumService
   ) {}
 
-  public getCrossChainContracts(): Record<
-    SupportedCrossChainSwapBlockchain,
-    CrossChainContractData
-  > {
+  public getCrossChainContracts(): Record<SupportedCrossChainBlockchain, CrossChainContractData> {
     return {
       [BLOCKCHAIN_NAME.ETHEREUM]: new CrossChainContractData(
         BLOCKCHAIN_NAME.ETHEREUM,

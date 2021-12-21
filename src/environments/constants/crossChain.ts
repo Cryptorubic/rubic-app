@@ -1,9 +1,9 @@
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 
 type CrossChainConstants = {
   apiBaseUrl: string;
-  contractAddresses: Record<SupportedCrossChainSwapBlockchain, string>;
+  contractAddresses: Record<SupportedCrossChainBlockchain, string>;
 };
 
 export const crossChainDev: CrossChainConstants = {

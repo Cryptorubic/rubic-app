@@ -1,11 +1,11 @@
-import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import BigNumber from 'bignumber.js';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';
@@ -33,7 +33,7 @@ export class EthLikeContractExecutorService {
   ) {}
 
   public async execute(
-    trade: CrossChainRoutingTrade,
+    trade: CrossChainTrade,
     options: TransactionOptions,
     userAddress: string,
     targetAddress: string
@@ -85,7 +85,7 @@ export class EthLikeContractExecutorService {
    * @param walletAddress Wallet address.
    */
   public async getContractParams(
-    trade: CrossChainRoutingTrade,
+    trade: CrossChainTrade,
     walletAddress: string
   ): Promise<ContractParams> {
     const { fromBlockchain, toBlockchain } = trade;
@@ -157,7 +157,7 @@ export class EthLikeContractExecutorService {
    * @param targetAddress Target network wallet address.
    */
   private sendSolanaData(
-    trade: CrossChainRoutingTrade,
+    trade: CrossChainTrade,
     transactionHash: string,
     targetAddress: string
   ): void {

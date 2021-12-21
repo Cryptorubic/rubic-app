@@ -2,11 +2,11 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   MinimalProvider,
   ProviderData
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/models/ProviderData';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/models/provider-data';
 import { CROSS_CHAIN_SWAP_METHOD } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CROSS_CHAIN_SWAP_METHOD';
 import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { crossChainSwapContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
-import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+import { crossChainSwapContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-addresses';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
 import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 
@@ -20,7 +20,7 @@ export class CrossChainContractData {
   }
 
   constructor(
-    public readonly blockchain: SupportedCrossChainSwapBlockchain,
+    public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
     public readonly numOfBlockchain: number
   ) {}

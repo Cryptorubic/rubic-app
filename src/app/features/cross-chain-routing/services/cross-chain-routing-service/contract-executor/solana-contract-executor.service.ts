@@ -1,4 +1,4 @@
-import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import {
   Account,
   AccountMeta,
@@ -155,7 +155,7 @@ export class SolanaContractExecutorService {
 
   // eslint-disable-next-line complexity
   public async execute(
-    trade: CrossChainRoutingTrade,
+    trade: CrossChainTrade,
     address: string,
     targetAddress: string,
     isToNative: boolean

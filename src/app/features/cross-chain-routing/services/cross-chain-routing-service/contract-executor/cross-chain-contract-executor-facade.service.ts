@@ -1,4 +1,4 @@
-import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -20,7 +20,7 @@ export class CrossChainContractExecutorFacadeService {
   /**
    * Calculates maximum sent amount of token-in, based on tokens route and slippage.
    */
-  public static calculateTokenInAmountMax(trade: CrossChainRoutingTrade): BigNumber {
+  public static calculateTokenInAmountMax(trade: CrossChainTrade): BigNumber {
     if (trade.firstPath.length === 1) {
       return trade.tokenInAmount;
     }
@@ -30,7 +30,7 @@ export class CrossChainContractExecutorFacadeService {
   /**
    * Calculates minimum received amount of transit token, based on tokens route and slippage.
    */
-  public static calculateFirstTransitTokenAmountMin(trade: CrossChainRoutingTrade): BigNumber {
+  public static calculateFirstTransitTokenAmountMin(trade: CrossChainTrade): BigNumber {
     if (trade.firstPath.length === 1) {
       return trade.firstTransitTokenAmount;
     }
@@ -40,7 +40,7 @@ export class CrossChainContractExecutorFacadeService {
   /**
    * Calculates minimum received amount of token-out, based on tokens route and slippage.
    */
-  public static calculateTokenOutAmountMin(trade: CrossChainRoutingTrade): BigNumber {
+  public static calculateTokenOutAmountMin(trade: CrossChainTrade): BigNumber {
     if (trade.secondPath.length === 1) {
       return trade.tokenOutAmount;
     }
@@ -60,7 +60,7 @@ export class CrossChainContractExecutorFacadeService {
   ) {}
 
   public async executeCCRContract(
-    trade: CrossChainRoutingTrade,
+    trade: CrossChainTrade,
     options: TransactionOptions,
     userAddress: string
   ): Promise<string> {
@@ -107,7 +107,7 @@ export class CrossChainContractExecutorFacadeService {
   }
 
   public async getContractParams(
-    trade: CrossChainRoutingTrade,
+    trade: CrossChainTrade,
     walletAddress: string
   ): Promise<ContractParams> {
     return this.ethLikeContractExecutor.getContractParams(trade, walletAddress);
