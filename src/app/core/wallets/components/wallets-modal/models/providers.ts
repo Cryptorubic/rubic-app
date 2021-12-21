@@ -2,7 +2,9 @@ export enum WALLET_NAME {
   METAMASK = 'metamask',
   WALLET_LINK = 'walletlink',
   WALLET_CONNECT = 'walletconnect',
-  TRUST_WALLET = 'trustwallet'
+  TRUST_WALLET = 'trustwallet',
+  PHANTOM = 'phantom',
+  SOLFLARE = 'solflare'
 }
 
 export interface WalletProvider {
@@ -65,5 +67,27 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: false,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: true
+  },
+  {
+    name: 'Phantom',
+    value: WALLET_NAME.PHANTOM,
+    img: './assets/images/icons/wallets/phantom.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: true,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: false
+  },
+  {
+    name: 'Solflare',
+    value: WALLET_NAME.SOLFLARE,
+    img: './assets/images/icons/wallets/solflare.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: true,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: false
   }
 ];

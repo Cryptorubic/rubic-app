@@ -8,8 +8,8 @@ import { soliditySha3 } from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
-import { Web3PrivateService } from '@core/services/blockchain/web3/web3-private-service/web3-private.service';
-import { Web3PublicService } from '@core/services/blockchain/web3/web3-public-service/web3-public.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
@@ -18,8 +18,11 @@ import {
   REFUND_ADDRESS,
   REFUND_ADDRESS_TESTNET
 } from '@features/my-trades/constants/REFUND_ADDRESS';
-import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
 
 @Injectable()
 export class GasRefundService {
@@ -40,9 +43,9 @@ export class GasRefundService {
   constructor(
     private readonly gasRefundApiService: GasRefundApiService,
     private readonly authService: AuthService,
-    private readonly web3Private: Web3PrivateService,
-    private readonly web3Public: Web3PublicService,
-    private readonly providerConnector: ProviderConnectorService,
+    private readonly web3Private: EthLikeWeb3PrivateService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly testingModeService: UseTestingModeService
   ) {
     this.userPromotions$ = this._userPromotions$.asObservable();
@@ -143,8 +146,8 @@ export class GasRefundService {
    * @return is the correct network selected as a result.
    */
   private checkChain(): Promise<boolean> {
-    if (this.providerConnector.networkName !== this.refundBlockchain) {
-      return this.providerConnector.switchChain(this.refundBlockchain);
+    if (this.walletConnectorService.networkName !== this.refundBlockchain) {
+      return this.walletConnectorService.switchChain(this.refundBlockchain);
     }
     return Promise.resolve(true);
   }
@@ -164,8 +167,13 @@ export class GasRefundService {
     onTransactionHash?: (hash: string) => void
   ): Promise<TransactionReceipt> {
     const address = this.authService.userAddress;
-    const web3Public = this.web3Public[this.refundBlockchain];
-    const hexRootFromContract = await web3Public.callContractMethod(
+    if (BlockchainsInfo.getBlockchainType(this.refundBlockchain) !== 'ethLike') {
+      throw new CustomError('Wrong blockchain error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[
+      this.refundBlockchain
+    ] as EthLikeWeb3Public;
+    const hexRootFromContract = await blockchainAdapter.callContractMethod(
       this.refundContractAddress,
       this.refundContractAbi,
       'merkleRoots',

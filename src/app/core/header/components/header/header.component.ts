@@ -196,8 +196,4 @@ export class HeaderComponent implements AfterViewInit {
       queryParamsHandling: 'merge'
     });
   }
-
-  public navigateToStaking(): void {
-    this.router.navigate(['staking']);
-  }
 }

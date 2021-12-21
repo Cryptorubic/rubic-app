@@ -165,5 +165,14 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
       }
     }
+  ],
+  [BLOCKCHAIN_NAME.SOLANA]: [
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Raydium',
+        value: INSTANT_TRADES_PROVIDER.RAYDIUM
+      }
+    }
   ]
 };

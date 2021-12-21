@@ -108,7 +108,7 @@
   }
 
   &__nav {
-    grid-gap: 30px;
+    grid-gap: 15px;
   }
 
   &__logo {
@@ -165,6 +165,24 @@
 @include b(1650) {
   .rubic-header__nav {
     width: 610px;
+  }
+
+
+}
+
+@include b(1460) {
+  .rubic-header__nav {
+    position: static;
+
+    grid-gap: 10px;
+    width: auto;
+    margin-right: auto;
+
+    transform: initial;
+
+    .button-link {
+      padding: 14px;
+    }
   }
 }
 

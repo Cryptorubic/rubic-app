@@ -9,11 +9,14 @@ import { TokensApiService } from 'src/app/core/services/backend/tokens-api/token
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Token } from 'src/app/shared/models/tokens/Token';
 import BigNumber from 'bignumber.js';
-import { Web3PublicService } from 'src/app/core/services/blockchain/web3/web3-public-service/web3-public.service';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  NATIVE_SOLANA_MINT_ADDRESS
+} from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
@@ -23,6 +26,10 @@ import {
 import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import CustomError from '@core/errors/models/custom-error';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -112,10 +119,11 @@ export class TokensService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly web3PublicService: Web3PublicService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.testTokensNumber = coingeckoTestTokens.length;
 
@@ -228,7 +236,7 @@ export class TokensService {
         return {
           ...token,
           ...currentToken,
-          amount: balance
+          amount: balance || new BigNumber(NaN)
         };
       });
       subject$.next(List(updatedTokens));
@@ -241,22 +249,15 @@ export class TokensService {
    * @return Promise<TokenAmount[]> Tokens with balance.
    */
   private async getTokensWithBalance(tokens: List<TokenAmount>): Promise<TokenAmount[]> {
-    const blockchains: BLOCKCHAIN_NAME[] = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.HARMONY,
-      BLOCKCHAIN_NAME.AVALANCHE,
-      BLOCKCHAIN_NAME.MOONRIVER,
-      BLOCKCHAIN_NAME.FANTOM
-    ];
-    const balances$: Promise<BigNumber[]>[] = blockchains.map(blockchain => {
+    const blockchains = this.walletConnectorService.getBlockchainsBasedOnWallet();
+
+    const balances$ = blockchains.map(blockchain => {
       const tokensAddresses = tokens
         .filter(token => token.blockchain === blockchain)
         .map(token => token.address)
         .toArray();
 
-      return this.web3PublicService[blockchain].getTokensBalances(
+      return this.publicBlockchainAdapterService[blockchain].getTokensBalances(
         this.userAddress,
         tokensAddresses
       );
@@ -273,7 +274,7 @@ export class TokensService {
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
-              amount: Web3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
+              amount: EthLikeWeb3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
             }))
             .toArray();
         }
@@ -290,12 +291,12 @@ export class TokensService {
    * @return Observable<TokenAmount> Token with balance.
    */
   public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
-    const web3Public: Web3Public = this.web3PublicService[blockchain];
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
     const balance$: Observable<BigNumber> = this.userAddress
-      ? from(web3Public.getTokenBalance(this.userAddress, address))
+      ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
       : of(null);
 
-    return forkJoin([web3Public.getTokenInfo(address), balance$]).pipe(
+    return forkJoin([blockchainAdapter.getTokenInfo(address), balance$]).pipe(
       map(([tokenInfo, amount]) => ({
         blockchain,
         address,
@@ -358,8 +359,15 @@ export class TokensService {
    * @param blockchain Blockchain of native token.
    */
   public getNativeCoinPriceInUsd(blockchain: BLOCKCHAIN_NAME): Promise<number> {
+    let nativeCoinAddress: string;
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    if (blockchainType === 'solana') {
+      nativeCoinAddress = NATIVE_SOLANA_MINT_ADDRESS;
+    } else if (blockchainType === 'ethLike') {
+      nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
+    }
     const nativeCoin = this.tokens.find(token =>
-      TokensService.areTokensEqual(token, { blockchain, address: NATIVE_TOKEN_ADDRESS })
+      TokensService.areTokensEqual(token, { blockchain, address: nativeCoinAddress })
     );
     return this.coingeckoApiService
       .getNativeCoinPrice(blockchain)
@@ -431,8 +439,8 @@ export class TokensService {
     }
 
     try {
-      const web3Public = this.web3PublicService[token.blockchain];
-      const balanceInWei = await web3Public.getTokenOrNativeBalance(
+      const blockchainAdapter = this.publicBlockchainAdapterService[token.blockchain];
+      const balanceInWei = await blockchainAdapter.getTokenOrNativeBalance(
         this.userAddress,
         token.address
       );
@@ -441,7 +449,7 @@ export class TokensService {
       if (!foundToken) {
         return new BigNumber(NaN);
       }
-      const balance = Web3Public.fromWei(balanceInWei, foundToken.decimals);
+      const balance = EthLikeWeb3Public.fromWei(balanceInWei, foundToken.decimals);
       if (!foundToken.amount.eq(balance)) {
         const newToken = {
           ...foundToken,
@@ -459,6 +467,26 @@ export class TokensService {
       const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
       return foundToken?.amount;
     }
+  }
+
+  /**
+   * Gets token by address.
+   * @param token Token's data to find it by.
+   * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
+   */
+  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Token> {
+    const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
+    if (foundToken) {
+      return foundToken;
+    }
+
+    if (searchBackend) {
+      return this.fetchQueryTokens(token.address, token.blockchain as PAGINATED_BLOCKCHAIN_NAME)
+        .pipe(map(backendTokens => backendTokens.get(0)))
+        .toPromise();
+    }
+
+    return null;
   }
 
   /**
@@ -560,7 +588,7 @@ export class TokensService {
   }
 
   /**
-   * Gets symbol of token, using currently stored tokens or web3 request.
+   * Gets symbol of token, using currently stored tokens or blockchain request.
    */
   public async getTokenSymbol(blockchain: BLOCKCHAIN_NAME, tokenAddress: string): Promise<string> {
     const foundToken = this.tokens.find(
@@ -569,7 +597,10 @@ export class TokensService {
     if (foundToken) {
       return foundToken?.symbol;
     }
-    const web3Public = this.web3PublicService[blockchain];
-    return web3Public.getTokenSymbol(tokenAddress);
+    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
+      throw new CustomError('Wrong blockchain error');
+    }
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    return blockchainAdapter.getTokenSymbol(tokenAddress);
   }
 }

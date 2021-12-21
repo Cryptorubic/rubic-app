@@ -8,11 +8,10 @@ import {
 } from '@angular/core';
 import { FormService } from 'src/app/shared/models/swaps/FormService';
 import { startWith } from 'rxjs/operators';
-import { NATIVE_TOKEN_ADDRESS } from 'src/app/shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Subscription } from 'rxjs';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 const WETH_ADDRESSES = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -39,25 +38,30 @@ export class AnalyticsLinkComponent implements OnInit, OnDestroy {
 
   private formServiceSub$: Subscription;
 
+  /**
+   * Gets token info url.
+   */
   get tokenInfoUrl(): string {
     let tokenAddress: string;
-    if (this.toToken && Web3Public.isAddressCorrect(this.toToken.address)) {
-      if (this.toToken.address === NATIVE_TOKEN_ADDRESS) {
-        tokenAddress = WETH_ADDRESSES[this.toToken.blockchain as WethBlockchains];
-      } else {
-        tokenAddress = this.toToken.address;
-      }
-    } else if (this.fromToken) {
-      if (this.fromToken.address === NATIVE_TOKEN_ADDRESS) {
-        tokenAddress = WETH_ADDRESSES[this.fromToken.blockchain as WethBlockchains];
-      } else {
-        tokenAddress = this.fromToken.address;
-      }
+    const fromBlockchainAdapter = this.publicBlockchainAdapterService[this.fromToken?.blockchain];
+    const toBlockchainAdapter = this.publicBlockchainAdapterService[this.toToken?.blockchain];
+
+    if (toBlockchainAdapter?.isAddressCorrect(this.toToken.address)) {
+      tokenAddress = toBlockchainAdapter.isNativeAddress(this.toToken.address)
+        ? WETH_ADDRESSES[this.toToken.blockchain as WethBlockchains]
+        : this.toToken.address;
+    } else if (fromBlockchainAdapter?.isAddressCorrect(this.fromToken.address)) {
+      tokenAddress = fromBlockchainAdapter.isNativeAddress(this.fromToken.address)
+        ? WETH_ADDRESSES[this.fromToken.blockchain as WethBlockchains]
+        : this.fromToken.address;
     }
     return tokenAddress ? `t/${tokenAddress}` : '';
   }
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
+  ) {}
 
   ngOnInit() {
     this.formServiceSub$ = this.formService.inputValueChanges

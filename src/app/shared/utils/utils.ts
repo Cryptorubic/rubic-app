@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { map, switchMap } from 'rxjs/operators';
-import { defer, iif, Observable, of, OperatorFunction } from 'rxjs';
+import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
@@ -87,4 +87,8 @@ export function switchIif<A = void, T = never, F = never>(
       defer(() => falseResultFn(args))
     )
   );
+}
+
+export function getBigNumber(num: unknown): number {
+  return num === undefined || num === null ? 0 : parseFloat(num.toString());
 }

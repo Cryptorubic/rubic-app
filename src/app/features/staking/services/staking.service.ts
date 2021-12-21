@@ -4,12 +4,9 @@ import BigNumber from 'bignumber.js';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { Web3PublicService } from '@app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
-import { Web3Public } from '@app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
-import { Web3PrivateService } from '@app/core/services/blockchain/web3/web3-private-service/web3-private.service';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -21,6 +18,9 @@ import { TransactionReceipt } from 'web3-eth';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 @Injectable()
 export class StakingService {
@@ -100,8 +100,8 @@ export class StakingService {
   public readonly dataReloading$ = new BehaviorSubject<boolean>(true);
 
   constructor(
-    private readonly web3PublicService: Web3PublicService,
-    private readonly web3PrivateService: Web3PrivateService,
+    private readonly web3PublicService: PublicBlockchainAdapterService,
+    private readonly web3PrivateService: PrivateBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly stakingApiService: StakingApiService,
     private readonly errorService: ErrorsService,
@@ -147,7 +147,7 @@ export class StakingService {
     const needSwap =
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET &&
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
-    const amountInWei = Number(Web3Public.toWei(amount, 18)).toLocaleString('fullwide', {
+    const amountInWei = Number(EthLikeWeb3Public.toWei(amount, 18)).toLocaleString('fullwide', {
       useGrouping: false
     });
 
@@ -155,7 +155,7 @@ export class StakingService {
       return this.openSwapModal();
     } else {
       const enterStake$ = from(
-        this.web3PrivateService.tryExecuteContractMethod(
+        this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
           this.stakingContractAddress,
           STAKING_CONTRACT_ABI,
           'enter',
@@ -182,28 +182,28 @@ export class StakingService {
 
   public leaveStake(amount: BigNumber): Observable<TransactionReceipt> {
     return from(
-      this.web3PrivateService.tryExecuteContractMethod(
+      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'leave',
-        [Web3Public.toWei(amount, 18)]
+        [EthLikeWeb3Public.toWei(amount, 18)]
       )
     );
   }
 
   public needApprove(amount: BigNumber): Observable<boolean> {
     return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].getAllowance(
-        this.selectedToken.address,
-        this.walletAddress,
-        this.stakingContractAddress
-      )
-    ).pipe(map(allowance => amount.gt(Web3Public.fromWei(allowance, 18))));
+      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].getAllowance({
+        tokenAddress: this.selectedToken.address,
+        ownerAddress: this.walletAddress,
+        spenderAddress: this.stakingContractAddress
+      })
+    ).pipe(map(allowance => amount.gt(EthLikeWeb3Public.fromWei(allowance, 18))));
   }
 
   public approveTokens(): Observable<TransactionReceipt> {
     return from(
-      this.web3PrivateService.approveTokens(
+      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].approveTokens(
         this.selectedToken.address,
         this.stakingContractAddress,
         'infinity'
@@ -228,7 +228,7 @@ export class StakingService {
 
   private approve(): Observable<TransactionReceipt> {
     return from(
-      this.web3PrivateService.approveTokens(
+      this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].approveTokens(
         this.selectedToken.address,
         this.stakingContractAddress,
         'infinity'
@@ -242,7 +242,7 @@ export class StakingService {
         this.walletAddress,
         tokenAddress
       )
-    ).pipe(map(balance => Web3Public.fromWei(balance, 18)));
+    ).pipe(map(balance => EthLikeWeb3Public.fromWei(balance, 18)));
   }
 
   public getStakingTokenBalance(): Observable<BigNumber> {
@@ -256,7 +256,7 @@ export class StakingService {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber('0'));
       }),
-      tap(balance => this._stakingTokenBalance$.next(Web3Public.fromWei(balance, 18)))
+      tap(balance => this._stakingTokenBalance$.next(EthLikeWeb3Public.fromWei(balance, 18)))
     );
   }
 
@@ -276,7 +276,7 @@ export class StakingService {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
-      map(actualBalance => Web3Public.fromWei(actualBalance, 18)),
+      map(actualBalance => EthLikeWeb3Public.fromWei(actualBalance, 18)),
       tap(actualBalance => this._amountWithRewards$.next(actualBalance))
     );
   }
@@ -287,7 +287,7 @@ export class StakingService {
       amountWithRewards ? of(amountWithRewards) : this._amountWithRewards$
     ]).pipe(
       map(() => {
-        // const usersDepositInTokens = Web3Public.fromWei(usersDeposit, 18);
+        // const usersDepositInTokens = EthLikeWeb3Public.fromWei(usersDeposit, 18);
         // console.log(usersDepositInTokens.toNumber());
         // const earnedRewards = totalAmount.toNumber() - usersDepositInTokens.toNumber();
         // if (earnedRewards < 0) {
@@ -323,7 +323,7 @@ export class StakingService {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
-      map(amount => Web3Public.fromWei(amount, 18).toNumber()),
+      map(amount => EthLikeWeb3Public.fromWei(amount, 18).toNumber()),
       tap(userEnteredAmount => this._userEnteredAmount$.next(userEnteredAmount))
     );
   }
@@ -341,7 +341,7 @@ export class StakingService {
         return of('0');
       }),
       tap(totalRbcEntered =>
-        this._totalRBCEntered$.next(Web3Public.fromWei(+totalRbcEntered, 18).toNumber())
+        this._totalRBCEntered$.next(EthLikeWeb3Public.fromWei(+totalRbcEntered, 18).toNumber())
       )
     );
   }
@@ -371,7 +371,7 @@ export class StakingService {
         'canReceive',
         { methodArguments: [amount], from: this.walletAddress }
       )
-    ).pipe(map(res => Web3Public.fromWei(res, 18)));
+    ).pipe(map(res => EthLikeWeb3Public.fromWei(res, 18)));
   }
 
   private getUsersDeposit(): Observable<number> {

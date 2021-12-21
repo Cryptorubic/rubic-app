@@ -29,7 +29,7 @@ export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
       };
     });
 
-    return this.web3Public.multicallContractMethods<{ amounts: string[] }>(
+    return this.blockchainAdapter.multicallContractMethods<{ amounts: string[] }>(
       this.contractAddress,
       this.contractAbi,
       methodParams

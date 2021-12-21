@@ -22,7 +22,7 @@ import {
 } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { TransactionReceipt } from 'web3-eth';
-import { ProviderConnectorService } from 'src/app/core/services/blockchain/providers/provider-connector-service/provider-connector.service';
+import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
 import { List } from 'immutable';
@@ -38,7 +38,7 @@ import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS
 import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
-import { Web3Public } from '@core/services/blockchain/web3/web3-public-service/Web3Public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { TuiNotification } from '@taiga-ui/core';
@@ -67,7 +67,7 @@ export class MyTradesService {
 
   constructor(
     private readonly httpClient: HttpClient,
-    private readonly providerConnectorService: ProviderConnectorService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -88,7 +88,7 @@ export class MyTradesService {
       .pipe(
         debounceTime(500),
         filter(
-          () => this.router.url === '/my-trades' && Boolean(this.providerConnectorService.address)
+          () => this.router.url === '/my-trades' && Boolean(this.walletConnectorService.address)
         )
       )
       .subscribe(() => {
@@ -138,11 +138,11 @@ export class MyTradesService {
 
   private getBridgeTransactions(): Observable<TableTrade[]> {
     return this.bridgeApiService.getUserTrades(this.walletAddress).pipe(
-      mergeMap(trades => {
-        const filteredTrades = trades
-          .map(trade => this.prepareBridgeData(trade))
-          .filter(trade => !!trade);
-        const sources: Observable<HashPair>[] = filteredTrades.map(trade => {
+      switchMap(async trades =>
+        (await Promise.all(trades.map(trade => this.prepareBridgeData(trade)))).filter(Boolean)
+      ),
+      mergeMap(bridgeTrades => {
+        const sources: Observable<HashPair>[] = bridgeTrades.map(trade => {
           return of({
             fromTransactionHash: trade.fromTransactionHash,
             toTransactionHash: trade.toTransactionHash
@@ -151,7 +151,7 @@ export class MyTradesService {
         return forkJoin(sources).pipe(
           map((txHashes: HashPair[]) =>
             txHashes.map(({ fromTransactionHash, toTransactionHash }, index) => ({
-              ...filteredTrades[index],
+              ...bridgeTrades[index],
               fromTransactionHash,
               toTransactionHash
             }))
@@ -167,20 +167,25 @@ export class MyTradesService {
     );
   }
 
-  private prepareBridgeData(trade: TableTrade): TableTrade {
+  private async prepareBridgeData(trade: TableTrade): Promise<TableTrade> {
     let fromSymbol = trade.fromToken.symbol;
     let toSymbol = trade.toToken.symbol;
+
     if (trade.provider === 'polygon') {
-      fromSymbol = this.tokens.find(
-        token =>
-          token.blockchain === trade.fromToken.blockchain &&
-          token.address.toLowerCase() === fromSymbol.toLowerCase()
-      )?.symbol;
-      toSymbol = this.tokens.find(
-        token =>
-          token.blockchain === trade.toToken.blockchain &&
-          token.address.toLowerCase() === toSymbol.toLowerCase()
-      )?.symbol;
+      [fromSymbol, toSymbol] = await Promise.all([
+        (
+          await this.tokensService.getTokenByAddress({
+            address: fromSymbol,
+            blockchain: trade.fromToken.blockchain as BLOCKCHAIN_NAME
+          })
+        ).symbol,
+        (
+          await this.tokensService.getTokenByAddress({
+            address: toSymbol,
+            blockchain: trade.toToken.blockchain as BLOCKCHAIN_NAME
+          })
+        ).symbol
+      ]);
 
       if (!fromSymbol || !toSymbol) {
         return null;
@@ -248,7 +253,7 @@ export class MyTradesService {
             if (!toToken) {
               return null;
             }
-            const amount = Web3Public.fromWei(item.value, toToken.decimals).toFixed();
+            const amount = EthLikeWeb3Public.fromWei(item.value, toToken.decimals).toFixed();
             return {
               fromTransactionHash: item.hash,
               transactionHashScanUrl: this.scannerLinkPipe.transform(
@@ -285,7 +290,7 @@ export class MyTradesService {
     onTransactionHash: (hash: string) => void
   ): Observable<TransactionReceipt> {
     try {
-      this.providerConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
+      this.walletConnectorService.checkSettings(BLOCKCHAIN_NAME.ETHEREUM);
     } catch (err) {
       return throwError(err);
     }

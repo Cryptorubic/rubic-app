@@ -6,9 +6,9 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { HealthcheckService } from './core/services/backend/healthcheck/healthcheck.service';
-import { QueryParams } from './core/services/query-params/models/query-params';
-import { QueryParamsService } from './core/services/query-params/query-params.service';
+import { HealthcheckService } from '@core/services/backend/healthcheck/healthcheck.service';
+import { QueryParams } from '@core/services/query-params/models/query-params';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-root',

@@ -1,4 +1,4 @@
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import {
   routerLiquidityPoolsWithMode,
   routerTokensNetMode
@@ -102,7 +102,7 @@ export class LiquidityPoolsController {
     };
   }
 
-  constructor(private readonly web3Public: Web3Public, isTestingMode = false) {
+  constructor(private readonly web3Public: EthLikeWeb3Public, isTestingMode = false) {
     this.feeAmounts = [500, 3000, 10000];
 
     if (!isTestingMode) {

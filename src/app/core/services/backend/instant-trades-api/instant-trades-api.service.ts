@@ -13,15 +13,20 @@ import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
-import { Web3Public } from 'src/app/core/services/blockchain/web3/web3-public-service/Web3Public';
+import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from '../constants/BOT_URL';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
+import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
+
+type HashObject = { hash: string } | { signature: string };
 
 const instantTradesApiRoutes = {
-  createData: 'instant_trades/',
-  editData: 'instant_trades/',
-  getData: 'instant_trades/'
+  createData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`,
+  editData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`,
+  getData: (networkType: BlockchainType) => `instant_trades/${networkType.toLowerCase()}`
 };
 
 @Injectable({
@@ -30,9 +35,18 @@ const instantTradesApiRoutes = {
 export class InstantTradesApiService {
   private isTestingMode: boolean;
 
+  private static getHashObject(blockchain: BLOCKCHAIN_NAME, hash: string): HashObject {
+    const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
+    return {
+      ...(blockchainType === 'ethLike' && { hash }),
+      ...(blockchainType === 'solana' && { signature: hash })
+    };
+  }
+
   constructor(
     private httpService: HttpService,
-    private useTestingModeService: UseTestingModeService
+    private useTestingModeService: UseTestingModeService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
   }
@@ -67,23 +81,23 @@ export class InstantTradesApiService {
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
+    const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
-      hash,
       network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain],
       provider,
       from_token: trade.from.token.address,
       to_token: trade.to.token.address,
-      from_amount: Web3Public.toWei(trade.from.amount, trade.from.token.decimals),
-      to_amount: Web3Public.toWei(trade.to.amount, trade.to.token.decimals)
+      from_amount: EthLikeWeb3Public.toWei(trade.from.amount, trade.from.token.decimals),
+      to_amount: EthLikeWeb3Public.toWei(trade.to.amount, trade.to.token.decimals),
+      ...hashObject
     };
 
     if (this.isTestingMode) {
       tradeInfo.network = 'ethereum-test';
     }
 
-    return this.httpService
-      .post<InstantTradesResponseApi>(instantTradesApiRoutes.createData, tradeInfo)
-      .pipe(delay(1000));
+    const url = instantTradesApiRoutes.createData(this.walletConnectorService.provider.walletType);
+    return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
   }
 
   /**
@@ -93,8 +107,13 @@ export class InstantTradesApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
-    const url = instantTradesApiRoutes.editData;
-    return this.httpService.patch(url, { hash, success });
+    const blockchain =
+      this.walletConnectorService.provider.walletType === 'solana'
+        ? BLOCKCHAIN_NAME.SOLANA
+        : BLOCKCHAIN_NAME.ETHEREUM;
+    const body = { success, ...InstantTradesApiService.getHashObject(blockchain, hash) };
+    const url = instantTradesApiRoutes.editData(this.walletConnectorService.provider.walletType);
+    return this.httpService.patch(url, body);
   }
 
   /**
@@ -107,17 +126,16 @@ export class InstantTradesApiService {
     walletAddress: string,
     errorCallback?: (error: unknown) => void
   ): Observable<TableTrade[]> {
-    return this.httpService
-      .get(instantTradesApiRoutes.getData, { user: walletAddress.toLowerCase() })
-      .pipe(
-        map((swaps: InstantTradesResponseApi[]) =>
-          swaps.map(swap => this.parseTradeApiToTableTrade(swap))
-        ),
-        catchError((err: unknown) => {
-          errorCallback?.(err);
-          return of([]);
-        })
-      );
+    const url = instantTradesApiRoutes.getData(this.walletConnectorService.provider.walletType);
+    return this.httpService.get(url, { user: walletAddress }).pipe(
+      map((swaps: InstantTradesResponseApi[]) =>
+        swaps.map(swap => this.parseTradeApiToTableTrade(swap))
+      ),
+      catchError((err: unknown) => {
+        errorCallback?.(err);
+        return of([]);
+      })
+    );
   }
 
   private parseTradeApiToTableTrade(tradeApi: InstantTradesResponseApi): TableTrade {
@@ -130,18 +148,32 @@ export class InstantTradesApiService {
             token.blockchain_network as keyof typeof FROM_BACKEND_BLOCKCHAINS
           ],
         symbol: token.symbol,
-        amount: Web3Public.fromWei(amount, token.decimals).toFixed(),
+        amount: EthLikeWeb3Public.fromWei(amount, token.decimals).toFixed(),
         image: token.image
       };
     }
 
-    let provider = tradeApi.contract.name;
+    let provider;
+    if ('contract' in tradeApi) {
+      provider = tradeApi.contract.name;
+    }
+    if ('program' in tradeApi) {
+      provider = tradeApi.program.name;
+    }
     if (provider === 'pancakeswap_old') {
       provider = INSTANT_TRADES_PROVIDER.PANCAKESWAP;
     }
 
+    let fromTransactionHash;
+    if ('hash' in tradeApi) {
+      fromTransactionHash = tradeApi.hash;
+    }
+    if ('signature' in tradeApi) {
+      fromTransactionHash = tradeApi.signature;
+    }
+
     return {
-      fromTransactionHash: tradeApi.hash,
+      fromTransactionHash,
       status: tradeApi.status,
       provider,
       fromToken: getTableToken('from'),

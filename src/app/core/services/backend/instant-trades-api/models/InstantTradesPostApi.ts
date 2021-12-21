@@ -16,4 +16,17 @@ interface InstantTradesOneInchApi {
   to_amount: string;
 }
 
-export type InstantTradesPostApi = InstantTradesUniswapAbstractApi | InstantTradesOneInchApi;
+interface SolanaTradesApi {
+  signature: string;
+  provider: INSTANT_TRADES_PROVIDER;
+  network: string;
+  from_token: string;
+  to_token: string;
+  from_amount: string;
+  to_amount: string;
+}
+
+export type InstantTradesPostApi =
+  | InstantTradesUniswapAbstractApi
+  | InstantTradesOneInchApi
+  | SolanaTradesApi;

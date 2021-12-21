@@ -1,16 +1,22 @@
 <section class="bottom-form">
   <div class="bottom-form__container">
-    <app-rubic-tokens
-      [loading]="loading"
-      formType="to"
-      [tokens]="tokens"
-      [favoriteTokens]="favoriteTokens"
-      [formService]="swapFormService"
-    ></app-rubic-tokens>
-    <app-amount-estimated
-      [loading]="tradeStatus === TRADE_STATUS.LOADING"
-      [errorText]="errorText"
-    ></app-amount-estimated>
+    <div class="bottom-form__estimate-container">
+      <app-rubic-tokens
+        [loading]="loading"
+        formType="to"
+        [tokens]="tokens"
+        [favoriteTokens]="favoriteTokens"
+        [formService]="swapFormService"
+      ></app-rubic-tokens>
+      <app-amount-estimated
+        [loading]="tradeStatus === TRADE_STATUS.LOADING"
+        [errorText]="errorText"
+      ></app-amount-estimated>
+    </div>
+    <app-target-network-address
+      *ngIf="displayTargetAddressInput$ | async"
+      [targetBlockchain]="toBlockchain"
+    ></app-target-network-address>
   </div>
 
   <div class="bottom-form__footer">

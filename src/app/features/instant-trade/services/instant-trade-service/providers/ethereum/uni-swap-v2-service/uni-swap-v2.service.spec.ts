@@ -4,14 +4,14 @@
 //   let web3Private: Web3PrivateService;
 //   let web3PublicEth: Web3Public;
 //   let uniSwapContractAddress: string;
-//   let providerConnectorService: ProviderConnectorService;
+//   let walletConnectorService: walletConnectorService;
 //
 //   beforeEach(() => {
 //     TestBed.configureTestingModule({
-//       providers: [
+//       wallets: [
 //         UniSwapService,
 //         Web3PrivateService,
-//         ProviderConnectorService,
+//         walletConnectorService,
 //         { provide: MetamaskProvider, useValue: providerServiceStub() },
 //         { provide: PublicProviderService, useValue: publicProviderServiceStub() }
 //       ],
@@ -24,7 +24,7 @@
 //     service = TestBed.inject(UniSwapService);
 //     web3Private = TestBed.inject(Web3PrivateService);
 //     uniSwapContractAddress = uniSwapContracts.testnetAddress;
-//     providerConnectorService = TestBed.inject(ProviderConnectorService);
+//     walletConnectorService = TestBed.inject(walletConnectorService);
 //   });
 //
 //   afterEach(() => {
@@ -151,7 +151,7 @@
 //     spyOn(callbackObject, 'onApprove');
 //
 //     const startBalance = await web3PublicEth.getTokenBalance(
-//       providerConnectorService.address,
+//       walletConnectorService.address,
 //       YEENUS.address
 //     );
 //
@@ -168,7 +168,7 @@
 //       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
 //     );
 //     const newBalance = await web3PublicEth.getTokenBalance(
-//       providerConnectorService.address,
+//       walletConnectorService.address,
 //       YEENUS.address
 //     );
 //
@@ -200,7 +200,7 @@
 //     spyOn(callbackObject, 'onApprove');
 //
 //     const startBalance = await web3PublicEth.getTokenBalance(
-//       providerConnectorService.address,
+//       walletConnectorService.address,
 //       YEENUS.address
 //     );
 //
@@ -214,7 +214,7 @@
 //       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
 //     );
 //     const newBalance = await web3PublicEth.getTokenBalance(
-//       providerConnectorService.address,
+//       walletConnectorService.address,
 //       YEENUS.address
 //     );
 //
@@ -237,7 +237,7 @@
 //     spyOn(callbackObject, 'onConfirm');
 //
 //     const startBalance = await web3PublicEth.getTokenBalance(
-//       providerConnectorService.address,
+//       walletConnectorService.address,
 //       YEENUS.address
 //     );
 //
@@ -249,7 +249,7 @@
 //       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
 //     );
 //     const newBalance = await web3PublicEth.getTokenBalance(
-//       providerConnectorService.address,
+//       walletConnectorService.address,
 //       YEENUS.address
 //     );
 //
@@ -278,7 +278,7 @@
 //     spyOn(callbackObject, 'onConfirm');
 //     spyOn(callbackObject, 'onApprove').and.callThrough();
 //
-//     const startBalance = await web3PublicEth.getBalance(providerConnectorService.address);
+//     const startBalance = await web3PublicEth.getBalance(walletConnectorService.address);
 //
 //     const receipt = await service.createTrade(trade, {
 //       onConfirm: callbackObject.onConfirm,
@@ -295,7 +295,7 @@
 //     expect(callbackObject.onApprove).toHaveBeenCalledWith(
 //       jasmine.stringMatching(/^0x([A-Fa-f0-9]{64})$/)
 //     );
-//     const newBalance = await web3PublicEth.getBalance(providerConnectorService.address);
+//     const newBalance = await web3PublicEth.getBalance(walletConnectorService.address);
 //
 //     expect(newBalance.minus(startBalance).gte(outputMinAmount.minus(gasFee))).toBeTruthy();
 //
@@ -327,7 +327,7 @@
 //     spyOn(callbackObject, 'onConfirm');
 //     spyOn(callbackObject, 'onApprove');
 //
-//     const startBalance = await web3PublicEth.getBalance(providerConnectorService.address);
+//     const startBalance = await web3PublicEth.getBalance(walletConnectorService.address);
 //
 //     const receipt = await service.createTrade(trade, {
 //       onConfirm: callbackObject.onConfirm,
@@ -343,7 +343,7 @@
 //
 //     expect(callbackObject.onApprove).not.toHaveBeenCalled();
 //
-//     const newBalance = await web3PublicEth.getBalance(providerConnectorService.address);
+//     const newBalance = await web3PublicEth.getBalance(walletConnectorService.address);
 //
 //     expect(newBalance.minus(startBalance).gte(outputMinAmount.minus(gasFee))).toBeTruthy();
 //
