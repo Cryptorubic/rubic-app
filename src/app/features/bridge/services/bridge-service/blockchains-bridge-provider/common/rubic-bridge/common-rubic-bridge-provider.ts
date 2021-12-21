@@ -260,20 +260,18 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     const blockchainAdapter = this.publicBlockchainAdapterService[bridgeTrade.fromBlockchain];
 
     const fromDecimals = token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals;
+
+    const tradeConfig =
+      this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains];
     const trade: RubicTrade = {
       token: {
-        address:
-          this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
-            .rubicTokenAddress,
-        decimals: token.tokenByBlockchain[bridgeTrade.fromBlockchain].decimals,
-        symbol:
-          this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains].symbol
+        address: tradeConfig.rubicTokenAddress,
+        decimals: tradeConfig.decimals,
+        symbol: tradeConfig.symbol
       },
-      swapContractAddress:
-        this.rubicConfig[bridgeTrade.fromBlockchain as RubicBridgeSupportedBlockchains]
-          .swapContractAddress,
+      swapContractAddress: tradeConfig.swapContractAddress,
       amount: bridgeTrade.amount.multipliedBy(10 ** fromDecimals)
-    } as RubicTrade;
+    };
 
     const onApprove = bridgeTrade.onTransactionHash;
 
