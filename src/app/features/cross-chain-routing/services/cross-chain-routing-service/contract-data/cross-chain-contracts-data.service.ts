@@ -62,11 +62,11 @@ export class CrossChainContractsDataService {
         BLOCKCHAIN_NAME.AVALANCHE,
         [
           {
-            provider: this.joeAvalancheService,
+            provider: this.pangolinAvalancheService,
             methodSuffix: ''
           },
           {
-            provider: this.pangolinAvalancheService,
+            provider: this.joeAvalancheService,
             methodSuffix: '1'
           }
         ],
