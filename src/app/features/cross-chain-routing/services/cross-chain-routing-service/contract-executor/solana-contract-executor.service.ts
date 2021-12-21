@@ -179,7 +179,7 @@ export class SolanaContractExecutorService {
     const middleDecimals = new BigNumber(10).exponentiatedBy(
       this.contracts[BLOCKCHAIN_NAME.SOLANA].transitToken.decimals
     );
-    const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
+    const amountMiddle = new BigNumber(trade.fromTransitTokenAmount.toString()).multipliedBy(
       middleDecimals
     );
 
@@ -194,7 +194,7 @@ export class SolanaContractExecutorService {
       trade.tokenIn.address === NATIVE_SOL.mintAddress
         ? TOKENS.WSOL.mintAddress
         : trade.tokenIn.address;
-    const toRouteMint = trade.firstPath[trade.firstPath.length - 1];
+    const toRouteMint = trade.fromTrade.path[trade.fromTrade.path.length - 1].address;
     const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
@@ -218,7 +218,9 @@ export class SolanaContractExecutorService {
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
       tokenInAmount: fromFinalAmount,
-      secondPath: trade.secondPath.map(el => EthLikeWeb3Public.toChecksumAddress(el)),
+      secondPath: trade.toTrade.path.map(token =>
+        EthLikeWeb3Public.toChecksumAddress(token.address)
+      ),
       exactRbcTokenOut: middleFinalAmount,
       tokenOutMin: amountOut.toFixed(0),
       newAddress: targetAddress,

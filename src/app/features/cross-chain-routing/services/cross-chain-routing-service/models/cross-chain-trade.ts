@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
 
 export interface CrossChainTrade {
   // from blockchain data
@@ -8,18 +9,18 @@ export interface CrossChainTrade {
   fromProviderIndex: number;
   tokenIn: TokenAmount;
   tokenInAmount: BigNumber;
-  firstTransitTokenAmount: BigNumber;
-  firstPath: string[];
+  fromTransitTokenAmount: BigNumber;
   fromSlippage: number;
+  fromTrade: InstantTrade | null; // `null` means `tokenIn` = `transitToken`
 
   // to blockchain data
   toBlockchain: SupportedCrossChainBlockchain;
   toProviderIndex: number;
-  secondTransitTokenAmount: BigNumber;
+  toTransitTokenAmount: BigNumber;
   tokenOut: TokenAmount;
   tokenOutAmount: BigNumber;
-  secondPath: string[];
   toSlippage: number;
+  toTrade: InstantTrade | null; // `null` means `tokenOut` = `transitToken`
 
   // fee data
   transitTokenFee: number; // in percents

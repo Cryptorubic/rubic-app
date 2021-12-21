@@ -14,11 +14,13 @@ import { crossChainContractAbiV2 } from '@features/cross-chain-routing/services/
 import { crossChainContractAbiV3 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';
-import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
-import { ContractParams } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/contract-params';
-import BigNumber from 'bignumber.js';
+import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
+import { UniSwapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
+import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
+import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
+import { compareAddresses } from '@shared/utils/utils';
+import InstantTrade from '@features/instant-trade/models/InstantTrade';
 
 export class CrossChainContractData {
   @tuiPure
@@ -41,46 +43,11 @@ export class CrossChainContractData {
     return this.providersData[providerIndex].provider;
   }
 
-  private isV3(providerIndex: number): boolean {
+  private isProviderV3(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof CommonUniV3AlgebraService;
   }
 
-  public getContractParams(
-    trade: CrossChainTrade,
-    isFromTokenNative: boolean,
-    isToTokenNative: boolean,
-    toNumOfBlockchain: number,
-    walletAddress: string
-  ): ContractParams {
-    const { methodName, contractAbi } = this.getMethodNameAndContractAbi(
-      trade.fromProviderIndex,
-      isFromTokenNative
-    );
-
-    let methodArguments;
-    let value;
-    if (this.isV3(trade.fromProviderIndex)) {
-      // TODO
-    } else {
-      ({ methodArguments, value } = this.getV2MethodArgumentsAndValue(
-        trade,
-        isFromTokenNative,
-        isToTokenNative,
-        toNumOfBlockchain,
-        walletAddress
-      ));
-    }
-
-    return {
-      contractAddress: this.address,
-      contractAbi,
-      methodName,
-      methodArguments,
-      value
-    };
-  }
-
-  private getMethodNameAndContractAbi(
+  public getMethodNameAndContractAbi(
     providerIndex: number,
     isFromTokenNative: boolean
   ): {
@@ -94,7 +61,7 @@ export class CrossChainContractData {
       ...crossChainContractAbiV2.find(method => method.name === methodName)
     };
 
-    if (this.isV3(providerIndex)) {
+    if (this.isProviderV3(providerIndex)) {
       methodName += 'V3';
       contractAbiMethod = { ...crossChainContractAbiV3.find(method => method.name === methodName) };
     }
@@ -112,64 +79,50 @@ export class CrossChainContractData {
     };
   }
 
-  // TODO
-  // private getV3MethodArguments() {}
+  public getFromPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
+    const provider = this.getProvider(providerIndex);
 
-  private getV2MethodArgumentsAndValue(
-    trade: CrossChainTrade,
-    isFromTokenNative: boolean,
-    isToTokenNative: boolean,
-    toNumOfBlockchain: number,
-    walletAddress: string
-  ): {
-    methodArguments: unknown[];
-    value: string;
-  } {
-    const { toBlockchain } = trade;
+    if (provider instanceof UniSwapV3Service) {
+      const route = (instantTrade as UniSwapV3InstantTrade).route;
 
-    const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(
-      trade.tokenInAmount,
-      trade.tokenIn.decimals
-    );
-    const tokenOutAmountMin =
-      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = EthLikeWeb3Public.toWei(
-      tokenOutAmountMin,
-      trade.tokenOut.decimals
-    );
+      return UniSwapV3QuoterController.getEncodedPoolsPath(
+        route.poolsPath,
+        route.initialTokenAddress
+      );
+    }
 
-    const firstTransitTokenAmountMin =
-      CrossChainContractExecutorFacadeService.calculateFirstTransitTokenAmountMin(trade);
-    const firstTransitTokenAmountMinAbsolute = EthLikeWeb3Public.toWei(
-      firstTransitTokenAmountMin,
-      this.transitToken.decimals
-    );
+    if (provider instanceof AlgebraService) {
+      return AlgebraQuoterController.getEncodedPath(instantTrade.path);
+    }
 
-    const methodArguments = [
-      [
-        toNumOfBlockchain,
-        tokenInAmountAbsolute,
-        trade.firstPath,
-        // @TODO Solana. Remove hardcode.
-        toBlockchain === BLOCKCHAIN_NAME.SOLANA ? [EMPTY_ADDRESS] : trade.secondPath,
-        firstTransitTokenAmountMinAbsolute,
-        tokenOutAmountMinAbsolute,
-        // @TODO Solana. Remove hardcode.
-        toBlockchain === BLOCKCHAIN_NAME.SOLANA ? EMPTY_ADDRESS : walletAddress,
-        isToTokenNative,
-        true,
-        false
-      ]
-    ];
+    return instantTrade.path.map(token => token.address);
+  }
 
-    const blockchainCryptoFee = EthLikeWeb3Public.toWei(trade.cryptoFee);
-    const value = new BigNumber(blockchainCryptoFee)
-      .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
-      .toFixed(0);
+  public getToPath(providerIndex: number, instantTrade: InstantTrade): string[] {
+    const provider = this.getProvider(providerIndex);
 
-    return {
-      methodArguments,
-      value
-    };
+    if (provider instanceof UniSwapV3Service) {
+      const route = (instantTrade as UniSwapV3InstantTrade).route;
+      const path: string[] = [];
+      let lastTokenAddress = route.initialTokenAddress;
+
+      route.poolsPath.forEach(pool => {
+        path.push(
+          '0x' +
+            pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
+            lastTokenAddress.slice(2).toLowerCase()
+        );
+
+        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
+          ? pool.token1
+          : pool.token0;
+        lastTokenAddress = newToken.address;
+      });
+      path.push(EthLikeWeb3Public.addressToBytes32(lastTokenAddress));
+
+      return path;
+    }
+
+    return instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
   }
 }
