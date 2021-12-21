@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
 import { StakingService } from '@features/staking/services/staking.service';
-import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import BigNumber from 'bignumber.js';
 import { ProviderConnectorService } from '@core/services/blockchain/providers/provider-connector-service/provider-connector.service';
-import { combineLatest } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
@@ -22,21 +21,21 @@ export class WithdrawComponent {
 
   public readonly needLogin$ = this.stakingService.needLogin$;
 
-  public readonly needChangeNetwork$ = combineLatest([
-    this.stakingService.selectedToken$,
-    this.providerConnectorService.networkChange$.pipe(
-      startWith(this.providerConnectorService?.network)
-    )
-  ]).pipe(
-    map(([selectedToken, network]) => {
-      if (!network?.name) {
-        return false;
-      }
-      return selectedToken.blockchain !== network.name;
-    }),
-    tap(needChangeNetwork => console.log('need change network', needChangeNetwork)),
-    takeUntil(this.destroy$)
-  );
+  // public readonly needChangeNetwork$ = combineLatest([
+  //   this.stakingService.selectedToken$,
+  //   this.providerConnectorService.networkChange$.pipe(
+  //     startWith(this.providerConnectorService?.network)
+  //   )
+  // ]).pipe(
+  //   map(([selectedToken, network]) => {
+  //     if (!network?.name) {
+  //       return false;
+  //     }
+  //     return selectedToken.blockchain !== network.name;
+  //   }),
+  //   tap(needChangeNetwork => console.log('need change network', needChangeNetwork)),
+  //   takeUntil(this.destroy$)
+  // );
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
@@ -55,7 +54,8 @@ export class WithdrawComponent {
   ) {}
 
   ngOnInit() {
-    this.needChangeNetwork$.subscribe();
+    console.log('');
+    // this.needChangeNetwork$.subscribe();
   }
 
   public withdraw(): void {

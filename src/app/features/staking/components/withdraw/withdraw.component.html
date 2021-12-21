@@ -39,7 +39,7 @@
     [needLogin]="needLogin$ | async"
     [balance]="stakingTokenBalance$ | async"
     [amount]="amount.value"
-    [needChangeNetwork]="needChangeNetwork$ | async"
+    [needChangeNetwork]="false"
     (onLogin)="login()"
     (onWithdraw)="withdraw()"
     (onChangeNetwork)="changeNetwork()"

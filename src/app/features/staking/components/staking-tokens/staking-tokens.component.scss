@@ -56,6 +56,11 @@
   align-items: center;
   padding: 8px 0px 8px 18px;
 
+  &_active {
+    background: #29582f;
+    border-radius: 100px;
+  }
+
   &__icon {
     width: 44px;
     height: 43px;

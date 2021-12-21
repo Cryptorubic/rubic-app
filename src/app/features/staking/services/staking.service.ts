@@ -1,13 +1,12 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { TransactionReceipt } from 'web3-eth';
 import { TuiDialogService } from '@taiga-ui/core';
 
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { Web3PublicService } from '@app/core/services/blockchain/web3/web3-public-service/web3-public.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Web3Public } from '@app/core/services/blockchain/web3/web3-public-service/Web3Public';
 import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
 import { Web3PrivateService } from '@app/core/services/blockchain/web3/web3-private-service/web3-private.service';
@@ -16,6 +15,10 @@ import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 import { switchIif } from '@shared/utils/utils';
+import { ErrorsService } from '@core/errors/errors.service';
+import { RubicError } from '@core/errors/models/RubicError';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { TransactionReceipt } from 'web3-eth';
 
 @Injectable()
 export class StakingService {
@@ -87,6 +90,7 @@ export class StakingService {
     private readonly web3PrivateService: Web3PrivateService,
     private readonly authService: AuthService,
     private readonly stakingApiService: StakingApiService,
+    private readonly errorService: ErrorsService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {
@@ -199,6 +203,10 @@ export class StakingService {
         }
       )
     ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+        return of(new BigNumber(0));
+      }),
       map(actualBalance => Web3Public.fromWei(actualBalance, 18)),
       tap(actualBalance => this._amountWithRewards$.next(actualBalance))
     );
@@ -222,6 +230,10 @@ export class StakingService {
         }
       )
     ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+        return of(new BigNumber(0));
+      }),
       map(amount => Web3Public.fromWei(amount, 18).toNumber()),
       tap(userEnteredAmount => this._userEnteredAmount$.next(userEnteredAmount))
     );
@@ -234,7 +246,13 @@ export class StakingService {
         STAKING_CONTRACT_ABI,
         'totalRBCEntered'
       )
-    ).pipe(tap(totalRbcEntered => this._totalRBCEntered$.next(+totalRbcEntered)));
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catch(error as RubicError<ERROR_TYPE.RAW_MESSAGE>);
+        return of('0');
+      }),
+      tap(totalRbcEntered => this._totalRBCEntered$.next(+totalRbcEntered))
+    );
   }
 
   private getApr(): Observable<number> {

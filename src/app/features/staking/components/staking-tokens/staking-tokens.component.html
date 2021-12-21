@@ -14,7 +14,7 @@
 </ng-template>
 
 <ng-template #optionTpl let-item>
-  <div class="option">
+  <div class="option" [class.option_active]="tokenFormControl.value.blockchain === item.blockchain">
     <img class="option__icon" [src]="item.image" [alt]="item.symbol" />
     <div class="option__desc">
       <div class="option__symbol">{{ item.symbol }}</div>
