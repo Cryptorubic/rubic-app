@@ -65,6 +65,8 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: RubicConfig;
   };
 
+  private readonly rubicConfigMaxAmount = 100_000;
+
   constructor(
     private readonly httpService: HttpService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
@@ -78,12 +80,12 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
 
     this.rubicConfig = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
-        maxAmount: 50_000,
+        maxAmount: this.rubicConfigMaxAmount,
         swapContractAddress: rubicBridgeContractAddressesNetMode.mainnet[BLOCKCHAIN_NAME.ETHEREUM],
         rubicTokenAddress: rubicTokenAddressesNetMode.mainnet[BLOCKCHAIN_NAME.ETHEREUM]
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        maxAmount: 50_000,
+        maxAmount: this.rubicConfigMaxAmount,
         swapContractAddress:
           rubicBridgeContractAddressesNetMode.mainnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
         rubicTokenAddress: rubicTokenAddressesNetMode.mainnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]
@@ -99,13 +101,13 @@ export class EthereumBinanceRubicBridgeProviderService extends BlockchainsBridge
       if (isTestingMode) {
         this.rubicConfig = {
           [BLOCKCHAIN_NAME.ETHEREUM]: {
-            maxAmount: 50_000,
+            maxAmount: this.rubicConfigMaxAmount,
             swapContractAddress:
               rubicBridgeContractAddressesNetMode.testnet[BLOCKCHAIN_NAME.ETHEREUM],
             rubicTokenAddress: rubicTokenAddressesNetMode.testnet[BLOCKCHAIN_NAME.ETHEREUM]
           },
           [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-            maxAmount: 50_000,
+            maxAmount: this.rubicConfigMaxAmount,
             swapContractAddress:
               rubicBridgeContractAddressesNetMode.testnet[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN],
             rubicTokenAddress:
