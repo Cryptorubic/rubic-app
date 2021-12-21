@@ -140,5 +140,95 @@ export const crossChainContractAbiV2 = [
     outputs: [],
     stateMutability: 'payable',
     type: 'function'
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'user',
+            type: 'address'
+          },
+          {
+            internalType: 'uint256',
+            name: 'amountWithFee',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'amountOutMin',
+            type: 'uint256'
+          },
+          {
+            internalType: 'address[]',
+            name: 'path',
+            type: 'address[]'
+          },
+          {
+            internalType: 'bytes32',
+            name: 'originalTxHash',
+            type: 'bytes32'
+          },
+          {
+            internalType: 'bytes',
+            name: 'concatSignatures',
+            type: 'bytes'
+          }
+        ],
+        internalType: 'struct ISwapContract.swapFromParams',
+        name: 'params',
+        type: 'tuple'
+      }
+    ],
+    name: 'swapTokensToUserWithFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'user',
+            type: 'address'
+          },
+          {
+            internalType: 'uint256',
+            name: 'amountWithFee',
+            type: 'uint256'
+          },
+          {
+            internalType: 'uint256',
+            name: 'amountOutMin',
+            type: 'uint256'
+          },
+          {
+            internalType: 'address[]',
+            name: 'path',
+            type: 'address[]'
+          },
+          {
+            internalType: 'bytes32',
+            name: 'originalTxHash',
+            type: 'bytes32'
+          },
+          {
+            internalType: 'bytes',
+            name: 'concatSignatures',
+            type: 'bytes'
+          }
+        ],
+        internalType: 'struct ISwapContract.swapFromParams',
+        name: 'params',
+        type: 'tuple'
+      }
+    ],
+    name: 'swapCryptoToUserWithFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as AbiItem[];

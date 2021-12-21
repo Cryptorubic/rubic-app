@@ -93,10 +93,9 @@ export class EthLikeContractExecutorService {
 
     const contractAddress = this.contracts[fromBlockchain].address;
 
-    const { contractAbi, methodName } = this.contracts[fromBlockchain].getMethodNameAndContractAbi(
-      trade.fromProviderIndex,
-      isFromTokenNative
-    );
+    const { contractAbi, methodName } = this.contracts[
+      fromBlockchain
+    ].getFromMethodNameAndContractAbi(trade.fromProviderIndex, isFromTokenNative);
 
     const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(
       trade.tokenInAmount,
@@ -124,6 +123,11 @@ export class EthLikeContractExecutorService {
     );
     const toPath = this.contracts[toBlockchain].getToPath(trade.toProviderIndex, trade.toTrade);
 
+    const toMethodSignature = this.contracts[toBlockchain].getToMethodSignature(
+      trade.toProviderIndex,
+      isToTokenNative
+    );
+
     const methodArguments = [
       [
         toNumOfBlockchain,
@@ -136,7 +140,7 @@ export class EthLikeContractExecutorService {
         isToTokenNative,
         true,
         false,
-        ''
+        toMethodSignature
       ]
     ];
 

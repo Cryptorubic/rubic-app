@@ -2,8 +2,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   MinimalProvider,
   ProviderData
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/models/provider-data';
-import { CROSS_CHAIN_SWAP_METHOD } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/models/CROSS_CHAIN_SWAP_METHOD';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/models/provider-data';
 import { crossChainContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/cross-chain-contract-addresses';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
@@ -21,6 +20,16 @@ import { AlgebraQuoterController } from '@features/instant-trade/services/instan
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { compareAddresses } from '@shared/utils/utils';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
+
+enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
+  SWAP_TOKENS = 'swapTokensToOtherBlockchain',
+  SWAP_CRYPTO = 'swapCryptoToOtherBlockchain'
+}
+
+enum TO_USER_SWAP_METHOD {
+  SWAP_TOKENS = 'swapTokensToUserWithFee',
+  SWAP_CRYPTO = 'swapCryptoToUserWithFee'
+}
 
 export class CrossChainContractData {
   @tuiPure
@@ -47,7 +56,7 @@ export class CrossChainContractData {
     return this.getProvider(providerIndex) instanceof CommonUniV3AlgebraService;
   }
 
-  public getMethodNameAndContractAbi(
+  public getFromMethodNameAndContractAbi(
     providerIndex: number,
     isFromTokenNative: boolean
   ): {
@@ -55,8 +64,8 @@ export class CrossChainContractData {
     contractAbi: AbiItem[];
   } {
     let methodName: string = isFromTokenNative
-      ? CROSS_CHAIN_SWAP_METHOD.SWAP_CRYPTO
-      : CROSS_CHAIN_SWAP_METHOD.SWAP_TOKENS;
+      ? TO_OTHER_BLOCKCHAIN_SWAP_METHOD.SWAP_CRYPTO
+      : TO_OTHER_BLOCKCHAIN_SWAP_METHOD.SWAP_TOKENS;
     let contractAbiMethod = {
       ...crossChainContractAbiV2.find(method => method.name === methodName)
     };
@@ -80,6 +89,10 @@ export class CrossChainContractData {
   }
 
   public getFromPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
+    if (!instantTrade) {
+      return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
+    }
+
     const provider = this.getProvider(providerIndex);
 
     if (provider instanceof UniSwapV3Service) {
@@ -99,6 +112,10 @@ export class CrossChainContractData {
   }
 
   public getToPath(providerIndex: number, instantTrade: InstantTrade): string[] {
+    if (!instantTrade) {
+      return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
+    }
+
     const provider = this.getProvider(providerIndex);
 
     if (provider instanceof UniSwapV3Service) {
@@ -124,5 +141,40 @@ export class CrossChainContractData {
     }
 
     return instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
+  }
+
+  public getToMethodSignature(providerIndex: number, isToTokenNative: boolean): string {
+    let methodName: string = isToTokenNative
+      ? TO_USER_SWAP_METHOD.SWAP_CRYPTO
+      : TO_USER_SWAP_METHOD.SWAP_TOKENS;
+    let contractAbiMethod = crossChainContractAbiV2.find(method => method.name === methodName);
+
+    if (this.isProviderV3(providerIndex)) {
+      methodName += 'V3';
+      contractAbiMethod = crossChainContractAbiV3.find(method => method.name === methodName);
+    }
+
+    if (this.blockchain === BLOCKCHAIN_NAME.AVALANCHE) {
+      methodName += 'AVAX';
+    }
+
+    methodName = methodName + this.providersData[providerIndex].methodSuffix;
+
+    const parameters = contractAbiMethod.inputs[0].components;
+    const paramsSignature = parameters.reduce((acc, parameter, index) => {
+      if (index === 0) {
+        acc = '((';
+      }
+
+      acc += parameter.type;
+
+      if (index === parameters.length - 1) {
+        return acc + '))';
+      } else {
+        return acc + ',';
+      }
+    }, '');
+
+    return methodName + paramsSignature;
   }
 }
