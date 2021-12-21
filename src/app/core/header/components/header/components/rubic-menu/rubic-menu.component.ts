@@ -110,15 +110,16 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     this.isOpened = false;
   }
 
-  // TODO refactor: switchCase, define type for links
-  public menuClickHandler(linkType: 'swaps' | 'bridge' | 'cross-chain'): void {
+  // TODO refactor: define type for links
+  public menuClickHandler(linkType: 'swaps' | 'bridge' | 'cross-chain' | 'staking'): void {
     this.closeMenu();
-    if (linkType === 'swaps') {
-      this.swapClick.emit();
-    } else if (linkType === 'bridge') {
-      this.bridgeClick.emit();
-    } else {
-      this.crossChainClick.emit();
+    switch (linkType) {
+      case 'swaps':
+        this.swapClick.emit();
+      case 'bridge':
+        this.bridgeClick.emit();
+      case 'cross-chain':
+        this.crossChainClick.emit();
     }
   }
 

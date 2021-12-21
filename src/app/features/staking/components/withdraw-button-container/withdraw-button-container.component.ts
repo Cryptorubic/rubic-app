@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
 
@@ -10,8 +17,10 @@ import { ErrorTypeEnum } from '../../enums/error-type.enum';
   styleUrls: ['./withdraw-button-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WithdrawButtonContainerComponent {
+export class WithdrawButtonContainerComponent implements OnInit {
   @Input() needLogin: boolean;
+
+  @Input() needChangeNetwork: boolean;
 
   @Input() balance: BigNumber;
 
@@ -26,6 +35,8 @@ export class WithdrawButtonContainerComponent {
 
   @Output() onLogin = new EventEmitter<void>();
 
+  @Output() onChangeNetwork = new EventEmitter<void>();
+
   private _amount: BigNumber;
 
   public errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(ErrorTypeEnum.EMPTY_AMOUNT);
@@ -33,6 +44,10 @@ export class WithdrawButtonContainerComponent {
   public readonly errorTypeEnum = ErrorTypeEnum;
 
   constructor() {}
+
+  ngOnInit() {
+    console.log('');
+  }
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber): void {
     if (amount.isNaN()) {

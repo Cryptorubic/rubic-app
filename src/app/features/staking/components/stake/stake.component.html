@@ -12,10 +12,12 @@
     />
   </div>
   <div class="stake__balance-and-usd">
-    <div class="stake__balance" *ngIf="selectedTokenBalance$ | async as tokenBalance">
-      {{ 'staking.stake.balance' | translate: { amount: tokenBalance | bigNumberFormat } }}
-      <span>MAX</span>
-    </div>
+    <ng-container *ngIf="(needLogin$ | async) === false">
+      <div class="stake__balance" *ngIf="selectedTokenBalance$ | async as tokenBalance">
+        {{ 'staking.stake.balance' | translate: { amount: tokenBalance | bigNumberFormat } }}
+        <span>MAX</span>
+      </div>
+    </ng-container>
     <div class="stake__usd">
       <app-usd-price-container [usdPrice]=""></app-usd-price-container>
     </div>

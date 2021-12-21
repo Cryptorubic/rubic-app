@@ -11,6 +11,7 @@ import {
   TuiHintControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
+  TuiLoaderModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -57,7 +58,8 @@ import { StakingApiService } from './services/staking-api.service';
     TuiTextfieldControllerModule,
     TuiHintControllerModule,
     TuiHintModule,
-    TuiProgressModule
+    TuiProgressModule,
+    TuiLoaderModule
   ]
 })
 export class StakingModule {}

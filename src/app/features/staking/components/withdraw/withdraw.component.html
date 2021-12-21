@@ -13,10 +13,13 @@
       appTokenAmount
       [formControl]="amount"
     />
-    <div class="withdraw__balance" *ngIf="stakingTokenBalance$ | async as stakingTokenBalance">
-      {{ 'staking.stake.balance' | translate: { amount: stakingTokenBalance | bigNumberFormat } }}
-      <span>MAX</span>
-    </div>
+    <ng-container *ngIf="(needLogin$ | async) === false">
+      <div class="withdraw__balance" *ngIf="stakingTokenBalance$ | async as stakingTokenBalance">
+        <ng-container *ngIf="(needLogin$ | async) === false"></ng-container>
+        {{ 'staking.stake.balance' | translate: { amount: stakingTokenBalance | bigNumberFormat } }}
+        <span>MAX</span>
+      </div>
+    </ng-container>
     <app-usd-price-container></app-usd-price-container>
   </div>
 
@@ -36,7 +39,9 @@
     [needLogin]="needLogin$ | async"
     [balance]="stakingTokenBalance$ | async"
     [amount]="amount.value"
+    [needChangeNetwork]="needChangeNetwork$ | async"
     (onLogin)="login()"
     (onWithdraw)="withdraw()"
+    (onChangeNetwork)="changeNetwork()"
   ></app-withdraw-button-container>
 </div>
