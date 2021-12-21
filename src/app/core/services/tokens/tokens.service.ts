@@ -28,7 +28,6 @@ import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import CustomError from '@core/errors/models/custom-error';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
@@ -597,9 +596,8 @@ export class TokensService {
     if (foundToken) {
       return foundToken?.symbol;
     }
-    if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
+
+    BlockchainsInfo.checkIsEthLike(blockchain);
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
     return blockchainAdapter.getTokenSymbol(tokenAddress);
   }

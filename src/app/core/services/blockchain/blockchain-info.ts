@@ -23,4 +23,10 @@ export class BlockchainsInfo {
     }
     throw new CustomError('Unknown network');
   }
+
+  static checkIsEthLike(name: BLOCKCHAIN_NAME): void | never {
+    if (this.getBlockchainType(name) !== 'ethLike') {
+      throw new CustomError('Wrong blockchain error');
+    }
+  }
 }
