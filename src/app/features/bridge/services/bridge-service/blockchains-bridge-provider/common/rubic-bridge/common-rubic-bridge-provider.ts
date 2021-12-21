@@ -183,9 +183,9 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
     if (toBlockchain === this.defaultConfig.from.blockchainName) {
-      return of(tokenPair.toEthFee);
+      return of(tokenPair.fromEthFee);
     }
-    return of(tokenPair.fromEthFee);
+    return of(tokenPair.toEthFee);
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
