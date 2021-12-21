@@ -78,7 +78,11 @@
     "tradingIsNotAvailable": "거래 불가",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
-    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token."
+    "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
+    "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
+    "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
+    "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
+    "buttonLink": "더 알아보기"
   },
   "navigation": {
     "about": "소개",
@@ -273,116 +277,74 @@
   },
   "faqPage": {
     "title": "FAQ",
-    "questions": {
-      "0": {
+    "questions": [
+      {
         "title": "What is Rubic?",
-        "answer": "Rubic is a multichain DeFi ecosystem, which features cross-chain swaps, instant swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete cross-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as buying MATIC or BNB directly via our Crypto Tap.\n\nAt the moment, Rubic supports trades on Ethereum, Polygon (ex Matic), and Binance Smart Chain networks and cross-chain swaps between Ethereum, Polygon (ex Matic), and Binance Smart Chain, xDai and TRON networks."
+        "answer": "Rubic is a multichain DeFi ecosystem, which features multi-chain swaps, on-chain swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete multi-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as our unique multi-chain feature which gives the opportunity to swap all supported tokens on 1 click!"
       },
-      "1": {
+      {
         "title": "Who can use our service?",
-        "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete cross-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at Rubic.exchange"
+        "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete multi-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at app.rubic.exchange"
       },
-      "2": {
-        "title": "What are the minimum and maximum trade sizes?",
-        "answer": "There are no limits for Instant Trades.\n\nThe minimum and maximum trade sizes for Cross-Chain Swaps will be shown on the form for each token, if they have any restrictions."
-      },
-      "3": {
-        "title": "How does it work?",
-        "answer": "There are numerous features that Rubic provides to its users. These features include:\n\nInstant Trades - Complete a trade between different assets using different blockchains and DEXs, all on one platform.\n\nRubic Routing system - Complete an instant trade while getting the best rates on the market.\n\nCross-Chain Swaps - Complete a swap between different networks using integrated and created bridges between those networks.\n\nCrypto Tap - Easily buy MATIC or BNB without ever needing KYC/VPNs, using either RBC or ETH. If RBC is used for the Tap, you’ll also get a discounted rate.\n\nThe Rubic platform also provides the services of Custom Bridge creation, platform listings, Rubic Relay Widget integrations and will soon offer cross-chain routing.\n\nThe Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well."
-      },
-      "4": {
-        "title": "Which cryptocurrencies are supported?",
-        "answer": "At the moment, Rubic allows trading for Ethereum-based tokens (ERC-20),  Binance Smart Chain tokens (BEP-20), and on the Polygon network. For cross-chain swaps Rubic also allows users to transfer their assets between Ethereum, BSC, Polygon, xDai and TRON networks. \nMore blockchains will be implemented soon.\n\nAt the same time, thanks to our partnership, MyWish users can create and manage tokens. We also provide multichain services supported by Ethereum, Tron, EOS, NEO, and Binance Smart Chain.\n"
-      },
-      "5": {
-        "title": "Should I list my token before using your service?",
-        "answer": "No, you can freely trade any token by manually adding their contract addresses. However, you can <a href='mailto:support@rubic.exchange'>contact us</a> and we’ll add your token to our list."
-      },
-      "6": {
-        "title": "How to start?",
-        "answer": "Using Rubic is quick and simple. You need either a MetaMask crypto wallet, or a wallet that’s compatible with WalletConnect. Choose the blockchain in which you want to swap your tokens, and choose the trade which you’d like to complete.\n\nCheck out the tutorials on our YouTube channel: <a href='https://www.youtube.com/watch?v=eo4qZnQbSs8&list=PLVWQUJaU3PTpCzcxPEPNoJOIuVV0Or0FV'>https://www.youtube.com/watch?v=eo4qZnQbSs8&list=PLVWQUJaU3PTpCzcxPEPNoJOIuVV0Or0FV</a>"
-      },
-      "7": {
-        "title": "How to create a trade?",
-        "answer": "<span class='faq__highlight'>Instant Trades:</span>\n<strong>Step 1:</strong> Select “Swaps”, and choose network in which you would like to complete a swap.\n<strong>Step 2:</strong> Fill out the form by choosing the tokens you want to exchange.\n<strong>Step 3:</strong> Enter the amount you want to exchange.\n<strong>Step 4:</strong> Now, the DEX aggregator will automatically show you the best rates across multiple protocols.\n<strong>Step 5:</strong> Press the “Swap” button or Approve your tokens if needed.\n<strong>Step 4:</strong> Now, the DEX aggregator will automatically show you the best rates across multiple protocols.\n<strong>Step 6:</strong> Use MetaMask or a wallet that’s compatible with WalletConnect, to confirm your trade, and now wait for the transaction to be confirmed on the blockchain.\n<a href='https://youtu.be/kxg9GQvBU2A'>Video tutorial</a>"
-      },
-      "8": {
-        "title": "How much does it cost?",
-        "answer": "Currently, our service doesn't charge any provider fees for Instant Trades.\n\nFees for using the bridges for BRBC and RBC will be:\n\nFrom RBC (Ethereum) to BRBC (BSC) — 100 RBC (Ethereum).\n\nFrom BRBC (BSC) to RBC (Ethereum) - 100 BRBC (BSC).\nIn every trade you need to pay gas fee, you will see the exact amount while confirming the transaction in your wallet.\n\nRubic’s Tap will help anyone begin using the Polygon and BSC networks, as well as providing a discount for users that complete the swap using the RBC token. Users will be able to swap more BNB and MATIC than normal and pay less RBC at the same time.\n\nCommission fees in ETH is 0.02, and in RBC is just 150 RBC or about 0.007 ETH worth at the current market prices at the time of writing this article."
-      },
-      "9": {
-        "title": "How long does it take to complete a transaction?",
-        "answer": "For Instant Trades, the transaction will be complete as soon as it gets confirmed on the blockchain.\n\nFor Cross-chain Swaps, the swap timing depends on the bridge which you’re using to complete the swap.\n\nFor Crypto Taps - It will be completed in 5 minutes after the acceptance swap."
-      },
-      "10": {
-        "title": "How is the privacy and security of the transaction ensured?",
-        "answer": "The deal is secured by smart contracts verified by experienced developers and external audits. As a DEX aggregator, we collect several AMM's in our platform that allows users to complete a swap with the best rate.\nRubic team is carefully checking the security of integrated AMM’s and all of the transactions through instant trades are passing through this security reliable projects."
-      },
-      "11": {
-        "title": "How do I add the Binance Smart Chain and Polygon networks to MetaMask?",
-        "answer": "<strong>Step 1.</strong> Click on the top-right circle and head to Settings\n\n<strong>Step 2.</strong> After Settings was accessed, locate and click Networks\n\n<strong>Step 3.</strong> On the top-right cornet click Add Network to manually add Binance Smart Chain (or any\nother blockchain)\n\n<strong>Step 4.</strong> Add the details written down below for your blockchain of interest\n\nBinance Smart Chain Network\n\nNetwork Name: Binance Smart Chain Mainnet\n\nNew RPC URL: https://bsc-dataseed.binance.org/\n\nChainID: 56 (*if it’s not working, try 0x38)\n\nSymbol: BNB\n\nBlock Explorer URL: https://bscscan.com\n\nMatic Network\n\nNetwork Name: Matic Mainnet\n\nNew RPC URL: https://rpc-mainnet.matic.network/\n\nChainID: 137 (*if it’s not working, try 0x89)\n\nSymbol: MATIC\n\nBlock Explorer URL: https://explorer.matic.network\n\n<strong>Step 5.</strong> Click Save and you are ready to go!\n\nRemember! Before starting trading, identify your nature of your tokens and select their\ncorresponding Network. To swap between the Networks just click on the top-right on the name of\nthe current Network selected and you’ll get a drop-menu with all the Networks available.\n\n<a href='https://app.rubic.exchange/assets/book.pdf'>Please click here for more details.</a>"
-      },
-      "12": {
-        "title": "How do I use the ETH <-> BSC bridge?",
-        "answer": "<strong>Step 1.</strong> Install and unlock MetaMask wallet (www.metamask.io) or use WalletConnect to connect your wallet to <a href='http://www.app.rubic.exchange'>www.app.rubic.exchange</a>. \n\n<strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button. \n\n<strong>Step 3.</strong> Currently, users are able to swap 25 ERC20 tokens with their corresponding BEP20 version, and vice-versa (the list is always being updated). The list of tokens:\nUSDT to BUSDT-T (Tether)\nETH to ETH (Ethereum)\nBBTC to BTCB (Bitcoin)\nBBCH to BCH (Bitcoin Cash)\nBDOT to DOT (Polkadot)\nBFIL to FIL (Filecoin)\nSNX to SNX (Synthetix Network Token)\nDAI to DAI (Dai Stablecoin)\nBAND to BAND (BandToken)\nBAT to BATBasic (Attention Token)\nLINK to LINK (ChainLink)\nUNI to UNI (Uniswap)\nYFII to YFII (DFI.Money)\nYFI to YFI (yearn.finance)\nBUSD to BUSD (Binance USD)\nCOMP to COMP (Compound)\nMKR to MKR (Maker)\nTCT to TCTToken (Club Token)\nIOTX to IOTX (IoTeX)\nBEL to BEL (Bella Protocol)\nELF to ELF (aelf)\nPAX to PAX (Paxos Standard)\nUSDC to USDC (USD Coin)\nINJ to INJ (Injective Protocol)\nSXP to SX (Swipe)\n\n<strong>Step 4.</strong>  Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Proceed if you’re satisfied with the amount of returning tokens (this includes the Binance fee).\n\n<strong>Step 5.</strong>  You can view tokens' contracts by clicking on 'Check on Etherscan/BSCscan'.\n\n<strong>Step 6.</strong> Click “Swap”, followed by MetaMask's or a wallet that’s compatible with WalletConnect, trade confirmation. \n\n<strong>Step 7.</strong> Please wait until the transaction will be recorded in the blockchain. Once your transaction is accepted you will be notified. You can find the transaction details in the table. Please wait until the Binance will process it as well."
-      },
-      "13": {
-        "title": "I'm not able to use cross-chain swaps; it appears I have exceeded their limit. What should I do?",
-        "answer": "The swap between the Ethereum and Binance Smart Chain networks uses the Panama Bridge, which has some restrictions on swaps. This error might occur if you’re completing the swap from a country that has restricted Binance. Please use a VPN, and refresh the page or try again in 30 mins.\n\nThis restriction will soon improve after the implementation of cross-chain routing."
-      },
-      "14": {
-        "title": "How long does it take to complete a cross-chain swap?",
-        "answer": "It usually varies, and this does not depend on us, but on the two blockchains.\n\n As estimations, we have 2 minutes for initialization, then 4 minutes for feedback waiting, and another couple of minutes for the deposit"
-      },
-      "15": {
+      {
         "title": "How does Rubic unite different DEX platforms? ",
         "answer": "Users will be able to choose the suitable DEX protocol in order to get the best tokens rates with the lowest gas prices. Rubic always analyzes and compares all the variants, and comes up with the best rate. Please notice that while checking all the alternatives we consider the GAS fee. Rubic strives to provide users with the best exchange opportunities. "
       },
-      "16": {
+      {
         "title": "Why do we need to make a choice between different providers?",
-        "answer": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to make better trading decisions.\n\nMoreover, Rubic created a routing solution that will allow users to trade any token on BSC, Polygon and Ethereum networks. Our self-created routing system for Ethereum has several advantages over the Uniswap routing system. The main advantage is the ability to calculate gas prices and show users the best-optimized solution while paying the least amount of gas.\n\nOur routing system gives users lower prices on their swaps than most DEXs. Users will receive quotes for lower prices in situations where the price difference between different swap outcomes costs more than the ANTICIPATED price difference for the miner’s commission fees. When this difference in swap price is more than the difference in miner’s commission fees, the user will be presented with an option for a cheaper swap route. In situations where this occurs, users will also be given an option with a more expensive gas fee and a longer route to execute the swap, due to potential issues with liquidity."
+        "answer": "The gas fees and price rates of these protocols are different, therefore the opportunity of having more options empowers the users to make better trading decisions.\n\nMoreover, Rubic created a routing solution that will allow users to trade any token on different networks. Our self-created routing system for Ethereum has several advantages over the Uniswap routing system. The main advantage is the ability to calculate gas prices and show users the best-optimized solution while paying the least amount of gas.\n\nOur routing system gives users lower prices on their swaps than most DEXs. Users will receive quotes for lower prices in situations where the price difference between different swap outcomes costs more than the ANTICIPATED price difference for the miner’s commission fees. When this difference in swap price is more than the difference in miner’s commission fees, the user will be presented with an option for a cheaper swap route. In situations where this occurs, users will also be given an option with a more expensive gas fee and a longer route to execute the swap, due to potential issues with liquidity."
       },
-      "17": {
-        "title": "What should I do when I see the message:\n<div class='faq__warning-container'><div class='faq__warning'>Trading on Uniswap is not available</div>?</div>",
-        "answer": "If you get this message, try the following methods:\n1. Reload the page.\n2. Clear the website cache.\n3.  Log out and then log back into MetaMask.\n\nIf it’s still not working please contact our support team."
+      {
+        "title": "How To Contact Support?",
+        "answer": "If you need assistance, feel free to contact our support team here by submitting a ticket on our website or on our Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>\n\n Live chat - Contact Rubic team for immediate assistance using chat. Available 24/7.\n\nEmail Support - <a href='mailto:support@rubic.finance'>support@rubic.finance</a>. Message Rubic Support anytime with more complex or technical questions. We're here to help."
       },
-      "18": {
-        "title": "What should I do if Uniswap doesn’t display the rates?",
-        "answer": "In order to see the Uniswap rates you will need to login with your MetaMask wallet or a wallet that’s compatible with WalletConnect, once logged in refresh the page as well."
+      {
+        "title": "What is the Rubic Relay widget and how can we integrate it?",
+        "answer": "The Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well.\n\nHere is a detailed instructional guide for the Relay’s integration:\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing' target='_blank'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
       },
-      "19": {
-        "title": "What are use cases of RBC? ",
-        "answer": "The Rubic platform has an ERC-20 token, «RBC», which is used as the fuel within the platform.\n\n Our platform is chargingthe users for the following operations:\n\n Rubic Bridge swaps \n\n Crypto Tap swaps \n\n Bridge creations \n\n Order book creation \n\n Other services \n\n Accounting with Relayers, external services, and marketing services are made in RBC."
+      {
+        "title": "What should I do when I see the message “Trading is not available“?",
+        "answer": "If you get this message, try the following methods:\n1. Reload the page.\n2. Clear the website cache.\n\n If it didn’t help probably one of the tokens you try to swap doesn’t have enough liquidity for this trade."
       },
-      "20": {
-        "title": "What is the Rubic Relay widget?",
-        "answer": "The Rubic Relay is a great solution for the problems projects face regarding low user turnover.\nIt keeps users on your website, transforming trades into a simple action: the Relay offers users and project owners the function of buying and selling tokens on their own project’s webpage, leading users to stay on your website for longer out of sheer utility.\nThe Relay is also scalable across different devices, and it’s possible to change the colours and size of the Relay widget itself as well."
+      {
+        "title": "Why does my On-Chain swap have a long-lasting “Pending” status?",
+        "answer": "Reason:\nIt’s possible that the gas fee that was set is not enough to process your transaction.\n\n How to solve:\n If the transaction is “Pending”, it is best to accelerate the transaction manually, by changing to the desired value of gas, in order to force the completion of the transaction. It can be done via your wallet. You will be able to pay an additional gas fee.\n\nIf you still need assistance, feel free to contact our support team hereby submitting a ticket or on Telegram <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>"
       },
-      "21": {
-        "title": "How can we integrate the Rubic Relay widget?",
-        "answer": "Here is a detailed instructional guide for the Relay’s integration:\n\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing'>https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
+      {
+        "title": "Why do I get the “Insufficient Balance” error?",
+        "answer": "If you swap a native token and you encounter this error it means that you are trying to send all of your transferable funds out, without leaving enough balance for the transaction fees. If you transfer a non-native token, a value exceeding the available balance has been entered in the “Amount” field. \nAlso, please check that you have connected the proper wallet and you have enough tokens for the swap.\nThe fee is shown on the transfer screen before you confirm the transfer. Deduct this amount from the total amount you're sending out, and your transfer will go through."
       },
-      "22": {
-        "title": "How do we get listed on Rubic? ",
-        "answer": "Please fill out the form at Rubic.exchange in order to get listed.\n\n If you want your project to be listed on the Rubic platform please send an email to support@rubic.finance with the following information:\nProject name\nProject description\nLinks to the project and social media\nContract address\nWhitepaper/Onepager"
+      {
+        "title": "What should I do if I get the “Price Impact Too High” error?",
+        "answer": "Reason:\n This error is caused by low liquidity.\n\nTry trading a smaller amount, or increase slippage tolerance via the settings icon and try again. If that did not help, then the token’s liquidity is too low to swap."
       },
-      "23": {
-        "title": "How do I use Rubic’s bridges?",
-        "answer": "Tutorial for our bridges:\n\n <strong>Step 1.</strong> Install MetaMask wallet (www.metamask.io) or WalletConnect and connect it to Rubic.exchange. \n\n <strong>Step 2.</strong> Choose your exchange destination (from Ethereum to Binance or vice-versa). You can switch your destination by clicking on the swap arrows button.\n\n <strong>Step 3.</strong> Currently, users are able to swap the RBC token with its corresponding BEP20 (BRBC) version, and vice-versa.\n\n <strong>Step 4.</strong>  Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Proceed if you’re satisfied with the amount of returning tokens (this includes the Rubic bridge).\n\n <strong>Step 5.</strong> You can view token contracts by clicking on 'Check on Etherscan/BSCScan'.\n\n <strong>Step 6.</strong> Click “Swap”, followed by accepting MetaMask’s or a wallet that’s compatible with WalletConnect, trade confirmation.\n\n <strong>Step 7.</strong> Please wait until the transaction is recorded on the blockchain. You’ll be notified once your transaction is accepted, and you can find the transaction details in the MyTrades table. Please wait until the Rubic bridge processes it as well."
+      {
+        "title": "What if my transaction has a “Dropped & Replaced” status on the scanner?",
+        "answer": "Dropped & Replaced\" means the transaction has been replaced by a new one.\n\n There are two possible reasons for that status:\n1. You have accelerated the transaction in your wallet and will receive the desired tokens, you can find out information about the transaction in the “Replaced by Txn Hash\" tab.\n2. You probably cancelled the transaction by mistake. The assets will not be debited from your address, but the gas fee will not be refunded back to you."
       },
-      "24": {
-        "title": "How to use TRON bridge?",
-        "answer": "<strong>Step 1.</strong>  Install and unlock MetaMask wallet (www.metamask.io) or use WalletConnect to connect your wallet to <a href='http://www.app.rubic.exchange/'>www.app.rubic.exchange</a>.\n\n <strong>Step 2.</strong> Choose your exchange destination (from Ethereum or Binance Smart Chain to TRON).\n\n <strong>Step 3.</strong> Enter your TRON wallet address in settings. Your tokens will be transferred to it.\n\n <strong>Step 4.</strong> Currently, users can only trade USDT and bUSDT to the corresponding TRON network version. <strong>Step 5.</strong> Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Next, proceed if you are satisfied with the amount of returning tokens (this includes the transaction fee).\n\n <strong>Step 6.</strong>  You can view token contracts by clicking on ‘Check on Etherscan/TRONscan’.\n\n <strong>Step 7.</strong> Click Create Swap, followed by accepting MetaMask’s or a wallet that’s compatible with WalletConnect trade confirmation.\n\n <strong>Step 8.</strong> Please wait until the transaction is recorded in the blockchain. You’ll be notified once your transaction is accepted, and you can find the transaction details in the table."
+      {
+        "title": "Why did I get the ”Expired” status on the scanner?",
+        "answer": "The transaction was not mined in the time period allotted for it.\n\nIn this scenario, the transaction should be sent again. Note that during the transaction, the gas spent on its execution is burned, but not completely. A gas fee is also charged for conducting the re-sent transaction."
       },
-      "25": {
-        "title": "How do I use the ETH <-> Polygon bridge?",
-        "answer": "On Rubic.exchange, you’re able to swap ERC20 tokens with their corresponding version in the Polygon network and vice-versa (for example, swap USDT- ERC20 with USDT in the Polygon network). Since Ethereum is facing high gas fees and BSC only started adding more validators, people are looking for networks that are more attractive for traders. Users will be able to transfer their tokens onto the Polygon ecosystem, all within the Rubic platform. Polygon has already powered more than 7M transactions for more than 300k user addresses, with transaction activity increasing by the day. Currently, our bridge will only allow users to swap PoS tokens.\n\n Swap from Ethereum to Polygon:\n\n <strong>Step 1.</strong> Enter the number of tokens that you want to swap and press “Create Swap.”\n\n <strong>Step 2.</strong> Accept the transaction through your MetaMask or a wallet that’s compatible with WalletConnect.\n\n <strong>Step 3.</strong> Your transaction status will be shown on the table.\n\n <strong>Step 4.</strong>  After 7–10 minutes, your cross-chain swap will be completed and you’ll be able to trade your tokens within the Polygon network.\n\n Swap from Polygon to Ethereum:\n\n <strong>Step 1.</strong> Enter the number of tokens that you want to swap and press “Create swap.”\n\n <strong>Step 2.</strong> Wait until the “Withdraw in progress” status is changed to “Waiting for deposit”. Your transaction status will be shown on the table.\n\n <strong>Step 3.</strong> Press “Receive.”\n\n <strong>Step 4.</strong> Your tokens will be swapped to your wallet on the Ethereum network as soon as the transaction is mined.\n\n In some cases, completing swaps might take more time than usual."
+      {
+        "title": "Why do I get “Warning! Error Encountered During Contract Execution [Out of Gas]”?",
+        "answer": "Reason:\n There was not enough gas for the transaction.\n\n This scanner error means the gas limit you set was above the minimum but still not sufficient to get the transaction to execute. Please try again with a higher gas limit. Also, we recommend not to change the gas limit manually, your wallet will set the needed amount automatically."
       },
-      "26": {
-        "title": "How do I use the xDai bridge? ",
-        "answer": "<strong>Step 1.</strong> Install and unlock MetaMask wallet (www.metamask.io) or use WalletConnect to connect your wallet to <a href='http://www.app.rubic.exchange/'>www.app.rubic.exchange.</a>\n\n <strong>Step 2.</strong>  Choose your exchange destination (from Ethereum to xDai).\n\n <strong>Step 3.</strong> Currently, users are able to swap DAI tokens to the xDAI version.\n\n <strong>Step 4.</strong> Enter the number of tokens you want to swap (check the minimum and maximum amount of tokens that you’re able to exchange). Proceed if you’re satisfied with the amount of returning tokens.\n\n <strong>Step 5.</strong> You can view token contracts by clicking on 'Check on Etherscan/Blockscout.’\n\n <strong>Step 6.</strong>  Click “Swap,” followed by accepting your wallet’s trade confirmation.\n\n <strong>Step 7.</strong> Please wait until the transaction is recorded on the blockchain. You’ll be notified once your transaction is accepted, and you can find the transaction details in the table. Please wait until the xDai bridge processes it as well."
+      {
+        "title": "Why do I have a long-lasting “Pending” status of a Multi-Chain transaction?",
+        "answer": "Presumably, gas prices increased dramatically during that time. \nIf the above methods did not help, please contact our support team via chat on the website or Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
+      },
+      {
+        "title": "Why can't I do the multi-chain swap?",
+        "answer": "Unfortunately, we don’t support tokens with an included fee to sell via multi-chain routing. We are working on implementing this feature.\n For now we suggest you to sell these types of tokens for stable or native coins via on-chain swap and then do the multi-chain swap with the token you have bought.",
+        "id": "unsupportedTokenCCR"
+      },
+      {
+        "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
+        "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
+        "id": "rpcError"
       }
-    }
+    ]
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
