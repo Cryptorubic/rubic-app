@@ -2,14 +2,9 @@ import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-ch
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import BigNumber from 'bignumber.js';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';
-import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Injectable } from '@angular/core';
 import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
@@ -20,8 +15,6 @@ import { ContractParams } from '@features/cross-chain-routing/services/cross-cha
   providedIn: 'root'
 })
 export class EthLikeContractExecutorService {
-  private readonly contractAbi = crossChainSwapContractAbi;
-
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
   constructor(
@@ -38,17 +31,15 @@ export class EthLikeContractExecutorService {
     userAddress: string,
     targetAddress: string
   ): Promise<string> {
-    const { contractAddress, methodName, methodArguments, value } = await this.getContractParams(
-      trade,
-      userAddress
-    );
+    const { contractAddress, contractAbi, methodName, methodArguments, value } =
+      await this.getContractParams(trade, userAddress);
 
     const privateAdapter = this.privateAdapter[trade.fromBlockchain] as EthLikeWeb3PrivateService;
     let transactionHash;
 
     await privateAdapter.tryExecuteContractMethod(
       contractAddress,
-      this.contractAbi,
+      contractAbi,
       methodName,
       methodArguments,
       {
@@ -90,64 +81,20 @@ export class EthLikeContractExecutorService {
   ): Promise<ContractParams> {
     const { fromBlockchain, toBlockchain } = trade;
 
-    const contractAddress = this.contracts[fromBlockchain].address;
-    const blockchainFromAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    const blockchainToAdapter = this.publicBlockchainAdapterService[toBlockchain];
-
-    const isFromTokenNative = blockchainFromAdapter.isNativeAddress(trade.tokenIn.address);
-    const methodName = this.contracts[fromBlockchain].getMethodName(
-      trade.fromProviderIndex,
-      isFromTokenNative
+    const isFromTokenNative = this.publicBlockchainAdapterService[fromBlockchain].isNativeAddress(
+      trade.tokenIn.address
+    );
+    const isToTokenNative = this.publicBlockchainAdapterService[toBlockchain].isNativeAddress(
+      trade.tokenOut.address
     );
 
-    const toNumOfBlockchain = this.contracts[toBlockchain].numOfBlockchain;
-
-    const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(
-      trade.tokenInAmount,
-      trade.tokenIn.decimals
+    return this.contracts[fromBlockchain].getContractParams(
+      trade,
+      isFromTokenNative,
+      isToTokenNative,
+      this.contracts[toBlockchain].numOfBlockchain,
+      walletAddress
     );
-    const tokenOutAmountMin =
-      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = EthLikeWeb3Public.toWei(
-      tokenOutAmountMin,
-      trade.tokenOut.decimals
-    );
-
-    const firstTransitTokenAmountMin =
-      CrossChainContractExecutorFacadeService.calculateFirstTransitTokenAmountMin(trade);
-    const firstTransitTokenAmountMinAbsolute = EthLikeWeb3Public.toWei(
-      firstTransitTokenAmountMin,
-      this.contracts[fromBlockchain].transitToken.decimals
-    );
-
-    const methodArguments = [
-      [
-        toNumOfBlockchain,
-        tokenInAmountAbsolute,
-        trade.firstPath,
-        // @TODO Solana. Remove hardcode.
-        toBlockchain === BLOCKCHAIN_NAME.SOLANA ? [EMPTY_ADDRESS] : trade.secondPath,
-        firstTransitTokenAmountMinAbsolute,
-        tokenOutAmountMinAbsolute,
-        // @TODO Solana. Remove hardcode.
-        toBlockchain === BLOCKCHAIN_NAME.SOLANA ? EMPTY_ADDRESS : walletAddress,
-        blockchainToAdapter.isNativeAddress(trade.tokenOut.address),
-        true,
-        false
-      ]
-    ];
-
-    const blockchainCryptoFee = EthLikeWeb3Public.toWei(trade.cryptoFee);
-    const value = new BigNumber(blockchainCryptoFee)
-      .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
-      .toFixed(0);
-
-    return {
-      contractAddress,
-      methodName,
-      methodArguments,
-      value
-    };
   }
 
   /**

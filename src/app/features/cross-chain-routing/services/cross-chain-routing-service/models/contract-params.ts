@@ -1,8 +1,15 @@
+import { AbiItem } from 'web3-utils';
+
 export interface ContractParams {
   /**
    * Contract address in source network.
    */
   contractAddress: string;
+
+  /**
+   * Contract abi in source network.
+   */
+  contractAbi: AbiItem[];
 
   /**
    * Method's name to call in contract.

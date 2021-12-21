@@ -1,7 +1,5 @@
-import { AbiItem } from 'web3-utils';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { PublicKey } from '@solana/web3.js';
 import {
   BlockchainLayout,
@@ -9,20 +7,16 @@ import {
   BridgeConfigData,
   SolanaBlockchainConfig
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
-import {
-  PDA_CONFIG,
-  PDA_POOL
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
+import { PDA_CONFIG } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
+import { crossChainContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/eth-like/cross-chain-contract-abi';
 
 export class CrossChainContractReader {
-  private readonly ethContractAbi: AbiItem[];
+  private readonly ethContractAbi = crossChainContractAbi;
 
-  constructor(private readonly blockchainAdapter: SolanaWeb3Public | EthLikeWeb3Public) {
-    this.ethContractAbi = crossChainSwapContractAbi;
-  }
+  constructor(private readonly blockchainAdapter: SolanaWeb3Public | EthLikeWeb3Public) {}
 
   private isSolana(
     blockchainAdapter: Web3Public<unknown, unknown>
@@ -132,16 +126,15 @@ export class CrossChainContractReader {
     );
   }
 
-  public async blockchainPool(contractAddress: string): Promise<string> {
+  public async getMaxGasPrice(contractAddress: string): Promise<string> {
     if (this.isSolana(this.blockchainAdapter)) {
-      return PDA_POOL;
+      return null;
     }
 
-    // isEthLike
     return this.blockchainAdapter.callContractMethod(
       contractAddress,
       this.ethContractAbi,
-      'blockchainPool'
+      'maxGasPrice'
     );
   }
 }

@@ -12,7 +12,7 @@ import {
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
-import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
+import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,

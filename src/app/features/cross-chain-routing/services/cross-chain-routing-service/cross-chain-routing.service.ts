@@ -37,7 +37,6 @@ import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-a
 import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
 import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
-import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 
 interface PathAndToAmount {
   path: string[];
@@ -62,8 +61,6 @@ export class CrossChainRoutingService {
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
-
-  private readonly contractAbi = crossChainSwapContractAbi;
 
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
@@ -461,12 +458,12 @@ export class CrossChainRoutingService {
     }
 
     try {
-      const { contractAddress, methodName, methodArguments, value } =
+      const { contractAddress, contractAbi, methodName, methodArguments, value } =
         await this.contractExecutorFacade.getContractParams(trade, walletAddress);
 
       const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
       const gasLimit = await web3Public.getEstimatedGas(
-        this.contractAbi,
+        contractAbi,
         contractAddress,
         methodName,
         methodArguments,
@@ -621,10 +618,8 @@ export class CrossChainRoutingService {
     const contractAddress = this.contracts[toBlockchain].address;
     const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
 
-    const maxGasPrice = await blockchainAdapter.callContractMethod(
-      contractAddress,
-      this.contractAbi,
-      'maxGasPrice'
+    const maxGasPrice = await new CrossChainContractReader(blockchainAdapter).getMaxGasPrice(
+      contractAddress
     );
     const currentGasPrice = EthLikeWeb3Public.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
