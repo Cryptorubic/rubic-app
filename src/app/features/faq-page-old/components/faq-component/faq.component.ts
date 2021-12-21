@@ -1,32 +1,60 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Self } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Question } from '../../models/question';
+import { ActivatedRoute } from '@angular/router';
+import { combineLatest, fromEvent } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-faq',
   templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.scss']
+  styleUrls: ['./faq.component.scss'],
+  providers: [TuiDestroyService]
 })
-export class FaqComponent {
-  public questions: Question[];
+export class FaqComponent implements AfterViewInit {
+  public questions: Question[] = [];
 
-  constructor(private readonly translateService: TranslateService) {
-    this.translateService.stream('faqPage.questions').subscribe(questions => {
-      this.questions = Object.values(questions).map((question: Question) => ({
-        isActive: false,
-        ...question
-      }));
-    });
+  private hash: string;
+
+  constructor(
+    private readonly translateService: TranslateService,
+    private readonly route: ActivatedRoute,
+    private readonly element: ElementRef,
+    @Self() private readonly destroy$: TuiDestroyService
+  ) {
+    combineLatest([this.route.fragment, this.translateService.stream('faqPage.questions')])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([hash, questions]) => {
+        this.hash = hash;
+        this.questions = questions.map(
+          (question: { title: string; answer: string; id: string }) => ({
+            ...question,
+            isActive: hash === question.id,
+            id: question.id
+          })
+        );
+      });
   }
 
-  public toggleQuestion(containerElement: MouseEvent, question: Question): void {
-    const answerElement = (containerElement.currentTarget as HTMLElement)
-      .children[1] as HTMLElement;
-    question.isActive = !question.isActive;
-    if (question.isActive) {
-      answerElement.style.height = `${answerElement.scrollHeight}px`;
-    } else {
-      answerElement.style.height = '0';
+  public ngAfterViewInit(): void {
+    if (this.hash) {
+      const answerElement = this.element.nativeElement.querySelector(`#${this.hash}`);
+
+      if (!answerElement) return;
+
+      answerElement.scrollIntoView({
+        behavior: 'smooth'
+      });
+      fromEvent(document, 'scroll')
+        .pipe(debounceTime(50), takeUntil(this.destroy$))
+        .subscribe(() => {
+          answerElement.classList.add('questions-container__question_highlight');
+        });
     }
+  }
+
+  public toggleQuestion(question: Question): void {
+    question.isActive = !question.isActive;
   }
 }

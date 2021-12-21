@@ -10,10 +10,10 @@
 @import 'scss/elements/icons';
 @import 'scss/elements/dropdown-labels';
 @import 'scss/elements/banner';
+@import 'scss/elements/buttons';
 
 /* Global */
 @import 'scss/carrot-quest';
-@import 'scss/new-ui';
 @import 'scss/dark-theme';
 
 /* TaigaUI custom styles */
@@ -34,6 +34,11 @@
 }
 
 html {
+  --tui-primary: #{$rubic-primary} !important;
+  --tui-primary-hover: #{$rubic-primary} !important;
+  --tui-font-text: #{$sf-pro-font} !important;
+
+  box-sizing: border-box;
   height: auto !important;
   overflow-x: hidden;
 

@@ -42,6 +42,10 @@
     border-radius: 10px;
     cursor: pointer;
 
+    &_highlight {
+      animation: 1s ease-in-out flicker;
+    }
+
     &_active {
       border-left: 5px solid var(--main-green);
 
@@ -50,6 +54,7 @@
       }
 
       .questions-container__text {
+        max-height: 500px;
         margin: 12px 0;
 
         opacity: 1;
@@ -70,7 +75,7 @@
   }
 
   &__text {
-    height: 0;
+    max-height: 0;
     margin: 0;
     overflow: hidden;
 
@@ -81,7 +86,8 @@
     cursor: text;
     opacity: 0;
 
-    transition: all 0.5s ease;
+    transition: 0.5s ease;
+    transition-property: opacity, max-height, margin;
   }
 
   &__arrow {
@@ -144,4 +150,9 @@
       width: 100%;
     }
   }
+}
+
+
+@keyframes flicker {
+  0% { background-color: rgba(255, 255, 255, 0.6); }
 }

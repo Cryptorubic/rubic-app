@@ -4,7 +4,8 @@
     <div
       *ngFor="let question of questions"
       [ngClass]="{ 'questions-container__question_active': question.isActive }"
-      (click)="toggleQuestion($event, question)"
+      (click)="toggleQuestion(question)"
+      [id]="question.id"
       class="questions-container__question"
     >
       <div class="questions-container__question-head">
