@@ -18,11 +18,11 @@
   <p class="swap-modal__desc" [innerHTML]="'modals.stakingSwapModal.aboutSwap' | translate"></p>
 
   <div class="swap-modal__buttons">
-    <app-rubic-button appearance="outline" size="l">
+    <app-rubic-button appearance="outline" size="l" (click)="navigateToSwaps()">
       {{ 'modals.stakingSwapModal.swapMyself' | translate }}
       <img src="assets/images/icons/external-link.svg" />
     </app-rubic-button>
-    <app-rubic-button appearance="secondary" size="l">
+    <app-rubic-button appearance="secondary" size="l" (click)="swapViaPlatform()">
       {{ 'modals.stakingSwapModal.agree' | translate }}
     </app-rubic-button>
   </div>

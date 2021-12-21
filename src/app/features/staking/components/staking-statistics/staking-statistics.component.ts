@@ -8,7 +8,7 @@ import { StakingService } from '@features/staking/services/staking.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingStatisticsComponent implements OnInit {
-  public readonly loading$ = this.stakingService.dataReloading$;
+  public readonly loading$ = this.stakingService.stakingStatisticsLoading$;
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
@@ -21,13 +21,13 @@ export class StakingStatisticsComponent implements OnInit {
   constructor(private readonly stakingService: StakingService) {}
 
   public ngOnInit(): void {
-    // TODO: refactor
-    this.stakingService.needLogin$.subscribe(needLogin => {
-      if (!needLogin) {
-        this.stakingService.getStakingTokenBalance();
-      }
-    });
+    console.log('');
   }
 
-  // public reloadStakingStatistics(): void {}
+  public reloadStakingStatistics(): void {
+    this.loading$.next(true);
+    this.stakingService.reloadStakingStatistics().subscribe(() => {
+      this.loading$.next(false);
+    });
+  }
 }

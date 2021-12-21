@@ -66,7 +66,7 @@ export class UseTestingModeService {
     this.setAliases();
 
     if (cookieService.get('testingMode') === 'true') {
-      setTimeout(() => this.useTestingMode(), 2000);
+      this.useTestingMode();
     }
   }
 

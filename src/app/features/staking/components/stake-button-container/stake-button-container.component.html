@@ -1,17 +1,18 @@
 <app-rubic-button
-  *ngIf="needLogin; else stakeButton"
+  *ngIf="needLogin; else stakeBtn"
   appearance="secondary"
   (onClick)="onLogin.emit()"
 >
   {{ 'navigation.login' | translate }}
 </app-rubic-button>
 
-<ng-template #stakeButton>
+<ng-template #stakeBtn>
   <app-rubic-button
     *ngLet="errorType$ | async as errorType"
     [disabled]="errorType | falsy"
+    [loading]="loading"
     appearance="secondary"
-    (onClick)="onConfirmStake.emit()"
+    (onClick)="onStake()"
   >
     <ng-container [ngSwitch]="errorType">
       <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
@@ -22,11 +23,14 @@
       </ng-container>
       <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
         <span class="error">{{
-          'staking.stake.overLimit' | translate: { availableAmount: limit }
+          'staking.stake.overLimit' | translate: { availableAmount: limit | bigNumberFormat }
         }}</span>
       </ng-container>
       <ng-container *ngSwitchCase="null">
-        {{ 'staking.stake.confirmStake' | translate }}
+        <ng-container *ngIf="needApprove; else confirmStake">Approve</ng-container>
+        <ng-template #confirmStake>
+          {{ 'staking.stake.confirmStake' | translate }}
+        </ng-template>
       </ng-container>
     </ng-container>
   </app-rubic-button>

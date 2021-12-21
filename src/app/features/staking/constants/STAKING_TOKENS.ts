@@ -6,20 +6,21 @@ export const STAKING_TOKENS = [
     symbol: 'BRBC',
     image: 'assets/images/icons/staking/brbc-bsc.svg',
     address: '0xd51bd30A91F88Dcf72Acd45c8A1E7aE0066263e8', //testnet
-    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET
+    // mainnet 0x8E3BCC334657560253B83f08331d85267316e08a
+    blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   },
   {
     name: 'Rubic',
     symbol: 'RBC',
     image: 'assets/images/icons/staking/rbc-eth.svg',
-    address: '',
-    blockchain: BLOCKCHAIN_NAME.ETHEREUM_TESTNET
+    address: '0xA4EED63db85311E22dF4473f87CcfC3DaDCFA3E3', //mainnet
+    blockchain: BLOCKCHAIN_NAME.ETHEREUM
   },
   {
     name: 'Rubic (PoS)',
     symbol: 'RBC',
     image: 'assets/images/icons/staking/rbc-pos.svg',
-    address: '',
-    blockchain: BLOCKCHAIN_NAME.POLYGON_TESTNET
+    address: '0xc3cFFDAf8F3fdF07da6D5e3A89B8723D5E385ff8', //mainnet
+    blockchain: BLOCKCHAIN_NAME.POLYGON
   }
 ];

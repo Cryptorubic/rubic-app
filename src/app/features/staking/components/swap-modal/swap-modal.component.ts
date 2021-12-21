@@ -1,7 +1,9 @@
 // TODO refactor
-import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
+import { Router } from '@angular/router';
+import { StakingService } from '@features/staking/services/staking.service';
 
 @Component({
   selector: 'app-swap-modal',
@@ -12,6 +14,14 @@ import { TuiDialogContext } from '@taiga-ui/core';
 export class SwapModalComponent {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, null>
+    private readonly context: TuiDialogContext<boolean, null>,
+    private readonly router: Router,
+    private readonly stakingService: StakingService
   ) {}
+
+  public navigateToSwaps(): void {
+    this.router.navigate(['swaps']);
+  }
+
+  public swapViaPlatform(): void {}
 }
