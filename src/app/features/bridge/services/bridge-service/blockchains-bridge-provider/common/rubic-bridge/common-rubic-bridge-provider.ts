@@ -124,63 +124,65 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
           this._tokenPairs$.next(List([]));
           return;
         }
+        const bridgeTokenPair = this.getTokenPairs(response);
 
-        // @TODO Fix matic.
-        const firstContractData = response.find(
-          data =>
-            data.network.toLowerCase() ===
-              TO_BACKEND_BLOCKCHAINS[this.defaultConfig.from.blockchainName] ||
-            data.network.toLowerCase() === 'matic'
-        );
-        const secondContractData = response.find(
-          data =>
-            data.network.toLowerCase() ===
-              TO_BACKEND_BLOCKCHAINS[this.defaultConfig.to.blockchainName] ||
-            data.network.toLowerCase() === 'matic'
-        );
-
-        const fromBlockchain = this.defaultConfig.from.blockchainName;
-        const toBlockchain = this.defaultConfig.to.blockchainName;
-
-        const bridgeTokenPair: BridgeTokenPair = {
-          symbol: 'RBC',
-          image: '',
-          rank: 0,
-
-          tokenByBlockchain: {
-            [fromBlockchain]: {
-              blockchain: fromBlockchain,
-              address: this.rubicConfig[fromBlockchain].rubicTokenAddress,
-              name: this.rubicConfig[fromBlockchain].name,
-              symbol: this.rubicConfig[fromBlockchain].symbol,
-              decimals: this.rubicConfig[fromBlockchain].decimals,
-              minAmount: parseFloat(firstContractData.min_amount),
-              maxAmount: this.rubicConfig[fromBlockchain].maxAmount
-            },
-            [toBlockchain]: {
-              blockchain: toBlockchain,
-              address: this.rubicConfig[toBlockchain].rubicTokenAddress,
-              name: this.rubicConfig[toBlockchain].name,
-              symbol: this.rubicConfig[toBlockchain].symbol,
-              decimals: this.rubicConfig[toBlockchain].decimals,
-              minAmount: parseFloat(secondContractData.min_amount),
-              maxAmount: this.rubicConfig[toBlockchain].maxAmount
-            }
-          },
-          fromEthFee: parseFloat(firstContractData.fee),
-          toEthFee: parseFloat(secondContractData.fee)
-        };
         this._tokenPairs$.next(List([bridgeTokenPair]));
       });
+  }
+
+  private getTokenPairs(response: RubicApiResponse[]): BridgeTokenPair {
+    const firstContractData = response.find(
+      data =>
+        data.network.toLowerCase() ===
+        TO_BACKEND_BLOCKCHAINS[this.defaultConfig.from.blockchainName]
+    );
+    const secondContractData = response.find(
+      data =>
+        data.network.toLowerCase() === TO_BACKEND_BLOCKCHAINS[this.defaultConfig.to.blockchainName]
+    );
+
+    const fromBlockchain = this.defaultConfig.from.blockchainName;
+    const toBlockchain = this.defaultConfig.to.blockchainName;
+
+    const fromConfig = this.rubicConfig[fromBlockchain];
+    const toConfig = this.rubicConfig[toBlockchain];
+
+    return {
+      symbol: 'RBC',
+      image: '',
+      rank: 0,
+
+      tokenByBlockchain: {
+        [fromBlockchain]: {
+          blockchain: fromBlockchain,
+          address: fromConfig.rubicTokenAddress,
+          name: fromConfig.name,
+          symbol: fromConfig.symbol,
+          decimals: fromConfig.decimals,
+          minAmount: parseFloat(firstContractData.min_amount),
+          maxAmount: fromConfig.maxAmount
+        },
+        [toBlockchain]: {
+          blockchain: toBlockchain,
+          address: toConfig.rubicTokenAddress,
+          name: toConfig.name,
+          symbol: toConfig.symbol,
+          decimals: toConfig.decimals,
+          minAmount: parseFloat(secondContractData.min_amount),
+          maxAmount: toConfig.maxAmount
+        }
+      },
+      fromEthFee: parseFloat(firstContractData.fee),
+      toEthFee: parseFloat(secondContractData.fee)
+    };
   }
 
   public getProviderType(): BRIDGE_PROVIDER {
     return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
-  //@TODO ?.
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
-    if (toBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+    if (toBlockchain === this.defaultConfig.from.blockchainName) {
       return of(tokenPair.toEthFee);
     }
     return of(tokenPair.fromEthFee);
