@@ -25,10 +25,13 @@ export class WithdrawComponent {
   public readonly needChangeNetwork$ = combineLatest([
     this.stakingService.selectedToken$,
     this.providerConnectorService.networkChange$.pipe(
-      startWith(this.providerConnectorService.network)
+      startWith(this.providerConnectorService?.network)
     )
   ]).pipe(
     map(([selectedToken, network]) => {
+      if (!network?.name) {
+        return false;
+      }
       return selectedToken.blockchain !== network.name;
     }),
     tap(needChangeNetwork => console.log('need change network', needChangeNetwork)),
