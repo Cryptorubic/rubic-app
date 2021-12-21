@@ -12,7 +12,7 @@ import {
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
-import { transitTokensWithMode } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
+import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -29,17 +29,21 @@ import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor.facade';
+import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
+import { Injectable } from '@angular/core';
+import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
   TRANSFER_TOKEN = 1,
   NATIVE = 2
 }
-
-export class SolanaContractExecutor {
+@Injectable({
+  providedIn: 'root'
+})
+export class SolanaContractExecutorService {
   private static createSolanaInstruction(
     pdaConfig: PublicKey,
     pdaBlockchainConfig: PublicKey,
@@ -140,7 +144,10 @@ export class SolanaContractExecutor {
     return averageTPS >= minimumTPSLimit;
   }
 
+  private readonly contracts = this.contractsDataService.getCrossChainContracts();
+
   constructor(
+    private readonly contractsDataService: CrossChainContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly tokensService: TokensService,
     private readonly raydiumRoutingService: RaydiumRoutingService
@@ -150,7 +157,6 @@ export class SolanaContractExecutor {
   public async execute(
     trade: CrossChainRoutingTrade,
     address: string,
-    toBlockchainInContractNumber: number,
     targetAddress: string,
     isToNative: boolean
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
@@ -161,15 +167,17 @@ export class SolanaContractExecutor {
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
-    const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(trade);
+    const tokenInAmountMax =
+      CrossChainContractExecutorFacadeService.calculateTokenInAmountMax(trade);
     const amountIn = new BigNumber(tokenInAmountMax.toString()).multipliedBy(fromDecimals);
 
     const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
-    const tokenOutAmountMin = CrossChainContractExecutorFacade.calculateTokenOutAmountMin(trade);
+    const tokenOutAmountMin =
+      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
     const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
 
     const middleDecimals = new BigNumber(10).exponentiatedBy(
-      transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
+      this.contracts[BLOCKCHAIN_NAME.SOLANA].transitToken.decimals
     );
     const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
       middleDecimals
@@ -194,8 +202,7 @@ export class SolanaContractExecutor {
 
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
-    const isTransfer =
-      trade.tokenIn.address === transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].address;
+    const isTransfer = trade.tokenIn.address === transitTokens[BLOCKCHAIN_NAME.SOLANA].address;
     const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
     let transferType;
     if (fromNative) {
@@ -205,6 +212,8 @@ export class SolanaContractExecutor {
     } else {
       transferType = TransferDataType.NON_TRANSFER_TOKEN;
     }
+
+    const toBlockchainInContractNumber = this.contracts[trade.toBlockchain].numOfBlockchain;
 
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
@@ -232,7 +241,7 @@ export class SolanaContractExecutor {
 
     // @TODO Solana. Fix keys order.
     transaction.add(
-      SolanaContractExecutor.createSolanaInstruction(
+      SolanaContractExecutorService.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
         new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContractNumber]),
         TOKEN_PROGRAM_ID,

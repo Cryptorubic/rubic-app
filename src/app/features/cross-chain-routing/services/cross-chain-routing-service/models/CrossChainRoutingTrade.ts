@@ -5,7 +5,7 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 export interface CrossChainRoutingTrade {
   // from blockchain data
   fromBlockchain: SupportedCrossChainSwapBlockchain;
-  fromContractIndex: number;
+  fromProviderIndex: number;
   tokenIn: TokenAmount;
   tokenInAmount: BigNumber;
   firstTransitTokenAmount: BigNumber;
@@ -14,7 +14,7 @@ export interface CrossChainRoutingTrade {
 
   // to blockchain data
   toBlockchain: SupportedCrossChainSwapBlockchain;
-  toContractIndex: number;
+  toProviderIndex: number;
   secondTransitTokenAmount: BigNumber;
   tokenOut: TokenAmount;
   tokenOutAmount: BigNumber;
