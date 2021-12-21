@@ -38,6 +38,7 @@ import { SolanaContractExecutorService } from '@features/cross-chain-routing/ser
 import CustomError from '@core/errors/models/custom-error';
 import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -701,6 +702,24 @@ export class CrossChainRoutingService {
             throw new InsufficientFundsGasPriceValueError(
               this.currentCrossChainTrade.tokenIn.symbol
             );
+          }
+
+          const unsupportedTokenErrors = [
+            'execution reverted: TransferHelper: TRANSFER_FROM_FAILED',
+            'execution reverted: UniswapV2: K',
+            'execution reverted: UniswapV2:  TRANSFER_FAILED',
+            'execution reverted: Pancake: K',
+            'execution reverted: Pancake:  TRANSFER_FAILED',
+            'execution reverted: Solarbeam: K',
+            'execution reverted: Solarbeam:  TRANSFER_FAILED'
+          ];
+
+          if (
+            unsupportedTokenErrors.some(errText =>
+              errMessage.toLowerCase().includes(errText.toLocaleLowerCase())
+            )
+          ) {
+            throw new UnsupportedTokenCCR();
           }
 
           throw err;
