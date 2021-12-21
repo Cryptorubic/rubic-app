@@ -14,7 +14,7 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
    * Gets detailed provider name with peer meta information.
    */
   public get detailedWalletName(): string {
-    return `${this.name} (${this.core.connector.peerMeta.name})`;
+    return `${this.name} (${this.wallet.connector.peerMeta.name})`;
   }
 
   constructor(
