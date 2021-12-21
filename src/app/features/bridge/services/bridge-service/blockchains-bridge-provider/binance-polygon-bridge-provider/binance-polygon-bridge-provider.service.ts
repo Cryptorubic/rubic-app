@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TransactionReceipt } from 'web3-eth';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
-import { UnknownError } from '@core/errors/models/unknown.error';
-import { EthereumBinanceRubicBridgeProviderService } from './rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
+import { first } from 'rxjs/operators';
+import { BridgeTokenPair } from '@features/bridge/models/BridgeTokenPair';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { Observable } from 'rxjs';
+import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
+import { TransactionReceipt } from 'web3-eth';
+import { UnknownError } from '@core/errors/models/unknown.error';
+import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 
 @Injectable()
-export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvider {
-  constructor(private readonly rubicBridgeProvider: EthereumBinanceRubicBridgeProviderService) {
+export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvider {
+  constructor(private readonly rubicBridgeProvider: BinancePolygonRubicBridgeProviderService) {
     super();
     this.rubicBridgeProvider.tokenPairs$
       .pipe(first())
@@ -20,37 +20,41 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
   }
 
   public getProviderType(token?: BridgeTokenPair): BRIDGE_PROVIDER {
-    if (token?.symbol === 'RBC') {
+    if (this.isRBCToken(token?.symbol)) {
       return BRIDGE_PROVIDER.SWAP_RBC;
     }
     throw new UnknownError();
   }
 
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
-    if (tokenPair.symbol === 'RBC') {
+    if (this.isRBCToken(tokenPair.symbol)) {
       return this.rubicBridgeProvider.getFee(tokenPair, toBlockchain);
     }
     throw new UnknownError();
   }
 
   public createTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    if (bridgeTrade.token.symbol === 'RBC') {
+    if (this.isRBCToken(bridgeTrade.token.symbol)) {
       return this.rubicBridgeProvider.createTrade(bridgeTrade);
     }
     throw new UnknownError();
   }
 
   public approve(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
-    if (bridgeTrade.token.symbol === 'RBC') {
+    if (this.isRBCToken(bridgeTrade.token.symbol)) {
       return this.rubicBridgeProvider.approve(bridgeTrade);
     }
     throw new UnknownError();
   }
 
   public needApprove(bridgeTrade: BridgeTrade): Observable<boolean> {
-    if (bridgeTrade.token.symbol === 'RBC') {
+    if (this.isRBCToken(bridgeTrade.token.symbol)) {
       return this.rubicBridgeProvider.needApprove(bridgeTrade);
     }
     throw new UnknownError();
+  }
+
+  private isRBCToken(symbol: string): boolean {
+    return symbol === 'RBC';
   }
 }

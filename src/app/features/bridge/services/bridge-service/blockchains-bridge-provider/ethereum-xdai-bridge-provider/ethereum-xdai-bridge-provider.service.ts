@@ -12,7 +12,7 @@ import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
 import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
-import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
+import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 
 @Injectable()
 export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider {
