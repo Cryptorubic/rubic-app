@@ -25,7 +25,7 @@
     >
       <ng-container [ngSwitch]="errorType">
         <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
-          {{ 'errors.InsufficientBalance' | translate }}
+          <span class="error-button">{{ 'errors.InsufficientBalance' | translate }}</span>
         </ng-container>
         <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
           {{ 'errors.noEnteredAmount' | translate }}
