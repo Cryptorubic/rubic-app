@@ -465,7 +465,8 @@
       "globalUpdateHint": "about global update",
       "getBrbc": "Get BRBC",
       "calculateProfitability": "Calculate profitability",
-      "refillTime": "{{hours}} hours {{minutes}} minutes"
+      "refillTime": "{{hours}} hours {{minutes}} minutes",
+      "addXbrbc": "Add xBRBC"
     },
     "stats": {
       "profitTime": "Yesterday's APY",

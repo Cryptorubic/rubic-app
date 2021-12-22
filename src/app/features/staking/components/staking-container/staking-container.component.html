@@ -33,4 +33,7 @@
     {{ 'staking.stake.getBrbc' | translate }}
     <img src="assets/images/icons/external-link.svg" alt="Get BRBC" class="get-brbc__icon" />
   </div>
+  <button *ngIf="isLoggedIn$ | async" (click)="addTokensToWallet()" class="add-xbrbc">
+    {{ 'staking.stake.addXbrbc' | translate }}
+  </button>
 </div>

@@ -25,12 +25,13 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
 import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
+import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/STAKING_CONTRACT_ADDRESS';
 
 @Injectable()
 export class StakingService {
   private walletAddress: string;
 
-  private readonly stakingContractAddress = '0x9BaDcCd58EA80E4c8fA17f1f580b84B1882eaAAf';
+  private readonly stakingContractAddress = STAKING_CONTRACT_ADDRESS;
   // ? '0xc7FC65d50AfFBF2f32236eDc5217A916614e1F9d' //testnet xBRBC
   // : '0x0d0Ed1E7994a3926644cac9b296B3745315700ff'; // mainnet xBRBC
 
