@@ -10,6 +10,13 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/Token';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { SwapFormInput } from '@features/swaps/models/SwapForm';
+import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
+import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { compareTokens } from '@shared/utils/utils';
+import BigNumber from 'bignumber.js';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
@@ -43,11 +50,34 @@ export class StakingContainerComponent {
     private readonly stakingService: StakingService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly swapFormService: SwapFormService,
+    private readonly tokensService: TokensService
   ) {}
 
-  public navigateToSwaps(): void {
-    this.router.navigate(['/']);
+  public async navigateToSwaps(): Promise<void> {
+    const form = this.swapFormService.commonTrade.controls.input;
+    const { from, to } = this.getTokens();
+    const params = {
+      fromBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+      fromToken: from,
+      toToken: to,
+      fromAmount: new BigNumber(1)
+    } as SwapFormInput;
+    form.patchValue(params);
+    await this.router.navigate(['/'], {
+      queryParams: {
+        fromChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        toChain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+        amount: '1',
+        from: from,
+        to: to
+      },
+      queryParamsHandling: 'merge'
+    });
+
+    await this.router.navigate(['/']);
   }
 
   public async addTokensToWallet(): Promise<void> {
@@ -63,5 +93,20 @@ export class StakingContainerComponent {
       name: 'Rubic Staking Token'
     };
     await this.walletConnectorService.addToken(xBRBC);
+  }
+
+  private getTokens(): { from: TokenAmount; to: TokenAmount } {
+    const fromToken = {
+      address: NATIVE_TOKEN_ADDRESS,
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    };
+    const toToken = {
+      address: '0x8e3bcc334657560253b83f08331d85267316e08a',
+      blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    };
+    const from = this.tokensService.tokens.find(token => compareTokens(fromToken, token));
+    const to = this.tokensService.tokens.find(token => compareTokens(toToken, token));
+
+    return { from, to };
   }
 }
