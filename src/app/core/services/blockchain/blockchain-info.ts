@@ -29,4 +29,10 @@ export class BlockchainsInfo {
       throw new CustomError('Wrong blockchain error');
     }
   }
+
+  static checkIsSolana(name: BLOCKCHAIN_NAME): void | never {
+    if (this.getBlockchainType(name) !== 'solana') {
+      throw new CustomError('Wrong blockchain error');
+    }
+  }
 }

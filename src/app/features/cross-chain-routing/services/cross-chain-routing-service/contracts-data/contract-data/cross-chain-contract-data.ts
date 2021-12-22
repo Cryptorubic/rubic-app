@@ -2,15 +2,15 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import {
   MinimalProvider,
   ProviderData
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/models/provider-data';
-import { crossChainContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/cross-chain-contract-addresses';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
+import { crossChainContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/cross-chain-contract-addresses';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
-import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/transit-tokens';
+import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { AbiItem } from 'web3-utils';
 import { tuiPure } from '@taiga-ui/cdk';
-import { crossChainContractAbiV2 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/contract-abi/cross-chain-contract-abi-v2';
-import { crossChainContractAbiV3 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
+import { crossChainContractAbiV2 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v2';
+import { crossChainContractAbiV3 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
@@ -31,7 +31,7 @@ enum TO_USER_SWAP_METHOD {
   SWAP_CRYPTO = 'swapCryptoToUserWithFee'
 }
 
-export class CrossChainContractData {
+export abstract class CrossChainContractData {
   @tuiPure
   public get address(): string {
     return crossChainContractAddresses[this.blockchain];
@@ -42,11 +42,21 @@ export class CrossChainContractData {
     return transitTokens[this.blockchain];
   }
 
-  constructor(
+  protected constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
     public readonly numOfBlockchain: number
   ) {}
+
+  public abstract minTokenAmount(): Promise<string>;
+
+  public abstract maxTokenAmount(): Promise<string>;
+
+  public abstract feeAmountOfBlockchain(): Promise<string>;
+
+  public abstract blockchainCryptoFee(toBlockchainInContract: number): Promise<number>;
+
+  public abstract isPaused(): Promise<boolean>;
 
   public getProvider(providerIndex: number): MinimalProvider {
     return this.providersData[providerIndex].provider;

@@ -7,7 +7,7 @@ import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Injectable } from '@angular/core';
-import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
+import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ContractParams } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/contract-params';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -18,7 +18,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 @Injectable({
   providedIn: 'root'
 })
-export class EthLikeContractExecutorService {
+export class EthLikeCrossChainContractExecutorService {
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
   constructor(

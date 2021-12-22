@@ -30,15 +30,15 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
-import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-reader/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
+import { SolanaCrossChainContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
-import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
+import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -324,25 +324,21 @@ export class CrossChainRoutingService {
     minAmount: BigNumber;
     maxAmount: BigNumber;
   }> {
-    const firstTransitToken = this.contracts[fromBlockchain].transitToken;
-    const fromContractAddress = this.contracts[fromBlockchain].address;
+    const fromTransitToken = this.contracts[fromBlockchain].transitToken;
 
     const getAmount = async (type: 'minAmount' | 'maxAmount'): Promise<BigNumber> => {
-      const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-      const contractFacade = new CrossChainContractReader(blockchainAdapter);
-      const firstTransitTokenAmountAbsolute =
-        type === 'minAmount'
-          ? await contractFacade.minTokenAmount(fromContractAddress)
-          : await contractFacade.maxTokenAmount(fromContractAddress);
-      const firstTransitTokenAmount = Web3Pure.fromWei(
-        firstTransitTokenAmountAbsolute,
-        firstTransitToken.decimals
+      const contract = this.contracts[fromBlockchain];
+      const fromTransitTokenAmountAbsolute =
+        type === 'minAmount' ? await contract.minTokenAmount() : await contract.maxTokenAmount();
+      const fromTransitTokenAmount = Web3Pure.fromWei(
+        fromTransitTokenAmountAbsolute,
+        fromTransitToken.decimals
       );
 
       if (type === 'minAmount') {
-        return firstTransitTokenAmount.dividedBy(fromSlippage);
+        return fromTransitTokenAmount.dividedBy(fromSlippage);
       }
-      return firstTransitTokenAmount.minus(1);
+      return fromTransitTokenAmount.minus(1);
     };
 
     return Promise.all([getAmount('minAmount'), getAmount('maxAmount')]).then(
@@ -416,13 +412,7 @@ export class CrossChainRoutingService {
    * @param toBlockchain Target blockchain.
    */
   private async getFeeInPercents(toBlockchain: SupportedCrossChainBlockchain): Promise<number> {
-    const contractAddress = this.contracts[toBlockchain].address;
-    const numOfBlockchain = this.contracts[toBlockchain].numOfBlockchain;
-
-    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
-    const feeOfToBlockchainAbsolute = await new CrossChainContractReader(
-      blockchainAdapter
-    ).feeAmountOfBlockchain(contractAddress, numOfBlockchain);
+    const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain();
     return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
   }
 
@@ -436,13 +426,8 @@ export class CrossChainRoutingService {
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
   ): Promise<number> {
-    const contractAddress = this.contracts[fromBlockchain].address;
-    const toNumOfBlockchain = this.contracts[toBlockchain].numOfBlockchain;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-
-    return new CrossChainContractReader(blockchainAdapter).blockchainCryptoFee(
-      contractAddress,
-      toNumOfBlockchain
+    return this.contracts[fromBlockchain].blockchainCryptoFee(
+      this.contracts[toBlockchain].numOfBlockchain
     );
   }
 
@@ -570,31 +555,22 @@ export class CrossChainRoutingService {
   }
 
   /**
-   * Checks that contracts are alive.
+   * Checks that contracts are not paused.
    */
-  private async checkWorking(): Promise<void> {
+  private async checkIfPaused(): Promise<void> {
     const { fromBlockchain, toBlockchain } = this.currentCrossChainTrade;
 
-    const fromContractAddress = this.contracts[fromBlockchain].address;
-    const fromBlockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
-    const isFromPaused = await new CrossChainContractReader(fromBlockchainAdapter).isPaused(
-      fromContractAddress
-    );
-    if (isFromPaused) {
-      throw new CrossChainIsUnavailableWarning();
-    }
+    const [isFromPaused, isToPaused] = await Promise.all([
+      this.contracts[fromBlockchain].isPaused(),
+      this.contracts[toBlockchain].isPaused()
+    ]);
 
-    const toContractAddress = this.contracts[toBlockchain].address;
-    const toBlockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
-    const isToPaused = await new CrossChainContractReader(toBlockchainAdapter).isPaused(
-      toContractAddress
-    );
-    if (isToPaused) {
+    if (isFromPaused || isToPaused) {
       throw new CrossChainIsUnavailableWarning();
     }
 
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      const isSolanaWorking = await SolanaContractExecutorService.checkHealth(
+      const isSolanaWorking = await SolanaCrossChainContractExecutorService.checkHealth(
         this.solanaPrivateAdapter
       );
       if (!isSolanaWorking) {
@@ -615,15 +591,14 @@ export class CrossChainRoutingService {
       return;
     }
 
-    const contractAddress = this.contracts[toBlockchain].address;
-    const blockchainAdapter = this.publicBlockchainAdapterService[toBlockchain];
+    const maxGasPrice = await (
+      this.contracts[toBlockchain] as EthLikeCrossChainContractData
+    ).getMaxGasPrice();
 
-    const maxGasPrice = await new CrossChainContractReader(blockchainAdapter).getMaxGasPrice(
-      contractAddress
-    );
     const currentGasPrice = Web3Pure.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
     );
+
     if (new BigNumber(maxGasPrice).lt(currentGasPrice)) {
       throw new MaxGasPriceOverflowWarning(toBlockchain);
     }
@@ -655,14 +630,14 @@ export class CrossChainRoutingService {
   /**
    * Checks contracts' state and user's balance.
    */
-  private async checkTradeWorking(): Promise<void | never> {
+  private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
 
     const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
     await Promise.all([
-      this.checkWorking(),
+      this.checkIfPaused(),
       this.checkGasPrice(),
       this.checkContractBalance(),
       blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
@@ -672,7 +647,7 @@ export class CrossChainRoutingService {
   public createTrade(options: TransactionOptions = {}): Observable<void> {
     return from(
       (async () => {
-        await this.checkTradeWorking();
+        await this.checkTradeParameters();
 
         let transactionHash;
         try {

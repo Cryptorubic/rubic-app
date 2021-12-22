@@ -12,7 +12,7 @@ import {
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
-import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/constants/transit-tokens';
+import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -33,7 +33,7 @@ import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-r
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 import { Injectable } from '@angular/core';
-import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contracts-data.service';
+import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -43,7 +43,7 @@ enum TransferDataType {
 @Injectable({
   providedIn: 'root'
 })
-export class SolanaContractExecutorService {
+export class SolanaCrossChainContractExecutorService {
   private static createSolanaInstruction(
     pdaConfig: PublicKey,
     pdaBlockchainConfig: PublicKey,
@@ -243,7 +243,7 @@ export class SolanaContractExecutorService {
 
     // @TODO Solana. Fix keys order.
     transaction.add(
-      SolanaContractExecutorService.createSolanaInstruction(
+      SolanaCrossChainContractExecutorService.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
         new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContractNumber]),
         TOKEN_PROGRAM_ID,

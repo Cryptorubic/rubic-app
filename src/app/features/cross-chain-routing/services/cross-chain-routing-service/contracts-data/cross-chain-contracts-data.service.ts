@@ -9,7 +9,10 @@ import { SpookySwapFantomService } from '@features/instant-trade/services/instan
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-data/cross-chain-contract-data';
+import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/cross-chain-contract-data';
+import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { SolanaCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 
 @Injectable({
   providedIn: 'root'
@@ -23,12 +26,13 @@ export class CrossChainContractsDataService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
-    private readonly raydiumService: RaydiumService
+    private readonly raydiumService: RaydiumService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
 
   public getCrossChainContracts(): Record<SupportedCrossChainBlockchain, CrossChainContractData> {
     return {
-      [BLOCKCHAIN_NAME.ETHEREUM]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.ETHEREUM]: new EthLikeCrossChainContractData(
         BLOCKCHAIN_NAME.ETHEREUM,
         [
           {
@@ -36,9 +40,10 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        1
+        1,
+        this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new EthLikeCrossChainContractData(
         BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
         [
           {
@@ -46,9 +51,10 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        2
+        2,
+        this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.POLYGON]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.POLYGON]: new EthLikeCrossChainContractData(
         BLOCKCHAIN_NAME.POLYGON,
         [
           {
@@ -56,9 +62,10 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        3
+        3,
+        this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.AVALANCHE]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.AVALANCHE]: new EthLikeCrossChainContractData(
         BLOCKCHAIN_NAME.AVALANCHE,
         [
           {
@@ -70,9 +77,10 @@ export class CrossChainContractsDataService {
             methodSuffix: '1'
           }
         ],
-        4
+        4,
+        this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.MOONRIVER]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.MOONRIVER]: new EthLikeCrossChainContractData(
         BLOCKCHAIN_NAME.MOONRIVER,
         [
           {
@@ -80,9 +88,10 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        5
+        5,
+        this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.FANTOM]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.FANTOM]: new EthLikeCrossChainContractData(
         BLOCKCHAIN_NAME.FANTOM,
         [
           {
@@ -90,9 +99,10 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        6
+        6,
+        this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.SOLANA]: new CrossChainContractData(
+      [BLOCKCHAIN_NAME.SOLANA]: new SolanaCrossChainContractData(
         BLOCKCHAIN_NAME.SOLANA,
         [
           {
@@ -100,7 +110,8 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        7
+        7,
+        this.publicBlockchainAdapterService
       )
     };
   }
