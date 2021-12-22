@@ -44,7 +44,7 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
    * Subscribes to wallet connect deep link url and redirects after getting.
    */
   private initDisplaySubscription(): void {
-    this.core.connector.on('display_uri', (err, payload) => {
+    this.wallet.connector.on('display_uri', (err: unknown, payload: { params: string[] }) => {
       if (err) {
         console.debug(err);
         return;
