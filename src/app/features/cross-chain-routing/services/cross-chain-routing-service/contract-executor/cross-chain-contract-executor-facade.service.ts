@@ -17,16 +17,6 @@ import { TargetNetworkAddressService } from '@features/cross-chain-routing/compo
 })
 export class CrossChainContractExecutorFacadeService {
   /**
-   * Calculates maximum sent amount of token-in, based on tokens route and slippage.
-   */
-  public static calculateTokenInAmountMax(trade: CrossChainTrade): BigNumber {
-    if (trade.fromTrade === null) {
-      return trade.tokenInAmount;
-    }
-    return trade.tokenInAmount.multipliedBy(2 - trade.fromSlippage);
-  }
-
-  /**
    * Calculates minimum received amount of transit token, based on tokens route and slippage.
    */
   public static calculateFromTransitTokenAmountMin(trade: CrossChainTrade): BigNumber {

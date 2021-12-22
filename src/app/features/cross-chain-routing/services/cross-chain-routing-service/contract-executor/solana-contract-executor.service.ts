@@ -11,8 +11,6 @@ import {
   NATIVE_SOL,
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import BigNumber from 'bignumber.js';
-import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -34,6 +32,9 @@ import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-a
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 import { Injectable } from '@angular/core';
 import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { SolanaCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { tuiPure } from '@taiga-ui/cdk';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -146,6 +147,11 @@ export class SolanaCrossChainContractExecutorService {
 
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
+  @tuiPure
+  private get contract(): SolanaCrossChainContractData {
+    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaCrossChainContractData;
+  }
+
   constructor(
     private readonly contractsDataService: CrossChainContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
@@ -166,21 +172,17 @@ export class SolanaCrossChainContractExecutorService {
     const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
 
-    const fromDecimals = new BigNumber(10).exponentiatedBy(trade.tokenIn.decimals);
-    const tokenInAmountMax =
-      CrossChainContractExecutorFacadeService.calculateTokenInAmountMax(trade);
-    const amountIn = new BigNumber(tokenInAmountMax.toString()).multipliedBy(fromDecimals);
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
 
-    const toDecimals = new BigNumber(10).exponentiatedBy(trade.tokenOut.decimals);
     const tokenOutAmountMin =
       CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
+    const tokenOutAmountAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const middleDecimals = new BigNumber(10).exponentiatedBy(
-      this.contracts[BLOCKCHAIN_NAME.SOLANA].transitToken.decimals
-    );
-    const amountMiddle = new BigNumber(trade.fromTransitTokenAmount.toString()).multipliedBy(
-      middleDecimals
+    const fromTransitTokenAmountMin =
+      CrossChainContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
+    const fromTransitTokenAmountMinAbsolute = Web3Pure.toWei(
+      fromTransitTokenAmountMin,
+      this.contract.transitToken.decimals
     );
 
     const from = this.tokensService.tokens.find(el => el.address === trade.tokenIn.address);
@@ -194,15 +196,14 @@ export class SolanaCrossChainContractExecutorService {
       trade.tokenIn.address === NATIVE_SOL.mintAddress
         ? TOKENS.WSOL.mintAddress
         : trade.tokenIn.address;
-    const toRouteMint = trade.fromTrade.path[trade.fromTrade.path.length - 1].address;
-    const toMint = toRouteMint === NATIVE_SOL.mintAddress ? TOKENS.WSOL.mintAddress : toRouteMint;
+    const middleMint = this.contract.transitToken.address;
 
-    const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
-    const middleFinalAmount = Math.floor(parseFloat(amountMiddle.toString()));
+    const fromFinalAmount = parseInt(tokenInAmountAbsolute);
+    const middleFinalAmount = parseInt(fromTransitTokenAmountMinAbsolute);
 
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
-    const isTransfer = trade.tokenIn.address === transitTokens[BLOCKCHAIN_NAME.SOLANA].address;
+    const isTransfer = trade.tokenIn.address === this.contract.transitToken.address;
     const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
     let transferType;
     if (fromNative) {
@@ -222,7 +223,7 @@ export class SolanaCrossChainContractExecutorService {
         EthLikeWeb3Public.toChecksumAddress(token.address)
       ),
       exactRbcTokenOut: middleFinalAmount,
-      tokenOutMin: amountOut.toFixed(0),
+      tokenOutMin: tokenOutAmountAbsolute,
       newAddress: targetAddress,
       swapToCrypto: isToNative,
       transferType
@@ -233,7 +234,7 @@ export class SolanaCrossChainContractExecutorService {
         ? await privateBlockchainAdapter.getOrCreatesTokensAccounts(
             mintAccountsAddresses,
             fromMint,
-            toMint,
+            middleMint,
             owner,
             fromFinalAmount,
             transaction,
