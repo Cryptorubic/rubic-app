@@ -26,6 +26,7 @@ import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
 import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/STAKING_CONTRACT_ADDRESS';
+import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 
 @Injectable()
 export class StakingService {
@@ -112,7 +113,8 @@ export class StakingService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly testingModeService: UseTestingModeService,
-    private readonly polygonBinance: BinancePolygonRubicBridgeProviderService,
+    private readonly polygonBinanceBridge: BinancePolygonRubicBridgeProviderService,
+    private readonly ethereumBinanceBridge: EthereumBinanceRubicBridgeProviderService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {
@@ -302,7 +304,7 @@ export class StakingService {
     );
   }
 
-  getEarnedRewards(amountWithRewards?: BigNumber): Observable<BigNumber> {
+  private getEarnedRewards(amountWithRewards?: BigNumber): Observable<BigNumber> {
     return combineLatest([
       this.getUsersDeposit(),
       amountWithRewards ? of(amountWithRewards) : this._amountWithRewards$
@@ -320,7 +322,7 @@ export class StakingService {
     );
   }
 
-  reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
+  public reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
     this.stakingStatisticsLoading$.next(true);
     return this.getStakingTokenBalance().pipe(
       switchMap(stakingTokenBalance => {
@@ -460,20 +462,21 @@ export class StakingService {
     const fromBlockchain = this._selectedToken$.getValue().blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
 
-    return this.polygonBinance.createTrade(bridgeTrade);
+    return this.getRubicBridge(fromBlockchain).createTrade(bridgeTrade);
   }
 
   public needBridgeApprove(amount: BigNumber): Observable<boolean> {
     const fromBlockchain = this._selectedToken$.getValue().blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
-    return this.polygonBinance.needApprove(bridgeTrade);
+
+    return this.getRubicBridge(fromBlockchain).needApprove(bridgeTrade);
   }
 
   public approveBridgeTokens(amount: BigNumber): Observable<TransactionReceipt> {
     const fromBlockchain = this._selectedToken$.getValue().blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
 
-    return this.polygonBinance.approve(bridgeTrade);
+    return this.getRubicBridge(fromBlockchain).approve(bridgeTrade);
   }
 
   private getBridgeTradeObject(fromBlockchain: BLOCKCHAIN_NAME, amount: BigNumber): BridgeTrade {
@@ -559,5 +562,19 @@ export class StakingService {
           }
         };
     }
+  }
+
+  private getRubicBridge(
+    blockchain: BLOCKCHAIN_NAME
+  ): BinancePolygonRubicBridgeProviderService | EthereumBinanceRubicBridgeProviderService {
+    if (blockchain === BLOCKCHAIN_NAME.POLYGON) {
+      return this.polygonBinanceBridge;
+    } else if (blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      return this.ethereumBinanceBridge;
+    }
+  }
+
+  public reloadStakingInfo(): void {
+    forkJoin([this.getUserEnteredAmount(), this.getTotalRBCEntered()]);
   }
 }
