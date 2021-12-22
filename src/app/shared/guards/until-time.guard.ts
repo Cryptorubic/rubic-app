@@ -1,19 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
-import { CanActivate, UrlTree } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-
-type ActivationResult =
-  | Observable<boolean | UrlTree>
-  | Promise<boolean | UrlTree>
-  | boolean
-  | UrlTree;
-
-type LoadResult = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree;
+import { ActivationResult, LoadResult } from '@shared/guards/models/types';
 
 @Injectable({
   providedIn: 'root'
