@@ -14,7 +14,7 @@ import {
   AlgebraRoute
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +40,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
     toToken: InstantTradeToken
   ): Promise<AlgebraInstantTrade> {
     const { fromTokenWrapped, toTokenWrapped } = this.getWrappedTokens(fromToken, toToken);
-    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
     const route = await this.getRoute(fromTokenWrapped, fromAmountAbsolute, toTokenWrapped);
 
@@ -52,7 +52,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
       },
       to: {
         token: toToken,
-        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: Web3Pure.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       path: route.path,
       route

@@ -24,6 +24,7 @@ import { PCacheable } from 'ts-cacheable';
 import UChild_ERC20_ABI from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/UChild_ERC20/UChild_ERC20_ABI';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { BlockchainsBridgeProvider } from '../blockchains-bridge-provider';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 interface PolygonGraphToken {
   rootToken: string;
@@ -227,7 +228,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
           ownerAddress: walletAddress,
           spenderAddress: predicateAddress
         });
-        return bridgeTrade.amount.gt(EthLikeWeb3Public.fromWei(allowance, token.decimals));
+        return bridgeTrade.amount.gt(Web3Pure.fromWei(allowance, token.decimals));
       })()
     );
   }
@@ -259,7 +260,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   private createPolygonTrade(bridgeTrade: BridgeTrade): Observable<TransactionReceipt> {
     const walletAddress = this.authService.userAddress;
     const fromToken = bridgeTrade.token.tokenByBlockchain[bridgeTrade.fromBlockchain];
-    const amountAbsolute = EthLikeWeb3Public.toWei(bridgeTrade.amount, fromToken.decimals);
+    const amountAbsolute = Web3Pure.toWei(bridgeTrade.amount, fromToken.decimals);
 
     const onTradeTransactionHash = async (hash: string) => {
       if (bridgeTrade.onTransactionHash) {

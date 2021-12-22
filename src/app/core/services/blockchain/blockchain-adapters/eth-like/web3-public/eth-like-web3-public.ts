@@ -29,7 +29,8 @@ import {
 } from '@core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 type AllowanceParams = {
   /**
@@ -84,14 +85,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
 
   static calculateGasMargin(amount: BigNumber | string | number, percent: number): string {
     return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
-  }
-
-  static toWei(amount: BigNumber | string | number, decimals = 18): string {
-    return new BigNumber(amount || 0).times(new BigNumber(10).pow(decimals)).toFixed(0);
-  }
-
-  static fromWei(amountInWei: BigNumber | string | number, decimals = 18): BigNumber {
-    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
   }
 
   static addressToBytes32(address: string): string {
@@ -603,9 +596,9 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
       balance = await this.getTokenBalance(userAddress, token.address);
     }
 
-    const amountAbsolute = EthLikeWeb3Public.toWei(amount, token.decimals);
+    const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
     if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = EthLikeWeb3Public.fromWei(balance, token.decimals).toFormat(
+      const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
         BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(

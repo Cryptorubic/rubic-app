@@ -13,6 +13,7 @@ import { ContractParams } from '@features/cross-chain-routing/services/cross-cha
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
 import BigNumber from 'bignumber.js';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Injectable({
   providedIn: 'root'
@@ -97,20 +98,14 @@ export class EthLikeContractExecutorService {
       fromBlockchain
     ].getFromMethodNameAndContractAbi(trade.fromProviderIndex, isFromTokenNative);
 
-    const tokenInAmountAbsolute = EthLikeWeb3Public.toWei(
-      trade.tokenInAmount,
-      trade.tokenIn.decimals
-    );
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const tokenOutAmountMin =
       CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = EthLikeWeb3Public.toWei(
-      tokenOutAmountMin,
-      trade.tokenOut.decimals
-    );
+    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const fromTransitTokenAmountMin =
       CrossChainContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
-    const fromTransitTokenAmountMinAbsolute = EthLikeWeb3Public.toWei(
+    const fromTransitTokenAmountMinAbsolute = Web3Pure.toWei(
       fromTransitTokenAmountMin,
       this.contracts[fromBlockchain].transitToken.decimals
     );
@@ -144,7 +139,7 @@ export class EthLikeContractExecutorService {
       ]
     ];
 
-    const blockchainCryptoFee = EthLikeWeb3Public.toWei(trade.cryptoFee);
+    const blockchainCryptoFee = Web3Pure.toWei(trade.cryptoFee);
     const value = new BigNumber(blockchainCryptoFee)
       .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
       .toFixed(0);

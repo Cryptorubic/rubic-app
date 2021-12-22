@@ -38,13 +38,13 @@ import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS
 import { compareTokens } from '@shared/utils/utils';
 import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 interface HashPair {
   fromTransactionHash: string;
@@ -253,7 +253,7 @@ export class MyTradesService {
             if (!toToken) {
               return null;
             }
-            const amount = EthLikeWeb3Public.fromWei(item.value, toToken.decimals).toFixed();
+            const amount = Web3Pure.fromWei(item.value, toToken.decimals).toFixed();
             return {
               fromTransactionHash: item.hash,
               transactionHashScanUrl: this.scannerLinkPipe.transform(

@@ -51,6 +51,7 @@ import { TradeContractData } from '@features/instant-trade/services/instant-trad
 import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation.error';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -354,7 +355,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       estimatedGasPredictionMethod = this.calculateTokensToEthGasLimit;
     }
 
-    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
@@ -381,7 +382,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       },
       to: {
         token: toToken,
-        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: Web3Pure.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       path: route.path
     };
@@ -397,7 +398,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     return {
       ...instantTrade,
       gasLimit: increasedGas,
-      gasPrice: EthLikeWeb3Public.toWei(gasPriceInEth),
+      gasPrice: Web3Pure.toWei(gasPriceInEth),
       gasFeeInUsd,
       gasFeeInEth
     };
@@ -455,7 +456,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       const routesWithProfit: UniswapV2CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
-        const profit = EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        const profit = Web3Pure.fromWei(route.outputAbsoluteAmount, toToken.decimals)
           .multipliedBy(toToken.price)
           .minus(gasFeeInUsd);
 
@@ -605,7 +606,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       toTokenClone.address = this.wethAddress;
     }
 
-    const toAmountAbsolute = EthLikeWeb3Public.toWei(toAmount, toToken.decimals);
+    const toAmountAbsolute = Web3Pure.toWei(toAmount, toToken.decimals);
     const routes = (
       await this.getAllRoutes(fromTokenClone, toTokenClone, toAmountAbsolute, 'getAmountsIn')
     ).sort((a, b) => a.outputAbsoluteAmount.comparedTo(b.outputAbsoluteAmount));
@@ -624,8 +625,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     );
 
     const uniswapV2Trade: UniswapV2Trade = {
-      amountIn: EthLikeWeb3Public.toWei(trade.from.amount, trade.from.token.decimals),
-      amountOutMin: EthLikeWeb3Public.toWei(
+      amountIn: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
+      amountOutMin: Web3Pure.toWei(
         subtractPercent(trade.to.amount, this.settings.slippageTolerance),
         trade.to.token.decimals
       ),
