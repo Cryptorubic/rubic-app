@@ -28,12 +28,12 @@
       class="total__progress"
     ></progress>
   </div>
-  <img
-    src="assets/images/icons/reload.svg"
-    alt="Reload"
+
+  <app-rotating-icon
     class="total__reload"
-    (click)="reloadStakingProgress()"
-  />
+    (iconClick)="reloadStakingProgress()"
+    [rotating]="loading$ | async"
+  ></app-rotating-icon>
 
   <div class="total__spinner" *ngIf="loading$ | async">
     <app-spinner></app-spinner>

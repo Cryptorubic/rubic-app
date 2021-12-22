@@ -15,7 +15,11 @@
     <div class="statistics__value">{{ apr$ | async | percent }}</div>
     <div class="statistics__caption">{{ 'staking.stats.apr' | translate }}</div>
   </div>
-  <img src="assets/images/icons/reload.svg" alt="Reload" class="statistics__reload" />
+  <app-rotating-icon
+    class="statistics__reload"
+    (iconClick)="reloadStakingStatistics()"
+    [rotating]="loading$ | async"
+  ></app-rotating-icon>
   <div class="statistics__spinner" *ngIf="loading$ | async">
     <app-spinner></app-spinner>
   </div>
