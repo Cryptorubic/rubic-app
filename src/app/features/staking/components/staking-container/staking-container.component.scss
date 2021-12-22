@@ -102,7 +102,8 @@
 
 .global-update,
 .get-brbc,
-.calculate-profitability {
+.calculate-profitability,
+.add-xbrbc {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
@@ -141,6 +142,7 @@
 }
 
 .get-brbc,
+.add-xbrbc,
 .calculate-profitability {
   color: vars.$rubic-primary;
 
