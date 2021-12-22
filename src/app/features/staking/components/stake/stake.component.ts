@@ -41,6 +41,8 @@ export class StakeComponent {
 
   public readonly stakeButtonLoading$ = new BehaviorSubject(false);
 
+  public approvedTokens: boolean = false;
+
   constructor(
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
@@ -103,6 +105,7 @@ export class StakeComponent {
         })
       )
       .subscribe(() => {
+        this.approvedTokens = true;
         this.notificationsService.show(
           this.translateService.instant('notifications.successApprove'),
           {
