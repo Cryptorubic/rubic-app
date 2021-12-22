@@ -60,8 +60,8 @@ export class StakeComponent {
       )
       .subscribe(() => {
         this.amount.reset();
-        this.notificationsService.show('Staking', {
-          label: 'The transaction was successful',
+        this.notificationsService.show('The staking was successful', {
+          label: 'The transaction of staking was successful.',
           status: TuiNotification.Success,
           autoClose: 5000
         });
@@ -78,11 +78,14 @@ export class StakeComponent {
       .approveTokens()
       .pipe(finalize(() => this.stakeButtonLoading$.next(false)))
       .subscribe(() => {
-        this.notificationsService.show('Tokens approve', {
-          label: 'The transaction was successful',
-          status: TuiNotification.Success,
-          autoClose: 5000
-        });
+        this.notificationsService.show(
+          'The tokens was successfully approved. Now you can initiate the swap.',
+          {
+            label: 'The approve was successful',
+            status: TuiNotification.Success,
+            autoClose: 5000
+          }
+        );
       });
   }
 

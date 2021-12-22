@@ -84,7 +84,7 @@ export class StakingService {
 
   public readonly stakingProgressLoading$ = new BehaviorSubject<boolean>(true);
 
-  public readonly stakingStatisticsLoading$ = new BehaviorSubject<boolean>(true);
+  public readonly stakingStatisticsLoading$ = new BehaviorSubject<boolean>(false);
 
   public readonly selectedToken$ = this._selectedToken$.asObservable();
 
@@ -116,6 +116,7 @@ export class StakingService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {
+    this.stakingProgressLoading$.next(true);
     forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]).subscribe(() => {
       this.stakingProgressLoading$.next(false);
     });
@@ -320,17 +321,34 @@ export class StakingService {
     );
   }
 
-  reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
+  reloadStakingStatistics(): Observable<number | BigNumber> {
     this.stakingStatisticsLoading$.next(true);
-    return this.getStakingTokenBalance().pipe(
-      switchMap(stakingTokenBalance => {
-        return this.getAmountWithRewards(stakingTokenBalance);
-      }),
-      switchMap(() => {
-        return forkJoin([this.getEarnedRewards(), this.getApr()]);
-      }),
-      finalize(() => this.stakingStatisticsLoading$.next(false))
+    return this.needLogin$.pipe(
+      switchMap(needLogin => {
+        if (needLogin) {
+          return this.getApr().pipe(finalize(() => this.stakingStatisticsLoading$.next(false)));
+        } else {
+          return this.getStakingTokenBalance().pipe(
+            switchMap(stakingTokenBalance => {
+              return this.getAmountWithRewards(stakingTokenBalance);
+            }),
+            switchMap(() => {
+              return this.getEarnedRewards();
+            }),
+            finalize(() => this.stakingStatisticsLoading$.next(false))
+          );
+        }
+      })
     );
+    // return this.getStakingTokenBalance().pipe(
+    //   switchMap(stakingTokenBalance => {
+    //     return this.getAmountWithRewards(stakingTokenBalance);
+    //   }),
+    //   switchMap(() => {
+    //     return forkJoin([this.getEarnedRewards(), this.getApr()]);
+    //   }),
+    //   finalize(() => this.stakingStatisticsLoading$.next(false))
+    // );
   }
 
   private getUserEnteredAmount(): Observable<number> {

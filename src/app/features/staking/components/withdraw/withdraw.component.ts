@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
 import { StakingService } from '@features/staking/services/staking.service';
-import { finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, EMPTY } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 
@@ -16,7 +16,7 @@ import { TuiNotification } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class WithdrawComponent {
+export class WithdrawComponent implements OnInit {
   public readonly amount = new FormControl<string>('');
 
   public readonly needLogin$ = this.stakingService.needLogin$;
@@ -41,14 +41,29 @@ export class WithdrawComponent {
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
+  public ngOnInit(): void {
+    this.needLogin$
+      .pipe(
+        take(1),
+        switchMap(needLogin => {
+          if (!needLogin) {
+            return this.stakingService.getStakingTokenBalance();
+          } else {
+            return EMPTY;
+          }
+        })
+      )
+      .subscribe();
+  }
+
   public withdraw(): void {
     this.withdrawButtonLoading$.next(true);
     this.stakingService
       .leaveStake(new BigNumber(this.amount.value))
       .pipe(finalize(() => this.withdrawButtonLoading$.next(false)))
       .subscribe(() => {
-        this.notificationsService.show('Withdraw', {
-          label: 'The transaction was successful',
+        this.notificationsService.show('The transaction of withdraw was successful.', {
+          label: 'The withdraw was successful',
           status: TuiNotification.Success,
           autoClose: 5000
         });
