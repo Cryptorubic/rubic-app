@@ -166,7 +166,7 @@ export class StakingService {
           this.stakingContractAddress,
           STAKING_CONTRACT_ABI,
           'enter',
-          [new BigNumber(amountInWei)]
+          [amountInWei]
         )
       ).pipe(
         catchError((err: unknown) => {
