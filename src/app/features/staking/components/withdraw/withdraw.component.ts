@@ -8,6 +8,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BehaviorSubject, EMPTY } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-withdraw',
@@ -38,6 +39,7 @@ export class WithdrawComponent implements OnInit {
     private readonly stakingService: StakingService,
     private readonly walletsModalService: WalletsModalService,
     private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -57,16 +59,30 @@ export class WithdrawComponent implements OnInit {
   }
 
   public withdraw(): void {
+    const withdrawNotification$ = this.notificationsService.show(
+      this.translateService.instant('notifications.withdrawInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: 5000
+      }
+    );
     this.withdrawButtonLoading$.next(true);
     this.stakingService
       .leaveStake(new BigNumber(this.amount.value))
-      .pipe(finalize(() => this.withdrawButtonLoading$.next(false)))
+      .pipe(
+        finalize(() => {
+          withdrawNotification$.unsubscribe();
+          this.withdrawButtonLoading$.next(false);
+        })
+      )
       .subscribe(() => {
-        this.notificationsService.show('The transaction of withdraw was successful.', {
-          label: 'The withdraw was successful',
-          status: TuiNotification.Success,
-          autoClose: 5000
-        });
+        this.notificationsService.show(
+          this.translateService.instant('notifications.successfulWithdraw'),
+          {
+            autoClose: 5000,
+            status: TuiNotification.Success
+          }
+        );
       });
   }
 
