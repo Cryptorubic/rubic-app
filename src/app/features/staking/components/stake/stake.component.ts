@@ -70,6 +70,7 @@ export class StakeComponent {
       )
       .subscribe(() => {
         this.amount.reset();
+        this.stakingService.reloadStakingInfo();
         this.notificationsService.show(
           this.translateService.instant('notifications.successfulStake'),
           {
