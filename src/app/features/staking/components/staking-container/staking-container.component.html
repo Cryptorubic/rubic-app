@@ -17,18 +17,6 @@
     </ng-template>
   </ng-container>
 
-  <div class="global-update">
-    {{ 'staking.stake.globalUpdate' | translate }}
-    <div
-      class="global-update__icon"
-      [inlineSVG]="'/assets/images/icons/hint-question.svg'"
-      [tuiHint]="'staking.stake.globalUpdateHint' | translate"
-    ></div>
-    <span class="global-update__time" *ngIf="refillTime$ | async as refillTime">{{
-      'staking.stake.refillTime'
-        | translate: { hours: refillTime.hours, minutes: refillTime.minutes }
-    }}</span>
-  </div>
   <div class="get-brbc" (click)="navigateToSwaps()">
     {{ 'staking.stake.getBrbc' | translate }}
     <img src="assets/images/icons/external-link.svg" alt="Get BRBC" class="get-brbc__icon" />

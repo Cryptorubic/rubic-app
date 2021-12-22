@@ -628,7 +628,11 @@
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
-    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
+    "stakeInProgress": "Stake in progress",
+    "successfulStake": "Successful stake",
+    "successfulWithdraw": "Successful withdraw",
+    "withdrawInProgress": "Withdraw in progress"
   },
   "buyTokens": {
     "default": "Купить RBC",

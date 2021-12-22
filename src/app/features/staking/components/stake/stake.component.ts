@@ -10,6 +10,7 @@ import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.se
 import { BehaviorSubject } from 'rxjs';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-stake',
@@ -46,25 +47,37 @@ export class StakeComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly stakingService: StakingService,
     private readonly walletsModalService: WalletsModalService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   public confirmStake(): void {
     this.stakeButtonLoading$.next(true);
+    const stakeNotification = this.notificationsService.show(
+      this.translateService.instant('notifications.stakeInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
     this.stakingService
       .enterStake(new BigNumber(this.amount.value.split(',').join('')))
       .pipe(
         finalize(() => {
+          stakeNotification.unsubscribe();
           this.stakeButtonLoading$.next(false);
         })
       )
       .subscribe(() => {
         this.amount.reset();
-        this.notificationsService.show('Staking', {
-          label: 'The transaction was successful',
-          status: TuiNotification.Success,
-          autoClose: 5000
-        });
+        this.stakingService.reloadStakingInfo();
+        this.notificationsService.show(
+          this.translateService.instant('notifications.successfulStake'),
+          {
+            status: TuiNotification.Success,
+            autoClose: 5000
+          }
+        );
       });
   }
 
@@ -74,15 +87,29 @@ export class StakeComponent {
 
   public approve(): void {
     this.stakeButtonLoading$.next(true);
+    const approveNotification = this.notificationsService.show(
+      this.translateService.instant('notifications.approveInProgress'),
+      {
+        status: TuiNotification.Info,
+        autoClose: false
+      }
+    );
     this.stakingService
       .approveTokens()
-      .pipe(finalize(() => this.stakeButtonLoading$.next(false)))
+      .pipe(
+        finalize(() => {
+          approveNotification.unsubscribe();
+          this.stakeButtonLoading$.next(false);
+        })
+      )
       .subscribe(() => {
-        this.notificationsService.show('Tokens approve', {
-          label: 'The transaction was successful',
-          status: TuiNotification.Success,
-          autoClose: 5000
-        });
+        this.notificationsService.show(
+          this.translateService.instant('notifications.successApprove'),
+          {
+            status: TuiNotification.Success,
+            autoClose: 5000
+          }
+        );
       });
   }
 
