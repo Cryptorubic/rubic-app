@@ -33,13 +33,7 @@
       <img class="token__icon" src="assets/images/icons/staking/brbc-bsc.svg" alt="xBRBC" />
       BRBC
     </div>
-    <input
-      [value]="canReceive$ | async | bigNumberFormat"
-      appTokenAmount
-      [decimals]="18"
-      disabled
-      class="withdraw__reward"
-    />
+    <input [value]="canReceive$ | async | bigNumberFormat" disabled class="withdraw__reward" />
     <div></div>
     <app-usd-price-container></app-usd-price-container>
   </div>

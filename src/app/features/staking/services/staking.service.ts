@@ -126,16 +126,14 @@ export class StakingService {
         tap(({ address }) => (this.walletAddress = address)),
         switchMap(() => {
           return forkJoin([
-            this.getStakingTokenBalance(),
+            this.getStakingTokenBalance().pipe(
+              switchMap(stakingTokenBalance => this.getAmountWithRewards(stakingTokenBalance))
+            ),
             this.getUserEnteredAmount(),
             this.getMaxAmountForWithdraw()
           ]);
         }),
-        switchMap(() => this._stakingTokenBalance$),
-        switchMap(stakingTokenBalance => {
-          return this.getAmountWithRewards(stakingTokenBalance);
-        }),
-        switchMap(amountWithRewards => {
+        switchMap(([amountWithRewards]) => {
           return this.getEarnedRewards(amountWithRewards);
         })
       )
@@ -171,7 +169,7 @@ export class StakingService {
         )
       ).pipe(
         catchError((err: unknown) => {
-          console.error('enter stake error');
+          console.debug('enter stake error');
           this.errorService.catchAnyError(err as Error);
           return EMPTY;
         }),
@@ -267,7 +265,9 @@ export class StakingService {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber('0'));
       }),
-      tap(balance => this._stakingTokenBalance$.next(EthLikeWeb3Public.fromWei(balance, 18)))
+      tap(balance => {
+        this._stakingTokenBalance$.next(EthLikeWeb3Public.fromWei(balance, 18));
+      })
     );
   }
 
@@ -322,7 +322,9 @@ export class StakingService {
   reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
     this.stakingStatisticsLoading$.next(true);
     return this.getStakingTokenBalance().pipe(
-      switchMap(stakingTokenBalance => this.getAmountWithRewards(stakingTokenBalance)),
+      switchMap(stakingTokenBalance => {
+        return this.getAmountWithRewards(stakingTokenBalance);
+      }),
       switchMap(() => {
         return forkJoin([this.getEarnedRewards(), this.getApr()]);
       }),
@@ -405,7 +407,6 @@ export class StakingService {
     if (amount.isZero()) {
       return of(new BigNumber(0));
     }
-    console.log('amount', amount);
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
@@ -414,8 +415,10 @@ export class StakingService {
         { methodArguments: [amount], from: this.walletAddress }
       )
     ).pipe(
+      catchError(() => {
+        return EMPTY;
+      }),
       map(res => {
-        console.log('can receive from contract', res);
         return EthLikeWeb3Public.fromWei(res, 18);
       })
     );

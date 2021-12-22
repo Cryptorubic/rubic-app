@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
 import { StakingService } from '@features/staking/services/staking.service';
-import { finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -28,8 +28,7 @@ export class WithdrawComponent {
   public readonly canReceive$ = this.amount.valueChanges.pipe(
     map(value => new BigNumber(value || 0)),
     switchMap(amount => this.stakingService.calculateLeaveReward(amount)),
-    // map(amount => EthLikeWeb3Public.fromWei(amount, 18)),
-    tap(console.log),
+    map(amount => new BigNumber(amount.toNumber() * Math.pow(10, 18))),
     takeUntil(this.destroy$)
   );
 
