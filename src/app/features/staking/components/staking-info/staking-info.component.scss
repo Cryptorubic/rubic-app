@@ -53,8 +53,12 @@
     }
   }
 
-  &__spinner {
+  &__overlay {
     @include staking.staking-spinner-overlay;
+  }
+
+  &__spinner {
+    width: 100%;
   }
 
   &__total-staked {

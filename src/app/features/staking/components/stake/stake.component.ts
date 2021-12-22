@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
 
 import { StakingService } from '../../services/staking.service';
@@ -8,7 +8,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { BehaviorSubject } from 'rxjs';
-import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Component({
@@ -19,8 +19,6 @@ import { NotificationsService } from '@core/services/notifications/notifications
   providers: [TuiDestroyService]
 })
 export class StakeComponent {
-  public readonly DEFAULT_DECIMALS = 18;
-
   public readonly loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly needLogin$ = this.stakingService.needLogin$;
@@ -29,13 +27,14 @@ export class StakeComponent {
 
   public readonly token = new FormControl(STAKING_TOKENS[0]);
 
+  public readonly selectedToken$ = this.stakingService.selectedToken$;
+
   public readonly selectedTokenBalance$ = this.stakingService.selectedTokenBalance$;
 
   public readonly userEnteredAmount$ = this.stakingService.userEnteredAmount$;
 
   public readonly needApprove$ = this.amount.valueChanges.pipe(
     switchMap(amount => this.stakingService.needApprove(new BigNumber(amount.split(',').join('')))),
-    tap(console.log),
     takeUntil(this.destroy$)
   );
 
@@ -54,8 +53,18 @@ export class StakeComponent {
     this.stakeButtonLoading$.next(true);
     this.stakingService
       .enterStake(new BigNumber(this.amount.value.split(',').join('')))
+      .pipe(
+        finalize(() => {
+          this.stakeButtonLoading$.next(false);
+        })
+      )
       .subscribe(() => {
-        this.stakeButtonLoading$.next(false);
+        this.amount.reset();
+        this.notificationsService.show('Staking', {
+          label: 'The transaction was successful',
+          status: TuiNotification.Success,
+          autoClose: 5000
+        });
       });
   }
 
@@ -65,16 +74,19 @@ export class StakeComponent {
 
   public approve(): void {
     this.stakeButtonLoading$.next(true);
-    this.stakingService.approveTokens().subscribe(() => {
-      this.amount.patchValue(this.amount.value);
-      this.stakeButtonLoading$.next(false);
-    });
+    this.stakingService
+      .approveTokens()
+      .pipe(finalize(() => this.stakeButtonLoading$.next(false)))
+      .subscribe(() => {
+        this.notificationsService.show('Tokens approve', {
+          label: 'The transaction was successful',
+          status: TuiNotification.Success,
+          autoClose: 5000
+        });
+      });
   }
 
-  public setMaxAmount(): void {
-    this.selectedTokenBalance$.pipe(take(1)).subscribe(balance => {
-      console.log(balance);
-      this.amount.patchValue(balance.toString());
-    });
+  public setMaxAmount(amount: BigNumber): void {
+    this.amount.setValue(amount.toString());
   }
 }

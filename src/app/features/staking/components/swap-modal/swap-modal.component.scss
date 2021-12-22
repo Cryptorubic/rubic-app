@@ -79,6 +79,12 @@
     app-rubic-button {
       flex-grow: 1;
       height: 60px;
+
+      &:first-child {
+        img {
+          margin-left: 10px;
+        }
+      }
     }
   }
 }

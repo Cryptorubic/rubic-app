@@ -16,6 +16,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 export class StakingTokensComponent {
   @Input() tokenFormControl: FormControl;
 
+  @Input() amountFormControl: FormControl;
+
   public readonly availableTokens = STAKING_TOKENS;
 
   constructor(
@@ -29,6 +31,7 @@ export class StakingTokensComponent {
       .pipe(startWith(this.tokenFormControl.value), takeUntil(this.destroy$))
       .subscribe(token => {
         this.stakingService.setToken(token);
+        this.amountFormControl.setValue('');
       });
   }
 }

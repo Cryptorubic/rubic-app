@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { StakingService } from '@features/staking/services/staking.service';
+import { map } from 'rxjs/operators';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
@@ -17,7 +18,15 @@ enum STAKING_NAV_ENUM {
 export class StakingContainerComponent {
   public activeItemIndex = STAKING_NAV_ENUM.STAKE;
 
-  public readonly refillTime$ = this.stakingService.refillTime$;
+  public readonly refillTime$ = this.stakingService.refillTime$.pipe(
+    map(refillTime => {
+      if (!refillTime) {
+        return 0;
+      }
+      const date = new Date(Number(refillTime));
+      return { hours: date.getHours(), minutes: date.getMinutes() };
+    })
+  );
 
   constructor(
     private readonly router: Router,

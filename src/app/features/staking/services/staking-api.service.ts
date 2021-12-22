@@ -1,51 +1,47 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UpdateDepositRequestInterface } from '@features/staking/models/update-deposit-request.interface';
 import { BridgeTxRequestInterface } from '@features/staking/models/bridge-tx-request.interface';
-import { pluck, tap } from 'rxjs/operators';
+import { pluck } from 'rxjs/operators';
 
 @Injectable()
 export class StakingApiService {
+  stakingApiPath = '//dev-staking.rubic.exchange/api/';
+
   constructor(private readonly httpService: HttpService) {}
 
   public getApr(): Observable<number> {
-    return this.httpService
-      .get<number>('apr/', {}, '//dev-staking.rubic.exchange/api/')
-      .pipe(pluck('value'), tap(console.log));
+    return this.httpService.get<number>('apr/', {}, this.stakingApiPath).pipe(pluck('value'));
   }
 
   public getRefillTime(): Observable<string> {
-    return of(new Date().toString());
-    // return this.httpService.get<string>('', {});
+    return this.httpService
+      .get<string>('apr/refill-time', {}, this.stakingApiPath)
+      .pipe(pluck('value'));
   }
 
   public getUsersDeposit(walletAddress: string): Observable<number> {
     return this.httpService
-      .get<number>('deposit/', { walletAddress }, '//dev-staking.rubic.exchange/api/')
+      .get<number>('balance/', { walletAddress }, this.stakingApiPath)
       .pipe(pluck('balance'));
   }
 
   public updateUsersDeposit(request: UpdateDepositRequestInterface): Observable<void> {
-    console.log(request);
-    return this.httpService.post<void>(
-      'deposit/',
-      { ...request },
-      '//dev-staking.rubic.exchange/api/'
-    );
+    return this.httpService.post<void>('balance/deposit', { ...request }, this.stakingApiPath);
+  }
+
+  public updateUsersDepositAfterWithdraw(request: UpdateDepositRequestInterface): Observable<void> {
+    return this.httpService.post<void>('balance/withdraw', { ...request }, this.stakingApiPath);
   }
 
   public sendBridgeTxHash(request: BridgeTxRequestInterface): Observable<void> {
-    return this.httpService.post<void>(
-      'transfer-crypto/',
-      { ...request },
-      '//dev-staking.rubic.exchange/api/'
-    );
+    return this.httpService.post<void>('transfer-crypto/', { ...request }, this.stakingApiPath);
   }
 
   public getBridgeContractAddress(): Observable<string> {
     return this.httpService
-      .get<string>('transfer-crypto/wallet-address', {}, '//dev-staking.rubic.exchange/api/')
+      .get<string>('transfer-crypto/wallet-address', {}, this.stakingApiPath)
       .pipe(pluck('walletAddress'));
   }
 }

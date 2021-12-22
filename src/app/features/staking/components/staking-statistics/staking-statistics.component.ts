@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StakingService } from '@features/staking/services/staking.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-staking-statistics',
@@ -7,12 +8,12 @@ import { StakingService } from '@features/staking/services/staking.service';
   styleUrls: ['./staking-statistics.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingStatisticsComponent implements OnInit {
+export class StakingStatisticsComponent {
   public readonly loading$ = this.stakingService.stakingStatisticsLoading$;
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
-  public readonly apr$ = this.stakingService.apr$;
+  public readonly apr$ = this.stakingService.apr$.pipe(map(apr => `${apr.toFixed()}%`));
 
   public readonly amountWithRewards$ = this.stakingService.amountWithRewards$;
 
@@ -20,14 +21,7 @@ export class StakingStatisticsComponent implements OnInit {
 
   constructor(private readonly stakingService: StakingService) {}
 
-  public ngOnInit(): void {
-    console.log('');
-  }
-
   public reloadStakingStatistics(): void {
-    this.loading$.next(true);
-    this.stakingService.reloadStakingStatistics().subscribe(() => {
-      this.loading$.next(false);
-    });
+    this.stakingService.reloadStakingStatistics().subscribe();
   }
 }

@@ -24,8 +24,12 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  &__spinner {
+  &__overlay {
     @include staking.staking-spinner-overlay;
+  }
+
+  &__spinner {
+    width: 100%;
   }
 
   &__value {

@@ -463,11 +463,12 @@
       "balance": "You have {{amount}}",
       "confirmStake": "Confirm stake",
       "unstake": "Unstake",
-      "overLimit": "One stake limits 1,000 - {{availableAmount}} BRBC",
+      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Update",
       "globalUpdateHint": "about global update",
       "getBrbc": "Get BRBC",
-      "calculateProfitability": "Calculate profitability"
+      "calculateProfitability": "Calculate profitability",
+      "refillTime": "{{hours}} hours {{minutes}} minutes"
     },
     "stats": {
       "profitTime": "Yesterday's APY",

@@ -22,7 +22,12 @@
       {{ 'modals.stakingSwapModal.swapMyself' | translate }}
       <img src="assets/images/icons/external-link.svg" />
     </app-rubic-button>
-    <app-rubic-button appearance="secondary" size="l" (click)="swapViaPlatform()">
+    <app-rubic-button
+      appearance="secondary"
+      size="l"
+      (click)="swapViaPlatform()"
+      [loading]="bridgeSwapButtonLoading$ | async"
+    >
       {{ 'modals.stakingSwapModal.agree' | translate }}
     </app-rubic-button>
   </div>

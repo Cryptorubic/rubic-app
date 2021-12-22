@@ -5,7 +5,7 @@ export const STAKING_TOKENS = [
     name: 'Rubic',
     symbol: 'BRBC',
     image: 'assets/images/icons/staking/brbc-bsc.svg',
-    address: '0xd51bd30A91F88Dcf72Acd45c8A1E7aE0066263e8', //testnet
+    address: '0x8e3bcc334657560253b83f08331d85267316e08a', //testnet
     // mainnet 0x8E3BCC334657560253B83f08331d85267316e08a
     blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   },

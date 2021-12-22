@@ -25,7 +25,6 @@ export class StakingInfoComponent {
   constructor(private readonly stakingService: StakingService) {}
 
   public reloadStakingProgress(): void {
-    this.loading$.next(true);
-    this.stakingService.reloadStakingProgress().subscribe(() => this.loading$.next(false));
+    this.stakingService.reloadStakingProgress().subscribe();
   }
 }

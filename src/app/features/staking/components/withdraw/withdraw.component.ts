@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
 import { StakingService } from '@features/staking/services/staking.service';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { BehaviorSubject } from 'rxjs';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TuiNotification } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-withdraw',
@@ -14,29 +17,43 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   providers: [TuiDestroyService]
 })
 export class WithdrawComponent {
-  public readonly DEFAULT_DECIMALS = 18;
-
   public readonly amount = new FormControl<string>('');
 
   public readonly needLogin$ = this.stakingService.needLogin$;
 
+  public readonly maxAmountForWithdraw$ = this.stakingService.maxAmountForWithdraw$;
+
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
   public readonly canReceive$ = this.amount.valueChanges.pipe(
-    startWith(this.amount.value),
-    map(value => (value ? new BigNumber(value.split(',').join('')) : new BigNumber(0))),
+    map(value => new BigNumber(value || 0)),
     switchMap(amount => this.stakingService.calculateLeaveReward(amount)),
+    // map(amount => EthLikeWeb3Public.fromWei(amount, 18)),
+    tap(console.log),
     takeUntil(this.destroy$)
   );
+
+  public readonly withdrawButtonLoading$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private readonly stakingService: StakingService,
     private readonly walletsModalService: WalletsModalService,
+    private readonly notificationsService: NotificationsService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public withdraw(): void {
-    this.stakingService.leaveStake(new BigNumber(this.amount.value)).subscribe(console.log);
+    this.withdrawButtonLoading$.next(true);
+    this.stakingService
+      .leaveStake(new BigNumber(this.amount.value))
+      .pipe(finalize(() => this.withdrawButtonLoading$.next(false)))
+      .subscribe(() => {
+        this.notificationsService.show('Withdraw', {
+          label: 'The transaction was successful',
+          status: TuiNotification.Success,
+          autoClose: 5000
+        });
+      });
   }
 
   public login(): void {

@@ -24,7 +24,10 @@
       [inlineSVG]="'/assets/images/icons/hint-question.svg'"
       [tuiHint]="'staking.stake.globalUpdateHint' | translate"
     ></div>
-    <span class="global-update__time">{{ refillTime$ | async | date: 'hh mm' }}</span>
+    <span class="global-update__time" *ngIf="refillTime$ | async as refillTime">{{
+      'staking.stake.refillTime'
+        | translate: { hours: refillTime.hours, minutes: refillTime.minutes }
+    }}</span>
   </div>
   <div class="get-brbc" (click)="navigateToSwaps()">
     {{ 'staking.stake.getBrbc' | translate }}

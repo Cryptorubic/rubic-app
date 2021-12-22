@@ -1,5 +1,5 @@
 <app-rubic-button
-  *ngIf="needLogin; else walletActions"
+  *ngIf="needLogin$ | async; else walletActions"
   appearance="secondary"
   (onClick)="onLogin.emit()"
 >
@@ -9,8 +9,8 @@
 <ng-template #walletActions>
   <app-rubic-button
     appearance="secondary"
-    *ngIf="needChangeNetwork; else leaveStakeBtn"
-    (click)="onChangeNetwork.emit()"
+    *ngIf="needChangeNetwork$ | async; else leaveStakeBtn"
+    (click)="switchNetwork()"
   >
     Switch Network
   </app-rubic-button>
@@ -21,6 +21,7 @@
       [disabled]="errorType | falsy"
       appearance="secondary"
       (onClick)="onWithdraw.emit()"
+      [loading]="loading"
     >
       <ng-container [ngSwitch]="errorType">
         <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">

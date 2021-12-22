@@ -1,9 +1,12 @@
-// TODO refactor
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext } from '@taiga-ui/core';
+import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
 import { StakingService } from '@features/staking/services/staking.service';
+import BigNumber from 'bignumber.js';
+import { BehaviorSubject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Component({
   selector: 'app-swap-modal',
@@ -12,16 +15,33 @@ import { StakingService } from '@features/staking/services/staking.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapModalComponent {
+  public readonly bridgeSwapButtonLoading$ = new BehaviorSubject<boolean>(false);
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, null>,
+    private readonly context: TuiDialogContext<boolean, { amount: BigNumber }>,
     private readonly router: Router,
-    private readonly stakingService: StakingService
+    private readonly stakingService: StakingService,
+    private readonly dialogService: TuiDialogService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public navigateToSwaps(): void {
-    this.router.navigate(['swaps']);
+    this.router.navigate(['/swaps']).then(() => this.context.completeWith(false));
   }
 
-  public swapViaPlatform(): void {}
+  public swapViaPlatform(): void {
+    this.bridgeSwapButtonLoading$.next(true);
+    this.stakingService
+      .enterStakeViaBridge(this.context.data.amount)
+      .pipe(finalize(() => this.bridgeSwapButtonLoading$.next(false)))
+      .subscribe(() => {
+        this.context.completeWith(false);
+        this.notificationsService.show('Staking', {
+          label: 'The transaction was successful',
+          status: TuiNotification.Success,
+          autoClose: 5000
+        });
+      });
+  }
 }

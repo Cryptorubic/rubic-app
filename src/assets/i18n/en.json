@@ -460,11 +460,12 @@
       "balance": "You have {{amount}}",
       "confirmStake": "Confirm stake",
       "unstake": "Unstake",
-      "overLimit": "One stake limits 1,000 - {{availableAmount}} BRBC",
+      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Update",
       "globalUpdateHint": "about global update",
       "getBrbc": "Get BRBC",
-      "calculateProfitability": "Calculate profitability"
+      "calculateProfitability": "Calculate profitability",
+      "refillTime": "{{hours}} hours {{minutes}} minutes"
     },
     "stats": {
       "profitTime": "Yesterday's APY",
@@ -479,11 +480,11 @@
     },
     "features": {
       "highApr": "High APR",
-      "minimumApr": "Minimum APR ~ 80%.",
+      "minimumApr": "Predicted APR is 80% or more for the period of 2 months, based on the RBC/USDT price and Multi-Chain volume\n",
       "brbcRewards": "BRBC rewards",
-      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
+      "stakeTokens": "Stake 1,000 - 100,000 RBC/BRBC/ wRBC to get rewards in BRBC",
       "teamBuybacks": "Team Buybacks",
-      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool"
     }
   },
   "maintenance": {

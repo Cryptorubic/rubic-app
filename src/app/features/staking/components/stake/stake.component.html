@@ -1,6 +1,10 @@
 <div class="stake">
   <div class="stake__token-and-amount">
-    <app-staking-tokens class="stake__select-token" [tokenFormControl]="token"></app-staking-tokens>
+    <app-staking-tokens
+      class="stake__select-token"
+      [tokenFormControl]="token"
+      [amountFormControl]="amount"
+    ></app-staking-tokens>
     <input
       autocomplete="off"
       class="stake__input"
@@ -8,14 +12,14 @@
       placeholder="0.0"
       appTokenAmount
       [formControl]="amount"
-      [decimals]="DEFAULT_DECIMALS"
+      [decimals]="18"
     />
   </div>
   <div class="stake__balance-and-usd">
     <ng-container *ngIf="(needLogin$ | async) === false">
       <div class="stake__balance" *ngIf="selectedTokenBalance$ | async as tokenBalance">
         {{ 'staking.stake.balance' | translate: { amount: tokenBalance | bigNumberFormat } }}
-        <span (click)="setMaxAmount()">MAX</span>
+        <span (click)="setMaxAmount(tokenBalance)">MAX</span>
       </div>
     </ng-container>
     <div class="stake__usd">
@@ -23,12 +27,8 @@
     </div>
   </div>
   <app-stake-button-container
-    [amount]="amount.value"
-    [balance]="selectedTokenBalance$ | async"
-    [limit]="userEnteredAmount$ | async"
-    [needLogin]="needLogin$ | async"
-    [needApprove]="needApprove$ | async"
     [loading]="stakeButtonLoading$ | async"
+    [amountFormControl]="amount"
     (onConfirmStake)="confirmStake()"
     (onLogin)="login()"
     (onApprove)="approve()"
