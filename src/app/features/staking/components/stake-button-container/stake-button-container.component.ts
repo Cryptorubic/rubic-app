@@ -47,6 +47,8 @@ export class StakeButtonContainerComponent implements OnInit {
     })
   );
 
+  @Input() approvedTokens: boolean;
+
   @Input() amountFormControl: FormControl;
 
   @Input() loading: boolean;

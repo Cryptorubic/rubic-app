@@ -37,7 +37,9 @@
             }}</span>
           </ng-container>
           <ng-container *ngSwitchCase="null">
-            <ng-container *ngIf="needApprove$ | async; else confirmStake">Approve</ng-container>
+            <ng-container *ngIf="(needApprove$ | async) && !approvedTokens; else confirmStake"
+              >Approve</ng-container
+            >
             <ng-template #confirmStake>
               {{ 'staking.stake.confirmStake' | translate }}
             </ng-template>

@@ -1,14 +1,20 @@
 <div class="statistics">
   <div class="statistics__item">
-    <div class="statistics__value">{{ stakingTokenBalance$ | async | bigNumberFormat }} xBRBC</div>
+    <div class="statistics__value">
+      {{ stakingTokenBalance$ | async | bigNumberFormat | shortenAmount: 9:4:true }} xBRBC
+    </div>
     <div class="statistics__caption">{{ 'staking.stats.balance' | translate }}</div>
   </div>
   <div class="statistics__item">
-    <div class="statistics__value">{{ amountWithRewards$ | async | bigNumberFormat }} BRBC</div>
+    <div class="statistics__value">
+      {{ amountWithRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
+    </div>
     <div class="statistics__caption">{{ 'staking.stats.canReceive' | translate }}</div>
   </div>
   <div class="statistics__item">
-    <div class="statistics__value">{{ earnedRewards$ | async }} BRBC</div>
+    <div class="statistics__value">
+      {{ earnedRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
+    </div>
     <div class="statistics__caption">{{ 'staking.stats.rewards' | translate }}</div>
   </div>
   <div class="statistics__item">

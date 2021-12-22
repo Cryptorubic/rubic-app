@@ -18,7 +18,10 @@
   <div class="stake__balance-and-usd">
     <ng-container *ngIf="(needLogin$ | async) === false">
       <div class="stake__balance" *ngIf="selectedTokenBalance$ | async as tokenBalance">
-        {{ 'staking.stake.balance' | translate: { amount: tokenBalance | bigNumberFormat } }}
+        {{
+          'staking.stake.balance'
+            | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount }
+        }}
         <span (click)="setMaxAmount(tokenBalance)">MAX</span>
       </div>
     </ng-container>
@@ -32,5 +35,6 @@
     (onConfirmStake)="confirmStake()"
     (onLogin)="login()"
     (onApprove)="approve()"
+    [approvedTokens]="approvedTokens"
   ></app-stake-button-container>
 </div>

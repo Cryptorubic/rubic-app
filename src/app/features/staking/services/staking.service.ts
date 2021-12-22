@@ -87,13 +87,18 @@ export class StakingService {
 
   public readonly stakingStatisticsLoading$ = new BehaviorSubject<boolean>(true);
 
+  private readonly updateTokenBalance$$ = new BehaviorSubject<void>(null);
+
+  public readonly updateTokenBalance$ = this.updateTokenBalance$$.asObservable();
+
   public readonly selectedToken$ = this._selectedToken$.asObservable();
 
   public readonly maxAmountForWithdraw$ = this._maxAmountForWithdraw$.asObservable();
 
   public readonly selectedTokenBalance$ = combineLatest([
     this.selectedToken$,
-    this.needLogin$
+    this.needLogin$,
+    this.updateTokenBalance$
   ]).pipe(
     switchMap(([selectedToken, needLogin]) => {
       if (needLogin) {
@@ -179,7 +184,8 @@ export class StakingService {
         switchMap(receipt => this.updateUsersDeposit(amountInWei, receipt.transactionHash)),
         switchMap(() => {
           return forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()]);
-        })
+        }),
+        tap(() => this.updateTokenBalance$$.next())
       );
     }
   }
