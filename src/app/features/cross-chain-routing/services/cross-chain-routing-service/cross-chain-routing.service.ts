@@ -39,6 +39,7 @@ import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
+import { EthLikeCrossChainContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -87,6 +88,7 @@ export class CrossChainRoutingService {
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
     private readonly contractExecutorFacade: CrossChainContractExecutorFacadeService,
+    private readonly ethLikeContractExecutor: EthLikeCrossChainContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
   ) {}
 
@@ -446,7 +448,7 @@ export class CrossChainRoutingService {
 
     try {
       const { contractAddress, contractAbi, methodName, methodArguments, value } =
-        await this.contractExecutorFacade.getContractParams(trade, walletAddress);
+        await this.ethLikeContractExecutor.getContractParams(trade, walletAddress);
 
       const web3Public = this.publicBlockchainAdapterService[fromBlockchain];
       const gasLimit = await web3Public.getEstimatedGas(
@@ -593,7 +595,7 @@ export class CrossChainRoutingService {
 
     const maxGasPrice = await (
       this.contracts[toBlockchain] as EthLikeCrossChainContractData
-    ).getMaxGasPrice();
+    ).maxGasPrice();
 
     const currentGasPrice = Web3Pure.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
@@ -651,7 +653,7 @@ export class CrossChainRoutingService {
 
         let transactionHash;
         try {
-          transactionHash = await this.contractExecutorFacade.executeCCRContract(
+          transactionHash = await this.contractExecutorFacade.executeTrade(
             this.currentCrossChainTrade,
             options,
             this.authService.userAddress

@@ -154,7 +154,7 @@ export class SolanaCrossChainContractExecutorService {
   ) {}
 
   // eslint-disable-next-line complexity
-  public async execute(
+  public async executeTrade(
     trade: CrossChainTrade,
     address: string,
     targetAddress: string,

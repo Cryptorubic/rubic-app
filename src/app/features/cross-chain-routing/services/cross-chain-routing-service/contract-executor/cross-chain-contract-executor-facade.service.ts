@@ -11,7 +11,6 @@ import { EthLikeCrossChainContractExecutorService } from '@features/cross-chain-
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { ContractParams } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/contract-params';
 
 @Injectable({
   providedIn: 'root'
@@ -59,13 +58,18 @@ export class CrossChainContractExecutorFacadeService {
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
-  public async executeCCRContract(
+  public async executeTrade(
     trade: CrossChainTrade,
     options: TransactionOptions,
     userAddress: string
   ): Promise<string> {
     if (BlockchainsInfo.getBlockchainType(trade.fromBlockchain) === 'ethLike') {
-      return this.ethLikeContractExecutor.execute(trade, options, userAddress, this.targetAddress);
+      return this.ethLikeContractExecutor.executeTrade(
+        trade,
+        options,
+        userAddress,
+        this.targetAddress
+      );
     }
 
     // solana
@@ -73,7 +77,7 @@ export class CrossChainContractExecutorFacadeService {
       const isToNative = this.publicBlockchainAdapterService[trade.toBlockchain].isNativeAddress(
         trade.tokenOut.address
       );
-      const { transaction, signers } = await this.solanaContractExecutor.execute(
+      const { transaction, signers } = await this.solanaContractExecutor.executeTrade(
         trade,
         userAddress,
         this.targetAddress,
@@ -104,12 +108,5 @@ export class CrossChainContractExecutorFacadeService {
         throw new CustomError(err.message);
       }
     }
-  }
-
-  public async getContractParams(
-    trade: CrossChainTrade,
-    walletAddress: string
-  ): Promise<ContractParams> {
-    return this.ethLikeContractExecutor.getContractParams(trade, walletAddress);
   }
 }

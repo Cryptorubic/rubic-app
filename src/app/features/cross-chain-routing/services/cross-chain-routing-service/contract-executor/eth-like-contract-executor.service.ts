@@ -29,7 +29,7 @@ export class EthLikeCrossChainContractExecutorService {
     private readonly raydiumRoutingService: RaydiumRoutingService
   ) {}
 
-  public async execute(
+  public async executeTrade(
     trade: CrossChainTrade,
     options: TransactionOptions,
     userAddress: string,

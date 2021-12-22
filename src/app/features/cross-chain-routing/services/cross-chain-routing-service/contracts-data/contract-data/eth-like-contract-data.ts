@@ -70,7 +70,7 @@ export class EthLikeCrossChainContractData extends CrossChainContractData {
     );
   }
 
-  public async getMaxGasPrice(): Promise<string> {
+  public async maxGasPrice(): Promise<string> {
     return this.blockchainAdapter.callContractMethod(
       this.address,
       crossChainContractAbi,
