@@ -46,6 +46,9 @@ export class CrossChainContractExecutorFacadeService {
     return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
   }
 
+  /**
+   * Gets address in target network.
+   */
   get targetAddress(): string {
     return this.targetAddressService.targetAddress?.value;
   }

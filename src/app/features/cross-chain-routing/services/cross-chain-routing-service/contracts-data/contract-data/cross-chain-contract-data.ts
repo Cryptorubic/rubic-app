@@ -62,10 +62,16 @@ export abstract class CrossChainContractData {
     return this.providersData[providerIndex].provider;
   }
 
+  /**
+   * Returns true, if provider is of `uniswap v3` or `algebra` type.
+   */
   private isProviderV3(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof CommonUniV3AlgebraService;
   }
 
+  /**
+   * Returns method's name and contract abi to call in source network.
+   */
   public getFromMethodNameAndContractAbi(
     providerIndex: number,
     isFromTokenNative: boolean
@@ -98,6 +104,9 @@ export abstract class CrossChainContractData {
     };
   }
 
+  /**
+   * Returns `from path` method argument, converted from instant-trade data and chosen provider.
+   */
   public getFromPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
@@ -121,6 +130,9 @@ export abstract class CrossChainContractData {
     return instantTrade.path.map(token => token.address);
   }
 
+  /**
+   * Returns `to path` method argument, converted from instant-trade data and chosen provider.
+   */
   public getToPath(providerIndex: number, instantTrade: InstantTrade): string[] {
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
@@ -153,6 +165,10 @@ export abstract class CrossChainContractData {
     return instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
   }
 
+  /**
+   * Returns `signature` method argument, build from function name and its arguments.
+   * Example: `${function_name_in_target_network}(${arguments})`
+   */
   public getToMethodSignature(providerIndex: number, isToTokenNative: boolean): string {
     let methodName: string = isToTokenNative
       ? TO_USER_SWAP_METHOD.SWAP_CRYPTO
