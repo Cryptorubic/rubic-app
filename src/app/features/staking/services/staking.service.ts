@@ -302,7 +302,7 @@ export class StakingService {
     );
   }
 
-  getEarnedRewards(amountWithRewards?: BigNumber): Observable<BigNumber> {
+  private getEarnedRewards(amountWithRewards?: BigNumber): Observable<BigNumber> {
     return combineLatest([
       this.getUsersDeposit(),
       amountWithRewards ? of(amountWithRewards) : this._amountWithRewards$
@@ -320,7 +320,7 @@ export class StakingService {
     );
   }
 
-  reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
+  public reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
     this.stakingStatisticsLoading$.next(true);
     return this.getStakingTokenBalance().pipe(
       switchMap(stakingTokenBalance => {
@@ -559,5 +559,9 @@ export class StakingService {
           }
         };
     }
+  }
+
+  public reloadStakingInfo(): void {
+    forkJoin([this.getUserEnteredAmount(), this.getTotalRBCEntered()]);
   }
 }
