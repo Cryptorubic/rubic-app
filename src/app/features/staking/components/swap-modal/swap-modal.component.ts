@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-swap-modal',
@@ -17,14 +18,21 @@ import { NotificationsService } from '@core/services/notifications/notifications
 export class SwapModalComponent {
   public readonly bridgeSwapButtonLoading$ = new BehaviorSubject<boolean>(false);
 
+  public isEthBlockchain: boolean;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, { amount: BigNumber }>,
+    private readonly context: TuiDialogContext<
+      boolean,
+      { amount: BigNumber; blockchain: BLOCKCHAIN_NAME }
+    >,
     private readonly router: Router,
     private readonly stakingService: StakingService,
     private readonly dialogService: TuiDialogService,
     private readonly notificationsService: NotificationsService
-  ) {}
+  ) {
+    this.isEthBlockchain = this.context.data.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
+  }
 
   public navigateToSwaps(): void {
     this.router.navigate(['/swaps']).then(() => this.context.completeWith(false));

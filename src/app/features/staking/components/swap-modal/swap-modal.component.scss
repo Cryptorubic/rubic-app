@@ -73,7 +73,7 @@
   &__buttons {
     display: grid;
     grid-column-gap: 20px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 
 
     app-rubic-button {

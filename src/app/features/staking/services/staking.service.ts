@@ -159,7 +159,7 @@ export class StakingService {
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
     if (needSwap) {
-      return this.openSwapModal(amount);
+      return this.openSwapModal(amount, tokenBlockchain);
     } else {
       return from(
         this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
@@ -449,10 +449,10 @@ export class StakingService {
     });
   }
 
-  private openSwapModal(amount: BigNumber): Observable<unknown> {
+  private openSwapModal(amount: BigNumber, blockchain: BLOCKCHAIN_NAME): Observable<unknown> {
     return this.dialogService.open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
       size: 'l',
-      data: { amount }
+      data: { amount, blockchain }
     });
   }
 
