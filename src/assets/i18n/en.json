@@ -458,6 +458,7 @@
       "stake": "Stake",
       "withdraw": "Withdraw",
       "balance": "You have {{amount}}",
+      "unstakeBalance": "Available to unstake {{amount}}",
       "confirmStake": "Confirm stake",
       "unstake": "Unstake",
       "overLimit": "One stake limits {{min}} - {{max}} BRBC",
