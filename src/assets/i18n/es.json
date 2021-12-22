@@ -371,7 +371,7 @@
     }
   },
   "instantTrades": {
-    "title": "Swap assets with low gas fees",
+    "title": "Swap assets in 1 click",
     "gasFeeMessage": "Tarifa de intercambio estimada. Será necesario que provea una tarifa mayor a la de Metamask, que será reembolsada una vez que la transacción sea completada.",
     "gasFee": "Costo de tarifas estimado:",
     "useOptimization": "Utilice la optimización de Rubic",

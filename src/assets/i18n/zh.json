@@ -371,7 +371,7 @@
     }
   },
   "instantTrades": {
-    "title": "Swap assets with low gas fees",
+    "title": "Swap assets in 1 click",
     "gasFeeMessage": "gas费用估计值为完成交易，在MetaMask中需要提供的gas将大于估计值，多余的gas将于交易完成后被退回。",
     "gasFee": "gas费用估计值",
     "useOptimization": "使用Rubic優化",
