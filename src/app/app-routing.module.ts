@@ -44,7 +44,8 @@ const routes: Routes = [
   {
     path: ROUTE_PATH.STAKING,
     loadChildren: () => import('./features/staking/staking.module').then(m => m.StakingModule),
-    canActivate: [UntilTimeGuard]
+    canActivate: [UntilTimeGuard],
+    canLoad: [UntilTimeGuard]
   },
   {
     path: ROUTE_PATH.REST,
