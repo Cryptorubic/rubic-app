@@ -586,7 +586,7 @@ export class StakingService {
     }
   }
 
-  public reloadStakingInfo(): void {
-    forkJoin([this.getUserEnteredAmount(), this.getTotalRBCEntered()]);
+  public reloadStakingInfo(): Observable<[number, string]> {
+    return forkJoin([this.getUserEnteredAmount(), this.getTotalRBCEntered()]);
   }
 }
