@@ -18,7 +18,7 @@
         {{
           'staking.stake.canUnstake' | translate: { amount: maxAmountForWithdraw | bigNumberFormat }
         }}
-        <span class="withdraw__max">MAX</span>
+        <span class="withdraw__max" (click)="setMaxAmount(maxAmountForWithdraw)">MAX</span>
       </div>
     </ng-container>
     <app-usd-price-container></app-usd-price-container>
@@ -42,6 +42,5 @@
     [loading]="withdrawButtonLoading$ | async"
     (onLogin)="login()"
     (onWithdraw)="withdraw()"
-    (onChangeNetwork)="changeNetwork()"
   ></app-withdraw-button-container>
 </div>

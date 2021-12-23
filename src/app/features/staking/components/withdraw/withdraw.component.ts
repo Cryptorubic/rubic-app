@@ -5,7 +5,7 @@ import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, EMPTY, forkJoin } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, of } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,9 +27,16 @@ export class WithdrawComponent implements OnInit {
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
   public readonly canReceive$ = this.amount.valueChanges.pipe(
-    map(value => new BigNumber(value || 0)),
-    switchMap(amount => this.stakingService.calculateLeaveReward(amount)),
-    map(amount => new BigNumber(amount.toNumber() * Math.pow(10, 18))),
+    switchMap(amount => {
+      if (amount === '') {
+        return of('');
+      } else {
+        return of(new BigNumber(amount)).pipe(
+          switchMap(x => this.stakingService.calculateLeaveReward(x)),
+          map(x => new BigNumber(x.toNumber() * Math.pow(10, 18)))
+        );
+      }
+    }),
     takeUntil(this.destroy$)
   );
 
@@ -93,5 +100,7 @@ export class WithdrawComponent implements OnInit {
     this.walletsModalService.open().subscribe();
   }
 
-  public changeNetwork(): void {}
+  public setMaxAmount(amount: BigNumber): void {
+    this.amount.setValue(amount.toString());
+  }
 }
