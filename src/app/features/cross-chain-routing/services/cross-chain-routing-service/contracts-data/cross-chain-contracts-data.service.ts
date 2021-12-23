@@ -40,7 +40,7 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        1,
+        2,
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new EthLikeCrossChainContractData(
@@ -51,7 +51,7 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        2,
+        1,
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.POLYGON]: new EthLikeCrossChainContractData(
