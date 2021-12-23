@@ -8,7 +8,7 @@ export class EthereumBinanceRubicBridgeProviderService extends CommonRubicBridge
   constructor() {
     const config: RubicBridgeConfig = {
       from: {
-        maxAmount: 50_000,
+        maxAmount: 100_000,
         blockchainName: BLOCKCHAIN_NAME.ETHEREUM,
         token: {
           symbol: 'RBC',
@@ -17,7 +17,7 @@ export class EthereumBinanceRubicBridgeProviderService extends CommonRubicBridge
         }
       },
       to: {
-        maxAmount: 50_000,
+        maxAmount: 100_000,
         blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
         token: {
           symbol: 'BRBC',
