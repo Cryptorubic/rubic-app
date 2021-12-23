@@ -131,7 +131,7 @@ export class StakeButtonContainerComponent implements OnInit {
   }
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber, limit: BigNumber): void {
-    if (amount.isNaN()) {
+    if (!amount.isFinite()) {
       this.errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
       return;
     }
