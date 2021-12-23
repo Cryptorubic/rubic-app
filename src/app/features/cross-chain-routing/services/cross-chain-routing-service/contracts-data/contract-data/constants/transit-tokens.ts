@@ -36,6 +36,11 @@ export const transitTokens: TransitTokens = {
     decimals: 6,
     symbol: 'USDC'
   },
+  [BLOCKCHAIN_NAME.HARMONY]: {
+    address: '0x985458e523db3d53125813ed68c274899e9dfab4',
+    decimals: 6,
+    symbol: '1USDC'
+  },
   [BLOCKCHAIN_NAME.SOLANA]: {
     address: TOKENS.USDC.mintAddress,
     decimals: TOKENS.USDC.decimals,

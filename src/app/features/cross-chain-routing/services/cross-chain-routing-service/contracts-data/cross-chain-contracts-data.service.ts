@@ -14,6 +14,7 @@ import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/ser
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { SolanaCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
+import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ export class CrossChainContractsDataService {
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly raydiumService: RaydiumService,
     private readonly algebraService: AlgebraService,
+    private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
 
@@ -108,6 +110,17 @@ export class CrossChainContractsDataService {
         6,
         this.publicBlockchainAdapterService
       ),
+      [BLOCKCHAIN_NAME.HARMONY]: new EthLikeCrossChainContractData(
+        BLOCKCHAIN_NAME.HARMONY,
+        [
+          {
+            provider: this.sushiSwapHarmonyService,
+            methodSuffix: ''
+          }
+        ],
+        7,
+        this.publicBlockchainAdapterService
+      ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaCrossChainContractData(
         BLOCKCHAIN_NAME.SOLANA,
         [
@@ -116,7 +129,7 @@ export class CrossChainContractsDataService {
             methodSuffix: ''
           }
         ],
-        7,
+        8,
         this.publicBlockchainAdapterService
       )
     };
