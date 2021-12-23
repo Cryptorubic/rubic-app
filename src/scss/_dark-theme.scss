@@ -106,11 +106,6 @@ html.dark {
       filter: invert(1) opacity(0.7) hue-rotate(180deg);
     }
 
-    tui-dropdown-box {
-      --tui-base-01: rgba(0, 0, 0, 0.5);
-
-      backdrop-filter: $backdrop-blur-1;
-    }
 
     .gradient {
       position: absolute;

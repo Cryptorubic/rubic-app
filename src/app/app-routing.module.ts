@@ -41,6 +41,10 @@ const routes: Routes = [
     loadChildren: () => import('./features/my-trades/my-trades.module').then(m => m.MyTradesModule)
   },
   {
+    path: ROUTE_PATH.STAKING,
+    loadChildren: () => import('./features/staking/staking.module').then(m => m.StakingModule)
+  },
+  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }

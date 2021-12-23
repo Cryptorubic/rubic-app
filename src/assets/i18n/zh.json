@@ -32,7 +32,8 @@
     "swap": "交換",
     "approve": "批准",
     "switchTo": "切换到 {{networkName}} 网络",
-    "tradeVia": "贸易途径 "
+    "tradeVia": "贸易途径 ",
+    "bridge": "Bridge"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -95,7 +96,8 @@
     "logout": "注销",
     "logoutMessage": "你真的想注销吗？",
     "notAvailable": "建設中 - 用戶體驗重新設計。",
-    "merch": "Merch shop"
+    "merch": "Merch shop",
+    "staking": "Staking"
   },
   "aboutPage": {
     "description": "Rubic 是一个支持多链的 DeFi 生态系统，以成为完整的一站式去中心化平台为目标，提供多个不同区块链间的跨链P2P即时兑换功能。",
@@ -454,6 +456,43 @@
     "tradingNotAvailable": "交易不可用",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "staking": {
+    "stake": {
+      "stake": "Stake",
+      "withdraw": "Withdraw",
+      "balance": "You have {{amount}}",
+      "unstakeBalance": "Available to unstake {{amount}}",
+      "confirmStake": "Confirm stake",
+      "unstake": "Unstake",
+      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
+      "globalUpdate": "Global Update",
+      "globalUpdateHint": "about global update",
+      "getBrbc": "Get BRBC",
+      "calculateProfitability": "Calculate profitability",
+      "refillTime": "{{hours}} hours {{minutes}} minutes",
+      "addXbrbc": "Add xBRBC",
+      "canUnstake": "Can unstake {{amount}}"
+    },
+    "stats": {
+      "profitTime": "Yesterday's APY",
+      "calc": "Calculate",
+      "balance": "Balance",
+      "canReceive": "Amount with Rewards",
+      "rewards": "Earned Rewards",
+      "apr": "APR",
+      "usersTotal": "You total staked",
+      "total": "Total staked",
+      "connectWallet": "Connect wallet to receive info"
+    },
+    "features": {
+      "highApr": "High APR",
+      "minimumApr": "Minimum APR ~ 80%.",
+      "brbcRewards": "BRBC rewards",
+      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
+      "teamBuybacks": "Team Buybacks",
+      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+    }
+  },
   "maintenance": {
     "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
@@ -492,6 +531,14 @@
       "ccrTitle": "Successful swap in source network!",
       "seeDetails": "See details in ",
       "link": "My Trades"
+    },
+    "stakingSwapModal": {
+      "title": "For RBC staking, you need to swap in BRBC",
+      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes.",
+      "aboutSign": "You will need to sign two transactions: approve and swap.",
+      "aboutMyself": "But you can swap tokens yourself.",
+      "agree": "Ok, I agree",
+      "swapMyself": "I swap myself"
     }
   },
   "settings": {
@@ -583,7 +630,11 @@
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
-    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
+    "stakeInProgress": "Stake in progress",
+    "successfulStake": "Successful stake",
+    "successfulWithdraw": "Successful withdraw",
+    "withdrawInProgress": "Withdraw in progress"
   },
   "buyTokens": {
     "default": "購買 RBC",
