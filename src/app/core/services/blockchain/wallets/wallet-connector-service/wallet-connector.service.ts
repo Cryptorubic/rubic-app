@@ -63,11 +63,11 @@ export class WalletConnectorService {
   }
 
   public get network(): IBlockchain {
-    return this.provider.network;
+    return this.provider?.network;
   }
 
   public get networkName(): BLOCKCHAIN_NAME {
-    return this.provider.networkName;
+    return this.provider?.networkName;
   }
 
   public get provider(): CommonWalletAdapter {

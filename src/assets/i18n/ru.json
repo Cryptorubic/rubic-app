@@ -32,7 +32,8 @@
     "swap": "Обменять",
     "approve": "Утвердить",
     "switchTo": "Переключиться на сеть {{ networkName }}",
-    "tradeVia": "Торговать через "
+    "tradeVia": "Торговать через ",
+    "bridge": "Bridge"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -95,7 +96,8 @@
     "logout": "Выйти",
     "logoutMessage": "Вы действительно хотите выйти?",
     "notAvailable": "В работе. UX редизайн.",
-    "merch": "Merch shop"
+    "merch": "Merch shop",
+    "staking": "Staking"
   },
   "aboutPage": {
     "description": "Rubic-это мультичейн экосистема DeFi, которая включает в себя кросс-чейн, P2P, мгновенные обмены и лимит ордера с возможностью использовать разные блокчейны, стремясь обеспечить общую для всех универсальную децентрализованную платформу.",
@@ -371,7 +373,7 @@
     }
   },
   "instantTrades": {
-    "title": "Swap assets with low gas fees",
+    "title": "Swap assets in 1 click",
     "gasFeeMessage": "Приблизительный размер платы за газ. Для завершения сделки потребуется предоставить больше газа в Метамаске, дополнительный газ будет возвращен вам после завершения сделки.",
     "gasFee": "Приблизительный газ",
     "useOptimization": "Использовать оптимизацию Rubic",
@@ -453,6 +455,43 @@
     "tradingNotAvailable": "Трэйдинг недоступен",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "staking": {
+    "stake": {
+      "stake": "Stake",
+      "withdraw": "Withdraw",
+      "balance": "You have {{amount}}",
+      "unstakeBalance": "Available to unstake {{amount}}",
+      "confirmStake": "Confirm stake",
+      "unstake": "Unstake",
+      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
+      "globalUpdate": "Global Update",
+      "globalUpdateHint": "about global update",
+      "getBrbc": "Get BRBC",
+      "calculateProfitability": "Calculate profitability",
+      "refillTime": "{{hours}} hours {{minutes}} minutes",
+      "addXbrbc": "Add xBRBC",
+      "canUnstake": "Can unstake {{amount}}"
+    },
+    "stats": {
+      "profitTime": "Yesterday's APY",
+      "calc": "Calculate",
+      "balance": "Balance",
+      "canReceive": "Amount with Rewards",
+      "rewards": "Earned Rewards",
+      "apr": "APR",
+      "usersTotal": "You total staked",
+      "total": "Total staked",
+      "connectWallet": "Connect wallet to receive info"
+    },
+    "features": {
+      "highApr": "High APR",
+      "minimumApr": "Minimum APR ~ 80%.",
+      "brbcRewards": "BRBC rewards",
+      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
+      "teamBuybacks": "Team Buybacks",
+      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+    }
+  },
   "maintenance": {
     "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
@@ -491,6 +530,14 @@
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
       "seeDetails": "See details in ",
       "link": "My Trades"
+    },
+    "stakingSwapModal": {
+      "title": "For RBC staking, you need to swap in BRBC",
+      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes.",
+      "aboutSign": "You will need to sign two transactions: approve and swap.",
+      "aboutMyself": "But you can swap tokens yourself.",
+      "agree": "Ok, I agree",
+      "swapMyself": "I swap myself"
     }
   },
   "settings": {
@@ -582,7 +629,11 @@
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
-    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
+    "stakeInProgress": "Stake in progress",
+    "successfulStake": "Successful stake",
+    "successfulWithdraw": "Successful withdraw",
+    "withdrawInProgress": "Withdraw in progress"
   },
   "buyTokens": {
     "default": "Купить RBC",

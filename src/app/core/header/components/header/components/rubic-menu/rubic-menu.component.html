@@ -66,6 +66,17 @@
         >
           <button tuiOption class="data-list__option">Multi-Chain</button>
         </a>
+
+        <a
+          routerLink="/staking"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+          (click)="menuClickHandler('staking')"
+        >
+          <button tuiOption class="data-list__option">
+            {{ 'navigation.staking' | translate }}
+          </button>
+        </a>
       </tui-opt-group>
 
       <tui-opt-group *ngIf="(currentUser$ | async)?.address" class="rubic-menu__mobile">

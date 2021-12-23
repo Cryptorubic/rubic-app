@@ -1,0 +1,195 @@
+@use 'src/scss/vars';
+@use 'src/scss/mixins';
+@use './../../styles/staking';
+
+:host {
+  padding: 26px;
+
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 36px;
+
+  @include mixins.b(vars.$tablet) {
+    padding: 0;
+
+    background: none;
+  }
+}
+
+.total {
+  position: relative;
+
+  margin-bottom: 12px;
+  padding: 36px;
+
+  background: #202320;
+  border-radius: 22px;
+
+  @include mixins.b(vars.$tablet) {
+    margin-bottom: 18px;
+    padding: 28px;
+
+    &__total-staked {
+      margin-bottom: 28px;
+    }
+
+    &__title {
+      margin-bottom: 2px;
+
+      font-size: 14px;
+      line-height: 17px;
+    }
+
+    &__amount {
+      margin-bottom: 10px;
+
+      font-size: 16px;
+      line-height: 22px;
+      letter-spacing: 0.03em;
+    }
+
+    &__reload {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__overlay {
+    @include staking.staking-spinner-overlay;
+  }
+
+  &__spinner {
+    width: 100%;
+  }
+
+  &__total-staked {
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    margin-bottom: 7px;
+
+    color: vars.$rubic-primary;
+    font-weight: 800;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  &__amount {
+    margin-bottom: 12px;
+
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  ::ng-deep {
+    progress {
+      height: 6px;
+
+      border-radius: 19px;
+    }
+  }
+
+  &__reload {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    cursor: pointer;
+  }
+}
+
+.features {
+  padding: 25px 36px;
+
+  background: #202320;
+  border-radius: 22px;
+
+  @include mixins.b(vars.$tablet) {
+    padding: 28px;
+  }
+
+  .feature {
+    display: flex;
+
+    &:not(:last-child) {
+      margin-bottom: 26px;
+
+      @include mixins.b(vars.$tablet) {
+        margin-bottom: 28px;
+      }
+    }
+
+    &__icon {
+      margin-right: 12px;
+
+      @include mixins.b(vars.$tablet) {
+        margin-right: 14px;
+
+        &--top,
+        &--brbc,
+        &--graph {
+          width: 22px;
+        }
+
+        &--top {
+          height: 35px;
+        }
+
+        &--brbc {
+          height: 26px;
+        }
+
+        &--graph {
+          height: 20px;
+        }
+      }
+
+      &--top,
+      &--brbc,
+      &--graph {
+        width: 28px;
+      }
+
+      &--top {
+        height: 35px;
+      }
+
+      &--brbc {
+        height: 33px;
+      }
+
+      &--graph {
+        height: 25px;
+      }
+    }
+
+    &__title {
+      margin-bottom: 4px;
+
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 21px;
+
+      @include mixins.b(vars.$tablet) {
+        margin-bottom: 2px;
+
+        font-size: 16px;
+        line-height: 19px;
+        letter-spacing: 0.03em;
+      }
+    }
+
+    &__text {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+
+      @include mixins.b(vars.$tablet) {
+        font-size: 14px;
+        line-height: 17px;
+      }
+    }
+  }
+}
