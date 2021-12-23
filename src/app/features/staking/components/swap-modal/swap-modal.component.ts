@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { StakingService } from '@features/staking/services/staking.service';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
@@ -39,17 +38,36 @@ export class SwapModalComponent {
   }
 
   public swapViaPlatform(): void {
-    this.bridgeSwapButtonLoading$.next(true);
-    this.stakingService
-      .enterStakeViaBridge(this.context.data.amount)
-      .pipe(finalize(() => this.bridgeSwapButtonLoading$.next(false)))
-      .subscribe(() => {
-        this.context.completeWith(false);
-        this.notificationsService.show('Staking', {
-          label: 'The transaction was successful',
-          status: TuiNotification.Success,
-          autoClose: 5000
-        });
-      });
+    this.notificationsService.show('Staking is disabled due to Staking contract is full.', {
+      status: TuiNotification.Warning,
+      autoClose: 10000
+    });
+    // this.bridgeSwapButtonLoading$.next(true);
+    // this.stakingService.stakingProgress$
+    //   .pipe(
+    //     switchMap(stakingProgress => {
+    //       return stakingProgress.totalRbcEntered > 6_000_000
+    //         ? of(false)
+    //         : this.stakingService.enterStakeViaBridge(this.context.data.amount).pipe(
+    //             map(() => true),
+    //             finalize(() => this.bridgeSwapButtonLoading$.next(false))
+    //           );
+    //     })
+    //   )
+    //   .subscribe(allowBridge => {
+    //     if (allowBridge) {
+    //       this.context.completeWith(false);
+    //       this.notificationsService.show('Staking', {
+    //         label: 'The transaction was successful',
+    //         status: TuiNotification.Success,
+    //         autoClose: 5000
+    //       });
+    //     } else {
+    //       this.notificationsService.show('Staking is disabled due to Staking contract is full.', {
+    //         status: TuiNotification.Warning,
+    //         autoClose: 10000
+    //       });
+    //     }
+    //   });
   }
 }
