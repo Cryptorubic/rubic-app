@@ -5,7 +5,7 @@ import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, EMPTY } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -49,7 +49,10 @@ export class WithdrawComponent implements OnInit {
         take(1),
         switchMap(needLogin => {
           if (!needLogin) {
-            return this.stakingService.getStakingTokenBalance();
+            return forkJoin([
+              this.stakingService.getStakingTokenBalance(),
+              this.stakingService.getMaxAmountForWithdraw()
+            ]);
           } else {
             return EMPTY;
           }

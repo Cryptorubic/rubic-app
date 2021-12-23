@@ -16,7 +16,7 @@
     <ng-container *ngIf="(needLogin$ | async) === false">
       <div class="withdraw__balance" *ngIf="maxAmountForWithdraw$ | async as maxAmountForWithdraw">
         {{
-          'staking.stake.balance' | translate: { amount: maxAmountForWithdraw | bigNumberFormat }
+          'staking.stake.canUnstake' | translate: { amount: maxAmountForWithdraw | bigNumberFormat }
         }}
         <span class="withdraw__max">MAX</span>
       </div>

@@ -208,7 +208,13 @@ export class StakingService {
       switchMap(receipt =>
         this.updateUsersDepositAfterWithdraw(adjustedAmountInWei, receipt.transactionHash)
       ),
-      switchMap(() => forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()]))
+      switchMap(() =>
+        forkJoin([
+          this.reloadStakingStatistics(),
+          this.reloadStakingProgress(),
+          this.getMaxAmountForWithdraw()
+        ])
+      )
     );
   }
 
@@ -281,6 +287,7 @@ export class StakingService {
   }
 
   public getMaxAmountForWithdraw(): Observable<BigNumber> {
+    console.log('exec');
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
@@ -293,6 +300,7 @@ export class StakingService {
       )
     ).pipe(
       map(actualBalance => EthLikeWeb3Public.fromWei(actualBalance, 18)),
+      tap(console.log),
       tap(actualBalance => this._maxAmountForWithdraw$.next(actualBalance))
     );
   }
