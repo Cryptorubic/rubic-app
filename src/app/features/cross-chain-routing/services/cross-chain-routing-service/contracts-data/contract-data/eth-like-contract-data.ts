@@ -6,6 +6,8 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { crossChainContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/eth-like/cross-chain-contract-abi';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
+import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
 
 export class EthLikeCrossChainContractData extends CrossChainContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -76,5 +78,57 @@ export class EthLikeCrossChainContractData extends CrossChainContractData {
       crossChainContractAbi,
       'maxGasPrice'
     );
+  }
+
+  /**
+   * Returns method's arguments to use in source network.
+   */
+  public getMethodArguments(
+    trade: CrossChainTrade,
+    isToTokenNative: boolean,
+    toContract: CrossChainContractData,
+    walletAddress: string
+  ): unknown[] {
+    const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
+    const tokenOutAmountMin =
+      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
+    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+
+    const fromTransitTokenAmountMin =
+      CrossChainContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
+    const fromTransitTokenAmountMinAbsolute = Web3Pure.toWei(
+      fromTransitTokenAmountMin,
+      this.transitToken.decimals
+    );
+
+    const toNumOfBlockchain = toContract.numOfBlockchain;
+
+    const fromPath = this.getFromPath(trade.fromProviderIndex, trade.fromTrade);
+    const toPath = toContract.getToPath(trade.toProviderIndex, trade.toTrade);
+
+    const toMethodSignature = toContract.getToMethodSignature(
+      trade.toProviderIndex,
+      isToTokenNative
+    );
+
+    const methodArguments = [
+      [
+        toNumOfBlockchain,
+        tokenInAmountAbsolute,
+        fromPath,
+        toPath,
+        fromTransitTokenAmountMinAbsolute,
+        tokenOutAmountMinAbsolute,
+        EthLikeWeb3Public.addressToBytes32(walletAddress),
+        isToTokenNative,
+        true
+      ]
+    ];
+    if (!this.isProviderV3(trade.fromProviderIndex)) {
+      methodArguments[0].push(false);
+    }
+    methodArguments[0].push(toMethodSignature);
+
+    return methodArguments;
   }
 }

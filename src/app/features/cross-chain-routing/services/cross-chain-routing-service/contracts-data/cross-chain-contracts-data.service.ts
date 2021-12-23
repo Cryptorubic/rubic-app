@@ -13,6 +13,7 @@ import { CrossChainContractData } from '@features/cross-chain-routing/services/c
 import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { SolanaCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,7 @@ export class CrossChainContractsDataService {
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly raydiumService: RaydiumService,
+    private readonly algebraService: AlgebraService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
 
@@ -59,6 +61,10 @@ export class CrossChainContractsDataService {
         [
           {
             provider: this.quickSwapService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.algebraService,
             methodSuffix: ''
           }
         ],

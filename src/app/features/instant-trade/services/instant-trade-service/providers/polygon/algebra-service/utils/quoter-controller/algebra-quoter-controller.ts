@@ -6,11 +6,13 @@ import { routerTokensNetMode } from '@features/instant-trade/services/instant-tr
 import { ContractData } from '@shared/models/blockchain/ContractData';
 import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { ExactMethod } from '@features/instant-trade/services/instant-trade-service/models/exact-method';
 
 interface RecGraphVisitorOptions {
   routesTokens: SymbolToken[];
-  fromAmountAbsolute: string;
   toToken: SymbolToken;
+  amountAbsolute: string;
+  exactMethod: ExactMethod;
   maxTransitTokens: number;
 }
 
@@ -37,11 +39,13 @@ export class AlgebraQuoterController {
   /**
    * Returns swap method's name and arguments to pass it to Quoter contract.
    * @param path Pools, included in route.
-   * @param fromAmountAbsolute From amount.
+   * @param amountAbsolute From or to amount.
+   * @param exactMethod Defines which method will be used - 'input' or 'output'.
    */
   private static getQuoterMethodData(
     path: SymbolToken[],
-    fromAmountAbsolute: string
+    amountAbsolute: string,
+    exactMethod: ExactMethod
   ): {
     path: SymbolToken[];
     methodData: MethodData;
@@ -50,16 +54,22 @@ export class AlgebraQuoterController {
       return {
         path: path,
         methodData: {
-          methodName: 'quoteExactInputSingle',
-          methodArguments: [path[0].address, path[1].address, fromAmountAbsolute, 0]
+          methodName: exactMethod === 'input' ? 'quoteExactInputSingle' : 'quoteExactOutputSingle',
+          methodArguments: [path[0].address, path[1].address, amountAbsolute, 0]
         }
       };
     }
+
+    let encodedPath = AlgebraQuoterController.getEncodedPath(path);
+    if (exactMethod === 'output') {
+      encodedPath = '0x' + encodedPath.slice(2).split('').reverse().join('');
+    }
+
     return {
       path: path,
       methodData: {
-        methodName: 'quoteExactInput',
-        methodArguments: [AlgebraQuoterController.getEncodedPath(path), fromAmountAbsolute]
+        methodName: exactMethod === 'input' ? 'quoteExactInput' : 'quoteExactOutput',
+        methodArguments: [encodedPath, amountAbsolute]
       }
     };
   }
@@ -77,16 +87,18 @@ export class AlgebraQuoterController {
 
   /**
    * Returns all routes between given tokens with output amount.
-   * @param fromAmountAbsolute From token amount in Wei.
    * @param fromToken From token.
    * @param toToken To token.
+   * @param amountAbsolute From or to token amount in Wei.
    * @param routeMaxTransitPools Max amount of transit pools.
+   * @param exactMethod Defines which method will be used - 'input' or 'output'.
    */
   public async getAllRoutes(
-    fromAmountAbsolute: string,
     fromToken: SymbolToken,
     toToken: SymbolToken,
-    routeMaxTransitPools: number
+    amountAbsolute: string,
+    routeMaxTransitPools: number,
+    exactMethod: ExactMethod
   ): Promise<AlgebraRoute[]> {
     const routesTokens = this.routerTokens.filter(
       token =>
@@ -95,8 +107,9 @@ export class AlgebraQuoterController {
     );
     const options: Omit<RecGraphVisitorOptions, 'maxTransitTokens'> = {
       routesTokens,
-      fromAmountAbsolute,
-      toToken
+      toToken,
+      amountAbsolute,
+      exactMethod
     };
     const quoterMethodsData = [...Array(routeMaxTransitPools + 1)]
       .map((_, maxTransitTokens) =>
@@ -136,11 +149,15 @@ export class AlgebraQuoterController {
     options: RecGraphVisitorOptions,
     path: SymbolToken[]
   ): { path: SymbolToken[]; methodData: MethodData }[] {
-    const { routesTokens, fromAmountAbsolute, toToken, maxTransitTokens } = options;
+    const { routesTokens, toToken, amountAbsolute, exactMethod, maxTransitTokens } = options;
 
     if (path.length === maxTransitTokens + 1) {
       return [
-        AlgebraQuoterController.getQuoterMethodData(path.concat(toToken), fromAmountAbsolute)
+        AlgebraQuoterController.getQuoterMethodData(
+          path.concat(toToken),
+          amountAbsolute,
+          exactMethod
+        )
       ];
     }
 

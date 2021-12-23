@@ -65,7 +65,7 @@ export abstract class CrossChainContractData {
   /**
    * Returns true, if provider is of `uniswap v3` or `algebra` type.
    */
-  private isProviderV3(providerIndex: number): boolean {
+  protected isProviderV3(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof CommonUniV3AlgebraService;
   }
 

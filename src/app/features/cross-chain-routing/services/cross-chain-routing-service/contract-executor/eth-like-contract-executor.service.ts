@@ -10,10 +10,9 @@ import { Injectable } from '@angular/core';
 import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ContractParams } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/contract-params';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
 import BigNumber from 'bignumber.js';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 
 @Injectable({
   providedIn: 'root'
@@ -98,47 +97,11 @@ export class EthLikeCrossChainContractExecutorService {
       fromBlockchain
     ].getFromMethodNameAndContractAbi(trade.fromProviderIndex, isFromTokenNative);
 
+    const methodArguments = (
+      this.contracts[fromBlockchain] as EthLikeCrossChainContractData
+    ).getMethodArguments(trade, isToTokenNative, this.contracts[toBlockchain], walletAddress);
+
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
-    const tokenOutAmountMin =
-      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
-
-    const fromTransitTokenAmountMin =
-      CrossChainContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
-    const fromTransitTokenAmountMinAbsolute = Web3Pure.toWei(
-      fromTransitTokenAmountMin,
-      this.contracts[fromBlockchain].transitToken.decimals
-    );
-
-    const toNumOfBlockchain = this.contracts[toBlockchain].numOfBlockchain;
-
-    const fromPath = this.contracts[fromBlockchain].getFromPath(
-      trade.fromProviderIndex,
-      trade.fromTrade
-    );
-    const toPath = this.contracts[toBlockchain].getToPath(trade.toProviderIndex, trade.toTrade);
-
-    const toMethodSignature = this.contracts[toBlockchain].getToMethodSignature(
-      trade.toProviderIndex,
-      isToTokenNative
-    );
-
-    const methodArguments = [
-      [
-        toNumOfBlockchain,
-        tokenInAmountAbsolute,
-        fromPath,
-        toPath,
-        fromTransitTokenAmountMinAbsolute,
-        tokenOutAmountMinAbsolute,
-        EthLikeWeb3Public.addressToBytes32(walletAddress),
-        isToTokenNative,
-        true,
-        false,
-        toMethodSignature
-      ]
-    ];
-
     const blockchainCryptoFee = Web3Pure.toWei(trade.cryptoFee);
     const value = new BigNumber(blockchainCryptoFee)
       .plus(isFromTokenNative ? tokenInAmountAbsolute : 0)
