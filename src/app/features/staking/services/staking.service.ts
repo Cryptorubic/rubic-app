@@ -100,6 +100,10 @@ export class StakingService {
   ]).pipe(
     switchMap(([selectedToken, needLogin]) => {
       if (needLogin) {
+        this._amountWithRewards$.next(new BigNumber(0));
+        this._earnedRewards$.next(new BigNumber(0));
+        this._stakingTokenBalance$.next(new BigNumber(0));
+        this._apr$.next(0);
         return of(new BigNumber(0));
       } else {
         return this.getSelectedTokenBalance(selectedToken);
