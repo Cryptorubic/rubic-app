@@ -21,7 +21,7 @@
         [disabled]="errorType | falsy"
         [loading]="loading"
         appearance="secondary"
-        (onClick)="onStake(needApprove)"
+        (onClick)="onStake(needApprove && !approvedTokens)"
       >
         <ng-container [ngSwitch]="errorType">
           <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
