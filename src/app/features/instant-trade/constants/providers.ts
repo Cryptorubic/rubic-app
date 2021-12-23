@@ -76,6 +76,13 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
     {
       ...defaultState,
       tradeProviderInfo: {
+        label: 'Algebra',
+        value: INSTANT_TRADES_PROVIDER.ALGEBRA
+      }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
         label: '1inch',
         value: INSTANT_TRADES_PROVIDER.ONEINCH
       }
