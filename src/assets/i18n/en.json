@@ -531,7 +531,9 @@
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
-      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes. But you can swap tokens yourself.",
+      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes.",
+      "aboutSign": "You will need to sign two transactions: approve and swap.",
+      "aboutMyself": "But you can swap tokens yourself.",
       "agree": "Ok, I agree",
       "swapMyself": "I swap myself"
     }

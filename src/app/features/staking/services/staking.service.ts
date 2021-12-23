@@ -87,13 +87,18 @@ export class StakingService {
 
   public readonly stakingStatisticsLoading$ = new BehaviorSubject<boolean>(true);
 
+  private readonly updateTokenBalance$$ = new BehaviorSubject<void>(null);
+
+  public readonly updateTokenBalance$ = this.updateTokenBalance$$.asObservable();
+
   public readonly selectedToken$ = this._selectedToken$.asObservable();
 
   public readonly maxAmountForWithdraw$ = this._maxAmountForWithdraw$.asObservable();
 
   public readonly selectedTokenBalance$ = combineLatest([
     this.selectedToken$,
-    this.needLogin$
+    this.needLogin$,
+    this.updateTokenBalance$
   ]).pipe(
     switchMap(([selectedToken, needLogin]) => {
       if (needLogin) {
@@ -161,7 +166,7 @@ export class StakingService {
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
     if (needSwap) {
-      return this.openSwapModal(amount);
+      return this.openSwapModal(amount, tokenBlockchain);
     } else {
       return from(
         this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
@@ -179,7 +184,8 @@ export class StakingService {
         switchMap(receipt => this.updateUsersDeposit(amountInWei, receipt.transactionHash)),
         switchMap(() => {
           return forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()]);
-        })
+        }),
+        tap(() => this.updateTokenBalance$$.next())
       );
     }
   }
@@ -451,10 +457,10 @@ export class StakingService {
     });
   }
 
-  private openSwapModal(amount: BigNumber): Observable<unknown> {
+  private openSwapModal(amount: BigNumber, blockchain: BLOCKCHAIN_NAME): Observable<unknown> {
     return this.dialogService.open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
       size: 'l',
-      data: { amount }
+      data: { amount, blockchain }
     });
   }
 

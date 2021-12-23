@@ -15,10 +15,19 @@
     </div>
   </div>
 
-  <p class="swap-modal__desc" [innerHTML]="'modals.stakingSwapModal.aboutSwap' | translate"></p>
+  <p class="swap-modal__desc">
+    <span [innerHTML]="'modals.stakingSwapModal.aboutSwap' | translate"></span> {{ ' ' }}
+    <span>{{ 'modals.stakingSwapModal.aboutSign' | translate }}</span> {{ ' ' }}
+    <span *ngIf="isEthBlockchain">{{ 'modals.stakingSwapModal.aboutMyself' | translate }}</span>
+  </p>
 
   <div class="swap-modal__buttons">
-    <app-rubic-button appearance="outline" size="l" (click)="navigateToSwaps()">
+    <app-rubic-button
+      *ngIf="isEthBlockchain"
+      appearance="outline"
+      size="l"
+      (click)="navigateToSwaps()"
+    >
       {{ 'modals.stakingSwapModal.swapMyself' | translate }}
       <img src="assets/images/icons/external-link.svg" />
     </app-rubic-button>
