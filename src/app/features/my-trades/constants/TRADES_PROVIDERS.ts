@@ -84,6 +84,10 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
   [INSTANT_TRADES_PROVIDER.RAYDIUM]: {
     name: 'Raydium',
     image: `${imageBasePath}raydium.svg`
+  },
+  [INSTANT_TRADES_PROVIDER.VIPER]: {
+    name: 'Viper',
+    image: `${imageBasePath}viperswap.svg`
   }
 };
 

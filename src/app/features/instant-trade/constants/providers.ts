@@ -102,6 +102,13 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
         label: 'Sushiswap',
         value: INSTANT_TRADES_PROVIDER.SUSHISWAP
       }
+    },
+    {
+      ...defaultState,
+      tradeProviderInfo: {
+        label: 'Viperswap',
+        value: INSTANT_TRADES_PROVIDER.VIPER
+      }
     }
   ],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
