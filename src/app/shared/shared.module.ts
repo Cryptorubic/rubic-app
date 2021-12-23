@@ -62,6 +62,7 @@ import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.
 import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
+import { FalsyPipe } from './pipes/falsy.pipe';
 
 @NgModule({
   declarations: [
@@ -100,6 +101,7 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
     WithRoundPipe,
     ShortenAmountPipe,
     ThemedIconPipe,
+    FalsyPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
@@ -157,6 +159,7 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
     ShortenAmountPipe,
     RubicLanguageSelectComponent,
     RubicVolumeComponent,
+    FalsyPipe,
     SwapButtonContainerComponent,
     WithRoundPipe,
     SafetyLinkDirective,

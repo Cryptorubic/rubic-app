@@ -1,0 +1,5 @@
+@use 'src/scss/vars';
+
+.error {
+  color: vars.$rubic-text-error;
+}

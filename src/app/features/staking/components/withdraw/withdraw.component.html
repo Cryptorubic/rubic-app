@@ -1,0 +1,46 @@
+<div class="withdraw">
+  <div class="withdraw__stake-token">
+    <div class="token">
+      <img class="token__icon" src="assets/images/icons/staking/brbc-bsc.svg" alt="xBRBC" />
+      xBRBC
+    </div>
+    <input
+      autocomplete="off"
+      class="withdraw__input"
+      name="token-amount"
+      placeholder="0.0"
+      [decimals]="18"
+      appTokenAmount
+      [formControl]="amount"
+    />
+    <ng-container *ngIf="(needLogin$ | async) === false">
+      <div class="withdraw__balance" *ngIf="maxAmountForWithdraw$ | async as maxAmountForWithdraw">
+        {{
+          'staking.stake.canUnstake' | translate: { amount: maxAmountForWithdraw | bigNumberFormat }
+        }}
+        <span class="withdraw__max" (click)="setMaxAmount(maxAmountForWithdraw)">MAX</span>
+      </div>
+    </ng-container>
+    <app-usd-price-container></app-usd-price-container>
+  </div>
+
+  <hr class="withdraw__divider" />
+
+  <div class="withdraw__staked-token">
+    <div class="token">
+      <img class="token__icon" src="assets/images/icons/staking/brbc-bsc.svg" alt="xBRBC" />
+      BRBC
+    </div>
+    <input [value]="canReceive$ | async | bigNumberFormat" disabled class="withdraw__reward" />
+    <div></div>
+    <app-usd-price-container></app-usd-price-container>
+  </div>
+
+  <app-withdraw-button-container
+    [amountFormControl]="amount"
+    [needChangeNetwork]="false"
+    [loading]="withdrawButtonLoading$ | async"
+    (onLogin)="login()"
+    (onWithdraw)="withdraw()"
+  ></app-withdraw-button-container>
+</div>

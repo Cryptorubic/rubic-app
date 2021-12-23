@@ -1,0 +1,154 @@
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
+
+:host {
+  padding: 26px;
+
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 36px;
+
+  @include mixins.b(vars.$tablet) {
+    padding: 0;
+
+    background: none;
+  }
+}
+
+.staking-container {
+  padding: 8px;
+
+  background: #202320;
+  border-radius: 22px;
+  box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
+
+  &__tabs {
+    font-weight: 700;
+    font-size: 20px;
+
+    background: linear-gradient(to bottom, #202320 50%, #414141 50%);
+    box-shadow: none;
+
+    ::ng-deep {
+      tui-underline {
+        display: none;
+      }
+    }
+  }
+
+  &__tab {
+    flex-grow: 1;
+    justify-content: center;
+    margin-right: 0 !important; // @TODO Remove important.
+
+    font-weight: 800;
+    text-align: center;
+
+    background-color: #202320;
+    border-radius: 22px;
+
+    &._active {
+      background-color: #414141;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &_first {
+      border-bottom-left-radius: 0;
+
+      @include mixins.b(vars.$tablet) {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+      }
+    }
+
+    &_last {
+      border-top-left-radius: 0;
+      border-bottom-right-radius: 0;
+
+      @include mixins.b(vars.$tablet) {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+      }
+
+      &._active {
+        border-top-left-radius: 22px;
+      }
+    }
+
+    &:hover {
+      box-shadow: none !important; // @TODO Remove important.
+    }
+  }
+
+  &__stake,
+  &__withdraw {
+    display: block;
+
+    background-color: #414141;
+    border-radius: 22px;
+  }
+
+  &__stake {
+    border-top-left-radius: 0;
+  }
+
+  &__withdraw {
+    border-top-right-radius: 0;
+  }
+}
+
+
+.global-update,
+.get-brbc,
+.calculate-profitability,
+.add-xbrbc {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 26px;
+
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.global-update {
+  margin-top: 22px;
+
+  &__time {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+  }
+}
+
+.global-update__icon,
+.get-brbc__icon {
+  display: flex;
+  align-items: center;
+  margin-left: 14px;
+}
+
+.global-update__icon {
+  width: 20px;
+  height: 20px;
+}
+
+.get-brbc__icon {
+  width: 15px;
+  height: 15px;
+}
+
+.get-brbc,
+.add-xbrbc,
+.calculate-profitability {
+  color: vars.$rubic-primary;
+
+  cursor: pointer;
+}
+
+.get-brbc {
+  margin-top: 22px;
+}

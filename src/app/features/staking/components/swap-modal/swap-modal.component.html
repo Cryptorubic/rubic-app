@@ -1,0 +1,43 @@
+<div class="swap-modal">
+  <h2 class="swap-modal__title">
+    {{ 'modals.stakingSwapModal.title' | translate }}
+  </h2>
+
+  <div class="swap-modal__steps">
+    <div class="step">
+      <div class="step__circle">1</div>
+      <div class="step__caption">{{ 'common.bridge' | translate }}</div>
+    </div>
+    <div class="swap-modal__line"></div>
+    <div class="step">
+      <div class="step__circle">2</div>
+      <div class="step__caption">{{ 'navigation.staking' | translate }}</div>
+    </div>
+  </div>
+
+  <p class="swap-modal__desc">
+    <span [innerHTML]="'modals.stakingSwapModal.aboutSwap' | translate"></span> {{ ' ' }}
+    <span>{{ 'modals.stakingSwapModal.aboutSign' | translate }}</span> {{ ' ' }}
+    <span *ngIf="isEthBlockchain">{{ 'modals.stakingSwapModal.aboutMyself' | translate }}</span>
+  </p>
+
+  <div class="swap-modal__buttons">
+    <app-rubic-button
+      *ngIf="isEthBlockchain"
+      appearance="outline"
+      size="l"
+      (click)="navigateToSwaps()"
+    >
+      {{ 'modals.stakingSwapModal.swapMyself' | translate }}
+      <img src="assets/images/icons/external-link.svg" />
+    </app-rubic-button>
+    <app-rubic-button
+      appearance="secondary"
+      size="l"
+      (click)="swapViaPlatform()"
+      [loading]="bridgeSwapButtonLoading$ | async"
+    >
+      {{ 'modals.stakingSwapModal.agree' | translate }}
+    </app-rubic-button>
+  </div>
+</div>

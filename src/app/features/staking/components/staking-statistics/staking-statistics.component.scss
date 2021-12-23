@@ -1,0 +1,65 @@
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
+@use './../../styles/staking';
+
+.statistics {
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 81.5px;
+
+  background: linear-gradient(0deg, #202320, #202320);
+  border-radius: 22px;
+  box-shadow: 0px 1px 14px rgba(15, 15, 15, 0.12), 0px 5px 8px rgba(15, 15, 15, 0.14), 0px 3px 5px rgba(15, 15, 15, 0.2);
+
+  @include mixins.b(vars.$tablet) {
+    padding: 32px 30px;
+  }
+
+  @include mixins.b(vars.$tablet) {
+    display: grid;
+    grid-row-gap: 28px;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__overlay {
+    @include staking.staking-spinner-overlay;
+  }
+
+  &__spinner {
+    width: 100%;
+  }
+
+  &__value {
+    margin-bottom: 2px;
+
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 29px;
+
+    @include mixins.b(vars.$tablet) {
+      font-size: 20px;
+    }
+  }
+
+  &__caption {
+    color: vars.$rubic-primary;
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 21px;
+
+    @include mixins.b(vars.$tablet) {
+      font-size: 14px;
+    }
+  }
+
+  &__reload {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    cursor: pointer;
+  }
+}

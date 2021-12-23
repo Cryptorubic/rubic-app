@@ -1,0 +1,48 @@
+@use 'src/scss/mixins';
+@use 'src/scss/vars';
+
+/* stylelint-disable */
+:host {
+  display: grid;
+  grid-template: 'stats stats' 1fr
+                 'container features';
+  width: 100%;
+  max-width: 985px;
+  margin: 0 auto;
+  padding-top: 16px;
+
+  @include mixins.b(vars.$tablet) {
+    grid-template: 'stats'
+                   'container'
+                   'features';
+  }
+}
+/* stylelint-enable */
+
+app-staking-statistics {
+  grid-area: stats;
+  margin-bottom: 20px;
+
+  @include mixins.b(vars.$tablet) {
+    margin-bottom: 18px;
+  }
+}
+
+app-staking-container {
+  grid-area: container;
+  height: fit-content;
+  margin-right: 8px;
+
+  @include mixins.b(vars.$tablet) {
+    margin: 0 0 18px;
+  }
+}
+
+app-staking-info {
+  grid-area: features;
+  width: 432px;
+
+  @include mixins.b(vars.$laptop) {
+    width: 100%;
+  }
+}

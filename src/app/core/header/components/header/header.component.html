@@ -56,7 +56,9 @@
       "
       >Multi-Chain</a
     >
-    <a class="button-link" (click)="navigateToStaking()"> Staking </a>
+    <a *noFrame class="button-link" routerLink="staking" routerLinkActive="button-link_active">
+      {{ 'navigation.staking' | translate }}
+    </a>
   </nav>
 
   <app-buy-token
