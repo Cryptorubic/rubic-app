@@ -50,7 +50,6 @@ import { GetTradeSupportingFeeData } from '@features/instant-trade/services/inst
 import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/TradeContractData';
 import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import CustomError from '@core/errors/models/custom-error';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation.error';
 
 interface RecGraphVisitorOptions {
@@ -131,23 +130,19 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private setUniswapConstants(uniswapConstants: UniswapV2Constants): void {
     this.blockchain = uniswapConstants.blockchain;
-    if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
-      throw new CustomError('Wrong blockchain error');
-    }
+
+    BlockchainsInfo.checkIsEthLike(this.blockchain);
     this.blockchainAdapter = this.publicBlockchainAdapterService[
       this.blockchain
     ] as EthLikeWeb3Public;
-    this.maxTransitTokens = uniswapConstants.maxTransitTokens;
 
+    this.maxTransitTokens = uniswapConstants.maxTransitTokens;
     this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
     this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
     this.routingProviders = uniswapConstants.routingProvidersNetMode.mainnet;
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        if (BlockchainsInfo.getBlockchainType(this.blockchain) !== 'ethLike') {
-          throw new CustomError('Wrong blockchain error');
-        }
         this.blockchainAdapter = this.publicBlockchainAdapterService[
           this.blockchain
         ] as EthLikeWeb3Public;

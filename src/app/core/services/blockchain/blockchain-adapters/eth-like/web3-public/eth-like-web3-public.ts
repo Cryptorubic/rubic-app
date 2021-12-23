@@ -286,7 +286,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   /**
    * Executes allowance method in ERC-20 token contract.
    * @param params {@link AllowanceParams}.
-   * @return tokens Amount, allowed to be spent
+   * @return Promise<BigNumber> Amount, allowed to be spent
    */
   public async getAllowance(params: AllowanceParams): Promise<BigNumber> {
     const { tokenAddress, ownerAddress, spenderAddress } = params;
