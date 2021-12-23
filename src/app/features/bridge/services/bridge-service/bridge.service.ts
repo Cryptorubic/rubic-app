@@ -74,12 +74,10 @@ export class BridgeService {
         [BLOCKCHAIN_NAME.XDAI]: this.ethereumXdaiBridgeProviderService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService,
-        [BLOCKCHAIN_NAME.POLYGON]: this.binancePolygonBridgeProviderService
+        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService,
-        [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.binancePolygonBridgeProviderService
+        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService
       }
     };
   }
