@@ -43,7 +43,7 @@ export default [
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     label: 'Binance Smart Chain',
     scannerUrl: 'https://bscscan.com/',
-    rpcLink: 'https://summer-late-dew.bsc.quiknode.pro/362f8e0606a3c572692dafdfb3a23e76a7be5f1d/',
+    rpcLink: 'https://summer-late-dew.bsc.quiknode.pro/',
     additionalRpcLink:
       'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/bnb.svg',

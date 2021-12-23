@@ -32,7 +32,8 @@
     "swap": "교환",
     "approve": "승인",
     "switchTo": "{{ networkName }} 네트워크로 전환",
-    "tradeVia": "무역을 통해 "
+    "tradeVia": "무역을 통해 ",
+    "bridge": "Bridge"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -95,7 +96,8 @@
     "logout": "로그 아웃",
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
     "notAvailable": "공사중-UX 재 설계.",
-    "merch": "Merch shop"
+    "merch": "Merch shop",
+    "staking": "Staking"
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
@@ -371,7 +373,7 @@
     }
   },
   "instantTrades": {
-    "title": "Swap assets with low gas fees",
+    "title": "Swap assets in 1 click",
     "gasFeeMessage": "예상 가스 수수료. 거래를 완료하려면 메타마스크에 더 많은 가스를 제공해야 하며, 거래가 완료된 후 추가 가스가 반환됩니다.",
     "gasFee": "예상 가스 수수료",
     "useOptimization": "Rubic 최적화 사용",
@@ -453,6 +455,43 @@
     "tradingNotAvailable": "거래 불가",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "staking": {
+    "stake": {
+      "stake": "Stake",
+      "withdraw": "Withdraw",
+      "balance": "You have {{amount}}",
+      "unstakeBalance": "Available to unstake {{amount}}",
+      "confirmStake": "Confirm stake",
+      "unstake": "Unstake",
+      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
+      "globalUpdate": "Global Update",
+      "globalUpdateHint": "about global update",
+      "getBrbc": "Get BRBC",
+      "calculateProfitability": "Calculate profitability",
+      "refillTime": "{{hours}} hours {{minutes}} minutes",
+      "addXbrbc": "Add xBRBC",
+      "canUnstake": "Can unstake {{amount}}"
+    },
+    "stats": {
+      "profitTime": "Yesterday's APY",
+      "calc": "Calculate",
+      "balance": "Balance",
+      "canReceive": "Amount with Rewards",
+      "rewards": "Earned Rewards",
+      "apr": "APR",
+      "usersTotal": "You total staked",
+      "total": "Total staked",
+      "connectWallet": "Connect wallet to receive info"
+    },
+    "features": {
+      "highApr": "High APR",
+      "minimumApr": "Minimum APR ~ 80%.",
+      "brbcRewards": "BRBC rewards",
+      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
+      "teamBuybacks": "Team Buybacks",
+      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+    }
+  },
   "maintenance": {
     "title": "The site is under maintenance",
     "text": "Together, let’s change the world of crypto."
@@ -491,6 +530,14 @@
       "ccrTitle": "Successful swap in source network!",
       "seeDetails": "See details in ",
       "link": "My Trades"
+    },
+    "stakingSwapModal": {
+      "title": "For RBC staking, you need to swap in BRBC",
+      "aboutSwap": "<b>We’ll do everything automatically</b> <br> The transaction will take ~7 minutes.",
+      "aboutSign": "You will need to sign two transactions: approve and swap.",
+      "aboutMyself": "But you can swap tokens yourself.",
+      "agree": "Ok, I agree",
+      "swapMyself": "I swap myself"
     }
   },
   "settings": {
@@ -582,7 +629,11 @@
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
-    "solanaBeta": "Solana network is in beta now. Use it at your own risk."
+    "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
+    "stakeInProgress": "Stake in progress",
+    "successfulStake": "Successful stake",
+    "successfulWithdraw": "Successful withdraw",
+    "withdrawInProgress": "Withdraw in progress"
   },
   "buyTokens": {
     "default": "RBC 구매",

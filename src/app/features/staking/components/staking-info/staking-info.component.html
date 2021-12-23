@@ -1,0 +1,90 @@
+<div class="total" *ngLet="stakingProgress$ | async as stakingProgress">
+  <div class="total__total-staked">
+    <div class="total__title">{{ 'staking.stats.total' | translate }}</div>
+    <div class="total__amount">
+      {{ stakingProgress.totalRbcEntered | bigNumberFormat }} BRBC of
+      {{ BRBCTotal | bigNumberFormat }} BRBC
+    </div>
+    <progress
+      tuiProgressBar
+      [max]="BRBCTotal"
+      [value]="stakingProgress.totalRbcEntered"
+      class="total__progress"
+    ></progress>
+  </div>
+  <div class="total__you-total-staked">
+    <div class="total__title">{{ 'staking.stats.usersTotal' | translate }}</div>
+    <div class="total__amount">
+      <ng-container *ngIf="needLogin$ | async; else userTotalStaked">
+        {{ 'staking.stats.connectWallet' | translate }}
+      </ng-container>
+      <ng-template #userTotalStaked>
+        {{ stakingProgress.userEnteredAmount | bigNumberFormat }} BRBC of
+        {{ stakeLimitMax | bigNumberFormat }} BRBC
+      </ng-template>
+    </div>
+    <progress
+      tuiProgressBar
+      [max]="stakeLimitMax"
+      [value]="stakingProgress.userEnteredAmount"
+      class="total__progress"
+    ></progress>
+  </div>
+  <app-rotating-icon
+    class="total__reload"
+    (iconClick)="reloadStakingProgress()"
+    [rotating]="loading$ | async"
+  ></app-rotating-icon>
+
+  <div class="total__overlay" *ngIf="loading$ | async">
+    <tui-loader [showLoader]="true" [inheritColor]="true" class="total__spinner"></tui-loader>
+  </div>
+</div>
+
+<div class="features">
+  <div class="feature">
+    <img
+      src="assets/images/icons/staking/top-1.svg"
+      alt="High APR"
+      class="feature__icon feature__icon--top"
+    />
+    <div class="feature__content">
+      <div class="feature__title">
+        {{ 'staking.features.highApr' | translate }}
+      </div>
+      <div class="feature__text">
+        {{ 'staking.features.minimumApr' | translate }}
+      </div>
+    </div>
+  </div>
+  <div class="feature">
+    <img
+      src="assets/images/icons/staking/brbc.svg"
+      alt="BRBC"
+      class="feature__icon feature__icon--brbc"
+    />
+    <div class="feature__content">
+      <div class="feature__title">
+        {{ 'staking.features.brbcRewards' | translate }}
+      </div>
+      <div class="feature__text">
+        {{ 'staking.features.stakeTokens' | translate }}
+      </div>
+    </div>
+  </div>
+  <div class="feature">
+    <img
+      src="assets/images/icons/staking/graph.svg"
+      alt="Team Buybacks"
+      class="feature__icon feature__icon--graph"
+    />
+    <div class="feature__content">
+      <div class="feature__title">
+        {{ 'staking.features.teamBuybacks' | translate }}
+      </div>
+      <div class="feature__text">
+        {{ 'staking.features.chainFeeUsage' | translate }}
+      </div>
+    </div>
+  </div>
+</div>

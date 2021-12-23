@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
 import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
-import { EthereumBinanceRubicBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { EthereumPolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
-import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/blockchains-bridge-provider';
+import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
@@ -23,6 +22,7 @@ import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair'
 import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
+import { BinancePolygonBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 
 @Injectable()
 export class BridgeService {
@@ -43,9 +43,9 @@ export class BridgeService {
   constructor(
     // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
-    private readonly rubicBridgeProviderService: EthereumBinanceRubicBridgeProviderService,
     private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
+    private readonly binancePolygonBridgeProviderService: BinancePolygonBridgeProviderService,
     // bridge providers end
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,

@@ -38,6 +38,8 @@
   }
 
   &:focus {
+    text-decoration: none;
+
     border-color: $rubic-primary;
   }
 

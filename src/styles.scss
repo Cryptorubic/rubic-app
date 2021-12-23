@@ -134,11 +134,44 @@ a {
 }
 
 tui-dropdown-box {
-  min-width: auto;
+  min-width: 185px;
   max-height: 560px !important;
 
   border: none !important;
   border-radius: 18px !important;
+
+  tui-data-list-wrapper {
+    backdrop-filter: blur(24px);
+
+    tui-data-list {
+      button[role='option'] {
+        margin: 4px 0;
+        padding: 0 8px;
+
+        border: 0;
+
+        tui-select-option {
+          display: block;
+
+          font-weight: 600;
+          font-size: 18px;
+          line-height: 21px;
+
+          border-radius: 100px;
+
+          transition: background-color 0.1s ease;
+
+          &:hover {
+            background-color: rgba(74, 169, 86, 0.15);
+          }
+
+          tui-svg {
+            display: none;
+          }
+        }
+      }
+    }
+  }
 }
 
 .wave {
