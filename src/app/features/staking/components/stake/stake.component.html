@@ -20,7 +20,7 @@
       <div class="stake__balance" *ngIf="selectedTokenBalance$ | async as tokenBalance">
         {{
           'staking.stake.balance'
-            | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount }
+            | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount: 9:4:true }
         }}
         <span (click)="setMaxAmount(tokenBalance)">MAX</span>
       </div>
