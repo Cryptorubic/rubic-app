@@ -6,7 +6,7 @@ import { crossChainDev } from 'src/environments/constants/crossChain';
 
 export const environment = {
   production: false,
-  apiBaseUrl: '//dev2-api.rubic.exchange/api',
+  apiBaseUrl: '//dev-api.rubic.exchange/api',
   zrxAffiliateAddress: undefined as string,
   crossChain: crossChainDev
 };
