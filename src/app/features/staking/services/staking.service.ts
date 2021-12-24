@@ -349,8 +349,9 @@ export class StakingService {
               return this.getAmountWithRewards(stakingTokenBalance);
             }),
             switchMap(() => {
-              return forkJoin([this.getEarnedRewards(), this.getApr()]);
-            })
+              return this.getEarnedRewards();
+            }),
+            switchMap(() => this.getApr())
           );
         }
       }),
