@@ -17,8 +17,6 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   protected isEnabled: boolean;
 
-  protected core: WalletConnect;
-
   protected selectedAddress: string;
 
   protected selectedChain: string;
@@ -31,22 +29,10 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     return 'ethLike';
   }
 
-  get isInstalled(): boolean {
-    return !!this.core;
-  }
-
   get isMultiChainWallet(): boolean {
     const multiChainWalletNames = ['Trust Wallet Android', 'Trust Wallet'];
-    const walletName = this.core.connector.peerMeta.name;
+    const walletName = this.wallet.connector.peerMeta.name;
     return multiChainWalletNames.includes(walletName);
-  }
-
-  get isActive(): boolean {
-    return this.isEnabled && this.core?.accounts.length > 0;
-  }
-
-  public get address(): string {
-    return this.selectedAddress;
   }
 
   protected constructor(
@@ -57,24 +43,24 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     providerConfig: IWalletConnectProviderOptions
   ) {
     super(errorsService, accountChange$, chainChange$);
-    this.core = new WalletConnect({
+    this.wallet = new WalletConnect({
       rpc: this.getNetworksProviders(),
       ...providerConfig
     });
     // eslint-disable-next-line
-    web3.setProvider(this.core as any);
+    web3.setProvider(this.wallet as any);
     this.initSubscriptions();
   }
 
   private initSubscriptions(): void {
-    this.core.on('chainChanged', (chain: string) => {
+    this.wallet.on('chainChanged', (chain: string) => {
       this.selectedChain = chain;
       if (this.isEnabled) {
         this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainById(chain));
         console.info('Chain changed', chain);
       }
     });
-    this.core.on('accountsChanged', (accounts: string[]) => {
+    this.wallet.on('accountsChanged', (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
       if (this.isEnabled) {
         this.onAddressChanges$.next(this.selectedAddress);
@@ -111,10 +97,10 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      const [address] = await this.core.enable();
+      const [address] = await this.wallet.enable();
       this.isEnabled = true;
       this.selectedAddress = address;
-      this.selectedChain = String(this.core.chainId);
+      this.selectedChain = String(this.wallet.chainId);
       this.onNetworkChanges$.next(this.getNetwork());
       this.onAddressChanges$.next(address);
     } catch (error) {
@@ -123,7 +109,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   }
 
   public async deActivate(): Promise<void> {
-    await this.core.close();
+    await this.wallet.close();
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
@@ -137,7 +123,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
       throw new NetworkError(token.blockchain);
     }
 
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
@@ -152,14 +138,14 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   }
 
   public async switchChain(chainId: string): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
   }
 
   public async addChain(params: AddEthChainParams): Promise<null | never> {
-    return this.core.request({
+    return this.wallet.request({
       method: 'wallet_addEthereumChain',
       params: [params]
     });

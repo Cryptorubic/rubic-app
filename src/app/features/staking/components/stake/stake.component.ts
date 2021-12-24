@@ -65,6 +65,7 @@ export class StakeComponent {
     this.stakingService
       .enterStake(new BigNumber(this.amount.value.split(',').join('')))
       .pipe(
+        switchMap(() => this.stakingService.reloadStakingInfo()),
         finalize(() => {
           stakeNotification.unsubscribe();
           this.stakeButtonLoading$.next(false);
@@ -72,7 +73,6 @@ export class StakeComponent {
       )
       .subscribe(() => {
         this.amount.reset();
-        this.stakingService.reloadStakingInfo();
         this.notificationsService.show(
           this.translateService.instant('notifications.successfulStake'),
           {

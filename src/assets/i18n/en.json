@@ -371,7 +371,7 @@
     }
   },
   "instantTrades": {
-    "title": "Swap assets with low gas fees",
+    "title": "Swap assets in 1 click",
     "gasFeeMessage": "Estimated gas fee amount. It will be required to provide more gas in MetaMask to complete the trade, the extra gas will be returned after the transaction is completed.",
     "gasFee": "Est. gas fee",
     "useOptimization": "Use Rubic optimization",
@@ -608,7 +608,7 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Staking with 80% APY or more starts on Dec, 23.",
+      "text": "Staking with 80% APR or more starts on Dec, 23.",
       "link": "Learn more!"
     }
   },

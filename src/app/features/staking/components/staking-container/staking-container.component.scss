@@ -58,7 +58,7 @@
   &__tab {
     flex-grow: 1;
     justify-content: center;
-    margin-right: 0 !important;
+    margin-right: 0 !important; // @TODO Remove important.
 
     font-weight: 800;
     text-align: center;
@@ -102,7 +102,7 @@
     }
 
     &:hover {
-      box-shadow: none !important;
+      box-shadow: none !important; // @TODO Remove important.
     }
   }
 

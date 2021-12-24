@@ -2,23 +2,23 @@ import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-a
 import {
   routerLiquidityPoolsWithMode,
   routerTokensNetMode
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/constants/routerLiqudityPools';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/router-liqudity-pools';
 import {
   FeeAmount,
   LiquidityPool
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/models/LiquidityPool';
-import { UniswapV3Route } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/UniswapV3Route';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/liquidity-pool';
 import { EMPTY_ADDRESS } from 'src/app/shared/constants/blockchain/EMPTY_ADDRESS';
 import {
   factoryContractAbi,
   factoryContractAddress
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/liquidity-pool-controller/constants/factoryContractData';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/factory-contract-data';
 import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
 import { PCacheable } from 'ts-cacheable';
-import { uniSwapV3ContractData } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { ContractData } from '@shared/models/blockchain/ContractData';
+import { UniSwapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -30,10 +30,10 @@ interface RecGraphVisitorOptions {
 /**
  * Works with requests, related to Uniswap v3 liquidity pools.
  */
-export class LiquidityPoolsController {
-  private readonly routerTokens: Record<string, SymbolToken>;
+export class UniSwapV3QuoterController {
+  private routerTokens: Record<string, SymbolToken>;
 
-  private readonly routerLiquidityPools: LiquidityPool[];
+  private routerLiquidityPools: LiquidityPool[];
 
   private readonly feeAmounts: FeeAmount[];
 
@@ -95,23 +95,26 @@ export class LiquidityPoolsController {
       methodData: {
         methodName: 'quoteExactInput',
         methodArguments: [
-          LiquidityPoolsController.getEncodedPoolsPath(poolsPath, fromTokenAddress),
+          UniSwapV3QuoterController.getEncodedPoolsPath(poolsPath, fromTokenAddress),
           fromAmountAbsolute
         ]
       }
     };
   }
 
-  constructor(private readonly web3Public: EthLikeWeb3Public, isTestingMode = false) {
+  constructor(
+    private readonly web3Public: EthLikeWeb3Public,
+    private readonly quoterContract: ContractData
+  ) {
     this.feeAmounts = [500, 3000, 10000];
 
-    if (!isTestingMode) {
-      this.routerTokens = routerTokensNetMode.mainnet;
-      this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
-    } else {
-      this.routerTokens = routerTokensNetMode.testnet;
-      this.routerLiquidityPools = routerLiquidityPoolsWithMode.testnet;
-    }
+    this.routerTokens = routerTokensNetMode.mainnet;
+    this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
+  }
+
+  public setTestingMode(): void {
+    this.routerTokens = routerTokensNetMode.testnet;
+    this.routerLiquidityPools = routerLiquidityPoolsWithMode.testnet;
   }
 
   /**
@@ -218,7 +221,7 @@ export class LiquidityPoolsController {
     fromToken: SymbolToken,
     toToken: SymbolToken,
     routeMaxTransitPools: number
-  ): Promise<UniswapV3Route[]> {
+  ): Promise<UniSwapV3Route[]> {
     const routesLiquidityPools = await this.getAllLiquidityPools(
       fromToken.address,
       toToken.address,
@@ -235,26 +238,24 @@ export class LiquidityPoolsController {
       .map((_, index) => this.getQuoterMethodsData(options, [], fromToken.address, index))
       .flat();
 
-    return this.web3Public
-      .multicallContractMethods<{ 0: string }>(
-        uniSwapV3ContractData.quoter.address,
-        uniSwapV3ContractData.quoter.abi,
-        quoterMethodsData.map(quoterMethodData => quoterMethodData.methodData)
-      )
-      .then(results => {
-        return results
-          .map((result, index) => {
-            if (result.success) {
-              return {
-                outputAbsoluteAmount: new BigNumber(result.output[0]),
-                poolsPath: quoterMethodsData[index].poolsPath,
-                initialTokenAddress: fromToken.address
-              };
-            }
-            return null;
-          })
-          .filter(route => route !== null);
-      });
+    const results = await this.web3Public.multicallContractMethods<{ 0: string }>(
+      this.quoterContract.address,
+      this.quoterContract.abi,
+      quoterMethodsData.map(quoterMethodData => quoterMethodData.methodData)
+    );
+
+    return results
+      .map((result, index) => {
+        if (result.success) {
+          return {
+            outputAbsoluteAmount: new BigNumber(result.output[0]),
+            poolsPath: quoterMethodsData[index].poolsPath,
+            initialTokenAddress: fromToken.address
+          };
+        }
+        return null;
+      })
+      .filter(route => route !== null);
   }
 
   /**
@@ -278,7 +279,7 @@ export class LiquidityPoolsController {
         pool.isPoolWithTokens(lastTokenAddress, toTokenAddress)
       );
       return pools.map(pool =>
-        LiquidityPoolsController.getQuoterMethodData(
+        UniSwapV3QuoterController.getQuoterMethodData(
           path.concat(pool),
           fromAmountAbsolute,
           fromTokenAddress,

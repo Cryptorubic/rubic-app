@@ -11,11 +11,11 @@ export class EthLikeWeb3Pure {
    * @param methodArguments Parameters to encode.
    * @return string An ABI encoded function call. Means function signature + parameters.
    */
-  public static async encodeFunctionCall(
+  public static encodeFunctionCall(
     contractAbi: AbiItem[],
     methodName: string,
     methodArguments: unknown[]
-  ): Promise<string> {
+  ): string {
     const methodSignature = contractAbi.find(abiItem => abiItem.name === methodName);
     if (methodSignature === undefined) {
       throw Error('No such method in abi');
