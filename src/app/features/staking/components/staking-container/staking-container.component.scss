@@ -111,7 +111,7 @@
     display: block;
 
     background-color: var(--background-color);
-    border-radius: $border-radius-2 $border-radius-2 0 0;
+    border-radius: vars.$border-radius-2 vars.$border-radius-2 0 0;
   }
 
   &__stake {
