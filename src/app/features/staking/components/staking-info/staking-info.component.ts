@@ -5,7 +5,7 @@ import { BRBC_TOTAL } from '@features/staking/constants/BRBC_TOTAL';
 import { STAKE_LIMIT_MAX } from '@features/staking/constants/STACKING_LIMITS';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ThemeService } from '@core/services/theme/theme.service';
-import { delay, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -32,6 +32,6 @@ export class StakingInfoComponent {
   }
 
   public reloadStakingProgress(): void {
-    this.stakingService.reloadStakingProgress().pipe(delay(3000)).subscribe();
+    this.stakingService.reloadStakingProgress().subscribe();
   }
 }
