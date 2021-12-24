@@ -1,17 +1,22 @@
 @use 'src/scss/mixins';
 @use 'src/scss/vars';
-@use './../../styles/staking';
 
 .statistics {
+  --shadow: 0px 1px 14px rgba(15, 15, 15, 0.12), 0px 5px 8px rgba(15, 15, 15, 0.14), 0px 3px 5px rgba(15, 15, 15, 0.2);
+  --shadow-light: 0px 1px 14px rgba(197, 197, 197, 0.12), 0px 5px 8px rgba(197, 197, 197, 0.14), 0px 3px 5px rgba(197, 197, 197, 0.2);
   position: relative;
 
   display: flex;
   justify-content: space-between;
   padding: 40px 81.5px;
 
-  background: linear-gradient(0deg, #202320, #202320);
+  background: var(--rubic-base-19);
   border-radius: 22px;
-  box-shadow: 0px 1px 14px rgba(15, 15, 15, 0.12), 0px 5px 8px rgba(15, 15, 15, 0.14), 0px 3px 5px rgba(15, 15, 15, 0.2);
+  box-shadow: var(--shadow-light);
+
+  @include mixins.dark {
+    box-shadow: var(--shadow);
+  }
 
   @include mixins.b(vars.$tablet) {
     padding: 32px 30px;
@@ -24,12 +29,8 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  &__overlay {
-    @include staking.staking-spinner-overlay;
-  }
-
   &__spinner {
-    width: 100%;
+    overflow: visible;
   }
 
   &__value {
