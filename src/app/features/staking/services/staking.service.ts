@@ -33,8 +33,6 @@ export class StakingService {
   private walletAddress: string;
 
   private readonly stakingContractAddress = STAKING_CONTRACT_ADDRESS;
-  // ? '0xc7FC65d50AfFBF2f32236eDc5217A916614e1F9d' //testnet xBRBC
-  // : '0x0d0Ed1E7994a3926644cac9b296B3745315700ff'; // mainnet xBRBC
 
   private bridgeContractAddress: string;
 
@@ -306,7 +304,6 @@ export class StakingService {
   }
 
   private getAmountWithRewards(stakingTokenBalance: BigNumber): Observable<BigNumber> {
-    console.log(stakingTokenBalance);
     return this.calculateLeaveReward(stakingTokenBalance).pipe(
       catchError((error: unknown) => {
         this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
@@ -440,7 +437,7 @@ export class StakingService {
         STAKING_CONTRACT_ABI,
         'canReceive',
         {
-          methodArguments: [amount.toNumber().toLocaleString('fullwide', { useGrouping: false })],
+          methodArguments: [amount.toString()],
           from: this.walletAddress
         }
       )

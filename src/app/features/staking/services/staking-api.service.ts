@@ -7,7 +7,7 @@ import { pluck } from 'rxjs/operators';
 
 @Injectable()
 export class StakingApiService {
-  stakingApiPath = '//dev-staking.rubic.exchange/api/';
+  stakingApiPath = '//staking.rubic.exchange/api/';
 
   constructor(private readonly httpService: HttpService) {}
 
