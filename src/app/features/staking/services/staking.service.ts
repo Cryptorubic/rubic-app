@@ -306,9 +306,10 @@ export class StakingService {
   }
 
   private getAmountWithRewards(stakingTokenBalance: BigNumber): Observable<BigNumber> {
+    console.log(stakingTokenBalance);
     return this.calculateLeaveReward(stakingTokenBalance).pipe(
       catchError((error: unknown) => {
-        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
       tap(actualBalance => {
@@ -439,12 +440,13 @@ export class StakingService {
         STAKING_CONTRACT_ABI,
         'canReceive',
         {
-          methodArguments: [amount.toString()],
+          methodArguments: [amount.toNumber().toLocaleString('fullwide', { useGrouping: false })],
           from: this.walletAddress
         }
       )
     ).pipe(
-      catchError(() => {
+      catchError((error: unknown) => {
+        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
       map(res => {
