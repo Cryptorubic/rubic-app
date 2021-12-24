@@ -108,12 +108,8 @@
   line-height: 24px;
   letter-spacing: -0.03em;
 
-  background: #f5f9f6;
+  background: var(--tui-base-01);
   border-radius: 21.5px;
-
-  @include mixins.dark {
-    background: #2c2c2c;
-  }
 
   &__icon {
     width: 26px;
