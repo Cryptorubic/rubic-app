@@ -439,7 +439,7 @@ export class StakingService {
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'canReceive',
-        { methodArguments: [amount], from: this.walletAddress }
+        { methodArguments: [EthLikeWeb3Public.toWei(amount, 18)], from: this.walletAddress }
       )
     ).pipe(
       catchError(() => {
