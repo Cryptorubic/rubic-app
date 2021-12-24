@@ -54,6 +54,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
         token: toToken,
         amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
+      path: route.path,
       route
     };
   }
