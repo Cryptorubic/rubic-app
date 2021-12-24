@@ -103,7 +103,6 @@ export class StakingService {
         this._amountWithRewards$.next(new BigNumber(0));
         this._earnedRewards$.next(new BigNumber(0));
         this._stakingTokenBalance$.next(new BigNumber(0));
-        this._apr$.next(0);
         return of(new BigNumber(0));
       } else {
         return this.getSelectedTokenBalance(selectedToken);
@@ -133,6 +132,7 @@ export class StakingService {
       .getCurrentUser()
       .pipe(
         filter(Boolean),
+        take(1),
         tap(({ address }) => (this.walletAddress = address)),
         switchMap(() => {
           return forkJoin([
@@ -175,7 +175,7 @@ export class StakingService {
           this.stakingContractAddress,
           STAKING_CONTRACT_ABI,
           'enter',
-          [amountInWei]
+          [EthLikeWeb3Public.toWei(amount, 18)]
         )
       ).pipe(
         catchError((err: unknown) => {
@@ -185,7 +185,10 @@ export class StakingService {
         }),
         switchMap(receipt => this.updateUsersDeposit(amountInWei, receipt.transactionHash)),
         switchMap(() => {
-          return forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()]);
+          return this.reloadStakingStatistics();
+        }),
+        switchMap(() => {
+          return this.reloadStakingProgress();
         }),
         tap(() => {
           this.updateTokenBalance$.next();
@@ -212,13 +215,8 @@ export class StakingService {
       switchMap(receipt =>
         this.updateUsersDepositAfterWithdraw(adjustedAmountInWei, receipt.transactionHash)
       ),
-      switchMap(() =>
-        forkJoin([
-          this.reloadStakingStatistics(),
-          this.reloadStakingProgress(),
-          this.getMaxAmountForWithdraw()
-        ])
-      )
+      switchMap(() => forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()])),
+      switchMap(() => this.getMaxAmountForWithdraw())
     );
   }
 
@@ -338,14 +336,23 @@ export class StakingService {
     );
   }
 
-  public reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
+  public reloadStakingStatistics(): Observable<(number | BigNumber)[] | number> {
     this.stakingStatisticsLoading$.next(true);
-    return this.getStakingTokenBalance().pipe(
-      switchMap(stakingTokenBalance => {
-        return this.getAmountWithRewards(stakingTokenBalance);
-      }),
-      switchMap(() => {
-        return forkJoin([this.getEarnedRewards(), this.getApr()]);
+    return this.needLogin$.pipe(
+      take(1),
+      switchMap(needLogin => {
+        if (needLogin) {
+          return this.getApr();
+        } else {
+          return this.getStakingTokenBalance().pipe(
+            switchMap(stakingTokenBalance => {
+              return this.getAmountWithRewards(stakingTokenBalance);
+            }),
+            switchMap(() => {
+              return forkJoin([this.getEarnedRewards(), this.getApr()]);
+            })
+          );
+        }
       }),
       finalize(() => this.stakingStatisticsLoading$.next(false))
     );
