@@ -17,7 +17,7 @@
   </div>
   <div class="stake__balance-and-usd">
     <ng-container *ngIf="(needLogin$ | async) === false">
-      <div class="stake__balance" *ngIf="selectedTokenBalance$ | async as tokenBalance">
+      <div class="stake__balance" *ngLet="selectedTokenBalance$ | async as tokenBalance">
         {{
           'staking.stake.balance'
             | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount: 9:4:true }
