@@ -44,7 +44,7 @@ import { Queue } from 'src/app/shared/models/utils/queue';
 import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +86,7 @@ export class InstantTradeService {
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
     private readonly raydiumService: RaydiumService,
+    private readonly algebraService: AlgebraService,
     // Providers end
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -97,8 +98,7 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
-    private readonly walletConnectorService: WalletConnectorService
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {
     this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
@@ -121,7 +121,8 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.POLYGON]: {
         [INSTANT_TRADES_PROVIDER.ONEINCH]: this.oneInchPolygonService,
         [INSTANT_TRADES_PROVIDER.QUICKSWAP]: this.quickSwapService,
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapPolygonService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapPolygonService,
+        [INSTANT_TRADES_PROVIDER.ALGEBRA]: this.algebraService
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
