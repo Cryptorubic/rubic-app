@@ -35,7 +35,6 @@ import { ContractsDataService } from '@features/cross-chain-routing/services/cro
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { tuiPure } from '@taiga-ui/cdk';
-import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -43,7 +42,7 @@ enum TransferDataType {
   NATIVE = 2
 }
 @Injectable({
-  providedIn: CrossChainModule
+  providedIn: 'root'
 })
 export class SolanaContractExecutorService {
   private static createSolanaInstruction(

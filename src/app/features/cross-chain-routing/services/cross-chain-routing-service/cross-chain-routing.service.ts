@@ -340,7 +340,7 @@ export class CrossChainRoutingService {
       if (type === 'minAmount') {
         return fromTransitTokenAmount.dividedBy(fromSlippage);
       }
-      return fromTransitTokenAmount.minus(1);
+      return fromTransitTokenAmount;
     };
 
     return Promise.all([getAmount('minAmount'), getAmount('maxAmount')]).then(

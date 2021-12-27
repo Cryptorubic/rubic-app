@@ -72,7 +72,7 @@ export abstract class ContractData {
   /**
    * Returns method's name and contract abi to call in source network.
    */
-  public getFromMethodNameAndContractAbi(
+  public getMethodNameAndContractAbi(
     providerIndex: number,
     isFromTokenNative: boolean
   ): {
@@ -105,11 +105,12 @@ export abstract class ContractData {
   }
 
   /**
-   * Returns `from path` method argument, converted from instant-trade data and chosen provider.
+   * Returns `first path` method argument, converted from instant-trade data and chosen provider.
+   * Must be called on source contract.
    */
-  public getFromPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
+  public getFirstPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
     if (!instantTrade) {
-      return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
+      return [this.transitToken.address];
     }
 
     const provider = this.getProvider(providerIndex);
@@ -131,9 +132,10 @@ export abstract class ContractData {
   }
 
   /**
-   * Returns `to path` method argument, converted from instant-trade data and chosen provider.
+   * Returns `second path` method argument, converted from instant-trade data and chosen provider.
+   * Must be called on target contract.
    */
-  public getToPath(providerIndex: number, instantTrade: InstantTrade): string[] {
+  public getSecondPath(providerIndex: number, instantTrade: InstantTrade): string[] {
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
     }
@@ -166,10 +168,11 @@ export abstract class ContractData {
   }
 
   /**
-   * Returns `signature` method argument, build from function name and its arguments.
-   * Example: `${function_name_in_target_network}(${arguments})`
+   * Returns `signature` method argument, built from `swapToUser` function name and its arguments.
+   * Example: `${function_name_in_target_network}(${arguments})`.
+   * Must be called on target contract.
    */
-  public getToMethodSignature(providerIndex: number, isToTokenNative: boolean): string {
+  public getSwapToUserMethodSignature(providerIndex: number, isToTokenNative: boolean): string {
     let methodName: string = isToTokenNative
       ? TO_USER_SWAP_METHOD.SWAP_CRYPTO
       : TO_USER_SWAP_METHOD.SWAP_TOKENS;

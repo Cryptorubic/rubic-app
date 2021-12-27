@@ -15,10 +15,9 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
-import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 @Injectable({
-  providedIn: CrossChainModule
+  providedIn: 'root'
 })
 export class ContractsDataService {
   constructor(

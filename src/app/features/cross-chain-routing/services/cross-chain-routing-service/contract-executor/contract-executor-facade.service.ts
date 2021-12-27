@@ -11,10 +11,9 @@ import { EthLikeContractExecutorService } from '@features/cross-chain-routing/se
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 @Injectable({
-  providedIn: CrossChainModule
+  providedIn: 'root'
 })
 export class ContractExecutorFacadeService {
   /**

@@ -102,10 +102,10 @@ export class EthLikeContractData extends ContractData {
 
     const toNumOfBlockchain = toContract.numOfBlockchain;
 
-    const fromPath = this.getFromPath(trade.fromProviderIndex, trade.fromTrade);
-    const toPath = toContract.getToPath(trade.toProviderIndex, trade.toTrade);
+    const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
+    const secondPath = toContract.getSecondPath(trade.toProviderIndex, trade.toTrade);
 
-    const toMethodSignature = toContract.getToMethodSignature(
+    const swapToUserMethodSignature = toContract.getSwapToUserMethodSignature(
       trade.toProviderIndex,
       isToTokenNative
     );
@@ -114,8 +114,8 @@ export class EthLikeContractData extends ContractData {
       [
         toNumOfBlockchain,
         tokenInAmountAbsolute,
-        fromPath,
-        toPath,
+        firstPath,
+        secondPath,
         fromTransitTokenAmountMinAbsolute,
         tokenOutAmountMinAbsolute,
         EthLikeWeb3Public.addressToBytes32(walletAddress),
@@ -126,7 +126,7 @@ export class EthLikeContractData extends ContractData {
     if (!this.isProviderV3(trade.fromProviderIndex)) {
       methodArguments[0].push(false);
     }
-    methodArguments[0].push(toMethodSignature);
+    methodArguments[0].push(swapToUserMethodSignature);
 
     return methodArguments;
   }

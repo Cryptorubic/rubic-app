@@ -13,10 +13,9 @@ import { ContractParams } from '@features/cross-chain-routing/services/cross-cha
 import BigNumber from 'bignumber.js';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
-import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 @Injectable({
-  providedIn: CrossChainModule
+  providedIn: 'root'
 })
 export class EthLikeContractExecutorService {
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
@@ -94,9 +93,10 @@ export class EthLikeContractExecutorService {
 
     const contractAddress = this.contracts[fromBlockchain].address;
 
-    const { contractAbi, methodName } = this.contracts[
-      fromBlockchain
-    ].getFromMethodNameAndContractAbi(trade.fromProviderIndex, isFromTokenNative);
+    const { contractAbi, methodName } = this.contracts[fromBlockchain].getMethodNameAndContractAbi(
+      trade.fromProviderIndex,
+      isFromTokenNative
+    );
 
     const methodArguments = (
       this.contracts[fromBlockchain] as EthLikeContractData
