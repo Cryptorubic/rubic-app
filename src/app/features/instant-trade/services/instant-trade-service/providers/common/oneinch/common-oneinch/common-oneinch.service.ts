@@ -34,6 +34,7 @@ import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-tr
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/InsufficientFundsOneinchError';
 import { SymbolToken } from '@shared/models/tokens/SymbolToken';
 import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -177,7 +178,7 @@ export class CommonOneinchService {
       throw new OneinchNotSupportedTokens();
     }
 
-    const amountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
+    const amountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
     const { estimatedGas, toTokenAmount, path } = await this.getTradeInfo(
       blockchain,
       fromTokenAddress,
@@ -193,7 +194,7 @@ export class CommonOneinchService {
       },
       to: {
         token: toToken,
-        amount: EthLikeWeb3Public.fromWei(toTokenAmount, toToken.decimals)
+        amount: Web3Pure.fromWei(toTokenAmount, toToken.decimals)
       },
       path
     };
@@ -206,7 +207,7 @@ export class CommonOneinchService {
     }
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
     const gasPrice = await blockchainAdapter.getGasPrice();
-    const gasPriceInEth = EthLikeWeb3Public.fromWei(gasPrice);
+    const gasPriceInEth = Web3Pure.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
     const ethPrice = await this.tokensService.getNativeCoinPriceInUsd(blockchain);
     const gasFeeInUsd = gasFeeInEth.multipliedBy(ethPrice);
@@ -337,10 +338,7 @@ export class CommonOneinchService {
       trade.to.token.address
     );
 
-    const fromAmountAbsolute = EthLikeWeb3Public.toWei(
-      trade.from.amount,
-      trade.from.token.decimals
-    );
+    const fromAmountAbsolute = Web3Pure.toWei(trade.from.amount, trade.from.token.decimals);
 
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
     const swapTradeParams: OneinchSwapRequest = {

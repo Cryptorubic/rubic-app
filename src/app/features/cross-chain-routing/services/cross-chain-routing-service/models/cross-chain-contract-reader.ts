@@ -15,7 +15,8 @@ import {
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 export class CrossChainContractReader {
   private readonly ethContractAbi: AbiItem[];
@@ -123,7 +124,7 @@ export class CrossChainContractReader {
       );
       decimals = 18;
     }
-    return EthLikeWeb3Public.fromWei(fee, decimals).toNumber();
+    return Web3Pure.fromWei(fee, decimals).toNumber();
   }
 
   public async isPaused(contractAddress: string): Promise<boolean> {

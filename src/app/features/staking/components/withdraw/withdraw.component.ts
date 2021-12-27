@@ -9,7 +9,7 @@ import { BehaviorSubject, EMPTY, forkJoin, of } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Component({
   selector: 'app-withdraw',
@@ -32,7 +32,7 @@ export class WithdrawComponent implements OnInit {
       if (amount === '') {
         return of('');
       }
-      return of(new BigNumber(EthLikeWeb3Public.toWei(new BigNumber(amount)))).pipe(
+      return of(new BigNumber(Web3Pure.toWei(new BigNumber(amount)))).pipe(
         switchMap(x => this.stakingService.calculateLeaveReward(x)),
         map(x => x.toNumber())
       );
