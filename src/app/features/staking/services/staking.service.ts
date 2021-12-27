@@ -370,7 +370,7 @@ export class StakingService {
         this.errorService.catch(err as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
-      map(balance => EthLikeWeb3Public.fromWei(balance))
+      map(balance => Web3Pure.fromWei(balance))
     );
   }
 
@@ -396,7 +396,7 @@ export class StakingService {
         return EMPTY;
       }),
       map(res => {
-        return EthLikeWeb3Public.fromWei(res);
+        return Web3Pure.fromWei(res);
       })
     );
   }

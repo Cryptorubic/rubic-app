@@ -31,10 +31,8 @@ export class WithdrawComponent implements OnInit {
     switchMap(amount => {
       if (amount === '') {
         return of('');
-      }      
-      return of(
-        new BigNumber(EthLikeWeb3Public.toWei(new BigNumber(amount.split(',').join(''))))
-      ).pipe(
+      }
+      return of(new BigNumber(Web3Pure.toWei(new BigNumber(amount.split(',').join(''))))).pipe(
         switchMap(x => this.stakingService.calculateLeaveReward(x)),
         map(x => x.toNumber())
       );
