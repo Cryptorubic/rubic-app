@@ -16,8 +16,8 @@ import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<
@@ -208,10 +208,10 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     userAddress: string
   ): Promise<void> {
     const balance = await this.getTokenBalance(userAddress, token.address);
-    const amountAbsolute = EthLikeWeb3Public.toWei(amount, token.decimals);
+    const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
 
     if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = EthLikeWeb3Public.fromWei(balance, token.decimals).toFormat(
+      const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
         BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(

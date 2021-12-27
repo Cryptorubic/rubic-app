@@ -5,7 +5,7 @@ import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
+import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from '@core/errors/models/undefined.error';
@@ -29,17 +29,20 @@ import {
 } from '@core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
-import { Web3Public } from '@core/services/blockchain/blockchain-adapters/models/web3-public';
+import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 type AllowanceParams = {
   /**
    * Address of the smart-contract corresponding to the token.
    */
   tokenAddress: string;
+
   /**
    * Wallet address to spend from.
    */
   ownerAddress: string;
+
   /**
    * Wallet or contract address, allowed to spend.
    */
@@ -80,18 +83,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     return NATIVE_TOKEN_ADDRESS;
   }
 
-  static calculateGasMargin(amount: BigNumber | string | number, percent: number): string {
-    return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
-  }
-
-  static toWei(amount: BigNumber | string | number, decimals = 18): string {
-    return new BigNumber(amount || 0).times(new BigNumber(10).pow(decimals)).toFixed(0);
-  }
-
-  static fromWei(amountInWei: BigNumber | string | number, decimals = 18): BigNumber {
-    return new BigNumber(amountInWei).div(new BigNumber(10).pow(decimals));
-  }
-
   static addressToBytes32(address: string): string {
     if (address.slice(0, 2) !== '0x' || address.length !== 42) {
       console.error('Wrong address format');
@@ -111,22 +102,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public isAddressCorrect(address: string): boolean {
     return isAddress(address);
-  }
-
-  /**
-   * converts Eth amount into Wei
-   * @param value to convert in Eth
-   */
-  static ethToWei(value: string | BigNumber): string {
-    return toWei(value.toString(), 'ether');
-  }
-
-  /**
-   * converts Wei amount into Eth
-   * @param value to convert in Wei
-   */
-  static weiToEth(value: string | BigNumber): string {
-    return fromWei(value.toString(), 'ether');
   }
 
   /**
@@ -186,7 +161,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getBalance(address: string, options: { inWei?: boolean } = {}): Promise<BigNumber> {
     const balance = await this.web3.eth.getBalance(address);
-    return new BigNumber(options.inWei ? balance : EthLikeWeb3Public.weiToEth(balance));
+    return new BigNumber(options.inWei ? balance : Web3Pure.fromWei(balance));
   }
 
   /**
@@ -601,9 +576,9 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
       balance = await this.getTokenBalance(userAddress, token.address);
     }
 
-    const amountAbsolute = EthLikeWeb3Public.toWei(amount, token.decimals);
+    const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
     if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = EthLikeWeb3Public.fromWei(balance, token.decimals).toFormat(
+      const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
         BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(
