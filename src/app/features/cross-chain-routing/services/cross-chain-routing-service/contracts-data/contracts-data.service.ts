@@ -9,17 +9,18 @@ import { SpookySwapFantomService } from '@features/instant-trade/services/instan
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/cross-chain-contract-data';
-import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
+import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
+import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { SolanaCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
+import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: CrossChainModule
 })
-export class CrossChainContractsDataService {
+export class ContractsDataService {
   constructor(
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly pancakeSwapService: PancakeSwapService,
@@ -34,9 +35,9 @@ export class CrossChainContractsDataService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
 
-  public getCrossChainContracts(): Record<SupportedCrossChainBlockchain, CrossChainContractData> {
+  public getCrossChainContracts(): Record<SupportedCrossChainBlockchain, ContractData> {
     return {
-      [BLOCKCHAIN_NAME.ETHEREUM]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.ETHEREUM]: new EthLikeContractData(
         BLOCKCHAIN_NAME.ETHEREUM,
         [
           {
@@ -47,7 +48,7 @@ export class CrossChainContractsDataService {
         2,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new EthLikeContractData(
         BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
         [
           {
@@ -58,7 +59,7 @@ export class CrossChainContractsDataService {
         1,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.POLYGON]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.POLYGON]: new EthLikeContractData(
         BLOCKCHAIN_NAME.POLYGON,
         [
           {
@@ -73,7 +74,7 @@ export class CrossChainContractsDataService {
         3,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.AVALANCHE]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.AVALANCHE]: new EthLikeContractData(
         BLOCKCHAIN_NAME.AVALANCHE,
         [
           {
@@ -88,7 +89,7 @@ export class CrossChainContractsDataService {
         4,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.MOONRIVER]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.MOONRIVER]: new EthLikeContractData(
         BLOCKCHAIN_NAME.MOONRIVER,
         [
           {
@@ -99,7 +100,7 @@ export class CrossChainContractsDataService {
         5,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.FANTOM]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.FANTOM]: new EthLikeContractData(
         BLOCKCHAIN_NAME.FANTOM,
         [
           {
@@ -110,7 +111,7 @@ export class CrossChainContractsDataService {
         6,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.HARMONY]: new EthLikeCrossChainContractData(
+      [BLOCKCHAIN_NAME.HARMONY]: new EthLikeContractData(
         BLOCKCHAIN_NAME.HARMONY,
         [
           {
@@ -121,7 +122,7 @@ export class CrossChainContractsDataService {
         7,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.SOLANA]: new SolanaCrossChainContractData(
+      [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(
         BLOCKCHAIN_NAME.SOLANA,
         [
           {

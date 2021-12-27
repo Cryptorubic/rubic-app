@@ -31,7 +31,7 @@ enum TO_USER_SWAP_METHOD {
   SWAP_CRYPTO = 'swapCryptoToUserWithFee'
 }
 
-export abstract class CrossChainContractData {
+export abstract class ContractData {
   @tuiPure
   public get address(): string {
     return crossChainContractAddresses[this.blockchain];

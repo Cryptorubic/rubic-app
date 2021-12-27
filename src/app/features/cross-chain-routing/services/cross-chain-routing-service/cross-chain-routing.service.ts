@@ -30,16 +30,16 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
-import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
+import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { SolanaCrossChainContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
+import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
-import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
+import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
 import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
-import { EthLikeCrossChainContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
+import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
+import { EthLikeContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -77,7 +77,7 @@ export class CrossChainRoutingService {
   }
 
   constructor(
-    private readonly contractsDataService: CrossChainContractsDataService,
+    private readonly contractsDataService: ContractsDataService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
@@ -87,8 +87,8 @@ export class CrossChainRoutingService {
     private readonly tokensService: TokensService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly gasService: GasService,
-    private readonly contractExecutorFacade: CrossChainContractExecutorFacadeService,
-    private readonly ethLikeContractExecutor: EthLikeCrossChainContractExecutorService,
+    private readonly contractExecutorFacade: ContractExecutorFacadeService,
+    private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
   ) {}
 
@@ -572,7 +572,7 @@ export class CrossChainRoutingService {
     }
 
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      const isSolanaWorking = await SolanaCrossChainContractExecutorService.checkHealth(
+      const isSolanaWorking = await SolanaContractExecutorService.checkHealth(
         this.solanaPrivateAdapter
       );
       if (!isSolanaWorking) {
@@ -593,9 +593,7 @@ export class CrossChainRoutingService {
       return;
     }
 
-    const maxGasPrice = await (
-      this.contracts[toBlockchain] as EthLikeCrossChainContractData
-    ).maxGasPrice();
+    const maxGasPrice = await (this.contracts[toBlockchain] as EthLikeContractData).maxGasPrice();
 
     const currentGasPrice = Web3Pure.toWei(
       await this.gasService.getGasPriceInEthUnits(toBlockchain)
@@ -714,8 +712,6 @@ export class CrossChainRoutingService {
   }
 
   public calculateTokenOutAmountMin(): BigNumber {
-    return CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(
-      this.currentCrossChainTrade
-    );
+    return ContractExecutorFacadeService.calculateTokenOutAmountMin(this.currentCrossChainTrade);
   }
 }

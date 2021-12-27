@@ -7,21 +7,22 @@ import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Injectable } from '@angular/core';
-import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
+import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ContractParams } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/contract-params';
 import BigNumber from 'bignumber.js';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { EthLikeCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
+import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
+import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: CrossChainModule
 })
-export class EthLikeCrossChainContractExecutorService {
+export class EthLikeContractExecutorService {
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
   constructor(
-    private readonly contractsDataService: CrossChainContractsDataService,
+    private readonly contractsDataService: ContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
@@ -98,7 +99,7 @@ export class EthLikeCrossChainContractExecutorService {
     ].getFromMethodNameAndContractAbi(trade.fromProviderIndex, isFromTokenNative);
 
     const methodArguments = (
-      this.contracts[fromBlockchain] as EthLikeCrossChainContractData
+      this.contracts[fromBlockchain] as EthLikeContractData
     ).getMethodArguments(trade, isToTokenNative, this.contracts[toBlockchain], walletAddress);
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);

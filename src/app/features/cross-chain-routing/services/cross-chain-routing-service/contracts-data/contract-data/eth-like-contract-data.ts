@@ -1,4 +1,4 @@
-import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/cross-chain-contract-data';
+import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -7,9 +7,9 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { crossChainContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/eth-like/cross-chain-contract-abi';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
-import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
+import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 
-export class EthLikeCrossChainContractData extends CrossChainContractData {
+export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
 
   constructor(
@@ -86,16 +86,15 @@ export class EthLikeCrossChainContractData extends CrossChainContractData {
   public getMethodArguments(
     trade: CrossChainTrade,
     isToTokenNative: boolean,
-    toContract: CrossChainContractData,
+    toContract: ContractData,
     walletAddress: string
   ): unknown[] {
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
-    const tokenOutAmountMin =
-      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
+    const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
     const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const fromTransitTokenAmountMin =
-      CrossChainContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
+      ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
     const fromTransitTokenAmountMinAbsolute = Web3Pure.toWei(
       fromTransitTokenAmountMin,
       this.transitToken.decimals

@@ -6,16 +6,17 @@ import { SignatureResult } from '@solana/web3.js';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Injectable } from '@angular/core';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import { SolanaCrossChainContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
-import { EthLikeCrossChainContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
+import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
+import { EthLikeContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: CrossChainModule
 })
-export class CrossChainContractExecutorFacadeService {
+export class ContractExecutorFacadeService {
   /**
    * Calculates minimum received amount of transit token, based on tokens route and slippage.
    */
@@ -44,8 +45,8 @@ export class CrossChainContractExecutorFacadeService {
   }
 
   constructor(
-    private readonly ethLikeContractExecutor: EthLikeCrossChainContractExecutorService,
-    private readonly solanaContractExecutor: SolanaCrossChainContractExecutorService,
+    private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
+    private readonly solanaContractExecutor: SolanaContractExecutorService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly raydiumService: RaydiumService,
     private readonly targetAddressService: TargetNetworkAddressService

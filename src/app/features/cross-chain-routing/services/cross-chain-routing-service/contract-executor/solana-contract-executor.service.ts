@@ -27,14 +27,15 @@ import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { CrossChainContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/cross-chain-contract-executor-facade.service';
+import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 import { Injectable } from '@angular/core';
-import { CrossChainContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/cross-chain-contracts-data.service';
+import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { SolanaCrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { tuiPure } from '@taiga-ui/cdk';
+import { CrossChainModule } from '@features/cross-chain-routing/cross-chain.module';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -42,9 +43,9 @@ enum TransferDataType {
   NATIVE = 2
 }
 @Injectable({
-  providedIn: 'root'
+  providedIn: CrossChainModule
 })
-export class SolanaCrossChainContractExecutorService {
+export class SolanaContractExecutorService {
   private static createSolanaInstruction(
     pdaConfig: PublicKey,
     pdaBlockchainConfig: PublicKey,
@@ -148,12 +149,12 @@ export class SolanaCrossChainContractExecutorService {
   private readonly contracts = this.contractsDataService.getCrossChainContracts();
 
   @tuiPure
-  private get contract(): SolanaCrossChainContractData {
-    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaCrossChainContractData;
+  private get contract(): SolanaContractData {
+    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaContractData;
   }
 
   constructor(
-    private readonly contractsDataService: CrossChainContractsDataService,
+    private readonly contractsDataService: ContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly tokensService: TokensService,
     private readonly raydiumRoutingService: RaydiumRoutingService
@@ -174,12 +175,11 @@ export class SolanaCrossChainContractExecutorService {
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
 
-    const tokenOutAmountMin =
-      CrossChainContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
+    const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
     const tokenOutAmountAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const fromTransitTokenAmountMin =
-      CrossChainContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
+      ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
     const fromTransitTokenAmountMinAbsolute = Web3Pure.toWei(
       fromTransitTokenAmountMin,
       this.contract.transitToken.decimals
@@ -244,7 +244,7 @@ export class SolanaCrossChainContractExecutorService {
 
     // @TODO Solana. Fix keys order.
     transaction.add(
-      SolanaCrossChainContractExecutorService.createSolanaInstruction(
+      SolanaContractExecutorService.createSolanaInstruction(
         new PublicKey(PDA_CONFIG),
         new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContractNumber]),
         TOKEN_PROGRAM_ID,

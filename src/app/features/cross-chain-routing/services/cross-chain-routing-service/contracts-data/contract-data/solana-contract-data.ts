@@ -1,4 +1,4 @@
-import { CrossChainContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/cross-chain-contract-data';
+import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -16,7 +16,7 @@ import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-ch
 import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
-export class SolanaCrossChainContractData extends CrossChainContractData {
+export class SolanaContractData extends ContractData {
   private readonly blockchainAdapter: SolanaWeb3Public;
 
   constructor(
