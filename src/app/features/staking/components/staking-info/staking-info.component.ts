@@ -4,6 +4,9 @@ import { StakingService } from '@features/staking/services/staking.service';
 import { BRBC_TOTAL } from '@features/staking/constants/BRBC_TOTAL';
 import { STAKE_LIMIT_MAX } from '@features/staking/constants/STACKING_LIMITS';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ThemeService } from '@core/services/theme/theme.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-staking-info',
@@ -22,7 +25,11 @@ export class StakingInfoComponent {
 
   public readonly loading$ = this.stakingService.stakingProgressLoading$;
 
-  constructor(private readonly stakingService: StakingService) {}
+  public readonly isDark$: Observable<boolean>;
+
+  constructor(private readonly stakingService: StakingService, private themeService: ThemeService) {
+    this.isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
+  }
 
   public reloadStakingProgress(): void {
     this.stakingService.reloadStakingProgress().subscribe();

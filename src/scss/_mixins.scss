@@ -17,14 +17,18 @@
   }
 }
 
-
-
 @mixin clearfix {
   &::after {
     display: block;
     clear: both;
 
     content: ' ';
+  }
+}
+
+@mixin dark {
+  :host-context(html.dark) & {
+    @content;
   }
 }
 

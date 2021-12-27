@@ -36,7 +36,7 @@
 
   &__balance {
 
-    color: #bdbebd;
+    color: var(--form-dim-text-color);
     font-weight: 500;
     font-size: 18px;
     line-height: 21px;
@@ -64,6 +64,12 @@
 
   &__divider {
     margin: 20px 0;
+
+    background-color: #fff;
+
+    @include mixins.dark {
+      background-color: #5e645e;
+    }
   }
 
   &__input {
@@ -87,6 +93,11 @@
       line-height: 43px;
     }
   }
+
+  &__button {
+    display: block;
+    margin-top: 30px;
+  }
 }
 
 .token {
@@ -97,14 +108,13 @@
   height: 43px;
   padding: 9px 20px;
 
-  color: #fff;
   font-weight: 600;
   font-size: 20px;
   line-height: 24px;
   letter-spacing: -0.03em;
 
-  background: #2c2c2c;
-  border-radius: vars.$border-radius-2;
+  background: var(--tui-base-01);
+  border-radius: 21.5px;
 
   &__icon {
     width: 26px;

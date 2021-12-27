@@ -1,14 +1,22 @@
-@mixin staking-spinner-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+@use 'src/scss/vars';
+@use 'src/scss/mixins';
 
-  display: grid;
-  width: 100%;
-  height: 100%;
+.error-button {
+  color: vars.$rubic-text-error;
+}
 
-  background: #000;
-  border-radius: 22px;
-  opacity: 0.5;
-  place-items: center;
+app-rubic-button[appearance='secondary'] {
+  display: block;
+
+  ::ng-deep {
+    [tuiButton]._disabled {
+      tui-wrapper {
+        background-color: #fff;
+
+        @include mixins.dark {
+          background-color: #232824;
+        }
+      }
+    }
+  }
 }
