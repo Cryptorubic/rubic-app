@@ -32,7 +32,7 @@ enum STAKING_NAV_ENUM {
 export class StakingContainerComponent {
   public activeItemIndex = STAKING_NAV_ENUM.STAKE;
 
-  public isLoggedIn$ = this.authService.getCurrentUser();
+  public readonly isLoggedIn$ = this.authService.getCurrentUser();
 
   public readonly refillTime$ = this.stakingService.refillTime$.pipe(
     map(refillTime => {
@@ -50,9 +50,9 @@ export class StakingContainerComponent {
     private readonly stakingService: StakingService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly swapFormService: SwapFormService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   public async navigateToSwaps(): Promise<void> {

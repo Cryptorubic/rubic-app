@@ -471,7 +471,7 @@
       "canUnstake": "Can unstake {{amount}}"
     },
     "stats": {
-      "profitTime": "Yesterday's APY",
+      "profitTime": "Yesterday's APR",
       "calc": "Calculate",
       "balance": "Balance",
       "canReceive": "Amount with Rewards",
@@ -485,7 +485,7 @@
       "highApr": "High APR",
       "minimumApr": "Predicted APR is 80% or more for the period of 2 months, based on the RBC/USDT price and Multi-Chain volume\n",
       "brbcRewards": "BRBC rewards",
-      "stakeTokens": "Stake 1,000 - 100,000 RBC/BRBC/ wRBC to get rewards in BRBC",
+      "stakeTokens": "Stake 1,000 - 100,000 RBC/BRBC/wRBC to get rewards in BRBC",
       "teamBuybacks": "Team Buybacks",
       "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool"
     }

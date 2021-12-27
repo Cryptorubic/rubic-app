@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-staking-page',
@@ -6,6 +6,4 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./staking-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingPageComponent {
-  constructor() {}
-}
+export class StakingPageComponent {}

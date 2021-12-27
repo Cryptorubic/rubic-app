@@ -18,7 +18,7 @@
   padding: 8px;
 
   background: #202320;
-  border-radius: 22px;
+  border-radius: vars.$border-radius-2;
   box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
 
   &__tabs {
@@ -44,7 +44,7 @@
     text-align: center;
 
     background-color: #202320;
-    border-radius: 22px;
+    border-radius: vars.$border-radius-2;
 
     &._active {
       background-color: #414141;
@@ -87,7 +87,7 @@
     display: block;
 
     background-color: #414141;
-    border-radius: 22px;
+    border-radius: vars.$border-radius-2;
   }
 
   &__stake {

@@ -50,7 +50,7 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   public readonly errorTypeEnum = ErrorTypeEnum;
 
-  public needChangeNetwork$ = new BehaviorSubject<boolean>(
+  public readonly needChangeNetwork$ = new BehaviorSubject<boolean>(
     this.walletConnectorService.networkName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   );
 
