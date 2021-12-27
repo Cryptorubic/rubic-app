@@ -21,7 +21,6 @@ import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil, tap } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
@@ -32,6 +31,7 @@ import { TOKENS } from '@features/instant-trade/services/instant-trade-service/p
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 enum ERROR_TYPE {
   INSUFFICIENT_FUNDS = 'Insufficient balance',
@@ -347,7 +347,7 @@ export class SwapButtonContainerComponent implements OnInit {
       return;
     }
     const balance = !fromToken.amount.isFinite()
-      ? EthLikeWeb3Public.fromWei(
+      ? Web3Pure.fromWei(
           await this.publicBlockchainAdapterService[fromToken.blockchain].getTokenOrNativeBalance(
             this.authService.user.address,
             fromToken.address

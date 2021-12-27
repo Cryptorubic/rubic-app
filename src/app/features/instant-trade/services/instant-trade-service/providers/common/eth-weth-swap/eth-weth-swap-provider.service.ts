@@ -5,7 +5,6 @@ import {
   wethContractAddressesNetMode,
   SupportedEthWethSwapBlockchain
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAddressesNetMode';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -17,6 +16,7 @@ import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_
 import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +69,7 @@ export class EthWethSwapProviderService {
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
     await blockchainAdapter.checkBalance(fromToken, fromAmount, this.authService.userAddress);
 
-    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount);
+    const fromAmountAbsolute = Web3Pure.toWei(fromAmount);
     const swapMethod = blockchainAdapter.isNativeAddress(fromToken.address)
       ? this.swapEthToWeth
       : this.swapWethToEth;

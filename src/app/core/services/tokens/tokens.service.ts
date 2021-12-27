@@ -29,6 +29,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -273,7 +274,7 @@ export class TokensService {
             .filter(token => token.blockchain === blockchain)
             .map((token, tokenIndex) => ({
               ...token,
-              amount: EthLikeWeb3Public.fromWei(balances[tokenIndex], token.decimals) || undefined
+              amount: Web3Pure.fromWei(balances[tokenIndex], token.decimals) || undefined
             }))
             .toArray();
         }
@@ -448,7 +449,7 @@ export class TokensService {
       if (!foundToken) {
         return new BigNumber(NaN);
       }
-      const balance = EthLikeWeb3Public.fromWei(balanceInWei, foundToken.decimals);
+      const balance = Web3Pure.fromWei(balanceInWei, foundToken.decimals);
       if (!foundToken.amount.eq(balance)) {
         const newToken = {
           ...foundToken,

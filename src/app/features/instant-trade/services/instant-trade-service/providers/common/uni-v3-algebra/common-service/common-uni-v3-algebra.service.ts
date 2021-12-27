@@ -34,6 +34,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Injectable()
 export abstract class CommonUniV3AlgebraService implements ItProvider {
@@ -176,10 +177,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
 
     const fromToken = trade.from.token;
     const toToken = trade.to.token;
-    const fromAmountAbsolute = EthLikeWeb3Public.toWei(
-      trade.from.amount,
-      trade.from.token.decimals
-    );
+    const fromAmountAbsolute = Web3Pure.toWei(trade.from.amount, trade.from.token.decimals);
     const { toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
     return this.swapTokens(trade, fromAmountAbsolute, toTokenWrapped.address, isEth, options);
