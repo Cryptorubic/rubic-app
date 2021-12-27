@@ -33,8 +33,6 @@ export class StakingService {
   private walletAddress: string;
 
   private readonly stakingContractAddress = STAKING_CONTRACT_ADDRESS;
-  // ? '0xc7FC65d50AfFBF2f32236eDc5217A916614e1F9d' //testnet xBRBC
-  // : '0x0d0Ed1E7994a3926644cac9b296B3745315700ff'; // mainnet xBRBC
 
   private bridgeContractAddress: string;
 
@@ -103,7 +101,6 @@ export class StakingService {
         this._amountWithRewards$.next(new BigNumber(0));
         this._earnedRewards$.next(new BigNumber(0));
         this._stakingTokenBalance$.next(new BigNumber(0));
-        this._apr$.next(0);
         return of(new BigNumber(0));
       } else {
         return this.getSelectedTokenBalance(selectedToken);
@@ -133,6 +130,7 @@ export class StakingService {
       .getCurrentUser()
       .pipe(
         filter(Boolean),
+        take(1),
         tap(({ address }) => (this.walletAddress = address)),
         switchMap(() => {
           return forkJoin([
@@ -160,7 +158,7 @@ export class StakingService {
 
   public enterStake(amount: BigNumber): Observable<TransactionReceipt | unknown> {
     const tokenBlockchain = this._selectedToken$.getValue().blockchain;
-    const amountInWei = Number(EthLikeWeb3Public.toWei(amount, 18)).toLocaleString('fullwide', {
+    const amountInWei = Number(EthLikeWeb3Public.toWei(amount)).toLocaleString('fullwide', {
       useGrouping: false
     });
     const needSwap =
@@ -175,7 +173,7 @@ export class StakingService {
           this.stakingContractAddress,
           STAKING_CONTRACT_ABI,
           'enter',
-          [amountInWei]
+          [EthLikeWeb3Public.toWei(amount)]
         )
       ).pipe(
         catchError((err: unknown) => {
@@ -184,41 +182,30 @@ export class StakingService {
           return EMPTY;
         }),
         switchMap(receipt => this.updateUsersDeposit(amountInWei, receipt.transactionHash)),
-        switchMap(() => {
-          return forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()]);
-        }),
-        tap(() => {
-          this.updateTokenBalance$.next();
-        })
+        switchMap(() => this.reloadStakingStatistics()),
+        switchMap(() => this.reloadStakingProgress()),
+        tap(() => this.updateTokenBalance$.next())
       );
     }
   }
 
   public leaveStake(amount: BigNumber): Observable<unknown> {
-    const adjustedAmountInWei = Number(EthLikeWeb3Public.toWei(amount, 18)).toLocaleString(
-      'fullwide',
-      {
-        useGrouping: false
-      }
-    );
+    const adjustedAmountInWei = Number(EthLikeWeb3Public.toWei(amount)).toLocaleString('fullwide', {
+      useGrouping: false
+    });
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'leave',
-        [EthLikeWeb3Public.toWei(amount, 18)]
+        [EthLikeWeb3Public.toWei(amount)]
       )
     ).pipe(
       switchMap(receipt =>
         this.updateUsersDepositAfterWithdraw(adjustedAmountInWei, receipt.transactionHash)
       ),
-      switchMap(() =>
-        forkJoin([
-          this.reloadStakingStatistics(),
-          this.reloadStakingProgress(),
-          this.getMaxAmountForWithdraw()
-        ])
-      )
+      switchMap(() => forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()])),
+      switchMap(() => this.getMaxAmountForWithdraw())
     );
   }
 
@@ -231,7 +218,7 @@ export class StakingService {
       })
     ).pipe(
       map(allowance => {
-        return allowance.lt(EthLikeWeb3Public.fromWei(amount, 18));
+        return allowance.lt(EthLikeWeb3Public.fromWei(amount));
       })
     );
   }
@@ -269,7 +256,7 @@ export class StakingService {
         this.errorService.catch(err as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
-      map(balance => EthLikeWeb3Public.fromWei(balance, 18))
+      map(balance => EthLikeWeb3Public.fromWei(balance))
     );
   }
 
@@ -285,7 +272,7 @@ export class StakingService {
         return of(new BigNumber('0'));
       }),
       tap(balance => {
-        this._stakingTokenBalance$.next(EthLikeWeb3Public.fromWei(balance, 18));
+        this._stakingTokenBalance$.next(EthLikeWeb3Public.fromWei(balance));
       })
     );
   }
@@ -302,16 +289,15 @@ export class StakingService {
         }
       )
     ).pipe(
-      map(actualBalance => EthLikeWeb3Public.fromWei(actualBalance, 18)),
+      map(actualBalance => EthLikeWeb3Public.fromWei(actualBalance)),
       tap(actualBalance => this._maxAmountForWithdraw$.next(actualBalance))
     );
   }
 
-  private getAmountWithRewards(stakingTokenBalance?: BigNumber): Observable<BigNumber> {
-    const balance = stakingTokenBalance || this._stakingTokenBalance$.getValue();
-    return this.calculateLeaveReward(balance).pipe(
+  private getAmountWithRewards(stakingTokenBalance: BigNumber): Observable<BigNumber> {
+    return this.calculateLeaveReward(stakingTokenBalance).pipe(
       catchError((error: unknown) => {
-        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber(0));
       }),
       tap(actualBalance => {
@@ -327,7 +313,7 @@ export class StakingService {
     ]).pipe(
       first(),
       map(([usersDeposit, totalAmount]) => {
-        const usersDepositInTokens = EthLikeWeb3Public.fromWei(usersDeposit, 18);
+        const usersDepositInTokens = EthLikeWeb3Public.fromWei(usersDeposit);
         const earnedRewards = totalAmount.minus(usersDepositInTokens);
         if (earnedRewards.s === -1 || earnedRewards.s === null) {
           return new BigNumber(0);
@@ -338,14 +324,19 @@ export class StakingService {
     );
   }
 
-  public reloadStakingStatistics(): Observable<(number | BigNumber)[]> {
+  public reloadStakingStatistics(): Observable<number | BigNumber> {
     this.stakingStatisticsLoading$.next(true);
-    return this.getStakingTokenBalance().pipe(
-      switchMap(stakingTokenBalance => {
-        return this.getAmountWithRewards(stakingTokenBalance);
-      }),
-      switchMap(() => {
-        return forkJoin([this.getEarnedRewards(), this.getApr()]);
+    this.getApr().subscribe();
+    return this.needLogin$.pipe(
+      take(1),
+      switchMap(needLogin => {
+        if (needLogin) {
+          return EMPTY;
+        }
+        return this.getStakingTokenBalance().pipe(
+          switchMap(stakingTokenBalance => this.getAmountWithRewards(stakingTokenBalance)),
+          switchMap(() => this.getEarnedRewards())
+        );
       }),
       finalize(() => this.stakingStatisticsLoading$.next(false))
     );
@@ -367,7 +358,7 @@ export class StakingService {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
-      map(amount => EthLikeWeb3Public.fromWei(amount, 18).toNumber()),
+      map(amount => EthLikeWeb3Public.fromWei(amount).toNumber()),
       tap(userEnteredAmount => this._userEnteredAmount$.next(userEnteredAmount))
     );
   }
@@ -386,7 +377,7 @@ export class StakingService {
         return EMPTY;
       }),
       tap(totalRbcEntered =>
-        this._totalRBCEntered$.next(EthLikeWeb3Public.fromWei(+totalRbcEntered, 18).toNumber())
+        this._totalRBCEntered$.next(EthLikeWeb3Public.fromWei(+totalRbcEntered).toNumber())
       )
     );
   }
@@ -431,14 +422,18 @@ export class StakingService {
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'canReceive',
-        { methodArguments: [amount], from: this.walletAddress }
+        {
+          methodArguments: [amount.toFixed(0)],
+          from: this.walletAddress
+        }
       )
     ).pipe(
-      catchError(() => {
+      catchError((error: unknown) => {
+        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
       map(res => {
-        return EthLikeWeb3Public.fromWei(res, 18);
+        return EthLikeWeb3Public.fromWei(res);
       })
     );
   }
