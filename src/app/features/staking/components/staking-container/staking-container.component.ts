@@ -5,7 +5,6 @@ import { StakingService } from '@features/staking/services/staking.service';
 import { map } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/STAKING_CONTRACT_ADDRESS';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/Token';
 import { WINDOW } from '@ng-web-apis/common';
@@ -17,6 +16,7 @@ import { TokenAmount } from '@shared/models/tokens/TokenAmount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
+import { environment } from 'src/environments/environment';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
@@ -84,7 +84,7 @@ export class StakingContainerComponent {
     const xBRBC: Token = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: STAKING_CONTRACT_ADDRESS,
+      address: environment.staking.stakingContractAddress,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,

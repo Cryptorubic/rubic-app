@@ -25,8 +25,8 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
 import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
-import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/STAKING_CONTRACT_ADDRESS';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class StakingService {
@@ -38,7 +38,7 @@ export class StakingService {
   /**
    * Staking contract address
    */
-  private readonly stakingContractAddress = STAKING_CONTRACT_ADDRESS;
+  private readonly stakingContractAddress = environment.staking.stakingContractAddress;
 
   /**
    * Contract address for staking via bridge [from backend]

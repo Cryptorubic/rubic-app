@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { UpdateDepositRequestInterface } from '@features/staking/models/update-deposit-request.interface';
 import { BridgeTxRequestInterface } from '@features/staking/models/bridge-tx-request.interface';
 import { pluck } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class StakingApiService {
-  stakingApiPath = '//staking.rubic.exchange/api/';
+  stakingApiPath = environment.staking.apiUrl;
 
   constructor(private readonly httpService: HttpService) {}
 
