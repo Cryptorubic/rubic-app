@@ -9,8 +9,6 @@ import { catchError, filter, finalize, first, map, switchMap, take, tap } from '
 import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 import { ErrorsService } from '@core/errors/errors.service';
 import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -20,13 +18,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
-import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { environment } from 'src/environments/environment';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
+import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
 
 @Injectable()
 export class StakingService {
@@ -209,10 +209,19 @@ export class StakingService {
     });
   }
 
+  /**
+   * Set what token user going to stake.
+   * @param token
+   */
   public setToken(token: MinimalToken): void {
     this._selectedToken$.next(token);
   }
 
+  /**
+   * Enter stake with provided amount of tokens.
+   * @param amount
+   * @return Observable<TransactionReceipt | number>
+   */
   public enterStake(amount: BigNumber): Observable<TransactionReceipt | unknown> {
     const tokenBlockchain = this._selectedToken$.getValue().blockchain;
     const amountInWei = Number(Web3Pure.toWei(amount)).toLocaleString('fullwide', {
@@ -246,6 +255,11 @@ export class StakingService {
     }
   }
 
+  /**
+   * Leave stake and withdraw provided amount of xBRBC.
+   * @param amount
+   * @return Observable<unknown>
+   */
   public leaveStake(amount: BigNumber): Observable<unknown> {
     const adjustedAmountInWei = Number(Web3Pure.toWei(amount)).toLocaleString('fullwide', {
       useGrouping: false
@@ -266,6 +280,11 @@ export class StakingService {
     );
   }
 
+  /**
+   * Check if user need to approve tokens before entering stake.
+   * @param amount
+   * @return Observable<boolean>
+   */
   public needApprove(amount: BigNumber): Observable<boolean> {
     return from(
       this.web3PublicService[this.selectedToken.blockchain].getAllowance({
@@ -280,6 +299,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Approve tokens for infinity amount.
+   * @return Observable<TransactionReceipt>
+   */
   public approveTokens(): Observable<TransactionReceipt> {
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].approveTokens(
@@ -295,6 +318,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Get staking token (xBRBC) balance from blockchain.
+   * @return Observable<BigNumber>
+   */
   public getStakingTokenBalance(): Observable<BigNumber> {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].getTokenBalance(
@@ -312,6 +339,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Get staking token balance without freezing tokens (max amount user can withdraw right now).
+   * @return Observable<BigNumber>
+   */
   public getMaxAmountForWithdraw(): Observable<BigNumber> {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
@@ -329,6 +360,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Reloads staking token balance, earned rewards, amount with rewards, apr.
+   * @return Observable<number | BigNumber>
+   */
   public reloadStakingStatistics(): Observable<number | BigNumber> {
     this.stakingStatisticsLoading$.next(true);
     this.getApr().subscribe();
@@ -347,6 +382,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Reloads total RBC entered & user entered amount.
+   * @return Observable<unknown>
+   */
   public reloadStakingProgress(): Observable<unknown> {
     this.stakingProgressLoading$.next(true);
     return this.needLogin$.pipe(
@@ -362,6 +401,11 @@ export class StakingService {
     );
   }
 
+  /**
+   * Gets balance of selected token from blockchain.
+   * @param token
+   * @return Observable<BigNumber>
+   */
   private getSelectedTokenBalance(token: MinimalToken): Observable<BigNumber> {
     return from(
       this.web3PublicService[token.blockchain].getTokenBalance(this.walletAddress, token.address)
@@ -374,6 +418,11 @@ export class StakingService {
     );
   }
 
+  /**
+   * Calculates what amount of BRBC user will get if withdraw provided amount of xBRBC.
+   * @param amount
+   * @return Observable<BigNumber>
+   */
   public calculateLeaveReward(amount: BigNumber): Observable<BigNumber> {
     if (amount.isZero()) {
       return of(new BigNumber(0));
@@ -401,6 +450,11 @@ export class StakingService {
     );
   }
 
+  /**
+   * Enters stake via Rubic bridge.
+   * @param amount
+   * @return Observable<TransactionReceipt>
+   */
   public enterStakeViaBridge(amount: BigNumber): Observable<TransactionReceipt> {
     const fromBlockchain = this._selectedToken$.getValue().blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
@@ -408,6 +462,11 @@ export class StakingService {
     return this.getRubicBridge(fromBlockchain).createTrade(bridgeTrade);
   }
 
+  /**
+   * Checks if Rubic bridge need approve.
+   * @param amount
+   * @return Observable<boolean>
+   */
   public needBridgeApprove(amount: BigNumber): Observable<boolean> {
     const fromBlockchain = this._selectedToken$.getValue().blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
@@ -415,6 +474,11 @@ export class StakingService {
     return this.getRubicBridge(fromBlockchain).needApprove(bridgeTrade);
   }
 
+  /**
+   * Approves tokens for bridge.
+   * @param amount
+   * @return Observable<TransactionReceipt>
+   */
   public approveBridgeTokens(amount: BigNumber): Observable<TransactionReceipt> {
     const fromBlockchain = this._selectedToken$.getValue().blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
@@ -422,6 +486,11 @@ export class StakingService {
     return this.getRubicBridge(fromBlockchain).approve(bridgeTrade);
   }
 
+  /**
+   * Gets amount with rewards from blockchain.
+   * @param stakingTokenBalance
+   * @return Observable<BigNumber>
+   */
   private getAmountWithRewards(stakingTokenBalance: BigNumber): Observable<BigNumber> {
     return this.calculateLeaveReward(stakingTokenBalance).pipe(
       catchError((error: unknown) => {
@@ -434,6 +503,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Gets earned rewards from blockchain.
+   * @return Observable<BigNumber>
+   */
   private getEarnedRewards(amountWithRewards?: BigNumber): Observable<BigNumber> {
     return combineLatest([
       this.getUsersDeposit(),
@@ -452,6 +525,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Gets user entered amount from blockchain.
+   * @return Observable<number>
+   */
   private getUserEnteredAmount(): Observable<number> {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
@@ -473,6 +550,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Gets total RBC entered from blockchain.
+   * @return Observable<string>
+   */
   private getTotalRBCEntered(): Observable<string> {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
@@ -492,6 +573,10 @@ export class StakingService {
     );
   }
 
+  /**
+   * Gets staking APR from backend.
+   * @return Observable<number>
+   */
   private getApr(): Observable<number> {
     return this.stakingApiService.getApr().pipe(
       catchError((err: unknown) => {
@@ -502,18 +587,32 @@ export class StakingService {
     );
   }
 
+  /**
+   * Gets refill time from backend.
+   * @return Observable<string>
+   */
   private getRefillTime(): Observable<string> {
     return this.stakingApiService
       .getRefillTime()
       .pipe(tap(refillTime => this._refillTime$.next(refillTime)));
   }
 
+  /**
+   * Gets user's deposit from backend.
+   * @return Observable<number>
+   */
   private getUsersDeposit(): Observable<number> {
     return this.stakingApiService
       .getUsersDeposit(this.walletAddress)
       .pipe(tap(deposit => this._usersTotalDeposit$.next(new BigNumber(deposit))));
   }
 
+  /**
+   * Updates user's deposit on backend after entering stake.
+   * @param amount
+   * @param txHash
+   * @return Observable<void>
+   */
   private updateUsersDeposit(amount: string, txHash: string): Observable<void> {
     return this.stakingApiService.updateUsersDeposit({
       walletAddress: this.walletAddress,
@@ -523,6 +622,12 @@ export class StakingService {
     });
   }
 
+  /**
+   * Updates user's deposit on backend after leaving stake.
+   * @param amount
+   * @param txHash
+   * @return Observable<void>
+   */
   private updateUsersDepositAfterWithdraw(amount: string, txHash: string): Observable<void> {
     return this.stakingApiService.updateUsersDepositAfterWithdraw({
       walletAddress: this.walletAddress,
@@ -532,6 +637,12 @@ export class StakingService {
     });
   }
 
+  /**
+   * Opens swap dialog.
+   * @param amount
+   * @param blockchain
+   * @return Observable<unknown>
+   */
   private openSwapModal(amount: BigNumber, blockchain: BLOCKCHAIN_NAME): Observable<unknown> {
     return this.dialogService.open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
       size: 'l',
@@ -539,6 +650,12 @@ export class StakingService {
     });
   }
 
+  /**
+   * Gets bridge trade object.
+   * @param fromBlockchain
+   * @param amount
+   * @return BridgeTrade
+   */
   private getBridgeTradeObject(fromBlockchain: BLOCKCHAIN_NAME, amount: BigNumber): BridgeTrade {
     switch (fromBlockchain) {
       case BLOCKCHAIN_NAME.POLYGON:
@@ -624,6 +741,11 @@ export class StakingService {
     }
   }
 
+  /**
+   * Gets Rubic bridge provider service.
+   * @param blockchain
+   * @return BinancePolygonRubicBridgeProviderService | EthereumBinanceRubicBridgeProviderService
+   */
   private getRubicBridge(
     blockchain: BLOCKCHAIN_NAME
   ): BinancePolygonRubicBridgeProviderService | EthereumBinanceRubicBridgeProviderService {
