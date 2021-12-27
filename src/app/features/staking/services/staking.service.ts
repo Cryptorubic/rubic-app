@@ -223,7 +223,7 @@ export class StakingService {
    * @return Observable<TransactionReceipt | number>
    */
   public enterStake(amount: BigNumber): Observable<TransactionReceipt | unknown> {
-    const tokenBlockchain = this._selectedToken$.getValue().blockchain;
+    const tokenBlockchain = this.selectedToken.blockchain;
     const amountInWei = Number(Web3Pure.toWei(amount)).toLocaleString('fullwide', {
       useGrouping: false
     });
@@ -456,7 +456,7 @@ export class StakingService {
    * @return Observable<TransactionReceipt>
    */
   public enterStakeViaBridge(amount: BigNumber): Observable<TransactionReceipt> {
-    const fromBlockchain = this._selectedToken$.getValue().blockchain;
+    const fromBlockchain = this.selectedToken.blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
 
     return this.getRubicBridge(fromBlockchain).createTrade(bridgeTrade);
@@ -468,7 +468,7 @@ export class StakingService {
    * @return Observable<boolean>
    */
   public needBridgeApprove(amount: BigNumber): Observable<boolean> {
-    const fromBlockchain = this._selectedToken$.getValue().blockchain;
+    const fromBlockchain = this.selectedToken.blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
 
     return this.getRubicBridge(fromBlockchain).needApprove(bridgeTrade);
@@ -480,7 +480,7 @@ export class StakingService {
    * @return Observable<TransactionReceipt>
    */
   public approveBridgeTokens(amount: BigNumber): Observable<TransactionReceipt> {
-    const fromBlockchain = this._selectedToken$.getValue().blockchain;
+    const fromBlockchain = this.selectedToken.blockchain;
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
 
     return this.getRubicBridge(fromBlockchain).approve(bridgeTrade);
