@@ -27,7 +27,10 @@ export class StakingInfoComponent {
 
   public readonly isDark$: Observable<boolean>;
 
-  constructor(private readonly stakingService: StakingService, private themeService: ThemeService) {
+  constructor(
+    private readonly stakingService: StakingService,
+    private readonly themeService: ThemeService
+  ) {
     this.isDark$ = this.themeService.theme$.pipe(map(theme => theme === 'dark'));
   }
 

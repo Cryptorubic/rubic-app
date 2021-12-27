@@ -31,57 +31,57 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class StakingService {
   /**
-   * User's wallet address
+   * User's wallet address.
    */
   private walletAddress: string;
 
   /**
-   * Staking contract address
+   * Staking contract address.
    */
   private readonly stakingContractAddress = environment.staking.stakingContractAddress;
 
   /**
-   * Contract address for staking via bridge [from backend]
+   * Contract address for staking via bridge [from backend].
    */
   private bridgeContractAddress: string;
 
   /**
-   * Amount with rewards [from contract]
+   * Amount with rewards [from contract].
    */
   private readonly _amountWithRewards$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
   public readonly amountWithRewards$ = this._amountWithRewards$.asObservable();
 
   /**
-   * Current APR [from backend]
+   * Current APR [from backend].
    */
   private readonly _apr$ = new BehaviorSubject<number>(0);
 
   public readonly apr$ = this._apr$.asObservable();
 
   /**
-   * Staking refill time [currently unused]
+   * Staking refill time [currently unused].
    */
   private readonly _refillTime$ = new BehaviorSubject<string>('');
 
   public readonly refillTime$ = this._refillTime$.asObservable();
 
   /**
-   * How much RBC user already staked [from contract]
+   * How much RBC user already staked [from contract].
    */
   private readonly _userEnteredAmount$ = new BehaviorSubject<number>(0);
 
   public readonly userEnteredAmount$ = this._userEnteredAmount$.asObservable();
 
   /**
-   * Total RBC amount in stake [from contract]
+   * Total RBC amount in stake [from contract].
    */
   private readonly _totalRBCEntered$ = new BehaviorSubject<number>(0);
 
   public readonly totalRBCEntered$ = this._totalRBCEntered$.asObservable();
 
   /**
-   * Grouped totalRbcEntered$ and userEnteredAnount$ [from contract]
+   * Grouped totalRbcEntered$ and userEnteredAnount$ [from contract].
    */
   public readonly stakingProgress$ = combineLatest([
     this._totalRBCEntered$,
@@ -89,21 +89,21 @@ export class StakingService {
   ]).pipe(map(([totalRbcEntered, userEnteredAmount]) => ({ totalRbcEntered, userEnteredAmount })));
 
   /**
-   * User's xBRBC balance [from contract]
+   * User's xBRBC balance [from contract].
    */
   private readonly _stakingTokenBalance$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
   public readonly stakingTokenBalance$ = this._stakingTokenBalance$.asObservable();
 
   /**
-   * Earned rewards [from contract]
+   * Earned rewards [from contract].
    */
   private readonly _earnedRewards$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
   public readonly earnedRewards$ = this._earnedRewards$.asObservable();
 
   /**
-   * Current token selected for stake
+   * Current token selected for stake.
    */
   private readonly _selectedToken$ = new BehaviorSubject<MinimalToken>(undefined);
 
@@ -114,39 +114,39 @@ export class StakingService {
   }
 
   /**
-   * User's max amount for unstake [from contract]
+   * User's max amount for unstake [from contract].
    */
   private readonly _maxAmountForWithdraw$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
   public readonly maxAmountForWithdraw$ = this._maxAmountForWithdraw$.asObservable();
 
   /**
-   * Users deposit [from backend]
+   * Users deposit [from backend].
    */
   private readonly _usersTotalDeposit$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
 
   /**
-   * Utility Subj to trigger token balance update
+   * Utility Subj to trigger token balance update.
    */
   private readonly updateTokenBalance$ = new BehaviorSubject<void>(null);
 
   /**
-   * Is user need to connect wallet
+   * Is user need to connect wallet.
    */
   public readonly needLogin$ = this.authService.getCurrentUser().pipe(map(user => !user?.address));
 
   /**
-   * Loading state for whole progress block
+   * Loading state for whole progress block.
    */
   public readonly stakingProgressLoading$ = new BehaviorSubject<boolean>(true);
 
   /**
-   * Loading state for whole statistics block
+   * Loading state for whole statistics block.
    */
   public readonly stakingStatisticsLoading$ = new BehaviorSubject<boolean>(false);
 
   /**
-   * Balance of token selected for stake [from contract]
+   * Balance of token selected for stake [from contract].
    */
   public readonly selectedTokenBalance$ = combineLatest([
     this.selectedToken$,
