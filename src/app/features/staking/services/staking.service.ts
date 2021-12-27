@@ -429,7 +429,9 @@ export class StakingService {
       )
     ).pipe(
       catchError((error: unknown) => {
-        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+        console.debug(error);
+        // TODO handle contract error "Amount is greater than total xBRBC amount"
+        // this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
       map(res => {

@@ -2,11 +2,7 @@
 @use 'src/scss/vars';
 
 .stake {
-  padding: 36px 28px 28px;
-
-  @include mixins.b(vars.$tablet) {
-    padding: 36px 22px 22px;
-  }
+  padding: 36px 22px 22px;
 
   &__token-and-amount {
     display: flex;
@@ -40,6 +36,8 @@
       margin-left: 12px;
 
       color: vars.$rubic-primary;
+
+      cursor: pointer;
     }
   }
 

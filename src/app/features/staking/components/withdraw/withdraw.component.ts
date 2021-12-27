@@ -32,7 +32,9 @@ export class WithdrawComponent implements OnInit {
       if (amount === '') {
         return of('');
       }
-      return of(new BigNumber(EthLikeWeb3Public.toWei(new BigNumber(amount)))).pipe(
+      return of(
+        new BigNumber(EthLikeWeb3Public.toWei(new BigNumber(amount.split(',').join(''))))
+      ).pipe(
         switchMap(x => this.stakingService.calculateLeaveReward(x)),
         map(x => x.toNumber())
       );
@@ -73,7 +75,7 @@ export class WithdrawComponent implements OnInit {
       this.translateService.instant('notifications.withdrawInProgress'),
       {
         status: TuiNotification.Info,
-        autoClose: 5000
+        autoClose: false
       }
     );
     this.withdrawButtonLoading$.next(true);
