@@ -391,7 +391,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       return instantTrade;
     }
 
-    const increasedGas = EthLikeWeb3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const increasedGas = Web3Pure.calculateGasMargin(estimatedGas, this.gasMargin);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
     const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 

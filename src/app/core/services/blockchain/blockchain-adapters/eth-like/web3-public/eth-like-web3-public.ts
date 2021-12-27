@@ -5,7 +5,7 @@ import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
 import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
-import { AbiItem, fromWei, isAddress, toChecksumAddress, toWei } from 'web3-utils';
+import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { UndefinedError } from '@core/errors/models/undefined.error';
@@ -83,10 +83,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     return NATIVE_TOKEN_ADDRESS;
   }
 
-  static calculateGasMargin(amount: BigNumber | string | number, percent: number): string {
-    return new BigNumber(amount || '0').multipliedBy(percent).toFixed(0);
-  }
-
   static addressToBytes32(address: string): string {
     if (address.slice(0, 2) !== '0x' || address.length !== 42) {
       console.error('Wrong address format');
@@ -106,22 +102,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public isAddressCorrect(address: string): boolean {
     return isAddress(address);
-  }
-
-  /**
-   * converts Eth amount into Wei
-   * @param value to convert in Eth
-   */
-  static ethToWei(value: string | BigNumber): string {
-    return toWei(value.toString(), 'ether');
-  }
-
-  /**
-   * converts Wei amount into Eth
-   * @param value to convert in Wei
-   */
-  static weiToEth(value: string | BigNumber): string {
-    return fromWei(value.toString(), 'ether');
   }
 
   /**
@@ -181,7 +161,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getBalance(address: string, options: { inWei?: boolean } = {}): Promise<BigNumber> {
     const balance = await this.web3.eth.getBalance(address);
-    return new BigNumber(options.inWei ? balance : EthLikeWeb3Public.weiToEth(balance));
+    return new BigNumber(options.inWei ? balance : Web3Pure.fromWei(balance));
   }
 
   /**

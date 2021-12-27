@@ -28,7 +28,6 @@ import {
   UniSwapV3InstantTrade,
   UniSwapV3Route
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
@@ -114,7 +113,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       return trade;
     }
 
-    const increasedGas = EthLikeWeb3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const increasedGas = Web3Pure.calculateGasMargin(estimatedGas, this.gasMargin);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
     const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 

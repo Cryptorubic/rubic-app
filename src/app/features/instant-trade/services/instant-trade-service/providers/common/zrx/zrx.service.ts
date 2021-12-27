@@ -207,10 +207,7 @@ export class ZrxService implements ItProvider {
       return trade;
     }
 
-    const estimatedGas = EthLikeWeb3Public.calculateGasMargin(
-      this.currentTradeData.gas,
-      this.gasMargin
-    );
+    const estimatedGas = Web3Pure.calculateGasMargin(this.currentTradeData.gas, this.gasMargin);
     const gasPriceInEth = Web3Pure.fromWei(this.currentTradeData.gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
