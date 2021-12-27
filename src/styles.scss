@@ -150,6 +150,10 @@ tui-dropdown-box {
 
         border: 0;
 
+        &:hover {
+          background-color: transparent;
+        }
+
         tui-select-option {
           display: block;
 

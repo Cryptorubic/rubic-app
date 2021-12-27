@@ -14,9 +14,11 @@
       [formControl]="amount"
     />
     <ng-container *ngIf="(needLogin$ | async) === false">
-      <div class="withdraw__balance" *ngIf="maxAmountForWithdraw$ | async as maxAmountForWithdraw">
+      <div class="withdraw__balance" *ngLet="maxAmountForWithdraw$ | async as maxAmountForWithdraw">
         {{
-          'staking.stake.canUnstake' | translate: { amount: maxAmountForWithdraw | bigNumberFormat }
+          'staking.stake.canUnstake'
+            | translate
+              : { amount: maxAmountForWithdraw | bigNumberFormat | shortenAmount: 9:4:true }
         }}
         <span class="withdraw__max" (click)="setMaxAmount(maxAmountForWithdraw)">MAX</span>
       </div>
@@ -37,6 +39,7 @@
   </div>
 
   <app-withdraw-button-container
+    class="withdraw__button"
     [amountFormControl]="amount"
     [needChangeNetwork]="false"
     [loading]="withdrawButtonLoading$ | async"

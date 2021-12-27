@@ -34,6 +34,7 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 
@@ -182,7 +183,7 @@ export class ZrxService implements ItProvider {
     const params: ZrxCalculateTradeParams = {
       sellToken: fromTokenClone.address,
       buyToken: toTokenClone.address,
-      sellAmount: EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals),
+      sellAmount: Web3Pure.toWei(fromAmount, fromToken.decimals),
       slippagePercentage: this.settings.slippageTolerance.toString()
     };
     if (AFFILIATE_ADDRESS) {
@@ -195,22 +196,19 @@ export class ZrxService implements ItProvider {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       from: {
         token: fromToken,
-        amount: EthLikeWeb3Public.fromWei(this.currentTradeData.sellAmount, fromToken.decimals)
+        amount: Web3Pure.fromWei(this.currentTradeData.sellAmount, fromToken.decimals)
       },
       to: {
         token: toToken,
-        amount: EthLikeWeb3Public.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
+        amount: Web3Pure.fromWei(this.currentTradeData.buyAmount, toToken.decimals)
       }
     };
     if (!shouldCalculateGas) {
       return trade;
     }
 
-    const estimatedGas = EthLikeWeb3Public.calculateGasMargin(
-      this.currentTradeData.gas,
-      this.gasMargin
-    );
-    const gasPriceInEth = EthLikeWeb3Public.fromWei(this.currentTradeData.gasPrice);
+    const estimatedGas = Web3Pure.calculateGasMargin(this.currentTradeData.gas, this.gasMargin);
+    const gasPriceInEth = Web3Pure.fromWei(this.currentTradeData.gasPrice);
     const nativeCoinPrice = await this.tokensService.getNativeCoinPriceInUsd(this.blockchain);
     const gasPriceInUsd = gasPriceInEth.multipliedBy(nativeCoinPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
@@ -231,7 +229,7 @@ export class ZrxService implements ItProvider {
   ): Promise<TransactionReceipt> {
     this.walletConnectorService.checkSettings(trade.blockchain);
 
-    const amount = EthLikeWeb3Public.fromWei(trade.from.amount, trade.from.token.decimals);
+    const amount = Web3Pure.fromWei(trade.from.amount, trade.from.token.decimals);
     await this.fromBlockchainAdapter.checkBalance(trade.from.token, amount, this.walletAddress);
 
     return this.web3PrivateService.trySendTransaction(

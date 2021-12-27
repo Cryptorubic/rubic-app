@@ -26,7 +26,7 @@ export class StakingTokensComponent {
     private readonly destroy$: TuiDestroyService
   ) {}
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.tokenFormControl.valueChanges
       .pipe(startWith(this.tokenFormControl.value), takeUntil(this.destroy$))
       .subscribe(token => {

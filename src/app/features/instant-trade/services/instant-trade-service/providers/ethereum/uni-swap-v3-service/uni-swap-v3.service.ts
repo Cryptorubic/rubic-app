@@ -28,7 +28,7 @@ import {
   UniSwapV3InstantTrade,
   UniSwapV3Route
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
@@ -63,7 +63,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
   ): Promise<UniSwapV3InstantTrade> {
     const { fromTokenWrapped, toTokenWrapped, isEth } = this.getWrappedTokens(fromToken, toToken);
 
-    const fromAmountAbsolute = EthLikeWeb3Public.toWei(fromAmount, fromToken.decimals);
+    const fromAmountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
     let gasPriceInEth: BigNumber;
     let gasPriceInUsd: BigNumber;
@@ -104,7 +104,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       },
       to: {
         token: toToken,
-        amount: EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        amount: Web3Pure.fromWei(route.outputAbsoluteAmount, toToken.decimals)
       },
       path,
       route
@@ -113,14 +113,14 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       return trade;
     }
 
-    const increasedGas = EthLikeWeb3Public.calculateGasMargin(estimatedGas, this.gasMargin);
+    const increasedGas = Web3Pure.calculateGasMargin(estimatedGas, this.gasMargin);
     const gasFeeInEth = gasPriceInEth.multipliedBy(increasedGas);
     const gasFeeInUsd = gasPriceInUsd.multipliedBy(increasedGas);
 
     return {
       ...trade,
       gasLimit: increasedGas,
-      gasPrice: EthLikeWeb3Public.toWei(gasPriceInEth),
+      gasPrice: Web3Pure.toWei(gasPriceInEth),
       gasFeeInEth,
       gasFeeInUsd
     };
@@ -193,7 +193,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
       const calculatedProfits: UniSwapV3CalculatedInfoWithProfit[] = routes.map((route, index) => {
         const estimatedGas = gasLimits[index];
         const gasFeeInUsd = estimatedGas.multipliedBy(gasPriceInUsd);
-        const profit = EthLikeWeb3Public.fromWei(route.outputAbsoluteAmount, toToken.decimals)
+        const profit = Web3Pure.fromWei(route.outputAbsoluteAmount, toToken.decimals)
           .multipliedBy(toToken.price)
           .minus(gasFeeInUsd);
         return {
