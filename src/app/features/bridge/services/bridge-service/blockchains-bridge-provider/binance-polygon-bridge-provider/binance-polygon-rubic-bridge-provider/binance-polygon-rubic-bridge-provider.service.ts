@@ -8,7 +8,7 @@ export class BinancePolygonRubicBridgeProviderService extends CommonRubicBridgeP
   constructor() {
     const config: RubicBridgeConfig = {
       from: {
-        maxAmount: 50_000,
+        maxAmount: 100_000,
         blockchainName: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
         token: {
           symbol: 'BRBC',
@@ -17,7 +17,7 @@ export class BinancePolygonRubicBridgeProviderService extends CommonRubicBridgeP
         }
       },
       to: {
-        maxAmount: 50_000,
+        maxAmount: 100_000,
         blockchainName: BLOCKCHAIN_NAME.POLYGON,
         token: {
           symbol: 'RBC',
