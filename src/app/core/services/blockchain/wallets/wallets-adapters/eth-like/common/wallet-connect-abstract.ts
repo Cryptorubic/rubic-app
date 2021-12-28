@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import WalletConnect from '@walletconnect/web3-provider';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
@@ -115,7 +115,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     this.isEnabled = false;
   }
 
-  public addToken(token: Tokens): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       throw new WalletconnectError();
     }

@@ -1,7 +1,7 @@
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
@@ -122,7 +122,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * opens a window with suggestion to add token to user's wallet
    * @param token token to add
    */
-  public abstract addToken(token: Tokens): Promise<void>;
+  public abstract addToken(token: Token): Promise<void>;
 
   public async requestPermissions(): Promise<{ parentCapability: string }[]> {
     return [{ parentCapability: 'eth_accounts' }];

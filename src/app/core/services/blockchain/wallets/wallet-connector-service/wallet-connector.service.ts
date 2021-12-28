@@ -4,7 +4,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -179,7 +179,7 @@ export class WalletConnectorService {
    * opens a window with suggestion to add token to user's wallet
    * @param token token to add
    */
-  public addToken(token: Tokens): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     return this.provider.addToken(token);
   }
 

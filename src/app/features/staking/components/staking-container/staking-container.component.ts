@@ -5,9 +5,8 @@ import { StakingService } from '@features/staking/services/staking.service';
 import { map } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { StakingContractAddress } from '@features/staking/constants/staking-contract-address';
 import { AuthService } from '@core/services/auth/auth.service';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
@@ -17,6 +16,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
+import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/staking-contract-address';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
@@ -81,10 +81,10 @@ export class StakingContainerComponent {
   }
 
   public async addTokensToWallet(): Promise<void> {
-    const xBRBC: Tokens = {
+    const xBRBC: Token = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: StakingContractAddress,
+      address: STAKING_CONTRACT_ADDRESS,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,

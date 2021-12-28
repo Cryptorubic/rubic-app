@@ -4,7 +4,7 @@ import WalletLink, { WalletLinkProvider, WalletLinkProvider as CoinbaseProvider 
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import BigNumber from 'bignumber.js';
@@ -117,7 +117,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     this.isEnabled = false;
   }
 
-  public async addToken(token: Tokens): Promise<void> {
+  public async addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       throw new WalletlinkError();
     }

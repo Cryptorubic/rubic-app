@@ -1,6 +1,6 @@
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 
-export interface Tokens extends BlockchainToken {
+export interface Token extends BlockchainToken {
   image: string;
   rank: number;
   price: number;

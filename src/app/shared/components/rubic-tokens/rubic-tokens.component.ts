@@ -5,7 +5,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import { BehaviorSubject } from 'rxjs';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -59,7 +59,7 @@ export class RubicTokensComponent implements OnInit {
 
   public ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public selectedToken: Tokens;
+  public selectedToken: Token;
 
   public buttonHovered: boolean = null;
 

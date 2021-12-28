@@ -23,7 +23,7 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
-import { StakingContractAddress } from '@features/staking/constants/staking-contract-address';
+import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/staking-contract-address';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -32,7 +32,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 export class StakingService {
   private walletAddress: string;
 
-  private readonly stakingContractAddress = StakingContractAddress;
+  private readonly stakingContractAddress = STAKING_CONTRACT_ADDRESS;
 
   private bridgeContractAddress: string;
 

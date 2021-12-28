@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 
@@ -47,7 +47,7 @@ export interface TokensRequestNetworkOptions {
 
 export interface TokensListResponse {
   total: number;
-  result: List<Tokens>;
+  result: List<Token>;
   next: string;
 }
 

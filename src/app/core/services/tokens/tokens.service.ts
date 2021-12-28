@@ -7,7 +7,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -181,7 +181,7 @@ export class TokensService {
    * @param tokens Tokens list.
    * @param isFavorite Is tokens list favorite.
    */
-  private setDefaultTokensParams(tokens: List<Tokens>, isFavorite: boolean): List<TokenAmount> {
+  private setDefaultTokensParams(tokens: List<Token>, isFavorite: boolean): List<TokenAmount> {
     return tokens.map(token => ({
       ...token,
       amount: new BigNumber(NaN),
@@ -204,7 +204,7 @@ export class TokensService {
    */
   public async calculateTokensBalancesByType(
     type: 'favorite' | 'default',
-    oldTokens?: List<TokenAmount | Tokens>
+    oldTokens?: List<TokenAmount | Token>
   ): Promise<void> {
     const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
     const tokens = oldTokens || subject$.value;
@@ -472,7 +472,7 @@ export class TokensService {
    * @param token Tokens's data to find it by.
    * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
    */
-  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Tokens> {
+  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Token> {
     const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
     if (foundToken) {
       return foundToken;
@@ -542,7 +542,7 @@ export class TokensService {
   public fetchQueryTokens(
     query: string,
     network: PAGINATED_BLOCKCHAIN_NAME
-  ): Observable<List<Tokens>> {
+  ): Observable<List<Token>> {
     const isAddress = query.includes('0x');
     const params: TokensRequestQueryOptions = {
       network,

@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Tokens } from '@shared/models/tokens/tokens';
+import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -133,7 +133,7 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     this.isEnabled = false;
   }
 
-  public addToken(token: Tokens): Promise<void> {
+  public addToken(token: Token): Promise<void> {
     if (!this.isActive) {
       throw new MetamaskError();
     }
