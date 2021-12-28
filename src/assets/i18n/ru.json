@@ -181,7 +181,6 @@
             "Custom Token Support",
             "Custom Bridges Feature",
             "Custom Routing System",
-            "Cross-chain Solution For TRON"
           ]
         },
         "2": {
@@ -190,7 +189,6 @@
           "done": true,
           "data": [
             "CoinGecko And Coin Market Cap API For ETH<>RBC",
-            "TRON Integration",
             "BNB Faucet",
             "Instant Trades Table",
             "UI Simple Update",
