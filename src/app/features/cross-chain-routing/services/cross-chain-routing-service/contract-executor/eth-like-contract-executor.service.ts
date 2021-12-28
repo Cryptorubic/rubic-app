@@ -18,7 +18,7 @@ import { EthLikeContractData } from '@features/cross-chain-routing/services/cros
   providedIn: 'root'
 })
 export class EthLikeContractExecutorService {
-  private readonly contracts = this.contractsDataService.getCrossChainContracts();
+  private readonly contracts = this.contractsDataService.contracts;
 
   constructor(
     private readonly contractsDataService: ContractsDataService,

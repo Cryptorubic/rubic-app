@@ -15,27 +15,40 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
+import { SpiritSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
+import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContractsDataService {
+  public readonly contracts: Readonly<Record<SupportedCrossChainBlockchain, ContractData>>;
+
   constructor(
+    // providers start
     private readonly uniSwapV2Service: UniSwapV2Service,
+
     private readonly pancakeSwapService: PancakeSwapService,
+
     private readonly quickSwapService: QuickSwapService,
+    private readonly algebraService: AlgebraService,
+
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
-    private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
-    private readonly spookySwapFantomService: SpookySwapFantomService,
-    private readonly raydiumService: RaydiumService,
-    private readonly algebraService: AlgebraService,
-    private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
-  ) {}
 
-  public getCrossChainContracts(): Record<SupportedCrossChainBlockchain, ContractData> {
-    return {
+    private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
+
+    private readonly spookySwapFantomService: SpookySwapFantomService,
+    private readonly spiritSwapFantomService: SpiritSwapFantomService,
+
+    private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
+
+    private readonly raydiumService: RaydiumService,
+    // providers end
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
+  ) {
+    this.contracts = {
       [BLOCKCHAIN_NAME.ETHEREUM]: new EthLikeContractData(
         BLOCKCHAIN_NAME.ETHEREUM,
         [
@@ -105,6 +118,10 @@ export class ContractsDataService {
           {
             provider: this.spookySwapFantomService,
             methodSuffix: ''
+          },
+          {
+            provider: this.spiritSwapFantomService,
+            methodSuffix: '1'
           }
         ],
         6,
@@ -115,6 +132,10 @@ export class ContractsDataService {
         [
           {
             provider: this.sushiSwapHarmonyService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.viperSwapHarmonyService,
             methodSuffix: ''
           }
         ],

@@ -145,7 +145,7 @@ export class SolanaContractExecutorService {
     return averageTPS >= minimumTPSLimit;
   }
 
-  private readonly contracts = this.contractsDataService.getCrossChainContracts();
+  private readonly contracts = this.contractsDataService.contracts;
 
   @tuiPure
   private get contract(): SolanaContractData {

@@ -65,7 +65,7 @@ export class CrossChainRoutingService {
     );
   }
 
-  private readonly contracts = this.contractsDataService.getCrossChainContracts();
+  private readonly contracts = this.contractsDataService.contracts;
 
   private currentCrossChainTrade: CrossChainTrade;
 
