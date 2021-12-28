@@ -1,9 +1,9 @@
 import {
   RoutingProvidersNetMode,
   UniswapV2Constants
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
-import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+} from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { ContractAddressNetMode } from '@shared/models/blockchain/net-mode';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const sushiSwapFantomContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',

@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Token } from 'src/app/shared/models/tokens/Token';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { Tokens } from '@shared/models/tokens/tokens';
 import BigNumber from 'bignumber.js';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
-  NATIVE_TOKEN_ADDRESS,
+  NativeTokenAddress,
   NATIVE_SOLANA_MINT_ADDRESS
-} from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
+} from '@shared/constants/blockchain/native-token-address';
+import { TokensPagination } from '@core/services/tokens/tokens-pagination';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { DefaultTokenImage } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -61,9 +61,7 @@ export class TokensService {
   /**
    * Current tokens network state.
    */
-  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(
-    TOKENS_PAGINATION
-  );
+  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(TokensPagination);
 
   public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
 
@@ -183,7 +181,7 @@ export class TokensService {
    * @param tokens Tokens list.
    * @param isFavorite Is tokens list favorite.
    */
-  private setDefaultTokensParams(tokens: List<Token>, isFavorite: boolean): List<TokenAmount> {
+  private setDefaultTokensParams(tokens: List<Tokens>, isFavorite: boolean): List<TokenAmount> {
     return tokens.map(token => ({
       ...token,
       amount: new BigNumber(NaN),
@@ -206,7 +204,7 @@ export class TokensService {
    */
   public async calculateTokensBalancesByType(
     type: 'favorite' | 'default',
-    oldTokens?: List<TokenAmount | Token>
+    oldTokens?: List<TokenAmount | Tokens>
   ): Promise<void> {
     const subject$ = type === 'favorite' ? this._favoriteTokens$ : this._tokens$;
     const tokens = oldTokens || subject$.value;
@@ -286,9 +284,9 @@ export class TokensService {
 
   /**
    * Adds token to tokens list.
-   * @param address Token address.
-   * @param blockchain Token blockchain.
-   * @return Observable<TokenAmount> Token with balance.
+   * @param address Tokens address.
+   * @param blockchain Tokens blockchain.
+   * @return Observable<TokenAmount> Tokens with balance.
    */
   public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
@@ -315,7 +313,7 @@ export class TokensService {
 
   /**
    * Adds new token to tokens list.
-   * @param token Token to add.
+   * @param token Tokens to add.
    */
   public addToken(token: TokenAmount): void {
     if (!this.tokens.find(t => TokensService.areTokensEqual(t, token))) {
@@ -325,7 +323,7 @@ export class TokensService {
 
   /**
    * Patches token in tokens list.
-   * @param token Token to patch.
+   * @param token Tokens to patch.
    */
   public patchToken(token: TokenAmount): void {
     this._tokens$.next(
@@ -341,13 +339,13 @@ export class TokensService {
    */
   public onTokenImageError($event: Event, token: TokenAmount = null): void {
     const target = $event.target as HTMLImageElement;
-    if (target.src !== DEFAULT_TOKEN_IMAGE) {
-      target.src = DEFAULT_TOKEN_IMAGE;
+    if (target.src !== DefaultTokenImage) {
+      target.src = DefaultTokenImage;
 
       if (token) {
         const newToken = {
           ...token,
-          image: DEFAULT_TOKEN_IMAGE
+          image: DefaultTokenImage
         };
         this.patchToken(newToken);
       }
@@ -364,7 +362,7 @@ export class TokensService {
     if (blockchainType === 'solana') {
       nativeCoinAddress = NATIVE_SOLANA_MINT_ADDRESS;
     } else if (blockchainType === 'ethLike') {
-      nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
+      nativeCoinAddress = NativeTokenAddress;
     }
     const nativeCoin = this.tokens.find(token =>
       TokensService.areTokensEqual(token, { blockchain, address: nativeCoinAddress })
@@ -377,7 +375,7 @@ export class TokensService {
 
   /**
    * Gets token's price and updates tokens list.
-   * @param token Token to get price for.
+   * @param token Tokens to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
   public getAndUpdateTokenPrice(
@@ -428,7 +426,7 @@ export class TokensService {
 
   /**
    * Gets token's balance and updates tokens list.
-   * @param token Token to get balance for.
+   * @param token Tokens to get balance for.
    */
   public async getAndUpdateTokenBalance(token: {
     address: string;
@@ -471,10 +469,10 @@ export class TokensService {
 
   /**
    * Gets token by address.
-   * @param token Token's data to find it by.
+   * @param token Tokens's data to find it by.
    * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
    */
-  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Token> {
+  public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Tokens> {
     const foundToken = this.tokens.find(t => TokensService.areTokensEqual(t, token));
     if (foundToken) {
       return foundToken;
@@ -544,7 +542,7 @@ export class TokensService {
   public fetchQueryTokens(
     query: string,
     network: PAGINATED_BLOCKCHAIN_NAME
-  ): Observable<List<Token>> {
+  ): Observable<List<Tokens>> {
     const isAddress = query.includes('0x');
     const params: TokensRequestQueryOptions = {
       network,

@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } f
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import AddressType from '@shared/models/blockchain/address-type';
+import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
 import { BridgeService } from '@features/bridge/services/bridge-service/bridge.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 
@@ -16,15 +16,15 @@ import { SwapInfoService } from '@features/swaps/components/swap-info/services/s
   providers: [TuiDestroyService]
 })
 export class BridgeSwapInfoComponent implements OnInit {
-  public readonly ADDRESS_TYPE = ADDRESS_TYPE;
+  public readonly ADDRESS_TYPE = AddressType;
 
   public readonly Infinity = Infinity;
 
-  private readonly averageTimeInProvider: Record<BRIDGE_PROVIDER, string>;
+  private readonly averageTimeInProvider: Record<BridgeProvider, string>;
 
   public isFromPolygonToEth: boolean;
 
-  private bridgeProvider: BRIDGE_PROVIDER;
+  private bridgeProvider: BridgeProvider;
 
   public fromTokenSymbol: string;
 
@@ -46,9 +46,9 @@ export class BridgeSwapInfoComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.averageTimeInProvider = {
-      [BRIDGE_PROVIDER.SWAP_RBC]: '5m',
-      [BRIDGE_PROVIDER.POLYGON]: '15m',
-      [BRIDGE_PROVIDER.XDAI]: '15m'
+      [BridgeProvider.SWAP_RBC]: '5m',
+      [BridgeProvider.POLYGON]: '15m',
+      [BridgeProvider.XDAI]: '15m'
     };
   }
 

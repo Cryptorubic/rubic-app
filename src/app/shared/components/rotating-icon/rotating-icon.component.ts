@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
-import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
+import { NgChanges } from '@shared/models/utility-types/ng-changes';
 
 /**
  * Rotating icon with smooth rotation completion.

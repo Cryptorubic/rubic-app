@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import {
@@ -11,46 +11,42 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { from, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { crossChainSwapContractAddresses } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
+import { CrossChainSwapContractAddress } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-address';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { UniSwapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v2-service/uni-swap-v2.service';
-import { CrossChainRoutingTrade } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-trade';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import MaxGasPriceOverflowWarning from 'src/app/core/errors/models/common/MaxGasPriceOverflowWarning';
-import CrossChainIsUnavailableWarning from 'src/app/core/errors/models/cross-chain-routing/CrossChainIsUnavailableWarning';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
-import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
 import { AbiItem } from 'web3-utils';
 import {
   SupportedCrossChainSwapBlockchain,
   supportedCrossChainSwapBlockchains
-} from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
 import {
   TransitTokens,
   transitTokensWithMode
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
-import { crossChainSwapContractAbi } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { CrossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
-import FailedToCheckForTransactionReceiptError from 'src/app/core/errors/models/common/FailedToCheckForTransactionReceiptError';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { JoeAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/joe-avalanche-service/joe-avalanche.service';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SolarBeamMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
-import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainTradeInfo';
+import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
@@ -58,6 +54,10 @@ import { SolanaContractExecutor } from '@features/cross-chain-routing/services/c
 import CustomError from '@core/errors/models/custom-error';
 import UnsupportedTokenCCR from '@core/errors/models/cross-chain-routing/unsupported-token-ccr';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
+import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
+import MaxGasPriceOverflowWarning from '@core/errors/models/common/max-gas-price-overflow-warning';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 
 interface PathAndToAmount {
   path: string[];
@@ -135,11 +135,11 @@ export class CrossChainRoutingService {
     private readonly ccrContractExecutorFacade: CrossChainContractExecutorFacade,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
   ) {
-    this.contractAbi = crossChainSwapContractAbi;
+    this.contractAbi = CrossChainSwapContractAbi;
 
     this.setProviders();
     this.setToBlockchainsInContract();
-    this.contractAddresses = crossChainSwapContractAddresses;
+    this.contractAddresses = CrossChainSwapContractAddress;
     this.transitTokens = transitTokensWithMode;
 
     this.settingsService.crossChainRoutingValueChanges
@@ -623,7 +623,7 @@ export class CrossChainRoutingService {
 
   /**
    * Calculates price impact of token to 'transit token', or vice versa, trade.
-   * @param token Token, selected in form.
+   * @param token Tokens, selected in form.
    * @param transitToken Transit token.
    * @param tokenAmount Amount of token, selected in form.
    * @param transitTokenAmount Amount of transit token.

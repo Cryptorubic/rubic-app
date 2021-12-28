@@ -1,5 +1,5 @@
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
+import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 interface NativeCoin {
   blockchain: BLOCKCHAIN_NAME;
@@ -32,7 +32,7 @@ export default [
     imagePath: 'assets/images/icons/coins/eth-contrast.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18
@@ -49,7 +49,7 @@ export default [
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'Binance Coin',
       symbol: 'BNB',
       decimals: 18
@@ -66,7 +66,7 @@ export default [
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.POLYGON,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'Matic Network',
       symbol: 'MATIC',
       decimals: 18
@@ -82,7 +82,7 @@ export default [
     imagePath: 'assets/images/icons/coins/xdai.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.XDAI,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'xDai',
       symbol: 'XDAI',
       decimals: 18
@@ -97,7 +97,7 @@ export default [
     imagePath: 'assets/images/icons/coins/harmony.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.HARMONY,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'ONE',
       symbol: 'ONE',
       decimals: 18
@@ -113,7 +113,7 @@ export default [
     imagePath: 'assets/images/icons/coins/avalanche.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.AVALANCHE,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'AVAX',
       symbol: 'AVAX',
       decimals: 18
@@ -129,7 +129,7 @@ export default [
     imagePath: 'assets/images/icons/coins/moonriver.webp',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.MOONRIVER,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'MOVR',
       symbol: 'MOVR',
       decimals: 18
@@ -145,7 +145,7 @@ export default [
     imagePath: 'assets/images/icons/coins/fantom.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.FANTOM,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'FTM',
       symbol: 'FTM',
       decimals: 18
@@ -162,7 +162,7 @@ export default [
     imagePath: 'assets/images/icons/coins/kovan.png',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18
@@ -178,7 +178,7 @@ export default [
     imagePath: 'assets/images/icons/coins/bnb.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'Binance Coin',
       symbol: 'BNB',
       decimals: 18
@@ -194,7 +194,7 @@ export default [
     imagePath: 'assets/images/icons/coins/polygon.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.POLYGON_TESTNET,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'Polygon',
       symbol: 'MATIC',
       decimals: 18
@@ -210,7 +210,7 @@ export default [
     imagePath: 'assets/images/icons/coins/harmony.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.HARMONY_TESTNET,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'ONE',
       symbol: 'ONE',
       decimals: 18
@@ -226,7 +226,7 @@ export default [
     imagePath: 'assets/images/icons/coins/avalanche-testnet.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       name: 'AVAX',
       symbol: 'AVAX',
       decimals: 18

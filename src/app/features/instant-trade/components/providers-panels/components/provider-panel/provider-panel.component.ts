@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
 import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
-import { RubicError } from '@core/errors/models/RubicError';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 @Component({
   selector: 'app-provider-panel',

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
-import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
+import { MethodData } from '@shared/models/blockchain/method-data';
+import { BatchCall } from '@core/services/blockchain/models/batch-call';
 import {
   swapEstimatedGas,
   wethToEthEstimatedGas
@@ -14,7 +13,7 @@ import {
   UniSwapV3CalculatedInfoWithProfit
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-calculated-info';
 import { compareAddresses } from 'src/app/shared/utils/utils';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -29,6 +28,7 @@ import {
   UniSwapV3Route
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 

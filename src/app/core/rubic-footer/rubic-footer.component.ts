@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { footerLinks } from 'src/app/core/rubic-footer/models/footer-links';
 import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
+import { FooterLinks } from '@core/rubic-footer/models/footer-links';
 
 @Component({
   selector: 'app-rubic-footer',
@@ -22,6 +22,6 @@ export class RubicFooterComponent {
 
   constructor() {
     this.year = new Date().getFullYear();
-    this.footerLinks = footerLinks;
+    this.footerLinks = FooterLinks;
   }
 }

@@ -3,21 +3,21 @@ import BigNumber from 'bignumber.js';
 import {
   BLOCKCHAIN_NAME,
   DEPRECATED_BLOCKCHAIN_NAME
-} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
+} from '@shared/models/blockchain/blockchain-name';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { EMPTY, Observable } from 'rxjs';
 import { first, map, mergeMap, switchMap } from 'rxjs/operators';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 import {
   BridgeBlockchainApi,
   BridgeTableTradeApi
-} from 'src/app/core/services/backend/bridge-api/models/BridgeTableTradeApi';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+} from '@core/services/backend/bridge-api/models/bridge-table-trade-api';
+import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { BridgeBotRequest } from 'src/app/core/services/backend/bridge-api/models/BridgeBotRequest';
 import { HttpService } from '../../http/http.service';
-import { BOT_URL } from '../constants/BOT_URL';
+import { BotUrl } from 'src/app/core/services/backend/constants/bot-url';
+import { BridgeBotRequest } from '@core/services/backend/bridge-api/models/bridge-bot-request';
 
 @Injectable({
   providedIn: 'root'
@@ -60,12 +60,12 @@ export class BridgeApiService {
     const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
 
-    let status = trade.status.toLowerCase() as TRANSACTION_STATUS;
+    let status = trade.status.toLowerCase() as TransactionStatus;
     if (
       fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-      status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT
+      status === TransactionStatus.WAITING_FOR_DEPOSIT
     ) {
-      status = TRANSACTION_STATUS.WAITING_FOR_RECEIVING;
+      status = TransactionStatus.WAITING_FOR_RECEIVING;
     }
 
     return {
@@ -123,7 +123,7 @@ export class BridgeApiService {
    */
   public postPolygonTransaction(
     bridgeTrade: BridgeTrade,
-    status: TRANSACTION_STATUS,
+    status: TransactionStatus,
     transactionHash: string,
     userAddress: string
   ): Promise<void> {
@@ -155,7 +155,7 @@ export class BridgeApiService {
   public patchPolygonTransaction(
     burnTransactionHash: string,
     newTransactionHash: string,
-    status: TRANSACTION_STATUS
+    status: TransactionStatus
   ): Promise<void> {
     return this.httpService
       .patch<void>(
@@ -209,7 +209,7 @@ export class BridgeApiService {
             symbol: bridgeTrade.token.symbol,
             price
           };
-          return this.httpService.post(BOT_URL.BRIDGES, body).pipe(switchMap(() => EMPTY));
+          return this.httpService.post(BotUrl.BRIDGES, body).pipe(switchMap(() => EMPTY));
         })
       )
       .toPromise();
@@ -218,7 +218,7 @@ export class BridgeApiService {
   /**
    * Gets tokens price.
    * @param bridgeTokenPair Object with info about pair of tokens.
-   * @return number Token price.
+   * @return number Tokens price.
    */
   private getTokenPrice(bridgeTokenPair: BridgeTokenPair): Observable<number> {
     return this.tokensService.tokens$.pipe(

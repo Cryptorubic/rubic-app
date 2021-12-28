@@ -16,7 +16,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { FormControl } from '@angular/forms';
 import { map, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 @Component({
   selector: 'app-withdraw-button-container',

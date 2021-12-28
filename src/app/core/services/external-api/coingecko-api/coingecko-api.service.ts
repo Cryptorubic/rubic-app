@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Cacheable } from 'ts-cacheable';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
@@ -124,7 +124,7 @@ export class CoingeckoApiService {
 
   /**
    * Gets price of common token or native coin in usd from coingecko.
-   * @param token Token to get price for.
+   * @param token Tokens to get price for.
    */
   public getCommonTokenOrNativeCoinPrice(token: {
     address: string;

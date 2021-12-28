@@ -10,14 +10,14 @@ import { MerkleTree } from 'merkletreejs';
 import { RootData } from '@features/my-trades/models/root-data';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { REFUND_ABI } from '@features/my-trades/constants/REFUND_ABI';
+import { RefundAbi } from '@features/my-trades/constants/refund-abi';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import {
-  REFUND_ADDRESS,
+  RefundAddress,
   REFUND_ADDRESS_TESTNET
-} from '@features/my-trades/constants/REFUND_ADDRESS';
+} from '@features/my-trades/constants/refund-address';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { mapToVoid } from '@shared/utils/utils';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -28,11 +28,11 @@ import CustomError from '@core/errors/models/custom-error';
 export class GasRefundService {
   public readonly userPromotions$: Observable<Promotion[]>;
 
-  private refundBlockchain = REFUND_ADDRESS.blockchain;
+  private refundBlockchain = RefundAddress.blockchain;
 
-  private readonly refundContractAbi = REFUND_ABI;
+  private readonly refundContractAbi = RefundAbi;
 
-  private refundContractAddress = REFUND_ADDRESS.address;
+  private refundContractAddress = RefundAddress.address;
 
   private readonly _userPromotions$ = new BehaviorSubject<Promotion[]>([]);
 

@@ -1,21 +1,21 @@
-import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CROSS_CHAIN_ROUTING_SWAP_METHOD';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
+import { CrossChainRoutingSwapMethod } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-swap-method';
 import BigNumber from 'bignumber.js';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { crossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAbi';
+import { CrossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
-import { crossChainSwapContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/crossChainSwapContract/crossChainSwapContractAddresses';
+import { CrossChainSwapContractAddress } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-address';
 import {
   TransitTokens,
   transitTokensWithMode
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
-import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
+import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/EMPTY_ADDRESS';
+import { EmptyAddress } from '@shared/constants/blockchain/empty-address';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -33,8 +33,8 @@ export class EthLikeContractExecutor {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly raydiumRoutingService: RaydiumRoutingService
   ) {
-    this.contractAbi = crossChainSwapContractAbi;
-    this.contractAddresses = crossChainSwapContractAddresses;
+    this.contractAbi = CrossChainSwapContractAbi;
+    this.contractAddresses = CrossChainSwapContractAddress;
     this.transitTokens = transitTokensWithMode;
   }
 
@@ -119,8 +119,8 @@ export class EthLikeContractExecutor {
 
     const isFromTokenNative = blockchainFromAdapter.isNativeAddress(trade.tokenIn.address);
     const methodName = isFromTokenNative
-      ? CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_CRYPTO
-      : CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_TOKENS;
+      ? CrossChainRoutingSwapMethod.SWAP_CRYPTO
+      : CrossChainRoutingSwapMethod.SWAP_TOKENS;
 
     const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
       trade,
@@ -145,11 +145,11 @@ export class EthLikeContractExecutor {
         tokenInAmountAbsolute,
         trade.firstPath,
         // @TODO Solana. Remove hardcode.
-        toBlockchainInContractNumber === 8 ? [EMPTY_ADDRESS] : trade.secondPath,
+        toBlockchainInContractNumber === 8 ? [EmptyAddress] : trade.secondPath,
         firstTransitTokenAmountAbsolute,
         tokenOutMinAbsolute,
         // @TODO Solana. Remove hardcode.
-        toBlockchainInContractNumber === 8 ? EMPTY_ADDRESS : walletAddress,
+        toBlockchainInContractNumber === 8 ? EmptyAddress : walletAddress,
         blockchainToAdapter.isNativeAddress(trade.tokenOut.address)
       ]
     ];

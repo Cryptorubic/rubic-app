@@ -1,21 +1,21 @@
 import { BehaviorSubject } from 'rxjs';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import CustomError from '@core/errors/models/custom-error';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { SolflareWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
+import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 
 export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWallet> {
-  public get walletName(): WALLET_NAME {
-    return WALLET_NAME.SOLFLARE;
+  public get walletName(): WalletName {
+    return WalletName.SOLFLARE;
   }
 
   constructor(
-    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService,
     connection: Connection

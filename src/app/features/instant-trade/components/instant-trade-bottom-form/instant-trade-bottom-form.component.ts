@@ -11,27 +11,26 @@ import {
 } from '@angular/core';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { INSTANT_TRADE_PROVIDERS } from 'src/app/features/instant-trade/constants/providers';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
+import { INSTANT_TRADE_PROVIDERS } from '@features/instant-trade/constants/providers';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
-import NoSelectedProviderError from 'src/app/core/errors/models/instant-trade/no-selected-provider.error';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import { TradeStatus } from '@shared/models/swaps/trade-status';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
-import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { defaultSlippageTolerance } from 'src/app/features/instant-trade/constants/defaultSlippageTolerance';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { DefaultSlippageTolerance } from '@features/instant-trade/constants/default-slippage-tolerance';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -42,19 +41,20 @@ import {
   takeUntil
 } from 'rxjs/operators';
 
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
+import { PermitedPriceDifference } from '@shared/constants/common/permited-price-difference';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
+import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -88,13 +88,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
    */
   @Output() instantTradeInfoChange = new EventEmitter<InstantTradeInfo>();
 
-  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
+  @Output() tradeStatusChange = new EventEmitter<TradeStatus>();
 
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
-    { name: INSTANT_TRADES_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+    { name: InstantTradeProvider; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
   >;
 
   public providerControllers: ProviderControllerData[];
@@ -116,7 +116,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     to: boolean;
   };
 
-  private _tradeStatus: TRADE_STATUS;
+  private _tradeStatus: TradeStatus;
 
   public needApprove: boolean;
 
@@ -128,7 +128,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public isIframe$: Observable<boolean>;
 
-  public TRADE_STATUS = TRADE_STATUS;
+  public TRADE_STATUS = TradeStatus;
 
   private autoSelect: boolean;
 
@@ -144,11 +144,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  public get tradeStatus(): TRADE_STATUS {
+  public get tradeStatus(): TradeStatus {
     return this._tradeStatus;
   }
 
-  public set tradeStatus(value: TRADE_STATUS) {
+  public set tradeStatus(value: TradeStatus) {
     this._tradeStatus = value;
     this.tradeStatusChange.emit(value);
   }
@@ -189,7 +189,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.setupCalculatingTrades();
     this.setupHiddenCalculatingTrades();
 
-    this.tradeStatus = TRADE_STATUS.DISABLED;
+    this.tradeStatus = TradeStatus.DISABLED;
 
     this.swapFormService.inputValueChanges
       .pipe(
@@ -248,8 +248,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.toToken = form.toToken;
 
     this.isEth = {
-      from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
-      to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
+      from: this.fromToken?.address === NativeTokenAddress,
+      to: this.toToken?.address === NativeTokenAddress
     };
 
     if (this.instantTradeService.getEthAndWethTrade()) {
@@ -285,8 +285,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.settingsForm &&
       (this.settingsForm.rubicOptimisation !== form.rubicOptimisation ||
         this.settingsForm.disableMultihops !== form.disableMultihops) &&
-      this.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
-      this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
+      this.tradeStatus !== TradeStatus.APPROVE_IN_PROGRESS &&
+      this.tradeStatus !== TradeStatus.SWAP_IN_PROGRESS
     ) {
       needRecalculation = true;
     }
@@ -323,8 +323,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
+      this.tradeStatus === TradeStatus.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TradeStatus.SWAP_IN_PROGRESS
     ) {
       return;
     }
@@ -345,7 +345,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         debounceTime(200),
         switchMap(() => {
           if (!this.allowTrade) {
-            this.tradeStatus = TRADE_STATUS.DISABLED;
+            this.tradeStatus = TradeStatus.DISABLED;
             this.selectedProvider = null;
             this.autoSelect = true;
             this.swapFormService.output.patchValue({
@@ -360,7 +360,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             this.selectedProvider = null;
             this.autoSelect = true;
             this.needApprove = false;
-            this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+            this.tradeStatus = TradeStatus.READY_TO_SWAP;
             this.cdr.markForCheck();
             return of(null);
           }
@@ -450,11 +450,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
           this.hiddenDataAmounts$.next(el);
           const hiddenProviderData = el.find(
-            (it: { name: INSTANT_TRADES_PROVIDER }) =>
+            (it: { name: InstantTradeProvider }) =>
               it.name === this.selectedProvider.tradeProviderInfo.value
           );
           if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
-            this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
+            this.tradeStatus = TradeStatus.OLD_TRADE_DATA;
           }
           this.cdr.markForCheck();
         }
@@ -462,7 +462,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private prepareControllers(): void {
-    this.tradeStatus = TRADE_STATUS.LOADING;
+    this.tradeStatus = TradeStatus.LOADING;
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
       tradeState: INSTANT_TRADES_STATUS.CALCULATION
@@ -508,8 +508,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.selectController(0);
 
       this.tradeStatus = this.selectedProvider.needApprove
-        ? TRADE_STATUS.READY_TO_APPROVE
-        : TRADE_STATUS.READY_TO_SWAP;
+        ? TradeStatus.READY_TO_APPROVE
+        : TradeStatus.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
 
       this.swapFormService.output.patchValue({
@@ -518,7 +518,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       this.setSlippageTolerance(this.selectedProvider);
     } else {
-      this.tradeStatus = TRADE_STATUS.DISABLED;
+      this.tradeStatus = TradeStatus.DISABLED;
       this.instantTradeInfoChange.emit(null);
       this.swapInfoService.emitInfoCalculated();
       if (this.providerControllers.length === 1) {
@@ -587,9 +587,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
     if (
-      this.tradeStatus === TRADE_STATUS.LOADING ||
-      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
-      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
+      this.tradeStatus === TradeStatus.LOADING ||
+      this.tradeStatus === TradeStatus.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TradeStatus.SWAP_IN_PROGRESS
     ) {
       return;
     }
@@ -607,8 +607,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     if (this.selectedProvider.needApprove !== null) {
       this.tradeStatus = this.selectedProvider.needApprove
-        ? TRADE_STATUS.READY_TO_APPROVE
-        : TRADE_STATUS.READY_TO_SWAP;
+        ? TradeStatus.READY_TO_APPROVE
+        : TradeStatus.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
     }
     this.swapFormService.output.patchValue({
@@ -624,7 +624,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       !this.iframeService.isIframe
     ) {
       const currentBlockchainDefaultSlippage =
-        defaultSlippageTolerance[this.currentBlockchain as keyof typeof defaultSlippageTolerance];
+        DefaultSlippageTolerance[this.currentBlockchain as keyof typeof DefaultSlippageTolerance];
       const providerName = provider.tradeProviderInfo.value;
       this.settingsService.instantTrade.patchValue({
         slippageTolerance:
@@ -646,14 +646,14 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken?.price);
     const toAmount = amount || this.selectedProvider?.trade.to.amount;
     const toTokenCost = toAmount.multipliedBy(this.toToken.price);
-    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PermitedPriceDifference)) {
       return new BigNumber(NaN);
     }
     return toTokenCost;
   }
 
   private setProviderState(
-    tradeStatus: TRADE_STATUS,
+    tradeStatus: TradeStatus,
     providerIndex: number,
     providerState?: INSTANT_TRADES_STATUS,
     needApprove?: boolean
@@ -678,7 +678,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     const provider = this.providerControllers[providerIndex];
-    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS, providerIndex);
+    this.setProviderState(TradeStatus.APPROVE_IN_PROGRESS, providerIndex);
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
@@ -687,7 +687,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       await this.tokensService.calculateTokensBalances();
 
       this.setProviderState(
-        TRADE_STATUS.READY_TO_SWAP,
+        TradeStatus.READY_TO_SWAP,
         providerIndex,
         INSTANT_TRADES_STATUS.COMPLETED,
         false
@@ -697,7 +697,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.errorService.catch(err);
 
       this.setProviderState(
-        TRADE_STATUS.READY_TO_APPROVE,
+        TradeStatus.READY_TO_APPROVE,
         providerIndex,
         INSTANT_TRADES_STATUS.APPROVAL,
         true
@@ -711,7 +711,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     let providerIndex = -1;
-    let instantTradeProvider: INSTANT_TRADES_PROVIDER;
+    let instantTradeProvider: InstantTradeProvider;
     let instantTrade: InstantTrade;
     if (!this.ethAndWethTrade) {
       providerIndex = this.providerControllers.findIndex(el => el.isSelected);
@@ -721,7 +721,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       const provider = this.providerControllers[providerIndex];
       this.setProviderState(
-        TRADE_STATUS.SWAP_IN_PROGRESS,
+        TradeStatus.SWAP_IN_PROGRESS,
         providerIndex,
         INSTANT_TRADES_STATUS.TX_IN_PROGRESS
       );
@@ -729,22 +729,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       instantTradeProvider = provider.tradeProviderInfo.value;
       instantTrade = provider.trade;
     } else {
-      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-      instantTradeProvider = INSTANT_TRADES_PROVIDER.WRAPPED;
+      this.tradeStatus = TradeStatus.SWAP_IN_PROGRESS;
+      instantTradeProvider = InstantTradeProvider.WRAPPED;
       instantTrade = this.ethAndWethTrade;
     }
 
     try {
       await this.instantTradeService.createTrade(instantTradeProvider, instantTrade, () => {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.tradeStatus = TradeStatus.READY_TO_SWAP;
         if (providerIndex !== -1) {
           this.setProviderState(
-            TRADE_STATUS.READY_TO_SWAP,
+            TradeStatus.READY_TO_SWAP,
             providerIndex,
             INSTANT_TRADES_STATUS.COMPLETED
           );
         } else {
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+          this.tradeStatus = TradeStatus.READY_TO_SWAP;
         }
         this.cdr.detectChanges();
       });
@@ -753,19 +753,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       await this.tokensService.calculateTokensBalances();
 
-      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      this.tradeStatus = TradeStatus.READY_TO_SWAP;
       this.conditionalCalculate();
     } catch (err) {
       this.errorService.catch(err);
 
       if (providerIndex !== -1) {
         this.setProviderState(
-          TRADE_STATUS.READY_TO_SWAP,
+          TradeStatus.READY_TO_SWAP,
           providerIndex,
           INSTANT_TRADES_STATUS.COMPLETED
         );
       } else {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+        this.tradeStatus = TradeStatus.READY_TO_SWAP;
       }
       this.cdr.detectChanges();
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);

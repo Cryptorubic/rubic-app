@@ -2,35 +2,35 @@ import Web3 from 'web3';
 import { Method } from 'web3-core-method';
 import BigNumber from 'bignumber.js';
 import { HttpProvider, provider as Provider, Transaction } from 'web3-core';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { UndefinedError } from '@core/errors/models/undefined.error';
-import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
-import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
+import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
 import { from, Observable, of } from 'rxjs';
-import { HEALTHCHECK } from '@core/services/blockchain/constants/healthcheck';
+import { Healthcheck } from '@core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Web3SupportedBlockchains } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { HttpClient } from '@angular/common/http';
-import { BatchCall } from '@core/services/blockchain/models/BatchCall';
-import { RpcResponse } from '@core/services/blockchain/models/RpcResponse';
+import { BatchCall } from '@core/services/blockchain/models/batch-call';
+import { RpcResponse } from '@core/services/blockchain/models/rpc-response';
 import { Cacheable } from 'ts-cacheable';
-import { MethodData } from '@shared/models/blockchain/MethodData';
+import { MethodData } from '@shared/models/blockchain/method-data';
 import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
 import MULTICALL_ABI from '@core/services/blockchain/constants/multicall-abi';
 import { Call } from '@core/services/blockchain/models/call';
 import {
-  MULTICALL_ADDRESSES,
+  MulticallAddresses,
   MULTICALL_ADDRESSES_TESTNET
 } from '@core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
 
 type AllowanceParams = {
   /**
@@ -65,12 +65,12 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
 
   constructor(
     private web3: Web3,
-    public blockchain: IBlockchain,
+    public blockchain: BlockchainData,
     useTestingModeService: UseTestingModeService,
     private readonly httpClient: HttpClient
   ) {
     super();
-    this.multicallAddresses = MULTICALL_ADDRESSES;
+    this.multicallAddresses = MulticallAddresses;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -80,7 +80,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   }
 
   static get nativeTokenAddress(): string {
-    return NATIVE_TOKEN_ADDRESS;
+    return NativeTokenAddress;
   }
 
   static addressToBytes32(address: string): string {
@@ -109,7 +109,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    * @param address Address to check.
    */
   public isNativeAddress = (address: string): boolean => {
-    return address === NATIVE_TOKEN_ADDRESS;
+    return address === NativeTokenAddress;
   };
 
   /**
@@ -126,7 +126,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    * @return null if healthcheck is not defined for current blockchain, else is node works status
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
-    const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3SupportedBlockchains];
+    const healthcheckData = Healthcheck[this.blockchain.name as Web3SupportedBlockchains];
     if (!healthcheckData) {
       return of(null);
     }
@@ -358,7 +358,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   /**
    * Gets token's symbol through ERC-20 token contract.
    * @param tokenAddress Address of the smart-contract corresponding to the token.
-   * @return string Token's symbol or a error, if there's no such token.
+   * @return string Tokens's symbol or a error, if there's no such token.
    */
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public getTokenSymbol: (tokenAddress: string) => Promise<string> =
@@ -417,7 +417,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   /**
    * Gets ERC-20 token info by address.
    * @param tokenAddress Address of token.
-   * @param tokenFields Token's fields to get.
+   * @param tokenFields Tokens's fields to get.
    */
   private async callForTokenInfo(
     tokenAddress: string,
@@ -579,12 +579,12 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
     if (balance.lt(amountAbsolute)) {
       const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
-        BIG_NUMBER_FORMAT
+        BigNumberFormat
       );
       throw new InsufficientFundsError(
         token.symbol,
         formattedTokensBalance,
-        amount.toFormat(BIG_NUMBER_FORMAT)
+        amount.toFormat(BigNumberFormat)
       );
     }
   }

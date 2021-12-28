@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { filter, map } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ export class CounterNotificationsService {
         filter(trades => !!trades),
         map(
           trades =>
-            trades.filter(trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING).length
+            trades.filter(trade => trade.status === TransactionStatus.WAITING_FOR_RECEIVING).length
         )
       )
       .subscribe(v => {

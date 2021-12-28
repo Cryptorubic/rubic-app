@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 
-import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
+import { StakingTokens } from 'src/app/features/staking/constants/staking-tokens';
 import { StakingService } from '../../services/staking.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 
@@ -18,7 +18,7 @@ export class StakingTokensComponent {
 
   @Input() amountFormControl: FormControl;
 
-  public readonly availableTokens = STAKING_TOKENS;
+  public readonly availableTokens = StakingTokens;
 
   constructor(
     private readonly stakingService: StakingService,

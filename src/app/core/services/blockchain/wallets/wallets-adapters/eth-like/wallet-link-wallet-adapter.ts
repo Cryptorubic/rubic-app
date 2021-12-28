@@ -1,22 +1,22 @@
 import { BehaviorSubject } from 'rxjs';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
-import { NetworkError } from '@core/errors/models/provider/NetworkError';
-import { WalletlinkError } from '@core/errors/models/provider/WalletlinkError';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import WalletLink, { WalletLinkProvider, WalletLinkProvider as CoinbaseProvider } from 'walletlink';
 import { WalletLinkOptions } from 'walletlink/dist/WalletLink';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/Token';
+import { Tokens } from '@shared/models/tokens/tokens';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import BigNumber from 'bignumber.js';
-import { RubicError } from '@core/errors/models/RubicError';
-import { WalletlinkWrongNetwork } from '@core/errors/models/provider/WalletlinkWrongNetwork';
+import { RubicError } from '@core/errors/models/rubic-error';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
+import { NetworkError } from '@core/errors/models/provider/network-error';
+import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
+import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 
 export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvider> {
   private isMobileMode: boolean = false;
@@ -31,13 +31,13 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     return 'ethLike';
   }
 
-  public get walletName(): WALLET_NAME {
-    return WALLET_NAME.WALLET_LINK;
+  public get walletName(): WalletName {
+    return WalletName.WALLET_LINK;
   }
 
   constructor(
     web3: Web3,
-    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
     errorService: ErrorsService,
     private readonly storeService: StoreService,
@@ -117,7 +117,7 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     this.isEnabled = false;
   }
 
-  public async addToken(token: Token): Promise<void> {
+  public async addToken(token: Tokens): Promise<void> {
     if (!this.isActive) {
       throw new WalletlinkError();
     }

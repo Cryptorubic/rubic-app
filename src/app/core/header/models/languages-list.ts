@@ -1,6 +1,6 @@
 import { LanguageListElement } from './language-list-element';
 
-export const languagesList: LanguageListElement[] = [
+export const LanguagesList: LanguageListElement[] = [
   {
     lng: 'en',
     title: 'English',

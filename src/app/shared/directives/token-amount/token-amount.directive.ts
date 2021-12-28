@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Output, EventEmitter, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
 
 @Directive({
   selector: '[appTokenAmount]'
@@ -72,7 +72,7 @@ export class TokenAmountDirective {
     const [integerPart, decimalPart] = value.split('.');
     if (integerPart.length) {
       value =
-        new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
+        new BigNumber(integerPart).toFormat(BigNumberFormat) +
         (value.includes('.') ? '.' : '') +
         (decimalPart || '');
     }

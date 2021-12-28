@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BlockchainItem } from 'src/app/features/swaps/models/BlockchainItem';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { BlockchainItem } from '@features/swaps/models/blockchain-item';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { blockchainsList } from '@features/swaps/constants/blockchains-list';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Component({
   selector: 'app-swaps-header',

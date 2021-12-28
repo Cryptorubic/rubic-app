@@ -14,19 +14,17 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
-import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
-import {
-  PROVIDERS_LIST,
-  WALLET_NAME,
-  WalletProvider
-} from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { Browser } from '@shared/models/browser/browser';
+import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { IframeWalletsWarningComponent } from 'src/app/core/wallets/components/iframe-wallets-warning/iframe-wallets-warning.component';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { PROVIDERS_LIST } from '@core/wallets/components/wallets-modal/models/providers';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -55,12 +53,12 @@ export class WalletsModalComponent implements OnInit {
     return new AsyncPipe(this.cdr).transform(this.mobileDisplayStatus$);
   }
 
-  private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
+  private deepLinkRedirectIfSupported(provider: WalletName): boolean {
     switch (provider) {
-      case WALLET_NAME.METAMASK:
+      case WalletName.METAMASK:
         this.redirectToMetamaskBrowser();
         return true;
-      case WALLET_NAME.WALLET_LINK:
+      case WalletName.WALLET_LINK:
         this.redirectToCoinbaseBrowser();
         return true;
       default:
@@ -79,11 +77,11 @@ export class WalletsModalComponent implements OnInit {
     this.window.location.assign(walletLinkAppLink);
   }
 
-  public shouldRenderAsLink(provider: WALLET_NAME): string | null {
+  public shouldRenderAsLink(provider: WalletName): string | null {
     if (
       this.iframeService.isIframe &&
       this.iframeService.device === 'mobile' &&
-      provider === WALLET_NAME.WALLET_LINK
+      provider === WalletName.WALLET_LINK
     ) {
       return 'https://go.cb-w.com/cDgO1V5aDlb';
     }
@@ -110,17 +108,17 @@ export class WalletsModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.browserService.currentBrowser === BROWSER.METAMASK) {
-      this.connectProvider(WALLET_NAME.METAMASK);
+    if (this.browserService.currentBrowser === Browser.METAMASK) {
+      this.connectProvider(WalletName.METAMASK);
       return;
     }
 
-    if (this.browserService.currentBrowser === BROWSER.COINBASE) {
-      this.connectProvider(WALLET_NAME.WALLET_LINK);
+    if (this.browserService.currentBrowser === Browser.COINBASE) {
+      this.connectProvider(WalletName.WALLET_LINK);
     }
   }
 
-  public async connectProvider(provider: WALLET_NAME): Promise<void> {
+  public async connectProvider(provider: WalletName): Promise<void> {
     const providerInfo = this.allProviders.find(elem => elem.value === provider);
     if (
       (this.iframeService.iframeAppearance === 'horizontal' &&
@@ -133,7 +131,7 @@ export class WalletsModalComponent implements OnInit {
       }
     }
 
-    if (this.browserService.currentBrowser === BROWSER.MOBILE) {
+    if (this.browserService.currentBrowser === Browser.MOBILE) {
       const redirected = this.deepLinkRedirectIfSupported(provider);
       if (redirected) {
         return;
@@ -144,8 +142,8 @@ export class WalletsModalComponent implements OnInit {
 
     // desktop coinbase
     if (
-      this.browserService.currentBrowser === BROWSER.DESKTOP &&
-      provider === WALLET_NAME.WALLET_LINK
+      this.browserService.currentBrowser === Browser.DESKTOP &&
+      provider === WalletName.WALLET_LINK
     ) {
       this.dialogService
         .open<BLOCKCHAIN_NAME>(
@@ -196,7 +194,7 @@ export class WalletsModalComponent implements OnInit {
       })
       .subscribe(confirm => {
         if (confirm) {
-          this.connectProvider(WALLET_NAME.METAMASK);
+          this.connectProvider(WalletName.METAMASK);
         }
       });
   }

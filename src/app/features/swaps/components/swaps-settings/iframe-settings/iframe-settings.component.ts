@@ -8,7 +8,7 @@ import {
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { SwapsService } from '@features/swaps/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { combineLatest } from 'rxjs';
 
 export interface IframeSettingsForm {

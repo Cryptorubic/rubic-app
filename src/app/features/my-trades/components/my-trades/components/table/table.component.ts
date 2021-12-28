@@ -15,16 +15,13 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
-import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import {
-  BLOCKCHAINS,
-  DEPRECATED_BLOCKCHAINS
-} from 'src/app/features/my-trades/constants/BLOCKCHAINS';
+import { TradesProviders } from '@features/my-trades/constants/trades-providers';
+import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
-import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
-import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/TRANSLATION_STATUS_KEYS';
-import { TableTrade } from '@shared/models/my-trades/TableTrade';
+import { Columns } from '@features/my-trades/components/my-trades/constants/columns';
+import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 
 @Component({
   selector: 'app-table',
@@ -42,13 +39,13 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
-  public TRANSACTION_STATUS = TRANSACTION_STATUS;
+  public TRANSACTION_STATUS = TransactionStatus;
 
   public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
-  public TRADES_PROVIDERS = TRADES_PROVIDERS;
+  public TRADES_PROVIDERS = TradesProviders;
 
-  public readonly columns = COLUMNS;
+  public readonly columns = Columns;
 
   public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
 
@@ -166,10 +163,10 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     if (!this.isFirstView) {
       this.isFirstView = false;
       const waitingForReceivingTrades = tableData.filter(
-        el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+        el => el.Status === TransactionStatus.WAITING_FOR_RECEIVING
       );
       const otherTrades = tableData
-        .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+        .filter(el => el.Status !== TransactionStatus.WAITING_FOR_RECEIVING)
         .sort(this.sortBy('Date', this._direction$.getValue()));
 
       return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>

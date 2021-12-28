@@ -6,7 +6,7 @@ import { StakingService } from '@features/staking/services/staking.service';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 @Component({
   selector: 'app-swap-modal',

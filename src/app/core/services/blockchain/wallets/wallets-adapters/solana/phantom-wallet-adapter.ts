@@ -1,20 +1,20 @@
 import { BehaviorSubject } from 'rxjs';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import CustomError from '@core/errors/models/custom-error';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { PhantomWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 
 export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
-  public get walletName(): WALLET_NAME {
-    return WALLET_NAME.PHANTOM;
+  public get walletName(): WalletName {
+    return WalletName.PHANTOM;
   }
 
   constructor(
-    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService,
     connection: Connection

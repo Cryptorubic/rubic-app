@@ -2,22 +2,22 @@ import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-a
 import {
   routerLiquidityPoolsWithMode,
   routerTokensNetMode
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/router-liqudity-pools';
+} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/router-liquidity-pools';
 import {
   FeeAmount,
   LiquidityPool
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/liquidity-pool';
-import { EMPTY_ADDRESS } from 'src/app/shared/constants/blockchain/EMPTY_ADDRESS';
+import { EmptyAddress } from '@shared/constants/blockchain/empty-address';
 import {
   factoryContractAbi,
   factoryContractAddress
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/factory-contract-data';
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
+import { MethodData } from '@shared/models/blockchain/method-data';
 import { PCacheable } from 'ts-cacheable';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
-import { ContractData } from '@shared/models/blockchain/ContractData';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
+import { ContractData } from '@shared/models/blockchain/contract-data';
 import { UniSwapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 
 interface RecGraphVisitorOptions {
@@ -195,7 +195,7 @@ export class UniSwapV3QuoterController {
 
     return poolsAddresses
       .map((poolAddress, index) => {
-        if (poolAddress !== EMPTY_ADDRESS) {
+        if (poolAddress !== EmptyAddress) {
           return new LiquidityPool(
             poolAddress,
             getPoolMethodArguments[index].tokenA,

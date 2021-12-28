@@ -6,7 +6,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { SettingsItComponent } from 'src/app/features/swaps/components/swaps-settings/settings-it/settings-it.component';
 import { SettingsBridgeComponent } from 'src/app/features/swaps/components/swaps-settings/settings-bridge/settings-bridge.component';
 import { SettingsCcrComponent } from 'src/app/features/swaps/components/swaps-settings/settings-ccr/settings-ccr.component';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Component({
   selector: 'app-settings-container',

@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
@@ -16,12 +16,12 @@ import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
+import { TradeStatus } from '@shared/models/swaps/trade-status';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
 
 type TokenType = 'from' | 'to';
 
@@ -42,7 +42,7 @@ type AvailableTokens = {
 export class SwapsFormComponent implements OnInit {
   public isLoading = true;
 
-  public tradeStatus: TRADE_STATUS;
+  public tradeStatus: TradeStatus;
 
   public autoRefresh: boolean;
 

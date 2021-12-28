@@ -6,9 +6,9 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import AddressType from '@shared/models/blockchain/address-type';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -40,7 +40,7 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
-  public readonly ADDRESS_TYPE = ADDRESS_TYPE;
+  public readonly ADDRESS_TYPE = AddressType;
 
   private readonly blockchainLabels: Record<SupportedBlockchain, string>;
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { EthereumBinanceRubicBridgeProviderService } from './rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
@@ -19,9 +19,9 @@ export class EthereumBinanceBridgeProviderService extends BlockchainsBridgeProvi
       .subscribe(rubicToken => this._tokenPairs$.next(rubicToken));
   }
 
-  public getProviderType(token?: BridgeTokenPair): BRIDGE_PROVIDER {
+  public getProviderType(token?: BridgeTokenPair): BridgeProvider {
     if (token?.symbol === 'RBC') {
-      return BRIDGE_PROVIDER.SWAP_RBC;
+      return BridgeProvider.SWAP_RBC;
     }
     throw new UnknownError();
   }

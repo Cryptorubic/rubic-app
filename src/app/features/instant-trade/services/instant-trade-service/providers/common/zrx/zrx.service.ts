@@ -5,12 +5,12 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
   ItOptions,
   ItProvider
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
+} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
   ItSettingsForm,
   SettingsService
@@ -19,16 +19,16 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { ZrxApiResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/zrx/zrx-types';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { ZrxCalculateTradeParams } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/models/ZrxCalculateTradeParams';
-import { ZRX_API_ADDRESS } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/ZRX_API_ADDRESS';
-import { ZRX_NATIVE_TOKEN } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/ZRX_NATIVE_TOKEN';
+import { ZrxCalculateTradeParams } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/models/zrx-calculate-trade-params';
+import { ZrxApiAddresses } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-api-addresses';
+import { ZrxNativeToken } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-native-token';
 import {
   SupportedZrxBlockchain,
   supportedZrxBlockchains
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/SupportedZrxBlockchain';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/supported-zrx-blockchain';
 import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -132,7 +132,7 @@ export class ZrxService implements ItProvider {
     }
     if (ZrxService.isSupportedBlockchain(blockchain)) {
       this.blockchain = blockchain;
-      this.apiAddress = ZRX_API_ADDRESS[blockchain];
+      this.apiAddress = ZrxApiAddresses[blockchain];
     }
   }
 
@@ -174,10 +174,10 @@ export class ZrxService implements ItProvider {
     const toTokenClone = { ...toToken };
 
     if (this.fromBlockchainAdapter.isNativeAddress(fromToken.address)) {
-      fromTokenClone.address = ZRX_NATIVE_TOKEN;
+      fromTokenClone.address = ZrxNativeToken;
     }
     if (this.toBlockchainAdapter.isNativeAddress(toToken.address)) {
-      toTokenClone.address = ZRX_NATIVE_TOKEN;
+      toTokenClone.address = ZrxNativeToken;
     }
 
     const params: ZrxCalculateTradeParams = {

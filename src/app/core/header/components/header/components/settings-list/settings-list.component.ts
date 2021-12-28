@@ -6,13 +6,13 @@ import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymor
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
-import { languagesList } from 'src/app/core/header/models/languages-list';
 import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { CurrentLanguageComponent } from 'src/app/core/header/components/header/components/current-language/current-language.component';
 import { TutorialsComponent } from 'src/app/core/header/components/header/components/tutorials/tutorials.component';
 import { SettingsListItem } from 'src/app/core/header/models/settings-list-item';
 import { ThemeSwitcherComponent } from 'src/app/core/header/components/header/components/theme-switcher/theme-switcher.component';
+import { LanguagesList } from '@core/header/models/languages-list';
 
 @Component({
   selector: 'app-settings-list',
@@ -28,7 +28,7 @@ export class SettingsListComponent {
    * @return LanguageListElement current language object.
    */
   public get currentLanguage(): LanguageListElement {
-    return languagesList.find(lang => lang.lng === this.translateService.currentLang);
+    return LanguagesList.find(lang => lang.lng === this.translateService.currentLang);
   }
 
   constructor(

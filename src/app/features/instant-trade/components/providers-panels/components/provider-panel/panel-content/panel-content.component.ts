@@ -8,11 +8,11 @@ import {
 } from '@angular/core';
 import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
 import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { shouldDisplayGas } from '@features/instant-trade/constants/shouldDisplayGas';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { ShouldDisplayGas } from '@features/instant-trade/constants/should-display-gas';
 import BigNumber from 'bignumber.js';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { PermitedPriceDifference } from '@shared/constants/common/permited-price-difference';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
@@ -45,7 +45,7 @@ export class PanelContentComponent implements OnInit {
     const { fromToken, fromAmount } = this.swapFormService.inputValue;
     const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
     const toTokenCost = this.tradeData.amount.multipliedBy(this.toToken.price);
-    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PermitedPriceDifference)) {
       return null;
     }
     return toTokenCost;
@@ -58,7 +58,7 @@ export class PanelContentComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.displayGas = shouldDisplayGas[this.tradeData?.blockchain as keyof typeof shouldDisplayGas];
+    this.displayGas = ShouldDisplayGas[this.tradeData?.blockchain as keyof typeof ShouldDisplayGas];
 
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))

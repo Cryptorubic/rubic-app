@@ -7,7 +7,10 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '../../constants/STACKING_LIMITS';
+import {
+  STAKE_LIMIT_MAX,
+  STAKE_LIMIT_MIN
+} from 'src/app/features/staking/constants/staking-limits';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, zip } from 'rxjs';
 
@@ -16,7 +19,7 @@ import { StakingService } from '@features/staking/services/staking.service';
 import { map, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({

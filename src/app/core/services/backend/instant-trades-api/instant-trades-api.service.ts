@@ -5,18 +5,18 @@ import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
-} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
-import { InstantTradesPostApi } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesPostApi';
-import { InstantTradesResponseApi } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesResponseApi';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
-import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { InstantTradeBotRequest } from 'src/app/core/services/backend/instant-trades-api/models/InstantTradesBotRequest';
+} from '@shared/constants/blockchain/backend-blockchains';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
+import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
+import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
-import { BOT_URL } from '../constants/BOT_URL';
+import { BotUrl } from 'src/app/core/services/backend/constants/bot-url';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -52,7 +52,7 @@ export class InstantTradesApiService {
   }
 
   public notifyInstantTradesBot(body: {
-    provider: INSTANT_TRADES_PROVIDER;
+    provider: InstantTradeProvider;
     blockchain: BLOCKCHAIN_NAME;
     walletAddress: string;
     trade: InstantTrade;
@@ -68,7 +68,7 @@ export class InstantTradesApiService {
       price: trade.from.token.price
     };
 
-    return this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req).toPromise();
+    return this.httpService.post<void>(BotUrl.INSTANT_TRADES, req).toPromise();
   }
 
   /**
@@ -77,7 +77,7 @@ export class InstantTradesApiService {
    */
   public createTrade(
     hash: string,
-    provider: INSTANT_TRADES_PROVIDER,
+    provider: InstantTradeProvider,
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
@@ -161,7 +161,7 @@ export class InstantTradesApiService {
       provider = tradeApi.program.name;
     }
     if (provider === 'pancakeswap_old') {
-      provider = INSTANT_TRADES_PROVIDER.PANCAKESWAP;
+      provider = InstantTradeProvider.PANCAKESWAP;
     }
 
     let fromTransactionHash;

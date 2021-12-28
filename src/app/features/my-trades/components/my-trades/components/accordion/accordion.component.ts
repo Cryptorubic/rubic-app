@@ -8,20 +8,20 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
-import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
+import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
+import { TradesProviders } from '@features/my-trades/constants/trades-providers';
 import { Observable } from 'rxjs';
 import {
   TableRow,
   TableRowKeyValue
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { filter, takeUntil } from 'rxjs/operators';
-import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { Columns } from '@features/my-trades/components/my-trades/constants/columns';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
+import { TRANSLATION_STATUS_KEY } from 'src/app/features/my-trades/components/my-trades/constants/translation-status-keys';
 
 @Component({
   selector: 'app-accordion',
@@ -38,11 +38,11 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
-  public TRANSACTION_STATUS = TRANSACTION_STATUS;
+  public TRANSACTION_STATUS = TransactionStatus;
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  public TRADES_PROVIDERS = TRADES_PROVIDERS;
+  public TRADES_PROVIDERS = TradesProviders;
 
   private PAGE_SIZE = 5;
 
@@ -58,7 +58,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public isDropdownOpened = false;
 
-  public readonly columns = COLUMNS;
+  public readonly columns = Columns;
 
   public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
 
@@ -98,10 +98,10 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
         }
 
         const waitingForReceivingTrades = this.tableData.filter(
-          el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
+          el => el.Status === TransactionStatus.WAITING_FOR_RECEIVING
         );
         const otherTrades = this.tableData
-          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
+          .filter(el => el.Status !== TransactionStatus.WAITING_FOR_RECEIVING)
           .sort(this.sortBy('Date', -1));
 
         this.tableData = [...waitingForReceivingTrades, ...otherTrades];

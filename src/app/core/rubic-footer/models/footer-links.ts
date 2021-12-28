@@ -1,6 +1,6 @@
 import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
 
-export const footerLinks: FooterLink[] = [
+export const FooterLinks: FooterLink[] = [
   {
     imageUrl: 'assets/images/contacts/fb.svg',
     altText: 'Facebook',

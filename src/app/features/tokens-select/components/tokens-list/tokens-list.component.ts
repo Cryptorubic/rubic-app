@@ -10,8 +10,8 @@ import {
   Self,
   ViewChild
 } from '@angular/core';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { debounceTime, filter, switchMap, takeUntil } from 'rxjs/operators';
@@ -19,8 +19,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PaginatedPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
-import { listAnimation } from 'src/app/features/tokens-select/components/tokens-list/animations/listAnimation';
+import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
+import { listAnimation } from '@features/tokens-select/components/tokens-list/animations/list-animation';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { UserInterface } from '@core/services/auth/models/user.interface';
@@ -57,7 +57,7 @@ export class TokensListComponent implements AfterViewInit {
   @Input() public loading: boolean;
 
   /**
-   * Token, currently selected in main form.
+   * Tokens, currently selected in main form.
    */
   @Input() public currentlySelectedToken: TokenAmount;
 

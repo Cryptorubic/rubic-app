@@ -4,17 +4,17 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { StakingService } from '@features/staking/services/staking.service';
 import { map } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/STAKING_CONTRACT_ADDRESS';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { StakingContractAddress } from '@features/staking/constants/staking-contract-address';
 import { AuthService } from '@core/services/auth/auth.service';
-import { Token } from '@shared/models/tokens/Token';
+import { Tokens } from '@shared/models/tokens/tokens';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { SwapFormInput } from '@features/swaps/models/SwapForm';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
 
@@ -81,23 +81,23 @@ export class StakingContainerComponent {
   }
 
   public async addTokensToWallet(): Promise<void> {
-    const xBRBC: Token = {
+    const xBRBC: Tokens = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: STAKING_CONTRACT_ADDRESS,
+      address: StakingContractAddress,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,
       price: 0,
       usedInIframe: false,
-      name: 'Rubic Staking Token'
+      name: 'Rubic Staking Tokens'
     };
     await this.walletConnectorService.addToken(xBRBC);
   }
 
   private getTokens(): { from: TokenAmount; to: TokenAmount } {
     const fromToken = {
-      address: NATIVE_TOKEN_ADDRESS,
+      address: NativeTokenAddress,
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
     };
     const toToken = {

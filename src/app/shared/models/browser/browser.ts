@@ -1,0 +1,6 @@
+export enum Browser {
+  METAMASK = 'METAMASK',
+  COINBASE = 'COINBASE',
+  MOBILE = 'MOBILE',
+  DESKTOP = 'DESKTOP'
+}

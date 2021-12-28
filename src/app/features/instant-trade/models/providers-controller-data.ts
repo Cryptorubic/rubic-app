@@ -1,15 +1,15 @@
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { RubicError } from '@core/errors/models/RubicError';
 
 export interface ProviderControllerData {
   trade: InstantTrade;
   tradeState: INSTANT_TRADES_STATUS;
   tradeProviderInfo: {
     label: string;
-    value: INSTANT_TRADES_PROVIDER;
+    value: InstantTradeProvider;
   };
   isSelected: boolean;
   needApprove: boolean;

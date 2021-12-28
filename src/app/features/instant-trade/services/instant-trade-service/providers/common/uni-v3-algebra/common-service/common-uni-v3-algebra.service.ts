@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
   ItSettingsForm,
   SettingsService
@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import {
   ItOptions,
   ItProvider
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
+} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { TransactionReceipt } from 'web3-eth';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { subtractPercent } from 'src/app/shared/utils/utils';
@@ -21,11 +21,11 @@ import {
   UniV3AlgebraInstantTrade,
   UniV3AlgebraRoute
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-instant-trade';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
-import { ContractData } from '@shared/models/blockchain/ContractData';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { MethodData } from '@shared/models/blockchain/MethodData';
+import { ContractData } from '@shared/models/blockchain/contract-data';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import { MethodData } from '@shared/models/blockchain/method-data';
 import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -252,7 +252,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
         route,
         fromAmountAbsolute,
         toTokenAddress,
-        NATIVE_TOKEN_ADDRESS,
+        NativeTokenAddress,
         deadline
       );
 

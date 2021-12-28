@@ -1,14 +1,14 @@
 import { List } from 'immutable';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { TokenRank } from '@shared/models/tokens/token-rank';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const RBC: BridgeTokenPair = {
   symbol: 'RBC',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: TOKEN_RANK.HIGH,
+  rank: TokenRank.HIGH,
 
   tokenByBlockchain: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {

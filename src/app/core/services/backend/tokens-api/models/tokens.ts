@@ -1,7 +1,7 @@
 import { List } from 'immutable';
-import { Token } from 'src/app/shared/models/tokens/Token';
+import { Tokens } from '@shared/models/tokens/tokens';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
-import { FromBackendBlockchain } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 
 export enum ENDPOINTS {
   TOKKENS = 'tokens/',
@@ -47,7 +47,7 @@ export interface TokensRequestNetworkOptions {
 
 export interface TokensListResponse {
   total: number;
-  result: List<Token>;
+  result: List<Tokens>;
   next: string;
 }
 

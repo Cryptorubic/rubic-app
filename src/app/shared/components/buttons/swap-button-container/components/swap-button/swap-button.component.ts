@@ -8,12 +8,12 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { TradeStatus } from '@shared/models/swaps/trade-status';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/PRICE_IMPACT_RANGE';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { PriceImpactRange } from '@shared/models/swaps/price-impact-range';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { combineLatest } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -28,9 +28,9 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 export class SwapButtonComponent implements OnInit {
   @Input() idPrefix: string;
 
-  @Input() set status(status: TRADE_STATUS) {
+  @Input() set status(status: TradeStatus) {
     if (
-      status === TRADE_STATUS.LOADING &&
+      status === TradeStatus.LOADING &&
       this.swapsService.swapMode !== SWAP_PROVIDER_TYPE.BRIDGE &&
       !this.iframeService.isIframe
     ) {
@@ -39,7 +39,7 @@ export class SwapButtonComponent implements OnInit {
     this._status = status;
   }
 
-  get status(): TRADE_STATUS {
+  get status(): TradeStatus {
     return this._status;
   }
 
@@ -52,11 +52,11 @@ export class SwapButtonComponent implements OnInit {
 
   @Output() onClick = new EventEmitter<void>();
 
-  public readonly PRICE_IMPACT_RANGE = PRICE_IMPACT_RANGE;
+  public readonly PRICE_IMPACT_RANGE = PriceImpactRange;
 
-  public readonly TRADE_STATUS = TRADE_STATUS;
+  public readonly TRADE_STATUS = TradeStatus;
 
-  private _status: TRADE_STATUS;
+  private _status: TradeStatus;
 
   /**
    * Price impact of trade in percents.
@@ -66,16 +66,16 @@ export class SwapButtonComponent implements OnInit {
   public get showLoader(): boolean {
     return (
       this.checkingOnErrors ||
-      this.status === TRADE_STATUS.SWAP_IN_PROGRESS ||
-      this.status === TRADE_STATUS.LOADING ||
-      (this.status === TRADE_STATUS.READY_TO_SWAP && this.priceImpact === undefined)
+      this.status === TradeStatus.SWAP_IN_PROGRESS ||
+      this.status === TradeStatus.LOADING ||
+      (this.status === TradeStatus.READY_TO_SWAP && this.priceImpact === undefined)
     );
   }
 
   public get disabled(): boolean {
     return (
-      this.status !== TRADE_STATUS.READY_TO_SWAP ||
-      this.priceImpact >= PRICE_IMPACT_RANGE.HIGH_DISABLED ||
+      this.status !== TradeStatus.READY_TO_SWAP ||
+      this.priceImpact >= PriceImpactRange.HIGH_DISABLED ||
       this.showLoader
     );
   }
@@ -85,9 +85,8 @@ export class SwapButtonComponent implements OnInit {
    */
   public get warningMedium(): boolean {
     return (
-      this.status !== TRADE_STATUS.DISABLED &&
-      ((PRICE_IMPACT_RANGE.MEDIUM <= this.priceImpact &&
-        this.priceImpact < PRICE_IMPACT_RANGE.HIGH) ||
+      this.status !== TradeStatus.DISABLED &&
+      ((PriceImpactRange.MEDIUM <= this.priceImpact && this.priceImpact < PriceImpactRange.HIGH) ||
         this.priceImpact === null)
     );
   }
@@ -96,7 +95,7 @@ export class SwapButtonComponent implements OnInit {
    * Returns true, if button should be warned high.
    */
   public get warningHigh(): boolean {
-    return this.status !== TRADE_STATUS.DISABLED && this.priceImpact >= PRICE_IMPACT_RANGE.HIGH;
+    return this.status !== TradeStatus.DISABLED && this.priceImpact >= PriceImpactRange.HIGH;
   }
 
   constructor(
@@ -127,11 +126,11 @@ export class SwapButtonComponent implements OnInit {
   }
 
   public onSwapClick(): void {
-    if (this.priceImpact >= PRICE_IMPACT_RANGE.HIGH) {
+    if (this.priceImpact >= PriceImpactRange.HIGH) {
       if (
         // eslint-disable-next-line no-alert
         prompt(
-          `This swap has a price impact of ${PRICE_IMPACT_RANGE.HIGH}% or more. Please type the word "confirm" to continue with this swap.\n\nPlease, take into account, that a non-refundable loss may happen. You’ll possibly loose the major part of the assets you are transferring.`
+          `This swap has a price impact of ${PriceImpactRange.HIGH}% or more. Please type the word "confirm" to continue with this swap.\n\nPlease, take into account, that a non-refundable loss may happen. You’ll possibly loose the major part of the assets you are transferring.`
         ) !== 'confirm'
       ) {
         return;

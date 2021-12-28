@@ -1,5 +1,5 @@
-import { NetMode } from 'src/app/shared/models/blockchain/NetMode';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { NetMode } from '@shared/models/blockchain/net-mode';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
 
 /**
  * Most popular tokens in uni v3 to use in a route.

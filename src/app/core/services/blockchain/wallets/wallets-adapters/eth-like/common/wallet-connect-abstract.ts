@@ -1,18 +1,18 @@
 import { BehaviorSubject } from 'rxjs';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
-import { NetworkError } from '@core/errors/models/provider/NetworkError';
-import { WalletlinkError } from '@core/errors/models/provider/WalletlinkError';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import WalletConnect from '@walletconnect/web3-provider';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WalletconnectError } from '@core/errors/models/provider/WalletconnectError';
-import { Token } from '@shared/models/tokens/Token';
+import { Tokens } from '@shared/models/tokens/tokens';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import Web3 from 'web3';
 import networks from '@shared/constants/blockchain/networks';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
+import { NetworkError } from '@core/errors/models/provider/network-error';
+import { WalletconnectError } from '@core/errors/models/provider/walletconnect-error';
+import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 
 export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
   protected isEnabled: boolean;
@@ -23,7 +23,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
 
   protected readonly onAddressChanges$: BehaviorSubject<string>;
 
-  protected readonly onNetworkChanges$: BehaviorSubject<IBlockchain>;
+  protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>;
 
   get walletType(): 'ethLike' | 'solana' {
     return 'ethLike';
@@ -37,7 +37,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
 
   protected constructor(
     web3: Web3,
-    chainChange$: BehaviorSubject<IBlockchain>,
+    chainChange$: BehaviorSubject<BlockchainData>,
     accountChange$: BehaviorSubject<string>,
     errorsService: ErrorsService,
     providerConfig: IWalletConnectProviderOptions
@@ -87,12 +87,12 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     return this.isEnabled && this.selectedAddress;
   }
 
-  public getNetwork(): IBlockchain {
+  public getNetwork(): BlockchainData {
     return this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain);
   }
 
-  public get name(): WALLET_NAME {
-    return WALLET_NAME.WALLET_CONNECT;
+  public get name(): WalletName {
+    return WalletName.WALLET_CONNECT;
   }
 
   public async activate(): Promise<void> {
@@ -115,7 +115,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     this.isEnabled = false;
   }
 
-  public addToken(token: Token): Promise<void> {
+  public addToken(token: Tokens): Promise<void> {
     if (!this.isActive) {
       throw new WalletconnectError();
     }

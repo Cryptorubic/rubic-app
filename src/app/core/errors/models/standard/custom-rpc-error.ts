@@ -1,4 +1,4 @@
-export const customRpcError = [
+export const CustomRpcError = [
   {
     code: '-32603',
     message: "Non-200 status code: '404'"

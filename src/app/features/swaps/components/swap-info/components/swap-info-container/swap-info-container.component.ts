@@ -6,12 +6,12 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/SwapProviderType';
-import { TRADE_STATUS } from '@shared/models/swaps/TRADE_STATUS';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { TradeStatus } from '@shared/models/swaps/trade-status';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-import { InstantTradeInfo } from '@features/instant-trade/models/InstantTradeInfo';
+import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 
 @Component({
@@ -26,8 +26,8 @@ export class SwapInfoContainerComponent implements OnInit {
 
   @Input() public currentInstantTradeInfo: InstantTradeInfo;
 
-  @Input() private set tradeStatus(status: TRADE_STATUS) {
-    if (status === TRADE_STATUS.LOADING) {
+  @Input() private set tradeStatus(status: TradeStatus) {
+    if (status === TradeStatus.LOADING) {
       this.loading = true;
     }
   }

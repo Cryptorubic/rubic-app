@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { first } from 'rxjs/operators';
-import { BridgeTokenPair } from '@features/bridge/models/BridgeTokenPair';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Observable } from 'rxjs';
-import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { TransactionReceipt } from 'web3-eth';
 import { UnknownError } from '@core/errors/models/unknown.error';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
@@ -19,9 +19,9 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
       .subscribe(rubicToken => this._tokenPairs$.next(rubicToken));
   }
 
-  public getProviderType(token?: BridgeTokenPair): BRIDGE_PROVIDER {
+  public getProviderType(token?: BridgeTokenPair): BridgeProvider {
     if (this.isRBCToken(token?.symbol)) {
-      return BRIDGE_PROVIDER.SWAP_RBC;
+      return BridgeProvider.SWAP_RBC;
     }
     throw new UnknownError();
   }

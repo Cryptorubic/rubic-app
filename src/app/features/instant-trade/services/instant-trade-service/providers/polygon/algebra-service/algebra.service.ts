@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
+import { MethodData } from '@shared/models/blockchain/method-data';
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import {
   algebraConstants,
@@ -15,6 +14,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 
 @Injectable({
   providedIn: 'root'

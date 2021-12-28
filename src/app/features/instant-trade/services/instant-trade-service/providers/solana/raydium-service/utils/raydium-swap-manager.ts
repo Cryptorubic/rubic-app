@@ -1,7 +1,7 @@
-import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 // eslint-disable-next-line
 // @ts-ignore
@@ -30,11 +30,11 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Token } from '@solana/spl-token';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 export type TokenAccounts = {
   from: {

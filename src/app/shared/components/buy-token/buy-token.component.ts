@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Router } from '@angular/router';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { List } from 'immutable';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { compareTokens } from '@shared/utils/utils';
 
 export interface TokenInfo {
@@ -57,14 +57,14 @@ export class BuyTokenComponent {
       },
       to: {
         blockchain: BLOCKCHAIN_NAME.FANTOM,
-        address: NATIVE_TOKEN_ADDRESS,
+        address: NativeTokenAddress,
         symbol: 'FTM'
       }
     };
     this.defaultTokens = {
       from: {
         blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-        address: NATIVE_TOKEN_ADDRESS,
+        address: NativeTokenAddress,
         symbol: 'ETH',
         amount: new BigNumber(1)
       },

@@ -4,35 +4,35 @@ import BigNumber from 'bignumber.js';
 import { TuiDialogService } from '@taiga-ui/core';
 
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { catchError, filter, finalize, first, map, switchMap, take, tap } from 'rxjs/operators';
-import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
+import { STAKING_CONTRACT_ABI } from 'src/app/features/staking/constants/xbrbc-contract-abi';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 import { ErrorsService } from '@core/errors/errors.service';
-import { RubicError } from '@core/errors/models/RubicError';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 import { TransactionReceipt } from 'web3-eth';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
-import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
+import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { TokenRank } from '@shared/models/tokens/token-rank';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
-import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/STAKING_CONTRACT_ADDRESS';
+import { StakingContractAddress } from '@features/staking/constants/staking-contract-address';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 @Injectable()
 export class StakingService {
   private walletAddress: string;
 
-  private readonly stakingContractAddress = STAKING_CONTRACT_ADDRESS;
+  private readonly stakingContractAddress = StakingContractAddress;
 
   private bridgeContractAddress: string;
 
@@ -494,11 +494,11 @@ export class StakingService {
     switch (fromBlockchain) {
       case BLOCKCHAIN_NAME.POLYGON:
         return {
-          provider: BRIDGE_PROVIDER.SWAP_RBC,
+          provider: BridgeProvider.SWAP_RBC,
           token: {
             symbol: 'RBC',
             image: 'assets/images/icons/staking/rbc-pos.svg',
-            rank: TOKEN_RANK.HIGH,
+            rank: TokenRank.HIGH,
             tokenByBlockchain: {
               [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
                 blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -534,11 +534,11 @@ export class StakingService {
         };
       case BLOCKCHAIN_NAME.ETHEREUM:
         return {
-          provider: BRIDGE_PROVIDER.SWAP_RBC,
+          provider: BridgeProvider.SWAP_RBC,
           token: {
             symbol: 'RBC',
             image: 'assets/images/icons/staking/rbc-eth.svg',
-            rank: TOKEN_RANK.HIGH,
+            rank: TokenRank.HIGH,
             tokenByBlockchain: {
               [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
                 blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

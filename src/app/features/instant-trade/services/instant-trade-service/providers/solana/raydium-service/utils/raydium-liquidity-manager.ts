@@ -28,7 +28,7 @@ import {
   SERUM_PROGRAM_ID_V3
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { List } from 'immutable';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 

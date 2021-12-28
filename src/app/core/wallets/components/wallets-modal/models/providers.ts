@@ -1,32 +1,10 @@
-export enum WALLET_NAME {
-  METAMASK = 'metamask',
-  WALLET_LINK = 'walletlink',
-  WALLET_CONNECT = 'walletconnect',
-  TRUST_WALLET = 'trustwallet',
-  PHANTOM = 'phantom',
-  SOLFLARE = 'solflare'
-}
-
-export interface WalletProvider {
-  name: string;
-  value: WALLET_NAME;
-  img: string;
-  desktopOnly: boolean;
-  mobileOnly: boolean;
-  display: boolean;
-  supportsInHorizontalIframe: boolean;
-  supportsInVerticalIframe: boolean;
-  supportsInVerticalMobileIframe: boolean;
-}
-
-export interface UnreadTrades {
-  [userAddress: string]: number;
-}
+import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
 
 export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {
     name: 'MetaMask',
-    value: WALLET_NAME.METAMASK,
+    value: WalletName.METAMASK,
     img: './assets/images/icons/wallets/metamask.svg',
     desktopOnly: false,
     mobileOnly: false,
@@ -37,7 +15,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Trust wallet',
-    value: WALLET_NAME.TRUST_WALLET,
+    value: WalletName.TRUST_WALLET,
     img: './assets/images/icons/wallets/trust.svg',
     desktopOnly: false,
     mobileOnly: true,
@@ -48,7 +26,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Coinbase wallet',
-    value: WALLET_NAME.WALLET_LINK,
+    value: WalletName.WALLET_LINK,
     img: './assets/images/icons/wallets/coinbase.png',
     desktopOnly: false,
     mobileOnly: false,
@@ -59,7 +37,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'WalletConnect',
-    value: WALLET_NAME.WALLET_CONNECT,
+    value: WalletName.WALLET_CONNECT,
     img: './assets/images/icons/wallets/walletconnect.svg',
     desktopOnly: false,
     mobileOnly: false,
@@ -70,7 +48,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Phantom',
-    value: WALLET_NAME.PHANTOM,
+    value: WalletName.PHANTOM,
     img: './assets/images/icons/wallets/phantom.svg',
     desktopOnly: false,
     mobileOnly: false,
@@ -81,7 +59,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Solflare',
-    value: WALLET_NAME.SOLFLARE,
+    value: WalletName.SOLFLARE,
     img: './assets/images/icons/wallets/solflare.svg',
     desktopOnly: false,
     mobileOnly: false,

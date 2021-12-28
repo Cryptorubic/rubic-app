@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 
 @Component({
@@ -12,7 +12,7 @@ import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-inf
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CoinbaseConfirmModalComponent {
-  public availableBlockchains: IBlockchain[] = [
+  public availableBlockchains: BlockchainData[] = [
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM),
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.POLYGON),
     BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.FANTOM),

@@ -1,5 +1,5 @@
-import { ContractAddressesNetMode } from '@shared/models/blockchain/NetMode';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { ContractAddressesNetMode } from '@shared/models/blockchain/net-mode';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { RubicBridgeSupportedBlockchains } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/models/types';
 
 export const rubicBridgeContractAddressesNetMode: ContractAddressesNetMode<RubicBridgeSupportedBlockchains> =

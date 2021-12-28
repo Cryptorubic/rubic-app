@@ -3,7 +3,7 @@ import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 
 const defaultSrc = 'assets/images/icons/navigation/';
 
-export const NAVIGATION_LIST = [
+export const NavigationList = [
   {
     translateKey: 'navigation.about',
     type: 'external',

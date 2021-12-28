@@ -4,18 +4,18 @@ import {
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import BigNumber from 'bignumber.js';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
+import AddressType from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EventEmitter, Injector } from '@angular/core';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { DefaultTokenImage } from '@shared/constants/tokens/default-token-image';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 export abstract class AbstractTableDataComponent {
   public abstract onReceivePolygonBridgeTrade: EventEmitter<TableTrade>;
 
-  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
+  public readonly DEFAULT_TOKEN_IMAGE = DefaultTokenImage;
 
   // Injected services
   private readonly myTradesService: MyTradesService;
@@ -63,7 +63,7 @@ export abstract class AbstractTableDataComponent {
 
     return (
       trade.transactionHashScanUrl ||
-      this.scannerLinkPipe.transform(transactionHash, blockchain, ADDRESS_TYPE.TRANSACTION)
+      this.scannerLinkPipe.transform(transactionHash, blockchain, AddressType.TRANSACTION)
     );
   }
 
