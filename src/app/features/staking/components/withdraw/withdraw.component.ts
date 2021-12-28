@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
-
 import { StakingService } from '@features/staking/services/staking.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
@@ -36,9 +35,9 @@ export class WithdrawComponent implements OnInit {
         this.rewardUsdPrice$.next(new BigNumber(0));
         return of('');
       }
-      const amountBN = new BigNumber(amount.split(',').join(''));
-      return of(Web3Pure.toWei(amountBN)).pipe(
-        switchMap(value => this.stakingService.calculateLeaveReward(new BigNumber(value))),
+      const amountInWei = new BigNumber(Web3Pure.toWei(amount.split(',').join('')));
+      return of(amountInWei).pipe(
+        switchMap(value => this.stakingService.calculateLeaveReward(value)),
         tap(reward => this.rewardUsdPrice$.next(this.stakingService.calculateBRBCUsdPrice(reward))),
         map(reward => reward.toNumber())
       );

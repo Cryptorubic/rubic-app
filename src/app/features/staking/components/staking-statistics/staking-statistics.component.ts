@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map } from 'rxjs/operators';
-
 import { StakingService } from '@features/staking/services/staking.service';
 
 @Component({

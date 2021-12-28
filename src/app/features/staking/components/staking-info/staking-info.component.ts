@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { StakingService } from '@features/staking/services/staking.service';
 import { ThemeService } from '@core/services/theme/theme.service';
-
 import { BRBC_TOTAL } from '@features/staking/constants/BRBC_TOTAL';
 import { STAKE_LIMIT_MAX } from '@features/staking/constants/STACKING_LIMITS';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';

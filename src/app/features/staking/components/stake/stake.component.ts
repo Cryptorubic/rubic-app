@@ -1,16 +1,14 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
-
 import { StakingService } from '../../services/staking.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-
 import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
 
 @Component({
@@ -49,8 +47,6 @@ export class StakeComponent {
     private readonly walletsModalService: WalletsModalService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 

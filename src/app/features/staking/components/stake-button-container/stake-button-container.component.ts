@@ -12,10 +12,8 @@ import { map, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/opera
 import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-
 import { StakingService } from '@features/staking/services/staking.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-
 import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '../../constants/STACKING_LIMITS';
 import { ErrorTypeEnum } from '../../enums/error-type.enum';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
