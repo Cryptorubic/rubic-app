@@ -62,9 +62,9 @@ export class StakeButtonContainerComponent implements OnInit {
 
   @Output() onApprove = new EventEmitter<void>();
 
-  public needApprove$ = new BehaviorSubject<boolean>(true);
+  public readonly needApprove$ = new BehaviorSubject<boolean>(true);
 
-  public needChangeNetwork$ = combineLatest([
+  public readonly needChangeNetwork$ = combineLatest([
     this.stakingService.selectedToken$,
     this.walletConnectorService.networkChange$
   ]).pipe(
@@ -80,8 +80,8 @@ export class StakeButtonContainerComponent implements OnInit {
   private readonly selectedToken$ = this.stakingService.selectedToken$;
 
   constructor(
-    private stakingService: StakingService,
-    private walletConnectorService: WalletConnectorService,
+    private readonly stakingService: StakingService,
+    private readonly walletConnectorService: WalletConnectorService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 

@@ -55,7 +55,7 @@ export class StakeComponent {
 
   public confirmStake(): void {
     this.stakeButtonLoading$.next(true);
-    const stakeNotification = this.notificationsService.show(
+    const stakeNotification$ = this.notificationsService.show(
       this.translateService.instant('notifications.stakeInProgress'),
       {
         status: TuiNotification.Info,
@@ -65,9 +65,8 @@ export class StakeComponent {
     this.stakingService
       .enterStake(new BigNumber(this.amount.value.split(',').join('')))
       .pipe(
-        switchMap(() => this.stakingService.reloadStakingInfo()),
         finalize(() => {
-          stakeNotification.unsubscribe();
+          stakeNotification$.unsubscribe();
           this.stakeButtonLoading$.next(false);
         })
       )

@@ -18,7 +18,7 @@
     <app-rubic-button
       #leaveStakeBtn
       *ngLet="errorType$ | async as errorType"
-      [disabled]="errorType | falsy"
+      [disabled]="(errorType | falsy) || errorType === errorTypeEnum.ZERO"
       appearance="secondary"
       (onClick)="onWithdraw.emit()"
       [loading]="loading"
@@ -29,6 +29,9 @@
         </ng-container>
         <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
           {{ 'errors.noEnteredAmount' | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="errorTypeEnum.ZERO">
+          {{ 'staking.stake.withdraw' | translate }}
         </ng-container>
         <ng-container *ngSwitchCase="null">
           {{ 'staking.stake.withdraw' | translate }}

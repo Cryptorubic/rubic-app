@@ -7,7 +7,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { UndefinedError } from '@core/errors/models/undefined.error';
 import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
 import { from, Observable, of } from 'rxjs';
@@ -80,7 +80,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   }
 
   static get nativeTokenAddress(): string {
-    return NativeTokenAddress;
+    return NATIVE_TOKEN_ADDRESS;
   }
 
   static addressToBytes32(address: string): string {
@@ -109,7 +109,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    * @param address Address to check.
    */
   public isNativeAddress = (address: string): boolean => {
-    return address === NativeTokenAddress;
+    return address === NATIVE_TOKEN_ADDRESS;
   };
 
   /**

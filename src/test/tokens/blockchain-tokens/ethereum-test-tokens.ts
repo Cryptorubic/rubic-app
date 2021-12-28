@@ -2,13 +2,13 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import BigNumber from 'bignumber.js';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 export const ETH: TokenAmount = {
   name: 'Ethereum',
   symbol: 'ETH',
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
-  address: NativeTokenAddress,
+  address: NATIVE_TOKEN_ADDRESS,
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: TOKEN_RANK.HIGH,

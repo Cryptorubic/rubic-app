@@ -45,7 +45,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
@@ -248,8 +248,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.toToken = form.toToken;
 
     this.isEth = {
-      from: this.fromToken?.address === NativeTokenAddress,
-      to: this.toToken?.address === NativeTokenAddress
+      from: this.fromToken?.address === NATIVE_TOKEN_ADDRESS,
+      to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
     if (this.instantTradeService.getEthAndWethTrade()) {

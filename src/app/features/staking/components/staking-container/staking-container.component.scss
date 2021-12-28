@@ -4,7 +4,7 @@
 :host {
   padding: 26px;
 
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--main-form-background);
   border-radius: 36px;
 
   @include mixins.b(vars.$tablet) {
@@ -15,18 +15,38 @@
 }
 
 .staking-container {
+  --background-color: var(--form-header-color-1);
   padding: 8px;
 
-  background: #202320;
-  border-radius: 22px;
+  background: var(--rubic-base-19);
+  border-radius: vars.$border-radius-2;
   box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
 
+  @include mixins.dark {
+    --background-color: #2e322f;
+  }
+
+  &__footer {
+    padding-bottom: 8px;
+
+    background-color: var(--background-color);
+    border-bottom-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+  }
+
   &__tabs {
+    color: rgba(0, 0, 0, 0.6);
     font-weight: 700;
     font-size: 20px;
 
-    background: linear-gradient(to bottom, #202320 50%, #414141 50%);
+    background: linear-gradient(to bottom, #fff 50%, var(--form-header-color-1) 50%);
     box-shadow: none;
+
+    @include mixins.dark {
+      color: rgba(255, 255, 255, 0.6);
+
+      background: linear-gradient(to bottom, #202320 50%, var(--background-color) 50%);
+    }
 
     ::ng-deep {
       tui-underline {
@@ -43,11 +63,15 @@
     font-weight: 800;
     text-align: center;
 
-    background-color: #202320;
-    border-radius: 22px;
+    background-color: var(--rubic-base-19);
+    border-radius: vars.$border-radius-2;
+
+    transition: 0.1s color;
 
     &._active {
-      background-color: #414141;
+      --tui-text-01: var(--main-green);
+
+      background-color: var(--background-color);
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -86,8 +110,8 @@
   &__withdraw {
     display: block;
 
-    background-color: #414141;
-    border-radius: 22px;
+    background-color: var(--background-color);
+    border-radius: vars.$border-radius-2 vars.$border-radius-2 0 0;
   }
 
   &__stake {
@@ -147,8 +171,4 @@
   color: vars.$rubic-primary;
 
   cursor: pointer;
-}
-
-.get-brbc {
-  margin-top: 22px;
 }

@@ -9,7 +9,7 @@ import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridg
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -117,12 +117,12 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     let polygonAddress = token.childToken;
 
     // Mapping for ETH native token is corrected
-    if (ethAddress === NativeTokenAddress) {
+    if (ethAddress === NATIVE_TOKEN_ADDRESS) {
       polygonAddress = '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619';
     }
 
     // Mapping for MATIC native token is incorrect
-    if (polygonAddress === NativeTokenAddress) {
+    if (polygonAddress === NATIVE_TOKEN_ADDRESS) {
       return null;
     }
 

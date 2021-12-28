@@ -22,7 +22,7 @@ import {
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -122,7 +122,7 @@ export class TokensApiService {
   private static fetchStaticTokens(): BackendToken[] {
     return [
       {
-        address: NativeTokenAddress,
+        address: NATIVE_TOKEN_ADDRESS,
         name: 'Dai Stablecoin',
         symbol: 'xDAI',
         decimals: 18,

@@ -1,13 +1,13 @@
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import BigNumber from 'bignumber.js';
 
 const MATIC: TokenAmount = {
   name: 'Matic',
   symbol: 'MATIC',
   blockchain: BLOCKCHAIN_NAME.POLYGON,
-  address: NativeTokenAddress,
+  address: NATIVE_TOKEN_ADDRESS,
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
   rank: 2,

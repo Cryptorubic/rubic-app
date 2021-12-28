@@ -21,7 +21,7 @@ import {
   UniV3AlgebraInstantTrade,
   UniV3AlgebraRoute
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-instant-trade';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
@@ -252,7 +252,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
         route,
         fromAmountAbsolute,
         toTokenAddress,
-        NativeTokenAddress,
+        NATIVE_TOKEN_ADDRESS,
         deadline
       );
 

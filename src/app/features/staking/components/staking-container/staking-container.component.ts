@@ -12,11 +12,11 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
-import { STAKING_CONTRACT_ADDRESS } from '@features/staking/constants/staking-contract-address';
+import { environment } from 'src/environments/environment';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
@@ -32,7 +32,7 @@ enum STAKING_NAV_ENUM {
 export class StakingContainerComponent {
   public activeItemIndex = STAKING_NAV_ENUM.STAKE;
 
-  public isLoggedIn$ = this.authService.getCurrentUser();
+  public readonly isLoggedIn$ = this.authService.getCurrentUser();
 
   public readonly refillTime$ = this.stakingService.refillTime$.pipe(
     map(refillTime => {
@@ -50,9 +50,9 @@ export class StakingContainerComponent {
     private readonly stakingService: StakingService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly swapFormService: SwapFormService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   public async navigateToSwaps(): Promise<void> {
@@ -84,7 +84,7 @@ export class StakingContainerComponent {
     const xBRBC: Token = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: STAKING_CONTRACT_ADDRESS,
+      address: environment.staking.stakingContractAddress,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,
@@ -97,7 +97,7 @@ export class StakingContainerComponent {
 
   private getTokens(): { from: TokenAmount; to: TokenAmount } {
     const fromToken = {
-      address: NativeTokenAddress,
+      address: NATIVE_TOKEN_ADDRESS,
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
     };
     const toToken = {

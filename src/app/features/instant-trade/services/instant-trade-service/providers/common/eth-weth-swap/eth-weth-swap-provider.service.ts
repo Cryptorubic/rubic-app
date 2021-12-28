@@ -12,7 +12,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -54,8 +54,9 @@ export class EthWethSwapProviderService {
     const wethAddress = this.contractAddresses[blockchain as SupportedEthWethSwapBlockchain];
 
     return (
-      (fromTokenAddress === NativeTokenAddress && compareAddresses(toTokenAddress, wethAddress)) ||
-      (toTokenAddress === NativeTokenAddress && compareAddresses(fromTokenAddress, wethAddress))
+      (fromTokenAddress === NATIVE_TOKEN_ADDRESS &&
+        compareAddresses(toTokenAddress, wethAddress)) ||
+      (toTokenAddress === NATIVE_TOKEN_ADDRESS && compareAddresses(fromTokenAddress, wethAddress))
     );
   }
 

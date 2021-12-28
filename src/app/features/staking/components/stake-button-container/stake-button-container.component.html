@@ -25,13 +25,13 @@
       >
         <ng-container [ngSwitch]="errorType">
           <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
-            <span class="error">{{ 'errors.InsufficientBalance' | translate }}</span>
+            <span class="error-button">{{ 'errors.InsufficientBalance' | translate }}</span>
           </ng-container>
           <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
             {{ 'errors.noEnteredAmount' | translate }}
           </ng-container>
           <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
-            <span class="error" *ngLet="limit$ | async as limit">{{
+            <span class="error-button" *ngLet="limit$ | async as limit">{{
               'staking.stake.overLimit'
                 | translate: { max: limit.max | bigNumberFormat, min: limit.min }
             }}</span>

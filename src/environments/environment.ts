@@ -3,12 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 import { crossChainDev } from 'src/environments/constants/crossChain';
+import { stakingConfigDevelop } from './constants/staking';
 
 export const environment = {
   production: false,
   apiBaseUrl: '//dev-api.rubic.exchange/api',
   zrxAffiliateAddress: undefined as string,
-  crossChain: crossChainDev
+  crossChain: crossChainDev,
+  staking: stakingConfigDevelop
 };
 
 /*

@@ -15,7 +15,7 @@ import networks from 'src/app/shared/constants/blockchain/networks';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import {
   ItSettingsForm,
   SettingsService
@@ -89,10 +89,10 @@ export class CommonOneinchService {
     fromTokenAddress: string,
     toTokenAddress: string
   ): { fromTokenAddress: string; toTokenAddress: string } {
-    if (fromTokenAddress === NativeTokenAddress) {
+    if (fromTokenAddress === NATIVE_TOKEN_ADDRESS) {
       fromTokenAddress = this.oneInchNativeAddress;
     }
-    if (toTokenAddress === NativeTokenAddress) {
+    if (toTokenAddress === NATIVE_TOKEN_ADDRESS) {
       toTokenAddress = this.oneInchNativeAddress;
     }
     return { fromTokenAddress, toTokenAddress };
@@ -302,13 +302,13 @@ export class CommonOneinchService {
     const promises = addressesPath.map(async (wrappedTokenAddress, index) => {
       const tokenAddress =
         wrappedTokenAddress === this.oneInchNativeAddress
-          ? NativeTokenAddress
+          ? NATIVE_TOKEN_ADDRESS
           : wrappedTokenAddress;
       let symbol = await this.tokensService.getTokenSymbol(blockchain, tokenAddress);
       if (
         index !== 0 &&
         index !== addressesPath.length - 1 &&
-        tokenAddress === NativeTokenAddress
+        tokenAddress === NATIVE_TOKEN_ADDRESS
       ) {
         symbol = `W${symbol}`;
       }
