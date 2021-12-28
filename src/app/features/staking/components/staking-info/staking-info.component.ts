@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StakingService } from '@features/staking/services/staking.service';
 
-import { Brbc_total } from '@features/staking/constants/brbc_total';
+import { BRBC_TOTAL } from '@features/staking/constants/brbc_total';
 import { STAKE_LIMIT_MAX } from '@features/staking/constants/staking-limits';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
@@ -12,7 +12,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingInfoComponent {
-  public readonly BRBCTotal = Brbc_total;
+  public readonly BRBCTotal = BRBC_TOTAL;
 
   public readonly stakeLimitMax = STAKE_LIMIT_MAX[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 

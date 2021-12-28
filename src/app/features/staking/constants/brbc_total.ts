@@ -1,1 +1,1 @@
-export const Brbc_total = 7000000;
+export const BRBC_TOTAL = 7000000;
