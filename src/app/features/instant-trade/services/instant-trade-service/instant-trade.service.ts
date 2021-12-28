@@ -45,6 +45,7 @@ import CustomError from 'src/app/core/errors/models/custom-error';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
+import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
 
 @Injectable({
   providedIn: 'root'
@@ -87,6 +88,7 @@ export class InstantTradeService {
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
     private readonly raydiumService: RaydiumService,
     private readonly algebraService: AlgebraService,
+    private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
     // Providers end
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -125,7 +127,8 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDER.ALGEBRA]: this.algebraService
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
-        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+        [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService,
+        [INSTANT_TRADES_PROVIDER.VIPER]: this.viperSwapHarmonyService
       },
       [BLOCKCHAIN_NAME.AVALANCHE]: {
         [INSTANT_TRADES_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,

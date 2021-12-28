@@ -88,6 +88,10 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADES_PROVIDER, Provider> = {
   [INSTANT_TRADES_PROVIDER.ALGEBRA]: {
     name: 'Algebra',
     image: `${imageBasePath}algebra.webp`
+  },
+  [INSTANT_TRADES_PROVIDER.VIPER]: {
+    name: 'Viper',
+    image: `${imageBasePath}viperswap.svg`
   }
 };
 
