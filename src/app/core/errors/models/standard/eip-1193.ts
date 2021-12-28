@@ -1,7 +1,7 @@
 /**
  * Provider rpc errors.
  */
-export const Eip1193 = [
+export const EIP_1193 = [
   {
     code: '4001',
     message: 'User Rejected Request',

@@ -7,8 +7,8 @@ import { NotificationsService } from 'src/app/core/services/notifications/notifi
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
 import { CustomRpcError } from '@core/errors/models/standard/custom-rpc-error';
-import { Eip1474 } from '@core/errors/models/standard/eip-1474';
-import { Eip1193 } from '@core/errors/models/standard/eip-1193';
+import { EIP_1474 } from '@core/errors/models/standard/eip-1474';
+import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicWarning } from '@core/errors/models/rubic-warning';
 
@@ -127,8 +127,8 @@ export class ErrorsService {
    */
   private isRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
     return (
-      Eip1193.some(rpcError => this.findRPCError(rpcError, currentError)) ||
-      Eip1474.some(rpcError => this.findRPCError(rpcError, currentError))
+      EIP_1193.some(rpcError => this.findRPCError(rpcError, currentError)) ||
+      EIP_1474.some(rpcError => this.findRPCError(rpcError, currentError))
     );
   }
 

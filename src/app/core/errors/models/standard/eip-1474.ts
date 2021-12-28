@@ -1,7 +1,7 @@
 /**
  * RPC Errors.
  */
-export const Eip1474 = [
+export const EIP_1474 = [
   {
     code: '-32700',
     message: 'Parse error',
