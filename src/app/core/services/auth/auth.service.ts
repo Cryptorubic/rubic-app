@@ -12,7 +12,7 @@ import { StoreService } from '../store/store.service';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -84,7 +84,7 @@ export class AuthService {
     address: string,
     nonce: string,
     signature: string,
-    walletProvider: WalletName
+    walletProvider: WALLET_NAME
   ): Promise<void> {
     return this.httpService
       .post('auth/wallets/login/', {

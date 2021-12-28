@@ -1,4 +1,4 @@
-export enum InstantTradeProvider {
+export enum INSTANT_TRADE_PROVIDER {
   ONEINCH = 'oneinch',
   UNISWAP_V2 = 'uniswap',
   UNISWAP_V3 = 'uniswap3',

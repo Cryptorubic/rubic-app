@@ -11,7 +11,7 @@ import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
-import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -52,7 +52,7 @@ export class InstantTradesApiService {
   }
 
   public notifyInstantTradesBot(body: {
-    provider: InstantTradeProvider;
+    provider: INSTANT_TRADE_PROVIDER;
     blockchain: BLOCKCHAIN_NAME;
     walletAddress: string;
     trade: InstantTrade;
@@ -77,7 +77,7 @@ export class InstantTradesApiService {
    */
   public createTrade(
     hash: string,
-    provider: InstantTradeProvider,
+    provider: INSTANT_TRADE_PROVIDER,
     trade: InstantTrade,
     blockchain: BLOCKCHAIN_NAME
   ): Observable<InstantTradesResponseApi> {
@@ -161,7 +161,7 @@ export class InstantTradesApiService {
       provider = tradeApi.program.name;
     }
     if (provider === 'pancakeswap_old') {
-      provider = InstantTradeProvider.PANCAKESWAP;
+      provider = INSTANT_TRADE_PROVIDER.PANCAKESWAP;
     }
 
     let fromTransactionHash;

@@ -28,7 +28,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TradeStatus } from '@shared/models/swaps/trade-status';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -69,9 +69,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   @Input() favoriteTokens: AvailableTokenAmount[];
 
-  @Output() tradeStatusChange = new EventEmitter<TradeStatus>();
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
-  public readonly TRADE_STATUS = TradeStatus;
+  public readonly TRADE_STATUS = TRADE_STATUS;
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
 
@@ -99,17 +99,17 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
-  private _tradeStatus: TradeStatus;
+  private _tradeStatus: TRADE_STATUS;
 
   private calculateTradeSubscription$: Subscription;
 
   private tradeInProgressSubscription$: Subscription;
 
-  public get tradeStatus(): TradeStatus {
+  public get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
   }
 
-  public set tradeStatus(value: TradeStatus) {
+  public set tradeStatus(value: TRADE_STATUS) {
     this._tradeStatus = value;
     this.tradeStatusChange.emit(value);
   }
@@ -153,7 +153,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.setupTradeCalculation();
-    this.tradeStatus = TradeStatus.DISABLED;
+    this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.bridgeService.tokens$.pipe(takeUntil(this.destroy$)).subscribe(tokens => {
       this.bridgeTokenPairsByBlockchainsArray = tokens;
@@ -220,7 +220,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     if (!(await this.bridgeService.isBridgeSupported())) {
-      this.tradeStatus = TradeStatus.DISABLED;
+      this.tradeStatus = TRADE_STATUS.DISABLED;
       this.isBridgeSupported = false;
       this.cdr.detectChanges();
       return;
@@ -243,7 +243,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         debounceTime(200),
         switchMap(() => {
           if (!this.allowTrade) {
-            this.tradeStatus = TradeStatus.DISABLED;
+            this.tradeStatus = TRADE_STATUS.DISABLED;
             this.swapFormService.output.patchValue({
               toAmount: new BigNumber(NaN)
             });
@@ -251,7 +251,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
             return of(null);
           }
 
-          this.tradeStatus = TradeStatus.LOADING;
+          this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
 
           const needApprove$ = this.authService.user?.address
@@ -266,7 +266,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
               this.needApprove = needApprove;
 
               if (fee === null) {
-                this.tradeStatus = TradeStatus.DISABLED;
+                this.tradeStatus = TRADE_STATUS.DISABLED;
                 this.errorsService.catch(new UndefinedError());
                 this.cdr.detectChanges();
                 return;
@@ -279,11 +279,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
               });
 
               if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
-                this.tradeStatus = TradeStatus.DISABLED;
+                this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
-                  ? TradeStatus.READY_TO_APPROVE
-                  : TradeStatus.READY_TO_SWAP;
+                  ? TRADE_STATUS.READY_TO_APPROVE
+                  : TRADE_STATUS.READY_TO_SWAP;
               }
               this.cdr.detectChanges();
             })
@@ -294,7 +294,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public approveTrade(): void {
-    this.tradeStatus = TradeStatus.APPROVE_IN_PROGRESS;
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
 
     let approveInProgressSubscription$: Subscription;
@@ -327,11 +327,11 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           );
         }),
         switchMap(() => this.tokensService.calculateTokensBalances()),
-        tap(() => (this.tradeStatus = TradeStatus.READY_TO_SWAP)),
+        tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),
         catchError((err: unknown) => {
           approveInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TradeStatus.READY_TO_APPROVE;
+          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
           this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
           return of();
@@ -341,7 +341,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public createTrade(): void {
-    this.tradeStatus = TradeStatus.SWAP_IN_PROGRESS;
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
@@ -368,12 +368,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           this.counterNotificationsService.updateUnread();
         }),
         switchMap(() => this.tokensService.calculateTokensBalances()),
-        tap(() => (this.tradeStatus = TradeStatus.READY_TO_SWAP)),
+        tap(() => (this.tradeStatus = TRADE_STATUS.READY_TO_SWAP)),
         watch(this.cdr),
         switchMap(() => this.conditionalCalculate()),
         catchError((err: unknown) => {
           this.tradeInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TradeStatus.READY_TO_SWAP;
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.errorsService.catch(err as RubicError<ERROR_TYPE>);
           this.cdr.detectChanges();
           return of();

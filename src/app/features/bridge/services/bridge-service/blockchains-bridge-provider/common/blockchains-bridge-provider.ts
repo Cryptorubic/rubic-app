@@ -4,7 +4,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
-import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import BigNumber from 'bignumber.js';
 
 export abstract class BlockchainsBridgeProvider {
@@ -20,7 +20,7 @@ export abstract class BlockchainsBridgeProvider {
   /**
    * get type of provider
    */
-  public abstract getProviderType?(token?: BridgeTokenPair): BridgeProvider;
+  public abstract getProviderType?(token?: BridgeTokenPair): BRIDGE_PROVIDER;
 
   /**
    * get price blockchain provider's fee

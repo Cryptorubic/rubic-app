@@ -6,128 +6,128 @@ import {
   BLOCKCHAIN_NAME,
   DEPRECATED_BLOCKCHAIN_NAME
 } from '@shared/models/blockchain/blockchain-name';
-import AddressType from 'src/app/shared/models/blockchain/address-type';
+import ADDRESS_TYPE from 'src/app/shared/models/blockchain/address-type';
 
 const blockchainsScanners = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     baseUrl: 'https://etherscan.io/',
     nativeCoinUrl: 'stat/supply/',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
     baseUrl: 'https://kovan.etherscan.io/',
     nativeCoinUrl: 'stat/supply/',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     baseUrl: 'https://bscscan.com/',
     nativeCoinUrl: 'stat/supply/',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: {
     baseUrl: 'https://testnet.bscscan.com/',
     nativeCoinUrl: 'stat/supply/',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
     baseUrl: 'https://polygonscan.com/',
     nativeCoinUrl: 'stat/supply/',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.POLYGON_TESTNET]: {
     baseUrl: 'https://https://mumbai.polygonscan.com/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.XDAI]: {
     baseUrl: 'https://blockscout.com/xdai/mainnet/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'tokens/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'tokens/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.HARMONY]: {
     baseUrl: 'https://explorer.harmony.one/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'address/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
     baseUrl: 'https://snowtrace.io/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.MOONRIVER]: {
     baseUrl: 'https://moonriver.moonscan.io/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'address/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.HARMONY_TESTNET]: {
     baseUrl: 'https://explorer.testnet.harmony.one/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'address/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: {
     baseUrl: 'https://cchain.explorer.avax-test.network',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'address/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.FANTOM]: {
     baseUrl: 'https://ftmscan.com/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'address/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [DEPRECATED_BLOCKCHAIN_NAME.TRON]: {
     baseUrl: 'https://tronscan.org/#/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token20/',
-    [AddressType.TRANSACTION]: 'transaction/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token20/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
     baseUrl: 'https://solscan.io/',
     nativeCoinUrl: '',
-    [AddressType.WALLET]: 'address/',
-    [AddressType.TOKEN]: 'token/',
-    [AddressType.TRANSACTION]: 'tx/',
-    [AddressType.BLOCK]: 'block/'
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
 
@@ -145,7 +145,7 @@ export class ScannerLinkPipe implements PipeTransform {
   transform(
     address: string,
     blockchainName: BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME,
-    type: AddressType
+    type: ADDRESS_TYPE
   ): string {
     if (!address || !blockchainName) {
       return '';

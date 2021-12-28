@@ -15,7 +15,7 @@ import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
 import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
@@ -26,7 +26,7 @@ import { startWith, takeUntil, tap } from 'rxjs/operators';
 import { InstantTradeService } from 'src/app/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { TradeStatus } from '@shared/models/swaps/trade-status';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -56,7 +56,7 @@ enum ERROR_TYPE {
 export class SwapButtonContainerComponent implements OnInit {
   @Input() needApprove = false;
 
-  @Input() status: TradeStatus;
+  @Input() status: TRADE_STATUS;
 
   @Input() formService: SwapFormService;
 
@@ -116,7 +116,7 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Output() updateRatesClick = new EventEmitter<void>();
 
-  public TRADE_STATUS = TradeStatus;
+  public TRADE_STATUS = TRADE_STATUS;
 
   public ERROR_TYPE = ERROR_TYPE;
 
@@ -140,7 +140,7 @@ export class SwapButtonContainerComponent implements OnInit {
     const form = this.formService.inputValue;
     const walletType = BlockchainsInfo.getBlockchainType(form.fromBlockchain);
     if (
-      this.walletConnectorService?.provider.walletName !== WalletName.METAMASK ||
+      this.walletConnectorService?.provider.walletName !== WALLET_NAME.METAMASK ||
       !form.fromBlockchain ||
       walletType !== 'ethLike'
     ) {
@@ -387,7 +387,7 @@ export class SwapButtonContainerComponent implements OnInit {
 
   public async changeNetwork(): Promise<void> {
     const currentStatus = this.status;
-    this.status = TradeStatus.LOADING;
+    this.status = TRADE_STATUS.LOADING;
     const { fromBlockchain } = this.formService.inputValue;
     try {
       await this.walletConnectorService.switchChain(fromBlockchain);

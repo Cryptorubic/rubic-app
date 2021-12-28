@@ -13,7 +13,7 @@ import {
   BridgeBlockchainApi,
   BridgeTableTradeApi
 } from '@core/services/backend/bridge-api/models/bridge-table-trade-api';
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
 import { BotUrl } from 'src/app/core/services/backend/constants/bot-url';
@@ -60,12 +60,12 @@ export class BridgeApiService {
     const fromBlockchain = this.tradeBlockchain[trade.fromNetwork];
     const toBlockchain = this.tradeBlockchain[trade.toNetwork];
 
-    let status = trade.status.toLowerCase() as TransactionStatus;
+    let status = trade.status.toLowerCase() as TRANSACTION_STATUS;
     if (
       fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-      status === TransactionStatus.WAITING_FOR_DEPOSIT
+      status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT
     ) {
-      status = TransactionStatus.WAITING_FOR_RECEIVING;
+      status = TRANSACTION_STATUS.WAITING_FOR_RECEIVING;
     }
 
     return {
@@ -123,7 +123,7 @@ export class BridgeApiService {
    */
   public postPolygonTransaction(
     bridgeTrade: BridgeTrade,
-    status: TransactionStatus,
+    status: TRANSACTION_STATUS,
     transactionHash: string,
     userAddress: string
   ): Promise<void> {
@@ -155,7 +155,7 @@ export class BridgeApiService {
   public patchPolygonTransaction(
     burnTransactionHash: string,
     newTransactionHash: string,
-    status: TransactionStatus
+    status: TRANSACTION_STATUS
   ): Promise<void> {
     return this.httpService
       .patch<void>(

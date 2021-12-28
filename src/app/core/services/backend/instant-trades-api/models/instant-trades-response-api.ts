@@ -1,19 +1,19 @@
 import InputToken from '@shared/models/tokens/input-token';
-import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
 interface InstantTradesBlockchainNetwork {
   title: string;
 }
 
 interface InstantTradesEthLikeContract {
-  name: InstantTradeProvider | 'pancakeswap_old';
+  name: INSTANT_TRADE_PROVIDER | 'pancakeswap_old';
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
 }
 
 interface SolanaITContract {
-  name: InstantTradeProvider;
+  name: INSTANT_TRADE_PROVIDER;
   address: string;
   blockchain_network: {
     title: 'solana';
@@ -34,7 +34,7 @@ export type InstantTradesResponseApi = {
   to_amount: string;
   gas_price: string;
   gas_limit: string;
-  status: TransactionStatus;
+  status: TRANSACTION_STATUS;
   status_updated_at: string;
 } & (
   | {

@@ -1,4 +1,4 @@
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
 export interface CrossChainTokenApi {
   symbol: string;
@@ -15,7 +15,7 @@ export interface CrossChainTradesResponseApi {
   toToken: CrossChainTokenApi;
   fromAmount: string;
   toAmount: string;
-  status: TransactionStatus;
+  status: TRANSACTION_STATUS;
   fromTransactionHash: string;
   toTransactionHash: string;
   fromTransactionScanURL: string;

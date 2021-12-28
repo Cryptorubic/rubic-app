@@ -16,7 +16,7 @@ import {
   TableRowKeyValue
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Columns } from '@features/my-trades/components/my-trades/constants/columns';
@@ -38,7 +38,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
-  public TRANSACTION_STATUS = TransactionStatus;
+  public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
@@ -98,10 +98,10 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
         }
 
         const waitingForReceivingTrades = this.tableData.filter(
-          el => el.Status === TransactionStatus.WAITING_FOR_RECEIVING
+          el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
         );
         const otherTrades = this.tableData
-          .filter(el => el.Status !== TransactionStatus.WAITING_FOR_RECEIVING)
+          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
           .sort(this.sortBy('Date', -1));
 
         this.tableData = [...waitingForReceivingTrades, ...otherTrades];

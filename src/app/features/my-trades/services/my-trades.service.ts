@@ -33,9 +33,9 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpClient } from '@angular/common/http';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { compareTokens } from '@shared/utils/utils';
-import AddressType from '@shared/models/blockchain/address-type';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { TuiNotification } from '@taiga-ui/core';
@@ -259,9 +259,9 @@ export class MyTradesService {
               transactionHashScanUrl: this.scannerLinkPipe.transform(
                 item.hash,
                 item.network,
-                AddressType.TRANSACTION
+                ADDRESS_TYPE.TRANSACTION
               ),
-              status: TransactionStatus.COMPLETED,
+              status: TRANSACTION_STATUS.COMPLETED,
               provider: 'GAS_REFUND_PROVIDER' as TableProvider,
               fromToken: null,
               toToken: {

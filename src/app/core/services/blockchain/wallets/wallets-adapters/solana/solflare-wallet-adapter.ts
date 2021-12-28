@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
 
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import CustomError from '@core/errors/models/custom-error';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { SolflareWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
@@ -10,8 +10,8 @@ import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wal
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 
 export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWallet> {
-  public get walletName(): WalletName {
-    return WalletName.SOLFLARE;
+  public get walletName(): WALLET_NAME {
+    return WALLET_NAME.SOLFLARE;
   }
 
   constructor(

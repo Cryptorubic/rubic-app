@@ -8,7 +8,7 @@ import {
 import { Tokens } from '@shared/models/tokens/tokens';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import { BehaviorSubject } from 'rxjs';
-import AddressType from '@shared/models/blockchain/address-type';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormService } from '@shared/models/swaps/form-service';
 import { ISwapFormInput } from '@shared/models/swaps/swap-form';
@@ -57,7 +57,7 @@ export class RubicTokensComponent implements OnInit {
 
   @Input() idPrefix: string = '';
 
-  public ADDRESS_TYPE = AddressType;
+  public ADDRESS_TYPE = ADDRESS_TYPE;
 
   public selectedToken: Tokens;
 

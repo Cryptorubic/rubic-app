@@ -13,8 +13,8 @@ import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-ad
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
-import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import PosRootChainManagerAbiI from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/pos-root-chain-manager-contract/pos-root-chain-manager-abiI';
@@ -175,8 +175,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     }
   }
 
-  public getProviderType(): BridgeProvider {
-    return BridgeProvider.POLYGON;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.POLYGON;
   }
 
   public getFee(): Observable<number> {
@@ -268,7 +268,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       }
       await this.bridgeApiService.postPolygonTransaction(
         bridgeTrade,
-        TransactionStatus.DEPOSIT_IN_PROGRESS,
+        TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS,
         hash,
         walletAddress
       );

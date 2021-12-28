@@ -16,7 +16,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import CustomError from '@core/errors/models/custom-error';
 import { HttpService } from '@core/services/http/http.service';
-import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';
@@ -177,8 +177,8 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     };
   }
 
-  public getProviderType(): BridgeProvider {
-    return BridgeProvider.SWAP_RBC;
+  public getProviderType(): BRIDGE_PROVIDER {
+    return BRIDGE_PROVIDER.SWAP_RBC;
   }
 
   public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {

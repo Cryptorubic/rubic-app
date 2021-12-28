@@ -1,8 +1,8 @@
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 
 export interface WalletProvider {
   name: string;
-  value: WalletName;
+  value: WALLET_NAME;
   img: string;
   desktopOnly: boolean;
   mobileOnly: boolean;

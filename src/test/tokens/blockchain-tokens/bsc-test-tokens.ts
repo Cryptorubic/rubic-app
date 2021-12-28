@@ -1,7 +1,7 @@
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { NativeTokenAddress } from '@shared/constants/blockchain/native-token-address';
-import { TokenRank } from '@shared/models/tokens/token-rank';
+import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import BigNumber from 'bignumber.js';
 
 const BNB: TokenAmount = {
@@ -11,7 +11,7 @@ const BNB: TokenAmount = {
   address: NativeTokenAddress,
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
-  rank: TokenRank.HIGH,
+  rank: TOKEN_RANK.HIGH,
   price: 1,
   usedInIframe: true,
   amount: new BigNumber(0),
@@ -25,7 +25,7 @@ const USDT: TokenAmount = {
   address: '0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684',
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
-  rank: TokenRank.LOW,
+  rank: TOKEN_RANK.LOW,
   price: 1,
   usedInIframe: true,
   amount: new BigNumber(0),
@@ -39,7 +39,7 @@ const ETH: TokenAmount = {
   address: '0x8babbb98678facc7342735486c851abd7a0d17ca',
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
-  rank: TokenRank.LOW,
+  rank: TOKEN_RANK.LOW,
   price: 1,
   usedInIframe: true,
   amount: new BigNumber(0),
@@ -53,7 +53,7 @@ export const BRBC: TokenAmount = {
   address: '0xd51bd30a91f88dcf72acd45c8a1e7ae0066263e8',
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
-  rank: TokenRank.LOW,
+  rank: TOKEN_RANK.LOW,
   price: 2,
   usedInIframe: true,
   amount: new BigNumber(0),
@@ -67,7 +67,7 @@ export const FAKE_BRBC: TokenAmount = {
   address: '0x8e3bcc334657560253b83f08331d85267316e08a',
   decimals: 18,
   image: 'https://dev-api.rubic.exchange/media/token_images/cg_logo_CHOP_Porkchop.png',
-  rank: TokenRank.LOW,
+  rank: TOKEN_RANK.LOW,
   price: 0.2,
   usedInIframe: true,
   amount: new BigNumber(0),
@@ -81,7 +81,7 @@ export const XBRBC: TokenAmount = {
   address: '0x2C85DAf343e31fB871Bae1b1BFBD790d81BAE855',
   decimals: 18,
   image: '',
-  rank: TokenRank.LOW,
+  rank: TOKEN_RANK.LOW,
   usedInIframe: false,
   amount: new BigNumber(0),
   favorite: false,

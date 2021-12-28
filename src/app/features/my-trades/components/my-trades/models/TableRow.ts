@@ -1,4 +1,4 @@
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TableProvider } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
 
@@ -10,7 +10,7 @@ export type TableRowKeyValue = {
 };
 
 export interface TableRow {
-  Status: TransactionStatus;
+  Status: TRANSACTION_STATUS;
   FromTo: string;
   Provider: TableProvider;
   Sent: BigNumber;

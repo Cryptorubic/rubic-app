@@ -1,10 +1,10 @@
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
 
 export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {
     name: 'MetaMask',
-    value: WalletName.METAMASK,
+    value: WALLET_NAME.METAMASK,
     img: './assets/images/icons/wallets/metamask.svg',
     desktopOnly: false,
     mobileOnly: false,
@@ -15,7 +15,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Trust wallet',
-    value: WalletName.TRUST_WALLET,
+    value: WALLET_NAME.TRUST_WALLET,
     img: './assets/images/icons/wallets/trust.svg',
     desktopOnly: false,
     mobileOnly: true,
@@ -26,7 +26,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Coinbase wallet',
-    value: WalletName.WALLET_LINK,
+    value: WALLET_NAME.WALLET_LINK,
     img: './assets/images/icons/wallets/coinbase.png',
     desktopOnly: false,
     mobileOnly: false,
@@ -37,7 +37,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'WalletConnect',
-    value: WalletName.WALLET_CONNECT,
+    value: WALLET_NAME.WALLET_CONNECT,
     img: './assets/images/icons/wallets/walletconnect.svg',
     desktopOnly: false,
     mobileOnly: false,
@@ -48,7 +48,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Phantom',
-    value: WalletName.PHANTOM,
+    value: WALLET_NAME.PHANTOM,
     img: './assets/images/icons/wallets/phantom.svg',
     desktopOnly: false,
     mobileOnly: false,
@@ -59,7 +59,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Solflare',
-    value: WalletName.SOLFLARE,
+    value: WALLET_NAME.SOLFLARE,
     img: './assets/images/icons/wallets/solflare.svg',
     desktopOnly: false,
     mobileOnly: false,

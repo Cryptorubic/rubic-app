@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
-import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 
 const defaultState: ProviderControllerData = {
@@ -17,35 +17,35 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Uniswap V3',
-        value: InstantTradeProvider.UNISWAP_V3
+        value: INSTANT_TRADE_PROVIDER.UNISWAP_V3
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: '1inch',
-        value: InstantTradeProvider.ONEINCH
+        value: INSTANT_TRADE_PROVIDER.ONEINCH
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Uniswap V2',
-        value: InstantTradeProvider.UNISWAP_V2
+        value: INSTANT_TRADE_PROVIDER.UNISWAP_V2
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: '0x',
-        value: InstantTradeProvider.ZRX
+        value: INSTANT_TRADE_PROVIDER.ZRX
       }
     }
   ],
@@ -54,21 +54,21 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: '1inch',
-        value: InstantTradeProvider.ONEINCH
+        value: INSTANT_TRADE_PROVIDER.ONEINCH
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Pancakeswap',
-        value: InstantTradeProvider.PANCAKESWAP
+        value: INSTANT_TRADE_PROVIDER.PANCAKESWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     }
   ],
@@ -77,28 +77,28 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Algebra',
-        value: InstantTradeProvider.ALGEBRA
+        value: INSTANT_TRADE_PROVIDER.ALGEBRA
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: '1inch',
-        value: InstantTradeProvider.ONEINCH
+        value: INSTANT_TRADE_PROVIDER.ONEINCH
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Quickswap',
-        value: InstantTradeProvider.QUICKSWAP
+        value: INSTANT_TRADE_PROVIDER.QUICKSWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     }
   ],
@@ -107,7 +107,7 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     }
   ],
@@ -116,21 +116,21 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Pangolin',
-        value: InstantTradeProvider.PANGOLIN
+        value: INSTANT_TRADE_PROVIDER.PANGOLIN
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Joe',
-        value: InstantTradeProvider.JOE
+        value: INSTANT_TRADE_PROVIDER.JOE
       }
     }
   ],
@@ -139,14 +139,14 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Solarbeam',
-        value: InstantTradeProvider.SOLARBEAM
+        value: INSTANT_TRADE_PROVIDER.SOLARBEAM
       }
     }
   ],
@@ -155,21 +155,21 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Spookyswap',
-        value: InstantTradeProvider.SPOOKYSWAP
+        value: INSTANT_TRADE_PROVIDER.SPOOKYSWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Spiritswap',
-        value: InstantTradeProvider.SPIRITSWAP
+        value: INSTANT_TRADE_PROVIDER.SPIRITSWAP
       }
     },
     {
       ...defaultState,
       tradeProviderInfo: {
         label: 'Sushiswap',
-        value: InstantTradeProvider.SUSHISWAP
+        value: INSTANT_TRADE_PROVIDER.SUSHISWAP
       }
     }
   ],
@@ -178,7 +178,7 @@ export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderCo
       ...defaultState,
       tradeProviderInfo: {
         label: 'Raydium',
-        value: InstantTradeProvider.RAYDIUM
+        value: INSTANT_TRADE_PROVIDER.RAYDIUM
       }
     }
   ]

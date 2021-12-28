@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Browser } from '@shared/models/browser/browser';
+import { BROWSER } from '@shared/models/browser/browser';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -10,20 +10,20 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 export class BrowserService {
   private mobileBreakpoint = 500;
 
-  public get currentBrowser(): Browser {
+  public get currentBrowser(): BROWSER {
     switch (true) {
       case this.window.innerWidth >= this.mobileBreakpoint ||
         (this.iframeService.isIframe && this.iframeService.device === 'desktop'):
-        return Browser.DESKTOP;
+        return BROWSER.DESKTOP;
       case !this.window.ethereum:
-        return Browser.MOBILE;
+        return BROWSER.MOBILE;
       case this.window.ethereum?.isMetaMask:
-        return Browser.METAMASK;
+        return BROWSER.METAMASK;
       // @ts-ignore
       case this.window.ethereum?.isWalletLink || this.window.ethereum?.isCoinbaseWallet:
-        return Browser.COINBASE;
+        return BROWSER.COINBASE;
       default:
-        return Browser.DESKTOP;
+        return BROWSER.DESKTOP;
     }
   }
 

@@ -1,45 +1,45 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 export const DefaultSlippageTolerance = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
-    [InstantTradeProvider.ONEINCH]: 2,
-    [InstantTradeProvider.UNISWAP_V2]: 2,
-    [InstantTradeProvider.UNISWAP_V3]: 2,
-    [InstantTradeProvider.SUSHISWAP]: 2,
-    [InstantTradeProvider.ZRX]: 2
+    [INSTANT_TRADE_PROVIDER.ONEINCH]: 2,
+    [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: 2,
+    [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: 2,
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.ZRX]: 2
   },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-    [InstantTradeProvider.ONEINCH]: 2,
-    [InstantTradeProvider.PANCAKESWAP]: 2,
-    [InstantTradeProvider.SUSHISWAP]: 2
+    [INSTANT_TRADE_PROVIDER.ONEINCH]: 2,
+    [INSTANT_TRADE_PROVIDER.PANCAKESWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
-    [InstantTradeProvider.ONEINCH]: 2,
-    [InstantTradeProvider.QUICKSWAP]: 2,
-    [InstantTradeProvider.SUSHISWAP]: 2,
-    [InstantTradeProvider.ALGEBRA]: 2
+    [INSTANT_TRADE_PROVIDER.ONEINCH]: 2,
+    [INSTANT_TRADE_PROVIDER.QUICKSWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.ALGEBRA]: 2
   },
   [BLOCKCHAIN_NAME.HARMONY]: {
-    [InstantTradeProvider.ONEINCH]: 2,
-    [InstantTradeProvider.QUICKSWAP]: 2,
-    [InstantTradeProvider.SUSHISWAP]: 2
+    [INSTANT_TRADE_PROVIDER.ONEINCH]: 2,
+    [INSTANT_TRADE_PROVIDER.QUICKSWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2
   },
   [BLOCKCHAIN_NAME.AVALANCHE]: {
-    [InstantTradeProvider.SUSHISWAP]: 2,
-    [InstantTradeProvider.PANGOLIN]: 2,
-    [InstantTradeProvider.JOE]: 2
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.PANGOLIN]: 2,
+    [INSTANT_TRADE_PROVIDER.JOE]: 2
   },
   [BLOCKCHAIN_NAME.MOONRIVER]: {
-    [InstantTradeProvider.SOLARBEAM]: 2,
-    [InstantTradeProvider.SUSHISWAP]: 2
+    [INSTANT_TRADE_PROVIDER.SOLARBEAM]: 2,
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2
   },
   [BLOCKCHAIN_NAME.FANTOM]: {
-    [InstantTradeProvider.SUSHISWAP]: 2,
-    [InstantTradeProvider.SPOOKYSWAP]: 2,
-    [InstantTradeProvider.SPIRITSWAP]: 2
+    [INSTANT_TRADE_PROVIDER.SUSHISWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.SPOOKYSWAP]: 2,
+    [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: 2
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
-    [InstantTradeProvider.RAYDIUM]: 2
+    [INSTANT_TRADE_PROVIDER.RAYDIUM]: 2
   }
 };

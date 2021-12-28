@@ -19,12 +19,12 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
-import { TradeStatus } from '@shared/models/swaps/trade-status';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
-import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import {
   ItSettingsForm,
   SettingsService
@@ -88,13 +88,13 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
    */
   @Output() instantTradeInfoChange = new EventEmitter<InstantTradeInfo>();
 
-  @Output() tradeStatusChange = new EventEmitter<TradeStatus>();
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
-    { name: InstantTradeProvider; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+    { name: INSTANT_TRADE_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
   >;
 
   public providerControllers: ProviderControllerData[];
@@ -116,7 +116,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     to: boolean;
   };
 
-  private _tradeStatus: TradeStatus;
+  private _tradeStatus: TRADE_STATUS;
 
   public needApprove: boolean;
 
@@ -128,7 +128,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public isIframe$: Observable<boolean>;
 
-  public TRADE_STATUS = TradeStatus;
+  public TRADE_STATUS = TRADE_STATUS;
 
   private autoSelect: boolean;
 
@@ -144,11 +144,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  public get tradeStatus(): TradeStatus {
+  public get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
   }
 
-  public set tradeStatus(value: TradeStatus) {
+  public set tradeStatus(value: TRADE_STATUS) {
     this._tradeStatus = value;
     this.tradeStatusChange.emit(value);
   }
@@ -189,7 +189,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.setupCalculatingTrades();
     this.setupHiddenCalculatingTrades();
 
-    this.tradeStatus = TradeStatus.DISABLED;
+    this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.swapFormService.inputValueChanges
       .pipe(
@@ -285,8 +285,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.settingsForm &&
       (this.settingsForm.rubicOptimisation !== form.rubicOptimisation ||
         this.settingsForm.disableMultihops !== form.disableMultihops) &&
-      this.tradeStatus !== TradeStatus.APPROVE_IN_PROGRESS &&
-      this.tradeStatus !== TradeStatus.SWAP_IN_PROGRESS
+      this.tradeStatus !== TRADE_STATUS.APPROVE_IN_PROGRESS &&
+      this.tradeStatus !== TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
       needRecalculation = true;
     }
@@ -323,8 +323,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       return;
     }
     if (
-      this.tradeStatus === TradeStatus.APPROVE_IN_PROGRESS ||
-      this.tradeStatus === TradeStatus.SWAP_IN_PROGRESS
+      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
       return;
     }
@@ -345,7 +345,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         debounceTime(200),
         switchMap(() => {
           if (!this.allowTrade) {
-            this.tradeStatus = TradeStatus.DISABLED;
+            this.tradeStatus = TRADE_STATUS.DISABLED;
             this.selectedProvider = null;
             this.autoSelect = true;
             this.swapFormService.output.patchValue({
@@ -360,7 +360,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             this.selectedProvider = null;
             this.autoSelect = true;
             this.needApprove = false;
-            this.tradeStatus = TradeStatus.READY_TO_SWAP;
+            this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
             this.cdr.markForCheck();
             return of(null);
           }
@@ -450,11 +450,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
           this.hiddenDataAmounts$.next(el);
           const hiddenProviderData = el.find(
-            (it: { name: InstantTradeProvider }) =>
+            (it: { name: INSTANT_TRADE_PROVIDER }) =>
               it.name === this.selectedProvider.tradeProviderInfo.value
           );
           if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
-            this.tradeStatus = TradeStatus.OLD_TRADE_DATA;
+            this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
           }
           this.cdr.markForCheck();
         }
@@ -462,7 +462,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private prepareControllers(): void {
-    this.tradeStatus = TradeStatus.LOADING;
+    this.tradeStatus = TRADE_STATUS.LOADING;
     this.providerControllers = this.providerControllers.map(controller => ({
       ...controller,
       tradeState: INSTANT_TRADES_STATUS.CALCULATION
@@ -508,8 +508,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.selectController(0);
 
       this.tradeStatus = this.selectedProvider.needApprove
-        ? TradeStatus.READY_TO_APPROVE
-        : TradeStatus.READY_TO_SWAP;
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
 
       this.swapFormService.output.patchValue({
@@ -518,7 +518,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       this.setSlippageTolerance(this.selectedProvider);
     } else {
-      this.tradeStatus = TradeStatus.DISABLED;
+      this.tradeStatus = TRADE_STATUS.DISABLED;
       this.instantTradeInfoChange.emit(null);
       this.swapInfoService.emitInfoCalculated();
       if (this.providerControllers.length === 1) {
@@ -587,9 +587,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   public selectProvider(selectedProvider: ProviderControllerData): void {
     if (
-      this.tradeStatus === TradeStatus.LOADING ||
-      this.tradeStatus === TradeStatus.APPROVE_IN_PROGRESS ||
-      this.tradeStatus === TradeStatus.SWAP_IN_PROGRESS
+      this.tradeStatus === TRADE_STATUS.LOADING ||
+      this.tradeStatus === TRADE_STATUS.APPROVE_IN_PROGRESS ||
+      this.tradeStatus === TRADE_STATUS.SWAP_IN_PROGRESS
     ) {
       return;
     }
@@ -607,8 +607,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
     if (this.selectedProvider.needApprove !== null) {
       this.tradeStatus = this.selectedProvider.needApprove
-        ? TradeStatus.READY_TO_APPROVE
-        : TradeStatus.READY_TO_SWAP;
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
       this.needApprove = this.selectedProvider.needApprove;
     }
     this.swapFormService.output.patchValue({
@@ -653,7 +653,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private setProviderState(
-    tradeStatus: TradeStatus,
+    tradeStatus: TRADE_STATUS,
     providerIndex: number,
     providerState?: INSTANT_TRADES_STATUS,
     needApprove?: boolean
@@ -678,7 +678,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     }
 
     const provider = this.providerControllers[providerIndex];
-    this.setProviderState(TradeStatus.APPROVE_IN_PROGRESS, providerIndex);
+    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS, providerIndex);
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
@@ -687,7 +687,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       await this.tokensService.calculateTokensBalances();
 
       this.setProviderState(
-        TradeStatus.READY_TO_SWAP,
+        TRADE_STATUS.READY_TO_SWAP,
         providerIndex,
         INSTANT_TRADES_STATUS.COMPLETED,
         false
@@ -697,7 +697,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       this.errorService.catch(err);
 
       this.setProviderState(
-        TradeStatus.READY_TO_APPROVE,
+        TRADE_STATUS.READY_TO_APPROVE,
         providerIndex,
         INSTANT_TRADES_STATUS.APPROVAL,
         true
@@ -711,7 +711,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     let providerIndex = -1;
-    let instantTradeProvider: InstantTradeProvider;
+    let instantTradeProvider: INSTANT_TRADE_PROVIDER;
     let instantTrade: InstantTrade;
     if (!this.ethAndWethTrade) {
       providerIndex = this.providerControllers.findIndex(el => el.isSelected);
@@ -721,7 +721,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       const provider = this.providerControllers[providerIndex];
       this.setProviderState(
-        TradeStatus.SWAP_IN_PROGRESS,
+        TRADE_STATUS.SWAP_IN_PROGRESS,
         providerIndex,
         INSTANT_TRADES_STATUS.TX_IN_PROGRESS
       );
@@ -729,22 +729,22 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       instantTradeProvider = provider.tradeProviderInfo.value;
       instantTrade = provider.trade;
     } else {
-      this.tradeStatus = TradeStatus.SWAP_IN_PROGRESS;
-      instantTradeProvider = InstantTradeProvider.WRAPPED;
+      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+      instantTradeProvider = INSTANT_TRADE_PROVIDER.WRAPPED;
       instantTrade = this.ethAndWethTrade;
     }
 
     try {
       await this.instantTradeService.createTrade(instantTradeProvider, instantTrade, () => {
-        this.tradeStatus = TradeStatus.READY_TO_SWAP;
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         if (providerIndex !== -1) {
           this.setProviderState(
-            TradeStatus.READY_TO_SWAP,
+            TRADE_STATUS.READY_TO_SWAP,
             providerIndex,
             INSTANT_TRADES_STATUS.COMPLETED
           );
         } else {
-          this.tradeStatus = TradeStatus.READY_TO_SWAP;
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
         }
         this.cdr.detectChanges();
       });
@@ -753,19 +753,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
       await this.tokensService.calculateTokensBalances();
 
-      this.tradeStatus = TradeStatus.READY_TO_SWAP;
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.conditionalCalculate();
     } catch (err) {
       this.errorService.catch(err);
 
       if (providerIndex !== -1) {
         this.setProviderState(
-          TradeStatus.READY_TO_SWAP,
+          TRADE_STATUS.READY_TO_SWAP,
           providerIndex,
           INSTANT_TRADES_STATUS.COMPLETED
         );
       } else {
-        this.tradeStatus = TradeStatus.READY_TO_SWAP;
+        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       }
       this.cdr.detectChanges();
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);

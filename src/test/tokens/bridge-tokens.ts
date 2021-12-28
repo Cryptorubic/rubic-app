@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { TokenRank } from '@shared/models/tokens/token-rank';
+import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
@@ -8,7 +8,7 @@ const RBC: BridgeTokenPair = {
   symbol: 'RBC',
   image:
     'https://raw.githubusercontent.com/MyWishPlatform/etherscan_top_tokens_images/master/fa-empire.png',
-  rank: TokenRank.HIGH,
+  rank: TOKEN_RANK.HIGH,
 
   tokenByBlockchain: {
     [BLOCKCHAIN_NAME.ETHEREUM]: {

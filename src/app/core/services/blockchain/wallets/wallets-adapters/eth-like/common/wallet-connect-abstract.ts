@@ -5,7 +5,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { Tokens } from '@shared/models/tokens/tokens';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import Web3 from 'web3';
 import networks from '@shared/constants/blockchain/networks';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
@@ -91,8 +91,8 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
     return this.isEnabled && BlockchainsInfo.getBlockchainById(this.selectedChain);
   }
 
-  public get name(): WalletName {
-    return WalletName.WALLET_CONNECT;
+  public get name(): WALLET_NAME {
+    return WALLET_NAME.WALLET_CONNECT;
   }
 
   public async activate(): Promise<void> {

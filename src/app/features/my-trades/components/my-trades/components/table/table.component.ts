@@ -16,7 +16,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
 import { TradesProviders } from '@features/my-trades/constants/trades-providers';
-import { TransactionStatus } from '@shared/models/blockchain/transaction-status';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { Columns } from '@features/my-trades/components/my-trades/constants/columns';
@@ -39,7 +39,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
-  public TRANSACTION_STATUS = TransactionStatus;
+  public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
   public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
@@ -163,10 +163,10 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
     if (!this.isFirstView) {
       this.isFirstView = false;
       const waitingForReceivingTrades = tableData.filter(
-        el => el.Status === TransactionStatus.WAITING_FOR_RECEIVING
+        el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
       );
       const otherTrades = tableData
-        .filter(el => el.Status !== TransactionStatus.WAITING_FOR_RECEIVING)
+        .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
         .sort(this.sortBy('Date', this._direction$.getValue()));
 
       return [...waitingForReceivingTrades, ...otherTrades].map((user, index) =>

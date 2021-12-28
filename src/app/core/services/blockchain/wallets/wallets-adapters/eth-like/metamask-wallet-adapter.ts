@@ -6,7 +6,7 @@ import { Tokens } from '@shared/models/tokens/tokens';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
@@ -23,8 +23,8 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
     return 'ethLike';
   }
 
-  public get walletName(): WalletName {
-    return WalletName.METAMASK;
+  public get walletName(): WALLET_NAME {
+    return WALLET_NAME.METAMASK;
   }
 
   constructor(

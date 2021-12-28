@@ -1,8 +1,8 @@
-enum AddressType {
+enum ADDRESS_TYPE {
   WALLET = 'WALLET',
   TOKEN = 'TOKEN',
   TRANSACTION = 'TRANSACTION',
   BLOCK = 'BLOCK'
 }
 
-export default AddressType;
+export default ADDRESS_TYPE;

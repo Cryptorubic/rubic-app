@@ -12,7 +12,7 @@ import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets
 import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
@@ -54,7 +54,7 @@ export class WalletConnectorService {
 
   public readonly transactionEmitter$ = this._transactionEmitter$.asObservable();
 
-  public providerName: WalletName;
+  public providerName: WALLET_NAME;
 
   private privateProvider: CommonWalletAdapter;
 
@@ -144,7 +144,7 @@ export class WalletConnectorService {
     if (!provider) {
       return false;
     }
-    if (provider === WalletName.WALLET_LINK) {
+    if (provider === WALLET_NAME.WALLET_LINK) {
       const chainId = this.storage.getItem('chainId');
       return this.connectProvider(provider, chainId);
     }
@@ -183,7 +183,7 @@ export class WalletConnectorService {
     return this.provider.addToken(token);
   }
 
-  public async connectProvider(walletName: WalletName, chainId?: number): Promise<boolean> {
+  public async connectProvider(walletName: WALLET_NAME, chainId?: number): Promise<boolean> {
     try {
       this.provider = await this.createWalletAdapter(walletName, chainId);
       return true;
@@ -194,25 +194,25 @@ export class WalletConnectorService {
   }
 
   private async createWalletAdapter(
-    walletName: WalletName,
+    walletName: WALLET_NAME,
     chainId?: number
   ): Promise<CommonWalletAdapter> {
-    const walletAdapters: Record<WalletName, () => Promise<CommonWalletAdapter>> = {
-      [WalletName.SOLFLARE]: async () =>
+    const walletAdapters: Record<WALLET_NAME, () => Promise<CommonWalletAdapter>> = {
+      [WALLET_NAME.SOLFLARE]: async () =>
         new SolflareWalletAdapter(
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService,
           this.solanaWeb3Connection
         ),
-      [WalletName.PHANTOM]: async () =>
+      [WALLET_NAME.PHANTOM]: async () =>
         new PhantomWalletAdapter(
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService,
           this.solanaWeb3Connection
         ),
-      [WalletName.TRUST_WALLET]: async () =>
+      [WALLET_NAME.TRUST_WALLET]: async () =>
         new TrustWalletAdapter(
           this.web3,
           this.networkChangeSubject$,
@@ -222,14 +222,14 @@ export class WalletConnectorService {
           this.window,
           this.transactionEmitter$
         ),
-      [WalletName.WALLET_CONNECT]: async () =>
+      [WALLET_NAME.WALLET_CONNECT]: async () =>
         new WalletConnectAdapter(
           this.web3,
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService
         ),
-      [WalletName.METAMASK]: async () => {
+      [WALLET_NAME.METAMASK]: async () => {
         const metamaskWalletAdapter = new MetamaskWalletAdapter(
           this.web3,
           this.networkChangeSubject$,
@@ -239,7 +239,7 @@ export class WalletConnectorService {
         await metamaskWalletAdapter.setupDefaultValues();
         return metamaskWalletAdapter as CommonWalletAdapter;
       },
-      [WalletName.WALLET_LINK]: async () =>
+      [WALLET_NAME.WALLET_LINK]: async () =>
         new WalletLinkWalletAdapter(
           this.web3,
           this.networkChangeSubject$,
@@ -259,7 +259,7 @@ export class WalletConnectorService {
       this.addressChangeSubject$,
       this.errorService
     );
-    this.providerName = WalletName.METAMASK;
+    this.providerName = WALLET_NAME.METAMASK;
   }
 
   public checkSettings(selectedBlockchain: BLOCKCHAIN_NAME): void {
@@ -275,7 +275,7 @@ export class WalletConnectorService {
       this.networkName !== selectedBlockchain &&
       (!isTestingMode || this.networkName !== `${selectedBlockchain}_TESTNET`)
     ) {
-      if (this.providerName === WalletName.METAMASK) {
+      if (this.providerName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
       } else if (!this.provider.isMultiChainWallet) {
         throw new NotSupportedNetworkError(selectedBlockchain);

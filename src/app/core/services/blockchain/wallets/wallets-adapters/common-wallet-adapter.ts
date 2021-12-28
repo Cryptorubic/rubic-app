@@ -3,7 +3,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ErrorsService } from '@core/errors/errors.service';
 import { Tokens } from '@shared/models/tokens/tokens';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
@@ -42,7 +42,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   /**
    * Current provider name.
    */
-  abstract get walletName(): WalletName;
+  abstract get walletName(): WALLET_NAME;
 
   /**
    * Gets detailed provider name if it's possible. Otherwise returns common name.

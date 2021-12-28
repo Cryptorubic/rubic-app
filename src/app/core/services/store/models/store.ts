@@ -1,4 +1,4 @@
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
@@ -11,7 +11,7 @@ export interface Store {
   /**
    * Current wallet provider selected by user.
    */
-  provider: WalletName;
+  provider: WALLET_NAME;
 
   /**
    * User application settings (It, Bridge, Cross-chain).

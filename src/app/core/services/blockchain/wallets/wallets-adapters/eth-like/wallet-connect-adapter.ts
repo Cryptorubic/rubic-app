@@ -2,12 +2,12 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/wallet-connect-abstract';
 
 export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
-  public get walletName(): WalletName {
-    return WalletName.WALLET_CONNECT;
+  public get walletName(): WALLET_NAME {
+    return WALLET_NAME.WALLET_CONNECT;
   }
 
   /**

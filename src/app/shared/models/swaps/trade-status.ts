@@ -1,4 +1,4 @@
-export enum TradeStatus {
+export enum TRADE_STATUS {
   DISABLED = 'DISABLED',
   LOADING = 'LOADING',
   READY_TO_APPROVE = 'READY_TO_APPROVE',

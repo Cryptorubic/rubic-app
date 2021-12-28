@@ -3,7 +3,7 @@ import { TransactionOptions } from '@shared/models/blockchain/transaction-option
 import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
-import { CrossChainRoutingSwapMethod } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-swap-method';
+import { CROSS_CHAIN_ROUTING_SWAP_METHOD } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-swap-method';
 import BigNumber from 'bignumber.js';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { CrossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
@@ -119,8 +119,8 @@ export class EthLikeContractExecutor {
 
     const isFromTokenNative = blockchainFromAdapter.isNativeAddress(trade.tokenIn.address);
     const methodName = isFromTokenNative
-      ? CrossChainRoutingSwapMethod.SWAP_CRYPTO
-      : CrossChainRoutingSwapMethod.SWAP_TOKENS;
+      ? CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_CRYPTO
+      : CROSS_CHAIN_ROUTING_SWAP_METHOD.SWAP_TOKENS;
 
     const tokenInAmountMax = CrossChainContractExecutorFacade.calculateTokenInAmountMax(
       trade,

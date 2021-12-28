@@ -19,9 +19,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
-import { TokenRank } from '@shared/models/tokens/token-rank';
+import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { StakingContractAddress } from '@features/staking/constants/staking-contract-address';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
@@ -494,11 +494,11 @@ export class StakingService {
     switch (fromBlockchain) {
       case BLOCKCHAIN_NAME.POLYGON:
         return {
-          provider: BridgeProvider.SWAP_RBC,
+          provider: BRIDGE_PROVIDER.SWAP_RBC,
           token: {
             symbol: 'RBC',
             image: 'assets/images/icons/staking/rbc-pos.svg',
-            rank: TokenRank.HIGH,
+            rank: TOKEN_RANK.HIGH,
             tokenByBlockchain: {
               [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
                 blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -534,11 +534,11 @@ export class StakingService {
         };
       case BLOCKCHAIN_NAME.ETHEREUM:
         return {
-          provider: BridgeProvider.SWAP_RBC,
+          provider: BRIDGE_PROVIDER.SWAP_RBC,
           token: {
             symbol: 'RBC',
             image: 'assets/images/icons/staking/rbc-eth.svg',
-            rank: TokenRank.HIGH,
+            rank: TOKEN_RANK.HIGH,
             tokenByBlockchain: {
               [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
                 blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

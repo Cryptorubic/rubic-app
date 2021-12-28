@@ -1,5 +1,5 @@
-import { BridgeProvider } from '@shared/models/bridge/bridge-provider';
-import { InstantTradeProvider } from '@shared/models/instant-trade/instant-trade-provider';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TableProvider, DEPRECATED_PROVIDER } from '@shared/models/my-trades/table-trade';
 
 type Provider = {
@@ -9,83 +9,83 @@ type Provider = {
 
 const imageBasePath = 'assets/images/icons/providers/';
 
-const BRIDGE_PROVIDERS: Record<BridgeProvider, Provider> = {
-  [BridgeProvider.SWAP_RBC]: {
+const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
+  [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
   },
-  [BridgeProvider.POLYGON]: {
+  [BRIDGE_PROVIDER.POLYGON]: {
     name: 'Polygon',
     image: `${imageBasePath}polygon.svg`
   },
-  [BridgeProvider.XDAI]: {
+  [BRIDGE_PROVIDER.XDAI]: {
     name: 'XDai',
     image: `${imageBasePath}xdai.svg`
   }
 };
 
-const INSTANT_TRADES_PROVIDERS: Record<InstantTradeProvider, Provider> = {
-  [InstantTradeProvider.UNISWAP_V3]: {
+const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADE_PROVIDER, Provider> = {
+  [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.png`
   },
-  [InstantTradeProvider.UNISWAP_V2]: {
+  [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: {
     name: 'Uniswap V2',
     image: `${imageBasePath}uniswap-2.svg`
   },
-  [InstantTradeProvider.ONEINCH]: {
+  [INSTANT_TRADE_PROVIDER.ONEINCH]: {
     name: '1inch',
     image: `${imageBasePath}oneinch.svg`
   },
-  [InstantTradeProvider.PANCAKESWAP]: {
+  [INSTANT_TRADE_PROVIDER.PANCAKESWAP]: {
     name: 'Pancakeswap',
     image: `${imageBasePath}pancakeswap.svg`
   },
-  [InstantTradeProvider.QUICKSWAP]: {
+  [INSTANT_TRADE_PROVIDER.QUICKSWAP]: {
     name: 'Quickswap',
     image: `${imageBasePath}quickswap.svg`
   },
-  [InstantTradeProvider.SUSHISWAP]: {
+  [INSTANT_TRADE_PROVIDER.SUSHISWAP]: {
     name: 'Sushiswap',
     image: `${imageBasePath}sushiswap.svg`
   },
-  [InstantTradeProvider.PANGOLIN]: {
+  [INSTANT_TRADE_PROVIDER.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`
   },
-  [InstantTradeProvider.PANGOLIN]: {
+  [INSTANT_TRADE_PROVIDER.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`
   },
-  [InstantTradeProvider.JOE]: {
+  [INSTANT_TRADE_PROVIDER.JOE]: {
     name: 'Joe',
     image: `${imageBasePath}joe.png`
   },
-  [InstantTradeProvider.SPOOKYSWAP]: {
+  [INSTANT_TRADE_PROVIDER.SPOOKYSWAP]: {
     name: 'Spookyswap',
     image: `${imageBasePath}spookyswap.png`
   },
-  [InstantTradeProvider.SPIRITSWAP]: {
+  [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: {
     name: 'Spiritswap',
     image: `${imageBasePath}spiritswap.png`
   },
-  [InstantTradeProvider.WRAPPED]: {
+  [INSTANT_TRADE_PROVIDER.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`
   },
-  [InstantTradeProvider.ZRX]: {
+  [INSTANT_TRADE_PROVIDER.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.png`
   },
-  [InstantTradeProvider.SOLARBEAM]: {
+  [INSTANT_TRADE_PROVIDER.SOLARBEAM]: {
     name: 'Solarbeam',
     image: `${imageBasePath}solarbeam.png`
   },
-  [InstantTradeProvider.RAYDIUM]: {
+  [INSTANT_TRADE_PROVIDER.RAYDIUM]: {
     name: 'Raydium',
     image: `${imageBasePath}raydium.svg`
   },
-  [InstantTradeProvider.ALGEBRA]: {
+  [INSTANT_TRADE_PROVIDER.ALGEBRA]: {
     name: 'Algebra',
     image: `${imageBasePath}algebra.webp`
   }

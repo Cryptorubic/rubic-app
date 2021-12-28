@@ -1,4 +1,4 @@
-export enum WalletName {
+export enum WALLET_NAME {
   METAMASK = 'metamask',
   WALLET_LINK = 'walletlink',
   WALLET_CONNECT = 'walletconnect',

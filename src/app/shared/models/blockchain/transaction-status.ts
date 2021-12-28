@@ -1,4 +1,4 @@
-export enum TransactionStatus {
+export enum TRANSACTION_STATUS {
   PENDING = 'pending',
   DEPOSIT_IN_PROGRESS = 'deposit in progress',
   WITHDRAW_IN_PROGRESS = 'withdraw in progress',

@@ -27,7 +27,7 @@ import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TradeStatus } from '@shared/models/swaps/trade-status';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
@@ -72,9 +72,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() onRefreshStatusChange = new EventEmitter<REFRESH_BUTTON_STATUS>();
 
-  @Output() tradeStatusChange = new EventEmitter<TradeStatus>();
+  @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
-  public readonly TRADE_STATUS = TradeStatus;
+  public readonly TRADE_STATUS = TRADE_STATUS;
 
   private readonly onCalculateTrade$: Subject<CalculateTradeType>;
 
@@ -94,7 +94,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public needApprove: boolean;
 
-  private _tradeStatus: TradeStatus;
+  private _tradeStatus: TRADE_STATUS;
 
   private toAmount: BigNumber;
 
@@ -110,11 +110,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public isTargetNetworkValid: boolean;
 
-  get tradeStatus(): TradeStatus {
+  get tradeStatus(): TRADE_STATUS {
     return this._tradeStatus;
   }
 
-  set tradeStatus(value: TradeStatus) {
+  set tradeStatus(value: TRADE_STATUS) {
     this._tradeStatus = value;
     this.tradeStatusChange.emit(value);
   }
@@ -150,7 +150,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setupTradeCalculation();
     this.setupHiddenCalculation();
-    this.tradeStatus = TradeStatus.DISABLED;
+    this.tradeStatus = TRADE_STATUS.DISABLED;
 
     this.swapFormService.inputValueChanges
       .pipe(
@@ -224,7 +224,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         debounceTime(200),
         switchMap(() => {
           if (!this.allowTrade) {
-            this.tradeStatus = TradeStatus.DISABLED;
+            this.tradeStatus = TRADE_STATUS.DISABLED;
             this.swapFormService.output.patchValue({
               toAmount: new BigNumber(NaN)
             });
@@ -232,7 +232,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             return of(null);
           }
 
-          this.tradeStatus = TradeStatus.LOADING;
+          this.tradeStatus = TRADE_STATUS.LOADING;
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
 
@@ -268,11 +268,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               });
 
               if (this.minError || this.maxError || !toAmount?.isFinite() || toAmount.eq(0)) {
-                this.tradeStatus = TradeStatus.DISABLED;
+                this.tradeStatus = TRADE_STATUS.DISABLED;
               } else {
                 this.tradeStatus = needApprove
-                  ? TradeStatus.READY_TO_APPROVE
-                  : TradeStatus.READY_TO_SWAP;
+                  ? TRADE_STATUS.READY_TO_APPROVE
+                  : TRADE_STATUS.READY_TO_SWAP;
               }
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
@@ -283,7 +283,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.swapFormService.output.patchValue({
                 toAmount: new BigNumber(NaN)
               });
-              this.tradeStatus = TradeStatus.DISABLED;
+              this.tradeStatus = TRADE_STATUS.DISABLED;
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
@@ -330,7 +330,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
               this.hiddenTradeData$.next({ toAmount });
               if (!toAmount.eq(this.toAmount)) {
-                this.tradeStatus = TradeStatus.OLD_TRADE_DATA;
+                this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
 
               this.cdr.detectChanges();
@@ -342,7 +342,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
               this.swapFormService.output.patchValue({
                 toAmount: new BigNumber(NaN)
               });
-              this.tradeStatus = TradeStatus.DISABLED;
+              this.tradeStatus = TRADE_STATUS.DISABLED;
               this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
@@ -364,16 +364,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         toAmount: this.toAmount
       });
       this.tradeStatus = this.needApprove
-        ? TradeStatus.READY_TO_APPROVE
-        : TradeStatus.READY_TO_SWAP;
+        ? TRADE_STATUS.READY_TO_APPROVE
+        : TRADE_STATUS.READY_TO_SWAP;
     } else {
-      this.tradeStatus = TradeStatus.DISABLED;
+      this.tradeStatus = TRADE_STATUS.DISABLED;
     }
     this.cdr.detectChanges();
   }
 
   public async approveTrade(): Promise<void> {
-    this.tradeStatus = TradeStatus.APPROVE_IN_PROGRESS;
+    this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
     this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
@@ -407,7 +407,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           await this.tokensService.calculateTokensBalances();
 
-          this.tradeStatus = TradeStatus.READY_TO_SWAP;
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         },
@@ -415,7 +415,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           this.errorsService.catch(err);
 
           approveInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TradeStatus.READY_TO_APPROVE;
+          this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }
@@ -423,12 +423,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public async createTrade(): Promise<void> {
-    this.tradeStatus = TradeStatus.SWAP_IN_PROGRESS;
+    this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     const onTransactionHash = () => {
-      this.tradeStatus = TradeStatus.READY_TO_SWAP;
+      this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.notifyTradeInProgress();
       this.gtmService.notifySignTransaction();
     };
@@ -456,14 +456,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           await this.tokensService.calculateTokensBalances();
 
-          this.tradeStatus = TradeStatus.READY_TO_SWAP;
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           await this.conditionalCalculate();
         },
         err => {
           this.errorsService.catch(err);
 
           this.tradeInProgressSubscription$?.unsubscribe();
-          this.tradeStatus = TradeStatus.READY_TO_SWAP;
+          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
         }

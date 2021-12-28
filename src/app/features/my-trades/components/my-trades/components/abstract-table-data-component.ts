@@ -5,7 +5,7 @@ import {
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import BigNumber from 'bignumber.js';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
-import AddressType from '@shared/models/blockchain/address-type';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EventEmitter, Injector } from '@angular/core';
@@ -63,7 +63,7 @@ export abstract class AbstractTableDataComponent {
 
     return (
       trade.transactionHashScanUrl ||
-      this.scannerLinkPipe.transform(transactionHash, blockchain, AddressType.TRANSACTION)
+      this.scannerLinkPipe.transform(transactionHash, blockchain, ADDRESS_TYPE.TRANSACTION)
     );
   }
 

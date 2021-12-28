@@ -11,7 +11,7 @@ import BigNumber from 'bignumber.js';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { WalletName } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { NetworkError } from '@core/errors/models/provider/network-error';
@@ -31,8 +31,8 @@ export class WalletLinkWalletAdapter extends CommonWalletAdapter<CoinbaseProvide
     return 'ethLike';
   }
 
-  public get walletName(): WalletName {
-    return WalletName.WALLET_LINK;
+  public get walletName(): WALLET_NAME {
+    return WALLET_NAME.WALLET_LINK;
   }
 
   constructor(
