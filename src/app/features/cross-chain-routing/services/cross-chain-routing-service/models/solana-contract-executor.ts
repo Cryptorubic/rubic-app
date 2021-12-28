@@ -13,7 +13,7 @@ import {
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
-import { transitTokensWithMode } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
+import { TRANSIT_TOKENS_WITH_MODE } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -177,7 +177,7 @@ export class SolanaContractExecutor {
     const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
 
     const middleDecimals = new BigNumber(10).exponentiatedBy(
-      transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
+      TRANSIT_TOKENS_WITH_MODE[BLOCKCHAIN_NAME.SOLANA].decimals
     );
     const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
       middleDecimals
@@ -203,7 +203,7 @@ export class SolanaContractExecutor {
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
     const isTransfer =
-      trade.tokenIn.address === transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].address;
+      trade.tokenIn.address === TRANSIT_TOKENS_WITH_MODE[BLOCKCHAIN_NAME.SOLANA].address;
     const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
     let transferType;
     if (fromNative) {

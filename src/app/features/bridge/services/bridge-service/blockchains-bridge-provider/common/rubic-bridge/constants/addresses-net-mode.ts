@@ -2,7 +2,7 @@ import { ContractAddressesNetMode } from '@shared/models/blockchain/net-mode';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { RubicBridgeSupportedBlockchains } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/models/types';
 
-export const rubicBridgeContractAddressesNetMode: ContractAddressesNetMode<RubicBridgeSupportedBlockchains> =
+export const RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE: ContractAddressesNetMode<RubicBridgeSupportedBlockchains> =
   {
     mainnet: {
       [BLOCKCHAIN_NAME.ETHEREUM]: '0x3645Dca27D9f5Cf5ee0d6f52EE53ae366e4ceAc2',
@@ -16,7 +16,7 @@ export const rubicBridgeContractAddressesNetMode: ContractAddressesNetMode<Rubic
     }
   };
 
-export const rubicTokenAddressesNetMode: ContractAddressesNetMode<RubicBridgeSupportedBlockchains> =
+export const RUBIC_TOKEN_ADDRESSES_NET_MODE: ContractAddressesNetMode<RubicBridgeSupportedBlockchains> =
   {
     mainnet: {
       [BLOCKCHAIN_NAME.ETHEREUM]: '0xa4eed63db85311e22df4473f87ccfc3dadcfa3e3',

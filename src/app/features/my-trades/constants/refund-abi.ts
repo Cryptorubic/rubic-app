@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export const RefundAbi: AbiItem[] = [
+export const REFUND_ABI: AbiItem[] = [
   {
     inputs: [
       { internalType: 'bytes32[]', name: '_proof', type: 'bytes32[]' },

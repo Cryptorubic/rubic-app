@@ -29,7 +29,7 @@ import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { DefaultSlippageTolerance } from '@features/instant-trade/constants/default-slippage-tolerance';
+import { DEFAULT_SLIPPAGE_TOLERANCE } from '@features/instant-trade/constants/default-slippage-tolerance';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import {
   debounceTime,
@@ -49,7 +49,7 @@ import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
-import { PermitedPriceDifference } from '@shared/constants/common/permited-price-difference';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
@@ -624,7 +624,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       !this.iframeService.isIframe
     ) {
       const currentBlockchainDefaultSlippage =
-        DefaultSlippageTolerance[this.currentBlockchain as keyof typeof DefaultSlippageTolerance];
+        DEFAULT_SLIPPAGE_TOLERANCE[
+          this.currentBlockchain as keyof typeof DEFAULT_SLIPPAGE_TOLERANCE
+        ];
       const providerName = provider.tradeProviderInfo.value;
       this.settingsService.instantTrade.patchValue({
         slippageTolerance:
@@ -646,7 +648,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     const fromTokenCost = this.fromAmount.multipliedBy(this.fromToken?.price);
     const toAmount = amount || this.selectedProvider?.trade.to.amount;
     const toTokenCost = toAmount.multipliedBy(this.toToken.price);
-    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PermitedPriceDifference)) {
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
       return new BigNumber(NaN);
     }
     return toTokenCost;

@@ -6,7 +6,7 @@ type CrossChainConstants = {
   contractAddresses: Record<SupportedCrossChainSwapBlockchain, string[]>;
 };
 
-export const crossChainDev: CrossChainConstants = {
+export const CROSS_CHAIN_DEV: CrossChainConstants = {
   apiBaseUrl: 'https://dev-crosschain.rubic.exchange/api',
   contractAddresses: {
     [BLOCKCHAIN_NAME.ETHEREUM]: ['0xb9a94be803eC1197A234406eF5c0113f503d3178'],
@@ -22,7 +22,7 @@ export const crossChainDev: CrossChainConstants = {
   }
 };
 
-export const crossChainProd: CrossChainConstants = {
+export const CROSS_CHAIN_PROD: CrossChainConstants = {
   apiBaseUrl: 'https://crosschain.rubic.exchange/api',
   contractAddresses: {
     [BLOCKCHAIN_NAME.ETHEREUM]: ['0xb9a94be803eC1197A234406eF5c0113f503d3178'],

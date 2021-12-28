@@ -1,7 +1,7 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
-export const DefaultSlippageTolerance = {
+export const DEFAULT_SLIPPAGE_TOLERANCE = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     [INSTANT_TRADE_PROVIDER.ONEINCH]: 2,
     [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: 2,

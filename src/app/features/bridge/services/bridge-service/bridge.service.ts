@@ -16,7 +16,7 @@ import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
+import { BRIDGE_TEST_TOKENS } from 'src/test/tokens/bridge-tokens';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
@@ -61,7 +61,7 @@ export class BridgeService {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._tokens$.next(bridgeTestTokens);
+        this._tokens$.next(BRIDGE_TEST_TOKENS);
       }
     });
   }

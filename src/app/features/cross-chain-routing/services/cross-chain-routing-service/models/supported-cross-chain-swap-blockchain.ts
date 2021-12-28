@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-export const supportedCrossChainSwapBlockchains = [
+export const SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
@@ -10,4 +10,5 @@ export const supportedCrossChainSwapBlockchains = [
   BLOCKCHAIN_NAME.SOLANA
 ] as const;
 
-export type SupportedCrossChainSwapBlockchain = typeof supportedCrossChainSwapBlockchains[number];
+export type SupportedCrossChainSwapBlockchain =
+  typeof SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS[number];

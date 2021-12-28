@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BlockchainItem } from '@features/swaps/models/blockchain-item';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { blockchainsList } from '@features/swaps/constants/blockchains-list';
+import { BLOCKCHAINS_LIST } from '@features/swaps/constants/blockchains-list';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Component({
@@ -13,13 +13,13 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 export class SwapsHeaderComponent {
   @Input() public set fromBlockchain(blockchain: BLOCKCHAIN_NAME) {
     if (blockchain) {
-      this.fromBlockchainItem = blockchainsList.find(el => el.symbol === blockchain);
+      this.fromBlockchainItem = BLOCKCHAINS_LIST.find(el => el.symbol === blockchain);
     }
   }
 
   @Input() public set toBlockchain(blockchain: BLOCKCHAIN_NAME) {
     if (blockchain) {
-      this.toBlockchainItem = blockchainsList.find(el => el.symbol === blockchain);
+      this.toBlockchainItem = BLOCKCHAINS_LIST.find(el => el.symbol === blockchain);
     }
   }
 
@@ -34,7 +34,7 @@ export class SwapsHeaderComponent {
   public iconUrl: string;
 
   constructor() {
-    const ethBlockchain = blockchainsList.find(el => el.symbol === BLOCKCHAIN_NAME.ETHEREUM);
+    const ethBlockchain = BLOCKCHAINS_LIST.find(el => el.symbol === BLOCKCHAIN_NAME.ETHEREUM);
     this.fromBlockchainItem = ethBlockchain;
     this.toBlockchainItem = ethBlockchain;
     this.getIconUrl(SWAP_PROVIDER_TYPE.INSTANT_TRADE);

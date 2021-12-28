@@ -37,7 +37,7 @@ const RBC: BridgeTokenPair = {
   toEthFee: 100
 };
 
-export const bridgeTestTokens: BridgeTokenPairsByBlockchains[] = [
+export const BRIDGE_TEST_TOKENS: BridgeTokenPairsByBlockchains[] = [
   {
     fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
     toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,

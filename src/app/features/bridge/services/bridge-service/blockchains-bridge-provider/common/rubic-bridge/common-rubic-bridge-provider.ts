@@ -21,8 +21,8 @@ import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';
 import {
-  rubicBridgeContractAddressesNetMode,
-  rubicTokenAddressesNetMode
+  RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE,
+  RUBIC_TOKEN_ADDRESSES_NET_MODE
 } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses-net-mode';
 import rubicBridgeContractAbi from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/rubic-bridge-contract-abi';
 import {
@@ -332,14 +332,16 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     this.rubicConfig = {
       [config.from.blockchainName]: {
         maxAmount: config.from.maxAmount,
-        swapContractAddress: rubicBridgeContractAddressesNetMode[type][config.from.blockchainName],
-        rubicTokenAddress: rubicTokenAddressesNetMode[type][config.from.blockchainName],
+        swapContractAddress:
+          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.from.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.from.blockchainName],
         ...config.from.token
       },
       [config.to.blockchainName]: {
         maxAmount: config.to.maxAmount,
-        swapContractAddress: rubicBridgeContractAddressesNetMode[type][config.to.blockchainName],
-        rubicTokenAddress: rubicTokenAddressesNetMode[type][config.to.blockchainName],
+        swapContractAddress:
+          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.to.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.to.blockchainName],
         ...config.to.token
       }
     };

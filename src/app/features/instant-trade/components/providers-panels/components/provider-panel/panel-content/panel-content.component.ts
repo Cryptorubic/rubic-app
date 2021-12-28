@@ -9,9 +9,9 @@ import {
 import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
 import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { ShouldDisplayGas } from '@features/instant-trade/constants/should-display-gas';
+import { SHOULD_DISPLAY_GAS } from '@features/instant-trade/constants/should-display-gas';
 import BigNumber from 'bignumber.js';
-import { PermitedPriceDifference } from '@shared/constants/common/permited-price-difference';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -45,7 +45,7 @@ export class PanelContentComponent implements OnInit {
     const { fromToken, fromAmount } = this.swapFormService.inputValue;
     const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
     const toTokenCost = this.tradeData.amount.multipliedBy(this.toToken.price);
-    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PermitedPriceDifference)) {
+    if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
       return null;
     }
     return toTokenCost;
@@ -58,7 +58,8 @@ export class PanelContentComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.displayGas = ShouldDisplayGas[this.tradeData?.blockchain as keyof typeof ShouldDisplayGas];
+    this.displayGas =
+      SHOULD_DISPLAY_GAS[this.tradeData?.blockchain as keyof typeof SHOULD_DISPLAY_GAS];
 
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))

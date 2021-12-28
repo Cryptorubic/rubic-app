@@ -48,9 +48,9 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { supportedCrossChainSwapBlockchains } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
+import { SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
-import { DefaultTokenImage } from '@shared/constants/tokens/default-token-image';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareTokens } from '@shared/utils/utils';
 
 type ComponentInput = {
@@ -189,7 +189,7 @@ export class TokensSelectComponent implements OnInit {
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME
   ): boolean {
-    const availableNetworks = supportedCrossChainSwapBlockchains;
+    const availableNetworks = SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS;
     return (
       availableNetworks.some(availableNetwork => availableNetwork === fromBlockchain) &&
       availableNetworks.some(availableNetwork => availableNetwork === toBlockchain)
@@ -515,7 +515,7 @@ export class TokensSelectComponent implements OnInit {
       .pipe(
         mapTo(image),
         catchError((err: unknown) => {
-          return (err as HttpErrorResponse)?.status === 200 ? of(image) : of(DefaultTokenImage);
+          return (err as HttpErrorResponse)?.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
         })
       )
       .toPromise();

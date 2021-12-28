@@ -12,7 +12,7 @@ import { CurrentLanguageComponent } from 'src/app/core/header/components/header/
 import { TutorialsComponent } from 'src/app/core/header/components/header/components/tutorials/tutorials.component';
 import { SettingsListItem } from 'src/app/core/header/models/settings-list-item';
 import { ThemeSwitcherComponent } from 'src/app/core/header/components/header/components/theme-switcher/theme-switcher.component';
-import { LanguagesList } from '@core/header/models/languages-list';
+import { LANGUAGES_LIST } from '@core/header/models/languages-list';
 
 @Component({
   selector: 'app-settings-list',
@@ -28,7 +28,7 @@ export class SettingsListComponent {
    * @return LanguageListElement current language object.
    */
   public get currentLanguage(): LanguageListElement {
-    return LanguagesList.find(lang => lang.lng === this.translateService.currentLang);
+    return LANGUAGES_LIST.find(lang => lang.lng === this.translateService.currentLang);
   }
 
   constructor(

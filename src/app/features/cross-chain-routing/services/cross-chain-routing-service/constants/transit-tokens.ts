@@ -5,7 +5,7 @@ import { TOKENS } from '@features/instant-trade/services/instant-trade-service/p
 
 export type TransitTokens = Record<SupportedCrossChainSwapBlockchain, InstantTradeToken>;
 
-export const transitTokensWithMode: TransitTokens = {
+export const TRANSIT_TOKENS_WITH_MODE: TransitTokens = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     decimals: 6,

@@ -16,7 +16,7 @@ import {
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
-import { BotUrl } from 'src/app/core/services/backend/constants/bot-url';
+import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { BridgeBotRequest } from '@core/services/backend/bridge-api/models/bridge-bot-request';
 
 @Injectable({
@@ -209,7 +209,7 @@ export class BridgeApiService {
             symbol: bridgeTrade.token.symbol,
             price
           };
-          return this.httpService.post(BotUrl.BRIDGES, body).pipe(switchMap(() => EMPTY));
+          return this.httpService.post(BOT_URL.BRIDGES, body).pipe(switchMap(() => EMPTY));
         })
       )
       .toPromise();

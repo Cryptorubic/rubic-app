@@ -9,7 +9,7 @@ import {
   Output
 } from '@angular/core';
 import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
-import { TradesProviders } from '@features/my-trades/constants/trades-providers';
+import { TRADES_PROVIDERS } from '@features/my-trades/constants/trades-providers';
 import { Observable } from 'rxjs';
 import {
   TableRow,
@@ -19,7 +19,7 @@ import { AbstractTableDataComponent } from 'src/app/features/my-trades/component
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { filter, takeUntil } from 'rxjs/operators';
-import { Columns } from '@features/my-trades/components/my-trades/constants/columns';
+import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRANSLATION_STATUS_KEY } from 'src/app/features/my-trades/components/my-trades/constants/translation-status-keys';
 
@@ -42,7 +42,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  public TRADES_PROVIDERS = TradesProviders;
+  public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
   private PAGE_SIZE = 5;
 
@@ -58,7 +58,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public isDropdownOpened = false;
 
-  public readonly columns = Columns;
+  public readonly columns = COLUMNS;
 
   public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
 

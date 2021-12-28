@@ -31,4 +31,4 @@ const USDT: TokenAmount = {
   favorite: true
 };
 
-export const polygonTestTokens = [MATIC, USDT];
+export const POLYGON_TEST_TOKENS = [MATIC, USDT];

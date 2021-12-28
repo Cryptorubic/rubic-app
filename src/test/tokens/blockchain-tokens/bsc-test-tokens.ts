@@ -88,4 +88,4 @@ export const XBRBC: TokenAmount = {
   price: 5
 };
 
-export const bscTestTokens = [BNB, USDT, ETH, BRBC, FAKE_BRBC, XBRBC];
+export const BSC_TEST_TOKENS = [BNB, USDT, ETH, BRBC, FAKE_BRBC, XBRBC];

@@ -28,7 +28,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   testnet: [{ address: '0x1957d5e8496628d755a4b2151bca03ecc379bdd6', symbol: 'wFTM' }]
 };
 
-export const spookySwapFantomConstants: UniswapV2Constants = {
+export const SPOOKY_SWAP_FANTOM_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.FANTOM,
   contractAddressNetMode: spookySwapFantomContractAddressNetMode,
   wethAddressNetMode,

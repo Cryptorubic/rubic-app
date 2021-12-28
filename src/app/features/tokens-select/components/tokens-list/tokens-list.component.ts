@@ -20,7 +20,7 @@ import { PaginatedPage } from 'src/app/shared/models/tokens/paginated-tokens';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
-import { listAnimation } from '@features/tokens-select/components/tokens-list/animations/list-animation';
+import { LIST_ANIMATION } from '@features/tokens-select/components/tokens-list/animations/list-animation';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { UserInterface } from '@core/services/auth/models/user.interface';
@@ -33,7 +33,7 @@ import { WINDOW } from '@ng-web-apis/common';
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
-  animations: [listAnimation]
+  animations: [LIST_ANIMATION]
 })
 export class TokensListComponent implements AfterViewInit {
   /**

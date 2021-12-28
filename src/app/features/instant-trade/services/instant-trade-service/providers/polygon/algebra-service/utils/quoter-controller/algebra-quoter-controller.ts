@@ -2,7 +2,7 @@ import { MethodData } from '@shared/models/blockchain/method-data';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
-import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/router-tokens';
+import { ROUTER_TOKENS_NET_MODE } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/router-tokens';
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -68,11 +68,11 @@ export class AlgebraQuoterController {
     private readonly web3Public: EthLikeWeb3Public,
     private readonly quoterContract: ContractData
   ) {
-    this.routerTokens = routerTokensNetMode.mainnet;
+    this.routerTokens = ROUTER_TOKENS_NET_MODE.mainnet;
   }
 
   public setTestingMode(): void {
-    this.routerTokens = routerTokensNetMode.testnet;
+    this.routerTokens = ROUTER_TOKENS_NET_MODE.testnet;
   }
 
   /**

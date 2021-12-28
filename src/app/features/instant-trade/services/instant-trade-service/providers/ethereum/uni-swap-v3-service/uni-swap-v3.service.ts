@@ -19,9 +19,9 @@ import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-se
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import {
-  maxTransitPools,
-  quoterContract,
-  uniSwapV3Constants
+  MAX_TRANSIT_POOL,
+  QUOTER_CONTRACT,
+  UNI_SWAP_V3_CONSTANTS
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import {
   UniSwapV3InstantTrade,
@@ -44,9 +44,9 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
     private readonly gasService: GasService,
     private readonly tokensService: TokensService
   ) {
-    super(uniSwapV3Constants);
+    super(UNI_SWAP_V3_CONSTANTS);
 
-    this.quoterController = new UniSwapV3QuoterController(this.blockchainAdapter, quoterContract);
+    this.quoterController = new UniSwapV3QuoterController(this.blockchainAdapter, QUOTER_CONTRACT);
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -148,7 +148,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
         fromAmountAbsolute,
         fromToken,
         toToken,
-        this.settings.disableMultihops ? 0 : maxTransitPools
+        this.settings.disableMultihops ? 0 : MAX_TRANSIT_POOL
       )
     ).sort((a, b) => b.outputAbsoluteAmount.comparedTo(a.outputAbsoluteAmount));
 

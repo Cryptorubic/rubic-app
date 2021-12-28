@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
-export const listAnimation = trigger('listAnimation', [
+export const LIST_ANIMATION = trigger('listAnimation', [
   state('hidden', style({ opacity: '0.4' })),
   state(
     'shown',

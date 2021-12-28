@@ -11,7 +11,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { from, Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { CrossChainSwapContractAddress } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-address';
+import { CROSS_CHAIN_SWAP_CONTRACT_ADDRESS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-address';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
@@ -25,13 +25,13 @@ import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross
 import { AbiItem } from 'web3-utils';
 import {
   SupportedCrossChainSwapBlockchain,
-  supportedCrossChainSwapBlockchains
+  SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
 import {
   TransitTokens,
-  transitTokensWithMode
+  TRANSIT_TOKENS_WITH_MODE
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
-import { CrossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
+import { CROSS_CHAIN_SWAP_CONTRACT_ABI } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { PangolinAvalancheService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/avalanche/pangolin-avalanche-service/pangolin-avalanche.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import InsufficientFundsGasPriceValueError from 'src/app/core/errors/models/cross-chain-routing/insufficient-funds-gas-price-value';
@@ -106,7 +106,7 @@ export class CrossChainRoutingService {
   public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
   ): blockchain is SupportedCrossChainSwapBlockchain {
-    return !!supportedCrossChainSwapBlockchains.find(
+    return !!SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS.find(
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
@@ -135,12 +135,12 @@ export class CrossChainRoutingService {
     private readonly ccrContractExecutorFacade: CrossChainContractExecutorFacade,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
   ) {
-    this.contractAbi = CrossChainSwapContractAbi;
+    this.contractAbi = CROSS_CHAIN_SWAP_CONTRACT_ABI;
 
     this.setProviders();
     this.setToBlockchainsInContract();
-    this.contractAddresses = CrossChainSwapContractAddress;
-    this.transitTokens = transitTokensWithMode;
+    this.contractAddresses = CROSS_CHAIN_SWAP_CONTRACT_ADDRESS;
+    this.transitTokens = TRANSIT_TOKENS_WITH_MODE;
 
     this.settingsService.crossChainRoutingValueChanges
       .pipe(startWith(this.settingsService.crossChainRoutingValue))

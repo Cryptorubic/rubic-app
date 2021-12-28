@@ -3,7 +3,7 @@ import { BlockchainItem } from 'src/app/features/swaps/models/blockchain-item';
 
 const imageBaseSrc = 'assets/images/icons/coins/';
 
-export const blockchainsList: BlockchainItem[] = [
+export const BLOCKCHAINS_LIST: BlockchainItem[] = [
   {
     symbol: BLOCKCHAIN_NAME.ETHEREUM,
     visibleName: 'Ethereum',

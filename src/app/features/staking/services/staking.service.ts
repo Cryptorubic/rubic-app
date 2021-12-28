@@ -19,7 +19,7 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
@@ -38,7 +38,7 @@ export class StakingService {
   /**
    * Staking contract address.
    */
-  private readonly stakingContractAddress = environment.staking.stakingContractAddress;
+  private readonly stakingContractAddress = ENVIRONMENT.staking.stakingContractAddress;
 
   /**
    * Contract address for staking via bridge [from backend].

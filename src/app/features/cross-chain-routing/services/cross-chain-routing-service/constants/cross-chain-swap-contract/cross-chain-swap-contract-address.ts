@@ -1,5 +1,7 @@
 import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 
-export const CrossChainSwapContractAddress: Record<SupportedCrossChainSwapBlockchain, string[]> =
-  environment.crossChain.contractAddresses;
+export const CROSS_CHAIN_SWAP_CONTRACT_ADDRESS: Record<
+  SupportedCrossChainSwapBlockchain,
+  string[]
+> = ENVIRONMENT.crossChain.contractAddresses;

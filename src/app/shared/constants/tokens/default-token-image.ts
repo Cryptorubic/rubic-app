@@ -1,1 +1,1 @@
-export const DefaultTokenImage = 'assets/images/icons/coins/default-token-ico.svg';
+export const DEFAULT_TOKEN_IMAGE = 'assets/images/icons/coins/default-token-ico.svg';

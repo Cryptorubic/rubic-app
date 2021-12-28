@@ -1,6 +1,6 @@
 import { TableRowKeyValue } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 
-export const Columns: TableRowKeyValue[] = [
+export const COLUMNS: TableRowKeyValue[] = [
   {
     translateKey: 'tradesTable.columns.status',
     value: 'Status'

@@ -1,7 +1,7 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ContractAddressesNetMode } from '@shared/models/blockchain/net-mode';
 
-export const supportedEthWethSwapBlockchains = [
+export const SUPPORTED_ETH_WETH_SWAP_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
@@ -11,9 +11,9 @@ export const supportedEthWethSwapBlockchains = [
   BLOCKCHAIN_NAME.FANTOM
 ] as const;
 
-export type SupportedEthWethSwapBlockchain = typeof supportedEthWethSwapBlockchains[number];
+export type SupportedEthWethSwapBlockchain = typeof SUPPORTED_ETH_WETH_SWAP_BLOCKCHAINS[number];
 
-export const WethContractAddressesNetMode: ContractAddressesNetMode<SupportedEthWethSwapBlockchain> =
+export const WETH_CONTRACT_ADDRESSES_NET_MODE: ContractAddressesNetMode<SupportedEthWethSwapBlockchain> =
   {
     mainnet: {
       [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',

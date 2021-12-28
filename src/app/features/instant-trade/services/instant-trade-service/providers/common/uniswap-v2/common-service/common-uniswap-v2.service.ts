@@ -19,7 +19,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import {
   DefaultEstimatedGas,
-  defaultEstimatedGas
+  DEFAULT_ESTIMATED_GAS
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
 import { GetTradeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeData';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
@@ -110,7 +110,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   protected constructor(uniswapConstants: UniswapV2Constants) {
     this.contractAbi = DefaultUniswapV2Abi;
     this.swapsMethod = DEFAULT_SWAP_METHODS;
-    this.defaultEstimateGas = defaultEstimatedGas;
+    this.defaultEstimateGas = DEFAULT_ESTIMATED_GAS;
     this.gasMargin = 1.2; // 120%
 
     this.setUniswapConstants(uniswapConstants);

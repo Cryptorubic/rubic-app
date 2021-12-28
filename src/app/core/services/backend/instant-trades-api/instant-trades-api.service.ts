@@ -16,7 +16,7 @@ import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-ap
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
-import { BotUrl } from 'src/app/core/services/backend/constants/bot-url';
+import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -68,7 +68,7 @@ export class InstantTradesApiService {
       price: trade.from.token.price
     };
 
-    return this.httpService.post<void>(BotUrl.INSTANT_TRADES, req).toPromise();
+    return this.httpService.post<void>(BOT_URL.INSTANT_TRADES, req).toPromise();
   }
 
   /**

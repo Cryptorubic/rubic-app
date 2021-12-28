@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
 import {
   Account,
@@ -212,12 +212,12 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
 
     if (balance.lt(amountAbsolute)) {
       const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
-        BigNumberFormat
+        BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(
         token.symbol,
         formattedTokensBalance,
-        amount.toFormat(BigNumberFormat)
+        amount.toFormat(BIG_NUMBER_FORMAT)
       );
     }
   }

@@ -1,11 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BigNumberFormat } from 'src/app/shared/constants/formats/big-number-format';
+import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/big-number-format';
 
 @Pipe({ name: 'bigNumberFormat' })
 export class BigNumberFormatPipe implements PipeTransform {
   /**
-   * Converts number to {@link BigNumberFormat}.
+   * Converts number to {@link BIG_NUMBER_FORMAT}.
    * @param value number to convert
    * @param dp decimal places
    * @param toFixed true if decimals in converted number must be strictly equal to {@param dp},
@@ -26,10 +26,10 @@ export class BigNumberFormatPipe implements PipeTransform {
 
     if (dp !== -1) {
       return !toFixed
-        ? value.dp(dp).toFormat(BigNumberFormat)
-        : value.toFormat(dp, BigNumberFormat);
+        ? value.dp(dp).toFormat(BIG_NUMBER_FORMAT)
+        : value.toFormat(dp, BIG_NUMBER_FORMAT);
     }
 
-    return value.toFormat(BigNumberFormat);
+    return value.toFormat(BIG_NUMBER_FORMAT);
   }
 }

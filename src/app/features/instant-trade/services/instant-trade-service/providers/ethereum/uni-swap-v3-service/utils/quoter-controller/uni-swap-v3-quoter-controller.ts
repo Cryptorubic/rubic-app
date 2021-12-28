@@ -1,16 +1,16 @@
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import {
-  routerLiquidityPoolsWithMode,
-  routerTokensNetMode
+  ROUTER_LIQUIDITY_POOLS_WITH_MODE,
+  ROUTER_TOKENS_NET_MODE
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/router-liquidity-pools';
 import {
   FeeAmount,
   LiquidityPool
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/liquidity-pool';
-import { EmptyAddress } from '@shared/constants/blockchain/empty-address';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import {
-  factoryContractAbi,
-  factoryContractAddress
+  FACTORY_CONTRACT_ABI,
+  FACTORY_CONTRACT_ADDRESS
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/factory-contract-data';
 import { MethodData } from '@shared/models/blockchain/method-data';
 import { PCacheable } from 'ts-cacheable';
@@ -108,13 +108,13 @@ export class UniSwapV3QuoterController {
   ) {
     this.feeAmounts = [500, 3000, 10000];
 
-    this.routerTokens = routerTokensNetMode.mainnet;
-    this.routerLiquidityPools = routerLiquidityPoolsWithMode.mainnet;
+    this.routerTokens = ROUTER_TOKENS_NET_MODE.mainnet;
+    this.routerLiquidityPools = ROUTER_LIQUIDITY_POOLS_WITH_MODE.mainnet;
   }
 
   public setTestingMode(): void {
-    this.routerTokens = routerTokensNetMode.testnet;
-    this.routerLiquidityPools = routerLiquidityPoolsWithMode.testnet;
+    this.routerTokens = ROUTER_TOKENS_NET_MODE.testnet;
+    this.routerLiquidityPools = ROUTER_LIQUIDITY_POOLS_WITH_MODE.testnet;
   }
 
   /**
@@ -180,8 +180,8 @@ export class UniSwapV3QuoterController {
 
     const poolsAddresses = (
       await this.web3Public.multicallContractMethods<{ 0: string }>(
-        factoryContractAddress,
-        factoryContractAbi,
+        FACTORY_CONTRACT_ADDRESS,
+        FACTORY_CONTRACT_ABI,
         getPoolMethodArguments.map(methodArguments => ({
           methodName: 'getPool',
           methodArguments: [
@@ -195,7 +195,7 @@ export class UniSwapV3QuoterController {
 
     return poolsAddresses
       .map((poolAddress, index) => {
-        if (poolAddress !== EmptyAddress) {
+        if (poolAddress !== EMPTY_ADDRESS) {
           return new LiquidityPool(
             poolAddress,
             getPoolMethodArguments[index].tokenA,

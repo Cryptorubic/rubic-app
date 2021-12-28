@@ -30,7 +30,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const sushiSwapPolygonConstants: UniswapV2Constants = {
+export const SUSHI_SWAP_POLYGON_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.POLYGON,
   contractAddressNetMode: sushiSwapPolygonContractAddressNetMode,
   wethAddressNetMode,

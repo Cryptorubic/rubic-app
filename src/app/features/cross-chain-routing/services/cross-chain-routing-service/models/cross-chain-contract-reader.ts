@@ -1,13 +1,13 @@
 import { AbiItem } from 'web3-utils';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { CrossChainSwapContractAbi } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
+import { CROSS_CHAIN_SWAP_CONTRACT_ABI } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/cross-chain-swap-contract/cross-chain-swap-contract-abi';
 import { PublicKey } from '@solana/web3.js';
 import {
-  BlockchainLayout,
-  BridgeConfig,
-  BridgeConfigData,
-  SolanaBlockchainConfig
+  BLOCKCHAIN_LAYOUT,
+  BRIDGE_CONFIG,
+  BRIDGE_CONFIG_DATA,
+  SOLANA_BLOCKCHAIN_CONFIG
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import {
   PDA_CONFIG,
@@ -22,7 +22,7 @@ export class CrossChainContractReader {
   private readonly ethContractAbi: AbiItem[];
 
   constructor(private readonly blockchainAdapter: SolanaWeb3Public | EthLikeWeb3Public) {
-    this.ethContractAbi = CrossChainSwapContractAbi;
+    this.ethContractAbi = CROSS_CHAIN_SWAP_CONTRACT_ABI;
   }
 
   public async minTokenAmount(fromContractAddress: string): Promise<string> {
@@ -30,7 +30,7 @@ export class CrossChainContractReader {
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(
         new PublicKey(PDA_CONFIG)
       );
-      const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
+      const bridgeData = BRIDGE_CONFIG.decode(data) as BRIDGE_CONFIG_DATA;
       return bridgeData.min_token_amount.toString();
     }
 
@@ -61,7 +61,7 @@ export class CrossChainContractReader {
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(
         new PublicKey(PDA_CONFIG)
       );
-      const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
+      const bridgeData = BRIDGE_CONFIG.decode(data) as BRIDGE_CONFIG_DATA;
       return bridgeData.max_token_amount.toString();
     }
 
@@ -83,7 +83,7 @@ export class CrossChainContractReader {
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(
         new PublicKey(PDA_CONFIG)
       );
-      const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
+      const bridgeData = BRIDGE_CONFIG.decode(data) as BRIDGE_CONFIG_DATA;
       return bridgeData.fee_amount_of_blockchain.toString();
     }
 
@@ -108,7 +108,7 @@ export class CrossChainContractReader {
     if (this.isSolana(this.blockchainAdapter)) {
       const account = new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContract]);
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
-      const blockchainData = BlockchainLayout.decode(data) as SolanaBlockchainConfig;
+      const blockchainData = BLOCKCHAIN_LAYOUT.decode(data) as SOLANA_BLOCKCHAIN_CONFIG;
       fee = blockchainData.crypto_fee.toNumber();
       decimals = NATIVE_SOL.decimals;
     }
@@ -132,7 +132,7 @@ export class CrossChainContractReader {
       const { data } = await this.blockchainAdapter.connection.getAccountInfo(
         new PublicKey(PDA_CONFIG)
       );
-      const bridgeData = BridgeConfig.decode(data) as BridgeConfigData;
+      const bridgeData = BRIDGE_CONFIG.decode(data) as BRIDGE_CONFIG_DATA;
       return bridgeData?.is_paused || false;
     }
 

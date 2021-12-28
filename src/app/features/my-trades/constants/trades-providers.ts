@@ -112,7 +112,7 @@ const DEPRECATED_PROVIDERS: Record<DEPRECATED_PROVIDER, Provider> = {
   }
 };
 
-export const TradesProviders: Record<TableProvider, Provider> = {
+export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
   ...BRIDGE_PROVIDERS,
   ...INSTANT_TRADES_PROVIDERS,
   ...DEPRECATED_PROVIDERS,

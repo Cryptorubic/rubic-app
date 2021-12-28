@@ -21,14 +21,14 @@ const swapRouterContract: ContractData = {
   abi: swapRouterContractAbi
 };
 
-export const quoterContract: ContractData = {
+export const QUOTER_CONTRACT: ContractData = {
   address: quoterContractAddress,
   abi: quoterContractAbi
 };
 
-export const maxTransitPools = 1;
+export const MAX_TRANSIT_POOL = 1;
 
-export const uniSwapV3Constants: UniV3AlgebraConstants = {
+export const UNI_SWAP_V3_CONSTANTS: UniV3AlgebraConstants = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   wethAddressNetMode,
   swapRouterContract,

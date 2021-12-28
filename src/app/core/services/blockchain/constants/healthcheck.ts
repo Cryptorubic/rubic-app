@@ -1,7 +1,7 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import ERC20_ABI from '@core/services/blockchain/constants/erc-20-abi';
 
-export const Healthcheck = {
+export const HEALTHCHECK = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
     contractAbi: ERC20_ABI,

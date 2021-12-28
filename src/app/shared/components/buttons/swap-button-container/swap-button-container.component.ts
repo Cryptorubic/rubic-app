@@ -18,7 +18,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WithRoundPipe } from 'src/app/shared/pipes/with-round.pipe';
-import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -74,7 +74,7 @@ export class SwapButtonContainerComponent implements OnInit {
         this.minAmountValue = value.toString();
       } else {
         this.minAmountValue = this.withRoundPipe.transform(
-          value.toFormat(BigNumberFormat),
+          value.toFormat(BIG_NUMBER_FORMAT),
           'toClosestValue'
         );
       }
@@ -92,7 +92,7 @@ export class SwapButtonContainerComponent implements OnInit {
         this.maxAmountValue = value.toString();
       } else {
         this.maxAmountValue = this.withRoundPipe.transform(
-          value.toFormat(BigNumberFormat),
+          value.toFormat(BIG_NUMBER_FORMAT),
           'toClosestValue'
         );
       }

@@ -27,8 +27,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ],
   testnet: [{ address: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c', symbol: 'WAVAX' }]
 };
-
-export const JoeAvalancheConstants: UniswapV2Constants = {
+export const JOE_AVALANCHE_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.AVALANCHE,
   contractAddressNetMode: joeAvalancheContractAddressNetMode,
   wethAddressNetMode,

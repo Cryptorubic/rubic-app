@@ -9,13 +9,13 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EventEmitter, Injector } from '@angular/core';
-import { DefaultTokenImage } from '@shared/constants/tokens/default-token-image';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 export abstract class AbstractTableDataComponent {
   public abstract onReceivePolygonBridgeTrade: EventEmitter<TableTrade>;
 
-  public readonly DEFAULT_TOKEN_IMAGE = DefaultTokenImage;
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   // Injected services
   private readonly myTradesService: MyTradesService;

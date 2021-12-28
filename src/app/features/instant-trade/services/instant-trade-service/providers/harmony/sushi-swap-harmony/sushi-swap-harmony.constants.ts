@@ -23,7 +23,7 @@ const routingProvidersNetMode = {
   testnet: [{ address: '0xc0320368514b7961256d62bd7bc984623c0f7f65', symbol: 'WONE' }]
 };
 
-export const sushiSwapHarmonyConstants: UniswapV2Constants = {
+export const SUSHI_SWAP_HARMONY_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.HARMONY,
   contractAddressNetMode: sushiSwapHarmonyContracts,
   wethAddressNetMode,

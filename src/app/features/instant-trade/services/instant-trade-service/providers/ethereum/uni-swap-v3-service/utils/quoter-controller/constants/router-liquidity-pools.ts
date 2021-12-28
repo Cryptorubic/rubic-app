@@ -5,7 +5,7 @@ import { SymbolToken } from '@shared/models/tokens/symbol-token';
 /**
  * Most popular tokens in uni v3 to use in a route.
  */
-export const routerTokensNetMode: Record<NetMode, Record<string, SymbolToken>> = {
+export const ROUTER_TOKENS_NET_MODE: Record<NetMode, Record<string, SymbolToken>> = {
   mainnet: {
     WETH: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', symbol: 'WETH' },
     USDT: { address: '0xdac17f958d2ee523a2206206994597c13d831ec7', symbol: 'USDT' },
@@ -20,13 +20,13 @@ export const routerTokensNetMode: Record<NetMode, Record<string, SymbolToken>> =
   }
 };
 
-const mainnetRouterTokens = routerTokensNetMode.mainnet;
-const testnetRouterTokens = routerTokensNetMode.testnet;
+const mainnetRouterTokens = ROUTER_TOKENS_NET_MODE.mainnet;
+const testnetRouterTokens = ROUTER_TOKENS_NET_MODE.testnet;
 
 /**
  * Most popular liquidity pools in uni v3 to use in a route.
  */
-export const routerLiquidityPoolsWithMode: Record<NetMode, LiquidityPool[]> = {
+export const ROUTER_LIQUIDITY_POOLS_WITH_MODE: Record<NetMode, LiquidityPool[]> = {
   mainnet: [
     new LiquidityPool(
       '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8',

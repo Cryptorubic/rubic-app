@@ -28,7 +28,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   testnet: []
 };
 
-export const sushiSwapMoonRiverConstants: UniswapV2Constants = {
+export const SUSHI_SWAP_MOON_RIVER_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.MOONRIVER,
   contractAddressNetMode: sushiSwapMoonRiverContracts,
   wethAddressNetMode,

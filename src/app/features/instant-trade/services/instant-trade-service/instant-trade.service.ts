@@ -23,7 +23,7 @@ import { SushiSwapEthService } from 'src/app/features/instant-trade/services/ins
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
-import { ShouldCalculateGasBlockchain } from '@features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
+import { SHOULS_CALCULATE_GAS_BLOCKCHAIN } from '@features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
@@ -177,7 +177,9 @@ export class InstantTradeService {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     const shouldCalculateGas =
-      ShouldCalculateGasBlockchain[fromBlockchain as keyof typeof ShouldCalculateGasBlockchain];
+      SHOULS_CALCULATE_GAS_BLOCKCHAIN[
+        fromBlockchain as keyof typeof SHOULS_CALCULATE_GAS_BLOCKCHAIN
+      ];
 
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]

@@ -16,7 +16,7 @@ import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
-import { PermitedPriceDifference } from '@shared/constants/common/permited-price-difference';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 
@@ -124,7 +124,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
         fromAmount,
         toAmount
       );
-      if (this.priceImpact < -PermitedPriceDifference * 100) {
+      if (this.priceImpact < -PERMITTED_PRICE_DIFFERENCE * 100) {
         this.priceImpact = null;
       }
       this.priceImpactService.setPriceImpact(this.priceImpact);

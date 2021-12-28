@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export const BrbcContractAbi = [
+export const BRBC_CONTRACT_ABI = [
   {
     inputs: [
       {

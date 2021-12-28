@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-export const StakingTokens = [
+export const STAKING_TOKENS = [
   {
     name: 'Rubic',
     symbol: 'BRBC',

@@ -1,4 +1,4 @@
-export const BigNumberFormat = {
+export const BIG_NUMBER_FORMAT = {
   decimalSeparator: '.',
   groupSeparator: ',',
   groupSize: 3,

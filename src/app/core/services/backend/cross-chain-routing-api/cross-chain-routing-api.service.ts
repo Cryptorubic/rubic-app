@@ -13,10 +13,10 @@ import {
   CrossChainTradesResponseApi
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 
-export const BASE_URL = `${environment.crossChain.apiBaseUrl}/`;
+export const BASE_URL = `${ENVIRONMENT.crossChain.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'

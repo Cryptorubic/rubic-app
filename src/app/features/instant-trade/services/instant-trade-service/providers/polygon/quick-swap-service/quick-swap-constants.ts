@@ -30,7 +30,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const quickSwapConstants: UniswapV2Constants = {
+export const QUICK_SWAP_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.POLYGON,
   contractAddressNetMode: quickSwapContractAddressNetMode,
   wethAddressNetMode,

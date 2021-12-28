@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import wethContractAbi from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-abi';
 import {
-  WethContractAddressesNetMode,
+  WETH_CONTRACT_ADDRESSES_NET_MODE,
   SupportedEthWethSwapBlockchain
 } from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-addresses-net-mode';
 import { TransactionReceipt } from 'web3-eth';
@@ -33,11 +33,11 @@ export class EthWethSwapProviderService {
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService
   ) {
-    this.contractAddresses = WethContractAddressesNetMode.mainnet;
+    this.contractAddresses = WETH_CONTRACT_ADDRESSES_NET_MODE.mainnet;
 
     useTestingMode.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.contractAddresses = WethContractAddressesNetMode.testnet;
+        this.contractAddresses = WETH_CONTRACT_ADDRESSES_NET_MODE.testnet;
       }
     });
   }

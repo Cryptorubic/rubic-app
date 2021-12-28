@@ -3,7 +3,7 @@ import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
 
 import { StakingService } from '../../services/staking.service';
-import { StakingTokens } from 'src/app/features/staking/constants/staking-tokens';
+import { STAKING_TOKENS } from 'src/app/features/staking/constants/staking-tokens';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
@@ -26,7 +26,7 @@ export class StakeComponent {
 
   public readonly amount = new FormControl('');
 
-  public readonly token = new FormControl(StakingTokens[0]);
+  public readonly token = new FormControl(STAKING_TOKENS[0]);
 
   public readonly selectedToken$ = this.stakingService.selectedToken$;
 

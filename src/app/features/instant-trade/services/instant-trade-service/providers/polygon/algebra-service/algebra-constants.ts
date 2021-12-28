@@ -1,11 +1,11 @@
 import { ContractAddressNetMode } from '@shared/models/blockchain/net-mode';
 import {
-  quoterContractAbi,
-  quoterContractAddress
+  QUOTER_CONTRACT_ABI,
+  QUOTER_CONTRACT_ADDRESS
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/constants/quoter-contract-data';
 import {
-  swapRouterContractAbi,
-  swapRouterContractAddress
+  SWAP_ROUTER_CONTRACT_ABI,
+  SWAP_ROUTER_CONTRACT_ADDRESS
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/constants/swap-router-contract-data';
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
@@ -17,13 +17,13 @@ const wethAddressNetMode: ContractAddressNetMode = {
 };
 
 const swapRouterContract: ContractData = {
-  address: swapRouterContractAddress,
-  abi: swapRouterContractAbi
+  address: SWAP_ROUTER_CONTRACT_ADDRESS,
+  abi: SWAP_ROUTER_CONTRACT_ABI
 };
 
 export const quoterContract: ContractData = {
-  address: quoterContractAddress,
-  abi: quoterContractAbi
+  address: QUOTER_CONTRACT_ADDRESS,
+  abi: QUOTER_CONTRACT_ABI
 };
 
 export const maxTransitTokens = 1;

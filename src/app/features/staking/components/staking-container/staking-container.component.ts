@@ -14,7 +14,7 @@ import { SwapFormService } from '@features/swaps/services/swaps-form-service/swa
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
@@ -84,7 +84,7 @@ export class StakingContainerComponent {
     const xBRBC: Token = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: environment.staking.stakingContractAddress,
+      address: ENVIRONMENT.staking.stakingContractAddress,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,

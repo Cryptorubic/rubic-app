@@ -32,7 +32,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const pancakeSwapConstants: UniswapV2Constants = {
+export const PANCAKE_SWAP_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   contractAddressNetMode: pancakeSwapContractAddressNetMode,
   wethAddressNetMode,

@@ -15,11 +15,11 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
-import { TradesProviders } from '@features/my-trades/constants/trades-providers';
+import { TRADES_PROVIDERS } from '@features/my-trades/constants/trades-providers';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
-import { Columns } from '@features/my-trades/components/my-trades/constants/columns';
+import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
 
@@ -43,9 +43,9 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
-  public TRADES_PROVIDERS = TradesProviders;
+  public TRADES_PROVIDERS = TRADES_PROVIDERS;
 
-  public readonly columns = Columns;
+  public readonly columns = COLUMNS;
 
   public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
 

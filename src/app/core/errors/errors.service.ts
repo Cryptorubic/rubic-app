@@ -6,7 +6,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
-import { CustomRpcError } from '@core/errors/models/standard/custom-rpc-error';
+import { CUSTOM_RPC_ERROR } from '@core/errors/models/standard/custom-rpc-error';
 import { EIP_1474 } from '@core/errors/models/standard/eip-1474';
 import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -138,6 +138,6 @@ export class ErrorsService {
    * @return boolean Error content flag.
    */
   private isCustomRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
-    return CustomRpcError.some(rpcError => this.findRPCError(rpcError, currentError));
+    return CUSTOM_RPC_ERROR.some(rpcError => this.findRPCError(rpcError, currentError));
   }
 }

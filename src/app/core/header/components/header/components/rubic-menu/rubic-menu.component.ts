@@ -27,7 +27,7 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
-import { NavigationList } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
+import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -80,7 +80,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   ) {
     this.currentUser$ = this.authService.getCurrentUser();
     this.countUnread$ = this.counterNotificationsService.unread$;
-    this.navigationList = NavigationList;
+    this.navigationList = NAVIGATION_LIST;
     this.bridgeClick = new EventEmitter<void>();
     this.swapClick = new EventEmitter<void>();
     this.crossChainClick = new EventEmitter<void>();

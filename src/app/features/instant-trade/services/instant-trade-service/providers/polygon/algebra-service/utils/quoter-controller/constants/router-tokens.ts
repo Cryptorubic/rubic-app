@@ -4,7 +4,7 @@ import { SymbolToken } from '@shared/models/tokens/symbol-token';
 /**
  * Most popular tokens in uni v3 to use in a route.
  */
-export const routerTokensNetMode: Record<NetMode, SymbolToken[]> = {
+export const ROUTER_TOKENS_NET_MODE: Record<NetMode, SymbolToken[]> = {
   mainnet: [
     { address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', symbol: 'WMATIC' },
     { address: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619', symbol: 'WETH' },

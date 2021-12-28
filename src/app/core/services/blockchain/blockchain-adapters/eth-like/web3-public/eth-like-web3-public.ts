@@ -9,9 +9,9 @@ import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { UndefinedError } from '@core/errors/models/undefined.error';
-import { BigNumberFormat } from '@shared/constants/formats/big-number-format';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import { from, Observable, of } from 'rxjs';
-import { Healthcheck } from '@core/services/blockchain/constants/healthcheck';
+import { HEALTHCHECK } from '@core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { Web3SupportedBlockchains } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { HttpClient } from '@angular/common/http';
@@ -23,7 +23,7 @@ import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
 import MULTICALL_ABI from '@core/services/blockchain/constants/multicall-abi';
 import { Call } from '@core/services/blockchain/models/call';
 import {
-  MulticallAddresses,
+  MULTICALL_ADDRESSES,
   MULTICALL_ADDRESSES_TESTNET
 } from '@core/services/blockchain/constants/multicall-addresses';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
@@ -70,7 +70,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     private readonly httpClient: HttpClient
   ) {
     super();
-    this.multicallAddresses = MulticallAddresses;
+    this.multicallAddresses = MULTICALL_ADDRESSES;
 
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -126,7 +126,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    * @return null if healthcheck is not defined for current blockchain, else is node works status
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
-    const healthcheckData = Healthcheck[this.blockchain.name as Web3SupportedBlockchains];
+    const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3SupportedBlockchains];
     if (!healthcheckData) {
       return of(null);
     }
@@ -579,12 +579,12 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
     if (balance.lt(amountAbsolute)) {
       const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
-        BigNumberFormat
+        BIG_NUMBER_FORMAT
       );
       throw new InsufficientFundsError(
         token.symbol,
         formattedTokensBalance,
-        amount.toFormat(BigNumberFormat)
+        amount.toFormat(BIG_NUMBER_FORMAT)
       );
     }
   }

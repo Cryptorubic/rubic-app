@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
+import { COINGECKO_TEST_TOKENS } from 'src/test/tokens/test-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
@@ -17,13 +17,13 @@ import {
   NATIVE_TOKEN_ADDRESS,
   NATIVE_SOLANA_MINT_ADDRESS
 } from '@shared/constants/blockchain/native-token-address';
-import { TokensPagination } from '@core/services/tokens/tokens-pagination';
+import { TOKENS_PAGINATION } from '@core/services/tokens/tokens-pagination';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
-import { DefaultTokenImage } from '@shared/constants/tokens/default-token-image';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -61,7 +61,9 @@ export class TokensService {
   /**
    * Current tokens network state.
    */
-  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(TokensPagination);
+  private readonly _tokensNetworkState$ = new BehaviorSubject<TokensNetworkState>(
+    TOKENS_PAGINATION
+  );
 
   public readonly tokensNetworkState$ = this._tokensNetworkState$.asObservable();
 
@@ -123,7 +125,7 @@ export class TokensService {
     private readonly errorsService: ErrorsService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
-    this.testTokensNumber = coingeckoTestTokens.length;
+    this.testTokensNumber = COINGECKO_TEST_TOKENS.length;
 
     this.setupSubscriptions();
   }
@@ -162,7 +164,7 @@ export class TokensService {
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._tokens$.next(List(coingeckoTestTokens));
+        this._tokens$.next(List(COINGECKO_TEST_TOKENS));
         await this.calculateTokensBalancesByType('default');
       }
     });
@@ -339,13 +341,13 @@ export class TokensService {
    */
   public onTokenImageError($event: Event, token: TokenAmount = null): void {
     const target = $event.target as HTMLImageElement;
-    if (target.src !== DefaultTokenImage) {
-      target.src = DefaultTokenImage;
+    if (target.src !== DEFAULT_TOKEN_IMAGE) {
+      target.src = DEFAULT_TOKEN_IMAGE;
 
       if (token) {
         const newToken = {
           ...token,
-          image: DefaultTokenImage
+          image: DEFAULT_TOKEN_IMAGE
         };
         this.patchToken(newToken);
       }

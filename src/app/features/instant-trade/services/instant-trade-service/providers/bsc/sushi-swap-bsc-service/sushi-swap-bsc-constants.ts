@@ -32,7 +32,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const SushiSwapBscConstants: UniswapV2Constants = {
+export const SUSHI_SWAP_BSC_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   contractAddressNetMode: sushiSwapBscContractAddressNetMode,
   wethAddressNetMode,

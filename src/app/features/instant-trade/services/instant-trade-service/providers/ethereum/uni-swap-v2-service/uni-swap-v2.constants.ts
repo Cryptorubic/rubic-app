@@ -28,7 +28,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const uniSwapV2Constants: UniswapV2Constants = {
+export const UNI_SWAP_V2_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.ETHEREUM,
   contractAddressNetMode: uniSwapContractAddressNetMode,
   wethAddressNetMode,

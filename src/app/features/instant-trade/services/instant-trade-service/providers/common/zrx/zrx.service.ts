@@ -23,20 +23,20 @@ import InstantTradeToken from '@features/instant-trade/models/instant-trade-toke
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { ZrxCalculateTradeParams } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/models/zrx-calculate-trade-params';
-import { ZrxApiAddresses } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-api-addresses';
-import { ZrxNativeToken } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-native-token';
+import { ZRX_API_ADDRESS } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-api-addresses';
+import { ZRX_NATIVE_TOKEN } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-native-token';
 import {
   SupportedZrxBlockchain,
-  supportedZrxBlockchains
+  SUPPORTED_ZRX_BLOCKCHAINS
 } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/supported-zrx-blockchain';
 import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
-const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
+const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +65,9 @@ export class ZrxService implements ItProvider {
   public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
   ): blockchain is SupportedZrxBlockchain {
-    return supportedZrxBlockchains.some(supportedBlockchain => supportedBlockchain === blockchain);
+    return SUPPORTED_ZRX_BLOCKCHAINS.some(
+      supportedBlockchain => supportedBlockchain === blockchain
+    );
   }
 
   constructor(
@@ -132,7 +134,7 @@ export class ZrxService implements ItProvider {
     }
     if (ZrxService.isSupportedBlockchain(blockchain)) {
       this.blockchain = blockchain;
-      this.apiAddress = ZrxApiAddresses[blockchain];
+      this.apiAddress = ZRX_API_ADDRESS[blockchain];
     }
   }
 
@@ -174,10 +176,10 @@ export class ZrxService implements ItProvider {
     const toTokenClone = { ...toToken };
 
     if (this.fromBlockchainAdapter.isNativeAddress(fromToken.address)) {
-      fromTokenClone.address = ZrxNativeToken;
+      fromTokenClone.address = ZRX_NATIVE_TOKEN;
     }
     if (this.toBlockchainAdapter.isNativeAddress(toToken.address)) {
-      toTokenClone.address = ZrxNativeToken;
+      toTokenClone.address = ZRX_NATIVE_TOKEN;
     }
 
     const params: ZrxCalculateTradeParams = {

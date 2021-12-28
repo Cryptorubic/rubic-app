@@ -9,7 +9,7 @@ import { SettingsService } from '@features/swaps/services/settings-service/setti
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
-import { PermitedPriceDifference } from '@shared/constants/common/permited-price-difference';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
@@ -141,11 +141,11 @@ export class CcrSwapInfoComponent implements OnInit {
    */
   private setPriceImpact(tradeInfo: CrossChainTradeInfo): void {
     this.priceImpactFrom = tradeInfo.priceImpactFrom;
-    if (this.priceImpactFrom < -PermitedPriceDifference * 100) {
+    if (this.priceImpactFrom < -PERMITTED_PRICE_DIFFERENCE * 100) {
       this.priceImpactFrom = null;
     }
     this.priceImpactTo = tradeInfo.priceImpactTo;
-    if (this.priceImpactTo < -PermitedPriceDifference * 100) {
+    if (this.priceImpactTo < -PERMITTED_PRICE_DIFFERENCE * 100) {
       this.priceImpactTo = null;
     }
 

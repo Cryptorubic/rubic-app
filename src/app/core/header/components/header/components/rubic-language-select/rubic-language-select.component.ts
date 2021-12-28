@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-import { LanguagesList } from '@core/header/models/languages-list';
+import { LANGUAGES_LIST } from '@core/header/models/languages-list';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { POLYMORPHEUS_CONTEXT, PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { BehaviorSubject } from 'rxjs';
@@ -41,7 +41,7 @@ export class RubicLanguageSelectComponent {
     private readonly context$: BehaviorSubject<SettingsComponentData>,
     @Self() destroy$: TuiDestroyService
   ) {
-    this.languagesList = LanguagesList;
+    this.languagesList = LANGUAGES_LIST;
     translateService.onLangChange.pipe(takeUntil(destroy$)).subscribe((event: LangChangeEvent) => {
       this.setActiveLanguage(event);
     });
@@ -61,7 +61,7 @@ export class RubicLanguageSelectComponent {
         return lang.active === Boolean(this.currentLanguage);
       })[0].active = false;
     }
-    this.currentLanguage = event.lang || LanguagesList[0].lng;
+    this.currentLanguage = event.lang || LANGUAGES_LIST[0].lng;
     this.cookieService.set('lng', this.currentLanguage, null, null, null, null, null);
     this.languagesList.filter(lang => {
       return lang.lng === this.currentLanguage;

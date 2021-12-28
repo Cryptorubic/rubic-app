@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-export const ShouldCalculateGasBlockchain = {
+export const SHOULS_CALCULATE_GAS_BLOCKCHAIN = {
   [BLOCKCHAIN_NAME.ETHEREUM]: true,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: false,
   [BLOCKCHAIN_NAME.POLYGON]: false,

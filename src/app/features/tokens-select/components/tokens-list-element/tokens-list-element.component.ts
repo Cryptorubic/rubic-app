@@ -11,7 +11,7 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { DefaultTokenImage } from '@shared/constants/tokens/default-token-image';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { ErrorsService } from '@core/errors/errors.service';
@@ -32,7 +32,7 @@ export class TokensListElementComponent {
 
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
 
-  public readonly DEFAULT_TOKEN_IMAGE = DefaultTokenImage;
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   /**
    * Is iframe has horizontal view.

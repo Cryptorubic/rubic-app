@@ -102,4 +102,4 @@ export const RBC: TokenAmount = {
   favorite: true
 };
 
-export const ethereumTestTokens = [ETH, WETH, WEENUS, YEENUS, XEENUS, WSATT, RBC];
+export const ETHEREUM_TEST_TOKENS = [ETH, WETH, WEENUS, YEENUS, XEENUS, WSATT, RBC];
