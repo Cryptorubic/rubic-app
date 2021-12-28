@@ -50,7 +50,7 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   public readonly errorTypeEnum = ErrorTypeEnum;
 
-  public needChangeNetwork$ = new BehaviorSubject<boolean>(
+  public readonly needChangeNetwork$ = new BehaviorSubject<boolean>(
     this.walletConnectorService.networkName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   );
 
@@ -87,6 +87,11 @@ export class WithdrawButtonContainerComponent implements OnInit {
   }
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber): void {
+    if (amount.isZero()) {
+      this.errorType$.next(ErrorTypeEnum.ZERO);
+      return;
+    }
+
     if (amount.isNaN()) {
       this.errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
       return;

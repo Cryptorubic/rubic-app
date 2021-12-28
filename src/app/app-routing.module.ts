@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
 import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
-import { UntilTimeGuard } from '@shared/guards/until-time.guard';
 
 const routes: Routes = [
   {
@@ -43,8 +42,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.STAKING,
-    loadChildren: () => import('./features/staking/staking.module').then(m => m.StakingModule),
-    canLoad: [UntilTimeGuard]
+    loadChildren: () => import('./features/staking/staking.module').then(m => m.StakingModule)
   },
   {
     path: ROUTE_PATH.REST,
