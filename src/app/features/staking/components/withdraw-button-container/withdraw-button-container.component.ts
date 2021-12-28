@@ -35,6 +35,8 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   @Input() amountFormControl: FormControl;
 
+  @Input() maxAmountForWithdraw: BigNumber;
+
   @Output() onWithdraw = new EventEmitter<void>();
 
   @Output() onLogin = new EventEmitter<void>();
@@ -98,7 +100,7 @@ export class WithdrawButtonContainerComponent implements OnInit {
       return;
     }
 
-    if (balance.lt(amount)) {
+    if (balance.lt(amount) || this.maxAmountForWithdraw.lt(amount)) {
       this.errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
       return;
     }

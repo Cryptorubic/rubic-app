@@ -41,6 +41,7 @@
     class="withdraw__button"
     [amountFormControl]="amount"
     [needChangeNetwork]="false"
+    [maxAmountForWithdraw]="maxAmountForWithdraw$ | async"
     [loading]="withdrawButtonLoading$ | async"
     (onLogin)="login()"
     (onWithdraw)="withdraw()"

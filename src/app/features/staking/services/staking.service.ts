@@ -257,12 +257,10 @@ export class StakingService {
    */
   public enterStake(amount: BigNumber): Observable<TransactionReceipt | unknown> {
     const tokenBlockchain = this.selectedToken.blockchain;
-    const amountInWei = Number(Web3Pure.toWei(amount)).toLocaleString('fullwide', {
-      useGrouping: false
-    });
     const needSwap =
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET &&
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
+    const amountInWei = Web3Pure.toWei(amount);
 
     if (needSwap) {
       return this.openSwapModal(amount, tokenBlockchain);
@@ -272,7 +270,7 @@ export class StakingService {
           this.stakingContractAddress,
           STAKING_CONTRACT_ABI,
           'enter',
-          [Web3Pure.toWei(amount)]
+          [amountInWei]
         )
       ).pipe(
         catchError((error: unknown) => {
@@ -294,19 +292,17 @@ export class StakingService {
    * @return Observable<unknown>
    */
   public leaveStake(amount: BigNumber): Observable<unknown> {
-    const adjustedAmountInWei = Number(Web3Pure.toWei(amount)).toLocaleString('fullwide', {
-      useGrouping: false
-    });
+    const amountInWei = Web3Pure.toWei(amount);
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
         this.stakingContractAddress,
         STAKING_CONTRACT_ABI,
         'leave',
-        [Web3Pure.toWei(amount)]
+        [amountInWei]
       )
     ).pipe(
       switchMap(receipt =>
-        this.updateUsersDepositAfterWithdraw(adjustedAmountInWei, receipt.transactionHash)
+        this.updateUsersDepositAfterWithdraw(amountInWei, receipt.transactionHash)
       ),
       switchMap(() => forkJoin([this.reloadStakingStatistics(), this.reloadStakingProgress()])),
       switchMap(() => this.getMaxAmountForWithdraw())
@@ -516,7 +512,6 @@ export class StakingService {
    * @param amount
    */
   public calculateBRBCUsdPrice(amount: BigNumber): BigNumber {
-    console.log(amount);
     return amount.multipliedBy(this.BRBCUsdPrice);
   }
 
