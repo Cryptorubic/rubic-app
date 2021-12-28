@@ -1,32 +1,59 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  forkJoin,
+  from,
+  interval,
+  Observable,
+  of
+} from 'rxjs';
+import {
+  catchError,
+  filter,
+  finalize,
+  first,
+  map,
+  startWith,
+  switchMap,
+  take,
+  tap
+} from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService } from '@taiga-ui/core';
-
-import { AuthService } from '@app/core/services/auth/auth.service';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { catchError, filter, finalize, first, map, switchMap, take, tap } from 'rxjs/operators';
-import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
-import { StakingApiService } from '@features/staking/services/staking-api.service';
-import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { ErrorsService } from '@core/errors/errors.service';
-import { RubicError } from '@core/errors/models/RubicError';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { List } from 'immutable';
 import { TransactionReceipt } from 'web3-eth';
+
+// services
+import { StakingApiService } from '@features/staking/services/staking-api.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { ErrorsService } from '@core/errors/errors.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { TranslateService } from '@ngx-translate/core';
-import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
-import { environment } from 'src/environments/environment';
+import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+
+// components
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
+
+// models, constants
+import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { RubicError } from '@core/errors/models/RubicError';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { environment } from 'src/environments/environment';
 import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
 import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
+import { STAKING_TOKENS } from '@features/staking/constants/STAKING_TOKENS';
+import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
+import { Token } from '@shared/models/tokens/Token';
 
 @Injectable()
 export class StakingService {
@@ -131,6 +158,16 @@ export class StakingService {
   private readonly updateTokenBalance$ = new BehaviorSubject<void>(null);
 
   /**
+   * BRBC usd price [from backend].
+   */
+  private BRBCUsdPrice: number;
+
+  /**
+   * BRBC token usd price update time.
+   */
+  private BRBC_USD_PRICE_UPDATE_TIME = 600000;
+
+  /**
    * Is user need to connect wallet.
    */
   public readonly needLogin$ = this.authService.getCurrentUser().pipe(map(user => !user?.address));
@@ -159,9 +196,8 @@ export class StakingService {
         this._earnedRewards$.next(new BigNumber(0));
         this._stakingTokenBalance$.next(new BigNumber(0));
         return of(new BigNumber(0));
-      } else {
-        return this.getSelectedTokenBalance(selectedToken);
       }
+      return this.getSelectedTokenBalance(selectedToken);
     })
   );
 
@@ -170,18 +206,17 @@ export class StakingService {
     private readonly web3PrivateService: PrivateBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly stakingApiService: StakingApiService,
+    private readonly tokensApiService: TokensApiService,
     private readonly errorService: ErrorsService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService,
-    private readonly testingModeService: UseTestingModeService,
     private readonly polygonBinanceBridge: BinancePolygonRubicBridgeProviderService,
     private readonly ethereumBinanceBridge: EthereumBinanceRubicBridgeProviderService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {
-    forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]).subscribe(() => {
-      this.stakingProgressLoading$.next(false);
-    });
+    forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]).subscribe(() =>
+      this.stakingProgressLoading$.next(false)
+    );
 
     this.authService
       .getCurrentUser()
@@ -198,9 +233,7 @@ export class StakingService {
             this.getMaxAmountForWithdraw()
           ]);
         }),
-        switchMap(([amountWithRewards]) => {
-          return this.getEarnedRewards(amountWithRewards);
-        })
+        switchMap(([amountWithRewards]) => this.getEarnedRewards(amountWithRewards))
       )
       .subscribe(() => this.stakingStatisticsLoading$.next(false));
 
@@ -242,9 +275,9 @@ export class StakingService {
           [Web3Pure.toWei(amount)]
         )
       ).pipe(
-        catchError((err: unknown) => {
-          console.debug('enter stake error');
-          this.errorService.catchAnyError(err as Error);
+        catchError((error: unknown) => {
+          console.debug('enter stake error', error);
+          this.errorService.catchAnyError(error as Error);
           return EMPTY;
         }),
         switchMap(receipt => this.updateUsersDeposit(amountInWei, receipt.transactionHash)),
@@ -292,11 +325,7 @@ export class StakingService {
         ownerAddress: this.walletAddress,
         spenderAddress: this.stakingContractAddress
       })
-    ).pipe(
-      map(allowance => {
-        return allowance.lt(Web3Pure.fromWei(amount));
-      })
-    );
+    ).pipe(map(allowance => allowance.lt(Web3Pure.fromWei(amount))));
   }
 
   /**
@@ -311,8 +340,9 @@ export class StakingService {
         'infinity'
       )
     ).pipe(
-      catchError((err: unknown) => {
-        this.errorService.catch(err as RubicError<ERROR_TYPE.TEXT>);
+      catchError((error: unknown) => {
+        console.debug(error);
+        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       })
     );
@@ -330,12 +360,11 @@ export class StakingService {
       )
     ).pipe(
       catchError((error: unknown) => {
+        console.debug(error);
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber('0'));
       }),
-      tap(balance => {
-        this._stakingTokenBalance$.next(Web3Pure.fromWei(balance));
-      })
+      tap(balance => this._stakingTokenBalance$.next(Web3Pure.fromWei(balance)))
     );
   }
 
@@ -393,9 +422,8 @@ export class StakingService {
       switchMap(needLogin => {
         if (needLogin) {
           return this.getTotalRBCEntered();
-        } else {
-          return forkJoin([this.getTotalRBCEntered(), this.getUserEnteredAmount()]);
         }
+        return forkJoin([this.getTotalRBCEntered(), this.getUserEnteredAmount()]);
       }),
       finalize(() => this.stakingProgressLoading$.next(false))
     );
@@ -410,8 +438,9 @@ export class StakingService {
     return from(
       this.web3PublicService[token.blockchain].getTokenBalance(this.walletAddress, token.address)
     ).pipe(
-      catchError((err: unknown) => {
-        this.errorService.catch(err as RubicError<ERROR_TYPE.TEXT>);
+      catchError((error: unknown) => {
+        console.debug(error);
+        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
       map(balance => Web3Pure.fromWei(balance))
@@ -440,13 +469,9 @@ export class StakingService {
     ).pipe(
       catchError((error: unknown) => {
         console.debug(error);
-        // TODO handle contract error "Amount is greater than total xBRBC amount"
-        // this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return EMPTY;
       }),
-      map(res => {
-        return Web3Pure.fromWei(res);
-      })
+      map(res => Web3Pure.fromWei(res))
     );
   }
 
@@ -484,6 +509,15 @@ export class StakingService {
     const bridgeTrade = this.getBridgeTradeObject(fromBlockchain, amount);
 
     return this.getRubicBridge(fromBlockchain).approve(bridgeTrade);
+  }
+
+  /**
+   * Gets usd price of provided amount of BRBC tokens.
+   * @param amount
+   */
+  public calculateBRBCUsdPrice(amount: BigNumber): BigNumber {
+    console.log(amount);
+    return amount.multipliedBy(this.BRBCUsdPrice);
   }
 
   /**
@@ -754,5 +788,24 @@ export class StakingService {
     } else if (blockchain === BLOCKCHAIN_NAME.ETHEREUM) {
       return this.ethereumBinanceBridge;
     }
+  }
+
+  /**
+   * Gets BRBC usd price every BRBC_USD_PRICE_UPDATE_TIME millisecond.
+   * @return Observable<List<Token>>
+   */
+  public watchBRBCUsdPrice(): Observable<List<Token>> {
+    const { blockchain, address, symbol } = STAKING_TOKENS[0];
+    return interval(this.BRBC_USD_PRICE_UPDATE_TIME).pipe(
+      startWith(0),
+      switchMap(() =>
+        this.tokensApiService.fetchQueryTokens({
+          network: blockchain as PAGINATED_BLOCKCHAIN_NAME,
+          address,
+          symbol
+        })
+      ),
+      tap(response => (this.BRBCUsdPrice = response.get(0).price))
+    );
   }
 }

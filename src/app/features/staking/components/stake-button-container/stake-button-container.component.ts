@@ -7,17 +7,18 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '../../constants/STACKING_LIMITS';
-import BigNumber from 'bignumber.js';
 import { BehaviorSubject, combineLatest, from, of, zip } from 'rxjs';
-
-import { ErrorTypeEnum } from '../../enums/error-type.enum';
-import { StakingService } from '@features/staking/services/staking.service';
 import { map, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+
+import { StakingService } from '@features/staking/services/staking.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+
+import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '../../constants/STACKING_LIMITS';
+import { ErrorTypeEnum } from '../../enums/error-type.enum';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
   selector: 'app-stake-button-container',

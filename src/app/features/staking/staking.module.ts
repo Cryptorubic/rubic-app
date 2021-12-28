@@ -16,8 +16,11 @@ import {
 } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 
+// modules
 import { SharedModule } from '@shared/shared.module';
 import { StakingRoutingModule } from './staking-routing.module';
+
+// components
 import { StakeComponent } from './components/stake/stake.component';
 import { StakingContainerComponent } from './components/staking-container/staking-container.component';
 import { StakingTokensComponent } from './components/staking-tokens/staking-tokens.component';
@@ -28,6 +31,8 @@ import { StakingInfoComponent } from './components/staking-info/staking-info.com
 import { StakeButtonContainerComponent } from './components/stake-button-container/stake-button-container.component';
 import { WithdrawButtonContainerComponent } from './components/withdraw-button-container/withdraw-button-container.component';
 import { StakingPageComponent } from './components/staking-page/staking-page.component';
+
+// services
 import { StakingService } from './services/staking.service';
 import { StakingApiService } from './services/staking-api.service';
 
@@ -44,7 +49,6 @@ import { StakingApiService } from './services/staking-api.service';
     StakingPageComponent,
     WithdrawButtonContainerComponent
   ],
-  providers: [StakingService, StakingApiService],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -60,6 +64,7 @@ import { StakingApiService } from './services/staking-api.service';
     TuiHintModule,
     TuiProgressModule,
     TuiLoaderModule
-  ]
+  ],
+  providers: [StakingService, StakingApiService]
 })
 export class StakingModule {}

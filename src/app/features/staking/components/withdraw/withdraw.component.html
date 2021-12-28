@@ -13,18 +13,16 @@
       appTokenAmount
       [formControl]="amount"
     />
-    <ng-container *ngIf="(needLogin$ | async) === false">
-      <div class="withdraw__balance" *ngLet="maxAmountForWithdraw$ | async as maxAmountForWithdraw">
-        {{
-          'staking.stake.canUnstake'
-            | translate
-              : { amount: maxAmountForWithdraw | bigNumberFormat | shortenAmount: 9:4:true }
-        }}
-        <span class="withdraw__max" (click)="setMaxAmount(maxAmountForWithdraw)">MAX</span>
-      </div>
-    </ng-container>
-    <app-usd-price-container></app-usd-price-container>
   </div>
+  <ng-container *ngIf="(needLogin$ | async) === false">
+    <div class="withdraw__balance" *ngLet="maxAmountForWithdraw$ | async as maxAmountForWithdraw">
+      {{
+        'staking.stake.canUnstake'
+          | translate: { amount: maxAmountForWithdraw | bigNumberFormat | shortenAmount: 9:4:true }
+      }}
+      <span class="withdraw__max" (click)="setMaxAmount(maxAmountForWithdraw)">MAX</span>
+    </div>
+  </ng-container>
 
   <hr class="withdraw__divider" />
 
@@ -35,8 +33,9 @@
     </div>
     <input [value]="canReceive$ | async | bigNumberFormat" disabled class="withdraw__reward" />
     <div></div>
-    <app-usd-price-container></app-usd-price-container>
   </div>
+
+  <app-usd-price-container [usdPrice]="rewardUsdPrice$ | async"></app-usd-price-container>
 
   <app-withdraw-button-container
     class="withdraw__button"

@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
-
-import { StakingService } from '../../services/staking.service';
-import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
+import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
-import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { BehaviorSubject } from 'rxjs';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+
+import { StakingService } from '../../services/staking.service';
+import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { TranslateService } from '@ngx-translate/core';
+
+import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
 
 @Component({
   selector: 'app-stake',
@@ -44,13 +45,13 @@ export class StakeComponent {
   public approvedTokens: boolean = false;
 
   constructor(
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly stakingService: StakingService,
     private readonly walletsModalService: WalletsModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
+    @Inject(Injector) private readonly injector: Injector,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public confirmStake(): void {

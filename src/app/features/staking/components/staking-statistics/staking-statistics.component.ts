@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { StakingService } from '@features/staking/services/staking.service';
 import { map } from 'rxjs/operators';
+
+import { StakingService } from '@features/staking/services/staking.service';
 
 @Component({
   selector: 'app-staking-statistics',

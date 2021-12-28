@@ -2,10 +2,12 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
-import { StakingService } from '@features/staking/services/staking.service';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject } from 'rxjs';
+
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { StakingService } from '@features/staking/services/staking.service';
+
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 @Component({
