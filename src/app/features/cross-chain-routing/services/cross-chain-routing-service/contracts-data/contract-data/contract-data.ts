@@ -1,8 +1,5 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import {
-  MinimalProvider,
-  ProviderData
-} from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
+import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { crossChainContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/cross-chain-contract-addresses';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
@@ -20,6 +17,7 @@ import { AlgebraQuoterController } from '@features/instant-trade/services/instan
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { compareAddresses } from '@shared/utils/utils';
 import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/ItProvider';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -58,7 +56,7 @@ export abstract class ContractData {
 
   public abstract isPaused(): Promise<boolean>;
 
-  public getProvider(providerIndex: number): MinimalProvider {
+  public getProvider(providerIndex: number): ItProvider {
     return this.providersData[providerIndex].provider;
   }
 

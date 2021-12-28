@@ -15,7 +15,6 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { ExactMethod } from '@features/instant-trade/services/instant-trade-service/models/exact-method';
 
 @Injectable({
   providedIn: 'root'
@@ -43,12 +42,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
     const { fromTokenWrapped, toTokenWrapped } = this.getWrappedTokens(fromToken, toToken);
     const fromAmountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
-    const route = await this.getRoute(
-      fromTokenWrapped,
-      toTokenWrapped,
-      fromAmountAbsolute,
-      'input'
-    );
+    const route = await this.getRoute(fromTokenWrapped, toTokenWrapped, fromAmountAbsolute);
 
     return {
       blockchain: this.blockchain,
@@ -70,21 +64,18 @@ export class AlgebraService extends CommonUniV3AlgebraService {
    * @param fromToken From token.
    * @param toToken To token.
    * @param amountAbsolute From or to amount in Wei.
-   * @param exactMethod Defines which method will be used - 'input' or 'output'.
    */
   private async getRoute(
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
-    amountAbsolute: string,
-    exactMethod: ExactMethod
+    amountAbsolute: string
   ): Promise<AlgebraRoute> {
     const routes = (
       await this.quoterController.getAllRoutes(
         fromToken,
         toToken,
         amountAbsolute,
-        this.settings.disableMultihops ? 0 : maxTransitTokens,
-        exactMethod
+        this.settings.disableMultihops ? 0 : maxTransitTokens
       )
     ).sort((a, b) => b.outputAbsoluteAmount.comparedTo(a.outputAbsoluteAmount));
 
@@ -92,19 +83,6 @@ export class AlgebraService extends CommonUniV3AlgebraService {
       throw new InsufficientLiquidityError();
     }
     return routes[0];
-  }
-
-  public async getFromAmount(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    toAmount: BigNumber
-  ): Promise<BigNumber> {
-    const { fromTokenWrapped, toTokenWrapped } = this.getWrappedTokens(fromToken, toToken);
-    const toAmountAbsolute = Web3Pure.toWei(toAmount, toToken.decimals);
-
-    const route = await this.getRoute(fromTokenWrapped, toTokenWrapped, toAmountAbsolute, 'output');
-
-    return route.outputAbsoluteAmount;
   }
 
   protected getSwapRouterExactInputMethodParams(

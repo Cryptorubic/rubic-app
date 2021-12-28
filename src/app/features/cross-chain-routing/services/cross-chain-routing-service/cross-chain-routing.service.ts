@@ -369,16 +369,15 @@ export class CrossChainRoutingService {
       return transitTokenAmount;
     }
 
-    if (!CrossChainRoutingService.isSupportedBlockchain(fromToken.blockchain)) {
-      throw Error('Not supported blockchain');
+    if (transitTokenAmount.eq(0)) {
+      return new BigNumber(0);
     }
 
-    const amountAbsolute = transitTokenAmount.gt(0)
-      ? await this.contracts[fromToken.blockchain]
-          .getProvider(providerIndex)
-          .getFromAmount(fromToken, transitToken, transitTokenAmount)
-      : 0;
-    return Web3Pure.fromWei(amountAbsolute, fromToken.decimals);
+    return (
+      await this.contracts[blockchain]
+        .getProvider(providerIndex)
+        .calculateTrade(transitToken, transitTokenAmount, fromToken, false)
+    ).to.amount;
   }
 
   /**

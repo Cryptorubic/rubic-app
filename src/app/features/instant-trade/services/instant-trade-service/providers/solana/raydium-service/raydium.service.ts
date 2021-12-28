@@ -80,25 +80,6 @@ export class RaydiumService implements ItProvider {
     );
   }
 
-  public async getFromAmount(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    aIn: BigNumber
-  ): Promise<BigNumber> {
-    const pool = this.raydiumRoutingService.currentPoolInfo;
-    const { amountOut } = this.raydiumRoutingService.getSwapOutAmount(
-      pool,
-      fromToken.address,
-      toToken.address,
-      aIn.toString(),
-      this.settings.slippageTolerance
-    );
-    return new BigNumber(aIn)
-      .multipliedBy(100)
-      .dividedBy(amountOut)
-      .multipliedBy(10 ** fromToken.decimals);
-  }
-
   public approve(): Promise<void> {
     return;
   }
@@ -289,8 +270,7 @@ export class RaydiumService implements ItProvider {
     return this.connection?.sendRawTransaction(trx?.serialize());
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    console.log(tokenAddress);
+  public getAllowance(_tokenAddress: string): Observable<BigNumber> {
     return of(new BigNumber(NaN));
   }
 
