@@ -8,6 +8,10 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { StakingService } from '@features/staking/services/staking.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
+/**
+ * A modal window component allows user to choose how to stake,
+ * across the bridge or get BRBC on their own.
+ */
 @Component({
   selector: 'app-swap-modal',
   templateUrl: './swap-modal.component.html',

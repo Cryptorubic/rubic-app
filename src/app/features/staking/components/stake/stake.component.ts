@@ -11,6 +11,9 @@ import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.se
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
 
+/**
+ * Stake form component.
+ */
 @Component({
   selector: 'app-stake',
   templateUrl: './stake.component.html',

@@ -6,6 +6,10 @@ import { StakingService } from '../../services/staking.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
 
+/**
+ * Component for select with custom template of option
+ * and value changes event handling.
+ */
 @Component({
   selector: 'app-staking-tokens',
   templateUrl: './staking-tokens.component.html',
@@ -13,8 +17,14 @@ import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingTokensComponent {
+  /**
+   * Form control for token select.
+   */
   @Input() tokenFormControl: FormControl;
 
+  /**
+   * Form control for amount of selected token.
+   */
   @Input() amountFormControl: FormControl;
 
   public readonly availableTokens = STAKING_TOKENS;

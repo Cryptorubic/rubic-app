@@ -18,6 +18,10 @@ import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '../../constants/STACKING_LIMIT
 import { ErrorTypeEnum } from '../../enums/error-type.enum';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
+/**
+ * Stake button container component, contains logic of entering stake,
+ * connecting wallet, changing network and validation of entered staking amount.
+ */
 @Component({
   selector: 'app-stake-button-container',
   templateUrl: './stake-button-container.component.html',
@@ -26,6 +30,36 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
   providers: [TuiDestroyService]
 })
 export class StakeButtonContainerComponent implements OnInit {
+  /**
+   * Does user have approved tokens or not.
+   */
+  @Input() approvedTokens: boolean;
+
+  /**
+   * Form control for amount of token user wants to stake.
+   */
+  @Input() amountFormControl: FormControl;
+
+  /**
+   * Loading state for button "Confirm stake" button.
+   */
+  @Input() loading: boolean;
+
+  /**
+   * Emits event on entering stake.
+   */
+  @Output() onConfirmStake = new EventEmitter<void>();
+
+  /**
+   * Emits event on connecting wallet.
+   */
+  @Output() onLogin = new EventEmitter<void>();
+
+  /**
+   * Emits event on approving tokens.
+   */
+  @Output() onApprove = new EventEmitter<void>();
+
   public readonly needLogin$ = this.stakingService.needLogin$;
 
   public readonly selectedTokenBalance$ = this.stakingService.selectedTokenBalance$;
@@ -45,18 +79,6 @@ export class StakeButtonContainerComponent implements OnInit {
       return { max, min };
     })
   );
-
-  @Input() approvedTokens: boolean;
-
-  @Input() amountFormControl: FormControl;
-
-  @Input() loading: boolean;
-
-  @Output() onConfirmStake = new EventEmitter<void>();
-
-  @Output() onLogin = new EventEmitter<void>();
-
-  @Output() onApprove = new EventEmitter<void>();
 
   public readonly needApprove$ = new BehaviorSubject<boolean>(true);
 

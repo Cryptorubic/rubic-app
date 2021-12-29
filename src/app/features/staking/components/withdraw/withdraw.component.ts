@@ -11,6 +11,9 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
+/**
+ * Withdraw form component.
+ */
 @Component({
   selector: 'app-withdraw',
   templateUrl: './withdraw.component.html',

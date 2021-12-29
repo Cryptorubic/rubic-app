@@ -24,6 +24,11 @@ enum STAKING_NAV_ENUM {
   WITHDRAW = 1
 }
 
+/**
+ * Container component contains tab-switcher between staking and withdraw forms
+ * and some additional functionality: can add BRBC to users wallet, navigate user
+ * to swaps to get BRBC.
+ */
 @Component({
   selector: 'app-staking-container',
   templateUrl: './staking-container.component.html',

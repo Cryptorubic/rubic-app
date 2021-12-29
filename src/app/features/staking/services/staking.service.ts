@@ -774,7 +774,7 @@ export class StakingService {
 
   /**
    * Gets BRBC usd price every BRBC_USD_PRICE_UPDATE_TIME millisecond.
-   * @return Observable<List<Token>>
+   * @return Observable<number>
    */
   public watchBRBCUsdPrice(): Observable<number> {
     const { blockchain, address } = STAKING_TOKENS[0];

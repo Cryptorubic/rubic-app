@@ -17,6 +17,10 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { ErrorTypeEnum } from '../../enums/error-type.enum';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
+/**
+ * Withdraw button container component, contains logic of leaving stake,
+ * connecting wallet, changing network and validation of entered withdraw amount.
+ */
 @Component({
   selector: 'app-withdraw-button-container',
   templateUrl: './withdraw-button-container.component.html',
@@ -25,20 +29,39 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
   providers: [TuiDestroyService]
 })
 export class WithdrawButtonContainerComponent implements OnInit {
-  @Input() needChangeNetwork: boolean;
-
+  /**
+   * xBRBC balance.
+   */
   @Input() balance: BigNumber;
 
+  /**
+   * Loading state of withdraw button.
+   */
   @Input() loading: boolean;
 
+  /**
+   * Form control for amount of token user wants to withdraw.
+   */
   @Input() amountFormControl: FormControl;
 
+  /**
+   * Max amount of unfreezed tokens.
+   */
   @Input() maxAmountForWithdraw: BigNumber;
 
+  /**
+   * Emits event on leaving stake.
+   */
   @Output() onWithdraw = new EventEmitter<void>();
 
+  /**
+   * Emits event on connecting wallet.
+   */
   @Output() onLogin = new EventEmitter<void>();
 
+  /**
+   * Emits event on changing network
+   */
   @Output() onChangeNetwork = new EventEmitter<void>();
 
   public readonly needLogin$ = this.stakingService.needLogin$;
