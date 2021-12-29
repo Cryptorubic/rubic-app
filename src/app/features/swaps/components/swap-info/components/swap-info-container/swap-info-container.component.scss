@@ -1,5 +1,5 @@
 @use 'src/scss/core' as *;
-@forward '../../styles/styles';
+@use '../../styles/styles' as *;
 
 .swaps-info {
   padding: 29px 30px;

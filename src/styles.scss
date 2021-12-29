@@ -1,6 +1,6 @@
 /* Variables and mixins */
 @use 'scss/core' as *;
-@forward 'scss/dark-theme';
+@use 'scss/dark-theme' as *;
 
 /* Global scss */
 @use 'scss/fonts' as *;

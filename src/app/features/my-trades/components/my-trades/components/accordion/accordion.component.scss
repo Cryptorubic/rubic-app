@@ -2,7 +2,7 @@
 
 @use 'src/scss/core' as *;
 
-@forward '../styles';
+@use '../styles' as *;
 
 :host {
   --tui-secondary-hover: var(--rubic-base-01);
