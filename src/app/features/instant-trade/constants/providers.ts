@@ -2,6 +2,7 @@ import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAM
 import { INSTANT_TRADES_STATUS } from 'src/app/features/instant-trade/models/instant-trades-trade-status';
 import { INSTANT_TRADES_PROVIDER } from 'src/app/shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
+import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 
 const defaultState: ProviderControllerData = {
   trade: null,
@@ -11,182 +12,54 @@ const defaultState: ProviderControllerData = {
   needApprove: null
 };
 
+function getDefaultStateByProviders(
+  providers: INSTANT_TRADES_PROVIDER[]
+): ProviderControllerData[] {
+  return providers.map(provider => ({
+    ...defaultState,
+    tradeProviderInfo: {
+      label: instantTradesLabels[provider],
+      value: provider
+    }
+  }));
+}
+
 export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, ProviderControllerData[]>> = {
-  [BLOCKCHAIN_NAME.ETHEREUM]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Uniswap V3',
-        value: INSTANT_TRADES_PROVIDER.UNISWAP_V3
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: '1inch',
-        value: INSTANT_TRADES_PROVIDER.ONEINCH
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Uniswap V2',
-        value: INSTANT_TRADES_PROVIDER.UNISWAP_V2
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: '0x',
-        value: INSTANT_TRADES_PROVIDER.ZRX
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: '1inch',
-        value: INSTANT_TRADES_PROVIDER.ONEINCH
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Pancakeswap',
-        value: INSTANT_TRADES_PROVIDER.PANCAKESWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.POLYGON]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Algebra',
-        value: INSTANT_TRADES_PROVIDER.ALGEBRA
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: '1inch',
-        value: INSTANT_TRADES_PROVIDER.ONEINCH
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Quickswap',
-        value: INSTANT_TRADES_PROVIDER.QUICKSWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.HARMONY]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Viperswap',
-        value: INSTANT_TRADES_PROVIDER.VIPER
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.AVALANCHE]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Pangolin',
-        value: INSTANT_TRADES_PROVIDER.PANGOLIN
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Joe',
-        value: INSTANT_TRADES_PROVIDER.JOE
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.MOONRIVER]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Solarbeam',
-        value: INSTANT_TRADES_PROVIDER.SOLARBEAM
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.FANTOM]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Spookyswap',
-        value: INSTANT_TRADES_PROVIDER.SPOOKYSWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Spiritswap',
-        value: INSTANT_TRADES_PROVIDER.SPIRITSWAP
-      }
-    },
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Sushiswap',
-        value: INSTANT_TRADES_PROVIDER.SUSHISWAP
-      }
-    }
-  ],
-  [BLOCKCHAIN_NAME.SOLANA]: [
-    {
-      ...defaultState,
-      tradeProviderInfo: {
-        label: 'Raydium',
-        value: INSTANT_TRADES_PROVIDER.RAYDIUM
-      }
-    }
-  ]
+  [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.UNISWAP_V3,
+    INSTANT_TRADES_PROVIDER.ONEINCH,
+    INSTANT_TRADES_PROVIDER.UNISWAP_V2,
+    INSTANT_TRADES_PROVIDER.SUSHISWAP,
+    INSTANT_TRADES_PROVIDER.ZRX
+  ]),
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.ONEINCH,
+    INSTANT_TRADES_PROVIDER.PANCAKESWAP,
+    INSTANT_TRADES_PROVIDER.SUSHISWAP
+  ]),
+  [BLOCKCHAIN_NAME.POLYGON]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.ALGEBRA,
+    INSTANT_TRADES_PROVIDER.ONEINCH,
+    INSTANT_TRADES_PROVIDER.QUICKSWAP,
+    INSTANT_TRADES_PROVIDER.SUSHISWAP
+  ]),
+  [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.SUSHISWAP,
+    INSTANT_TRADES_PROVIDER.VIPER
+  ]),
+  [BLOCKCHAIN_NAME.AVALANCHE]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.SUSHISWAP,
+    INSTANT_TRADES_PROVIDER.PANGOLIN,
+    INSTANT_TRADES_PROVIDER.JOE
+  ]),
+  [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.SUSHISWAP,
+    INSTANT_TRADES_PROVIDER.SOLARBEAM
+  ]),
+  [BLOCKCHAIN_NAME.FANTOM]: getDefaultStateByProviders([
+    INSTANT_TRADES_PROVIDER.SPOOKYSWAP,
+    INSTANT_TRADES_PROVIDER.SPIRITSWAP,
+    INSTANT_TRADES_PROVIDER.SUSHISWAP
+  ]),
+  [BLOCKCHAIN_NAME.SOLANA]: getDefaultStateByProviders([INSTANT_TRADES_PROVIDER.RAYDIUM])
 };

@@ -30,6 +30,7 @@ import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
 import { subtractPercent } from '@shared/utils/utils';
 import CustomError from '@core/errors/models/custom-error';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,10 @@ export class RaydiumService implements ItProvider {
   private readonly blockchainAdapter: SolanaWeb3Public;
 
   private readonly swapManager: RaydiumSwapManager;
+
+  public get providerType(): INSTANT_TRADES_PROVIDER {
+    return INSTANT_TRADES_PROVIDER.RAYDIUM;
+  }
 
   constructor(
     private readonly httpClient: HttpClient,
