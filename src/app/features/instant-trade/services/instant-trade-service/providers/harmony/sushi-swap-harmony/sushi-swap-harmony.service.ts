@@ -7,9 +7,7 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
   providedIn: 'root'
 })
 export class SushiSwapHarmonyService extends CommonUniswapV2Service {
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.SUSHISWAP;
-  }
+  public readonly providerType = INSTANT_TRADES_PROVIDER.SUSHISWAP;
 
   constructor() {
     super(sushiSwapHarmonyConstants);

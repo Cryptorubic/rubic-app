@@ -49,6 +49,8 @@ export class ZrxService implements ItProvider {
     return supportedZrxBlockchains.some(supportedBlockchain => supportedBlockchain === blockchain);
   }
 
+  public readonly providerType = INSTANT_TRADES_PROVIDER.ZRX;
+
   private readonly gasMargin: number;
 
   private fromBlockchainAdapter: EthLikeWeb3Public;
@@ -68,10 +70,6 @@ export class ZrxService implements ItProvider {
   private walletAddress: string;
 
   private isTestingMode: boolean;
-
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.ZRX;
-  }
 
   constructor(
     private readonly settingsService: SettingsService,

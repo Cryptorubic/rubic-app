@@ -8,9 +8,7 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
   providedIn: 'root'
 })
 export class OneInchEthService extends OneinchProviderAbstract {
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.ONEINCH;
-  }
+  public readonly providerType = INSTANT_TRADES_PROVIDER.ONEINCH;
 
   constructor(commonOneinchService: CommonOneinchService) {
     super(BLOCKCHAIN_NAME.ETHEREUM, commonOneinchService);

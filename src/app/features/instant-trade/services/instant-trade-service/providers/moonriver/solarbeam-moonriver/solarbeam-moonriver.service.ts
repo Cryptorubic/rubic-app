@@ -9,9 +9,7 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
   providedIn: 'root'
 })
 export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.SOLARBEAM;
-  }
+  public readonly providerType = INSTANT_TRADES_PROVIDER.SOLARBEAM;
 
   constructor() {
     super(solarBeamMoonRiverConstants);

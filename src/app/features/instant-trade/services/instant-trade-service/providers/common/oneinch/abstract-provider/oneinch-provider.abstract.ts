@@ -13,9 +13,9 @@ import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction
 import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 export abstract class OneinchProviderAbstract implements ItProvider {
-  private readonly blockchain: BLOCKCHAIN_NAME;
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDER;
 
-  public abstract get providerType(): INSTANT_TRADES_PROVIDER;
+  private readonly blockchain: BLOCKCHAIN_NAME;
 
   constructor(
     blockchain: BLOCKCHAIN_NAME,

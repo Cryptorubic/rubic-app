@@ -39,6 +39,8 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
 
 @Injectable()
 export abstract class CommonUniV3AlgebraService implements ItProvider {
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDER;
+
   protected readonly blockchain: BLOCKCHAIN_NAME;
 
   protected blockchainAdapter: EthLikeWeb3Public;
@@ -65,8 +67,6 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
   private readonly settingsService = inject(SettingsService);
 
   protected readonly useTestingModeService = inject(UseTestingModeService);
-
-  public abstract get providerType(): INSTANT_TRADES_PROVIDER;
 
   protected constructor(uniswapV3Constants: UniV3AlgebraConstants) {
     this.blockchain = uniswapV3Constants.blockchain;

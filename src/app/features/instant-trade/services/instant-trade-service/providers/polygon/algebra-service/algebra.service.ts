@@ -21,11 +21,9 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
   providedIn: 'root'
 })
 export class AlgebraService extends CommonUniV3AlgebraService {
-  private readonly quoterController: AlgebraQuoterController;
+  public readonly providerType = INSTANT_TRADES_PROVIDER.ALGEBRA;
 
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.ALGEBRA;
-  }
+  private readonly quoterController: AlgebraQuoterController;
 
   constructor() {
     super(algebraConstants);
