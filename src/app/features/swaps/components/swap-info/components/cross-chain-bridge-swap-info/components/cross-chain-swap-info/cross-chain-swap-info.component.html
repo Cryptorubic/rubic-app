@@ -1,5 +1,5 @@
 <ng-container *ngIf="fromPath || toPath">
-  <div class="info-line">
+  <div class="info-line info-line_mb">
     <div class="info-line__title title">
       <span class="title__text">Best routing</span>
     </div>
@@ -7,7 +7,8 @@
 
   <div class="info-line" *ngIf="fromPath">
     <div class="info-line__title title">
-      <span class="title__text">{{ fromBlockchainLabel }} via Trader Joe</span>
+      <img [src]="fromProviderImg" alt="" />
+      <span class="title__text">{{ fromBlockchainLabel }} via {{ fromProviderLabel }}</span>
     </div>
     <div class="info-line__value route-value">
       <ng-container *ngFor="let tokenSymbol of fromPath; index as index">
@@ -24,7 +25,8 @@
 
   <div class="info-line" *ngIf="toPath">
     <div class="info-line__title title">
-      <span class="title__text">{{ toBlockchainLabel }} via Pangolin</span>
+      <img [src]="toProviderImg" alt="" />
+      <span class="title__text">{{ toBlockchainLabel }} via {{ toProviderLabel }}</span>
     </div>
     <div class="info-line__value route-value">
       <ng-container *ngFor="let tokenSymbol of toPath; index as index">

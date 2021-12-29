@@ -13,6 +13,9 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { tradesProviders } from '@shared/constants/common/trades-providers';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -48,9 +51,29 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public priceImpactTo: number;
 
+  private fromProvider: INSTANT_TRADES_PROVIDER;
+
+  private toProvider: INSTANT_TRADES_PROVIDER;
+
   public fromPath: string[] | null;
 
   public toPath: string[] | null;
+
+  public get fromProviderImg(): string {
+    return tradesProviders[this.fromProvider].image;
+  }
+
+  public get toProviderImg(): string {
+    return tradesProviders[this.toProvider].image;
+  }
+
+  public get fromProviderLabel(): string {
+    return instantTradesLabels[this.fromProvider];
+  }
+
+  public get toProviderLabel(): string {
+    return instantTradesLabels[this.toProvider];
+  }
 
   public get fromBlockchainLabel(): string {
     return BlockchainsInfo.getBlockchainLabel(this.fromToken.blockchain);
@@ -140,6 +163,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
 
     this.setPriceImpact(tradeInfo);
+
+    this.fromProvider = tradeInfo.fromProvider;
+    this.toProvider = tradeInfo.toProvider;
 
     this.fromPath = tradeInfo.fromPath;
     this.toPath = tradeInfo.toPath;

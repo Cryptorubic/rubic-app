@@ -514,6 +514,11 @@ export class CrossChainRoutingService {
       )
     ]);
 
+    const fromProvider = this.contracts[fromBlockchain].getProvider(
+      trade.fromProviderIndex
+    ).providerType;
+    const toProvider = this.contracts[toBlockchain].getProvider(trade.toProviderIndex).providerType;
+
     const fromPath = trade.fromTrade ? trade.fromTrade.path.map(token => token.symbol) : null;
     const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
 
@@ -525,6 +530,8 @@ export class CrossChainRoutingService {
       estimatedGas,
       priceImpactFrom,
       priceImpactTo,
+      fromProvider,
+      toProvider,
       fromPath,
       toPath
     };
