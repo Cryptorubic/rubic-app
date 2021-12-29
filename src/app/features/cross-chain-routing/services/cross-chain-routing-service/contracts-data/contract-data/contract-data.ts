@@ -89,10 +89,6 @@ export abstract class ContractData {
       contractAbiMethod = { ...crossChainContractAbiV3.find(method => method.name === methodName) };
     }
 
-    if (this.blockchain === BLOCKCHAIN_NAME.AVALANCHE) {
-      methodName += 'AVAX';
-    }
-
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
     contractAbiMethod.name = methodName;
 
