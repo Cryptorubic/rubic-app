@@ -1,6 +1,6 @@
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
-import { TableProvider, DEPRECATED_PROVIDER } from '@shared/models/my-trades/table-trade';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { DEPRECATED_PROVIDER, TableProvider } from '@shared/models/my-trades/table-trade';
 
 type Provider = {
   name: string;
@@ -9,7 +9,7 @@ type Provider = {
 
 const imageBasePath = 'assets/images/icons/providers/';
 
-const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
+const bridgesProviders: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
@@ -24,7 +24,7 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
   }
 };
 
-const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADE_PROVIDER, Provider> = {
+const instantTradesProviders: Record<INSTANT_TRADE_PROVIDER, Provider> = {
   [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.png`
@@ -91,17 +91,17 @@ const INSTANT_TRADES_PROVIDERS: Record<INSTANT_TRADE_PROVIDER, Provider> = {
   }
 };
 
-const CROSS_CHAIN_ROUTING_PROVIDER: Provider = {
+const crossChainProvider: Provider = {
   name: 'Cross-Chain',
   image: `${imageBasePath}ccr.svg`
 };
 
-const GAS_REFUND_PROVIDER: Provider = {
+const gasRefundProvider: Provider = {
   name: 'Gas Refund',
   image: `${imageBasePath}gas-refund.svg`
 };
 
-const DEPRECATED_PROVIDERS: Record<DEPRECATED_PROVIDER, Provider> = {
+const deprecatedProviders: Record<DEPRECATED_PROVIDER, Provider> = {
   [DEPRECATED_PROVIDER.PANAMA]: {
     name: 'Panama',
     image: `${imageBasePath}panama.svg`
@@ -112,10 +112,10 @@ const DEPRECATED_PROVIDERS: Record<DEPRECATED_PROVIDER, Provider> = {
   }
 };
 
-export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
-  ...BRIDGE_PROVIDERS,
-  ...INSTANT_TRADES_PROVIDERS,
-  ...DEPRECATED_PROVIDERS,
-  CROSS_CHAIN_ROUTING_PROVIDER,
-  GAS_REFUND_PROVIDER
+export const tradesProviders: Record<TableProvider, Provider> = {
+  ...bridgesProviders,
+  ...instantTradesProviders,
+  ...deprecatedProviders,
+  CROSS_CHAIN_ROUTING_PROVIDER: crossChainProvider,
+  GAS_REFUND_PROVIDER: gasRefundProvider
 };

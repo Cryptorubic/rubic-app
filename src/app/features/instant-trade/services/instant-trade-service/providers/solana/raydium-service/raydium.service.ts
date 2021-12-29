@@ -30,11 +30,14 @@ import { subtractPercent } from '@shared/utils/utils';
 import CustomError from '@core/errors/models/custom-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RaydiumService implements ItProvider {
+  public readonly providerType = INSTANT_TRADE_PROVIDER.RAYDIUM;
+
   private settings: ItSettingsForm;
 
   private readonly connection: Connection;

@@ -35,9 +35,12 @@ import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 @Injectable()
 export abstract class CommonUniV3AlgebraService implements ItProvider {
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
+
   protected readonly blockchain: BLOCKCHAIN_NAME;
 
   protected blockchainAdapter: EthLikeWeb3Public;

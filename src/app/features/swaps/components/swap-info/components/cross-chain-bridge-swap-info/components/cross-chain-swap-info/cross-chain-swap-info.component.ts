@@ -15,13 +15,13 @@ import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cros
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 @Component({
-  selector: 'app-ccr-swap-info',
-  templateUrl: './ccr-swap-info.component.html',
-  styleUrls: ['./ccr-swap-info.component.scss'],
+  selector: 'app-cross-chain-swap-info',
+  templateUrl: './cross-chain-swap-info.component.html',
+  styleUrls: ['./cross-chain-swap-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class CcrSwapInfoComponent implements OnInit {
+export class CrossChainSwapInfoComponent implements OnInit {
   public fromToken: TokenAmount;
 
   public toToken: TokenAmount;

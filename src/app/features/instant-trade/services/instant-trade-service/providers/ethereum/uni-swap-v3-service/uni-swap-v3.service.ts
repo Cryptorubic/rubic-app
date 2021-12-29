@@ -29,6 +29,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
@@ -36,6 +37,8 @@ const RUBIC_OPTIMIZATION_DISABLED = true;
   providedIn: 'root'
 })
 export class UniSwapV3Service extends CommonUniV3AlgebraService {
+  public readonly providerType = INSTANT_TRADE_PROVIDER.UNISWAP_V3;
+
   private readonly gasMargin = 1.2;
 
   private readonly quoterController: UniSwapV3QuoterController;

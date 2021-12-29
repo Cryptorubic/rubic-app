@@ -29,13 +29,13 @@ const supportedBlockchains = [
 type SupportedBlockchain = typeof supportedBlockchains[number];
 
 @Component({
-  selector: 'app-cross-chain-swap-info',
-  templateUrl: './cross-chain-swap-info.component.html',
-  styleUrls: ['./cross-chain-swap-info.component.scss'],
+  selector: 'app-cross-chain-bridge-swap-info',
+  templateUrl: './cross-chain-bridge-swap-info.component.html',
+  styleUrls: ['./cross-chain-bridge-swap-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class CrossChainSwapInfoComponent implements OnInit {
+export class CrossChainBridgeSwapInfoComponent implements OnInit {
   @Input() public swapType: SWAP_PROVIDER_TYPE;
 
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;

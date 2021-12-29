@@ -15,7 +15,7 @@ import {
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, share, startWith } from 'rxjs/operators';
 import { isPresent } from '@taiga-ui/cdk';
-import { TRADES_PROVIDERS } from '@features/my-trades/constants/trades-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
@@ -43,7 +43,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
-  public TRADES_PROVIDERS = TRADES_PROVIDERS;
+  public readonly tradesProviders = INSTANT_TRADE_PROVIDER;
 
   public readonly columns = COLUMNS;
 

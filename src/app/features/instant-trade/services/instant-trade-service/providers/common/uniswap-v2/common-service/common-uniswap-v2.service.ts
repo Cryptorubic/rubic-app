@@ -18,8 +18,8 @@ import {
   ItProvider
 } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import {
-  DefaultEstimatedGas,
-  DEFAULT_ESTIMATED_GAS
+  DEFAULT_ESTIMATED_GAS,
+  DefaultEstimatedGas
 } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-estimated-gas';
 import { GetTradeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeData';
 import { GasCalculationMethod } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GasCalculationMethod';
@@ -44,7 +44,6 @@ import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import InstantTrade from '@features/instant-trade/models/Instant-trade';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
-import DefaultUniswapV2Abi from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
 import { TradeContractData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/TradeContractData';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
@@ -52,6 +51,8 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation-error';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import DEFAULT_UNISWAP_V2_ABI from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -65,6 +66,8 @@ interface RecGraphVisitorOptions {
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
+
   protected contractAbi: AbiItem[];
 
   protected swapsMethod: ISwapMethods;
@@ -108,7 +111,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly gasService = inject(GasService);
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
-    this.contractAbi = DefaultUniswapV2Abi;
+    this.contractAbi = DEFAULT_UNISWAP_V2_ABI;
     this.swapsMethod = DEFAULT_SWAP_METHODS;
     this.defaultEstimateGas = DEFAULT_ESTIMATED_GAS;
     this.gasMargin = 1.2; // 120%

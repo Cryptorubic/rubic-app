@@ -14,12 +14,15 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlgebraService extends CommonUniV3AlgebraService {
+  public readonly providerType = INSTANT_TRADE_PROVIDER.ALGEBRA;
+
   private readonly quoterController: AlgebraQuoterController;
 
   constructor() {
