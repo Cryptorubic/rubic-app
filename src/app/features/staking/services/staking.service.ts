@@ -347,7 +347,6 @@ export class StakingService {
       )
     ).pipe(
       catchError((error: unknown) => {
-        console.debug(error);
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber('0'));
       }),

@@ -9,8 +9,7 @@ import { StakingService } from '@features/staking/services/staking.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
- * A modal window component allows user to choose how to stake,
- * across the bridge or get BRBC on their own.
+ * The modal which allows user to choose staking method.
  */
 @Component({
   selector: 'app-swap-modal',

@@ -8,7 +8,7 @@ import { STAKE_LIMIT_MAX } from '@features/staking/constants/STACKING_LIMITS';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
- * Component shows total staking progress and for logged-in user.
+ * Component shows total staking progress and progress for logged-in user.
  */
 @Component({
   selector: 'app-staking-info',

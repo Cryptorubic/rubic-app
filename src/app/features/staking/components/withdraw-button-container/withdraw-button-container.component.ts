@@ -18,7 +18,7 @@ import { ErrorTypeEnum } from '../../enums/error-type.enum';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
- * Withdraw button container component, contains logic of leaving stake,
+ * Withdraw button container component. Contains logic of leaving stake,
  * connecting wallet, changing network and validation of entered withdraw amount.
  */
 @Component({

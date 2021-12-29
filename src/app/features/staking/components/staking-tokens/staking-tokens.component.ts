@@ -7,8 +7,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
 
 /**
- * Component for select with custom template of option
- * and value changes event handling.
+ * Staking tokens dropdown component.
  */
 @Component({
   selector: 'app-staking-tokens',
