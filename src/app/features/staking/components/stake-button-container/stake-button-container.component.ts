@@ -7,7 +7,7 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, of, zip } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, of, zip } from 'rxjs';
 import { map, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { FormControl } from '@angular/forms';
@@ -80,7 +80,11 @@ export class StakeButtonContainerComponent implements OnInit {
     })
   );
 
-  public readonly needApprove$ = new BehaviorSubject<boolean>(true);
+  private readonly _needApprove$ = new BehaviorSubject<boolean>(true);
+
+  get needApprove$(): Observable<boolean> {
+    return this._needApprove$.asObservable();
+  }
 
   public readonly needChangeNetwork$ = combineLatest([
     this.stakingService.selectedToken$,
@@ -124,7 +128,7 @@ export class StakeButtonContainerComponent implements OnInit {
           );
         }),
         tap(([needApprove, balance, limit, amount]) => {
-          this.needApprove$.next(needApprove);
+          this._needApprove$.next(needApprove);
           this.checkAmountAndBalance(amount, balance, limit);
         }),
         takeUntil(this.destroy$)

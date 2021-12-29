@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { StakingService } from '../../services/staking.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
@@ -22,8 +22,6 @@ import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
   providers: [TuiDestroyService]
 })
 export class StakeComponent {
-  public readonly loading$ = new BehaviorSubject<boolean>(false);
-
   public readonly needLogin$ = this.stakingService.needLogin$;
 
   public readonly amount = new FormControl('');
@@ -41,7 +39,11 @@ export class StakeComponent {
     takeUntil(this.destroy$)
   );
 
-  public readonly stakeButtonLoading$ = new BehaviorSubject(false);
+  private readonly _stakeButtonLoading$ = new BehaviorSubject(false);
+
+  get stakeButtonLoading$(): Observable<boolean> {
+    return this._stakeButtonLoading$.asObservable();
+  }
 
   public approvedTokens: boolean = false;
 
@@ -54,7 +56,7 @@ export class StakeComponent {
   ) {}
 
   public confirmStake(): void {
-    this.stakeButtonLoading$.next(true);
+    this._stakeButtonLoading$.next(true);
     const stakeNotification$ = this.notificationsService.show(
       this.translateService.instant('notifications.stakeInProgress'),
       {
@@ -67,7 +69,7 @@ export class StakeComponent {
       .pipe(
         finalize(() => {
           stakeNotification$.unsubscribe();
-          this.stakeButtonLoading$.next(false);
+          this._stakeButtonLoading$.next(false);
         })
       )
       .subscribe(() => {
@@ -87,7 +89,7 @@ export class StakeComponent {
   }
 
   public approve(): void {
-    this.stakeButtonLoading$.next(true);
+    this._stakeButtonLoading$.next(true);
     const approveNotification = this.notificationsService.show(
       this.translateService.instant('notifications.approveInProgress'),
       {
@@ -100,7 +102,7 @@ export class StakeComponent {
       .pipe(
         finalize(() => {
           approveNotification.unsubscribe();
-          this.stakeButtonLoading$.next(false);
+          this._stakeButtonLoading$.next(false);
         })
       )
       .subscribe(() => {

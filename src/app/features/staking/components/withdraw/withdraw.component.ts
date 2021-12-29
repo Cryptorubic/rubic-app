@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
-import { BehaviorSubject, EMPTY, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, Observable, of } from 'rxjs';
 import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -30,25 +30,35 @@ export class WithdrawComponent implements OnInit {
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
-  public readonly rewardUsdPrice$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+  private readonly _withdrawButtonLoading$ = new BehaviorSubject<boolean>(false);
+
+  get withdrawButtonLoading$(): Observable<boolean> {
+    return this._withdrawButtonLoading$.asObservable();
+  }
+
+  private readonly _rewardUsdPrice$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+
+  get rewardUsdPrice$(): Observable<BigNumber> {
+    return this._rewardUsdPrice$.asObservable();
+  }
 
   public readonly canReceive$ = this.amount.valueChanges.pipe(
     switchMap(amount => {
       if (amount === '') {
-        this.rewardUsdPrice$.next(new BigNumber(0));
+        this._rewardUsdPrice$.next(new BigNumber(0));
         return of('');
       }
       const amountInWei = new BigNumber(Web3Pure.toWei(amount.split(',').join('')));
       return of(amountInWei).pipe(
         switchMap(value => this.stakingService.calculateLeaveReward(value)),
-        tap(reward => this.rewardUsdPrice$.next(this.stakingService.calculateBRBCUsdPrice(reward))),
+        tap(reward =>
+          this._rewardUsdPrice$.next(this.stakingService.calculateBRBCUsdPrice(reward))
+        ),
         map(reward => reward.toNumber())
       );
     }),
     takeUntil(this.destroy$)
   );
-
-  public readonly withdrawButtonLoading$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private readonly stakingService: StakingService,
@@ -84,13 +94,13 @@ export class WithdrawComponent implements OnInit {
         autoClose: false
       }
     );
-    this.withdrawButtonLoading$.next(true);
+    this._withdrawButtonLoading$.next(true);
     this.stakingService
       .leaveStake(new BigNumber(this.amount.value))
       .pipe(
         finalize(() => {
           withdrawNotification$.unsubscribe();
-          this.withdrawButtonLoading$.next(false);
+          this._withdrawButtonLoading$.next(false);
         })
       )
       .subscribe(() => {

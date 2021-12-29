@@ -8,7 +8,7 @@ import {
   Self
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { FormControl } from '@angular/forms';
@@ -68,9 +68,13 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
-  public readonly errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(
+  private readonly _errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(
     ErrorTypeEnum.EMPTY_AMOUNT
   );
+
+  get errorType$(): Observable<ErrorTypeEnum | null> {
+    return this._errorType$.asObservable();
+  }
 
   public readonly errorTypeEnum = ErrorTypeEnum;
 
@@ -112,21 +116,21 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber): void {
     if (amount.isZero()) {
-      this.errorType$.next(ErrorTypeEnum.ZERO);
+      this._errorType$.next(ErrorTypeEnum.ZERO);
       return;
     }
 
     if (amount.isNaN()) {
-      this.errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
+      this._errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
       return;
     }
 
     if (balance.lt(amount) || this.maxAmountForWithdraw.lt(amount)) {
-      this.errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
+      this._errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
       return;
     }
 
-    this.errorType$.next(null);
+    this._errorType$.next(null);
   }
 
   public switchNetwork(): void {
