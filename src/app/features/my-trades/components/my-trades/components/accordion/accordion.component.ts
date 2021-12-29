@@ -9,7 +9,7 @@ import {
   Output
 } from '@angular/core';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
-import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
+import { tradesProviders } from '@shared/constants/common/trades-providers';
 import { Observable } from 'rxjs';
 import {
   TableRow,
@@ -42,7 +42,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  public TRADES_PROVIDERS = TRADES_PROVIDERS;
+  public readonly tradesProviders = tradesProviders;
 
   private PAGE_SIZE = 5;
 

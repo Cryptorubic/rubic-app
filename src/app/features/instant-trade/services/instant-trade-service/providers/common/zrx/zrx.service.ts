@@ -35,6 +35,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
 
@@ -42,6 +43,14 @@ const AFFILIATE_ADDRESS = environment.zrxAffiliateAddress;
   providedIn: 'root'
 })
 export class ZrxService implements ItProvider {
+  public static isSupportedBlockchain(
+    blockchain: BLOCKCHAIN_NAME
+  ): blockchain is SupportedZrxBlockchain {
+    return supportedZrxBlockchains.some(supportedBlockchain => supportedBlockchain === blockchain);
+  }
+
+  public readonly providerType = INSTANT_TRADES_PROVIDER.ZRX;
+
   private readonly gasMargin: number;
 
   private fromBlockchainAdapter: EthLikeWeb3Public;
@@ -61,12 +70,6 @@ export class ZrxService implements ItProvider {
   private walletAddress: string;
 
   private isTestingMode: boolean;
-
-  public static isSupportedBlockchain(
-    blockchain: BLOCKCHAIN_NAME
-  ): blockchain is SupportedZrxBlockchain {
-    return supportedZrxBlockchains.some(supportedBlockchain => supportedBlockchain === blockchain);
-  }
 
   constructor(
     private readonly settingsService: SettingsService,
