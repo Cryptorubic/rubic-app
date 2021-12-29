@@ -15,12 +15,17 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlgebraService extends CommonUniV3AlgebraService {
   private readonly quoterController: AlgebraQuoterController;
+
+  public get providerType(): INSTANT_TRADES_PROVIDER {
+    return INSTANT_TRADES_PROVIDER.ALGEBRA;
+  }
 
   constructor() {
     super(algebraConstants);

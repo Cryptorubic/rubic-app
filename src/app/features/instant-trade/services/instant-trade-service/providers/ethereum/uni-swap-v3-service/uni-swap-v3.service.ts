@@ -29,6 +29,7 @@ import {
   UniSwapV3Route
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
@@ -39,6 +40,10 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
   private readonly gasMargin = 1.2;
 
   private readonly quoterController: UniSwapV3QuoterController;
+
+  public get providerType(): INSTANT_TRADES_PROVIDER {
+    return INSTANT_TRADES_PROVIDER.UNISWAP_V3;
+  }
 
   constructor(
     private readonly gasService: GasService,

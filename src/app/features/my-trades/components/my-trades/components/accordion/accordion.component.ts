@@ -9,7 +9,7 @@ import {
   Output
 } from '@angular/core';
 import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
-import { TRADES_PROVIDERS } from 'src/app/features/my-trades/constants/TRADES_PROVIDERS';
+import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { Observable } from 'rxjs';
 import {
   TableRow,
