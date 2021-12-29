@@ -1,5 +1,5 @@
-@import 'src/scss/vars';
-@import '../styles';
+@use 'src/scss/vars' as *;
+@forward '../styles';
 
 .table {
   width: 100%;

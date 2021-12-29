@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@use 'src/scss/vars' as *;
 
 :host {
   width: 100%;

@@ -1,26 +1,24 @@
-/* Global scss */
-@import 'scss/fonts';
+/* Variables and mixins */
+@use 'scss/core' as *;
+@forward 'scss/dark-theme';
 
 /* Global scss */
-@import 'scss/vars';
-@import 'scss/typography';
-@import 'scss/mixins';
+@use 'scss/fonts' as *;
+@use 'scss/typography' as *;
 
 /* Elements */
-@import 'scss/elements/icons';
-@import 'scss/elements/dropdown-labels';
-@import 'scss/elements/banner';
-@import 'scss/elements/buttons';
-
-/* Global */
-@import 'scss/carrot-quest';
-@import 'scss/dark-theme';
+@use 'scss/elements/icons' as *;
+@use 'scss/elements/dropdown-labels' as *;
+@use 'scss/elements/banner' as *;
+@use 'scss/elements/buttons' as *;
 
 /* TaigaUI custom styles */
-@import 'scss/taiga-slyles';
+@use 'scss/taiga-slyles' as *;
+
 
 /* External libs styles */
-@import 'scss/libs';
+@use 'scss/carrot-quest' as *;
+@use 'scss/libs' as *;
 
 * {
   box-sizing: border-box;

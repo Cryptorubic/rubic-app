@@ -1,4 +1,4 @@
-@import 'src/styles';
+@use 'src/scss/core' as *;
 
 :host {
   --tui-primary-text: #{$rubic-primary};
