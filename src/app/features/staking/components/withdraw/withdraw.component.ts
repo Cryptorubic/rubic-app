@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
 import { BehaviorSubject, EMPTY, forkJoin, Observable, of } from 'rxjs';
-import { finalize, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { finalize, map, share, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TuiNotification } from '@taiga-ui/core';
@@ -57,6 +57,7 @@ export class WithdrawComponent implements OnInit {
         map(reward => reward.toNumber())
       );
     }),
+    share(),
     takeUntil(this.destroy$)
   );
 
