@@ -9,7 +9,7 @@ type Provider = {
 
 const imageBasePath = 'assets/images/icons/providers/';
 
-const BridgeProviders: Record<BRIDGE_PROVIDER, Provider> = {
+const bridgesProviders: Record<BRIDGE_PROVIDER, Provider> = {
   [BRIDGE_PROVIDER.SWAP_RBC]: {
     name: 'Rubic',
     image: `${imageBasePath}rubic.svg`
@@ -24,7 +24,7 @@ const BridgeProviders: Record<BRIDGE_PROVIDER, Provider> = {
   }
 };
 
-const InstantTradesProviders: Record<INSTANT_TRADES_PROVIDER, Provider> = {
+const instantTradesProviders: Record<INSTANT_TRADES_PROVIDER, Provider> = {
   [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.png`
@@ -95,17 +95,17 @@ const InstantTradesProviders: Record<INSTANT_TRADES_PROVIDER, Provider> = {
   }
 };
 
-const CrossChainProvider: Provider = {
+const crossChainProvider: Provider = {
   name: 'Cross-Chain',
   image: `${imageBasePath}ccr.svg`
 };
 
-const GasRefundProvider: Provider = {
+const gasRefundProvider: Provider = {
   name: 'Gas Refund',
   image: `${imageBasePath}gas-refund.svg`
 };
 
-const DeprecatedProviders: Record<DEPRECATED_PROVIDER, Provider> = {
+const deprecatedProviders: Record<DEPRECATED_PROVIDER, Provider> = {
   [DEPRECATED_PROVIDER.PANAMA]: {
     name: 'Panama',
     image: `${imageBasePath}panama.svg`
@@ -116,10 +116,10 @@ const DeprecatedProviders: Record<DEPRECATED_PROVIDER, Provider> = {
   }
 };
 
-export const TRADES_PROVIDERS: Record<TableProvider, Provider> = {
-  ...BridgeProviders,
-  ...InstantTradesProviders,
-  ...DeprecatedProviders,
-  CROSS_CHAIN_ROUTING_PROVIDER: CrossChainProvider,
-  GAS_REFUND_PROVIDER: GasRefundProvider
+export const tradesProviders: Record<TableProvider, Provider> = {
+  ...bridgesProviders,
+  ...instantTradesProviders,
+  ...deprecatedProviders,
+  CROSS_CHAIN_ROUTING_PROVIDER: crossChainProvider,
+  GAS_REFUND_PROVIDER: gasRefundProvider
 };
