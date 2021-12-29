@@ -66,6 +66,8 @@ interface RecGraphVisitorOptions {
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDER;
+
   protected contractAbi: AbiItem[];
 
   protected swapsMethod: ISwapMethods;
@@ -107,8 +109,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly useTestingModeService = inject(UseTestingModeService);
 
   private readonly gasService = inject(GasService);
-
-  public abstract get providerType(): INSTANT_TRADES_PROVIDER;
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
     this.contractAbi = defaultUniswapV2Abi;

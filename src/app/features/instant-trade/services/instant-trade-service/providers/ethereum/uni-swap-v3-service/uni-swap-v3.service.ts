@@ -37,13 +37,11 @@ const RUBIC_OPTIMIZATION_DISABLED = true;
   providedIn: 'root'
 })
 export class UniSwapV3Service extends CommonUniV3AlgebraService {
+  public readonly providerType = INSTANT_TRADES_PROVIDER.UNISWAP_V3;
+
   private readonly gasMargin = 1.2;
 
   private readonly quoterController: UniSwapV3QuoterController;
-
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.UNISWAP_V3;
-  }
 
   constructor(
     private readonly gasService: GasService,

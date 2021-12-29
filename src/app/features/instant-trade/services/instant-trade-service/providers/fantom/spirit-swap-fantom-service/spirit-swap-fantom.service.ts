@@ -7,9 +7,7 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
   providedIn: 'root'
 })
 export class SpiritSwapFantomService extends CommonUniswapV2Service {
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.SPIRITSWAP;
-  }
+  public readonly providerType = INSTANT_TRADES_PROVIDER.SPIRITSWAP;
 
   constructor() {
     super(spiritSwapFantomConstants);

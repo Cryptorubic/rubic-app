@@ -11,7 +11,7 @@ export interface ItOptions {
 }
 
 export interface ItProvider {
-  get providerType(): INSTANT_TRADES_PROVIDER;
+  readonly providerType: INSTANT_TRADES_PROVIDER;
 
   createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
 

@@ -36,6 +36,8 @@ import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TR
   providedIn: 'root'
 })
 export class RaydiumService implements ItProvider {
+  public readonly providerType = INSTANT_TRADES_PROVIDER.RAYDIUM;
+
   private settings: ItSettingsForm;
 
   private readonly connection: Connection;
@@ -47,10 +49,6 @@ export class RaydiumService implements ItProvider {
   private readonly blockchainAdapter: SolanaWeb3Public;
 
   private readonly swapManager: RaydiumSwapManager;
-
-  public get providerType(): INSTANT_TRADES_PROVIDER {
-    return INSTANT_TRADES_PROVIDER.RAYDIUM;
-  }
 
   constructor(
     private readonly httpClient: HttpClient,
