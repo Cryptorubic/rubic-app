@@ -13,7 +13,6 @@ import { ContractData } from '@features/cross-chain-routing/services/cross-chain
 import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
-import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import { SpiritSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
@@ -31,7 +30,6 @@ export class ContractsDataService {
     private readonly pancakeSwapService: PancakeSwapService,
 
     private readonly quickSwapService: QuickSwapService,
-    private readonly algebraService: AlgebraService,
 
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
@@ -76,10 +74,6 @@ export class ContractsDataService {
         [
           {
             provider: this.quickSwapService,
-            methodSuffix: ''
-          },
-          {
-            provider: this.algebraService,
             methodSuffix: ''
           }
         ],
