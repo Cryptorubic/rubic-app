@@ -30,11 +30,14 @@ import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
 import { subtractPercent } from '@shared/utils/utils';
 import CustomError from '@core/errors/models/custom-error';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RaydiumService implements ItProvider {
+  public readonly providerType = INSTANT_TRADES_PROVIDER.RAYDIUM;
+
   private settings: ItSettingsForm;
 
   private readonly connection: Connection;

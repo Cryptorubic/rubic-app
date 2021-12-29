@@ -156,11 +156,11 @@
         <div class="img-container">
           <img
             (error)="handleImageError($event)"
-            [src]="TRADES_PROVIDERS[trade.provider].image"
+            [src]="tradesProviders[trade.provider].image"
             alt="provider"
           />
         </div>
-        {{ TRADES_PROVIDERS[trade.provider].name }}
+        {{ tradesProviders[trade.provider].name }}
       </div>
 
       <div class="item-header__date date">
@@ -236,11 +236,11 @@
             <div class="img-container">
               <img
                 (error)="handleImageError($event)"
-                [src]="TRADES_PROVIDERS[trade.provider].image"
+                [src]="tradesProviders[trade.provider].image"
                 alt="provider"
               />
             </div>
-            {{ TRADES_PROVIDERS[trade.provider].name }}
+            {{ tradesProviders[trade.provider].name }}
           </div>
         </div>
       </div>

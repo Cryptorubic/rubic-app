@@ -52,6 +52,7 @@ import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError'
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation.error';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -65,6 +66,8 @@ interface RecGraphVisitorOptions {
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDER;
+
   protected contractAbi: AbiItem[];
 
   protected swapsMethod: ISwapMethods;
