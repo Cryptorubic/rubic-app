@@ -12,6 +12,7 @@ import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_P
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -46,6 +47,18 @@ export class CrossChainSwapInfoComponent implements OnInit {
   public priceImpactFrom: number;
 
   public priceImpactTo: number;
+
+  public fromPath: string[] | null;
+
+  public toPath: string[] | null;
+
+  public get fromBlockchainLabel(): string {
+    return BlockchainsInfo.getBlockchainLabel(this.fromToken.blockchain);
+  }
+
+  public get toBlockchainLabel(): string {
+    return BlockchainsInfo.getBlockchainLabel(this.toToken.blockchain);
+  }
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -127,6 +140,9 @@ export class CrossChainSwapInfoComponent implements OnInit {
     this.feeTokenSymbol = tradeInfo.feeTokenSymbol;
 
     this.setPriceImpact(tradeInfo);
+
+    this.fromPath = tradeInfo.fromPath;
+    this.toPath = tradeInfo.toPath;
 
     this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
   }

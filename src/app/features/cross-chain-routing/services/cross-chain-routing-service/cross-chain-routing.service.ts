@@ -514,6 +514,9 @@ export class CrossChainRoutingService {
       )
     ]);
 
+    const fromPath = trade.fromTrade ? trade.fromTrade.path.map(token => token.symbol) : null;
+    const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
+
     return {
       feePercent,
       feeAmount,
@@ -521,7 +524,9 @@ export class CrossChainRoutingService {
       cryptoFee: trade.cryptoFee,
       estimatedGas,
       priceImpactFrom,
-      priceImpactTo
+      priceImpactTo,
+      fromPath,
+      toPath
     };
   }
 

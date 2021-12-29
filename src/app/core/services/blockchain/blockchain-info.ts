@@ -24,6 +24,10 @@ export class BlockchainsInfo {
     throw new CustomError('Unknown network');
   }
 
+  static getBlockchainLabel(name: BLOCKCHAIN_NAME): string {
+    return networks.find(network => network.name === name).label;
+  }
+
   static checkIsEthLike(name: BLOCKCHAIN_NAME): void | never {
     if (this.getBlockchainType(name) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
