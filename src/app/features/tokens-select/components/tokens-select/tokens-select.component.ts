@@ -272,6 +272,13 @@ export class TokensSelectComponent implements OnInit {
   }
 
   /**
+   * Clears token search query.
+   */
+  public onBlockchainChange(): void {
+    this.searchQuery = '';
+  }
+
+  /**
    * Sets new blockchain.
    * @param blockchain Current blockchain.
    */
