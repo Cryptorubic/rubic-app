@@ -16,7 +16,6 @@
   </app-rubic-button>
   <ng-template #leaveStakeBtn>
     <app-rubic-button
-      #leaveStakeBtn
       *ngLet="errorType$ | async as errorType"
       [disabled]="(errorType | falsy) || errorType === errorTypeEnum.ZERO"
       appearance="secondary"

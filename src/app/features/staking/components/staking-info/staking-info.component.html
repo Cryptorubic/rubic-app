@@ -1,43 +1,41 @@
-<tui-loader [showLoader]="loading$ | async" [inheritColor]="true">
-  <div class="total" *ngLet="stakingProgress$ | async as stakingProgress">
-    <div class="total__total-staked">
-      <div class="total__title">{{ 'staking.stats.total' | translate }}</div>
-      <div class="total__amount">
-        {{ stakingProgress.totalRbcEntered | bigNumberFormat }} BRBC of
-        {{ BRBCTotal | bigNumberFormat }} BRBC
-      </div>
-      <progress
-        tuiProgressBar
-        [max]="BRBCTotal"
-        [value]="stakingProgress.totalRbcEntered"
-        class="total__progress"
-      ></progress>
+<div class="total" *ngLet="stakingProgress$ | async as stakingProgress">
+  <div class="total__total-staked">
+    <div class="total__title">{{ 'staking.stats.total' | translate }}</div>
+    <div class="total__amount">
+      {{ stakingProgress.totalRbcEntered | bigNumberFormat }} BRBC of
+      {{ BRBCTotal | bigNumberFormat }} BRBC
     </div>
-    <div class="total__you-total-staked">
-      <div class="total__title">{{ 'staking.stats.usersTotal' | translate }}</div>
-      <div class="total__amount">
-        <ng-container *ngIf="needLogin$ | async; else userTotalStaked">
-          {{ 'staking.stats.connectWallet' | translate }}
-        </ng-container>
-        <ng-template #userTotalStaked>
-          {{ stakingProgress.userEnteredAmount | bigNumberFormat }} BRBC of
-          {{ stakeLimitMax | bigNumberFormat }} BRBC
-        </ng-template>
-      </div>
-      <progress
-        tuiProgressBar
-        [max]="stakeLimitMax"
-        [value]="stakingProgress.userEnteredAmount"
-        class="total__progress"
-      ></progress>
-    </div>
-    <app-rotating-icon
-      class="total__reload"
-      (iconClick)="reloadStakingProgress()"
-      [rotating]="loading$ | async"
-    ></app-rotating-icon>
+    <progress
+      tuiProgressBar
+      [max]="BRBCTotal"
+      [value]="stakingProgress.totalRbcEntered"
+      class="total__progress"
+    ></progress>
   </div>
-</tui-loader>
+  <div class="total__you-total-staked">
+    <div class="total__title">{{ 'staking.stats.usersTotal' | translate }}</div>
+    <div class="total__amount">
+      <ng-container *ngIf="needLogin$ | async; else userTotalStaked">
+        {{ 'staking.stats.connectWallet' | translate }}
+      </ng-container>
+      <ng-template #userTotalStaked>
+        {{ stakingProgress.userEnteredAmount | bigNumberFormat }} BRBC of
+        {{ stakeLimitMax | bigNumberFormat }} BRBC
+      </ng-template>
+    </div>
+    <progress
+      tuiProgressBar
+      [max]="stakeLimitMax"
+      [value]="stakingProgress.userEnteredAmount"
+      class="total__progress"
+    ></progress>
+  </div>
+  <app-rotating-icon
+    class="total__reload"
+    (iconClick)="reloadStakingProgress()"
+    [rotating]="loading$ | async"
+  ></app-rotating-icon>
+</div>
 
 <div class="features">
   <div class="feature">

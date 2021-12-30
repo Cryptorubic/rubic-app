@@ -34,6 +34,11 @@
     }
   }
 
+  app-usd-price-container {
+    display: block;
+    height: 17px;
+  }
+
   &__balance {
 
     color: var(--form-dim-text-color);
