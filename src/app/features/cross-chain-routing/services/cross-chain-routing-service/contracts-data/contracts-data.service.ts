@@ -166,7 +166,7 @@ export class ContractsDataService {
           },
           {
             provider: this.viperSwapHarmonyService,
-            methodSuffix: ''
+            methodSuffix: '1'
           }
         ],
         7,
