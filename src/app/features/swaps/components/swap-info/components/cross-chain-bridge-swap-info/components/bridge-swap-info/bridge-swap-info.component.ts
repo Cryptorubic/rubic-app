@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Self } f
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeService } from '@features/bridge/services/bridge-service/bridge.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 

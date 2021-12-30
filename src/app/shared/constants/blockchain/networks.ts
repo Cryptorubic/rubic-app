@@ -1,5 +1,5 @@
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { BLOCKCHAIN_NAME } from '../../models/blockchain/BLOCKCHAIN_NAME';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 interface NativeCoin {
   blockchain: BLOCKCHAIN_NAME;

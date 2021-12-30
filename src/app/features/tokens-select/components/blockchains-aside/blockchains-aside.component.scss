@@ -1,4 +1,4 @@
-@import 'src/styles';
+@use 'src/scss/core' as *;
 
 .blockchain-aside {
   width: 85px;

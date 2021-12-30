@@ -3,21 +3,21 @@ import BigNumber from 'bignumber.js';
 import {
   BLOCKCHAIN_NAME,
   DEPRECATED_BLOCKCHAIN_NAME
-} from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
+} from '@shared/models/blockchain/blockchain-name';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { EMPTY, Observable } from 'rxjs';
 import { first, map, mergeMap, switchMap } from 'rxjs/operators';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 import {
   BridgeBlockchainApi,
   BridgeTableTradeApi
-} from 'src/app/core/services/backend/bridge-api/models/BridgeTableTradeApi';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+} from '@core/services/backend/bridge-api/models/bridge-table-trade-api';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { BridgeBotRequest } from 'src/app/core/services/backend/bridge-api/models/BridgeBotRequest';
 import { HttpService } from '../../http/http.service';
-import { BOT_URL } from '../constants/BOT_URL';
+import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
+import { BridgeBotRequest } from '@core/services/backend/bridge-api/models/bridge-bot-request';
 
 @Injectable({
   providedIn: 'root'
@@ -216,7 +216,7 @@ export class BridgeApiService {
   }
 
   /**
-   * Gets tokens price.
+   * Gets token price.
    * @param bridgeTokenPair Object with info about pair of tokens.
    * @return number Token price.
    */

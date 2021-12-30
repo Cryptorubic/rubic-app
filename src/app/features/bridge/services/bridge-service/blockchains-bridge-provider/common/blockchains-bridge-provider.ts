@@ -1,10 +1,10 @@
 import { List } from 'immutable';
 import { Observable, Subject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
-import { BridgeTokenPair } from '@features/bridge/models/BridgeTokenPair';
-import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import BigNumber from 'bignumber.js';
 
 export abstract class BlockchainsBridgeProvider {

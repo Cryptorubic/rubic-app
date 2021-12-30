@@ -1,12 +1,12 @@
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
-import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-trade';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { SignatureResult } from '@solana/web3.js';
 
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Injectable } from '@angular/core';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/PRICE_IMPACT_RANGE';
+import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 
 @Component({
   selector: 'app-price-impact-info-line',

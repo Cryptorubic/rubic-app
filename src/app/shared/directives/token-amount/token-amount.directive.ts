@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Output, EventEmitter, Input } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BIG_NUMBER_FORMAT } from 'src/app/shared/constants/formats/BIG_NUMBER_FORMAT';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
 @Directive({
   selector: '[appTokenAmount]'

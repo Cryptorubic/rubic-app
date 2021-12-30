@@ -1,4 +1,4 @@
-@import 'src/styles';
+@use 'src/scss/core' as *;
 
 $default-transition: 0.2s ease-in-out;
 $white: white;

@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
 import { filter, first, pairwise, startWith } from 'rxjs/operators';
 import { BridgeService } from 'src/app/features/bridge/services/bridge-service/bridge.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeToken, BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BridgeToken, BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { compareAddresses, compareTokens } from 'src/app/shared/utils/utils';
-import { SWAP_PROVIDER_TYPE } from '../../models/SwapProviderType';
+import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/swap-provider-type';
 
 @Injectable()
 export class SwapsService {
@@ -130,7 +130,7 @@ export class SwapsService {
 
   /**
    * Gets bridge token pairs array for specific tokens list and modify tokens amounts list.
-   * @param pairsArray Token pairs array.
+   * @param pairsArray Tokens pairs array.
    * @param tokenAmounts List of old tokens.
    * @param updatedTokenAmounts List of new tokens.
    * @private

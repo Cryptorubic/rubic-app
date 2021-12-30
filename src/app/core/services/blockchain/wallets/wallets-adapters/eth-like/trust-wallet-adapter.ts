@@ -1,11 +1,11 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/wallet-connect-abstract';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IWalletConnectProviderOptions } from '@walletconnect/types';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   private deepLink: string;
@@ -20,7 +20,7 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
 
   constructor(
     web3: Web3,
-    chainChange$: BehaviorSubject<IBlockchain>,
+    chainChange$: BehaviorSubject<BlockchainData>,
     accountChange$: BehaviorSubject<string>,
     errorsService: ErrorsService,
     isIos: boolean,

@@ -1,9 +1,9 @@
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/Token';
+import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
@@ -66,7 +66,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
    * current selected network
    * @return current selected network or undefined if isActive is false
    */
-  get network(): IBlockchain {
+  get network(): BlockchainData {
     if (!this.isActive) {
       return null;
     }
@@ -84,7 +84,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   protected constructor(
     protected readonly errorsService: ErrorsService,
     protected readonly onAddressChanges$: BehaviorSubject<string>,
-    protected readonly onNetworkChanges$: BehaviorSubject<IBlockchain>
+    protected readonly onNetworkChanges$: BehaviorSubject<BlockchainData>
   ) {
     this.isEnabled = false;
   }
@@ -96,7 +96,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     return null;
   }
 
-  protected getNetwork(): IBlockchain | null {
+  protected getNetwork(): BlockchainData | null {
     if (this.isEnabled && this.selectedChain) {
       return (
         BlockchainsInfo.getBlockchainByName(this.selectedChain as BLOCKCHAIN_NAME) ||

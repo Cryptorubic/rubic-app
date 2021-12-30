@@ -1,4 +1,4 @@
-@import 'src/scss/vars';
+@use 'src/scss/vars' as *;
 
 html.dark {
   --main-form-background: rgba(0, 0, 0, 0.6);

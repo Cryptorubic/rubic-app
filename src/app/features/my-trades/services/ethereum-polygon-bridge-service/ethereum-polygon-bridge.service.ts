@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { defer, Observable } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import networks from 'src/app/shared/constants/blockchain/networks';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TransactionReceipt } from 'web3-eth';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { MaticPOSClient } from 'rubic-app-maticjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';

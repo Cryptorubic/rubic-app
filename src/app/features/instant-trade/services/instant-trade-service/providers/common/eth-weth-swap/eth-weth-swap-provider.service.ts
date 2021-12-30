@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import wethContractAbi from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAbi';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import wethContractAbi from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-abi';
 import {
-  wethContractAddressesNetMode,
+  WETH_CONTRACT_ADDRESSES_NET_MODE,
   SupportedEthWethSwapBlockchain
-} from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/wethContractAddressesNetMode';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/constants/weth-contract-addresses-net-mode';
 import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -33,11 +33,11 @@ export class EthWethSwapProviderService {
     private readonly authService: AuthService,
     private readonly useTestingMode: UseTestingModeService
   ) {
-    this.contractAddresses = wethContractAddressesNetMode.mainnet;
+    this.contractAddresses = WETH_CONTRACT_ADDRESSES_NET_MODE.mainnet;
 
     useTestingMode.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
-        this.contractAddresses = wethContractAddressesNetMode.testnet;
+        this.contractAddresses = WETH_CONTRACT_ADDRESSES_NET_MODE.testnet;
       }
     });
   }

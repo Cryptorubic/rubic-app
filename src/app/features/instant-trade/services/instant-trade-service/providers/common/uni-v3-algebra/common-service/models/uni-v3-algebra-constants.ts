@@ -1,6 +1,6 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { ContractAddressNetMode } from '@shared/models/blockchain/NetMode';
-import { ContractData } from '@shared/models/blockchain/ContractData';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { ContractAddressNetMode } from '@shared/models/blockchain/net-mode';
+import { ContractData } from '@shared/models/blockchain/contract-data';
 
 export interface UniV3AlgebraConstants {
   blockchain: BLOCKCHAIN_NAME;

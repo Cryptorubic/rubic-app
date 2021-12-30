@@ -6,11 +6,11 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { FormService } from '@shared/models/swaps/form-service';
 import { startWith } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Subscription } from 'rxjs';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 const WETH_ADDRESSES = {

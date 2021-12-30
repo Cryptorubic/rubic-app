@@ -8,10 +8,10 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { blockchainsList } from 'src/app/features/swaps/constants/BlockchainsList';
-import { BlockchainItem } from 'src/app/features/swaps/models/BlockchainItem';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { BLOCKCHAINS_LIST } from '@features/swaps/constants/blockchains-list';
+import { BlockchainItem } from '@features/swaps/models/blockchain-item';
+import { FormService } from '@shared/models/swaps/form-service';
+import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 
 @Component({
   selector: 'app-rubic-blockchains',
@@ -24,7 +24,7 @@ export class RubicBlockchainsComponent implements OnInit {
 
   @Input() formService: FormService;
 
-  @Input() blockchainsList = blockchainsList;
+  @Input() blockchainsList = BLOCKCHAINS_LIST;
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 

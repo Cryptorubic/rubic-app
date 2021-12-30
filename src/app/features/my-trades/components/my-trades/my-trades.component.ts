@@ -12,7 +12,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';

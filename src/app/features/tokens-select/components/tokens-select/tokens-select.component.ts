@@ -19,13 +19,13 @@ import {
   Subscription
 } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FormGroup } from '@ngneat/reactive-forms';
-import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
@@ -39,7 +39,7 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { TokensListComponent } from 'src/app/features/tokens-select/components/tokens-list/tokens-list.component';
@@ -48,9 +48,9 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { supportedCrossChainSwapBlockchains } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/models/SupportedCrossChainSwapBlockchain';
-import { TokensListType } from 'src/app/features/tokens-select/models/TokensListType';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
+import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareTokens } from '@shared/utils/utils';
 
 type ComponentInput = {
@@ -189,7 +189,7 @@ export class TokensSelectComponent implements OnInit {
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME
   ): boolean {
-    const availableNetworks = supportedCrossChainSwapBlockchains;
+    const availableNetworks = SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS;
     return (
       availableNetworks.some(availableNetwork => availableNetwork === fromBlockchain) &&
       availableNetworks.some(availableNetwork => availableNetwork === toBlockchain)

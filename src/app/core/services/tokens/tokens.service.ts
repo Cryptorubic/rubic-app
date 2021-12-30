@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { coingeckoTestTokens } from 'src/test/tokens/test-tokens';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { COINGECKO_TEST_TOKENS } from 'src/test/tokens/test-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { Token } from 'src/app/shared/models/tokens/Token';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -16,14 +16,14 @@ import { CoingeckoApiService } from 'src/app/core/services/external-api/coingeck
 import {
   NATIVE_TOKEN_ADDRESS,
   NATIVE_SOLANA_MINT_ADDRESS
-} from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { TOKENS_PAGINATION } from 'src/app/core/services/tokens/tokens-pagination.constant';
+} from '@shared/constants/blockchain/native-token-address';
+import { TOKENS_PAGINATION } from '@core/services/tokens/tokens-pagination';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import {
   PAGINATED_BLOCKCHAIN_NAME,
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -125,7 +125,7 @@ export class TokensService {
     private readonly errorsService: ErrorsService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
-    this.testTokensNumber = coingeckoTestTokens.length;
+    this.testTokensNumber = COINGECKO_TEST_TOKENS.length;
 
     this.setupSubscriptions();
   }
@@ -164,7 +164,7 @@ export class TokensService {
     this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._tokens$.next(List(coingeckoTestTokens));
+        this._tokens$.next(List(COINGECKO_TEST_TOKENS));
         await this.calculateTokensBalancesByType('default');
       }
     });
@@ -286,9 +286,9 @@ export class TokensService {
 
   /**
    * Adds token to tokens list.
-   * @param address Token address.
-   * @param blockchain Token blockchain.
-   * @return Observable<TokenAmount> Token with balance.
+   * @param address Tokens address.
+   * @param blockchain Tokens blockchain.
+   * @return Observable<TokenAmount> Tokens with balance.
    */
   public addTokenByAddress(address: string, blockchain: BLOCKCHAIN_NAME): Observable<TokenAmount> {
     const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
@@ -315,7 +315,7 @@ export class TokensService {
 
   /**
    * Adds new token to tokens list.
-   * @param token Token to add.
+   * @param token Tokens to add.
    */
   public addToken(token: TokenAmount): void {
     if (!this.tokens.find(t => TokensService.areTokensEqual(t, token))) {
@@ -325,7 +325,7 @@ export class TokensService {
 
   /**
    * Patches token in tokens list.
-   * @param token Token to patch.
+   * @param token Tokens to patch.
    */
   public patchToken(token: TokenAmount): void {
     this._tokens$.next(
@@ -377,7 +377,7 @@ export class TokensService {
 
   /**
    * Gets token's price and updates tokens list.
-   * @param token Token to get price for.
+   * @param token Tokens to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
   public getAndUpdateTokenPrice(
@@ -428,7 +428,7 @@ export class TokensService {
 
   /**
    * Gets token's balance and updates tokens list.
-   * @param token Token to get balance for.
+   * @param token Tokens to get balance for.
    */
   public async getAndUpdateTokenBalance(token: {
     address: string;
@@ -471,7 +471,7 @@ export class TokensService {
 
   /**
    * Gets token by address.
-   * @param token Token's data to find it by.
+   * @param token Tokens's data to find it by.
    * @param searchBackend If true and token was not retrieved, then request to backend with token's params is sent.
    */
   public async getTokenByAddress(token: MinimalToken, searchBackend = true): Promise<Token> {

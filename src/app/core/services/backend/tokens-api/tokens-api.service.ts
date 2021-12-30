@@ -5,8 +5,8 @@ import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
-} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
-import { Token } from 'src/app/shared/models/tokens/Token';
+} from '@shared/constants/blockchain/backend-blockchains';
+import { Token } from '@shared/models/tokens/token';
 import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import {
@@ -20,9 +20,9 @@ import {
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { HttpService } from '../../http/http.service';
 
 /**
@@ -82,7 +82,7 @@ export class TokensApiService {
 
   /**
    * Adds favorite token on backend.
-   * @param token Token to add.
+   * @param token Tokens to add.
    */
   public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
@@ -94,7 +94,7 @@ export class TokensApiService {
 
   /**
    * Deletes favorite token on backend.
-   * @param token Token to delete.
+   * @param token Tokens to delete.
    */
   public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
@@ -10,21 +10,21 @@ import { UndefinedError } from '@core/errors/models/undefined.error';
 import { List } from 'immutable';
 import { BridgeApiService } from '@core/services/backend/bridge-api/bridge-api.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BridgeTokenPair } from '@features/bridge/models/BridgeTokenPair';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TransactionReceipt } from 'web3-eth';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import CustomError from '@core/errors/models/custom-error';
 import { HttpService } from '@core/services/http/http.service';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';
 import {
-  rubicBridgeContractAddressesNetMode,
-  rubicTokenAddressesNetMode
+  RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE,
+  RUBIC_TOKEN_ADDRESSES_NET_MODE
 } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses-net-mode';
-import rubicBridgeContractAbi from './constants/rubic-bridge-contract-abi';
+import rubicBridgeContractAbi from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/rubic-bridge-contract-abi';
 import {
   RubicBridgeConfig,
   RubicBridgeSupportedBlockchains
@@ -32,7 +32,7 @@ import {
 import {
   FromBackendBlockchain,
   TO_BACKEND_BLOCKCHAINS
-} from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+} from '@shared/constants/blockchain/backend-blockchains';
 
 interface RubicConfig {
   maxAmount: number;
@@ -332,14 +332,16 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     this.rubicConfig = {
       [config.from.blockchainName]: {
         maxAmount: config.from.maxAmount,
-        swapContractAddress: rubicBridgeContractAddressesNetMode[type][config.from.blockchainName],
-        rubicTokenAddress: rubicTokenAddressesNetMode[type][config.from.blockchainName],
+        swapContractAddress:
+          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.from.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.from.blockchainName],
         ...config.from.token
       },
       [config.to.blockchainName]: {
         maxAmount: config.to.maxAmount,
-        swapContractAddress: rubicBridgeContractAddressesNetMode[type][config.to.blockchainName],
-        rubicTokenAddress: rubicTokenAddressesNetMode[type][config.to.blockchainName],
+        swapContractAddress:
+          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.to.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.to.blockchainName],
         ...config.to.token
       }
     };

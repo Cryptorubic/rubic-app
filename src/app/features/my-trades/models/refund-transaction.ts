@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 export interface RefundTransaction {
   hash: string;

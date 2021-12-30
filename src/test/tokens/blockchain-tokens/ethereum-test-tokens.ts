@@ -1,8 +1,8 @@
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import BigNumber from 'bignumber.js';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 export const ETH: TokenAmount = {
   name: 'Ethereum',
@@ -102,4 +102,4 @@ export const RBC: TokenAmount = {
   favorite: true
 };
 
-export const ethereumTestTokens = [ETH, WETH, WEENUS, YEENUS, XEENUS, WSATT, RBC];
+export const ETHEREUM_TEST_TOKENS = [ETH, WETH, WEENUS, YEENUS, XEENUS, WSATT, RBC];

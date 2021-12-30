@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LanguageListElement } from 'src/app/core/header/models/language-list-element';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-import { languagesList } from 'src/app/core/header/models/languages-list';
+import { LANGUAGES_LIST } from '@core/header/models/languages-list';
 
 @Component({
   selector: 'app-current-language',
@@ -35,6 +35,6 @@ export class CurrentLanguageComponent implements OnInit {
    * @param CurrentLang code of current language.
    */
   private getCurrentLanguage(currentLang: string): LanguageListElement {
-    return languagesList.find(lang => lang.lng === currentLang);
+    return LANGUAGES_LIST.find(lang => lang.lng === currentLang);
   }
 }

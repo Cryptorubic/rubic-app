@@ -20,7 +20,7 @@
 //     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
 //     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 //
-//     web3PublicEth = TestBed.inject(Web3PublicService)[BLOCKCHAIN_NAME.ETHEREUM];
+//     web3PublicEth = TestBed.inject(Web3PublicService)[BlockchainName.ETHEREUM];
 //     service = TestBed.inject(UniSwapService);
 //     web3Private = TestBed.inject(Web3PrivateService);
 //     uniSwapContractAddress = uniSwapContracts.testnetAddress;

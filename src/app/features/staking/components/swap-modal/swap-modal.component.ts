@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { StakingService } from '@features/staking/services/staking.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 
 /**
  * The modal which allows user to choose staking method.

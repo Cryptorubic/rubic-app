@@ -6,14 +6,14 @@ import {
   OnInit
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormControl } from '@ngneat/reactive-forms';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 

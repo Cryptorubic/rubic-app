@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
-import { sushiSwapBscConstants } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc-constants';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { SUSHI_SWAP_BSC_CONSTANTS } from '@features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc-constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SushiSwapBscService extends CommonUniswapV2Service {
-  public readonly providerType = INSTANT_TRADES_PROVIDER.SUSHISWAP;
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.SUSHISWAP;
 
   constructor() {
-    super(sushiSwapBscConstants);
+    super(SUSHI_SWAP_BSC_CONSTANTS);
   }
 }

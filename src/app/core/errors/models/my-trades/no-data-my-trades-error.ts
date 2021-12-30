@@ -1,5 +1,5 @@
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 export class NoDataMyTradesError extends RubicError<ERROR_TYPE.TEXT> {
   constructor() {

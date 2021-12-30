@@ -7,8 +7,8 @@ import {
   EventEmitter
 } from '@angular/core';
 import { Promotion } from '@features/my-trades/models/promotion';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
 import { WINDOW } from '@ng-web-apis/common';
 

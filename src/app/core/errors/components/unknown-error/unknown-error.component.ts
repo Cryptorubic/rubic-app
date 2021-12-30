@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
 import { timer } from 'rxjs';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Component({
   selector: 'polymorpheus-unknown-error',

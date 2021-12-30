@@ -1,19 +1,19 @@
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { Observable } from 'rxjs';
 import {
   ItOptions,
   ItProvider
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
+} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { TransactionReceipt } from 'web3-eth';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/common-oneinch.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 export abstract class OneinchProviderAbstract implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADES_PROVIDER;
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 
