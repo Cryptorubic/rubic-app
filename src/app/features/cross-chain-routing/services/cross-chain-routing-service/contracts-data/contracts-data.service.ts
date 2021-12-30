@@ -44,12 +44,12 @@ export class ContractsDataService {
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
 
-    private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
-    private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
-
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly sushiSwapFantomService: SushiSwapFantomService,
+
+    private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
+    private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
 
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
@@ -123,21 +123,6 @@ export class ContractsDataService {
         4,
         this.publicBlockchainAdapterService
       ),
-      [BLOCKCHAIN_NAME.MOONRIVER]: new EthLikeContractData(
-        BLOCKCHAIN_NAME.MOONRIVER,
-        [
-          {
-            provider: this.solarBeamMoonRiverService,
-            methodSuffix: ''
-          },
-          {
-            provider: this.sushiSwapMoonRiverService,
-            methodSuffix: '1'
-          }
-        ],
-        5,
-        this.publicBlockchainAdapterService
-      ),
       [BLOCKCHAIN_NAME.FANTOM]: new EthLikeContractData(
         BLOCKCHAIN_NAME.FANTOM,
         [
@@ -152,6 +137,21 @@ export class ContractsDataService {
           {
             provider: this.sushiSwapFantomService,
             methodSuffix: '2'
+          }
+        ],
+        5,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.MOONRIVER]: new EthLikeContractData(
+        BLOCKCHAIN_NAME.MOONRIVER,
+        [
+          {
+            provider: this.solarBeamMoonRiverService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.sushiSwapMoonRiverService,
+            methodSuffix: '1'
           }
         ],
         6,
