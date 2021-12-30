@@ -66,7 +66,7 @@ export class CrossChainRoutingApiService {
       );
   }
 
-  public postSolanaCCRdata(
+  public postCrossChainDataToSolana(
     transactionHash: string,
     network: string,
     targetAddress: string,
@@ -81,6 +81,22 @@ export class CrossChainRoutingApiService {
         walletAddress: targetAddress,
         secondPath,
         pool
+      },
+      BASE_URL
+    );
+  }
+
+  public postCrossChainDataFromSolana(
+    transactionHash: string,
+    network: string,
+    contractFunction: string
+  ): Observable<void> {
+    return this.httpService.post(
+      'trades/params',
+      {
+        fromTxHash: transactionHash,
+        network,
+        contractFunction
       },
       BASE_URL
     );

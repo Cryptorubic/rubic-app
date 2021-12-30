@@ -34,8 +34,13 @@ export class EthLikeContractExecutorService {
     userAddress: string,
     targetAddress: string
   ): Promise<string> {
+    const toWalletAddress =
+      trade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
+      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
+        ? targetAddress
+        : userAddress;
     const { contractAddress, contractAbi, methodName, methodArguments, value } =
-      await this.getContractParams(trade, userAddress);
+      await this.getContractParams(trade, toWalletAddress);
 
     const privateAdapter = this.privateAdapter[trade.fromBlockchain] as EthLikeWeb3PrivateService;
     let transactionHash;
@@ -54,7 +59,7 @@ export class EthLikeContractExecutorService {
           }
           transactionHash = hash;
           if (trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-            this.sendSolanaData(trade, transactionHash, targetAddress);
+            this.sendDataToSolana(trade, transactionHash, targetAddress);
           }
         }
       },
@@ -76,11 +81,11 @@ export class EthLikeContractExecutorService {
   /**
    * Returns contract's method's data to execute trade.
    * @param trade Cross chain trade.
-   * @param walletAddress Wallet address.
+   * @param toWalletAddress Target wallet address.
    */
   public async getContractParams(
     trade: CrossChainTrade,
-    walletAddress: string
+    toWalletAddress: string
   ): Promise<ContractParams> {
     const { fromBlockchain, toBlockchain } = trade;
 
@@ -100,7 +105,7 @@ export class EthLikeContractExecutorService {
 
     const methodArguments = (
       this.contracts[fromBlockchain] as EthLikeContractData
-    ).getMethodArguments(trade, isToTokenNative, this.contracts[toBlockchain], walletAddress);
+    ).getMethodArguments(trade, isToTokenNative, this.contracts[toBlockchain], toWalletAddress);
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const blockchainCryptoFee = Web3Pure.toWei(trade.cryptoFee);
@@ -118,18 +123,18 @@ export class EthLikeContractExecutorService {
   }
 
   /**
-   * Solana addresses has not supported by eth like blockchain contracts. Sends transaction details via http.
+   * Solana addresses are not supported by eth like blockchain contracts. Sends transaction details via http.
    * @param trade Cross-chain trade.
    * @param transactionHash Source transaction hash.
    * @param targetAddress Target network wallet address.
    */
-  private sendSolanaData(
+  private sendDataToSolana(
     trade: CrossChainTrade,
     transactionHash: string,
     targetAddress: string
   ): void {
     this.apiService
-      .postSolanaCCRdata(
+      .postCrossChainDataToSolana(
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
         targetAddress,

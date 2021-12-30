@@ -8,6 +8,8 @@ import { crossChainContractAbi } from '@features/cross-chain-routing/services/cr
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -87,11 +89,15 @@ export class EthLikeContractData extends ContractData {
     trade: CrossChainTrade,
     isToTokenNative: boolean,
     toContract: ContractData,
-    walletAddress: string
+    toWalletAddress: string
   ): unknown[] {
+    const toNumOfBlockchain = toContract.numOfBlockchain;
+
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
-    const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
-    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
+
+    const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
+
+    const secondPath = toContract.getSecondPath(trade.toProviderIndex, trade.toTrade);
 
     const fromTransitTokenAmountMin =
       ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
@@ -100,10 +106,13 @@ export class EthLikeContractData extends ContractData {
       this.transitToken.decimals
     );
 
-    const toNumOfBlockchain = toContract.numOfBlockchain;
+    const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
+    const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
-    const secondPath = toContract.getSecondPath(trade.toProviderIndex, trade.toTrade);
+    const toWalletAddressBytes32 =
+      trade.toBlockchain !== BLOCKCHAIN_NAME.SOLANA
+        ? EthLikeWeb3Public.addressToBytes32(toWalletAddress)
+        : SolanaWeb3Public.addressToBytes32(toWalletAddress);
 
     const swapToUserMethodSignature = toContract.getSwapToUserMethodSignature(
       trade.toProviderIndex,
@@ -118,7 +127,7 @@ export class EthLikeContractData extends ContractData {
         secondPath,
         fromTransitTokenAmountMinAbsolute,
         tokenOutAmountMinAbsolute,
-        EthLikeWeb3Public.addressToBytes32(walletAddress),
+        toWalletAddressBytes32,
         isToTokenNative,
         true
       ]

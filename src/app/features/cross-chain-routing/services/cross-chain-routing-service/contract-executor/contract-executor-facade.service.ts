@@ -11,6 +11,10 @@ import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
+import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
+import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +40,8 @@ export class ContractExecutorFacadeService {
     return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
   }
 
+  private readonly contracts = this.contractsDataService.contracts;
+
   /**
    * Gets address in target network.
    */
@@ -48,7 +54,9 @@ export class ContractExecutorFacadeService {
     private readonly solanaContractExecutor: SolanaContractExecutorService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly raydiumService: RaydiumService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly targetAddressService: TargetNetworkAddressService,
+    private readonly apiService: CrossChainRoutingApiService,
+    private readonly contractsDataService: ContractsDataService
   ) {}
 
   public async executeTrade(
@@ -80,6 +88,12 @@ export class ContractExecutorFacadeService {
       const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
       if (options.onTransactionHash) {
         options.onTransactionHash(hash);
+
+        const methodSignature = this.contracts[trade.toBlockchain].getSwapToUserMethodSignature(
+          trade.toProviderIndex,
+          isToNative
+        );
+        this.sendDataFromSolana(trade.fromBlockchain, hash, methodSignature);
       }
 
       await new Promise((resolve, reject) => {
@@ -101,5 +115,25 @@ export class ContractExecutorFacadeService {
         throw new CustomError(err.message);
       }
     }
+  }
+
+  /**
+   * Solana contract method doesn't have `signature` argument. Sends transaction details via http.
+   * @param fromBlockchain From blockchain.
+   * @param transactionHash Source transaction hash.
+   * @param contractFunction Method signature to call in target network.
+   */
+  private sendDataFromSolana(
+    fromBlockchain: SupportedCrossChainBlockchain,
+    transactionHash: string,
+    contractFunction: string
+  ): void {
+    this.apiService
+      .postCrossChainDataFromSolana(
+        transactionHash,
+        TO_BACKEND_BLOCKCHAINS[fromBlockchain],
+        contractFunction
+      )
+      .subscribe();
   }
 }
