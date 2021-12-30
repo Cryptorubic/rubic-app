@@ -1,4 +1,4 @@
-@import 'src/styles';
+@use 'src/scss/core' as *;
 
 :host .button_buy-token {
   &__custom ::ng-deep {

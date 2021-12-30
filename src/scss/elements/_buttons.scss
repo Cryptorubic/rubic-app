@@ -1,3 +1,5 @@
+@use 'src/scss/vars';
+
 .button-error {
   padding: 5px 10px;
 
@@ -18,7 +20,7 @@
   }
 }
 
-html.#{$dark} {
+html.#{vars.$dark} {
   .button-error {
     background-color: rgba(255, 255, 255, 0.4);
 
