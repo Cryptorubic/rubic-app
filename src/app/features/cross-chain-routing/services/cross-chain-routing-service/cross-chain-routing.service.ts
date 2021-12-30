@@ -196,8 +196,10 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
+    const toAmountWithoutSlippage = toAmount.dividedBy(fromSlippage);
+
     return {
-      toAmount,
+      toAmount: toAmountWithoutSlippage,
       ...minMaxErrors,
       needApprove
     };
