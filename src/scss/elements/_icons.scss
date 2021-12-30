@@ -1,5 +1,6 @@
-// *****  icons styles *****
+@use 'src/scss/mixins' as *;
 
+// *****  icons styles *****
 .icon {
   &::before {
     display: flex;

@@ -1,4 +1,4 @@
-@import 'src/styles';
+@use 'src/scss/core' as *;
 
 .tokens-select {
   display: flex;

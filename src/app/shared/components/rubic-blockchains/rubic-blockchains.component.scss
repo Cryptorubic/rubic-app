@@ -1,5 +1,4 @@
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@use 'src/scss/core' as *;
 
 :host {
   font-family: $sf-pro-font;

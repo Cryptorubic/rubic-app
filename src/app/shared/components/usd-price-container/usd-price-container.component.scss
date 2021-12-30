@@ -1,4 +1,4 @@
-@import 'src/styles';
+@use 'src/scss/core' as *;
 
 .usd-price-container {
   @include iframe-card;

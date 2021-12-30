@@ -1,5 +1,4 @@
-@import '../../../../../scss/mixins';
-@import '../../../../../scss/vars';
+@use 'src/scss/core' as *;
 
 .maintenance {
   position: relative;

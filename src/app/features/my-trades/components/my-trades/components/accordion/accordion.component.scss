@@ -1,9 +1,8 @@
-@import '~@taiga-ui/core/styles/taiga-ui-local';
+@use '~@taiga-ui/core/styles/taiga-ui-local' as *;
 
-@import 'src/scss/vars';
-@import 'src/scss/mixins';
+@use 'src/scss/core' as *;
 
-@import '../styles';
+@use '../styles' as *;
 
 :host {
   --tui-secondary-hover: var(--rubic-base-01);

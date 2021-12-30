@@ -1,4 +1,4 @@
-@import '../../../../../styles';
+@use 'src/scss/core' as *;
 
 .warning-text {
   display: block;
