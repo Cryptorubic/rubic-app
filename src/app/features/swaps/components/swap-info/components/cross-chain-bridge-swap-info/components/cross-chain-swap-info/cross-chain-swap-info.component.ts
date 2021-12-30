@@ -5,7 +5,6 @@ import { CrossChainRoutingService } from '@features/cross-chain-routing/services
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
@@ -13,6 +12,10 @@ import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-pr
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { tradesProviders } from '@shared/constants/common/trades-providers';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Component({
   selector: 'app-cross-chain-swap-info',
@@ -42,19 +45,48 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
   public feeTokenSymbol: string;
 
-  public maximumSent: BigNumber;
-
   public minimumReceived: BigNumber;
 
   public priceImpactFrom: number;
 
   public priceImpactTo: number;
 
+  private fromProvider: INSTANT_TRADES_PROVIDERS;
+
+  private toProvider: INSTANT_TRADES_PROVIDERS;
+
+  public fromPath: string[] | null;
+
+  public toPath: string[] | null;
+
+  public get fromProviderImg(): string {
+    return tradesProviders[this.fromProvider].image;
+  }
+
+  public get toProviderImg(): string {
+    return tradesProviders[this.toProvider].image;
+  }
+
+  public get fromProviderLabel(): string {
+    return instantTradesLabels[this.fromProvider];
+  }
+
+  public get toProviderLabel(): string {
+    return instantTradesLabels[this.toProvider];
+  }
+
+  public get fromBlockchainLabel(): string {
+    return BlockchainsInfo.getBlockchainLabel(this.fromToken.blockchain);
+  }
+
+  public get toBlockchainLabel(): string {
+    return BlockchainsInfo.getBlockchainLabel(this.toToken.blockchain);
+  }
+
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly swapInfoService: SwapInfoService,
     private readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly tokensService: TokensService,
     private readonly priceImpactService: PriceImpactService,
@@ -65,7 +97,6 @@ export class CrossChainSwapInfoComponent implements OnInit {
   ngOnInit(): void {
     this.subscribeOnInputValue();
     this.subscribeOnOutputValue();
-    this.subscribeOnSlippage();
   }
 
   private subscribeOnInputValue(): void {
@@ -133,7 +164,13 @@ export class CrossChainSwapInfoComponent implements OnInit {
 
     this.setPriceImpact(tradeInfo);
 
-    this.calculateMaxSentAndMinReceived();
+    this.fromProvider = tradeInfo.fromProvider;
+    this.toProvider = tradeInfo.toProvider;
+
+    this.fromPath = tradeInfo.fromPath;
+    this.toPath = tradeInfo.toPath;
+
+    this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
   }
 
   /**
@@ -154,25 +191,5 @@ export class CrossChainSwapInfoComponent implements OnInit {
         ? Math.max(this.priceImpactFrom, this.priceImpactTo)
         : null;
     this.priceImpactService.setPriceImpact(maxPriceImpact);
-  }
-
-  private subscribeOnSlippage(): void {
-    this.settingsService.crossChainRoutingValueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        const { toAmount } = this.swapFormService.outputValue;
-        if (toAmount?.isFinite()) {
-          this.calculateMaxSentAndMinReceived();
-          this.cdr.markForCheck();
-        }
-      });
-  }
-
-  /**
-   * Calculates maximum spent and minimum received amounts based on slippage.
-   */
-  private calculateMaxSentAndMinReceived(): void {
-    this.minimumReceived = this.crossChainRoutingService.calculateTokenOutAmountMin();
-    this.maximumSent = this.crossChainRoutingService.calculateTokenInAmountMax();
   }
 }

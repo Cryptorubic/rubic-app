@@ -1,5 +1,5 @@
+import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 interface NativeCoin {
   blockchain: BLOCKCHAIN_NAME;
@@ -20,7 +20,7 @@ interface Network {
   nativeCoin: NativeCoin;
 }
 
-export default [
+const networks: ReadonlyArray<Network> = [
   {
     id: 1,
     name: BLOCKCHAIN_NAME.ETHEREUM,
@@ -41,7 +41,7 @@ export default [
   {
     id: 56,
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    label: 'Binance Smart Chain',
+    label: 'BSC',
     scannerUrl: 'https://bscscan.com/',
     rpcLink: 'https://summer-late-dew.bsc.quiknode.pro/',
     additionalRpcLink:
@@ -91,6 +91,7 @@ export default [
   {
     id: 1666600000,
     name: BLOCKCHAIN_NAME.HARMONY,
+    label: 'HARMONY',
     scannerUrl: 'https://explorer.harmony.one/#/',
     rpcLink: 'https://api.harmony.one',
     additionalRpcLink: 'https://api.s0.t.hmny.io/',
@@ -248,4 +249,6 @@ export default [
       decimals: 9
     }
   }
-] as ReadonlyArray<Network>;
+];
+
+export default networks;

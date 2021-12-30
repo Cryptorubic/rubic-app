@@ -25,6 +25,10 @@
     margin-bottom: 10px;
   }
 
+  &_mb {
+    margin-bottom: 14px !important;
+  }
+
   &__value {
     display: flex;
     grid-gap: 8px;
@@ -88,5 +92,13 @@ app-price-impact-info-line {
     &:not(:last-child) {
       margin-bottom: 20px;
     }
+  }
+}
+
+
+.route-value {
+  &__icon-next {
+    width: 8px !important;
+    height: 14px !important;
   }
 }

@@ -20,7 +20,7 @@ export const BRIDGE_CONFIG = struct([
   bool('is_paused')
 ]) as Layout<unknown>;
 
-export type BRIDGE_CONFIG_DATA = {
+export type BridgeConfigData = {
   key: number;
   owner: PublicKey;
   manager: PublicKey;
@@ -43,7 +43,7 @@ export const BLOCKCHAIN_LAYOUT = struct([
   bool('is_active')
 ]);
 
-export interface SOLANA_BLOCKCHAIN_CONFIG {
+export interface SolanaBlockchainConfig {
   key: number;
   rubic_address: string;
   fee_amount: BigNumber;

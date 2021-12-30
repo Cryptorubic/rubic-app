@@ -288,11 +288,7 @@ export class QueryParamsService {
       );
     }
 
-    return of(
-      similarTokens.size > 1
-        ? similarTokens.find(token => token.usedInIframe)
-        : similarTokens.first()
-    );
+    return of(similarTokens.first());
   }
 
   /**

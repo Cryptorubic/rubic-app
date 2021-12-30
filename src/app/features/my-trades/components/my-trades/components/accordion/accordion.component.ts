@@ -21,7 +21,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRANSLATION_STATUS_KEY } from 'src/app/features/my-trades/components/my-trades/constants/translation-status-keys';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { tradesProviders } from '@shared/constants/common/trades-providers';
 
 @Component({
   selector: 'app-accordion',
@@ -42,7 +42,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  public readonly tradesProviders = INSTANT_TRADES_PROVIDERS;
+  public readonly tradesProviders = tradesProviders;
 
   private PAGE_SIZE = 5;
 

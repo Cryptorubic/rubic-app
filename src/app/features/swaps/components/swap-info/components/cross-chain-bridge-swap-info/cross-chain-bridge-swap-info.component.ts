@@ -16,17 +16,7 @@ import { SettingsService } from '@features/swaps/services/settings-service/setti
 import { combineLatest } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-
-const supportedBlockchains = [
-  BLOCKCHAIN_NAME.ETHEREUM,
-  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-  BLOCKCHAIN_NAME.POLYGON,
-  BLOCKCHAIN_NAME.AVALANCHE,
-  BLOCKCHAIN_NAME.XDAI,
-  BLOCKCHAIN_NAME.ETHEREUM_TESTNET
-] as const;
-
-type SupportedBlockchain = typeof supportedBlockchains[number];
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 @Component({
   selector: 'app-cross-chain-bridge-swap-info',
@@ -42,16 +32,14 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  private readonly blockchainLabels: Record<SupportedBlockchain, string>;
-
-  public toBlockchain: SupportedBlockchain;
+  public toBlockchain: BLOCKCHAIN_NAME;
 
   public toWalletAddress: string;
 
   public isWalletCopied: boolean;
 
   public get blockchainLabel(): string {
-    return this.blockchainLabels[this.toBlockchain];
+    return BlockchainsInfo.getBlockchainLabel(this.toBlockchain);
   }
 
   constructor(
@@ -62,15 +50,6 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
-    this.blockchainLabels = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: 'Ethereum',
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BSC',
-      [BLOCKCHAIN_NAME.POLYGON]: 'Polygon',
-      [BLOCKCHAIN_NAME.AVALANCHE]: 'Avalanche',
-      [BLOCKCHAIN_NAME.XDAI]: 'Xdai',
-      [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: 'Kovan'
-    };
-
     this.isWalletCopied = false;
   }
 
@@ -89,7 +68,7 @@ export class CrossChainBridgeSwapInfoComponent implements OnInit {
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([toBlockchain, user, displayTargetAddress, targetAddress]) => {
-        this.toBlockchain = toBlockchain as SupportedBlockchain;
+        this.toBlockchain = toBlockchain;
         const targetAddressExact = targetAddress?.isValid ? targetAddress.value : null;
         this.toWalletAddress = displayTargetAddress ? targetAddressExact : user?.address;
 

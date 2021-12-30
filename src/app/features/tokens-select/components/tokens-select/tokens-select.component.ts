@@ -48,10 +48,10 @@ import {
   TokensNetworkState
 } from 'src/app/shared/models/tokens/paginated-tokens';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
+import { compareTokens } from '@shared/utils/utils';
+import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { compareTokens } from '@shared/utils/utils';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -189,10 +189,9 @@ export class TokensSelectComponent implements OnInit {
     fromBlockchain: BLOCKCHAIN_NAME,
     toBlockchain: BLOCKCHAIN_NAME
   ): boolean {
-    const availableNetworks = SUPPORTED_CROSS_CHAIN_SWAP_BLOCKCHAINS;
     return (
-      availableNetworks.some(availableNetwork => availableNetwork === fromBlockchain) &&
-      availableNetworks.some(availableNetwork => availableNetwork === toBlockchain)
+      CrossChainRoutingService.isSupportedBlockchain(fromBlockchain) &&
+      CrossChainRoutingService.isSupportedBlockchain(toBlockchain)
     );
   }
 

@@ -45,7 +45,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
     const { fromTokenWrapped, toTokenWrapped } = this.getWrappedTokens(fromToken, toToken);
     const fromAmountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
-    const route = await this.getRoute(fromTokenWrapped, fromAmountAbsolute, toTokenWrapped);
+    const route = await this.getRoute(fromTokenWrapped, toTokenWrapped, fromAmountAbsolute);
 
     return {
       blockchain: this.blockchain,
@@ -65,19 +65,19 @@ export class AlgebraService extends CommonUniV3AlgebraService {
   /**
    * Returns most profitable route.
    * @param fromToken From token.
-   * @param fromAmountAbsolute From amount in Wei.
    * @param toToken To token.
+   * @param amountAbsolute From or to amount in Wei.
    */
   private async getRoute(
     fromToken: InstantTradeToken,
-    fromAmountAbsolute: string,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    amountAbsolute: string
   ): Promise<AlgebraRoute> {
     const routes = (
       await this.quoterController.getAllRoutes(
-        fromAmountAbsolute,
         fromToken,
         toToken,
+        amountAbsolute,
         this.settings.disableMultihops ? 0 : maxTransitTokens
       )
     ).sort((a, b) => b.outputAbsoluteAmount.comparedTo(a.outputAbsoluteAmount));

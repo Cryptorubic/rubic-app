@@ -47,7 +47,7 @@ export abstract class WalletConnectAbstractAdapter extends CommonWalletAdapter {
       rpc: this.getNetworksProviders(),
       ...providerConfig
     });
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     web3.setProvider(this.wallet as any);
     this.initSubscriptions();
   }

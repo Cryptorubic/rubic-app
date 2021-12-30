@@ -1,11 +1,10 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { SupportedCrossChainSwapBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-swap-blockchain';
-import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-export type TransitTokens = Record<SupportedCrossChainSwapBlockchain, InstantTradeToken>;
+export type TransitTokens = Record<SupportedCrossChainBlockchain, InstantTradeToken>;
 
-export const TRANSIT_TOKENS_WITH_MODE: TransitTokens = {
+export const transitTokens: TransitTokens = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     decimals: 6,
@@ -36,9 +35,16 @@ export const TRANSIT_TOKENS_WITH_MODE: TransitTokens = {
     decimals: 6,
     symbol: 'USDC'
   },
+  [BLOCKCHAIN_NAME.HARMONY]: {
+    address: '0x985458e523db3d53125813ed68c274899e9dfab4',
+    decimals: 6,
+    symbol: '1USDC'
+  }
+  /*
   [BLOCKCHAIN_NAME.SOLANA]: {
     address: TOKENS.USDC.mintAddress,
     decimals: TOKENS.USDC.decimals,
     symbol: TOKENS.USDC.symbol
   }
+  */
 };

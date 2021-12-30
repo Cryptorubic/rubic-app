@@ -18,6 +18,7 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
+import { base58 } from 'ethers/lib/utils';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<
@@ -39,6 +40,15 @@ type ReturnValue = Promise<{
 }>;
 
 export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
+  public static addressToBytes32(address: string): string {
+    return (
+      '0x' +
+      Array.from(base58.decode(address))
+        .map(num => num.toString(16).padStart(2, '0'))
+        .reduce((acc, hexNum) => acc + hexNum, '')
+    );
+  }
+
   public readonly connection: Connection;
 
   constructor(connection: Connection) {

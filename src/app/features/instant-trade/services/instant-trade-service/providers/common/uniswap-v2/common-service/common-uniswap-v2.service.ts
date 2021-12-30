@@ -415,9 +415,9 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     gasCalculationMethodName: GasCalculationMethod,
     gasPriceInUsd?: BigNumber
   ): Promise<UniswapV2CalculatedInfo> {
-    const routes = (
-      await this.getAllRoutes(fromToken, toToken, fromAmountAbsolute, 'getAmountsOut')
-    ).sort((a, b) => (b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1));
+    const routes = (await this.getAllRoutes(fromToken, toToken, fromAmountAbsolute)).sort((a, b) =>
+      b.outputAbsoluteAmount.gt(a.outputAbsoluteAmount) ? 1 : -1
+    );
     if (routes.length === 0) {
       throw new InsufficientLiquidityError();
     }
@@ -507,8 +507,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private async getAllRoutes(
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
-    amountAbsolute: string,
-    uniswapMethodName: 'getAmountsOut' | 'getAmountsIn'
+    amountAbsolute: string
   ): Promise<UniswapV2Route[]> {
     const vertexes: SymbolToken[] = this.routingProviders.filter(
       elem =>
@@ -540,15 +539,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const routes: UniswapV2Route[] = [];
 
     try {
-      const responses = await this.getRoutes(routesMethodArguments, uniswapMethodName);
+      const responses = await this.getRoutes(routesMethodArguments, 'getAmountsOut');
       responses.forEach((response, index) => {
         if (!response.success) {
           return;
         }
         const { amounts } = response.output;
-        const amount = new BigNumber(
-          uniswapMethodName === 'getAmountsOut' ? amounts[amounts.length - 1] : amounts[0]
-        );
+        const amount = new BigNumber(amounts[amounts.length - 1]);
         const path = routesPaths[index];
         routes.push({
           outputAbsoluteAmount: amount,
@@ -592,28 +589,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
           path: extendedPath
         });
       });
-  }
-
-  public async getFromAmount(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    toAmount: BigNumber
-  ): Promise<BigNumber> {
-    const fromTokenClone = { ...fromToken };
-    const toTokenClone = { ...toToken };
-
-    if (this.blockchainAdapter.isNativeAddress(fromTokenClone.address)) {
-      fromTokenClone.address = this.wethAddress;
-    }
-    if (this.blockchainAdapter.isNativeAddress(toTokenClone.address)) {
-      toTokenClone.address = this.wethAddress;
-    }
-
-    const toAmountAbsolute = Web3Pure.toWei(toAmount, toToken.decimals);
-    const routes = (
-      await this.getAllRoutes(fromTokenClone, toTokenClone, toAmountAbsolute, 'getAmountsIn')
-    ).sort((a, b) => a.outputAbsoluteAmount.comparedTo(b.outputAbsoluteAmount));
-    return routes[0]?.outputAbsoluteAmount;
   }
 
   public async createTrade(

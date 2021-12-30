@@ -45,7 +45,7 @@ export interface SlippageTolerance {
 export class SettingsService {
   private readonly defaultSlippageTolerance: SlippageTolerance = {
     instantTrades: 2,
-    crossChain: 5
+    crossChain: 4
   };
 
   public readonly defaultItSettings: ItSettingsForm;

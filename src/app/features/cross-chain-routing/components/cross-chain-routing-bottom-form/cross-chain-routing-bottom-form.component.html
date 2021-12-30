@@ -28,8 +28,8 @@
         [fromAmount]="fromAmount"
         [minAmount]="minError"
         [maxAmount]="maxError"
-        (swapClick)="doButtonAction('swap')"
-        (approveClick)="doButtonAction('approve')"
+        (swapClick)="createTrade()"
+        (approveClick)="approveTrade()"
         (updateRatesClick)="setHiddenData()"
       ></app-swap-button-container>
     </div>

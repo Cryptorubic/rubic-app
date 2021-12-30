@@ -1,3 +1,49 @@
+<ng-container *ngIf="fromPath || toPath">
+  <div class="info-line info-line_mb">
+    <div class="info-line__title title">
+      <span class="title__text">Best routing</span>
+    </div>
+  </div>
+
+  <div class="info-line" *ngIf="fromPath">
+    <div class="info-line__title title">
+      <img [src]="fromProviderImg" alt="" />
+      <span class="title__text">{{ fromBlockchainLabel }} via {{ fromProviderLabel }}</span>
+    </div>
+    <div class="info-line__value route-value">
+      <ng-container *ngFor="let tokenSymbol of fromPath; index as index">
+        {{ tokenSymbol }}
+        <img
+          *ngIf="index !== fromPath.length - 1"
+          class="route-value__icon-next"
+          src="assets/images/swaps/swaps-info/route-next-icon.svg"
+          alt=""
+        />
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="info-line" *ngIf="toPath">
+    <div class="info-line__title title">
+      <img [src]="toProviderImg" alt="" />
+      <span class="title__text">{{ toBlockchainLabel }} via {{ toProviderLabel }}</span>
+    </div>
+    <div class="info-line__value route-value">
+      <ng-container *ngFor="let tokenSymbol of toPath; index as index">
+        {{ tokenSymbol }}
+        <img
+          *ngIf="index !== toPath.length - 1"
+          class="route-value__icon-next"
+          src="assets/images/swaps/swaps-info/route-next-icon.svg"
+          alt=""
+        />
+      </ng-container>
+    </div>
+  </div>
+
+  <hr class="delimiter" />
+</ng-container>
+
 <div class="info-line" *ngIf="estimateGasInEth?.isFinite()">
   <div class="info-line__title title">
     <span class="title__text">Estimated gas fee</span>
@@ -85,28 +131,5 @@
   </div>
   <div class="info-line__value" *ngIf="minimumReceived?.isFinite()">
     {{ minimumReceivedFormatted }}
-  </div>
-</div>
-
-<div
-  class="info-line"
-  *ngLet="
-    (maximumSent | bigNumberFormat | withRound: 'toClosestValue':fromToken.decimals) +
-    ' ' +
-    fromToken.symbol as maximumSentFormatted
-  "
->
-  <div class="info-line__title title">
-    <span class="title__text"> {{ 'crossChainPage.swapInfo.maximumSent' | translate }}</span>
-    <img
-      src="assets/images/swaps/swaps-info/question-icon.svg"
-      alt="question"
-      [tuiHint]="
-        'Maximum amount of assets for the transaction taking into account the slippage. If some amount will not be used for the transaction, they will be returned to your wallet in the first transaction.'
-      "
-    />
-  </div>
-  <div class="info-line__value" *ngIf="maximumSent?.isFinite()">
-    {{ maximumSentFormatted }}
   </div>
 </div>
