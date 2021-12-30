@@ -1,4 +1,3 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { crossChainContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/cross-chain-contract-addresses';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
@@ -175,10 +174,6 @@ export abstract class ContractData {
     if (this.isProviderV3(providerIndex)) {
       methodName += 'V3';
       contractAbiMethod = crossChainContractAbiV3.find(method => method.name === methodName);
-    }
-
-    if (this.blockchain === BLOCKCHAIN_NAME.AVALANCHE) {
-      methodName += 'AVAX';
     }
 
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
