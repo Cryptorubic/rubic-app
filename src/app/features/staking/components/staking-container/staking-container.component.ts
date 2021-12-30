@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { StakingService } from '@features/staking/services/staking.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -17,19 +17,26 @@ import BigNumber from 'bignumber.js';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
   WITHDRAW = 1
 }
 
+/**
+ * Container component contains tab-switcher between staking and withdraw forms
+ * and some additional functionality: can add BRBC to users wallet, navigate user
+ * to swaps to get BRBC.
+ */
 @Component({
   selector: 'app-staking-container',
   templateUrl: './staking-container.component.html',
   styleUrls: ['./staking-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class StakingContainerComponent {
+export class StakingContainerComponent implements OnInit {
   public activeItemIndex = STAKING_NAV_ENUM.STAKE;
 
   public readonly isLoggedIn$ = this.authService.getCurrentUser();
@@ -52,8 +59,13 @@ export class StakingContainerComponent {
     private readonly authService: AuthService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
+    @Self() private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
+
+  public ngOnInit(): void {
+    this.stakingService.watchBRBCUsdPrice().pipe(takeUntil(this.destroy$)).subscribe();
+  }
 
   public async navigateToSwaps(): Promise<void> {
     const form = this.swapFormService.commonTrade.controls.input;
@@ -90,7 +102,7 @@ export class StakingContainerComponent {
       rank: 0,
       price: 0,
       usedInIframe: false,
-      name: 'Rubic Staking Tokens'
+      name: 'Rubic Staking Token'
     };
     await this.walletConnectorService.addToken(xBRBC);
   }

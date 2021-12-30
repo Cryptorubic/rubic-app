@@ -1,8 +1,5 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-// export const STAKE_LIMIT_MIN = 1000;
-// export const STAKE_LIMIT_MAX = 100000;
-
 export const STAKE_LIMIT_MAX = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 100000,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 100000,

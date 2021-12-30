@@ -15,20 +15,15 @@
       [decimals]="18"
     />
   </div>
-  <div class="stake__balance-and-usd">
-    <ng-container *ngIf="(needLogin$ | async) === false">
-      <div class="stake__balance" *ngLet="selectedTokenBalance$ | async as tokenBalance">
-        {{
-          'staking.stake.balance'
-            | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount: 9:4:true }
-        }}
-        <span (click)="setMaxAmount(tokenBalance)">MAX</span>
-      </div>
-    </ng-container>
-    <div class="stake__usd">
-      <app-usd-price-container [usdPrice]=""></app-usd-price-container>
+  <ng-container *ngIf="(needLogin$ | async) === false">
+    <div class="stake__balance" *ngLet="selectedTokenBalance$ | async as tokenBalance">
+      {{
+        'staking.stake.balance'
+          | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount: 9:4:true }
+      }}
+      <span (click)="setMaxAmount(tokenBalance)">MAX</span>
     </div>
-  </div>
+  </ng-container>
   <app-stake-button-container
     [loading]="stakeButtonLoading$ | async"
     [amountFormControl]="amount"

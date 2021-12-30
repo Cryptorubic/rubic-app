@@ -2,12 +2,15 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
-import { StakingService } from '@features/staking/services/staking.service';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { StakingService } from '@features/staking/services/staking.service';
 
+/**
+ * The modal which allows user to choose staking method.
+ */
 @Component({
   selector: 'app-swap-modal',
   templateUrl: './swap-modal.component.html',
@@ -15,7 +18,11 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapModalComponent {
-  public readonly bridgeSwapButtonLoading$ = new BehaviorSubject<boolean>(false);
+  private readonly _bridgeSwapButtonLoading$ = new BehaviorSubject<boolean>(false);
+
+  get bridgeSwapButtonLoading$(): Observable<boolean> {
+    return this._bridgeSwapButtonLoading$.asObservable();
+  }
 
   public isEthBlockchain: boolean;
 
@@ -42,7 +49,7 @@ export class SwapModalComponent {
       status: TuiNotification.Warning,
       autoClose: 10000
     });
-    // this.bridgeSwapButtonLoading$.next(true);
+    // this._bridgeSwapButtonLoading$.next(true);
     // this.stakingService.stakingProgress$
     //   .pipe(
     //     switchMap(stakingProgress => {
@@ -50,7 +57,7 @@ export class SwapModalComponent {
     //         ? of(false)
     //         : this.stakingService.enterStakeViaBridge(this.context.data.amount).pipe(
     //             map(() => true),
-    //             finalize(() => this.bridgeSwapButtonLoading$.next(false))
+    //             finalize(() => this._bridgeSwapButtonLoading$.next(false))
     //           );
     //     })
     //   )
