@@ -1,17 +1,19 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, Self } from '@angular/core';
-import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
-
-import { StakingService } from '../../services/staking.service';
-import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
+import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
-import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { StakingService } from '../../services/staking.service';
+import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { TranslateService } from '@ngx-translate/core';
+import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
 
+/**
+ * Stake form component.
+ */
 @Component({
   selector: 'app-stake',
   templateUrl: './stake.component.html',
@@ -20,8 +22,6 @@ import { TranslateService } from '@ngx-translate/core';
   providers: [TuiDestroyService]
 })
 export class StakeComponent {
-  public readonly loading$ = new BehaviorSubject<boolean>(false);
-
   public readonly needLogin$ = this.stakingService.needLogin$;
 
   public readonly amount = new FormControl('');
@@ -39,22 +39,24 @@ export class StakeComponent {
     takeUntil(this.destroy$)
   );
 
-  public readonly stakeButtonLoading$ = new BehaviorSubject(false);
+  private readonly _stakeButtonLoading$ = new BehaviorSubject(false);
+
+  get stakeButtonLoading$(): Observable<boolean> {
+    return this._stakeButtonLoading$.asObservable();
+  }
 
   public approvedTokens: boolean = false;
 
   constructor(
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private readonly injector: Injector,
-    @Self() private readonly destroy$: TuiDestroyService,
     private readonly stakingService: StakingService,
     private readonly walletsModalService: WalletsModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public confirmStake(): void {
-    this.stakeButtonLoading$.next(true);
+    this._stakeButtonLoading$.next(true);
     const stakeNotification$ = this.notificationsService.show(
       this.translateService.instant('notifications.stakeInProgress'),
       {
@@ -67,7 +69,7 @@ export class StakeComponent {
       .pipe(
         finalize(() => {
           stakeNotification$.unsubscribe();
-          this.stakeButtonLoading$.next(false);
+          this._stakeButtonLoading$.next(false);
         })
       )
       .subscribe(() => {
@@ -87,7 +89,7 @@ export class StakeComponent {
   }
 
   public approve(): void {
-    this.stakeButtonLoading$.next(true);
+    this._stakeButtonLoading$.next(true);
     const approveNotification = this.notificationsService.show(
       this.translateService.instant('notifications.approveInProgress'),
       {
@@ -100,7 +102,7 @@ export class StakeComponent {
       .pipe(
         finalize(() => {
           approveNotification.unsubscribe();
-          this.stakeButtonLoading$.next(false);
+          this._stakeButtonLoading$.next(false);
         })
       )
       .subscribe(() => {
