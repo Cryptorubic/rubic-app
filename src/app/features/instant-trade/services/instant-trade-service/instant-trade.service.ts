@@ -15,8 +15,8 @@ import { QuickSwapService } from 'src/app/features/instant-trade/services/instan
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TranslateService } from '@ngx-translate/core';
 import { SushiSwapPolygonService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/sushi-swap-polygon-service/sushi-swap-polygon.service';
 import { SushiSwapEthService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/sushi-swap-eth-service/sushi-swap-eth.service';
@@ -53,7 +53,7 @@ export class InstantTradeService {
   private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.XDAI];
 
   private blockchainsProviders: Partial<
-    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADE_PROVIDER, ItProvider>>>
+    Record<BLOCKCHAIN_NAME, Partial<Record<INSTANT_TRADES_PROVIDERS, ItProvider>>>
   >;
 
   private readonly modalSubscriptions: Queue<Subscription>;
@@ -107,42 +107,42 @@ export class InstantTradeService {
   private setBlockchainsProviders(): void {
     this.blockchainsProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
-        [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchEthService,
-        [INSTANT_TRADE_PROVIDER.UNISWAP_V2]: this.uniswapV2Service,
-        [INSTANT_TRADE_PROVIDER.UNISWAP_V3]: this.uniswapV3Service,
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapEthService,
-        [INSTANT_TRADE_PROVIDER.ZRX]: this.zrxService
+        [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchEthService,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: this.uniswapV2Service,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3Service,
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapEthService,
+        [INSTANT_TRADES_PROVIDERS.ZRX]: this.zrxService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
-        [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchBscService,
-        [INSTANT_TRADE_PROVIDER.PANCAKESWAP]: this.pancakeSwapService,
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapBscService
+        [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchBscService,
+        [INSTANT_TRADES_PROVIDERS.PANCAKESWAP]: this.pancakeSwapService,
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapBscService
       },
       [BLOCKCHAIN_NAME.POLYGON]: {
-        [INSTANT_TRADE_PROVIDER.ONEINCH]: this.oneInchPolygonService,
-        [INSTANT_TRADE_PROVIDER.QUICKSWAP]: this.quickSwapService,
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapPolygonService,
-        [INSTANT_TRADE_PROVIDER.ALGEBRA]: this.algebraService
+        [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchPolygonService,
+        [INSTANT_TRADES_PROVIDERS.QUICKSWAP]: this.quickSwapService,
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapPolygonService,
+        [INSTANT_TRADES_PROVIDERS.ALGEBRA]: this.algebraService
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapHarmonyService
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapHarmonyService
       },
       [BLOCKCHAIN_NAME.AVALANCHE]: {
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapAvalancheService,
-        [INSTANT_TRADE_PROVIDER.PANGOLIN]: this.pangolinAvalancheService,
-        [INSTANT_TRADE_PROVIDER.JOE]: this.joeAvalancheService
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapAvalancheService,
+        [INSTANT_TRADES_PROVIDERS.PANGOLIN]: this.pangolinAvalancheService,
+        [INSTANT_TRADES_PROVIDERS.JOE]: this.joeAvalancheService
       },
       [BLOCKCHAIN_NAME.MOONRIVER]: {
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapMoonRiverService,
-        [INSTANT_TRADE_PROVIDER.SOLARBEAM]: this.solarBeamMoonriverService
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapMoonRiverService,
+        [INSTANT_TRADES_PROVIDERS.SOLARBEAM]: this.solarBeamMoonriverService
       },
       [BLOCKCHAIN_NAME.FANTOM]: {
-        [INSTANT_TRADE_PROVIDER.SUSHISWAP]: this.sushiSwapFantomService,
-        [INSTANT_TRADE_PROVIDER.SPOOKYSWAP]: this.spookySwapFantomService,
-        [INSTANT_TRADE_PROVIDER.SPIRITSWAP]: this.spiritSwapFantomService
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapFantomService,
+        [INSTANT_TRADES_PROVIDERS.SPOOKYSWAP]: this.spookySwapFantomService,
+        [INSTANT_TRADES_PROVIDERS.SPIRITSWAP]: this.spiritSwapFantomService
       },
       [BLOCKCHAIN_NAME.SOLANA]: {
-        [INSTANT_TRADE_PROVIDER.RAYDIUM]: this.raydiumService
+        [INSTANT_TRADES_PROVIDERS.RAYDIUM]: this.raydiumService
       }
     };
   }
@@ -172,7 +172,7 @@ export class InstantTradeService {
   }
 
   public async calculateTrades(
-    providersNames: INSTANT_TRADE_PROVIDER[]
+    providersNames: INSTANT_TRADES_PROVIDERS[]
   ): Promise<PromiseSettledResult<InstantTrade>[]> {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
@@ -191,7 +191,7 @@ export class InstantTradeService {
   }
 
   public async createTrade(
-    provider: INSTANT_TRADE_PROVIDER,
+    provider: INSTANT_TRADES_PROVIDERS,
     trade: InstantTrade,
     confirmCallback?: () => void
   ): Promise<void> {
@@ -209,7 +209,7 @@ export class InstantTradeService {
       };
 
       let receipt;
-      if (provider === INSTANT_TRADE_PROVIDER.WRAPPED) {
+      if (provider === INSTANT_TRADES_PROVIDERS.WRAPPED) {
         receipt = await this.ethWethSwapProvider.createTrade(trade, options);
       } else {
         receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
@@ -247,7 +247,7 @@ export class InstantTradeService {
 
   private async postTrade(
     hash: string,
-    provider: INSTANT_TRADE_PROVIDER,
+    provider: INSTANT_TRADES_PROVIDERS,
     trade: InstantTrade
   ): Promise<void> {
     const publicBlockchainAdapter = this.publicBlockchainAdapterService[trade.blockchain];
@@ -283,7 +283,7 @@ export class InstantTradeService {
     });
   }
 
-  public getAllowance(providersNames: INSTANT_TRADE_PROVIDER[]): Observable<boolean[]> | never {
+  public getAllowance(providersNames: INSTANT_TRADES_PROVIDERS[]): Observable<boolean[]> | never {
     const { fromToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
@@ -305,7 +305,7 @@ export class InstantTradeService {
     );
   }
 
-  public async approve(provider: INSTANT_TRADE_PROVIDER, trade: InstantTrade): Promise<void> {
+  public async approve(provider: INSTANT_TRADES_PROVIDERS, trade: InstantTrade): Promise<void> {
     try {
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,

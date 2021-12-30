@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { Observable } from 'rxjs';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 export interface ItOptions {
   onConfirm?: (hash: string) => void;
@@ -11,7 +11,7 @@ export interface ItOptions {
 }
 
 export interface ItProvider {
-  readonly providerType: INSTANT_TRADE_PROVIDER;
+  readonly providerType: INSTANT_TRADES_PROVIDERS;
 
   createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
 

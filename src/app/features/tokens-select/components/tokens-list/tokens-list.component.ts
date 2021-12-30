@@ -57,7 +57,7 @@ export class TokensListComponent implements AfterViewInit {
   @Input() public loading: boolean;
 
   /**
-   * Tokens, currently selected in main form.
+   * Token, currently selected in main form.
    */
   @Input() public currentlySelectedToken: TokenAmount;
 

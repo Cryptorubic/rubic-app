@@ -17,11 +17,11 @@ import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import PosRootChainManagerAbiI from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/pos-root-chain-manager-contract/pos-root-chain-manager-abiI';
-import PosRootChainManagerAddresses from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/pos-root-chain-manager-contract/pos-root-chain-manager-addresses';
+import POS_ROOT_CHAIN_MANAGER_ABI from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/pos-root-chain-manager-contract/pos-root-chain-manager-abiI';
+import POS_ROOT_CHAIN_MANAGER_ADDRESSES from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/pos-root-chain-manager-contract/pos-root-chain-manager-addresses';
 import { compareAddresses } from 'src/app/shared/utils/utils';
 import { PCacheable } from 'ts-cacheable';
-import Uchild_erc20Abi from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/uchild_erc20/uchild_erc20-abi';
+import U_CHILD_ERC_20_ABI from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/constants/uchild_erc20/uchild_erc20-abi';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -193,8 +193,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
   })
   private async getPredicateAddress(tokenAddress: string): Promise<string> {
     const tokenType = await this.ethBlockchainAdapter.callContractMethod(
-      PosRootChainManagerAddresses,
-      PosRootChainManagerAbiI,
+      POS_ROOT_CHAIN_MANAGER_ADDRESSES,
+      POS_ROOT_CHAIN_MANAGER_ABI,
       'tokenToType',
       { methodArguments: [tokenAddress] }
     );
@@ -202,8 +202,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       throw new Error('Invalid Tokens Type');
     }
     return await this.ethBlockchainAdapter.callContractMethod(
-      PosRootChainManagerAddresses,
-      PosRootChainManagerAbiI,
+      POS_ROOT_CHAIN_MANAGER_ADDRESSES,
+      POS_ROOT_CHAIN_MANAGER_ABI,
       'typeToPredicate',
       { methodArguments: [tokenType] }
     );
@@ -278,8 +278,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       if (this.ethBlockchainAdapter.isNativeAddress(fromToken.address)) {
         return from(
           this.web3PrivateService.tryExecuteContractMethod(
-            PosRootChainManagerAddresses,
-            PosRootChainManagerAbiI,
+            POS_ROOT_CHAIN_MANAGER_ADDRESSES,
+            POS_ROOT_CHAIN_MANAGER_ABI,
             'depositEtherFor',
             [walletAddress],
             {
@@ -293,8 +293,8 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
       return from(
         EthLikeWeb3Pure.encodeParameter('uint256', amountAbsolute).then(encodedAmount =>
           this.web3PrivateService.tryExecuteContractMethod(
-            PosRootChainManagerAddresses,
-            PosRootChainManagerAbiI,
+            POS_ROOT_CHAIN_MANAGER_ADDRESSES,
+            POS_ROOT_CHAIN_MANAGER_ABI,
             'depositFor',
             [walletAddress, fromToken.address, encodedAmount],
             {
@@ -308,7 +308,7 @@ export class EthereumPolygonBridgeProviderService extends BlockchainsBridgeProvi
     return from(
       this.web3PrivateService.tryExecuteContractMethod(
         fromToken.address,
-        Uchild_erc20Abi,
+        U_CHILD_ERC_20_ABI,
         'withdraw',
         [amountAbsolute],
         {

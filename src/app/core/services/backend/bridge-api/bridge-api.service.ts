@@ -216,9 +216,9 @@ export class BridgeApiService {
   }
 
   /**
-   * Gets tokens price.
+   * Gets token price.
    * @param bridgeTokenPair Object with info about pair of tokens.
-   * @return number Tokens price.
+   * @return number Token price.
    */
   private getTokenPrice(bridgeTokenPair: BridgeTokenPair): Observable<number> {
     return this.tokensService.tokens$.pipe(

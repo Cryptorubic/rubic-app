@@ -18,13 +18,13 @@ import { INSTANT_TRADE_PROVIDERS } from '@features/instant-trade/constants/provi
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import {
   ItSettingsForm,
   SettingsService
@@ -94,7 +94,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
 
   private hiddenDataAmounts$: BehaviorSubject<
-    { name: INSTANT_TRADE_PROVIDER; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
+    { name: INSTANT_TRADES_PROVIDERS; amount: BigNumber; error?: RubicError<ERROR_TYPE> | Error }[]
   >;
 
   public providerControllers: ProviderControllerData[];
@@ -450,7 +450,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
           this.hiddenDataAmounts$.next(el);
           const hiddenProviderData = el.find(
-            (it: { name: INSTANT_TRADE_PROVIDER }) =>
+            (it: { name: INSTANT_TRADES_PROVIDERS }) =>
               it.name === this.selectedProvider.tradeProviderInfo.value
           );
           if (!this.selectedProvider.trade.to.amount.eq(hiddenProviderData.amount)) {
@@ -713,7 +713,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     let providerIndex = -1;
-    let instantTradeProvider: INSTANT_TRADE_PROVIDER;
+    let instantTradeProvider: INSTANT_TRADES_PROVIDERS;
     let instantTrade: InstantTrade;
     if (!this.ethAndWethTrade) {
       providerIndex = this.providerControllers.findIndex(el => el.isSelected);
@@ -732,7 +732,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       instantTrade = provider.trade;
     } else {
       this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-      instantTradeProvider = INSTANT_TRADE_PROVIDER.WRAPPED;
+      instantTradeProvider = INSTANT_TRADES_PROVIDERS.WRAPPED;
       instantTrade = this.ethAndWethTrade;
     }
 

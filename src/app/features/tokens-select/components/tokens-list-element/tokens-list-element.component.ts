@@ -26,7 +26,7 @@ export class TokensListElementComponent {
   public loadingFavoriteToken: boolean;
 
   /**
-   * Tokens element.
+   * Token element.
    */
   @Input() token: TokenAmount;
 

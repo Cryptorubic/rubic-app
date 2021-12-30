@@ -41,7 +41,7 @@ import { AbiItem } from 'web3-utils';
 import { GasService } from 'src/app/core/services/gas-service/gas.service';
 import { compareAddresses, subtractPercent } from 'src/app/shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
 import { GetTradeSupportingFeeData } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/models/GetTradeSupportingFeeData';
@@ -51,7 +51,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation-error';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import DEFAULT_UNISWAP_V2_ABI from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 
 interface RecGraphVisitorOptions {
@@ -66,7 +66,7 @@ interface RecGraphVisitorOptions {
 
 @Injectable()
 export abstract class CommonUniswapV2Service implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
 
   protected contractAbi: AbiItem[];
 

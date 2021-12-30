@@ -14,7 +14,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';

@@ -124,7 +124,7 @@ export class CoingeckoApiService {
 
   /**
    * Gets price of common token or native coin in usd from coingecko.
-   * @param token Tokens to get price for.
+   * @param token Token to get price for.
    */
   public getCommonTokenOrNativeCoinPrice(token: {
     address: string;

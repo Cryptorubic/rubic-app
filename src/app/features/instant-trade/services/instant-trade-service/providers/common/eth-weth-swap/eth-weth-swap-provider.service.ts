@@ -13,7 +13,7 @@ import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';

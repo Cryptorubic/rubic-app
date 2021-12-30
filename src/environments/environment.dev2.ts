@@ -1,4 +1,4 @@
-import { CROSS_CHAIN_DEV } from 'src/environments/constants/crossChain';
+import { CROSS_CHAIN_DEV } from 'src/environments/constants/cross-chain';
 import { STAKING_CONFIG_DEVELOP } from './constants/staking';
 
 export const ENVIRONMENT = {

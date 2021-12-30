@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-const Uchild_erc20Abi = [
+const U_CHILD_ERC_20_ABI = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,
@@ -336,4 +336,4 @@ const Uchild_erc20Abi = [
   }
 ] as AbiItem[];
 
-export default Uchild_erc20Abi;
+export default U_CHILD_ERC_20_ABI;

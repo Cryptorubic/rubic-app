@@ -20,14 +20,14 @@ import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/us
 import { ZrxApiResponse } from 'src/app/features/instant-trade/services/instant-trade-service/models/zrx/zrx-types';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { ZrxCalculateTradeParams } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/models/zrx-calculate-trade-params';
 import { ZRX_API_ADDRESS } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-api-addresses';
 import { ZRX_NATIVE_TOKEN } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/zrx-native-token';
 import {
   SUPPORTED_ZRX_BLOCKCHAINS,
-  SUPPORTED_ZRX_BLOCKCHAIN
+  SupportedZrxBlockchain
 } from '@features/instant-trade/services/instant-trade-service/providers/common/zrx/constants/supported-zrx-blockchain';
 import { filter, first, mergeMap, startWith } from 'rxjs/operators';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
@@ -35,7 +35,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 
@@ -45,13 +45,13 @@ const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 export class ZrxService implements ItProvider {
   public static isSupportedBlockchain(
     blockchain: BLOCKCHAIN_NAME
-  ): blockchain is SUPPORTED_ZRX_BLOCKCHAIN {
+  ): blockchain is SupportedZrxBlockchain {
     return SUPPORTED_ZRX_BLOCKCHAINS.some(
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
 
-  public readonly providerType = INSTANT_TRADE_PROVIDER.ZRX;
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.ZRX;
 
   private readonly gasMargin: number;
 
@@ -65,7 +65,7 @@ export class ZrxService implements ItProvider {
 
   private tradeDataIsUpdated$: BehaviorSubject<boolean>;
 
-  protected blockchain: SUPPORTED_ZRX_BLOCKCHAIN;
+  protected blockchain: SupportedZrxBlockchain;
 
   private apiAddress: string;
 

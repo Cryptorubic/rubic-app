@@ -5,4 +5,4 @@ export const SUPPORTED_ZRX_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM_TESTNET
 ] as const;
 
-export type SUPPORTED_ZRX_BLOCKCHAIN = typeof SUPPORTED_ZRX_BLOCKCHAINS[number];
+export type SupportedZrxBlockchain = typeof SUPPORTED_ZRX_BLOCKCHAINS[number];

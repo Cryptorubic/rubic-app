@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-const PosRootChainManagerAbiI = [
+const POS_ROOT_CHAIN_MANAGER_ABI = [
   {
     anonymous: false,
     inputs: [
@@ -368,4 +368,4 @@ const PosRootChainManagerAbiI = [
   { stateMutability: 'payable', type: 'receive' }
 ] as AbiItem[];
 
-export default PosRootChainManagerAbiI;
+export default POS_ROOT_CHAIN_MANAGER_ABI;

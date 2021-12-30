@@ -1,5 +1,5 @@
 import InputToken from '@shared/models/tokens/input-token';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 
 interface InstantTradesBlockchainNetwork {
@@ -7,13 +7,13 @@ interface InstantTradesBlockchainNetwork {
 }
 
 interface InstantTradesEthLikeContract {
-  name: INSTANT_TRADE_PROVIDER | 'pancakeswap_old';
+  name: INSTANT_TRADES_PROVIDERS | 'pancakeswap_old';
   address: string;
   blockchain_network: InstantTradesBlockchainNetwork;
 }
 
 interface SolanaITContract {
-  name: INSTANT_TRADE_PROVIDER;
+  name: INSTANT_TRADES_PROVIDERS;
   address: string;
   blockchain_network: {
     title: 'solana';

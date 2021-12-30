@@ -8,7 +8,7 @@ import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class StakingApiService {
-  stakingApiPath = ENVIRONMENT.staking.apiUrl;
+  private readonly stakingApiPath = ENVIRONMENT.staking.apiUrl;
 
   constructor(private readonly httpService: HttpService) {}
 

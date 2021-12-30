@@ -46,7 +46,7 @@ import { PriceImpactService } from '@core/services/price-impact/price-impact.ser
 import { PCacheable } from 'ts-cacheable';
 import { SpookySwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spooky-swap-fantom-service/spooky-swap-fantom.service';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { CrossChainContractReader } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-contract-reader';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
@@ -623,7 +623,7 @@ export class CrossChainRoutingService {
 
   /**
    * Calculates price impact of token to 'transit token', or vice versa, trade.
-   * @param token Tokens, selected in form.
+   * @param token Token, selected in form.
    * @param transitToken Transit token.
    * @param tokenAmount Amount of token, selected in form.
    * @param transitTokenAmount Amount of transit token.

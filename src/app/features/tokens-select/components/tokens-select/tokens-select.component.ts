@@ -495,8 +495,8 @@ export class TokensSelectComponent implements OnInit {
 
   /**
    * Fetches token's image url.
-   * @param token Tokens to display.
-   * @return Promise<string> Tokens image url.
+   * @param token Token to display.
+   * @return Promise<string> Token image url.
    */
   private fetchTokenImage(token: BlockchainToken): Promise<string> {
     const blockchains = {

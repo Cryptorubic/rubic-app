@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { InsufficientFundsErrorComponent } from 'src/app/core/errors/components/insufficient-funds-error/insufficient-funds-error.component';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';

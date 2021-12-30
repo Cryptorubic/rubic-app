@@ -24,7 +24,7 @@ import {
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
 import { ContractData } from '@shared/models/blockchain/contract-data';
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { MethodData } from '@shared/models/blockchain/method-data';
 import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
@@ -35,11 +35,11 @@ import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Injectable()
 export abstract class CommonUniV3AlgebraService implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
+  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
 
   protected readonly blockchain: BLOCKCHAIN_NAME;
 

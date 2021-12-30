@@ -1,4 +1,4 @@
-import InstantTrade from '@features/instant-trade/models/Instant-trade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 
 export interface InstantTradeInfo {
   trade: InstantTrade;

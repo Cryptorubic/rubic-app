@@ -2,7 +2,7 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { CROSS_CHAIN_DEV } from 'src/environments/constants/crossChain';
+import { CROSS_CHAIN_DEV } from 'src/environments/constants/cross-chain';
 import { STAKING_CONFIG_DEVELOP } from './constants/staking';
 
 export const ENVIRONMENT = {
