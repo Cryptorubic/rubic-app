@@ -35,7 +35,9 @@ export class EthLikeContractExecutorService {
     targetAddress: string
   ): Promise<string> {
     const toWalletAddress =
+      // @ts-ignore TODO uncomment
       trade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
+      // @ts-ignore TODO uncomment
       trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
         ? targetAddress
         : userAddress;
@@ -58,6 +60,7 @@ export class EthLikeContractExecutorService {
             options.onTransactionHash(hash);
           }
           transactionHash = hash;
+          // @ts-ignore
           if (trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
             this.sendDataToSolana(trade, transactionHash, targetAddress);
           }

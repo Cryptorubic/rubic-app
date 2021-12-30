@@ -2,15 +2,11 @@ import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-ch
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { SignatureResult } from '@solana/web3.js';
 import { Injectable } from '@angular/core';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
-import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import { EthLikeContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 import BigNumber from 'bignumber.js';
-import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
@@ -51,7 +47,7 @@ export class ContractExecutorFacadeService {
 
   constructor(
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
-    private readonly solanaContractExecutor: SolanaContractExecutorService,
+    // private readonly solanaContractExecutor: SolanaContractExecutorService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly raydiumService: RaydiumService,
     private readonly targetAddressService: TargetNetworkAddressService,
@@ -74,6 +70,7 @@ export class ContractExecutorFacadeService {
     }
 
     // solana
+    /* TODO uncomment
     try {
       const isToNative = this.publicBlockchainAdapterService[trade.toBlockchain].isNativeAddress(
         trade.tokenOut.address
@@ -114,7 +111,7 @@ export class ContractExecutorFacadeService {
       if ('message' in err) {
         throw new CustomError(err.message);
       }
-    }
+    }*/
   }
 
   /**

@@ -149,6 +149,7 @@ export class SolanaContractExecutorService {
 
   @tuiPure
   private get contract(): SolanaContractData {
+    // @ts-ignore TODO uncomment
     return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaContractData;
   }
 

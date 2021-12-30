@@ -582,6 +582,7 @@ export class CrossChainRoutingService {
       throw new CrossChainIsUnavailableWarning();
     }
 
+    // @ts-ignore TODO uncomment
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       const isSolanaWorking = await SolanaContractExecutorService.checkHealth(
         this.solanaPrivateAdapter

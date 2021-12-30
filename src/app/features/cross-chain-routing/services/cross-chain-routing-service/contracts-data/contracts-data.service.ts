@@ -11,7 +11,6 @@ import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/ser
 import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
 import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { SushiSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import { SpiritSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/spirit-swap-fantom-service/spirit-swap-fantom.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
@@ -171,7 +170,8 @@ export class ContractsDataService {
         ],
         7,
         this.publicBlockchainAdapterService
-      ),
+      )
+      /*
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(
         BLOCKCHAIN_NAME.SOLANA,
         [
@@ -183,6 +183,7 @@ export class ContractsDataService {
         8,
         this.publicBlockchainAdapterService
       )
+      */
     };
   }
 }

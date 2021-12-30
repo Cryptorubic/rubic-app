@@ -28,6 +28,7 @@ export class SolanaContractData extends ContractData {
     super(blockchain, providersData, numOfBlockchain);
 
     BlockchainsInfo.checkIsSolana(blockchain);
+    // @ts-ignore TODO uncomment
     this.blockchainAdapter = publicBlockchainAdapterService[blockchain] as SolanaWeb3Public;
   }
 

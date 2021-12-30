@@ -110,6 +110,7 @@ export class EthLikeContractData extends ContractData {
     const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const toWalletAddressBytes32 =
+      // @ts-ignore TODO uncomment
       trade.toBlockchain !== BLOCKCHAIN_NAME.SOLANA
         ? EthLikeWeb3Public.addressToBytes32(toWalletAddress)
         : SolanaWeb3Public.addressToBytes32(toWalletAddress);

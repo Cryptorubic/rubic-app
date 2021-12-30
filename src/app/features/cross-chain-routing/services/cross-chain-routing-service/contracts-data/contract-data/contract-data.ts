@@ -159,6 +159,7 @@ export abstract class ContractData {
       return path;
     }
 
+    // @ts-ignore TODO uncomment
     if (this.blockchain === BLOCKCHAIN_NAME.SOLANA) {
       return instantTrade.path.map(token => SolanaWeb3Public.addressToBytes32(token.address));
     }
