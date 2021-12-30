@@ -1,8 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from '@core/errors/errors.service';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WalletConnectAbstractAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/common/wallet-connect-abstract';
 
 export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
@@ -19,7 +19,7 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
 
   constructor(
     web3: Web3,
-    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService,
     availableMobileWallets?: string[]

@@ -1,5 +1,4 @@
-@import 'vars';
-@import 'mixins';
+@use 'core' as *;
 
 .span {
   &-roadmap-month,

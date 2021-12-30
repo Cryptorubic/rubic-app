@@ -1,5 +1,5 @@
 import { compareAddresses } from 'src/app/shared/utils/utils';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
 
 export type FeeAmount = 500 | 3000 | 10000;
 

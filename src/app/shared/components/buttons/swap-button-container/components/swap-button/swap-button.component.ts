@@ -8,12 +8,12 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
-import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/PRICE_IMPACT_RANGE';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { PRICE_IMPACT_RANGE } from '@shared/models/swaps/price-impact-range';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { combineLatest } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';

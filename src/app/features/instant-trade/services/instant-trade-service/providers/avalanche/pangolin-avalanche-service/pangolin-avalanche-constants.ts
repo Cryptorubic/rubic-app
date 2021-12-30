@@ -1,9 +1,9 @@
 import {
   RoutingProvidersNetMode,
   UniswapV2Constants
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
-import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+} from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { ContractAddressNetMode } from '@shared/models/blockchain/net-mode';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const pangolinAvalancheContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
@@ -28,7 +28,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   testnet: [{ address: '0xd00ae08403B9bbb9124bB305C09058E32C39A48c', symbol: 'WAVAX' }]
 };
 
-export const pangolinAvalancheConstants: UniswapV2Constants = {
+export const PANGOLIN_AVALANCHE_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.AVALANCHE,
   contractAddressNetMode: pangolinAvalancheContractAddressNetMode,
   wethAddressNetMode,

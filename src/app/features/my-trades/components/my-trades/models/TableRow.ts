@@ -1,5 +1,5 @@
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import { TableProvider } from 'src/app/shared/models/my-trades/TableTrade';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
+import { TableProvider } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
 
 export type TableRowKey = 'Status' | 'FromTo' | 'Provider' | 'Sent' | 'Expected' | 'Date';

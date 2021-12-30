@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { BROWSER } from 'src/app/shared/models/browser/BROWSER';
+import { BROWSER } from '@shared/models/browser/browser';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { RubicWindow } from '@shared/utils/rubic-window';

@@ -14,11 +14,11 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import { subtractPercent } from '@shared/utils/utils';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 @Component({
   selector: 'app-instant-trade-swap-info',

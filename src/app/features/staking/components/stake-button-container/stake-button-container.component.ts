@@ -7,18 +7,25 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '../../constants/STACKING_LIMITS';
+import {
+  STAKE_LIMIT_MAX,
+  STAKE_LIMIT_MIN
+} from 'src/app/features/staking/constants/staking-limits';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, combineLatest, from, of, zip } from 'rxjs';
 
 import { ErrorTypeEnum } from '../../enums/error-type.enum';
 import { StakingService } from '@features/staking/services/staking.service';
+import { BehaviorSubject, combineLatest, from, Observable, of, zip } from 'rxjs';
 import { map, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
+/**
+ * Stake button container component, contains logic of entering stake,
+ * connecting wallet, changing network and validation of entered staking amount.
+ */
 @Component({
   selector: 'app-stake-button-container',
   templateUrl: './stake-button-container.component.html',
@@ -27,6 +34,36 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
   providers: [TuiDestroyService]
 })
 export class StakeButtonContainerComponent implements OnInit {
+  /**
+   * Does user have approved tokens or not.
+   */
+  @Input() approvedTokens: boolean;
+
+  /**
+   * Form control for amount of token user wants to stake.
+   */
+  @Input() amountFormControl: FormControl;
+
+  /**
+   * Loading state for button "Confirm stake" button.
+   */
+  @Input() loading: boolean;
+
+  /**
+   * Emits event on entering stake.
+   */
+  @Output() onConfirmStake = new EventEmitter<void>();
+
+  /**
+   * Emits event on connecting wallet.
+   */
+  @Output() onLogin = new EventEmitter<void>();
+
+  /**
+   * Emits event on approving tokens.
+   */
+  @Output() onApprove = new EventEmitter<void>();
+
   public readonly needLogin$ = this.stakingService.needLogin$;
 
   public readonly selectedTokenBalance$ = this.stakingService.selectedTokenBalance$;
@@ -47,19 +84,11 @@ export class StakeButtonContainerComponent implements OnInit {
     })
   );
 
-  @Input() approvedTokens: boolean;
+  private readonly _needApprove$ = new BehaviorSubject<boolean>(true);
 
-  @Input() amountFormControl: FormControl;
-
-  @Input() loading: boolean;
-
-  @Output() onConfirmStake = new EventEmitter<void>();
-
-  @Output() onLogin = new EventEmitter<void>();
-
-  @Output() onApprove = new EventEmitter<void>();
-
-  public readonly needApprove$ = new BehaviorSubject<boolean>(true);
+  get needApprove$(): Observable<boolean> {
+    return this._needApprove$.asObservable();
+  }
 
   public readonly needChangeNetwork$ = combineLatest([
     this.stakingService.selectedToken$,
@@ -103,7 +132,7 @@ export class StakeButtonContainerComponent implements OnInit {
           );
         }),
         tap(([needApprove, balance, limit, amount]) => {
-          this.needApprove$.next(needApprove);
+          this._needApprove$.next(needApprove);
           this.checkAmountAndBalance(amount, balance, limit);
         }),
         takeUntil(this.destroy$)

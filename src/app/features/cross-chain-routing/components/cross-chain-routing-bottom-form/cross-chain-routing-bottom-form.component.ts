@@ -5,11 +5,11 @@ import {
   EventEmitter,
   Inject,
   Input,
-  OnDestroy,
   OnInit,
-  Output
+  Output,
+  Self
 } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { TuiNotification } from '@taiga-ui/core';
 import {
@@ -27,17 +27,15 @@ import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
@@ -50,6 +48,8 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -60,7 +60,7 @@ type CalculateTradeType = 'normal' | 'hidden';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
+export class CrossChainRoutingBottomFormComponent implements OnInit {
   // eslint-disable-next-line rxjs/finnish,rxjs/no-exposed-subjects
   @Input() onRefreshTrade: Subject<void>;
 
@@ -76,13 +76,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
-  private readonly onCalculateTrade$: Subject<CalculateTradeType>;
+  private readonly onCalculateTrade$ = new Subject<CalculateTradeType>();
 
-  public readonly displayTargetAddressInput$: Observable<boolean>;
+  private readonly hiddenTradeData$ = new BehaviorSubject<{ toAmount: BigNumber }>(undefined);
 
-  private readonly hiddenTradeData$: BehaviorSubject<{
-    toAmount: BigNumber;
-  }>;
+  public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
   public toBlockchain: BLOCKCHAIN_NAME;
 
@@ -99,8 +97,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
   private toAmount: BigNumber;
 
   public errorText: string;
-
-  public slippageTolerance: number;
 
   private calculateTradeSubscription$: Subscription;
 
@@ -136,16 +132,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     private readonly notificationsService: NotificationsService,
     private readonly crossChainRoutingService: CrossChainRoutingService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     private readonly gtmService: GoogleTagManagerService,
     private readonly successTxModalService: SuccessTxModalService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService
-  ) {
-    this.displayTargetAddressInput$ = targetNetworkAddressService.displayAddress$;
-    this.onCalculateTrade$ = new Subject();
-    this.hiddenTradeData$ = new BehaviorSubject(undefined);
-  }
+  ) {}
 
   ngOnInit() {
     this.setupTradeCalculation();
@@ -166,12 +158,15 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.destroy$)
       )
-      .subscribe(form => this.setFormValues(form));
+      .subscribe(form => {
+        this.setFormValues(form);
+        this.cdr.markForCheck();
+      });
 
     this.settingsService.crossChainRoutingValueChanges
       .pipe(startWith(this.settingsService.crossChainRoutingValue), takeUntil(this.destroy$))
-      .subscribe(settings => {
-        this.slippageTolerance = settings.slippageTolerance;
+      .subscribe(() => {
+        this.conditionalCalculate('normal');
       });
 
     this.authService
@@ -184,15 +179,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     this.onRefreshTrade.pipe(takeUntil(this.destroy$)).subscribe(() => this.conditionalCalculate());
   }
 
-  ngOnDestroy() {
-    this.calculateTradeSubscription$.unsubscribe();
-    this.hiddenCalculateTradeSubscription$.unsubscribe();
-  }
-
   private setFormValues(form: SwapFormInput): void {
     this.toBlockchain = form.toBlockchain;
     this.fromAmount = form.fromAmount;
-    this.cdr.detectChanges();
     this.conditionalCalculate('normal');
   }
 
@@ -228,7 +217,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
             this.swapFormService.output.patchValue({
               toAmount: new BigNumber(NaN)
             });
-            this.cdr.markForCheck();
             return of(null);
           }
 
@@ -274,7 +262,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                   ? TRADE_STATUS.READY_TO_APPROVE
                   : TRADE_STATUS.READY_TO_SWAP;
               }
-              this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
@@ -284,15 +271,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 toAmount: new BigNumber(NaN)
               });
               this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
               return of(null);
             })
           );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
-      .subscribe();
+      .subscribe(() => {
+        this.cdr.markForCheck();
+      });
   }
 
   public setupHiddenCalculation(): void {
@@ -333,7 +322,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 this.tradeStatus = TRADE_STATUS.OLD_TRADE_DATA;
               }
 
-              this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
             }),
             // eslint-disable-next-line rxjs/no-implicit-any-catch
@@ -343,15 +331,17 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
                 toAmount: new BigNumber(NaN)
               });
               this.tradeStatus = TRADE_STATUS.DISABLED;
-              this.cdr.detectChanges();
               this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
               return of(null);
             })
           );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
-      .subscribe();
+      .subscribe(() => {
+        this.cdr.markForCheck();
+      });
   }
 
   public setHiddenData(): void {
@@ -369,17 +359,14 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
     } else {
       this.tradeStatus = TRADE_STATUS.DISABLED;
     }
-    this.cdr.detectChanges();
   }
 
   public async approveTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.APPROVE_IN_PROGRESS;
-    this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     let approveInProgressSubscription$: Subscription;
     const onTransactionHash = () => {
-      this.cdr.detectChanges();
       approveInProgressSubscription$ = this.notificationsService.show(
         this.translateService.instant('notifications.approveInProgress'),
         {
@@ -408,23 +395,24 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
           await this.tokensService.calculateTokensBalances();
 
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+
+          this.cdr.markForCheck();
         },
         err => {
           this.errorsService.catch(err);
 
           approveInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_APPROVE;
-          this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+
+          this.cdr.markForCheck();
         }
       );
   }
 
   public async createTrade(): Promise<void> {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
-    this.cdr.detectChanges();
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     const onTransactionHash = () => {
@@ -464,8 +452,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
           this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-          this.cdr.detectChanges();
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
+
+          this.cdr.markForCheck();
         }
       );
   }
@@ -481,14 +470,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit, OnDestroy {
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open();
-    }
-  }
-
-  public doButtonAction(clickType: 'swap' | 'approve'): void {
-    if (clickType === 'swap') {
-      this.createTrade();
-    } else {
-      this.approveTrade();
     }
   }
 }

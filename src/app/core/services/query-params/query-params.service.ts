@@ -3,14 +3,14 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { List } from 'immutable';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
-import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
@@ -238,8 +238,8 @@ export class QueryParamsService {
   /**
    * Gets tokens by symbol or address.
    * @param tokens Tokens list to search.
-   * @param token Token symbol or address.
-   * @param chain Token chain.
+   * @param token Tokens symbol or address.
+   * @param chain Tokens chain.
    * @return Observable<TokenAmount> Founded token.
    */
   private getTokenBySymbolOrAddress(
@@ -288,11 +288,7 @@ export class QueryParamsService {
       );
     }
 
-    return of(
-      similarTokens.size > 1
-        ? similarTokens.find(token => token.usedInIframe)
-        : similarTokens.first()
-    );
+    return of(similarTokens.first());
   }
 
   /**

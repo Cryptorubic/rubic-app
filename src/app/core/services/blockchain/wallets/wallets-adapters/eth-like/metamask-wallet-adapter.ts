@@ -1,18 +1,18 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
-import { NetworkError } from '@core/errors/models/provider/NetworkError';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
-import { MetamaskError } from '@core/errors/models/provider/MetamaskError';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { ErrorsService } from '@core/errors/errors.service';
-import { Token } from '@shared/models/tokens/Token';
+import { Token } from '@shared/models/tokens/token';
 import { AddEthChainParams } from '@shared/models/blockchain/add-eth-chain-params';
-import { CoinbaseExtensionError } from '@core/errors/models/provider/CoinbaseExtensionError';
-import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
+import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
+import { MetamaskError } from '@core/errors/models/provider/metamask-error';
+import { NetworkError } from '@core/errors/models/provider/network-error';
+import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 
 export class MetamaskWalletAdapter extends CommonWalletAdapter {
   public get isMultiChainWallet(): boolean {
@@ -29,7 +29,7 @@ export class MetamaskWalletAdapter extends CommonWalletAdapter {
 
   constructor(
     web3: Web3,
-    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService
   ) {

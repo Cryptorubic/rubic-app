@@ -1,16 +1,16 @@
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
+import { MethodData } from '@shared/models/blockchain/method-data';
 import BigNumber from 'bignumber.js';
 import { compareAddresses } from 'src/app/shared/utils/utils';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
-import { routerTokensNetMode } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/router-tokens';
-import { ContractData } from '@shared/models/blockchain/ContractData';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
+import { ROUTER_TOKENS_NET_MODE } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/constants/router-tokens';
+import { ContractData } from '@shared/models/blockchain/contract-data';
 import { AlgebraRoute } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 
 interface RecGraphVisitorOptions {
   routesTokens: SymbolToken[];
-  fromAmountAbsolute: string;
   toToken: SymbolToken;
+  amountAbsolute: string;
   maxTransitTokens: number;
 }
 
@@ -37,11 +37,11 @@ export class AlgebraQuoterController {
   /**
    * Returns swap method's name and arguments to pass it to Quoter contract.
    * @param path Pools, included in route.
-   * @param fromAmountAbsolute From amount.
+   * @param amountAbsolute From or to amount.
    */
   private static getQuoterMethodData(
     path: SymbolToken[],
-    fromAmountAbsolute: string
+    amountAbsolute: string
   ): {
     path: SymbolToken[];
     methodData: MethodData;
@@ -51,15 +51,16 @@ export class AlgebraQuoterController {
         path: path,
         methodData: {
           methodName: 'quoteExactInputSingle',
-          methodArguments: [path[0].address, path[1].address, fromAmountAbsolute, 0]
+          methodArguments: [path[0].address, path[1].address, amountAbsolute, 0]
         }
       };
     }
+
     return {
       path: path,
       methodData: {
         methodName: 'quoteExactInput',
-        methodArguments: [AlgebraQuoterController.getEncodedPath(path), fromAmountAbsolute]
+        methodArguments: [AlgebraQuoterController.getEncodedPath(path), amountAbsolute]
       }
     };
   }
@@ -68,24 +69,24 @@ export class AlgebraQuoterController {
     private readonly web3Public: EthLikeWeb3Public,
     private readonly quoterContract: ContractData
   ) {
-    this.routerTokens = routerTokensNetMode.mainnet;
+    this.routerTokens = ROUTER_TOKENS_NET_MODE.mainnet;
   }
 
   public setTestingMode(): void {
-    this.routerTokens = routerTokensNetMode.testnet;
+    this.routerTokens = ROUTER_TOKENS_NET_MODE.testnet;
   }
 
   /**
    * Returns all routes between given tokens with output amount.
-   * @param fromAmountAbsolute From token amount in Wei.
    * @param fromToken From token.
    * @param toToken To token.
+   * @param amountAbsolute From or to token amount in Wei.
    * @param routeMaxTransitPools Max amount of transit pools.
    */
   public async getAllRoutes(
-    fromAmountAbsolute: string,
     fromToken: SymbolToken,
     toToken: SymbolToken,
+    amountAbsolute: string,
     routeMaxTransitPools: number
   ): Promise<AlgebraRoute[]> {
     const routesTokens = this.routerTokens.filter(
@@ -95,8 +96,8 @@ export class AlgebraQuoterController {
     );
     const options: Omit<RecGraphVisitorOptions, 'maxTransitTokens'> = {
       routesTokens,
-      fromAmountAbsolute,
-      toToken
+      toToken,
+      amountAbsolute
     };
     const quoterMethodsData = [...Array(routeMaxTransitPools + 1)]
       .map((_, maxTransitTokens) =>
@@ -136,12 +137,10 @@ export class AlgebraQuoterController {
     options: RecGraphVisitorOptions,
     path: SymbolToken[]
   ): { path: SymbolToken[]; methodData: MethodData }[] {
-    const { routesTokens, fromAmountAbsolute, toToken, maxTransitTokens } = options;
+    const { routesTokens, toToken, amountAbsolute, maxTransitTokens } = options;
 
     if (path.length === maxTransitTokens + 1) {
-      return [
-        AlgebraQuoterController.getQuoterMethodData(path.concat(toToken), fromAmountAbsolute)
-      ];
+      return [AlgebraQuoterController.getQuoterMethodData(path.concat(toToken), amountAbsolute)];
     }
 
     return routesTokens

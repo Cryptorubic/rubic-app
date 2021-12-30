@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { catchError, filter, finalize, first, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { SignRejectError } from 'src/app/core/errors/models/provider/SignRejectError';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { switchIif } from '@shared/utils/utils';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
 import { WalletLoginInterface, UserInterface } from './models/user.interface';
 import { StoreService } from '../store/store.service';
+import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 
 /**
  * Service that provides methods for working with authentication and user interaction.

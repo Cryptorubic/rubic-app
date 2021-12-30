@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 
 const bufferLayout = require('buffer-layout');
 
-export const BridgeConfig = struct([
+export const BRIDGE_CONFIG = struct([
   u8('key'),
   publicKey('owner'),
   publicKey('manager'),
@@ -35,7 +35,7 @@ export type BridgeConfigData = {
   is_paused: boolean;
 };
 
-export const BlockchainLayout = struct([
+export const BLOCKCHAIN_LAYOUT = struct([
   u8('key'),
   str('rubic_address'),
   u64('fee_amount'),
@@ -76,7 +76,7 @@ export const FIRST_CCR_DATA_LAYOUT = struct([
   bufferLayout.nu64('token_in_amount')
 ]);
 
-export const swap_to_crypto = struct([bool('swap_to_crypto')]);
+export const SWAP_TO_CRYPTO = struct([bool('swap_to_crypto')]);
 
 export const SECOND_CCR_DATA_LAYOUT = struct([
   bufferLayout.nu64('exact_rbc_token_out'),

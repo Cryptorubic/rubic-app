@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, timer } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { map, switchMap } from 'rxjs/operators';
-import { TradeVolume } from 'src/app/core/services/backend/volume-api/models/TradeVolume';
-import { TradeVolumeRequest } from 'src/app/core/services/backend/volume-api/models/TradeVolumeRequest';
+import { TradeVolume } from '@core/services/backend/volume-api/models/trade-volume';
+import { TradeVolumeRequest } from '@core/services/backend/volume-api/models/trade-volume-request';
 import { BigNumber } from 'bignumber.js';
 
 @Injectable({

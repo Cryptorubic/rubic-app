@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from 'src/app/core/services/http/http.service';
 import { Observable } from 'rxjs';
+import { HttpService } from 'src/app/core/services/http/http.service';
 import { UpdateDepositRequestInterface } from '@features/staking/models/update-deposit-request.interface';
 import { BridgeTxRequestInterface } from '@features/staking/models/bridge-tx-request.interface';
 import { pluck } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class StakingApiService {
-  stakingApiPath = environment.staking.apiUrl;
+  private readonly stakingApiPath = ENVIRONMENT.staking.apiUrl;
 
   constructor(private readonly httpService: HttpService) {}
 

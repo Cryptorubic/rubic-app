@@ -1,16 +1,19 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
 import { FormControl } from '@ngneat/reactive-forms';
-import { StakingService } from '@features/staking/services/staking.service';
-import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
-import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { BehaviorSubject, EMPTY, forkJoin, Observable, of } from 'rxjs';
+import { finalize, map, share, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BehaviorSubject, EMPTY, forkJoin, of } from 'rxjs';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
+import { StakingService } from '@features/staking/services/staking.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
+/**
+ * Withdraw form component.
+ */
 @Component({
   selector: 'app-withdraw',
   templateUrl: './withdraw.component.html',
@@ -27,20 +30,36 @@ export class WithdrawComponent implements OnInit {
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
+  private readonly _withdrawButtonLoading$ = new BehaviorSubject<boolean>(false);
+
+  get withdrawButtonLoading$(): Observable<boolean> {
+    return this._withdrawButtonLoading$.asObservable();
+  }
+
+  private readonly _rewardUsdPrice$ = new BehaviorSubject<BigNumber>(new BigNumber(0));
+
+  get rewardUsdPrice$(): Observable<BigNumber> {
+    return this._rewardUsdPrice$.asObservable();
+  }
+
   public readonly canReceive$ = this.amount.valueChanges.pipe(
     switchMap(amount => {
       if (amount === '') {
+        this._rewardUsdPrice$.next(new BigNumber(0));
         return of('');
       }
-      return of(new BigNumber(Web3Pure.toWei(new BigNumber(amount.split(',').join(''))))).pipe(
-        switchMap(x => this.stakingService.calculateLeaveReward(x)),
-        map(x => x.toNumber())
+      const amountInWei = new BigNumber(Web3Pure.toWei(amount.split(',').join('')));
+      return of(amountInWei).pipe(
+        switchMap(value => this.stakingService.calculateLeaveReward(value)),
+        tap(reward =>
+          this._rewardUsdPrice$.next(this.stakingService.calculateBRBCUsdPrice(reward))
+        ),
+        map(reward => reward.toNumber())
       );
     }),
+    share(),
     takeUntil(this.destroy$)
   );
-
-  public readonly withdrawButtonLoading$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private readonly stakingService: StakingService,
@@ -76,13 +95,13 @@ export class WithdrawComponent implements OnInit {
         autoClose: false
       }
     );
-    this.withdrawButtonLoading$.next(true);
+    this._withdrawButtonLoading$.next(true);
     this.stakingService
       .leaveStake(new BigNumber(this.amount.value))
       .pipe(
         finalize(() => {
           withdrawNotification$.unsubscribe();
-          this.withdrawButtonLoading$.next(false);
+          this._withdrawButtonLoading$.next(false);
         })
       )
       .subscribe(() => {

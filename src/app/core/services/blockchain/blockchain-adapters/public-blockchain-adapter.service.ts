@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import ConnectionLink from '@core/services/blockchain/models/ConnectionLink';
+import ConnectionLink from '@core/services/blockchain/models/connection-link';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';

@@ -20,31 +20,31 @@ import {
   mergeMap,
   switchMap
 } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TransactionReceipt } from 'web3-eth';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
-import { TableProvider, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TableProvider, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { UserRejectError } from 'src/app/core/errors/models/provider/UserRejectError';
 import { HttpClient } from '@angular/common/http';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
-import { TRANSACTION_STATUS } from '@shared/models/blockchain/TRANSACTION_STATUS';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { compareTokens } from '@shared/utils/utils';
-import ADDRESS_TYPE from '@shared/models/blockchain/ADDRESS_TYPE';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from '@shared/pipes/scanner-link.pipe';
-import { RubicError } from '@core/errors/models/RubicError';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 interface HashPair {
   fromTransactionHash: string;

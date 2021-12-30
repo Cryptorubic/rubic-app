@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
+import { MethodData } from '@shared/models/blockchain/method-data';
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import {
   algebraConstants,
@@ -15,11 +14,15 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/models/algebra-instant-trade';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlgebraService extends CommonUniV3AlgebraService {
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.ALGEBRA;
+
   private readonly quoterController: AlgebraQuoterController;
 
   constructor() {
@@ -42,7 +45,7 @@ export class AlgebraService extends CommonUniV3AlgebraService {
     const { fromTokenWrapped, toTokenWrapped } = this.getWrappedTokens(fromToken, toToken);
     const fromAmountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
 
-    const route = await this.getRoute(fromTokenWrapped, fromAmountAbsolute, toTokenWrapped);
+    const route = await this.getRoute(fromTokenWrapped, toTokenWrapped, fromAmountAbsolute);
 
     return {
       blockchain: this.blockchain,
@@ -62,19 +65,19 @@ export class AlgebraService extends CommonUniV3AlgebraService {
   /**
    * Returns most profitable route.
    * @param fromToken From token.
-   * @param fromAmountAbsolute From amount in Wei.
    * @param toToken To token.
+   * @param amountAbsolute From or to amount in Wei.
    */
   private async getRoute(
     fromToken: InstantTradeToken,
-    fromAmountAbsolute: string,
-    toToken: InstantTradeToken
+    toToken: InstantTradeToken,
+    amountAbsolute: string
   ): Promise<AlgebraRoute> {
     const routes = (
       await this.quoterController.getAllRoutes(
-        fromAmountAbsolute,
         fromToken,
         toToken,
+        amountAbsolute,
         this.settings.disableMultihops ? 0 : maxTransitTokens
       )
     ).sort((a, b) => b.outputAbsoluteAmount.comparedTo(a.outputAbsoluteAmount));

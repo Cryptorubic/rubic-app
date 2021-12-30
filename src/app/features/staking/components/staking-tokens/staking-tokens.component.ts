@@ -3,10 +3,13 @@ import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
 
-import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
+import { STAKING_TOKENS } from 'src/app/features/staking/constants/staking-tokens';
 import { StakingService } from '../../services/staking.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 
+/**
+ * Staking tokens dropdown component.
+ */
 @Component({
   selector: 'app-staking-tokens',
   templateUrl: './staking-tokens.component.html',
@@ -14,8 +17,14 @@ import { TokensService } from '@core/services/tokens/tokens.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingTokensComponent {
+  /**
+   * Form control for token select.
+   */
   @Input() tokenFormControl: FormControl;
 
+  /**
+   * Form control for amount of selected token.
+   */
   @Input() amountFormControl: FormControl;
 
   public readonly availableTokens = STAKING_TOKENS;

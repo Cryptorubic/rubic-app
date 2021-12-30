@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/ItProvider';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
-import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
 import { Observable, of } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Account, Connection, SignatureResult, Transaction } from '@solana/web3.js';
 import {
   ItSettingsForm,
@@ -26,15 +25,19 @@ import { RaydiumRoutingService } from '@features/instant-trade/services/instant-
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity.error';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { subtractPercent } from '@shared/utils/utils';
 import CustomError from '@core/errors/models/custom-error';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
+import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RaydiumService implements ItProvider {
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.RAYDIUM;
+
   private settings: ItSettingsForm;
 
   private readonly connection: Connection;
@@ -78,25 +81,6 @@ export class RaydiumService implements ItProvider {
       this.blockchainAdapter,
       this.solanaPrivateAdapterService
     );
-  }
-
-  public async getFromAmount(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    aIn: BigNumber
-  ): Promise<BigNumber> {
-    const pool = this.raydiumRoutingService.currentPoolInfo;
-    const { amountOut } = this.raydiumRoutingService.getSwapOutAmount(
-      pool,
-      fromToken.address,
-      toToken.address,
-      aIn.toString(),
-      this.settings.slippageTolerance
-    );
-    return new BigNumber(aIn)
-      .multipliedBy(100)
-      .dividedBy(amountOut)
-      .multipliedBy(10 ** fromToken.decimals);
   }
 
   public approve(): Promise<void> {
@@ -160,7 +144,7 @@ export class RaydiumService implements ItProvider {
     //   const poolInfos = await this.liquidityManager.requestInfos(
     //     fromToken.symbol,
     //     toToken.symbol,
-    //     this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
+    //     this.tokensService.tokens.filter(el => el.blockchain === BlockchainName.SOLANA),
     //     true
     //   );
     //
@@ -289,8 +273,7 @@ export class RaydiumService implements ItProvider {
     return this.connection?.sendRawTransaction(trx?.serialize());
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    console.log(tokenAddress);
+  public getAllowance(_tokenAddress: string): Observable<BigNumber> {
     return of(new BigNumber(NaN));
   }
 

@@ -11,7 +11,7 @@ import {
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CustomTokenWarningModalComponent } from '../custom-token-warning-modal/custom-token-warning-modal.component';
 
 @Component({

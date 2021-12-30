@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { Observable, of } from 'rxjs';
 import { Cacheable } from 'ts-cacheable';
 import {
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
-} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+} from '@shared/constants/blockchain/backend-blockchains';
 import { catchError, map } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { FROM_TEST_BLOCKCHAINS } from '@shared/constants/blockchain/TEST_BLOCKCHAINS';
+import { FROM_TEST_BLOCKCHAINS } from '@shared/constants/blockchain/test-blockchains';
 
 @Injectable({
   providedIn: 'root'

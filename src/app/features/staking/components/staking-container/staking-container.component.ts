@@ -1,35 +1,42 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { StakingService } from '@features/staking/services/staking.service';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { AuthService } from '@core/services/auth/auth.service';
-import { Token } from '@shared/models/tokens/Token';
+import { Token } from '@shared/models/tokens/token';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { SwapFormInput } from '@features/swaps/models/SwapForm';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 enum STAKING_NAV_ENUM {
   STAKE = 0,
   WITHDRAW = 1
 }
 
+/**
+ * Container component contains tab-switcher between staking and withdraw forms
+ * and some additional functionality: can add BRBC to users wallet, navigate user
+ * to swaps to get BRBC.
+ */
 @Component({
   selector: 'app-staking-container',
   templateUrl: './staking-container.component.html',
   styleUrls: ['./staking-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class StakingContainerComponent {
+export class StakingContainerComponent implements OnInit {
   public activeItemIndex = STAKING_NAV_ENUM.STAKE;
 
   public readonly isLoggedIn$ = this.authService.getCurrentUser();
@@ -52,8 +59,13 @@ export class StakingContainerComponent {
     private readonly authService: AuthService,
     private readonly swapFormService: SwapFormService,
     private readonly tokensService: TokensService,
+    @Self() private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
+
+  public ngOnInit(): void {
+    this.stakingService.watchBRBCUsdPrice().pipe(takeUntil(this.destroy$)).subscribe();
+  }
 
   public async navigateToSwaps(): Promise<void> {
     const form = this.swapFormService.commonTrade.controls.input;
@@ -84,7 +96,7 @@ export class StakingContainerComponent {
     const xBRBC: Token = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: environment.staking.stakingContractAddress,
+      address: ENVIRONMENT.staking.stakingContractAddress,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,

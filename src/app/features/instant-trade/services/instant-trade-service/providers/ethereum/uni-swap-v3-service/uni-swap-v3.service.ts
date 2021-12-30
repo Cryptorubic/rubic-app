@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import InsufficientLiquidityError from 'src/app/core/errors/models/instant-trade/insufficient-liquidity.error';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
-import { MethodData } from 'src/app/shared/models/blockchain/MethodData';
-import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
+import { MethodData } from '@shared/models/blockchain/method-data';
+import { BatchCall } from '@core/services/blockchain/models/batch-call';
 import {
   swapEstimatedGas,
   wethToEthEstimatedGas
@@ -14,21 +13,23 @@ import {
   UniSwapV3CalculatedInfoWithProfit
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-calculated-info';
 import { compareAddresses } from 'src/app/shared/utils/utils';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { IsEthFromOrTo } from '@features/instant-trade/services/instant-trade-service/models/is-eth-from-or-to';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import {
-  maxTransitPools,
-  quoterContract,
-  uniSwapV3Constants
+  MAX_TRANSIT_POOL,
+  QUOTER_CONTRACT,
+  UNI_SWAP_V3_CONSTANTS
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3-constants';
 import {
   UniSwapV3InstantTrade,
   UniSwapV3Route
 } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
@@ -36,6 +37,8 @@ const RUBIC_OPTIMIZATION_DISABLED = true;
   providedIn: 'root'
 })
 export class UniSwapV3Service extends CommonUniV3AlgebraService {
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.UNISWAP_V3;
+
   private readonly gasMargin = 1.2;
 
   private readonly quoterController: UniSwapV3QuoterController;
@@ -44,9 +47,9 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
     private readonly gasService: GasService,
     private readonly tokensService: TokensService
   ) {
-    super(uniSwapV3Constants);
+    super(UNI_SWAP_V3_CONSTANTS);
 
-    this.quoterController = new UniSwapV3QuoterController(this.blockchainAdapter, quoterContract);
+    this.quoterController = new UniSwapV3QuoterController(this.blockchainAdapter, QUOTER_CONTRACT);
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
@@ -148,7 +151,7 @@ export class UniSwapV3Service extends CommonUniV3AlgebraService {
         fromAmountAbsolute,
         fromToken,
         toToken,
-        this.settings.disableMultihops ? 0 : maxTransitPools
+        this.settings.disableMultihops ? 0 : MAX_TRANSIT_POOL
       )
     ).sort((a, b) => b.outputAbsoluteAmount.comparedTo(a.outputAbsoluteAmount));
 

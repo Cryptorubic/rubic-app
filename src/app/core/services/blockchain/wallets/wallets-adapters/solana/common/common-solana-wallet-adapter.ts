@@ -3,9 +3,9 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { Connection } from '@solana/web3.js';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export abstract class CommonSolanaWalletAdapter<
@@ -22,7 +22,7 @@ export abstract class CommonSolanaWalletAdapter<
   protected constructor(
     errorsService: ErrorsService,
     onAddressChanges$: BehaviorSubject<string>,
-    onNetworkChanges$: BehaviorSubject<IBlockchain>,
+    onNetworkChanges$: BehaviorSubject<BlockchainData>,
     public readonly connection: Connection
   ) {
     super(errorsService, onAddressChanges$, onNetworkChanges$);
@@ -42,14 +42,14 @@ export abstract class CommonSolanaWalletAdapter<
     this.isEnabled = false;
   }
 
-  protected getNetwork(): IBlockchain | null {
+  protected getNetwork(): BlockchainData | null {
     if (this.isEnabled && this.selectedChain) {
       return BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.SOLANA);
     }
     return null;
   }
 
-  public addToken(/* token: Token */): Promise<void> {
+  public addToken(/* token: Tokens */): Promise<void> {
     return null;
     // if (!this.isActive) {
     //   throw new MetamaskError();

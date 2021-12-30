@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from 'src/environments/environment';
 
-export const SERVER_REST_URL = `${environment.apiBaseUrl}/`;
+export const SERVER_REST_URL = `${ENVIRONMENT.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'
