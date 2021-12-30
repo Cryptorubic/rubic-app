@@ -121,40 +121,40 @@
       @include mixins.b(vars.$tablet) {
         margin-right: 14px;
 
-        &--top,
-        &--brbc,
-        &--graph {
+        &_top,
+        &_brbc,
+        &_graph {
           width: 22px;
         }
 
-        &--top {
+        &_top {
           height: 35px;
         }
 
-        &--brbc {
+        &_brbc {
           height: 26px;
         }
 
-        &--graph {
+        &_graph {
           height: 20px;
         }
       }
 
-      &--top,
-      &--brbc,
-      &--graph {
+      &_top,
+      &_brbc,
+      &_graph {
         width: 28px;
       }
 
-      &--top {
+      &_top {
         height: 35px;
       }
 
-      &--brbc {
+      &_brbc {
         height: 33px;
       }
 
-      &--graph {
+      &_graph {
         height: 25px;
       }
     }

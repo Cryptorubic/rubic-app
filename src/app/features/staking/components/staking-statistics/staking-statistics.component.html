@@ -1,31 +1,29 @@
-<tui-loader [showLoader]="loading$ | async" [inheritColor]="true" class="statistics__spinner">
-  <div class="statistics">
-    <div class="statistics__item">
-      <div class="statistics__value">
-        {{ stakingTokenBalance$ | async | bigNumberFormat | shortenAmount: 9:4:true }} xBRBC
-      </div>
-      <div class="statistics__caption">{{ 'staking.stats.balance' | translate }}</div>
+<div class="statistics">
+  <div class="statistics__item">
+    <div class="statistics__value">
+      {{ stakingTokenBalance$ | async | bigNumberFormat | shortenAmount: 9:4:true }} xBRBC
     </div>
-    <div class="statistics__item">
-      <div class="statistics__value">
-        {{ amountWithRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
-      </div>
-      <div class="statistics__caption">{{ 'staking.stats.canReceive' | translate }}</div>
-    </div>
-    <div class="statistics__item">
-      <div class="statistics__value">
-        {{ earnedRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
-      </div>
-      <div class="statistics__caption">{{ 'staking.stats.rewards' | translate }}</div>
-    </div>
-    <div class="statistics__item">
-      <div class="statistics__value">{{ apr$ | async }}</div>
-      <div class="statistics__caption">{{ 'staking.stats.apr' | translate }}</div>
-    </div>
-    <app-rotating-icon
-      class="statistics__reload"
-      (iconClick)="reloadStakingStatistics()"
-      [rotating]="loading$ | async"
-    ></app-rotating-icon>
+    <div class="statistics__caption">{{ 'staking.stats.balance' | translate }}</div>
   </div>
-</tui-loader>
+  <div class="statistics__item">
+    <div class="statistics__value">
+      {{ amountWithRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
+    </div>
+    <div class="statistics__caption">{{ 'staking.stats.canReceive' | translate }}</div>
+  </div>
+  <div class="statistics__item">
+    <div class="statistics__value">
+      {{ earnedRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
+    </div>
+    <div class="statistics__caption">{{ 'staking.stats.rewards' | translate }}</div>
+  </div>
+  <div class="statistics__item">
+    <div class="statistics__value">{{ apr$ | async }}</div>
+    <div class="statistics__caption">{{ 'staking.stats.apr' | translate }}</div>
+  </div>
+  <app-rotating-icon
+    class="statistics__reload"
+    (iconClick)="reloadStakingStatistics()"
+    [rotating]="loading$ | async"
+  ></app-rotating-icon>
+</div>
