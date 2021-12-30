@@ -4,7 +4,7 @@ import {
   CcrSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
+import { PromoCode } from '@features/swaps/models/promo-code';
 
 @Component({
   selector: 'app-settings-ccr',

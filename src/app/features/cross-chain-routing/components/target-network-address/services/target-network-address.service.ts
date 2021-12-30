@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { startWith } from 'rxjs/operators';
 

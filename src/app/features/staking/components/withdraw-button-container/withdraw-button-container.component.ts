@@ -15,7 +15,7 @@ import { FormControl } from '@angular/forms';
 import { StakingService } from '@features/staking/services/staking.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { ErrorTypeEnum } from '../../enums/error-type.enum';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 /**
  * Withdraw button container component. Contains logic of leaving stake,

@@ -8,7 +8,7 @@ import { MerkleData } from '@features/my-trades/models/merkle-data';
 import { MerkleResponse } from '@core/services/backend/gas-refund-api/models/merkle-response';
 import BigNumber from 'bignumber.js';
 import { PromotionResponse } from '@core/services/backend/gas-refund-api/models/promotion-response';
-import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { RefundTransaction } from '@features/my-trades/models/refund-transaction';
 import { RefundTransactionsResponse } from '@core/services/backend/gas-refund-api/models/refund-transactions-response';
 

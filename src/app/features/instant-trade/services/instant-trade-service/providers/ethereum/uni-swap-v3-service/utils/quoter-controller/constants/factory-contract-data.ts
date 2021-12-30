@@ -1,8 +1,8 @@
 import { AbiItem } from 'web3-utils';
 
-export const factoryContractAddress = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
+export const FACTORY_CONTRACT_ADDRESS = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
 
-export const factoryContractAbi = [
+export const FACTORY_CONTRACT_ABI = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,

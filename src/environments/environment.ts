@@ -2,15 +2,15 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { crossChainDev } from 'src/environments/constants/crossChain';
-import { stakingConfigDevelop } from './constants/staking';
+import { CROSS_CHAIN_DEV } from 'src/environments/constants/cross-chain';
+import { STAKING_CONFIG_DEVELOP } from './constants/staking';
 
-export const environment = {
+export const ENVIRONMENT = {
   production: false,
   apiBaseUrl: '//dev-api.rubic.exchange/api',
   zrxAffiliateAddress: undefined as string,
-  crossChain: crossChainDev,
-  staking: stakingConfigDevelop
+  crossChain: CROSS_CHAIN_DEV,
+  staking: STAKING_CONFIG_DEVELOP
 };
 
 /*

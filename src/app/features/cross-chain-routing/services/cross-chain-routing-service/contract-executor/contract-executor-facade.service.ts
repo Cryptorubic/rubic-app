@@ -3,7 +3,6 @@ import { TransactionOptions } from '@shared/models/blockchain/transaction-option
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { SignatureResult } from '@solana/web3.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
 import { Injectable } from '@angular/core';
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
@@ -11,6 +10,7 @@ import { EthLikeContractExecutorService } from '@features/cross-chain-routing/se
 import BigNumber from 'bignumber.js';
 import CustomError from '@core/errors/models/custom-error';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 @Injectable({
   providedIn: 'root'

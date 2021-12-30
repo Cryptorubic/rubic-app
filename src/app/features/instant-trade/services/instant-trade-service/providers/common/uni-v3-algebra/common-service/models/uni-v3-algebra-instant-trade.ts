@@ -1,4 +1,4 @@
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import BigNumber from 'bignumber.js';
 
 export interface UniV3AlgebraRoute {

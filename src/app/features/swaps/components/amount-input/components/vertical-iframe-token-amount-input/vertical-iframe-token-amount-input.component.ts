@@ -6,12 +6,12 @@ import {
   OnInit
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
-import { startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { FormControl } from '@ngneat/reactive-forms';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { startWith, takeUntil } from 'rxjs/operators';
+import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 
 @Component({
   selector: 'app-vertical-iframe-token-amount-input',

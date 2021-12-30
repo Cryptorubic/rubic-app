@@ -3,7 +3,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { timer } from 'rxjs';
-import { modalConfig } from 'src/app/shared/constants/modals/modal-config';
+import { MODAL_CONFIG } from 'src/app/shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 
@@ -29,7 +29,7 @@ export class SuccessTxModalComponent {
   ) {
     this.idPrefix = context.data.idPrefix;
     this.type = context.data.type;
-    timer(modalConfig.modalLifetime)
+    timer(MODAL_CONFIG.modalLifetime)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onConfirm());
   }

@@ -4,12 +4,12 @@ import {
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import BigNumber from 'bignumber.js';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { ScannerLinkPipe } from 'src/app/shared/pipes/scanner-link.pipe';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { EventEmitter, Injector } from '@angular/core';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 
 export abstract class AbstractTableDataComponent {

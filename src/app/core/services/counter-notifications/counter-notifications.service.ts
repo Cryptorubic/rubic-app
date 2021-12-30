@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { filter, map } from 'rxjs/operators';
 

@@ -1,4 +1,4 @@
-@import './mixins';
+@use 'src/scss/mixins' as *;
 
 @include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Thin', 100);
 @include font-face('SF-Pro', '/assets/fonts/SFPro/SFPro-Extralight', 200);

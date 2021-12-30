@@ -7,11 +7,11 @@ import {
   Self
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 
 @Component({
   selector: 'app-amount-estimated',

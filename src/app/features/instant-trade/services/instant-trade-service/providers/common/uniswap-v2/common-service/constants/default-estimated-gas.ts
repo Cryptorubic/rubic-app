@@ -6,7 +6,7 @@ export interface DefaultEstimatedGas {
   ethToTokens: BigNumber[];
 }
 
-export const defaultEstimatedGas: DefaultEstimatedGas = {
+export const DEFAULT_ESTIMATED_GAS: DefaultEstimatedGas = {
   tokensToTokens: [
     new BigNumber(120_000),
     new BigNumber(220_000),

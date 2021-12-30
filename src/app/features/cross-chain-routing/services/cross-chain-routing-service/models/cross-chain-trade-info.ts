@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 export interface CrossChainTradeInfo {
   feePercent: number;
@@ -12,8 +12,8 @@ export interface CrossChainTradeInfo {
   priceImpactFrom: number;
   priceImpactTo: number;
 
-  fromProvider: INSTANT_TRADES_PROVIDER;
-  toProvider: INSTANT_TRADES_PROVIDER;
+  fromProvider: INSTANT_TRADES_PROVIDERS;
+  toProvider: INSTANT_TRADES_PROVIDERS;
 
   fromPath: string[] | null; // null if `tokenIn` = `transitToken`
   toPath: string[] | null; // null if `tokenOut` = `transitToken`

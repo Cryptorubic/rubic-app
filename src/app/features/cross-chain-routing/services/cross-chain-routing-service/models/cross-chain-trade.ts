@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
 
 export interface CrossChainTrade {
   // from blockchain data

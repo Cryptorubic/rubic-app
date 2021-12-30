@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import BigNumber from 'bignumber.js';
 import { TokenInfo } from '@shared/components/buy-token/buy-token.component';
 

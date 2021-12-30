@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import { BehaviorSubject } from 'rxjs';
 // @ts-ignore
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IBlockchain } from '@shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import * as config from 'src/test/enviroment.test.json';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
@@ -16,7 +16,7 @@ export default () => {
   return {
     web3,
     onAddressChanges$: new BehaviorSubject<string>(undefined),
-    onNetworkChanges$: new BehaviorSubject<IBlockchain>(undefined),
+    onNetworkChanges$: new BehaviorSubject<BlockchainData>(undefined),
     get address(): string {
       return config.testWallet.address;
     },
@@ -26,7 +26,7 @@ export default () => {
     get isActive(): boolean {
       return true;
     },
-    get network(): IBlockchain {
+    get network(): BlockchainData {
       const eth = BlockchainsInfo.getBlockchainByName(BLOCKCHAIN_NAME.ETHEREUM);
       return {
         ...eth,

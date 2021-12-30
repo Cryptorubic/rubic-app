@@ -27,17 +27,15 @@ import { TransactionReceipt } from 'web3-eth';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { CrossChainRoutingService } from 'src/app/features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
@@ -50,6 +48,8 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 type CalculateTradeType = 'normal' | 'hidden';
 

@@ -2,11 +2,11 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import BigNumber from 'bignumber.js';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { FormService } from '@shared/models/swaps/form-service';
 import { Observable } from 'rxjs';
-import { SwapForm, SwapFormInput, SwapFormOutput } from '../../models/SwapForm';
+import { SwapForm, SwapFormInput, SwapFormOutput } from 'src/app/features/swaps/models/swap-form';
 
 @Injectable({
   providedIn: 'root'

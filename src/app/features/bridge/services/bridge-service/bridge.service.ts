@@ -1,28 +1,28 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
 import { EthereumPolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
-import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
+import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
 import { catchError, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { BlockchainToken } from 'src/app/shared/models/tokens/BlockchainToken';
+import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { bridgeTestTokens } from 'src/test/tokens/bridge-tokens';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
+import { BRIDGE_TEST_TOKENS } from 'src/test/tokens/bridge-tokens';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
-import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
+import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { BinancePolygonBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable()
 export class BridgeService {
@@ -61,7 +61,7 @@ export class BridgeService {
     useTestingModeService.isTestingMode.subscribe(isTestingMode => {
       if (isTestingMode) {
         this.isTestingMode = true;
-        this._tokens$.next(bridgeTestTokens);
+        this._tokens$.next(BRIDGE_TEST_TOKENS);
       }
     });
   }

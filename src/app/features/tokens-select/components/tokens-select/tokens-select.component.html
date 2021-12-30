@@ -30,6 +30,7 @@
       [idPrefix]="idPrefix"
       [(blockchain)]="blockchain"
       [allowedBlockchains]="allowedBlockchains"
+      (blockchainChange)="onBlockchainChange()"
     ></app-blockchains-aside>
 
     <tui-loader *ngIf="searchQueryLoading" [showLoader]="true" size="xl"></tui-loader>

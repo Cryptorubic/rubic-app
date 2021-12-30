@@ -22,6 +22,9 @@ import {
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService } from '@taiga-ui/core';
+
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { STAKING_CONTRACT_ABI } from 'src/app/features/staking/constants/xbrbc-contract-abi';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TransactionReceipt } from 'web3-eth';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
@@ -33,19 +36,17 @@ import { PrivateBlockchainAdapterService } from '@core/services/blockchain/block
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { STAKING_CONTRACT_ABI } from '../constants/XBRBC_CONTRACT_ABI';
-import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { RubicError } from '@core/errors/models/RubicError';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { environment } from 'src/environments/environment';
-import { BridgeTrade } from '@features/bridge/models/BridgeTrade';
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-import { TOKEN_RANK } from '@shared/models/tokens/TOKEN_RANK';
-import { STAKING_TOKENS } from '@features/staking/constants/STAKING_TOKENS';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
+import { STAKING_TOKENS } from '@features/staking/constants/staking-tokens';
 
 @Injectable()
 export class StakingService {
@@ -57,7 +58,7 @@ export class StakingService {
   /**
    * Staking contract address.
    */
-  private readonly stakingContractAddress = environment.staking.stakingContractAddress;
+  private readonly stakingContractAddress = ENVIRONMENT.staking.stakingContractAddress;
 
   /**
    * Contract address for staking via bridge [from api].

@@ -1,14 +1,14 @@
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-export const supportedCrossChainBlockchains = [
+export const SUPPORTED_CROSS_CHAIN_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.AVALANCHE,
-  BLOCKCHAIN_NAME.MOONRIVER,
   BLOCKCHAIN_NAME.FANTOM,
+  BLOCKCHAIN_NAME.MOONRIVER,
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.SOLANA
 ] as const;
 
-export type SupportedCrossChainBlockchain = typeof supportedCrossChainBlockchains[number];
+export type SupportedCrossChainBlockchain = typeof SUPPORTED_CROSS_CHAIN_BLOCKCHAINS[number];

@@ -1,6 +1,6 @@
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
-import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
 import { InsufficientFundsCcrErrorComponent } from 'src/app/core/errors/components/insufficient-funds-ccr-error/insufficient-funds-ccr-error.component';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicWarning } from '@core/errors/models/rubic-warning';
 
 class InsufficientFundsGasPriceValueError extends RubicWarning<ERROR_TYPE.TEXT> {
   constructor(nativeToken: string) {

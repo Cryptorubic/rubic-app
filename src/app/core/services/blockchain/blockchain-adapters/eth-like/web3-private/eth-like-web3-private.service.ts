@@ -4,14 +4,14 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { AbiItem } from 'web3-utils';
-import TransactionRevertedError from '@core/errors/models/common/transaction-reverted.error';
 import CustomError from '@core/errors/models/custom-error';
-import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/FailedToCheckForTransactionReceiptError';
 import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
-import { UserRejectError } from '@core/errors/models/provider/UserRejectError';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { LowGasError } from '@core/errors/models/provider/LowGasError';
 import { GasApiService } from '@core/services/backend/gas-api/gas-api.service';
+import FailedToCheckForTransactionReceiptError from '@core/errors/models/common/failed-to-check-for-transaction-receipt-error';
+import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
+import { LowGasError } from '@core/errors/models/provider/low-gas-error';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 type Web3Error = {
   message: string;

@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import InsufficientFundsError from '@core/errors/models/instant-trade/InsufficientFundsError';
-import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/BIG_NUMBER_FORMAT';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
 import {
   Account,
@@ -14,10 +13,11 @@ import {
 } from '@solana/web3.js';
 import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
+import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<

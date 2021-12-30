@@ -2,15 +2,15 @@ import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiNotification } from '@taiga-ui/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
-import { RubicError } from 'src/app/core/errors/models/RubicError';
-import { ERROR_TYPE } from 'src/app/core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
-import { RubicWarning } from 'src/app/core/errors/models/RubicWarning';
-import { EIP_1193 } from 'src/app/core/errors/models/standard/EIP-1193';
-import { EIP_1474 } from 'src/app/core/errors/models/standard/EIP-1474';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
 import { UnknownError } from 'src/app/core/errors/models/unknown.error';
-import { customRpcError } from 'src/app/core/errors/models/standard/custom-rpc-error';
+import { CUSTOM_RPC_ERROR } from '@core/errors/models/standard/custom-rpc-error';
+import { EIP_1474 } from '@core/errors/models/standard/eip-1474';
+import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicWarning } from '@core/errors/models/rubic-warning';
 
 interface Question {
   title: string;
@@ -138,6 +138,6 @@ export class ErrorsService {
    * @return boolean Error content flag.
    */
   private isCustomRPCError(currentError: RubicError<ERROR_TYPE>): boolean {
-    return customRpcError.some(rpcError => this.findRPCError(rpcError, currentError));
+    return CUSTOM_RPC_ERROR.some(rpcError => this.findRPCError(rpcError, currentError));
   }
 }

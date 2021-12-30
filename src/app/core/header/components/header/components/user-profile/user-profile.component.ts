@@ -13,7 +13,7 @@ import {
 import { NavigationStart, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -60,7 +60,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   public readonly currentUser$: Observable<UserInterface>;
 
-  public currentBlockchain: IBlockchain;
+  public currentBlockchain: BlockchainData;
 
   public dropdownIsOpened = false;
 

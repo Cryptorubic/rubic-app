@@ -1,12 +1,12 @@
 /* eslint-disable rxjs/finnish */
 import { Injectable } from '@angular/core';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { ControlsValue } from '@ngneat/reactive-forms/lib/types';
 import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
+import { PromoCode } from '@features/swaps/models/promo-code';
 import { copyObject } from 'src/app/shared/utils/utils';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 

@@ -19,15 +19,15 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
-import { NAVIGATION_LIST } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-list';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
+import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -56,7 +56,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   public countUnread$: Observable<number>;
 
-  public currentBlockchain: IBlockchain;
+  public currentBlockchain: BlockchainData;
 
   private _onNetworkChanges$: Subscription;
 

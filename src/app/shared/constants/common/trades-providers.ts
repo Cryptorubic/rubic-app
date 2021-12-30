@@ -1,6 +1,6 @@
-import { BRIDGE_PROVIDER } from '@shared/models/bridge/BRIDGE_PROVIDER';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
-import { TableProvider, DEPRECATED_PROVIDER } from '@shared/models/my-trades/TableTrade';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
+import { DEPRECATED_PROVIDER, TableProvider } from '@shared/models/my-trades/table-trade';
 
 type Provider = {
   name: string;
@@ -24,72 +24,72 @@ const bridgesProviders: Record<BRIDGE_PROVIDER, Provider> = {
   }
 };
 
-const instantTradesProviders: Record<INSTANT_TRADES_PROVIDER, Provider> = {
-  [INSTANT_TRADES_PROVIDER.UNISWAP_V3]: {
+const instantTradesProviders: Record<INSTANT_TRADES_PROVIDERS, Provider> = {
+  [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.png`
   },
-  [INSTANT_TRADES_PROVIDER.UNISWAP_V2]: {
+  [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: {
     name: 'Uniswap V2',
     image: `${imageBasePath}uniswap-2.svg`
   },
-  [INSTANT_TRADES_PROVIDER.ONEINCH]: {
+  [INSTANT_TRADES_PROVIDERS.ONEINCH]: {
     name: '1inch',
     image: `${imageBasePath}oneinch.svg`
   },
-  [INSTANT_TRADES_PROVIDER.PANCAKESWAP]: {
+  [INSTANT_TRADES_PROVIDERS.PANCAKESWAP]: {
     name: 'Pancakeswap',
     image: `${imageBasePath}pancakeswap.svg`
   },
-  [INSTANT_TRADES_PROVIDER.QUICKSWAP]: {
+  [INSTANT_TRADES_PROVIDERS.QUICKSWAP]: {
     name: 'Quickswap',
     image: `${imageBasePath}quickswap.svg`
   },
-  [INSTANT_TRADES_PROVIDER.SUSHISWAP]: {
+  [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: {
     name: 'Sushiswap',
     image: `${imageBasePath}sushiswap.svg`
   },
-  [INSTANT_TRADES_PROVIDER.PANGOLIN]: {
+  [INSTANT_TRADES_PROVIDERS.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`
   },
-  [INSTANT_TRADES_PROVIDER.PANGOLIN]: {
+  [INSTANT_TRADES_PROVIDERS.PANGOLIN]: {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`
   },
-  [INSTANT_TRADES_PROVIDER.JOE]: {
+  [INSTANT_TRADES_PROVIDERS.JOE]: {
     name: 'Joe',
     image: `${imageBasePath}joe.png`
   },
-  [INSTANT_TRADES_PROVIDER.SPOOKYSWAP]: {
+  [INSTANT_TRADES_PROVIDERS.SPOOKYSWAP]: {
     name: 'Spookyswap',
     image: `${imageBasePath}spookyswap.png`
   },
-  [INSTANT_TRADES_PROVIDER.SPIRITSWAP]: {
+  [INSTANT_TRADES_PROVIDERS.SPIRITSWAP]: {
     name: 'Spiritswap',
     image: `${imageBasePath}spiritswap.png`
   },
-  [INSTANT_TRADES_PROVIDER.WRAPPED]: {
+  [INSTANT_TRADES_PROVIDERS.WRAPPED]: {
     name: 'Wrapped',
     image: `${imageBasePath}wrapped.png`
   },
-  [INSTANT_TRADES_PROVIDER.ZRX]: {
+  [INSTANT_TRADES_PROVIDERS.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.png`
   },
-  [INSTANT_TRADES_PROVIDER.SOLARBEAM]: {
+  [INSTANT_TRADES_PROVIDERS.SOLARBEAM]: {
     name: 'Solarbeam',
     image: `${imageBasePath}solarbeam.png`
   },
-  [INSTANT_TRADES_PROVIDER.RAYDIUM]: {
+  [INSTANT_TRADES_PROVIDERS.RAYDIUM]: {
     name: 'Raydium',
     image: `${imageBasePath}raydium.svg`
   },
-  [INSTANT_TRADES_PROVIDER.ALGEBRA]: {
+  [INSTANT_TRADES_PROVIDERS.ALGEBRA]: {
     name: 'Algebra',
     image: `${imageBasePath}algebra.webp`
   },
-  [INSTANT_TRADES_PROVIDER.VIPER]: {
+  [INSTANT_TRADES_PROVIDERS.VIPER]: {
     name: 'Viper',
     image: `${imageBasePath}viperswap.svg`
   }

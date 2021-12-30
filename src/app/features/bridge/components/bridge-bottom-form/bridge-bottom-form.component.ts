@@ -28,14 +28,14 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TRADE_STATUS } from 'src/app/shared/models/swaps/TRADE_STATUS';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { SwapFormInput } from 'src/app/features/swaps/models/SwapForm';
-import { BridgeTokenPairsByBlockchains } from 'src/app/features/bridge/models/BridgeTokenPairsByBlockchains';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
+import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -49,11 +49,11 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from 'src/app/shared/utils/rubic-window';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
-import { RubicError } from '@core/errors/models/RubicError';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { RubicError } from '@core/errors/models/rubic-error';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
 import { BridgeService } from '../../services/bridge-service/bridge.service';
-import { BridgeTradeRequest } from '../../models/BridgeTradeRequest';
+import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 @Component({
   selector: 'app-bridge-bottom-form',

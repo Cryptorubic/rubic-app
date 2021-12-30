@@ -3,11 +3,11 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
 import { TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { FormGroup } from '@ngneat/reactive-forms';
-import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
+import { ISwapFormInput } from '@shared/models/swaps/swap-form';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TokensSelectComponent } from '../components/tokens-select/tokens-select.component';
 

@@ -1,7 +1,6 @@
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { crossChainContractAddresses } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/cross-chain-contract-addresses';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
-import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
 import { transitTokens } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/transit-tokens';
 import { AbiItem } from 'web3-utils';
 import { tuiPure } from '@taiga-ui/cdk';
@@ -15,8 +14,9 @@ import { UniSwapV3InstantTrade } from '@features/instant-trade/services/instant-
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { compareAddresses } from '@shared/utils/utils';
-import InstantTrade from '@features/instant-trade/models/InstantTrade';
-import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/ItProvider';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
+import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
