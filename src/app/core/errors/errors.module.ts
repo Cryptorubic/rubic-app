@@ -16,7 +16,7 @@ import { MaxGasPriceOverflowErrorComponent } from './components/max-gas-price-ov
 import { InsufficientFundsCcrErrorComponent } from './components/insufficient-funds-ccr-error/insufficient-funds-ccr-error.component';
 import { InsufficientFundsOneinchErrorComponent } from './components/insufficient-funds-oneinch-error/insufficient-funds-oneinch-error.component';
 import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/token-with-fee-error.component';
-import { UnsupportedTokenCCRComponent } from 'src/app/core/errors/components/unsupported-token-CCR/unsupported-token-ccr.component';
+import { UnsupportedTokenCCRComponent } from 'src/app/core/errors/components/unsupported-token-ccr/unsupported-token-ccr.component';
 import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
 
 @NgModule({

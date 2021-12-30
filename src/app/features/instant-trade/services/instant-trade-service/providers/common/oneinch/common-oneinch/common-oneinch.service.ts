@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import InstantTradeToken from 'src/app/features/instant-trade/models/InstantTradeToken';
-import InstantTrade from 'src/app/features/instant-trade/models/InstantTrade';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { from, Observable, of } from 'rxjs';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -15,26 +15,26 @@ import networks from 'src/app/shared/constants/blockchain/networks';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { OneinchQuoteError } from 'src/app/core/errors/models/provider/OneinchQuoteError';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import {
   ItSettingsForm,
   SettingsService
 } from 'src/app/features/swaps/services/settings-service/settings.service';
 import { TransactionReceipt } from 'web3-eth';
-import { ItOptions } from 'src/app/features/instant-trade/services/instant-trade-service/models/ItProvider';
-import { OneinchSwapResponse } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapResponse';
-import { OneinchQuoteResponse } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchQuoteResponse';
-import { OneinchTokensResponse } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchTokensResponse';
-import { OneinchApproveResponse } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchApproveResponse';
-import { OneinchQuoteRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchQuoteRequest';
-import { OneinchSwapRequest } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/OneinchSwapRequest';
+import { ItOptions } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { OneinchSwapResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-swap-response';
+import { OneinchQuoteResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-quote-response';
+import { OneinchTokensResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-tokens-response';
+import { OneinchApproveResponse } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-approve-response';
+import { OneinchQuoteRequest } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-quote-request';
+import { OneinchSwapRequest } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-swap-request';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { OneinchNotSupportedTokens } from 'src/app/core/errors/models/instant-trade/oneinch-not-supported-tokens';
-import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/InsufficientFundsOneinchError';
-import { SymbolToken } from '@shared/models/tokens/SymbolToken';
-import { TokenWithFeeError } from '@core/errors/models/common/TokenWithFeeError';
+import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
+import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
+import { OneinchQuoteError } from '@core/errors/models/provider/oneinch-quote-error';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];

@@ -3,15 +3,15 @@ import { SwapFormService } from '@features/swaps/services/swaps-form-service/swa
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { TokenAmount } from '@shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { forkJoin, from, of } from 'rxjs';
-import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/PERMITTED_PRICE_DIFFERENCE';
+import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
-import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainTradeInfo';
+import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 
 @Component({

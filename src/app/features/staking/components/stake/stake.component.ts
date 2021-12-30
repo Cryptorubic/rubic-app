@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
 import { TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
+
 import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
@@ -9,7 +10,7 @@ import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { StakingService } from '../../services/staking.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { STAKING_TOKENS } from '../../constants/STAKING_TOKENS';
+import { STAKING_TOKENS } from '@features/staking/constants/staking-tokens';
 
 /**
  * Stake form component.

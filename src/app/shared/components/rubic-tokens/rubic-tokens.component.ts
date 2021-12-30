@@ -5,21 +5,21 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import { Token } from 'src/app/shared/models/tokens/Token';
+import { Token } from '@shared/models/tokens/token';
 import { TokensSelectService } from 'src/app/features/tokens-select/services/tokens-select.service';
 import { BehaviorSubject } from 'rxjs';
-import ADDRESS_TYPE from 'src/app/shared/models/blockchain/ADDRESS_TYPE';
-import { AvailableTokenAmount } from 'src/app/shared/models/tokens/AvailableTokenAmount';
-import { FormService } from 'src/app/shared/models/swaps/FormService';
-import { ISwapFormInput } from 'src/app/shared/models/swaps/ISwapForm';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { FormService } from '@shared/models/swaps/form-service';
+import { ISwapFormInput } from '@shared/models/swaps/swap-form';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { takeUntil } from 'rxjs/operators';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareObjects } from 'src/app/shared/utils/utils';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 
 @Component({
   selector: 'app-rubic-tokens',

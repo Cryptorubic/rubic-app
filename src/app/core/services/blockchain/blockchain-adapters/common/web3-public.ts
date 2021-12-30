@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { BlockchainTokenExtended } from '@shared/models/tokens/BlockchainTokenExtended';
+import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 
 export abstract class Web3Public<AllowanceParams, TransactionResponse> {
   public abstract getAllowance(...params: AllowanceParams[]): Promise<BigNumber>;

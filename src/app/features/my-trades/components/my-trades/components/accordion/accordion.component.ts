@@ -8,20 +8,20 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import { BLOCKCHAINS } from 'src/app/features/my-trades/constants/BLOCKCHAINS';
-import { tradesProviders } from '@shared/constants/common/trades-providers';
+import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { Observable } from 'rxjs';
 import {
   TableRow,
   TableRowKeyValue
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
-import { TRANSACTION_STATUS } from 'src/app/shared/models/blockchain/TRANSACTION_STATUS';
-import { TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
+import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { filter, takeUntil } from 'rxjs/operators';
-import { COLUMNS } from 'src/app/features/my-trades/components/my-trades/constants/COLUMNS';
+import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TRANSLATION_STATUS_KEY } from '../../constants/TRANSLATION_STATUS_KEYS';
+import { TRANSLATION_STATUS_KEY } from 'src/app/features/my-trades/components/my-trades/constants/translation-status-keys';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Component({
   selector: 'app-accordion',
@@ -42,7 +42,7 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  public readonly tradesProviders = tradesProviders;
+  public readonly tradesProviders = INSTANT_TRADES_PROVIDERS;
 
   private PAGE_SIZE = 5;
 

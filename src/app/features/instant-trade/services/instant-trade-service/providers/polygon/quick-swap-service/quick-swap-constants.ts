@@ -1,9 +1,9 @@
 import {
   RoutingProvidersNetMode,
   UniswapV2Constants
-} from 'src/app/features/instant-trade/services/instant-trade-service/models/uniswap-v2/UniswapV2Constants';
-import { ContractAddressNetMode } from 'src/app/shared/models/blockchain/NetMode';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+} from '@features/instant-trade/services/instant-trade-service/models/uniswap-v2/uniswap-v2-constants';
+import { ContractAddressNetMode } from '@shared/models/blockchain/net-mode';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const quickSwapContractAddressNetMode: ContractAddressNetMode = {
   mainnet: '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff',
@@ -30,7 +30,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ]
 };
 
-export const quickSwapConstants: UniswapV2Constants = {
+export const QUICK_SWAP_CONSTANTS: UniswapV2Constants = {
   blockchain: BLOCKCHAIN_NAME.POLYGON,
   contractAddressNetMode: quickSwapContractAddressNetMode,
   wethAddressNetMode,

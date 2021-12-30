@@ -4,14 +4,14 @@ import { List } from 'immutable';
 import { tap } from 'rxjs/operators';
 import { TransactionReceipt } from 'web3-eth';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { ethToXDaiDepositWallet } from 'src/app/shared/constants/bridge/deposit-wallets';
+import { ETH_TO_XDAI_DEPOSIT_WALLET } from 'src/app/shared/constants/bridge/deposit-wallets';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { BridgeTrade } from 'src/app/features/bridge/models/BridgeTrade';
-import { BridgeTokenPair } from 'src/app/features/bridge/models/BridgeTokenPair';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { BRIDGE_PROVIDER } from 'src/app/shared/models/bridge/BRIDGE_PROVIDER';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BridgeTrade } from '@features/bridge/models/bridge-trade';
+import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 
 @Injectable()
@@ -81,7 +81,7 @@ export class EthereumXdaiBridgeProviderService extends BlockchainsBridgeProvider
     return from(
       this.web3PrivateService.transferTokens(
         tokenAddress,
-        ethToXDaiDepositWallet,
+        ETH_TO_XDAI_DEPOSIT_WALLET,
         amountInWei.toFixed(),
         {
           onTransactionHash: onTradeTransactionHash

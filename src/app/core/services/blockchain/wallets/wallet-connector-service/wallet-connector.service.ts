@@ -1,22 +1,18 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Token } from 'src/app/shared/models/tokens/Token';
+import { Token } from '@shared/models/tokens/token';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
-import { AccountError } from 'src/app/core/errors/models/provider/AccountError';
-import { NetworkError } from 'src/app/core/errors/models/provider/NetworkError';
-import { WalletError } from 'src/app/core/errors/models/provider/WalletError';
-import { NotSupportedNetworkError } from 'src/app/core/errors/models/provider/NotSupportedNetwork';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/metamask-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { WALLET_NAME } from 'src/app/core/wallets/components/wallets-modal/models/providers';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
@@ -25,10 +21,14 @@ import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { PhantomWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/solflare-wallet-adapter';
-import { SignRejectError } from '@core/errors/models/provider/SignRejectError';
 import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Connection } from '@solana/web3.js';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
+import { AccountError } from '@core/errors/models/provider/account-error';
+import { NetworkError } from '@core/errors/models/provider/network-error';
+import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
+import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { WalletError } from '@core/errors/models/provider/wallet-error';
 
 interface WCWallets {
   [P: string]: {
@@ -46,7 +46,7 @@ interface WCWallets {
   providedIn: 'root'
 })
 export class WalletConnectorService {
-  private readonly networkChangeSubject$: BehaviorSubject<IBlockchain>;
+  private readonly networkChangeSubject$: BehaviorSubject<BlockchainData>;
 
   private readonly addressChangeSubject$: BehaviorSubject<string>;
 
@@ -62,7 +62,7 @@ export class WalletConnectorService {
     return this.provider?.address;
   }
 
-  public get network(): IBlockchain {
+  public get network(): BlockchainData {
     return this.provider?.network;
   }
 
@@ -86,7 +86,7 @@ export class WalletConnectorService {
     return Boolean(this.provider?.isInstalled);
   }
 
-  public get networkChange$(): Observable<IBlockchain> {
+  public get networkChange$(): Observable<BlockchainData> {
     return this.networkChangeSubject$.asObservable();
   }
 
@@ -115,7 +115,7 @@ export class WalletConnectorService {
     @Inject(TUI_IS_IOS) private readonly isIos: boolean
   ) {
     this.web3 = new Web3();
-    this.networkChangeSubject$ = new BehaviorSubject<IBlockchain>(null);
+    this.networkChangeSubject$ = new BehaviorSubject<BlockchainData>(null);
     this.addressChangeSubject$ = new BehaviorSubject<string>(null);
   }
 

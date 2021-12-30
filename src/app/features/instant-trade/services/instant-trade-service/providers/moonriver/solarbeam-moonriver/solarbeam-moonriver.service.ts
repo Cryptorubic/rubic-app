@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { solarBeamMoonRiverConstants } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver-constants';
+import { SOLAR_BEAM_MOON_RIVER_CONSTANTS } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver-constants';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
 import solarBeamContractAbi from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/models/solar-beam-contract-abi';
 import { Multicall } from 'src/app/core/services/blockchain/models/multicall';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SolarBeamMoonRiverService extends CommonUniswapV2Service {
-  public readonly providerType = INSTANT_TRADES_PROVIDER.SOLARBEAM;
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.SOLARBEAM;
 
   constructor() {
-    super(solarBeamMoonRiverConstants);
+    super(SOLAR_BEAM_MOON_RIVER_CONSTANTS);
     this.contractAbi = solarBeamContractAbi;
   }
 

@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { SettingsService } from 'src/app/features/swaps/services/settings-service/settings.service';
-import { SWAP_PROVIDER_TYPE } from 'src/app/features/swaps/models/SwapProviderType';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 export enum REFRESH_BUTTON_STATUS {
   REFRESHING = 'refreshing',

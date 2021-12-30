@@ -1,4 +1,4 @@
-import { FromBackendBlockchain } from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+import { FromBackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 
 export type PromotionResponse = PromotionResponseItem[];
 

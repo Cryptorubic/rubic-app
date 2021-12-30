@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CommonUniswapV2Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/common-uniswap-v2.service';
-import { sushiSwapHarmonyConstants } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.constants';
-import { INSTANT_TRADES_PROVIDER } from '@shared/models/instant-trade/INSTANT_TRADES_PROVIDER';
+import { SUSHI_SWAP_HARMONY_CONSTANTS } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.constants';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SushiSwapHarmonyService extends CommonUniswapV2Service {
-  public readonly providerType = INSTANT_TRADES_PROVIDER.SUSHISWAP;
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.SUSHISWAP;
 
   constructor() {
-    super(sushiSwapHarmonyConstants);
+    super(SUSHI_SWAP_HARMONY_CONSTANTS);
   }
 }

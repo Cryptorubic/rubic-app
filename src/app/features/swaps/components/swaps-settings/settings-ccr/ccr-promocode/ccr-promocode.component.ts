@@ -12,12 +12,12 @@ import {
   ChangeDetectorRef,
   Self
 } from '@angular/core';
-import { PromoCode } from 'src/app/features/swaps/models/PromoCode';
+import { PromoCode } from '@features/swaps/models/promo-code';
 import { PromoCodeApiService } from 'src/app/core/services/backend/promo-code-api/promo-code-api.service';
 import { Observable, of, Subject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { NgChanges } from 'src/app/shared/models/utility-types/NgChanges';
+import { NgChanges } from '@shared/models/utility-types/ng-changes';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 
 /**

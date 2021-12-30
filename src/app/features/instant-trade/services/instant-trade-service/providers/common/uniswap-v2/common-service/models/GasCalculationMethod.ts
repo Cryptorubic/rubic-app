@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BatchCall } from 'src/app/core/services/blockchain/models/BatchCall';
+import { BatchCall } from '@core/services/blockchain/models/batch-call';
 
 export type GasCalculationMethod = (
   amountIn: string,

@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TableToken, TableTrade } from 'src/app/shared/models/my-trades/TableTrade';
+import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { catchError, map, mapTo } from 'rxjs/operators';
 import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
-} from 'src/app/shared/constants/blockchain/BACKEND_BLOCKCHAINS';
+} from '@shared/constants/blockchain/backend-blockchains';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   CrossChainTokenApi,
   CrossChainTradesResponseApi
-} from 'src/app/core/services/backend/cross-chain-routing-api/models/CrossChainTradesResponseApi';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { environment } from 'src/environments/environment';
+} from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { ENVIRONMENT } from 'src/environments/environment';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 
-export const BASE_URL = `${environment.crossChain.apiBaseUrl}/`;
+export const BASE_URL = `${ENVIRONMENT.crossChain.apiBaseUrl}/`;
 
 @Injectable({
   providedIn: 'root'

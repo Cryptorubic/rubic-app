@@ -1,17 +1,17 @@
-import { IBlockchain } from 'src/app/shared/models/blockchain/IBlockchain';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import networks from '../../../shared/constants/blockchain/networks';
 import CustomError from '@core/errors/models/custom-error';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 
 export class BlockchainsInfo {
-  static getBlockchainById(id: number | string): IBlockchain {
-    return networks.find(network => network.id === Number(id)) as IBlockchain;
+  static getBlockchainById(id: number | string): BlockchainData {
+    return networks.find(network => network.id === Number(id)) as BlockchainData;
   }
 
-  static getBlockchainByName(name: BLOCKCHAIN_NAME): IBlockchain {
-    return networks.find(network => network.name === name) as IBlockchain;
+  static getBlockchainByName(name: BLOCKCHAIN_NAME): BlockchainData {
+    return networks.find(network => network.name === name) as BlockchainData;
   }
 
   static getBlockchainType(name: BLOCKCHAIN_NAME): BlockchainType {

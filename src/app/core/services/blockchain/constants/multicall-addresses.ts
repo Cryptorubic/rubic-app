@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 export const MULTICALL_ADDRESSES = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0x5ba1e12693dc8f9c48aad8770482f4739beed696',

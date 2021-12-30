@@ -1,4 +1,4 @@
-import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/CrossChainRoutingTrade';
+import { CrossChainRoutingTrade } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-routing-trade';
 import { CcrSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import {
   Account,
@@ -7,13 +7,13 @@ import {
   Transaction,
   TransactionInstruction
 } from '@solana/web3.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/BLOCKCHAIN_NAME';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
   NATIVE_SOL,
   TOKENS
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import BigNumber from 'bignumber.js';
-import { transitTokensWithMode } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
+import { TRANSIT_TOKENS_WITH_MODE } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/transit-tokens';
 import {
   PDA_CONFIG,
   PDA_DELEGATE,
@@ -28,11 +28,11 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { Buffer } from 'buffer';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { CrossChainContractExecutorFacade } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-contract-executor.facade';
-import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
+import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -177,7 +177,7 @@ export class SolanaContractExecutor {
     const amountOut = new BigNumber(tokenOutAmountMin.toString()).multipliedBy(toDecimals);
 
     const middleDecimals = new BigNumber(10).exponentiatedBy(
-      transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].decimals
+      TRANSIT_TOKENS_WITH_MODE[BLOCKCHAIN_NAME.SOLANA].decimals
     );
     const amountMiddle = new BigNumber(trade.firstTransitTokenAmount.toString()).multipliedBy(
       middleDecimals
@@ -203,7 +203,7 @@ export class SolanaContractExecutor {
     const poolInfo = this.raydiumRoutingService.currentPoolInfo;
 
     const isTransfer =
-      trade.tokenIn.address === transitTokensWithMode[BLOCKCHAIN_NAME.SOLANA].address;
+      trade.tokenIn.address === TRANSIT_TOKENS_WITH_MODE[BLOCKCHAIN_NAME.SOLANA].address;
     const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;
     let transferType;
     if (fromNative) {

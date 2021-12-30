@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
-import InstantTradeToken from '@features/instant-trade/models/InstantTradeToken';
+import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 
 import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-token-amount';
 import { Injectable } from '@angular/core';
 import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 interface SwapOutAmount {
   amountIn: BigNumber;

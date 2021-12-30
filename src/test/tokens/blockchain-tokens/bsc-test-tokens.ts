@@ -1,7 +1,7 @@
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
-import { BLOCKCHAIN_NAME } from 'src/app/shared/models/blockchain/BLOCKCHAIN_NAME';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/NATIVE_TOKEN_ADDRESS';
-import { TOKEN_RANK } from 'src/app/shared/models/tokens/TOKEN_RANK';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import BigNumber from 'bignumber.js';
 
 const BNB: TokenAmount = {
@@ -33,7 +33,7 @@ const USDT: TokenAmount = {
 };
 
 const ETH: TokenAmount = {
-  name: 'Ethereum Token',
+  name: 'Ethereum Tokens',
   symbol: 'ETH',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   address: '0x8babbb98678facc7342735486c851abd7a0d17ca',
@@ -75,7 +75,7 @@ export const FAKE_BRBC: TokenAmount = {
 };
 
 export const XBRBC: TokenAmount = {
-  name: 'Rubic Staking Token',
+  name: 'Rubic Staking Tokens',
   symbol: 'xBRBC',
   blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
   address: '0x2C85DAf343e31fB871Bae1b1BFBD790d81BAE855',
@@ -88,4 +88,4 @@ export const XBRBC: TokenAmount = {
   price: 5
 };
 
-export const bscTestTokens = [BNB, USDT, ETH, BRBC, FAKE_BRBC, XBRBC];
+export const BSC_TEST_TOKENS = [BNB, USDT, ETH, BRBC, FAKE_BRBC, XBRBC];

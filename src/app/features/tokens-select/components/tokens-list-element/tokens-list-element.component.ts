@@ -6,15 +6,15 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { TokenAmount } from 'src/app/shared/models/tokens/TokenAmount';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { DEFAULT_TOKEN_IMAGE } from 'src/app/shared/constants/tokens/DEFAULT_TOKEN_IMAGE';
-import { ErrorsService } from '@core/errors/errors.service';
-import { WalletError } from '@core/errors/models/provider/WalletError';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { AuthService } from '@core/services/auth/auth.service';
+import { WalletError } from '@core/errors/models/provider/wallet-error';
+import { ErrorsService } from '@core/errors/errors.service';
 
 @Component({
   selector: 'app-tokens-list-element',
