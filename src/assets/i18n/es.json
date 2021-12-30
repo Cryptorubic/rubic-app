@@ -180,8 +180,7 @@
           "data": [
             "Custom Token Support",
             "Custom Bridges Feature",
-            "Custom Routing System",
-            "Cross-chain Solution For TRON"
+            "Custom Routing System"
           ]
         },
         "2": {
@@ -190,7 +189,6 @@
           "done": true,
           "data": [
             "CoinGecko And Coin Market Cap API For ETH<>RBC",
-            "TRON Integration",
             "BNB Faucet",
             "Instant Trades Table",
             "UI Simple Update",
@@ -613,7 +611,6 @@
       "text": "Las tasas con una tasa de interés del 80% o más comenzaron el 23 de diciembre.",
       "link": "¡Aprende más!"
     }
-
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
