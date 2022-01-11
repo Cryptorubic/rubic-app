@@ -35,7 +35,7 @@ import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-ch
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
-import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { CROSS_CHAIN_METHODS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/cross-chain-methods';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -216,9 +216,10 @@ export class SolanaContractExecutorService {
     }
 
     const toBlockchainInContractNumber = this.contracts[trade.toBlockchain].numOfBlockchain;
-    const methodName = SolanaWeb3Public.addressToBytes32(
-      this.contracts.SOL.getMethodNameAndContractAbi(trade.fromProviderIndex, fromNative).methodName
-    ).slice(2);
+    const methodName = this.contracts.SOL.getMethodNameAndContractAbi(
+      trade.fromProviderIndex,
+      fromNative
+    ).methodName;
 
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
@@ -231,7 +232,7 @@ export class SolanaContractExecutorService {
       newAddress: targetAddress,
       swapToCrypto: isToNative,
       transferType,
-      methodName
+      methodName: CROSS_CHAIN_METHODS[methodName].slice(2)
     };
 
     const { from: fromAccount } =
