@@ -216,10 +216,9 @@ export class SolanaContractExecutorService {
     }
 
     const toBlockchainInContractNumber = this.contracts[trade.toBlockchain].numOfBlockchain;
-    const { methodName } = this.contracts.SOL.getMethodNameAndContractAbi(
-      trade.toProviderIndex,
-      isToNative
-    );
+    const methodName = this.contracts[trade.toBlockchain]
+      .getSwapToUserMethodSignature(trade.toProviderIndex, isToNative)
+      .split('(')[0];
 
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
