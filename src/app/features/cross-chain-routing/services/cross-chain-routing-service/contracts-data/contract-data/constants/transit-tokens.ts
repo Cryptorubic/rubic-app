@@ -1,6 +1,7 @@
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 
 export type TransitTokens = Record<SupportedCrossChainBlockchain, InstantTradeToken>;
 
@@ -39,12 +40,10 @@ export const transitTokens: TransitTokens = {
     address: '0x985458e523db3d53125813ed68c274899e9dfab4',
     decimals: 6,
     symbol: '1USDC'
-  }
-  /*
+  },
   [BLOCKCHAIN_NAME.SOLANA]: {
     address: TOKENS.USDC.mintAddress,
     decimals: TOKENS.USDC.decimals,
     symbol: TOKENS.USDC.symbol
   }
-  */
 };

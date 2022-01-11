@@ -11,6 +11,10 @@ import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blo
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
+import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
+import CustomError from '@core/errors/models/custom-error';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { SignatureResult } from '@solana/web3.js';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +51,7 @@ export class ContractExecutorFacadeService {
 
   constructor(
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
-    // private readonly solanaContractExecutor: SolanaContractExecutorService,
+    private readonly solanaContractExecutor: SolanaContractExecutorService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly raydiumService: RaydiumService,
     private readonly targetAddressService: TargetNetworkAddressService,
@@ -70,7 +74,6 @@ export class ContractExecutorFacadeService {
     }
 
     // solana
-    /* TODO uncomment
     try {
       const isToNative = this.publicBlockchainAdapterService[trade.toBlockchain].isNativeAddress(
         trade.tokenOut.address
@@ -111,7 +114,7 @@ export class ContractExecutorFacadeService {
       if ('message' in err) {
         throw new CustomError(err.message);
       }
-    }*/
+    }
   }
 
   /**

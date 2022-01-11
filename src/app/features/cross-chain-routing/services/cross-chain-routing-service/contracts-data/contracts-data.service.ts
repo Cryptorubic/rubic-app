@@ -21,6 +21,7 @@ import { SushiSwapAvalancheService } from '@features/instant-trade/services/inst
 import { SushiSwapMoonRiverService } from '@features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 import { SushiSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 
 @Injectable({
   providedIn: 'root'
@@ -170,8 +171,7 @@ export class ContractsDataService {
         ],
         7,
         this.publicBlockchainAdapterService
-      )
-      /*
+      ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(
         BLOCKCHAIN_NAME.SOLANA,
         [
@@ -183,7 +183,6 @@ export class ContractsDataService {
         8,
         this.publicBlockchainAdapterService
       )
-      */
     };
   }
 }

@@ -15,6 +15,7 @@ import {
   BridgeConfigData,
   SolanaBlockchainConfig
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 export class SolanaContractData extends ContractData {
   private readonly blockchainAdapter: SolanaWeb3Public;
@@ -28,8 +29,7 @@ export class SolanaContractData extends ContractData {
     super(blockchain, providersData, numOfBlockchain);
 
     BlockchainsInfo.checkIsSolana(blockchain);
-    // @ts-ignore TODO uncomment
-    this.blockchainAdapter = publicBlockchainAdapterService[blockchain] as SolanaWeb3Public;
+    this.blockchainAdapter = publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA];
   }
 
   public async minTokenAmount(): Promise<string> {
