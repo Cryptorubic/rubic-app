@@ -18,7 +18,6 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -130,9 +129,15 @@ export abstract class ContractData {
    * Returns `second path` method argument, converted from instant-trade data and chosen provider.
    * Must be called on target contract.
    */
-  public getSecondPath(providerIndex: number, instantTrade: InstantTrade): string[] {
+  public getSecondPath(
+    providerIndex: number,
+    instantTrade: InstantTrade,
+    fromBlockchain: BLOCKCHAIN_NAME
+  ): string[] {
     if (!instantTrade) {
-      return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
+      return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+        ? [this.transitToken.address]
+        : [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
     }
 
     const provider = this.getProvider(providerIndex);
@@ -154,17 +159,18 @@ export abstract class ContractData {
           : pool.token0;
         lastTokenAddress = newToken.address;
       });
-      path.push(EthLikeWeb3Public.addressToBytes32(lastTokenAddress));
+      path.push(
+        fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+          ? lastTokenAddress
+          : EthLikeWeb3Public.addressToBytes32(lastTokenAddress)
+      );
 
       return path;
     }
 
-    // @ts-ignore TODO uncomment
-    if (this.blockchain === BLOCKCHAIN_NAME.SOLANA) {
-      return instantTrade.path.map(token => SolanaWeb3Public.addressToBytes32(token.address));
-    }
-
-    return instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
+    return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+      ? instantTrade.path.map(token => token.address)
+      : instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
   }
 
   /**
