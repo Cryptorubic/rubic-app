@@ -221,7 +221,15 @@ export class InstantTradeService {
         );
       }
 
-      this.notifyGtmOnSuccess(transactionHash, trade.from.token.symbol, trade.to.token.symbol);
+      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+      const revenue = usdPrice * 0.006;
+      this.notifyGtmOnSuccess(
+        transactionHash,
+        trade.from.token.symbol,
+        trade.to.token.symbol,
+        revenue,
+        usdPrice
+      );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -357,14 +365,20 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(txHash: string, fromToken: string, toToken: string): void {
+  private notifyGtmOnSuccess(
+    txHash: string,
+    fromToken: string,
+    toToken: string,
+    revenue: number,
+    usdPrice: number
+  ): void {
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
       txHash,
-      '1',
+      revenue,
       fromToken,
       toToken,
-      '1'
+      usdPrice
     );
   }
 }

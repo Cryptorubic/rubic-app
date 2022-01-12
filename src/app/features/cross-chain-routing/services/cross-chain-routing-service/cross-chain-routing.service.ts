@@ -741,13 +741,14 @@ export class CrossChainRoutingService {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM
     });
     const { tokenIn, tokenOut } = this.currentCrossChainTrade;
+
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
       txHash,
-      feeAmount.multipliedBy(usdcTokenUsdPrice).toString(),
+      feeAmount.multipliedBy(usdcTokenUsdPrice).toNumber(),
       tokenIn.symbol,
       tokenOut.symbol,
-      tokenOut.amount.toString()
+      tokenIn.amount.toNumber()
     );
     return;
   }

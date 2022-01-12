@@ -111,10 +111,10 @@ export class GoogleTagManagerService {
   public fireTxSignedEvent(
     eventCategory: SWAP_PROVIDER_TYPE,
     txId: string,
-    revenue: string,
+    revenue: number,
     fromToken: string,
     toToken: string,
-    txUsdAmount: string
+    txUsdAmount: number
   ): void {
     this.forms[eventCategory].next(formStepsInitial);
     this.angularGtmService.pushTag({
