@@ -97,7 +97,11 @@ export class EthLikeContractData extends ContractData {
 
     const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
 
-    const secondPath = toContract.getSecondPath(trade.toProviderIndex, trade.toTrade);
+    const secondPath = toContract.getSecondPath(
+      trade.toProviderIndex,
+      trade.toTrade,
+      trade.fromBlockchain
+    );
 
     const fromTransitTokenAmountMin =
       ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
