@@ -40,6 +40,8 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -89,7 +91,8 @@ export class CrossChainRoutingService {
     private readonly gasService: GasService,
     private readonly contractExecutorFacade: ContractExecutorFacadeService,
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
-    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
+    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
+    private readonly gtmService: GoogleTagManagerService
   ) {}
 
   private async needApprove(
@@ -672,6 +675,8 @@ export class CrossChainRoutingService {
           );
 
           await this.postCrossChainTrade(transactionHash);
+
+          await this.notifyGtmOnSuccess(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
             await this.postCrossChainTrade(transactionHash);
@@ -723,6 +728,28 @@ export class CrossChainRoutingService {
       this.currentCrossChainTrade.fromBlockchain,
       settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
+  }
+
+  /**
+   * Notifies GTM about signed transaction.
+   * @param txHash Signed transaction hash.
+   */
+  private async notifyGtmOnSuccess(txHash: string): Promise<void> {
+    const { feeAmount } = await this.getTradeInfo();
+    const usdcTokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
+      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC token
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM
+    });
+    const { tokenIn, tokenOut } = this.currentCrossChainTrade;
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      feeAmount.multipliedBy(usdcTokenUsdPrice).toString(),
+      tokenIn.symbol,
+      tokenOut.symbol,
+      tokenOut.amount.toString()
+    );
+    return;
   }
 
   public calculateTokenOutAmountMin(): BigNumber {

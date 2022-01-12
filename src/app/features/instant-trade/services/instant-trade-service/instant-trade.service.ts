@@ -46,6 +46,7 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Injectable({
   providedIn: 'root'
@@ -204,7 +205,6 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
-          this.gtmService.notifySignTransaction();
 
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
@@ -221,6 +221,7 @@ export class InstantTradeService {
         );
       }
 
+      this.notifyGtmOnSuccess(transactionHash, trade.from.token.symbol, trade.to.token.symbol);
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -354,5 +355,16 @@ export class InstantTradeService {
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open();
     }
+  }
+
+  private notifyGtmOnSuccess(txHash: string, fromToken: string, toToken: string): void {
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      txHash,
+      '1',
+      fromToken,
+      toToken,
+      '1'
+    );
   }
 }

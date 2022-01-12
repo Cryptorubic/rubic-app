@@ -10,7 +10,14 @@ import { SettingsService } from 'src/app/features/swaps/services/settings-servic
 import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { debounceTime, startWith, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  takeUntil,
+  withLatestFrom
+} from 'rxjs/operators';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { List } from 'immutable';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -22,6 +29,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 type TokenType = 'from' | 'to';
 
@@ -119,7 +127,8 @@ export class SwapsFormComponent implements OnInit {
     private readonly headerStore: HeaderStore,
     private readonly destroy$: TuiDestroyService,
     private readonly translateService: TranslateService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.availableTokens = {
       from: [],
@@ -140,14 +149,16 @@ export class SwapsFormComponent implements OnInit {
     this.subscribeOnTokens();
     this.subscribeOnSettings();
 
-    this.swapsService.swapMode$.pipe(takeUntil(this.destroy$)).subscribe(swapMode => {
-      this.swapType = swapMode;
-      if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-        this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
-      } else {
-        this.autoRefresh = this.settingsService.crossChainRoutingValue.autoRefresh;
-      }
-    });
+    this.swapsService.swapMode$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(swapMode => {
+        this.swapType = swapMode;
+        if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+          this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
+        } else {
+          this.autoRefresh = this.settingsService.crossChainRoutingValue.autoRefresh;
+        }
+      });
 
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
@@ -162,6 +173,8 @@ export class SwapsFormComponent implements OnInit {
         }
         this.setFormValues(form);
       });
+
+    this.watchGtmEvenst();
   }
 
   private subscribeOnTokens(): void {
@@ -383,5 +396,28 @@ export class SwapsFormComponent implements OnInit {
       status: TuiNotification.Warning,
       autoClose: 10000
     });
+  }
+
+  private watchGtmEvenst(): void {
+    this.gtmService.startGtmTimer();
+
+    this.swapFormService.inputValueChanges
+      .pipe(
+        map(form => [
+          form.fromToken ? form.fromToken.symbol : null,
+          form.toToken ? form.toToken.symbol : null
+        ]),
+        distinctUntilChanged((v1, v2) => JSON.stringify(v1) === JSON.stringify(v2)),
+        withLatestFrom(this.swapsService.swapMode$)
+      )
+      .subscribe(([[fromToken, toToken], swapMode]) => {
+        if (fromToken) {
+          this.gtmService.updateFormStep(swapMode, 'fromTokenSelected', fromToken);
+        }
+
+        if (toToken) {
+          this.gtmService.updateFormStep(swapMode, 'toTokenSelected', toToken);
+        }
+      });
   }
 }
