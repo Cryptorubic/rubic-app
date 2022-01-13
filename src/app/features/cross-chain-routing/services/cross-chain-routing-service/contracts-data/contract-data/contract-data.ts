@@ -85,8 +85,9 @@ export abstract class ContractData {
     };
 
     if (this.isProviderV3(providerIndex)) {
-      methodName += 'V3';
-      contractAbiMethod = { ...crossChainContractAbiV3.find(method => method.name === methodName) };
+      contractAbiMethod = {
+        ...crossChainContractAbiV3.find(method => method.name === methodName + 'V3')
+      };
     }
 
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
@@ -144,26 +145,22 @@ export abstract class ContractData {
 
     if (provider instanceof UniSwapV3Service) {
       const route = (instantTrade as UniSwapV3InstantTrade).route;
-      const path: string[] = [];
+      const path: string[] = [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
+
       let lastTokenAddress = route.initialTokenAddress;
 
       route.poolsPath.forEach(pool => {
+        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
+          ? pool.token1
+          : pool.token0;
+        lastTokenAddress = newToken.address;
+
         path.push(
           '0x' +
             pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
             lastTokenAddress.slice(2).toLowerCase()
         );
-
-        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
-          ? pool.token1
-          : pool.token0;
-        lastTokenAddress = newToken.address;
       });
-      path.push(
-        fromBlockchain === BLOCKCHAIN_NAME.SOLANA
-          ? lastTokenAddress
-          : EthLikeWeb3Public.addressToBytes32(lastTokenAddress)
-      );
 
       return path;
     }
@@ -174,38 +171,16 @@ export abstract class ContractData {
   }
 
   /**
-   * Returns `signature` method argument, built from `swapToUser` function name and its arguments.
-   * Example: `${function_name_in_target_network}(${arguments})`.
+   * Returns `signature` method argument, that is `swapToUserWithFee` function name.
    * Must be called on target contract.
    */
-  public getSwapToUserMethodSignature(providerIndex: number, isToTokenNative: boolean): string {
+  public getSwapToUserMethodName(providerIndex: number, isToTokenNative: boolean): string {
     let methodName: string = isToTokenNative
       ? TO_USER_SWAP_METHOD.SWAP_CRYPTO
       : TO_USER_SWAP_METHOD.SWAP_TOKENS;
-    let contractAbiMethod = crossChainContractAbiV2.find(method => method.name === methodName);
-
-    if (this.isProviderV3(providerIndex)) {
-      methodName += 'V3';
-      contractAbiMethod = crossChainContractAbiV3.find(method => method.name === methodName);
-    }
 
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
 
-    const parameters = contractAbiMethod.inputs[0].components;
-    const paramsSignature = parameters.reduce((acc, parameter, index) => {
-      if (index === 0) {
-        acc = '((';
-      }
-
-      acc += parameter.type;
-
-      if (index === parameters.length - 1) {
-        return acc + '))';
-      } else {
-        return acc + ',';
-      }
-    }, '');
-
-    return methodName + paramsSignature;
+    return methodName;
   }
 }
