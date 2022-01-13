@@ -30,6 +30,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { compareObjects } from '@shared/utils/utils';
 
 type TokenType = 'from' | 'to';
 
@@ -407,7 +408,7 @@ export class SwapsFormComponent implements OnInit {
           form.fromToken ? form.fromToken.symbol : null,
           form.toToken ? form.toToken.symbol : null
         ]),
-        distinctUntilChanged((v1, v2) => JSON.stringify(v1) === JSON.stringify(v2)),
+        distinctUntilChanged((v1, v2) => compareObjects(v1, v2)),
         withLatestFrom(this.swapsService.swapMode$)
       )
       .subscribe(([[fromToken, toToken], swapMode]) => {

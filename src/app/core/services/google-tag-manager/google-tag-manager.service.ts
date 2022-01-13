@@ -16,7 +16,7 @@ const formStepsInitial = {
   toTokenSelected: false
 };
 
-interface IFormSteps {
+interface FormSteps {
   fromTokenSelected: boolean;
   toTokenSelected: boolean;
 }
@@ -25,21 +25,21 @@ interface IFormSteps {
   providedIn: 'root'
 })
 export class GoogleTagManagerService {
-  private instantTradeSteps$ = new BehaviorSubject<IFormSteps>(formStepsInitial);
+  private readonly instantTradeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
-  private bridgeSteps$ = new BehaviorSubject<IFormSteps>(formStepsInitial);
+  private readonly bridgeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
-  private multiChainSteps$ = new BehaviorSubject<IFormSteps>(formStepsInitial);
+  private readonly multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
-  private forms = {
+  private readonly forms = {
     [SWAP_PROVIDER_TYPE.BRIDGE]: this.bridgeSteps$,
     [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: this.multiChainSteps$,
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this.instantTradeSteps$
   };
 
-  private toggleGtmSessionTimer$ = new BehaviorSubject<boolean>(false);
+  private readonly toggleGtmSessionTimer$ = new BehaviorSubject<boolean>(false);
 
-  public gtmSessionTimer$ = this.toggleGtmSessionTimer$.pipe(
+  public readonly gtmSessionTimer$ = this.toggleGtmSessionTimer$.pipe(
     switchMap(toggle => {
       return toggle
         ? interval(1000).pipe(
@@ -91,7 +91,7 @@ export class GoogleTagManagerService {
    * @param step Which token selected.
    * @param value Selected token.
    */
-  public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof IFormSteps, value: string): void {
+  public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof FormSteps, value: string): void {
     const formStep$ = this.forms[swapMode];
     if (!formStep$.getValue()[step]) {
       formStep$.next({ ...formStep$.getValue(), [step]: true });
