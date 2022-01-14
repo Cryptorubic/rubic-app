@@ -159,17 +159,6 @@
       ]
     },
     {
-      "img": "MininaAlexandra.jpg",
-      "name": "Alexandra Minina",
-      "role": "Backend Developer",
-      "links": [
-        {
-          "icon": "Github.svg",
-          "url": "https://github.com/karelinaas"
-        }
-      ]
-    },
-    {
       "img": "AndreyAksenov.png",
       "name": "Andrey Aksenov",
       "role": "Marketing",
@@ -187,7 +176,7 @@
       "links": [
         {
           "icon": "Telegram.svg",
-          "url": "https://t.me/mirapravitel"
+          "url": "https://t.me/mirarubic"
         }
       ]
     },
@@ -213,11 +202,6 @@
       ]
     },
     {
-      "img": "IlianaVasileva.png",
-      "name": "Iliana Vasileva",
-      "role": "Q/A and customer support"
-    },
-    {
       "img": "SvenMichael.jpg",
       "name": "Sven Michael",
       "role": "Business Development"
@@ -225,7 +209,7 @@
     {
       "img": "LeraSeikalis.png",
       "name": "Lera Seikalis",
-      "role": "Picture Designer"
+      "role": "Graphic Designer"
     }
   ]
 }
