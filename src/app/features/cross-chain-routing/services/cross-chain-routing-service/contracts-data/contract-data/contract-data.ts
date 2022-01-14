@@ -6,7 +6,6 @@ import { AbiItem } from 'web3-utils';
 import { tuiPure } from '@taiga-ui/cdk';
 import { crossChainContractAbiV2 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v2';
 import { crossChainContractAbiV3 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
-import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
 import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
@@ -19,6 +18,7 @@ import InstantTradeToken from '@features/instant-trade/models/instant-trade-toke
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -65,7 +65,7 @@ export abstract class ContractData {
    * Returns true, if provider is of `uniswap v3` or `algebra` type.
    */
   protected isProviderV3(providerIndex: number): boolean {
-    return this.getProvider(providerIndex) instanceof CommonUniV3AlgebraService;
+    return this.getProvider(providerIndex) instanceof CommonUniswapV3AlgebraService;
   }
 
   /**
