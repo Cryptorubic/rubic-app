@@ -138,7 +138,7 @@ export class EthLikeContractData extends ContractData {
         true
       ]
     ];
-    if (!this.isProviderV3(trade.fromProviderIndex)) {
+    if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
       methodArguments[0].push(false);
     }
     methodArguments[0].push(swapToUserMethodSignature);

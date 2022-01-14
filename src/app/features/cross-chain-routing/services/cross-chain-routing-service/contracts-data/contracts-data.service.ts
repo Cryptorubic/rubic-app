@@ -23,6 +23,7 @@ import { SushiSwapFantomService } from '@features/instant-trade/services/instant
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
+import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,7 @@ export class ContractsDataService {
     private readonly quickSwapService: QuickSwapService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly algebraService: AlgebraService,
+    private readonly uniSwapV3PolygonService: UniSwapV3PolygonService,
 
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
@@ -104,6 +106,10 @@ export class ContractsDataService {
           },
           {
             provider: this.algebraService,
+            methodSuffix: 'ALGB'
+          },
+          {
+            provider: this.uniSwapV3PolygonService,
             methodSuffix: 'V3'
           }
         ],

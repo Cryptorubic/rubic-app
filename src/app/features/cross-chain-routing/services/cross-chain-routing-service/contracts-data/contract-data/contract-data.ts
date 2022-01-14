@@ -64,7 +64,7 @@ export abstract class ContractData {
   /**
    * Returns true, if provider is of `uniswap v3` or `algebra` type.
    */
-  protected isProviderV3(providerIndex: number): boolean {
+  protected isProviderV3OrAlgebra(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof CommonUniswapV3AlgebraService;
   }
 
@@ -85,9 +85,9 @@ export abstract class ContractData {
       ...crossChainContractAbiV2.find(method => method.name === methodName)
     };
 
-    if (this.isProviderV3(providerIndex)) {
+    if (this.isProviderV3OrAlgebra(providerIndex)) {
       contractAbiMethod = {
-        ...crossChainContractAbiV3.find(method => method.name === methodName + 'V3')
+        ...crossChainContractAbiV3.find(method => method.name.startsWith(methodName))
       };
     }
 
