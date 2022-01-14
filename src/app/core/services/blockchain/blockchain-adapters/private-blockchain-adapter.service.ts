@@ -3,6 +3,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
+import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -38,15 +39,19 @@ export class PrivateBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3PrivateService = null;
 
+  public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3PrivateService = null;
+
   constructor(
     private useTestingModeService: UseTestingModeService,
     private readonly web3PrivateService: EthLikeWeb3PrivateService,
-    private readonly solanaWeb3PrivateService: SolanaWeb3PrivateService
+    private readonly solanaWeb3PrivateService: SolanaWeb3PrivateService,
+    private readonly nearWeb3privateService: NearWeb3PrivateService
   ) {
     WEB3_SUPPORTED_BLOCKCHAINS.forEach(blockchain => {
       // @ts-ignore. Cant assign to readonly property in cycle.
       this[blockchain] = web3PrivateService;
     });
     this[BLOCKCHAIN_NAME.SOLANA] = solanaWeb3PrivateService;
+    this[BLOCKCHAIN_NAME.NEAR] = nearWeb3privateService;
   }
 }

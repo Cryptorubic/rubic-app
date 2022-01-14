@@ -14,5 +14,6 @@ export enum INSTANT_TRADES_PROVIDERS {
   WRAPPED = 'wrapped',
   RAYDIUM = 'raydium',
   ALGEBRA = 'algebra',
-  VIPER = 'viper'
+  VIPER = 'viper',
+  REF = 'ref'
 }

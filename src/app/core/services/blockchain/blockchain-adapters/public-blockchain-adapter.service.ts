@@ -12,6 +12,8 @@ import networks from '@shared/constants/blockchain/networks';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { Connection } from '@solana/web3.js';
+import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
+import { NEAR_TESTNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -61,6 +63,8 @@ export class PublicBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 
+  public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3Public = null;
+
   constructor(
     private useTestingModeService: UseTestingModeService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -90,6 +94,10 @@ export class PublicBlockchainAdapterService {
     const solanaConnection = new Connection(solanaRpc.solanaApi.url);
     this.walletConnectorService.solanaWeb3Connection = solanaConnection;
     this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(solanaConnection);
+
+    this[BLOCKCHAIN_NAME.NEAR] = new NearWeb3Public(NEAR_TESTNET_CONFIG, connection => {
+      this.walletConnectorService.nearConnection = connection;
+    });
 
     this.checkAllRpcProviders();
 

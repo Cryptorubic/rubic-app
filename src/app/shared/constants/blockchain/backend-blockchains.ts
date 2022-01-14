@@ -10,7 +10,8 @@ export const FROM_BACKEND_BLOCKCHAINS = {
   moonriver: BLOCKCHAIN_NAME.MOONRIVER,
   fantom: BLOCKCHAIN_NAME.FANTOM,
   'ethereum-test': BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
-  solana: BLOCKCHAIN_NAME.SOLANA
+  solana: BLOCKCHAIN_NAME.SOLANA,
+  near: BLOCKCHAIN_NAME.NEAR
 };
 
 export const TO_BACKEND_BLOCKCHAINS = {
@@ -23,7 +24,8 @@ export const TO_BACKEND_BLOCKCHAINS = {
   [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
   [BLOCKCHAIN_NAME.XDAI]: 'xdai',
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: 'ethereum-test',
-  [BLOCKCHAIN_NAME.SOLANA]: 'solana'
+  [BLOCKCHAIN_NAME.SOLANA]: 'solana',
+  [BLOCKCHAIN_NAME.NEAR]: 'near'
 };
 
 export type ToBackendBlockchain = keyof typeof TO_BACKEND_BLOCKCHAINS;

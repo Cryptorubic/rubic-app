@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import Web3 from 'web3';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { Token } from '@shared/models/tokens/token';
+import { Token } from 'src/app/shared/models/tokens/Token';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
 import { AddEthChainParams } from 'src/app/shared/models/blockchain/add-eth-chain-params';
 import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
@@ -12,7 +10,6 @@ import { MetamaskWalletAdapter } from '@core/services/blockchain/wallets/wallets
 import { WalletConnectAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-connect-adapter';
 import { WalletLinkWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/wallet-link-wallet-adapter';
 import { StoreService } from 'src/app/core/services/store/store.service';
-import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HttpService } from '@core/services/http/http.service';
@@ -24,11 +21,16 @@ import { SolflareWalletAdapter } from '@core/services/blockchain/wallets/wallets
 import { WEB3_SUPPORTED_BLOCKCHAINS } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { Connection } from '@solana/web3.js';
 import { TrustWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/eth-like/trust-wallet-adapter';
-import { AccountError } from '@core/errors/models/provider/account-error';
-import { NetworkError } from '@core/errors/models/provider/network-error';
-import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
+import { Near } from 'near-api-js';
+import { NearWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/near/near-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { AccountError } from '@core/errors/models/provider/account-error';
+import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
+import { NetworkError } from '@core/errors/models/provider/network-error';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 
 interface WCWallets {
   [P: string]: {
@@ -98,12 +100,22 @@ export class WalletConnectorService {
 
   private _solanaWeb3connection: Connection;
 
+  private _nearConnection: Near;
+
   set solanaWeb3Connection(value: Connection) {
     this._solanaWeb3connection = value;
   }
 
   get solanaWeb3Connection(): Connection {
     return this._solanaWeb3connection;
+  }
+
+  set nearConnection(value: Near) {
+    this._nearConnection = value;
+  }
+
+  get nearConnection(): Near {
+    return this._nearConnection;
   }
 
   constructor(
@@ -157,6 +169,9 @@ export class WalletConnectorService {
     }
     if (this.provider.walletType === 'ethLike') {
       return [...WEB3_SUPPORTED_BLOCKCHAINS];
+    }
+    if (this.provider.walletType === 'near') {
+      return [BLOCKCHAIN_NAME.NEAR];
     }
     return [];
   }
@@ -228,6 +243,13 @@ export class WalletConnectorService {
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService
+        ),
+      [WALLET_NAME.NEAR]: async () =>
+        new NearWalletAdapter(
+          this.networkChangeSubject$,
+          this.addressChangeSubject$,
+          this.errorService,
+          this.window
         ),
       [WALLET_NAME.METAMASK]: async () => {
         const metamaskWalletAdapter = new MetamaskWalletAdapter(

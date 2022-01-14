@@ -19,11 +19,30 @@ import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 
 interface QuerySlippage {
   slippageIt: number | null;
   slippageCcr: number | null;
 }
+
+type NearQueryParams =
+  | {
+      hash: string;
+      toAmount: string;
+      walletAddress: string;
+    }
+  | {
+      errorCode: string;
+      errorMessage: string;
+    }
+  | {
+      accountId: string;
+      publicKey: string;
+      allKeys: string;
+    };
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -59,6 +78,10 @@ export class QueryParamsService {
     false
   ]);
 
+  private readonly _nearQueryParams$ = new BehaviorSubject<NearQueryParams>(null);
+
+  public readonly nearQueryParams$ = this._nearQueryParams$.asObservable();
+
   public get tokensSelectionDisabled$(): Observable<[boolean, boolean]> {
     return this._tokensSelectionDisabled$.asObservable();
   }
@@ -84,7 +107,9 @@ export class QueryParamsService {
     private readonly swapsService: SwapsService,
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -113,6 +138,7 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
+        this.setNearParams(queryParams);
       }
     }
   }
@@ -404,6 +430,49 @@ export class QueryParamsService {
     }
   }
 
+  /**
+   * Sets specific query params after near transaction or login.
+   * @param queryParams Query params with specific for near fields.
+   */
+  private async setNearParams(queryParams: QueryParams): Promise<void> {
+    const { nearLogin, transactionHashes, errorCode } = queryParams;
+    if (nearLogin) {
+      if (!queryParams.all_keys || !queryParams.public_key || !queryParams.account_id) {
+        return;
+      }
+      this._nearQueryParams$.next({
+        accountId: queryParams.account_id,
+        publicKey: queryParams.public_key,
+        allKeys: queryParams.all_keys
+      });
+      await this.walletConnectorService.connectProvider(WALLET_NAME.NEAR);
+      setTimeout(async () => {
+        await this.authService.signIn();
+        this.clearNearParams();
+      }, 500);
+    } else if (transactionHashes) {
+      if (!queryParams.toAmount || !queryParams.walletAddress) {
+        return;
+      }
+      const hash = typeof transactionHashes === 'string' ? transactionHashes : transactionHashes[0];
+      this._nearQueryParams$.next({
+        toAmount: queryParams.toAmount,
+        hash,
+        walletAddress: queryParams.walletAddress
+      });
+      this.clearNearParams();
+    } else if (errorCode) {
+      if (!queryParams.errorMessage || !queryParams.walletAddress) {
+        return;
+      }
+      this._nearQueryParams$.next({
+        errorMessage: queryParams.errorMessage,
+        errorCode: queryParams.errorCode
+      });
+      this.clearNearParams();
+    }
+  }
+
   private setLanguage(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
@@ -436,5 +505,26 @@ export class QueryParamsService {
     image.style.background = 'rgb(255, 255, 255)';
     image.style.background = stringToTest;
     return image.style.background !== 'rgb(255, 255, 255)';
+  }
+
+  /**
+   * Clears all near query params.
+   */
+  private clearNearParams(): void {
+    this._nearQueryParams$.next(null);
+    this._nearQueryParams$.complete();
+    this.setQueryParams({
+      errorCode: null,
+      errorMessage: null,
+      toAmount: null,
+      transactionHashes: null,
+      walletAddress: null,
+      swap_type: null,
+      nearLogin: null,
+      account_id: null,
+      all_keys: null,
+      public_key: null
+    });
+    this.navigate();
   }
 }

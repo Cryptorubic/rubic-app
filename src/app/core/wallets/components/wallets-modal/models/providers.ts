@@ -1,5 +1,20 @@
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { WalletProvider } from '@core/wallets/components/wallets-modal/models/types';
+
+export interface WalletProvider {
+  name: string;
+  value: WALLET_NAME;
+  img: string;
+  desktopOnly: boolean;
+  mobileOnly: boolean;
+  display: boolean;
+  supportsInHorizontalIframe: boolean;
+  supportsInVerticalIframe: boolean;
+  supportsInVerticalMobileIframe: boolean;
+}
+
+export interface UnreadTrades {
+  [userAddress: string]: number;
+}
 
 export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {
@@ -67,5 +82,16 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false
+  },
+  {
+    name: 'Near',
+    value: WALLET_NAME.NEAR,
+    img: './assets/images/icons/wallets/near.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: true,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: true
   }
 ];

@@ -10,9 +10,10 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
 
 function correctAddressValidator(
-  blockchainAdapter: EthLikeWeb3Public | SolanaWeb3Public
+  blockchainAdapter: EthLikeWeb3Public | SolanaWeb3Public | NearWeb3Public
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const isAddressCorrect = blockchainAdapter.isAddressCorrect(control.value);

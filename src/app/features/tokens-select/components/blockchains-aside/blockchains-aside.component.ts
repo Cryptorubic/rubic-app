@@ -26,7 +26,8 @@ export class BlockchainsAsideComponent {
     BLOCKCHAIN_NAME.MOONRIVER,
     BLOCKCHAIN_NAME.FANTOM,
     BLOCKCHAIN_NAME.HARMONY,
-    BLOCKCHAIN_NAME.XDAI
+    BLOCKCHAIN_NAME.XDAI,
+    BLOCKCHAIN_NAME.NEAR
   ];
 
   public blockchainImages = Object.fromEntries(

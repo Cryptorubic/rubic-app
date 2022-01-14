@@ -1,5 +1,9 @@
-import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import {
+  NATIVE_NEAR_ADDRESS,
+  NATIVE_SOLANA_MINT_ADDRESS,
+  NATIVE_TOKEN_ADDRESS
+} from '@shared/constants/blockchain/native-token-address';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 interface NativeCoin {
   blockchain: BLOCKCHAIN_NAME;
@@ -243,10 +247,27 @@ const networks: ReadonlyArray<Network> = [
     imagePath: 'assets/images/icons/coins/solana.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.SOLANA,
-      address: 'SOLANA_NATIVE_TOKEN_ADDRESS',
+      address: NATIVE_SOLANA_MINT_ADDRESS,
       name: 'SOL',
       symbol: 'SOL',
       decimals: 9
+    }
+  },
+  {
+    id: NaN,
+    name: BLOCKCHAIN_NAME.NEAR,
+    label: 'Near',
+    scannerUrl: 'https://explorer.near.org/',
+    rpcLink: 'https://rpc.testnet.near.org',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/near.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.NEAR,
+      // @TODO near.
+      address: NATIVE_NEAR_ADDRESS,
+      name: 'NEAR',
+      symbol: 'NEAR',
+      decimals: 24
     }
   }
 ];

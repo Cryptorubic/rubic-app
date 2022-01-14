@@ -128,6 +128,14 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.NEAR]: {
+    baseUrl: 'https://explorer.near.org/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'accounts/',
+    [ADDRESS_TYPE.TOKEN]: 'accounts/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transactions/',
+    [ADDRESS_TYPE.BLOCK]: 'blocks/'
   }
 };
 

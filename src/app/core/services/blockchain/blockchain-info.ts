@@ -21,6 +21,9 @@ export class BlockchainsInfo {
     if (name === BLOCKCHAIN_NAME.SOLANA) {
       return 'solana';
     }
+    if (name === BLOCKCHAIN_NAME.NEAR) {
+      return 'near';
+    }
     throw new CustomError('Unknown network');
   }
 

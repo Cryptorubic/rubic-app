@@ -172,14 +172,16 @@ export class AuthService {
         this.isAuthProcess = false;
         return;
       }
-      const { message } = walletLoginBody.payload;
-      const signature = await this.walletConnectorService.signPersonal(message);
-      await this.sendSignedNonce(
-        this.walletConnectorService.address,
-        message,
-        signature,
-        this.walletConnectorService.provider.walletName
-      );
+      // @TODO near.
+      // const { message } = walletLoginBody.payload;
+      //
+      // const signature = await this.walletConnectorService.signPersonal(message);
+      // await this.sendSignedNonce(
+      //   this.walletConnectorService.address,
+      //   message,
+      //   signature,
+      //   this.walletConnectorService.provider.walletName
+      // );
 
       this.currentUser$.next({ address: this.walletConnectorService.address });
       this.isAuthProcess = false;
