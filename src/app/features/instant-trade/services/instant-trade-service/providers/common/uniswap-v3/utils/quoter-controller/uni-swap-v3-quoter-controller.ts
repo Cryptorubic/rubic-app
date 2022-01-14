@@ -1,8 +1,5 @@
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import {
-  ROUTER_LIQUIDITY_POOLS_WITH_MODE,
-  ROUTER_TOKENS_NET_MODE
-} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/constants/router-liquidity-pools';
+
 import {
   FeeAmount,
   LiquidityPool
@@ -19,6 +16,7 @@ import { compareAddresses } from '@shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import { UniswapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
+import { NetMode } from '@shared/models/blockchain/net-mode';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -104,17 +102,19 @@ export class UniSwapV3QuoterController {
 
   constructor(
     private readonly web3Public: EthLikeWeb3Public,
-    private readonly quoterContract: ContractData
+    private readonly quoterContract: ContractData,
+    private readonly routerTokensNetMode: Record<NetMode, Record<string, SymbolToken>>,
+    private readonly routerLiquidityPoolsNetMode: Record<NetMode, LiquidityPool[]>
   ) {
     this.feeAmounts = [500, 3000, 10000];
 
-    this.routerTokens = ROUTER_TOKENS_NET_MODE.mainnet;
-    this.routerLiquidityPools = ROUTER_LIQUIDITY_POOLS_WITH_MODE.mainnet;
+    this.routerTokens = routerTokensNetMode.mainnet;
+    this.routerLiquidityPools = routerLiquidityPoolsNetMode.mainnet;
   }
 
   public setTestingMode(): void {
-    this.routerTokens = ROUTER_TOKENS_NET_MODE.testnet;
-    this.routerLiquidityPools = ROUTER_LIQUIDITY_POOLS_WITH_MODE.testnet;
+    this.routerTokens = this.routerTokensNetMode.testnet;
+    this.routerLiquidityPools = this.routerLiquidityPoolsNetMode.testnet;
   }
 
   /**

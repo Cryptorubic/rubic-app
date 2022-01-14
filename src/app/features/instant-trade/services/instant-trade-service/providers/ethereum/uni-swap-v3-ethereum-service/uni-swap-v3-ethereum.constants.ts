@@ -1,11 +1,18 @@
-import { LiquidityPool } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/models/liquidity-pool';
-import { NetMode } from '@shared/models/blockchain/net-mode';
+import { ContractAddressNetMode, NetMode } from '@shared/models/blockchain/net-mode';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { UniswapV3Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-constants';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
+import { LiquidityPool } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/models/liquidity-pool';
+
+const wethAddressNetMode: ContractAddressNetMode = {
+  mainnet: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  testnet: '0xd0a1e359811322d97991e03f863a0c30c2cf029c'
+};
 
 /**
  * Most popular tokens in uni v3 to use in a route.
  */
-export const ROUTER_TOKENS_NET_MODE: Record<NetMode, Record<string, SymbolToken>> = {
+const routerTokensNetMode: Record<NetMode, Record<string, SymbolToken>> = {
   mainnet: {
     WETH: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', symbol: 'WETH' },
     USDT: { address: '0xdac17f958d2ee523a2206206994597c13d831ec7', symbol: 'USDT' },
@@ -20,13 +27,13 @@ export const ROUTER_TOKENS_NET_MODE: Record<NetMode, Record<string, SymbolToken>
   }
 };
 
-const mainnetRouterTokens = ROUTER_TOKENS_NET_MODE.mainnet;
-const testnetRouterTokens = ROUTER_TOKENS_NET_MODE.testnet;
+const mainnetRouterTokens = routerTokensNetMode.mainnet;
+const testnetRouterTokens = routerTokensNetMode.testnet;
 
 /**
  * Most popular liquidity pools in uni v3 to use in a route.
  */
-export const ROUTER_LIQUIDITY_POOLS_WITH_MODE: Record<NetMode, LiquidityPool[]> = {
+const routerLiquidityPoolsNetMode: Record<NetMode, LiquidityPool[]> = {
   mainnet: [
     new LiquidityPool(
       '0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8',
@@ -97,4 +104,11 @@ export const ROUTER_LIQUIDITY_POOLS_WITH_MODE: Record<NetMode, LiquidityPool[]> 
       3000
     )
   ]
+};
+
+export const UNI_SWAP_V3_ETHEREUM_CONSTANTS: UniswapV3Constants = {
+  blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+  wethAddressNetMode,
+  routerTokensNetMode,
+  routerLiquidityPoolsNetMode
 };

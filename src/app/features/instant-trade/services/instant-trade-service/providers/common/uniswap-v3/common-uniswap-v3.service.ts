@@ -28,11 +28,14 @@ import { MAX_TRANSIT_POOL } from '@features/instant-trade/services/instant-trade
 import { UniswapV3Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-constants';
 import { UNISWAP_V3_SWAP_ROUTER_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/constants/swap-router-contract-data';
 import { UNISWAP_V3_QUOTER_CONTRACT } from './constants/quoter-contract-data';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
 @Injectable()
 export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraService {
+  public readonly providerType = INSTANT_TRADES_PROVIDERS.UNISWAP_V3;
+
   protected readonly unwrapWethMethodName = 'unwrapWETH9';
 
   private readonly gasMargin = 1.2;
@@ -51,7 +54,9 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
 
     this.quoterController = new UniSwapV3QuoterController(
       this.blockchainAdapter,
-      UNISWAP_V3_QUOTER_CONTRACT
+      UNISWAP_V3_QUOTER_CONTRACT,
+      uniswapV3Constants.routerTokensNetMode,
+      uniswapV3Constants.routerLiquidityPoolsNetMode
     );
 
     this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
