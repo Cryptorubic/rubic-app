@@ -155,4 +155,11 @@ export class GoogleTagManagerService {
       elabel: undefined
     });
   }
+
+  /**
+   * Adds google tag manager to DOM immediately.
+   */
+  public addGtmToDom(): void {
+    this.angularGtmService.addGtmToDom();
+  }
 }
