@@ -1,24 +1,24 @@
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import {
   ROUTER_LIQUIDITY_POOLS_WITH_MODE,
   ROUTER_TOKENS_NET_MODE
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/router-liquidity-pools';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/constants/router-liquidity-pools';
 import {
   FeeAmount,
   LiquidityPool
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/models/liquidity-pool';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/models/liquidity-pool';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import {
   FACTORY_CONTRACT_ABI,
   FACTORY_CONTRACT_ADDRESS
-} from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/constants/factory-contract-data';
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/constants/factory-contract-data';
 import { MethodData } from '@shared/models/blockchain/method-data';
 import { PCacheable } from 'ts-cacheable';
 import BigNumber from 'bignumber.js';
-import { compareAddresses } from 'src/app/shared/utils/utils';
+import { compareAddresses } from '@shared/utils/utils';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { ContractData } from '@shared/models/blockchain/contract-data';
-import { UniSwapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
+import { UniswapV3Route } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
 
 interface RecGraphVisitorOptions {
   routesLiquidityPools: LiquidityPool[];
@@ -221,7 +221,7 @@ export class UniSwapV3QuoterController {
     fromToken: SymbolToken,
     toToken: SymbolToken,
     routeMaxTransitPools: number
-  ): Promise<UniSwapV3Route[]> {
+  ): Promise<UniswapV3Route[]> {
     const routesLiquidityPools = await this.getAllLiquidityPools(
       fromToken.address,
       toToken.address,

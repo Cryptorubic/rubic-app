@@ -7,9 +7,8 @@ import { tuiPure } from '@taiga-ui/cdk';
 import { crossChainContractAbiV2 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v2';
 import { crossChainContractAbiV3 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
-import { UniSwapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
+import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/uni-swap-v3-quoter-controller';
+import { UniswapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { compareAddresses } from '@shared/utils/utils';
@@ -19,6 +18,7 @@ import { ItProvider } from '@features/instant-trade/services/instant-trade-servi
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
+import { CommonUniswapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -111,8 +111,8 @@ export abstract class ContractData {
 
     const provider = this.getProvider(providerIndex);
 
-    if (provider instanceof UniSwapV3Service) {
-      const route = (instantTrade as UniSwapV3InstantTrade).route;
+    if (provider instanceof CommonUniswapV3Service) {
+      const route = (instantTrade as UniswapV3InstantTrade).route;
 
       return UniSwapV3QuoterController.getEncodedPoolsPath(
         route.poolsPath,
@@ -147,8 +147,8 @@ export abstract class ContractData {
 
     const provider = this.getProvider(providerIndex);
 
-    if (provider instanceof UniSwapV3Service) {
-      const route = (instantTrade as UniSwapV3InstantTrade).route;
+    if (provider instanceof CommonUniswapV3Service) {
+      const route = (instantTrade as UniswapV3InstantTrade).route;
       const path: string[] = [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
 
       let lastTokenAddress = route.initialTokenAddress;
