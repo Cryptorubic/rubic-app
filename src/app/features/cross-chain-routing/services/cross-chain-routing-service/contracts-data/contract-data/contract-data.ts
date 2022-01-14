@@ -18,6 +18,7 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -133,12 +134,15 @@ export abstract class ContractData {
   public getSecondPath(
     providerIndex: number,
     instantTrade: InstantTrade,
-    fromBlockchain: BLOCKCHAIN_NAME
+    fromBlockchain: BLOCKCHAIN_NAME,
+    toBlockchain: BLOCKCHAIN_NAME
   ): string[] {
+    const toBlockchainAdapter =
+      toBlockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
     if (!instantTrade) {
       return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
         ? [this.transitToken.address]
-        : [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
+        : [toBlockchainAdapter.addressToBytes32(this.transitToken.address)];
     }
 
     const provider = this.getProvider(providerIndex);
@@ -167,7 +171,7 @@ export abstract class ContractData {
 
     return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
       ? instantTrade.path.map(token => token.address)
-      : instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
+      : instantTrade.path.map(token => toBlockchainAdapter.addressToBytes32(token.address));
   }
 
   /**
