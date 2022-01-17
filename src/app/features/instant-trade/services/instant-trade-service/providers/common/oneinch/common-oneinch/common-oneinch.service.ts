@@ -40,6 +40,7 @@ interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: string[];
   [BLOCKCHAIN_NAME.POLYGON]: string[];
+  [BLOCKCHAIN_NAME.ARBITRUM]: string[];
 }
 
 @Injectable({
@@ -71,7 +72,8 @@ export class CommonOneinchService {
     this.supportedTokens = {
       [BLOCKCHAIN_NAME.ETHEREUM]: [],
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [],
-      [BLOCKCHAIN_NAME.POLYGON]: []
+      [BLOCKCHAIN_NAME.POLYGON]: [],
+      [BLOCKCHAIN_NAME.ARBITRUM]: []
     };
 
     this.authService.getCurrentUser().subscribe(user => {

@@ -113,6 +113,14 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.ARBITRUM]: {
+    baseUrl: 'https://arbiscan.io',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [DEPRECATED_BLOCKCHAIN_NAME.TRON]: {
     baseUrl: 'https://tronscan.org/#/',
     nativeCoinUrl: '',
