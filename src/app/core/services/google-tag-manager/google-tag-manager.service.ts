@@ -120,7 +120,6 @@ export class GoogleTagManagerService {
    */
   public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof FormSteps): void {
     const formStep$ = this.forms[swapMode];
-    console.log(formStep$.getValue()[step]);
     if (!formStep$.getValue()[step]) {
       formStep$.next({ ...formStep$.getValue(), [step]: true });
       this.fireFormInteractionEvent(swapMode, step);
