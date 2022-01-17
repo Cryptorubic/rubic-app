@@ -255,9 +255,10 @@ export class CrossChainRoutingService {
   ): Promise<TradeAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
+        const contractAddress = this.contracts[blockchain].address;
         const instantTrade = await this.contracts[blockchain]
           .getProvider(providerIndex)
-          .calculateTrade(fromToken, fromAmount, toToken, false);
+          .calculateTrade(fromToken, fromAmount, toToken, false, contractAddress);
         return {
           trade: instantTrade,
           toAmount: instantTrade.to.amount
@@ -375,10 +376,11 @@ export class CrossChainRoutingService {
       return new BigNumber(0);
     }
 
+    const contractAddress = this.contracts[blockchain].address;
     return (
       await this.contracts[blockchain]
         .getProvider(providerIndex)
-        .calculateTrade(transitToken, transitTokenAmount, fromToken, false)
+        .calculateTrade(transitToken, transitTokenAmount, fromToken, false, contractAddress)
     ).to.amount;
   }
 

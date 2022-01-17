@@ -19,6 +19,9 @@ import InstantTradeToken from '@features/instant-trade/models/instant-trade-toke
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
+import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -69,6 +72,13 @@ export abstract class ContractData {
   }
 
   /**
+   * Returns true, if provider is of `1inch` type.
+   */
+  protected isProviderOneinch(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof OneinchProviderAbstract;
+  }
+
+  /**
    * Returns method's name and contract abi to call in source network.
    */
   public getMethodNameAndContractAbi(
@@ -86,8 +96,15 @@ export abstract class ContractData {
     };
 
     if (this.isProviderV3(providerIndex)) {
-      methodName += 'V3';
-      contractAbiMethod = { ...crossChainContractAbiV3.find(method => method.name === methodName) };
+      contractAbiMethod = {
+        ...crossChainContractAbiV3.find(method => method.name.startsWith(methodName))
+      };
+    }
+
+    if (this.isProviderOneinch(providerIndex)) {
+      contractAbiMethod = {
+        ...crossChainContractAbiInch.find(method => method.name.startsWith(methodName))
+      };
     }
 
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
@@ -106,6 +123,10 @@ export abstract class ContractData {
   public getFirstPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
     if (!instantTrade) {
       return [this.transitToken.address];
+    }
+
+    if (this.isProviderOneinch(providerIndex)) {
+      return NATIVE_TOKEN_ADDRESS;
     }
 
     const provider = this.getProvider(providerIndex);
@@ -133,15 +154,18 @@ export abstract class ContractData {
   public getSecondPath(
     providerIndex: number,
     instantTrade: InstantTrade,
-    fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME
+    fromBlockchain: BLOCKCHAIN_NAME
   ): string[] {
     const toBlockchainAdapter =
-      toBlockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
+      this.blockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
     if (!instantTrade) {
       return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
         ? [this.transitToken.address]
         : [toBlockchainAdapter.addressToBytes32(this.transitToken.address)];
+    }
+
+    if (this.isProviderOneinch(providerIndex)) {
+      return [];
     }
 
     const provider = this.getProvider(providerIndex);
@@ -190,8 +214,15 @@ export abstract class ContractData {
     let contractAbiMethod = crossChainContractAbiV2.find(method => method.name === methodName);
 
     if (this.isProviderV3(providerIndex)) {
-      methodName += 'V3';
-      contractAbiMethod = crossChainContractAbiV3.find(method => method.name === methodName);
+      contractAbiMethod = crossChainContractAbiV3.find(method =>
+        method.name.startsWith(methodName)
+      );
+    }
+
+    if (this.isProviderOneinch(providerIndex)) {
+      contractAbiMethod = crossChainContractAbiInch.find(method =>
+        method.name.startsWith(methodName)
+      );
     }
 
     methodName = methodName + this.providersData[providerIndex].methodSuffix;

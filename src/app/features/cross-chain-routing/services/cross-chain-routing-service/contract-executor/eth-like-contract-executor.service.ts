@@ -105,13 +105,7 @@ export class EthLikeContractExecutorService {
 
     const methodArguments = (
       this.contracts[fromBlockchain] as EthLikeContractData
-    ).getMethodArguments(
-      trade,
-      isToTokenNative,
-      this.contracts[toBlockchain],
-      toWalletAddress,
-      toBlockchain
-    );
+    ).getMethodArguments(trade, isToTokenNative, this.contracts[toBlockchain], toWalletAddress);
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const blockchainCryptoFee = Web3Pure.toWei(trade.cryptoFee);
