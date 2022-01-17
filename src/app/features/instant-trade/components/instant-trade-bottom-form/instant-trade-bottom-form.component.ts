@@ -699,7 +699,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       );
       this.needApprove = false;
 
-      this.gtmService.fireFormInteractionEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
+      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
     } catch (err) {
       this.errorService.catch(err);
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -48,7 +48,7 @@ type AvailableTokens = {
   styleUrls: ['./swaps-form.component.scss'],
   providers: [TuiDestroyService]
 })
-export class SwapsFormComponent implements OnInit {
+export class SwapsFormComponent implements OnInit, OnDestroy {
   public isLoading = true;
 
   public tradeStatus: TRADE_STATUS;
@@ -400,7 +400,9 @@ export class SwapsFormComponent implements OnInit {
   }
 
   private watchGtmEvenst(): void {
-    this.gtmService.startGtmTimer();
+    this.gtmService.startGtmSession();
+    this.gtmService.fetchPassedFormSteps();
+    this.gtmService.gtmSessionObserver$.pipe(takeUntil(this.destroy$)).subscribe();
 
     this.swapFormService.inputValueChanges
       .pipe(
@@ -413,12 +415,16 @@ export class SwapsFormComponent implements OnInit {
       )
       .subscribe(([[fromToken, toToken], swapMode]) => {
         if (fromToken) {
-          this.gtmService.updateFormStep(swapMode, 'fromTokenSelected', fromToken);
+          this.gtmService.updateFormStep(swapMode, 'token1');
         }
 
         if (toToken) {
-          this.gtmService.updateFormStep(swapMode, 'toTokenSelected', toToken);
+          this.gtmService.updateFormStep(swapMode, 'token2');
         }
       });
+  }
+
+  public ngOnDestroy(): void {
+    this.gtmService.savePassedFormSteps();
   }
 }

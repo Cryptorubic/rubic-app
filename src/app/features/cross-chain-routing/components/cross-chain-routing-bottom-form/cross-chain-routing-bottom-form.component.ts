@@ -384,10 +384,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(first())
       .subscribe(
         async (_: TransactionReceipt) => {
-          this.gtmService.fireFormInteractionEvent(
-            SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-            'approve'
-          );
+          this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('notifications.successApprove'),

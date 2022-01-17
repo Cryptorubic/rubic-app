@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { BehaviorSubject, EMPTY, interval } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
+import { addMinutes } from 'date-and-time';
+import { StoreService } from '@core/services/store/store.service';
+import { tap } from 'rxjs/operators';
+import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
@@ -12,14 +16,10 @@ const formEventCategoryMap = {
 };
 
 const formStepsInitial = {
-  fromTokenSelected: false,
-  toTokenSelected: false
+  token1: false,
+  token2: false,
+  approve: false
 };
-
-interface FormSteps {
-  fromTokenSelected: boolean;
-  toTokenSelected: boolean;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -37,43 +37,65 @@ export class GoogleTagManagerService {
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this.instantTradeSteps$
   };
 
-  private readonly toggleGtmSessionTimer$ = new BehaviorSubject<boolean>(false);
+  public readonly gtmSessionObserver$ = interval(5 * 60 * 1000).pipe(
+    tap(() => {
+      const isSessionActive = this.cookieService.get('gtmSessionActive');
 
-  public readonly gtmSessionTimer$ = this.toggleGtmSessionTimer$.pipe(
-    switchMap(toggle => {
-      return toggle
-        ? interval(1000).pipe(
-            take(1860),
-            tap(v => {
-              if (v === 1800) {
-                Object.values(this.forms).forEach(form$ => form$.next(formStepsInitial));
-              }
-            })
-          )
-        : EMPTY;
+      if (!isSessionActive) {
+        this.clearPassedFormSteps();
+      }
     })
   );
 
-  constructor(private readonly angularGtmService: AngularGoogleTagManagerService) {}
+  constructor(
+    private readonly angularGtmService: AngularGoogleTagManagerService,
+    private readonly cookieService: CookieService,
+    private readonly storeService: StoreService
+  ) {}
 
   /**
-   * Reloads GTM session timer.
+   * Starts GTM session.
    */
-  public reloadGtmTimer(): void {
-    this.toggleGtmSessionTimer$.next(true);
+  public startGtmSession(): void {
+    if (!this.cookieService.get('gtmSessionActive')) {
+      this.cookieService.set(
+        'gtmSessionActive',
+        'true',
+        addMinutes(new Date(), 30),
+        null,
+        null,
+        null,
+        null
+      );
+    }
   }
 
   /**
-   * Starts GTM session timer.
+   * Stops GTM session.
    */
-  public startGtmTimer(): void {
-    this.gtmSessionTimer$.subscribe();
-    this.reloadGtmTimer();
+  public stopGtmSession(): void {
+    this.cookieService.delete('gtmSessionActive');
+  }
+
+  /**
+   * Reloads GTM session.
+   */
+  public reloadGtmTimer(): void {
+    this.stopGtmSession();
+    this.cookieService.set(
+      'gtmSessionActive',
+      'true',
+      addMinutes(new Date(), 30),
+      null,
+      null,
+      null,
+      null
+    );
   }
 
   /**
    * Fires GTM event when user interacts with form.
-   * @param eventCategory Swap type.
+   * @param eventCategory Form type.
    * @param value User's selected token or approve action.
    */
   public fireFormInteractionEvent(eventCategory: SWAP_PROVIDER_TYPE, value: string): void {
@@ -86,16 +108,15 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Updates steps passed by user in any from.
+   * Updates step passed by user in any from.
    * @param swapMode Form type.
    * @param step Which token selected.
-   * @param value Selected token.
    */
-  public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof FormSteps, value: string): void {
+  public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof FormSteps): void {
     const formStep$ = this.forms[swapMode];
     if (!formStep$.getValue()[step]) {
       formStep$.next({ ...formStep$.getValue(), [step]: true });
-      this.fireFormInteractionEvent(swapMode, value);
+      this.fireFormInteractionEvent(swapMode, step);
     }
   }
 
@@ -153,6 +174,38 @@ export class GoogleTagManagerService {
       ecategory: 'wallet',
       eaction: `connect_wallet_${walletName}`,
       elabel: undefined
+    });
+  }
+
+  /**
+   * Fetches passed form steps from local storage.
+   */
+  public fetchPassedFormSteps(): void {
+    const data = this.storeService.fetchData();
+    Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+      if (data[key]) {
+        this.forms[key].next(data[key]);
+      }
+    });
+  }
+
+  /**
+   * Puts passed form steps in local storage.
+   */
+  public savePassedFormSteps(): void {
+    Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+      const formSteps = this.forms[key].getValue();
+      this.storeService.setItem(key, formSteps);
+    });
+  }
+
+  /**
+   * Clears passed form steps in local storage and within current session.
+   */
+  public clearPassedFormSteps(): void {
+    Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+      this.forms[key].next(formStepsInitial);
+      this.storeService.deleteItem(key);
     });
   }
 
