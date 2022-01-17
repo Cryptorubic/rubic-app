@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject, interval } from 'rxjs';
@@ -8,6 +8,7 @@ import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';
 import { tap } from 'rxjs/operators';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+import { WINDOW } from '@ng-web-apis/common';
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
@@ -50,7 +51,8 @@ export class GoogleTagManagerService {
   constructor(
     private readonly angularGtmService: AngularGoogleTagManagerService,
     private readonly cookieService: CookieService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    @Inject(WINDOW) private window: Window
   ) {}
 
   /**
@@ -68,6 +70,10 @@ export class GoogleTagManagerService {
         null
       );
     }
+
+    this.window.addEventListener('beforeunload', () => {
+      this.savePassedFormSteps();
+    });
   }
 
   /**
@@ -114,6 +120,7 @@ export class GoogleTagManagerService {
    */
   public updateFormStep(swapMode: SWAP_PROVIDER_TYPE, step: keyof FormSteps): void {
     const formStep$ = this.forms[swapMode];
+    console.log(formStep$.getValue()[step]);
     if (!formStep$.getValue()[step]) {
       formStep$.next({ ...formStep$.getValue(), [step]: true });
       this.fireFormInteractionEvent(swapMode, step);
