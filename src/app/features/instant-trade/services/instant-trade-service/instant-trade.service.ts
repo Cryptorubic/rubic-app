@@ -49,6 +49,7 @@ import { ViperSwapHarmonyService } from '@features/instant-trade/services/instan
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
 import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
+import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +96,7 @@ export class InstantTradeService {
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
     private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
     private readonly oneInchArbitrumService: OneInchArbitrumService,
+    private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
     // Providers end
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -153,7 +155,8 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.ARBITRUM]: {
         [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchArbitrumService,
-        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapArbitrumService
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapArbitrumService,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniSwapV3ArbitrumService
       },
       [BLOCKCHAIN_NAME.SOLANA]: {
         [INSTANT_TRADES_PROVIDERS.RAYDIUM]: this.raydiumService
