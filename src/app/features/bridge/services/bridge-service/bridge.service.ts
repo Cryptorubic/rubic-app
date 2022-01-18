@@ -23,6 +23,10 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { BinancePolygonBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { TuiNotification } from '@taiga-ui/core';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { TranslateService } from '@ngx-translate/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Injectable()
 export class BridgeService {
@@ -51,7 +55,10 @@ export class BridgeService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly iframeService: IframeService,
+    private readonly translateService: TranslateService,
+    private readonly notificationService: NotificationsService
   ) {
     this.setupBlockchainsProviders();
     this.subscribeToFormChanges();
@@ -195,6 +202,7 @@ export class BridgeService {
   }
 
   public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
@@ -234,6 +242,7 @@ export class BridgeService {
   }
 
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
@@ -262,5 +271,17 @@ export class BridgeService {
   ): Promise<void> {
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
     return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
+    }
   }
 }
