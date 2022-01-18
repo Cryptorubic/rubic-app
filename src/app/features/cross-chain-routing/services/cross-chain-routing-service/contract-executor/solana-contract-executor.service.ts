@@ -215,9 +215,10 @@ export class SolanaContractExecutorService {
     }
 
     const toBlockchainInContractNumber = this.contracts[trade.toBlockchain].numOfBlockchain;
-    const methodName = this.contracts[trade.toBlockchain]
-      .getSwapToUserMethodSignature(trade.toProviderIndex, isToNative)
-      .split('(')[0];
+    const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
+      trade.toProviderIndex,
+      isToNative
+    );
 
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
@@ -233,7 +234,7 @@ export class SolanaContractExecutorService {
       newAddress: targetAddress,
       swapToCrypto: isToNative,
       transferType,
-      methodName: CROSS_CHAIN_METHODS[methodName].slice(2)
+      methodName: CROSS_CHAIN_METHODS[swapToUserMethodName].slice(2)
     };
 
     const { from: fromAccount } =
