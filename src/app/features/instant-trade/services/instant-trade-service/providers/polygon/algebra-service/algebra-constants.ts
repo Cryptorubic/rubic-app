@@ -8,7 +8,7 @@ import {
   SWAP_ROUTER_CONTRACT_ADDRESS
 } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/constants/swap-router-contract-data';
 import { ContractData } from '@shared/models/blockchain/contract-data';
-import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
+import { UniswapV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/uniswap-v3-algebra-constants';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 const wethAddressNetMode: ContractAddressNetMode = {
@@ -28,9 +28,8 @@ export const quoterContract: ContractData = {
 
 export const maxTransitTokens = 1;
 
-export const algebraConstants: UniV3AlgebraConstants = {
+export const algebraConstants: UniswapV3AlgebraConstants = {
   blockchain: BLOCKCHAIN_NAME.POLYGON,
   wethAddressNetMode,
-  swapRouterContract,
-  isAlgebra: true
+  swapRouterContract
 };

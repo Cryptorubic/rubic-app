@@ -22,6 +22,9 @@ import { SushiSwapMoonRiverService } from '@features/instant-trade/services/inst
 import { SushiSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
+import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
+import { UniSwapV3EthereumService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,12 +36,15 @@ export class ContractsDataService {
     // providers start
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly sushiSwapEthService: SushiSwapEthService,
+    private readonly uniSwapV3EthereumService: UniSwapV3EthereumService,
 
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly sushiSwapBscService: SushiSwapBscService,
 
     private readonly quickSwapService: QuickSwapService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
+    private readonly algebraService: AlgebraService,
+    private readonly uniSwapV3PolygonService: UniSwapV3PolygonService,
 
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
@@ -69,6 +75,10 @@ export class ContractsDataService {
           {
             provider: this.sushiSwapEthService,
             methodSuffix: '1'
+          },
+          {
+            provider: this.uniSwapV3EthereumService,
+            methodSuffix: 'V3'
           }
         ],
         2,
@@ -99,6 +109,14 @@ export class ContractsDataService {
           {
             provider: this.sushiSwapPolygonService,
             methodSuffix: '1'
+          },
+          {
+            provider: this.algebraService,
+            methodSuffix: 'ALGB'
+          },
+          {
+            provider: this.uniSwapV3PolygonService,
+            methodSuffix: 'V3'
           }
         ],
         3,
