@@ -1,8 +1,9 @@
 import { AbiItem } from 'web3-utils';
+import { ContractData } from '@shared/models/blockchain/contract-data';
 
-export const quoterContractAddress = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6';
+const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6';
 
-export const quoterContractAbi = [
+const QUOTER_CONTRACT_ABI = [
   {
     inputs: [
       { internalType: 'bytes', name: 'path', type: 'bytes' },
@@ -27,3 +28,8 @@ export const quoterContractAbi = [
     type: 'function'
   }
 ] as AbiItem[];
+
+export const UNISWAP_V3_QUOTER_CONTRACT: ContractData = {
+  address: QUOTER_CONTRACT_ADDRESS,
+  abi: QUOTER_CONTRACT_ABI
+};
