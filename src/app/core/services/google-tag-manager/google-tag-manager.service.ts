@@ -93,7 +93,7 @@ export class GoogleTagManagerService {
     this.cookieService.set(
       'gtmSessionActive',
       'true',
-      addMinutes(new Date(), 1),
+      addMinutes(new Date(), 30),
       null,
       null,
       null,
