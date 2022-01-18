@@ -154,7 +154,7 @@ export class AuthService {
   }
 
   /**
-   * Initiate authentication via wallet message signing
+   * Initiate authentication via wallet message signing.
    */
   public async signIn(): Promise<void> {
     try {

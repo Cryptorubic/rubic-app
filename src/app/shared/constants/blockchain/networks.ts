@@ -263,7 +263,6 @@ const networks: ReadonlyArray<Network> = [
     imagePath: 'assets/images/icons/coins/near.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.NEAR,
-      // @TODO near.
       address: NATIVE_NEAR_ADDRESS,
       name: 'NEAR',
       symbol: 'NEAR',
