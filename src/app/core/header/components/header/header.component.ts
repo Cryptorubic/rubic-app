@@ -32,6 +32,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-header',
@@ -87,7 +88,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly myTradesService: MyTradesService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.loadUser();
     this.advertisementType = 'default';
@@ -157,6 +159,9 @@ export class HeaderComponent implements AfterViewInit {
       fromAmount: amount || null
     } as SwapFormInput;
     form.patchValue(params);
+
+    this.gtmService.reloadGtmSession();
+
     await this.router.navigate(['/'], {
       queryParams: {
         fromChain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -185,6 +190,8 @@ export class HeaderComponent implements AfterViewInit {
       this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
     }
 
+    this.gtmService.reloadGtmSession();
+
     await this.router.navigate(['/'], {
       queryParams: {
         fromChain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -195,5 +202,9 @@ export class HeaderComponent implements AfterViewInit {
       },
       queryParamsHandling: 'merge'
     });
+  }
+
+  public handleMyTradesClick(): void {
+    this.gtmService.reloadGtmSession();
   }
 }

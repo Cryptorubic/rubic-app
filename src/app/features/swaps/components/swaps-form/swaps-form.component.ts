@@ -414,6 +414,10 @@ export class SwapsFormComponent implements OnInit, OnDestroy {
         withLatestFrom(this.swapsService.swapMode$)
       )
       .subscribe(([[fromToken, toToken], swapMode]) => {
+        if (!this.gtmService.isGtmSessionActive) {
+          this.gtmService.clearPassedFormSteps();
+        }
+
         if (fromToken) {
           this.gtmService.updateFormStep(swapMode, 'token1');
         }

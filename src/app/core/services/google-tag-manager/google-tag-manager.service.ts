@@ -38,11 +38,13 @@ export class GoogleTagManagerService {
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this.instantTradeSteps$
   };
 
+  get isGtmSessionActive(): boolean {
+    return Boolean(this.cookieService.get('gtmSessionActive'));
+  }
+
   public readonly gtmSessionObserver$ = interval(5 * 60 * 1000).pipe(
     tap(() => {
-      const isSessionActive = this.cookieService.get('gtmSessionActive');
-
-      if (!isSessionActive) {
+      if (!this.isGtmSessionActive) {
         this.clearPassedFormSteps();
       }
     })
@@ -59,7 +61,7 @@ export class GoogleTagManagerService {
    * Starts GTM session.
    */
   public startGtmSession(): void {
-    if (!this.cookieService.get('gtmSessionActive')) {
+    if (!this.isGtmSessionActive) {
       this.cookieService.set(
         'gtmSessionActive',
         'true',
@@ -86,12 +88,12 @@ export class GoogleTagManagerService {
   /**
    * Reloads GTM session.
    */
-  public reloadGtmTimer(): void {
+  public reloadGtmSession(): void {
     this.stopGtmSession();
     this.cookieService.set(
       'gtmSessionActive',
       'true',
-      addMinutes(new Date(), 30),
+      addMinutes(new Date(), 1),
       null,
       null,
       null,

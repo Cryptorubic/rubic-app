@@ -114,7 +114,7 @@ export class RubicTokensComponent implements OnInit {
     const { fromBlockchain, toBlockchain } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
 
-    this.gtmService.reloadGtmTimer();
+    this.gtmService.reloadGtmSession();
 
     this.tokensSelectService
       .showDialog(
