@@ -56,7 +56,13 @@
       "
       >Multi-Chain</a
     >
-    <a *noFrame class="button-link" routerLink="staking" routerLinkActive="button-link_active">
+    <a
+      *noFrame
+      class="button-link"
+      routerLink="staking"
+      routerLinkActive="button-link_active"
+      (click)="handleMenuButtonClick()"
+    >
       {{ 'navigation.staking' | translate }}
     </a>
   </nav>
@@ -72,7 +78,7 @@
     <a
       *noFrame
       class="rubic-header__profile-trades button-link"
-      (click)="handleMyTradesClick()"
+      (click)="handleMenuButtonClick()"
       routerLink="my-trades"
       routerLinkActive="button-link_active"
     >

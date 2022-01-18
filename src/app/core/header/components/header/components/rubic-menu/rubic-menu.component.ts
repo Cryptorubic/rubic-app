@@ -114,7 +114,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   // TODO refactor: define type for links
   public menuClickHandler(linkType: 'swaps' | 'bridge' | 'cross-chain' | 'staking'): void {
-    this.gtmService.reloadGtmSession();
+    this.handleButtonClick();
     this.closeMenu();
     switch (linkType) {
       case 'swaps':
@@ -132,5 +132,9 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   isLinkActive(url: string): boolean {
     return this.window.location.pathname === url;
+  }
+
+  public handleButtonClick(): void {
+    this.gtmService.reloadGtmSession();
   }
 }

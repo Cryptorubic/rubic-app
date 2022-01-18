@@ -177,6 +177,7 @@ export class GoogleTagManagerService {
    * @param walletName User's wallet provider.
    */
   public fireConnectWalletEvent(walletName: WALLET_NAME): void {
+    this.reloadGtmSession();
     this.angularGtmService.pushTag({
       event: 'GAevent',
       ecategory: 'wallet',

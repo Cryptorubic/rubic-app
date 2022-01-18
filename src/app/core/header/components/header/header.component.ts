@@ -204,7 +204,7 @@ export class HeaderComponent implements AfterViewInit {
     });
   }
 
-  public handleMyTradesClick(): void {
+  public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }
 }
