@@ -631,7 +631,8 @@
     "stakeInProgress": "Stake in progress",
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
-    "withdrawInProgress": "Withdraw in progress"
+    "withdrawInProgress": "Withdraw in progress",
+    "openMobileWallet": "Please, open mobile wallet application to sign transaction"
   },
   "buyTokens": {
     "default": "Купить RBC",

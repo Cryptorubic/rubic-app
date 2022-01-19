@@ -46,6 +46,7 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
+import { IframeService } from '@core/services/iframe/iframe.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 
 @Injectable({
@@ -92,6 +93,7 @@ export class InstantTradeService {
     private readonly algebraService: AlgebraService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
     // Providers end
+    private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -201,6 +203,7 @@ export class InstantTradeService {
     trade: InstantTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    this.checkDeviceAndShowNotification();
     let transactionHash: string;
     try {
       const options = {
@@ -312,6 +315,7 @@ export class InstantTradeService {
   }
 
   public async approve(provider: INSTANT_TRADES_PROVIDERS, trade: InstantTrade): Promise<void> {
+    this.checkDeviceAndShowNotification();
     try {
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
@@ -356,6 +360,18 @@ export class InstantTradeService {
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open();
+    }
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
     }
   }
 }

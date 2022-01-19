@@ -40,6 +40,10 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { TuiNotification } from '@taiga-ui/core';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -89,7 +93,10 @@ export class CrossChainRoutingService {
     private readonly gasService: GasService,
     private readonly contractExecutorFacade: ContractExecutorFacadeService,
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
-    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
+    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
+    private readonly iframeService: IframeService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   private async needApprove(
@@ -112,6 +119,7 @@ export class CrossChainRoutingService {
   }
 
   public approve(options: TransactionOptions = {}): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     const { fromBlockchain, tokenIn: fromToken } = this.currentCrossChainTrade;
     const contractAddress = this.contracts[fromBlockchain].address;
     return from(
@@ -661,6 +669,7 @@ export class CrossChainRoutingService {
     return from(
       (async () => {
         await this.checkTradeParameters();
+        this.checkDeviceAndShowNotification();
 
         let transactionHash;
         try {
@@ -726,5 +735,17 @@ export class CrossChainRoutingService {
 
   public calculateTokenOutAmountMin(): BigNumber {
     return ContractExecutorFacadeService.calculateTokenOutAmountMin(this.currentCrossChainTrade);
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
+    }
   }
 }
