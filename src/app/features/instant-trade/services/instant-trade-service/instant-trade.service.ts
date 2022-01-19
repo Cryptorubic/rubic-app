@@ -30,7 +30,7 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
-import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { UniSwapV3EthereumService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
 import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 import { SushiSwapAvalancheService } from '@features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
@@ -46,6 +46,7 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
+import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,8 @@ export class InstantTradeService {
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
     private readonly uniswapV2Service: UniSwapV2Service,
-    private readonly uniswapV3Service: UniSwapV3Service,
+    private readonly uniswapV3EthereumService: UniSwapV3EthereumService,
+    private readonly uniswapV3PolygonService: UniSwapV3PolygonService,
     private readonly oneInchPolygonService: OneInchPolygonService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
@@ -111,7 +113,7 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3Service,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3EthereumService,
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapEthService,
         [INSTANT_TRADES_PROVIDERS.ZRX]: this.zrxService
       },
@@ -124,7 +126,8 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchPolygonService,
         [INSTANT_TRADES_PROVIDERS.QUICKSWAP]: this.quickSwapService,
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapPolygonService,
-        [INSTANT_TRADES_PROVIDERS.ALGEBRA]: this.algebraService
+        [INSTANT_TRADES_PROVIDERS.ALGEBRA]: this.algebraService,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3PolygonService
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapHarmonyService,

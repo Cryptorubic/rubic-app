@@ -6,11 +6,9 @@ import { AbiItem } from 'web3-utils';
 import { tuiPure } from '@taiga-ui/cdk';
 import { crossChainContractAbiV2 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v2';
 import { crossChainContractAbiV3 } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-v3';
-import { CommonUniV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/common-uni-v3-algebra.service';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/utils/quoter-controller/uni-swap-v3-quoter-controller';
-import { UniSwapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
+import { UniSwapV3QuoterController } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/utils/quoter-controller/uni-swap-v3-quoter-controller';
+import { UniswapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { compareAddresses } from '@shared/utils/utils';
@@ -19,6 +17,8 @@ import InstantTradeToken from '@features/instant-trade/models/instant-trade-toke
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
+import { CommonUniswapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
 import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
 import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
@@ -67,8 +67,8 @@ export abstract class ContractData {
   /**
    * Returns true, if provider is of `uniswap v3` or `algebra` type.
    */
-  protected isProviderV3(providerIndex: number): boolean {
-    return this.getProvider(providerIndex) instanceof CommonUniV3AlgebraService;
+  protected isProviderV3OrAlgebra(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof CommonUniswapV3AlgebraService;
   }
 
   /**
@@ -95,7 +95,7 @@ export abstract class ContractData {
       ...crossChainContractAbiV2.find(method => method.name === methodName)
     };
 
-    if (this.isProviderV3(providerIndex)) {
+    if (this.isProviderV3OrAlgebra(providerIndex)) {
       contractAbiMethod = {
         ...crossChainContractAbiV3.find(method => method.name.startsWith(methodName))
       };
@@ -131,8 +131,8 @@ export abstract class ContractData {
 
     const provider = this.getProvider(providerIndex);
 
-    if (provider instanceof UniSwapV3Service) {
-      const route = (instantTrade as UniSwapV3InstantTrade).route;
+    if (provider instanceof CommonUniswapV3Service) {
+      const route = (instantTrade as UniswapV3InstantTrade).route;
 
       return UniSwapV3QuoterController.getEncodedPoolsPath(
         route.poolsPath,
@@ -170,29 +170,24 @@ export abstract class ContractData {
 
     const provider = this.getProvider(providerIndex);
 
-    if (provider instanceof UniSwapV3Service) {
-      const route = (instantTrade as UniSwapV3InstantTrade).route;
-      const path: string[] = [];
+    if (provider instanceof CommonUniswapV3Service) {
+      const route = (instantTrade as UniswapV3InstantTrade).route;
+      const path: string[] = [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
+
       let lastTokenAddress = route.initialTokenAddress;
 
       route.poolsPath.forEach(pool => {
+        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
+          ? pool.token1
+          : pool.token0;
+        lastTokenAddress = newToken.address;
+
         path.push(
           '0x' +
             pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
             lastTokenAddress.slice(2).toLowerCase()
         );
-
-        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
-          ? pool.token1
-          : pool.token0;
-        lastTokenAddress = newToken.address;
       });
-
-      path.push(
-        fromBlockchain === BLOCKCHAIN_NAME.SOLANA
-          ? lastTokenAddress
-          : EthLikeWeb3Public.addressToBytes32(lastTokenAddress)
-      );
 
       return path;
     }
@@ -203,45 +198,16 @@ export abstract class ContractData {
   }
 
   /**
-   * Returns `signature` method argument, built from `swapToUser` function name and its arguments.
-   * Example: `${function_name_in_target_network}(${arguments})`.
+   * Returns `signature` method argument, that is `swapToUserWithFee` function name.
    * Must be called on target contract.
    */
-  public getSwapToUserMethodSignature(providerIndex: number, isToTokenNative: boolean): string {
+  public getSwapToUserMethodName(providerIndex: number, isToTokenNative: boolean): string {
     let methodName: string = isToTokenNative
       ? TO_USER_SWAP_METHOD.SWAP_CRYPTO
       : TO_USER_SWAP_METHOD.SWAP_TOKENS;
-    let contractAbiMethod = crossChainContractAbiV2.find(method => method.name === methodName);
-
-    if (this.isProviderV3(providerIndex)) {
-      contractAbiMethod = crossChainContractAbiV3.find(method =>
-        method.name.startsWith(methodName)
-      );
-    }
-
-    if (this.isProviderOneinch(providerIndex)) {
-      contractAbiMethod = crossChainContractAbiInch.find(method =>
-        method.name.startsWith(methodName)
-      );
-    }
 
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
 
-    const parameters = contractAbiMethod.inputs[0].components;
-    const paramsSignature = parameters.reduce((acc, parameter, index) => {
-      if (index === 0) {
-        acc = '((';
-      }
-
-      acc += parameter.type;
-
-      if (index === parameters.length - 1) {
-        return acc + '))';
-      } else {
-        return acc + ',';
-      }
-    }, '');
-
-    return methodName + paramsSignature;
+    return methodName;
   }
 }

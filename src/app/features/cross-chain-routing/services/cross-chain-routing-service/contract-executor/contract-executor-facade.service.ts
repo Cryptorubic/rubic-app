@@ -89,11 +89,11 @@ export class ContractExecutorFacadeService {
       if (options.onTransactionHash) {
         options.onTransactionHash(hash);
 
-        const methodSignature = this.contracts[trade.toBlockchain].getSwapToUserMethodSignature(
+        const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
           trade.toProviderIndex,
           isToNative
         );
-        this.sendDataFromSolana(trade.fromBlockchain, hash, methodSignature);
+        this.sendDataFromSolana(trade.fromBlockchain, hash, swapToUserMethodName);
       }
 
       await new Promise((resolve, reject) => {

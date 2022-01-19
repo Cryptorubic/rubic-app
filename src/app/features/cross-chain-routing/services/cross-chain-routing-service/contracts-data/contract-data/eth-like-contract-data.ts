@@ -119,7 +119,7 @@ export class EthLikeContractData extends ContractData {
         ? SolanaWeb3Public.addressToBytes32(toWalletAddress)
         : EthLikeWeb3Public.addressToBytes32(toWalletAddress);
 
-    const swapToUserMethodSignature = toContract.getSwapToUserMethodSignature(
+    const swapToUserMethodSignature = toContract.getSwapToUserMethodName(
       trade.toProviderIndex,
       isToTokenNative
     );
@@ -143,7 +143,7 @@ export class EthLikeContractData extends ContractData {
     } else {
       methodArguments[0].push(true);
 
-      if (!this.isProviderV3(trade.fromProviderIndex)) {
+      if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
         methodArguments[0].push(false);
       }
     }
