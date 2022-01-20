@@ -97,14 +97,14 @@ export class ContractsDataService {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new EthLikeContractData(
         BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
         [
-          {
-            provider: this.pancakeSwapService,
-            methodSuffix: ''
-          },
-          {
-            provider: this.sushiSwapBscService,
-            methodSuffix: '1'
-          },
+          // {
+          //   provider: this.pancakeSwapService,
+          //   methodSuffix: ''
+          // },
+          // {
+          //   provider: this.sushiSwapBscService,
+          //   methodSuffix: '1'
+          // },
           {
             provider: this.oneinchBscService,
             methodSuffix: 'Inch'

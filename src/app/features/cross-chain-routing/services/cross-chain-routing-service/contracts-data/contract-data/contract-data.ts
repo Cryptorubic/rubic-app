@@ -21,7 +21,6 @@ import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/
 import { CommonUniswapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
 import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
 import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -126,7 +125,7 @@ export abstract class ContractData {
     }
 
     if (this.isProviderOneinch(providerIndex)) {
-      return NATIVE_TOKEN_ADDRESS;
+      return instantTrade.path[0].address;
     }
 
     const provider = this.getProvider(providerIndex);
@@ -162,10 +161,6 @@ export abstract class ContractData {
       return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
         ? [this.transitToken.address]
         : [toBlockchainAdapter.addressToBytes32(this.transitToken.address)];
-    }
-
-    if (this.isProviderOneinch(providerIndex)) {
-      return [];
     }
 
     const provider = this.getProvider(providerIndex);
