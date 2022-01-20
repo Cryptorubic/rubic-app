@@ -405,12 +405,10 @@ export class SwapsFormComponent implements OnInit {
 
     this.swapFormService.inputValueChanges
       .pipe(
-        map(form => [
-          form.fromToken ? form.fromToken.symbol : null,
-          form.toToken ? form.toToken.symbol : null
-        ]),
+        map(form => [form?.fromToken?.symbol || null, form?.toToken?.symbol || null]),
         distinctUntilChanged(compareObjects),
-        withLatestFrom(this.swapsService.swapMode$)
+        withLatestFrom(this.swapsService.swapMode$),
+        takeUntil(this.destroy$)
       )
       .subscribe(([[fromToken, toToken], swapMode]: [[string, string], SWAP_PROVIDER_TYPE]) => {
         if (!this.gtmService.isGtmSessionActive) {

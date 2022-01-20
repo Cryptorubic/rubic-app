@@ -228,12 +228,11 @@ export class InstantTradeService {
       }
 
       const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-      const revenue = usdPrice * 0.006;
       this.notifyGtmOnSuccess(
         transactionHash,
         trade.from.token.symbol,
         trade.to.token.symbol,
-        revenue,
+        0,
         usdPrice
       );
       this.modalSubscriptions.pop()?.unsubscribe();
