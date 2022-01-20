@@ -24,6 +24,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { SWAP_SCHEMA } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import * as BN from 'bn.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
 
 interface TransactionParams {
   receiverId: string;
@@ -226,8 +227,7 @@ export class NearWeb3PrivateService {
     const currentUrl = new URL(this.window.location.href);
     currentUrl.searchParams.set('swap_type', type);
     currentUrl.searchParams.set('toAmount', toAmount);
-    // @TODO Wallet url.
-    const newUrl = new URL('sign', 'https://wallet.testnet.near.org');
+    const newUrl = new URL('sign', NEAR_MAINNET_CONFIG.walletUrl);
     newUrl.searchParams.set(
       'transactions',
       transactions

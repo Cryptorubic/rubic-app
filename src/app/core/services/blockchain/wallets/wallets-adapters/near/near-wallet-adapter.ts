@@ -68,7 +68,7 @@ export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
       this.isEnabled = true;
       this.wallet = wallet;
       this.selectedAddress = wallet.account().accountId;
-      this.selectedChain = 'testnet';
+      this.selectedChain = NEAR_MAINNET_CONFIG.networkId;
 
       this.onNetworkChanges$.next(this.getNetwork());
       this.onAddressChanges$.next(this.selectedAddress);
