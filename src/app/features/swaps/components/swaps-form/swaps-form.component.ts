@@ -409,10 +409,10 @@ export class SwapsFormComponent implements OnInit {
           form.fromToken ? form.fromToken.symbol : null,
           form.toToken ? form.toToken.symbol : null
         ]),
-        distinctUntilChanged((v1, v2) => compareObjects(v1, v2)),
+        distinctUntilChanged(compareObjects),
         withLatestFrom(this.swapsService.swapMode$)
       )
-      .subscribe(([[fromToken, toToken], swapMode]) => {
+      .subscribe(([[fromToken, toToken], swapMode]: [[string, string], SWAP_PROVIDER_TYPE]) => {
         if (!this.gtmService.isGtmSessionActive) {
           this.gtmService.clearPassedFormSteps();
         }
