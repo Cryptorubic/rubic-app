@@ -37,9 +37,9 @@ export class GoogleTagManagerService {
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this.instantTradeSteps$
   };
 
-  private _windowBeforeUnloadAdded$ = new BehaviorSubject<boolean>(false);
+  private readonly _windowBeforeUnloadAdded$ = new BehaviorSubject<boolean>(false);
 
-  private _localStorageDataFetched$ = new BehaviorSubject<boolean>(false);
+  private readonly _localStorageDataFetched$ = new BehaviorSubject<boolean>(false);
 
   get isGtmSessionActive(): boolean {
     return Boolean(this.cookieService.get('gtmSessionActive'));
@@ -49,7 +49,7 @@ export class GoogleTagManagerService {
     private readonly angularGtmService: AngularGoogleTagManagerService,
     private readonly cookieService: CookieService,
     private readonly storeService: StoreService,
-    @Inject(WINDOW) private window: Window
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   /**
@@ -81,13 +81,6 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Stops GTM session.
-   */
-  public stopGtmSession(): void {
-    this.cookieService.delete('gtmSessionActive');
-  }
-
-  /**
    * Reloads GTM session.
    */
   public reloadGtmSession(): void {
@@ -95,7 +88,8 @@ export class GoogleTagManagerService {
       this.clearPassedFormSteps();
     }
 
-    this.stopGtmSession();
+    this.cookieService.delete('gtmSessionActive');
+
     this.cookieService.set(
       'gtmSessionActive',
       'true',

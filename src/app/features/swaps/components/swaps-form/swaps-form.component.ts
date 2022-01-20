@@ -175,7 +175,7 @@ export class SwapsFormComponent implements OnInit {
         this.setFormValues(form);
       });
 
-    this.watchGtmEvenst();
+    this.watchGtmEvents();
   }
 
   private subscribeOnTokens(): void {
@@ -399,7 +399,7 @@ export class SwapsFormComponent implements OnInit {
     });
   }
 
-  private watchGtmEvenst(): void {
+  private watchGtmEvents(): void {
     this.gtmService.fetchPassedFormSteps();
     this.gtmService.startGtmSession();
 
