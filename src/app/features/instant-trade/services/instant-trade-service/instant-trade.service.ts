@@ -388,7 +388,7 @@ export class InstantTradeService {
       usdPrice
     );
   }
-  
+
   private checkDeviceAndShowNotification(): void {
     if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
       this.notificationsService.show(
