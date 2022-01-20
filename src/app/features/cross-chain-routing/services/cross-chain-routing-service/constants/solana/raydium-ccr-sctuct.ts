@@ -60,7 +60,8 @@ export const SOLANA_CCR_LAYOUT = struct([
   str('tokenOutMin'),
   str('newAddress'),
   bool('swapToCrypto'),
-  u8('transferType')
+  u8('transferType'),
+  str('methodName')
 ]);
 
 export const INSTRUCTION_NUMBER = struct([u8('instruction')]);

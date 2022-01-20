@@ -89,7 +89,8 @@ export class EthLikeContractData extends ContractData {
     trade: CrossChainTrade,
     isToTokenNative: boolean,
     toContract: ContractData,
-    toWalletAddress: string
+    toWalletAddress: string,
+    toBlockchain: BLOCKCHAIN_NAME
   ): unknown[] {
     const toNumOfBlockchain = toContract.numOfBlockchain;
 
@@ -97,7 +98,12 @@ export class EthLikeContractData extends ContractData {
 
     const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
 
-    const secondPath = toContract.getSecondPath(trade.toProviderIndex, trade.toTrade);
+    const secondPath = toContract.getSecondPath(
+      trade.toProviderIndex,
+      trade.toTrade,
+      trade.fromBlockchain,
+      toBlockchain
+    );
 
     const fromTransitTokenAmountMin =
       ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
@@ -110,12 +116,11 @@ export class EthLikeContractData extends ContractData {
     const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const toWalletAddressBytes32 =
-      // @ts-ignore TODO uncomment
-      trade.toBlockchain !== BLOCKCHAIN_NAME.SOLANA
-        ? EthLikeWeb3Public.addressToBytes32(toWalletAddress)
-        : SolanaWeb3Public.addressToBytes32(toWalletAddress);
+      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
+        ? SolanaWeb3Public.addressToBytes32(toWalletAddress)
+        : EthLikeWeb3Public.addressToBytes32(toWalletAddress);
 
-    const swapToUserMethodSignature = toContract.getSwapToUserMethodSignature(
+    const swapToUserMethodSignature = toContract.getSwapToUserMethodName(
       trade.toProviderIndex,
       isToTokenNative
     );
@@ -133,7 +138,7 @@ export class EthLikeContractData extends ContractData {
         true
       ]
     ];
-    if (!this.isProviderV3(trade.fromProviderIndex)) {
+    if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
       methodArguments[0].push(false);
     }
     methodArguments[0].push(swapToUserMethodSignature);
