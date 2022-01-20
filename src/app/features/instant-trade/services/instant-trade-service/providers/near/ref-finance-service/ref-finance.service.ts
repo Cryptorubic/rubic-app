@@ -52,9 +52,11 @@ export class RefFinanceService implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  private currentTradePool: RefPool;
+  private _currentTradePool: RefPool;
 
-  private readonly storageToRegisterWithMft: string = '0.1';
+  public get currentTradePool(): RefPool {
+    return this._currentTradePool;
+  }
 
   private readonly oneYoctoNear: string = '0.000000000000000000000001';
 
@@ -132,7 +134,7 @@ export class RefFinanceService implements ItProvider {
         new BigNumber(b.estimate).gt(a.estimate) ? 1 : -1
       )[0];
 
-      this.currentTradePool = pool;
+      this._currentTradePool = pool;
 
       return {
         blockchain: BLOCKCHAIN_NAME.NEAR,
@@ -156,7 +158,7 @@ export class RefFinanceService implements ItProvider {
   }
 
   public async createTrade(trade: InstantTrade): Promise<{}> {
-    const pool = this.currentTradePool;
+    const pool = this._currentTradePool;
     const minAmountOut = Web3Pure.toWei(trade.to.amount, trade.to.token.decimals);
     const swapAction = {
       pool_id: pool?.id,
@@ -187,7 +189,7 @@ export class RefFinanceService implements ItProvider {
             account_id: account.accountId
           },
           gas: '30000000000000',
-          amount: this.storageToRegisterWithMft
+          amount: '0.1'
         }
       ];
 

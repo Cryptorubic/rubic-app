@@ -4,7 +4,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { connect, WalletConnection } from 'near-api-js';
-import { NEAR_TESTNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
+import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
@@ -12,6 +12,12 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WALLET_NAME } from '@app/core/wallets/components/wallets-modal/models/wallet-name';
 
 export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
+  private _publicKey: string;
+
+  public set publicKey(publicKey: string) {
+    this._publicKey = publicKey;
+  }
+
   public get walletType(): BlockchainType {
     return 'near';
   }
@@ -40,19 +46,24 @@ export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
     super(errorsService, onAddressChanges$, onNetworkChanges$);
   }
 
-  public async signPersonal(message: string): Promise<string> {
-    console.log(message);
-    return null;
+  public async signPersonal(): Promise<string> {
+    return this._publicKey;
   }
 
   public async activate(): Promise<void> {
-    const near = await connect(NEAR_TESTNET_CONFIG);
+    const near = await connect(NEAR_MAINNET_CONFIG);
     const wallet = new WalletConnection(near, 'rubic');
 
     if (!wallet.isSignedIn()) {
       const successUrl = new URL(this.window.location.href);
       successUrl.searchParams.set('nearLogin', 'true');
-      await wallet.requestSignIn('example-contract.testnet', 'rubic', successUrl.href);
+      await wallet.requestSignIn(
+        {
+          successUrl: successUrl.href
+        },
+        'rubic',
+        successUrl.href
+      );
     } else {
       this.isEnabled = true;
       this.wallet = wallet;

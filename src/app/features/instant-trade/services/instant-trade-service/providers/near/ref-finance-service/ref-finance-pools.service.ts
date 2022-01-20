@@ -11,6 +11,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { providers, WalletConnection } from 'near-api-js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class RefFinancePoolsService {
   private provider: JsonRpcProvider;
 
   constructor(private readonly walletConnectorService: WalletConnectorService) {
-    this.provider = new providers.JsonRpcProvider('https://rpc.testnet.near.org');
+    this.provider = new providers.JsonRpcProvider(NEAR_MAINNET_CONFIG.nodeUrl);
     this.walletConnectorService.addressChange$.subscribe(() => {
       if (this.walletConnectorService.networkName === BLOCKCHAIN_NAME.NEAR) {
         this.account = new WalletConnection(this.walletConnectorService.nearConnection, 'rubic');

@@ -13,6 +13,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 
 @Injectable({
   providedIn: 'root'
@@ -34,11 +35,8 @@ export class EthLikeContractExecutorService {
     userAddress: string,
     targetAddress: string
   ): Promise<string> {
-    const toWalletAddress =
-      trade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
-      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
-        ? targetAddress
-        : userAddress;
+    const isEthLike = BlockchainsInfo.getBlockchainType(trade.toBlockchain) === 'ethLike';
+    const toWalletAddress = isEthLike ? userAddress : targetAddress;
     const { contractAddress, contractAbi, methodName, methodArguments, value } =
       await this.getContractParams(trade, toWalletAddress);
 

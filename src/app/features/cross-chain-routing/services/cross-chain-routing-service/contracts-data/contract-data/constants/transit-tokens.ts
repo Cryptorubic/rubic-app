@@ -45,5 +45,10 @@ export const transitTokens: TransitTokens = {
     address: TOKENS.USDC.mintAddress,
     decimals: TOKENS.USDC.decimals,
     symbol: TOKENS.USDC.symbol
+  },
+  [BLOCKCHAIN_NAME.NEAR]: {
+    address: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
+    decimals: 6,
+    symbol: 'USDC'
   }
 };

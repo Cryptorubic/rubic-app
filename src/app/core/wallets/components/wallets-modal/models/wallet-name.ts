@@ -5,5 +5,5 @@ export enum WALLET_NAME {
   TRUST_WALLET = 'trustwallet',
   PHANTOM = 'phantom',
   SOLFLARE = 'solflare',
-  NEAR = 'near'
+  NEAR = 'nearwallet'
 }

@@ -42,4 +42,10 @@ export class BlockchainsInfo {
       throw new CustomError('Wrong blockchain error');
     }
   }
+
+  static checkIsNear(name: BLOCKCHAIN_NAME): void | never {
+    if (this.getBlockchainType(name) !== 'near') {
+      throw new CustomError('Wrong blockchain error');
+    }
+  }
 }

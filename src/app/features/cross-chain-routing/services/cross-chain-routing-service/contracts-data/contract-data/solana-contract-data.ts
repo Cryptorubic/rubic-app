@@ -16,6 +16,7 @@ import {
   SolanaBlockchainConfig
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
 
 export class SolanaContractData extends ContractData {
   private readonly blockchainAdapter: SolanaWeb3Public;
@@ -72,5 +73,12 @@ export class SolanaContractData extends ContractData {
     );
     const bridgeData = BRIDGE_CONFIG.decode(data) as BridgeConfigData;
     return bridgeData?.is_paused || false;
+  }
+
+  public getSecondPath(instantTrade: InstantTrade): string[] {
+    if (!instantTrade) {
+      return [SolanaWeb3Public.addressToBytes32(this.transitToken.address)];
+    }
+    return instantTrade.path.map(token => SolanaWeb3Public.addressToBytes32(token.address));
   }
 }

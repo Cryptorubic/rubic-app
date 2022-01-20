@@ -82,6 +82,8 @@ export class QueryParamsService {
 
   public readonly nearQueryParams$ = this._nearQueryParams$.asObservable();
 
+  public readonly nearQueryParams = this._nearQueryParams$.value;
+
   public get tokensSelectionDisabled$(): Observable<[boolean, boolean]> {
     return this._tokensSelectionDisabled$.asObservable();
   }
@@ -435,17 +437,18 @@ export class QueryParamsService {
    * @param queryParams Query params with specific for near fields.
    */
   private async setNearParams(queryParams: QueryParams): Promise<void> {
-    const { nearLogin, transactionHashes, errorCode } = queryParams;
-    if (nearLogin) {
-      if (!queryParams.all_keys || !queryParams.public_key || !queryParams.account_id) {
+    const { nearLogin, transactionHashes = undefined, errorCode = undefined } = queryParams;
+    if (nearLogin === 'true') {
+      if (!queryParams?.all_keys || !queryParams.account_id) {
         return;
       }
       this._nearQueryParams$.next({
         accountId: queryParams.account_id,
-        publicKey: queryParams.public_key,
+        publicKey: queryParams.all_keys,
         allKeys: queryParams.all_keys
       });
       await this.walletConnectorService.connectProvider(WALLET_NAME.NEAR);
+      this.walletConnectorService.setNearPublicKey(queryParams.all_keys);
       setTimeout(async () => {
         await this.authService.signIn();
         this.clearNearParams();
@@ -511,8 +514,6 @@ export class QueryParamsService {
    * Clears all near query params.
    */
   private clearNearParams(): void {
-    this._nearQueryParams$.next(null);
-    this._nearQueryParams$.complete();
     this.setQueryParams({
       errorCode: null,
       errorMessage: null,

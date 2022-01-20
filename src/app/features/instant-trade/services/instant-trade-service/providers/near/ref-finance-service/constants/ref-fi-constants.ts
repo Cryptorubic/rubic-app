@@ -18,8 +18,7 @@ import {
 } from 'near-api-js/lib/transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 
-export const REF_FI_CONTRACT_ID = 'exchange.ref-dev.testnet';
-// mainnet: 'v2.ref-finance.near';
+export const REF_FI_CONTRACT_ID = 'v2.ref-finance.near';
 
 export const SWAP_SCHEMA = new Map<Function, unknown>([
   [

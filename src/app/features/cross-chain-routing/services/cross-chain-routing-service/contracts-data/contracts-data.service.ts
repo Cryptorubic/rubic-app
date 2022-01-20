@@ -22,6 +22,8 @@ import { SushiSwapMoonRiverService } from '@features/instant-trade/services/inst
 import { SushiSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { NearContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/near-contract-data';
+import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +57,8 @@ export class ContractsDataService {
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
 
     private readonly raydiumService: RaydiumService,
+
+    private readonly refFinanceService: RefFinanceService,
     // providers end
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
@@ -181,6 +185,17 @@ export class ContractsDataService {
           }
         ],
         8,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.NEAR]: new NearContractData(
+        BLOCKCHAIN_NAME.NEAR,
+        [
+          {
+            provider: this.refFinanceService,
+            methodSuffix: ''
+          }
+        ],
+        9,
         this.publicBlockchainAdapterService
       )
     };

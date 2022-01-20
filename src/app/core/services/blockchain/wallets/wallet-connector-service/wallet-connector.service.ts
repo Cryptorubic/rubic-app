@@ -393,4 +393,10 @@ export class WalletConnectorService {
       })
     );
   }
+
+  public setNearPublicKey(publicKey: string): void {
+    if (this.provider.walletType === 'near') {
+      (this.provider as NearWalletAdapter).publicKey = publicKey;
+    }
+  }
 }

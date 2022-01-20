@@ -10,6 +10,10 @@ import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-ch
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
+import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { UniSwapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
+import { compareAddresses } from '@shared/utils/utils';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -82,6 +86,38 @@ export class EthLikeContractData extends ContractData {
     );
   }
 
+  public getSecondPath(instantTrade: InstantTrade, providerIndex: number): string[] {
+    if (!instantTrade) {
+      return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
+    }
+
+    const provider = this.getProvider(providerIndex);
+
+    if (provider instanceof UniSwapV3Service) {
+      const route = (instantTrade as UniSwapV3InstantTrade).route;
+      const path: string[] = [];
+      let lastTokenAddress = route.initialTokenAddress;
+
+      route.poolsPath.forEach(pool => {
+        path.push(
+          '0x' +
+            pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
+            lastTokenAddress.slice(2).toLowerCase()
+        );
+
+        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
+          ? pool.token1
+          : pool.token0;
+        lastTokenAddress = newToken.address;
+      });
+      path.push(EthLikeWeb3Public.addressToBytes32(lastTokenAddress));
+
+      return path;
+    }
+
+    return instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
+  }
+
   /**
    * Returns method's arguments to use in source network.
    */
@@ -97,7 +133,7 @@ export class EthLikeContractData extends ContractData {
 
     const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
 
-    const secondPath = toContract.getSecondPath(trade.toProviderIndex, trade.toTrade);
+    const secondPath = toContract.getSecondPath(trade.toTrade, trade.toProviderIndex);
 
     const fromTransitTokenAmountMin =
       ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);

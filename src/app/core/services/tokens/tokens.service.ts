@@ -112,7 +112,7 @@ export class TokensService {
   ): boolean {
     return (
       token0?.blockchain === token1?.blockchain &&
-      token0?.address.toLowerCase() === token1?.address.toLowerCase()
+      token0?.address?.toLowerCase() === token1?.address?.toLowerCase()
     );
   }
 

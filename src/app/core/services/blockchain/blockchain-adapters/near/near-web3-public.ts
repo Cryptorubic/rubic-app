@@ -8,18 +8,36 @@ import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { base58 } from 'ethers/lib/utils';
 
 export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
+  public static addressToBytes32(address: string): string {
+    return (
+      '0x' +
+      Array.from(base58.decode(address))
+        .map(num => num.toString(16).padStart(2, '0'))
+        .reduce((acc, hexNum) => acc + hexNum, '')
+    );
+  }
+
   /**
    * Connection with Near wallet.
    */
-  private walletConnection: WalletConnection;
+  private _walletConnection: WalletConnection;
+
+  public get walletConnection(): WalletConnection {
+    return this._walletConnection;
+  }
 
   /**
    * RPC connection to near blockchain.
    * @private
    */
-  private connection: Near;
+  private _connection: Near;
+
+  public get connection(): Near {
+    return this._connection;
+  }
 
   constructor(config: ConnectConfig, private handleConnection: (connection: Near) => void) {
     super();
@@ -31,9 +49,9 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    * @param config Near connection config.
    */
   private async establishConnection(config: ConnectConfig): Promise<void> {
-    this.connection = await connect(config);
-    this.walletConnection = new WalletConnection(this.connection, 'my-app');
-    this.handleConnection(this.connection);
+    this._connection = await connect(config);
+    this._walletConnection = new WalletConnection(this._connection, 'my-app');
+    this.handleConnection(this._connection);
   }
 
   /**
@@ -49,7 +67,7 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    */
   public isAddressCorrect(address: string): boolean {
     try {
-      this.connection.account(address);
+      this._connection.account(address);
     } catch {
       return false;
     }
@@ -92,8 +110,8 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
     const balance: string =
       tokenAddress === NATIVE_NEAR_ADDRESS
-        ? (await this.walletConnection.account().getAccountBalance()).available
-        : await this.walletConnection.account().viewFunction(tokenAddress, 'ft_balance_of', {
+        ? (await this._walletConnection.account().getAccountBalance()).available
+        : await this._walletConnection.account().viewFunction(tokenAddress, 'ft_balance_of', {
             account_id: address
           });
     return new BigNumber(balance);
@@ -103,7 +121,7 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    * Returns the most recent block's gas price.
    */
   public async getEstimatedGas(): Promise<BigNumber> {
-    const gas = await this.connection.connection.provider.gasPrice(null);
+    const gas = await this._connection.connection.provider.gasPrice(null);
     return new BigNumber(gas.gas_price);
   }
 
@@ -128,9 +146,9 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
       return null;
     }
 
-    const transaction = await this.connection.connection.provider.txStatus(
+    const transaction = await this._connection.connection.provider.txStatus(
       hash,
-      this.walletConnection.getAccountId()
+      this._walletConnection.getAccountId()
     );
     if (transaction === null) {
       return new Promise(resolve =>
@@ -151,13 +169,13 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
       tokensAddresses.map(id =>
         id === NATIVE_NEAR_ADDRESS
           ? null
-          : this.walletConnection.account().viewFunction(id, 'ft_balance_of', {
+          : this._walletConnection.account().viewFunction(id, 'ft_balance_of', {
               account_id: address
             })
       )
     );
 
-    const nativeNearBalance = await this.walletConnection.account().getAccountBalance();
+    const nativeNearBalance = await this._walletConnection.account().getAccountBalance();
 
     return tokensAddresses.map((tokenAddress, index) => {
       if (tokenAddress === NATIVE_NEAR_ADDRESS) {

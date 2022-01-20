@@ -172,16 +172,25 @@ export class AuthService {
         this.isAuthProcess = false;
         return;
       }
-      // @TODO near.
-      // const { message } = walletLoginBody.payload;
-      //
-      // const signature = await this.walletConnectorService.signPersonal(message);
-      // await this.sendSignedNonce(
-      //   this.walletConnectorService.address,
-      //   message,
-      //   signature,
-      //   this.walletConnectorService.provider.walletName
-      // );
+      const { message } = walletLoginBody.payload;
+
+      if (this.walletConnectorService.provider.walletType === 'near') {
+        const publicKey = await this.walletConnectorService.signPersonal(message);
+        await this.sendSignedNonce(
+          this.walletConnectorService.address,
+          publicKey,
+          '',
+          this.walletConnectorService.provider.walletName
+        );
+      } else {
+        const signature = await this.walletConnectorService.signPersonal(message);
+        await this.sendSignedNonce(
+          this.walletConnectorService.address,
+          message,
+          signature,
+          this.walletConnectorService.provider.walletName
+        );
+      }
 
       this.currentUser$.next({ address: this.walletConnectorService.address });
       this.isAuthProcess = false;

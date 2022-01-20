@@ -25,18 +25,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { HttpService } from '../../http/http.service';
 
-interface NearTokens {
-  [P: string]: {
-    decimals: number;
-    icon: string;
-    name: string;
-    reference: unknown;
-    reference_hash: string;
-    spec: string;
-    symbol: string;
-  };
-}
-
 /**
  * Perform backend requests and transforms to get valid tokens.
  */
@@ -162,13 +150,14 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.AVALANCHE,
       BLOCKCHAIN_NAME.MOONRIVER,
       BLOCKCHAIN_NAME.FANTOM,
-      BLOCKCHAIN_NAME.SOLANA
+      BLOCKCHAIN_NAME.SOLANA,
+      BLOCKCHAIN_NAME.NEAR
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
     const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
     );
-    return forkJoin([...requests$, this.getNearTokens()]).pipe(
+    return forkJoin([...requests$]).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
         const staticTokens = TokensApiService.fetchStaticTokens();
@@ -219,46 +208,5 @@ export class TokensApiService {
         };
       })
     );
-  }
-
-  private getNearTokens(): Observable<TokensBackendResponse> {
-    return this.httpService
-      .get<NearTokens>(null, null, 'https://dev-indexer.ref-finance.com/list-token')
-      .pipe(
-        map(el => {
-          const coolNames = [
-            'eth',
-            'usdc',
-            'near',
-            'dai',
-            'aurora',
-            'banana',
-            'paras',
-            'wrapper near fungible token'
-          ];
-          const tokens: BackendToken[] = Object.entries(el).map(token => {
-            const [key, value] = token;
-            return {
-              address: key,
-              name: value.name,
-              symbol: value.name,
-              blockchain_network: 'near',
-              decimals: value.decimals,
-              rank: coolNames.join('').includes(value.symbol.toLowerCase()) ? 1 : 0,
-              image: value.icon,
-              coingecko_id: null,
-              usd_price: 0,
-              used_in_iframe: false
-            };
-          });
-
-          return {
-            count: 100,
-            next: 'null',
-            previous: 'null',
-            results: tokens
-          } as TokensBackendResponse;
-        })
-      );
   }
 }
