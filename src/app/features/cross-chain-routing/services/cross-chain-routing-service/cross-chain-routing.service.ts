@@ -96,7 +96,7 @@ export class CrossChainRoutingService {
     private readonly contractExecutorFacade: ContractExecutorFacadeService,
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
     private readonly iframeService: IframeService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
