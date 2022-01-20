@@ -400,8 +400,8 @@ export class SwapsFormComponent implements OnInit {
   }
 
   private watchGtmEvenst(): void {
-    this.gtmService.startGtmSession();
     this.gtmService.fetchPassedFormSteps();
+    this.gtmService.startGtmSession();
 
     this.swapFormService.inputValueChanges
       .pipe(

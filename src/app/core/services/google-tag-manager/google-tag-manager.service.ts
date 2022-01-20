@@ -68,9 +68,13 @@ export class GoogleTagManagerService {
       );
     }
 
-    if (!this._windowBeforeUnloadAdded$.getValue()) {
+    if (!this._windowBeforeUnloadAdded$.value) {
       this.window.addEventListener('beforeunload', () => {
-        this.savePassedFormSteps();
+        if (this.isGtmSessionActive) {
+          this.savePassedFormSteps();
+        } else {
+          this.clearPassedFormSteps();
+        }
       });
       this._windowBeforeUnloadAdded$.next(true);
     }
@@ -192,7 +196,7 @@ export class GoogleTagManagerService {
    * Fetches passed form steps from local storage.
    */
   public fetchPassedFormSteps(): void {
-    if (!this._localStorageDataFetched$.value) {
+    if (!this._localStorageDataFetched$.value && this.isGtmSessionActive) {
       const data = this.storeService.fetchData();
       Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
         if (data[key]) {
