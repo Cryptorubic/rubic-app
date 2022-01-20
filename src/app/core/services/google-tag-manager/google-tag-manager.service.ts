@@ -1,12 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';
-import { tap } from 'rxjs/operators';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { WINDOW } from '@ng-web-apis/common';
 
@@ -38,17 +37,13 @@ export class GoogleTagManagerService {
     [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this.instantTradeSteps$
   };
 
+  private _windowBeforeUnloadAdded$ = new BehaviorSubject<boolean>(false);
+
+  private _localStorageDataFetched$ = new BehaviorSubject<boolean>(false);
+
   get isGtmSessionActive(): boolean {
     return Boolean(this.cookieService.get('gtmSessionActive'));
   }
-
-  public readonly gtmSessionObserver$ = interval(5 * 60 * 1000).pipe(
-    tap(() => {
-      if (!this.isGtmSessionActive) {
-        this.clearPassedFormSteps();
-      }
-    })
-  );
 
   constructor(
     private readonly angularGtmService: AngularGoogleTagManagerService,
@@ -73,9 +68,12 @@ export class GoogleTagManagerService {
       );
     }
 
-    this.window.addEventListener('beforeunload', () => {
-      this.savePassedFormSteps();
-    });
+    if (!this._windowBeforeUnloadAdded$.getValue()) {
+      this.window.addEventListener('beforeunload', () => {
+        this.savePassedFormSteps();
+      });
+      this._windowBeforeUnloadAdded$.next(true);
+    }
   }
 
   /**
@@ -89,6 +87,10 @@ export class GoogleTagManagerService {
    * Reloads GTM session.
    */
   public reloadGtmSession(): void {
+    if (!this.isGtmSessionActive) {
+      this.clearPassedFormSteps();
+    }
+
     this.stopGtmSession();
     this.cookieService.set(
       'gtmSessionActive',
@@ -190,12 +192,15 @@ export class GoogleTagManagerService {
    * Fetches passed form steps from local storage.
    */
   public fetchPassedFormSteps(): void {
-    const data = this.storeService.fetchData();
-    Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
-      if (data[key]) {
-        this.forms[key].next(data[key]);
-      }
-    });
+    if (!this._localStorageDataFetched$.value) {
+      const data = this.storeService.fetchData();
+      Object.keys(this.forms).forEach((key: SWAP_PROVIDER_TYPE) => {
+        if (data[key]) {
+          this.forms[key].next(data[key]);
+        }
+      });
+      this._localStorageDataFetched$.next(true);
+    }
   }
 
   /**
