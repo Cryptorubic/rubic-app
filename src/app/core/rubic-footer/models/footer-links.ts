@@ -50,5 +50,10 @@ export const FOOTER_LINKS: FooterLink[] = [
     imageUrl: 'assets/images/contacts/youtube.svg',
     altText: 'Youtube',
     link: 'https://www.youtube.com/c/RubicExchange'
+  },
+  {
+    imageUrl: 'assets/images/contacts/defi-pulse.svg',
+    altText: 'DeFi Pulse',
+    link: 'https://www.defipulse.com/'
   }
 ];

@@ -5,24 +5,24 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import {
   ItSettingsForm,
   SettingsService
-} from 'src/app/features/swaps/services/settings-service/settings.service';
+} from '@features/swaps/services/settings-service/settings.service';
 import { from, Observable, of } from 'rxjs';
-import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
+import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { startWith } from 'rxjs/operators';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 import {
   ItOptions,
   ItProvider
 } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { TransactionReceipt } from 'web3-eth';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { subtractPercent } from 'src/app/shared/utils/utils';
+import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
+import { subtractPercent } from '@shared/utils/utils';
 import {
-  UniV3AlgebraInstantTrade,
-  UniV3AlgebraRoute
-} from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-instant-trade';
+  UniswapV3AlgebraInstantTrade,
+  UniswapV3AlgebraRoute
+} from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/uniswap-v3-algebra-instant-trade';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { UniV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uni-v3-algebra/common-service/models/uni-v3-algebra-constants';
+import { UniswapV3AlgebraConstants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/models/uniswap-v3-algebra-constants';
 import { ContractData } from '@shared/models/blockchain/contract-data';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { MethodData } from '@shared/models/blockchain/method-data';
@@ -38,8 +38,10 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Injectable()
-export abstract class CommonUniV3AlgebraService implements ItProvider {
+export abstract class CommonUniswapV3AlgebraService implements ItProvider {
   public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
+
+  protected abstract readonly unwrapWethMethodName: 'unwrapWETH9' | 'unwrapWNativeToken';
 
   protected readonly blockchain: BLOCKCHAIN_NAME;
 
@@ -48,8 +50,6 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
   private wethAddress: string;
 
   protected readonly swapRouterContract: ContractData;
-
-  protected readonly isAlgebra: boolean;
 
   protected settings: ItSettingsForm;
 
@@ -68,7 +68,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
 
   protected readonly useTestingModeService = inject(UseTestingModeService);
 
-  protected constructor(uniswapV3Constants: UniV3AlgebraConstants) {
+  protected constructor(uniswapV3Constants: UniswapV3AlgebraConstants) {
     this.blockchain = uniswapV3Constants.blockchain;
 
     BlockchainsInfo.checkIsEthLike(this.blockchain);
@@ -78,7 +78,6 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
 
     this.wethAddress = uniswapV3Constants.wethAddressNetMode.mainnet;
     this.swapRouterContract = uniswapV3Constants.swapRouterContract;
-    this.isAlgebra = uniswapV3Constants.isAlgebra;
 
     this.settingsService.instantTradeValueChanges
       .pipe(startWith(this.settingsService.instantTradeValue))
@@ -168,7 +167,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
   }
 
   public async createTrade(
-    trade: UniV3AlgebraInstantTrade,
+    trade: UniswapV3AlgebraInstantTrade,
     options: { onConfirm?: (hash: string) => void; onApprove?: (hash: string | null) => void }
   ): Promise<TransactionReceipt> {
     this.walletConnectorService.checkSettings(this.blockchain);
@@ -195,7 +194,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
    * @param options Instant trade options.
    */
   private async swapTokens(
-    trade: UniV3AlgebraInstantTrade,
+    trade: UniswapV3AlgebraInstantTrade,
     fromAmountAbsolute: string,
     toTokenAddress: string,
     isEth: IsEthFromOrTo,
@@ -234,7 +233,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
    * @param deadline Deadline of swap in seconds.
    */
   protected getSwapRouterMethodData(
-    route: UniV3AlgebraRoute,
+    route: UniswapV3AlgebraRoute,
     fromAmountAbsolute: string,
     toTokenAddress: string,
     isEth: IsEthFromOrTo,
@@ -268,7 +267,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
     const amountOutMin = this.getAmountOutMin(route);
     const unwrapWETHMethodEncoded = EthLikeWeb3Pure.encodeFunctionCall(
       this.swapRouterContract.abi,
-      !this.isAlgebra ? 'unwrapWETH9' : 'unwrapWNativeToken',
+      this.unwrapWethMethodName,
       [amountOutMin, this.walletAddress]
     );
 
@@ -278,7 +277,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
     };
   }
 
-  protected getAmountOutMin(route: UniV3AlgebraRoute): string {
+  protected getAmountOutMin(route: UniswapV3AlgebraRoute): string {
     return subtractPercent(route.outputAbsoluteAmount, this.settings.slippageTolerance).toFixed(0);
   }
 
@@ -291,7 +290,7 @@ export abstract class CommonUniV3AlgebraService implements ItProvider {
    * @param deadline Deadline of swap in seconds.
    */
   protected abstract getSwapRouterExactInputMethodParams(
-    route: UniV3AlgebraRoute,
+    route: UniswapV3AlgebraRoute,
     fromAmountAbsolute: string,
     toTokenAddress: string,
     walletAddress: string,

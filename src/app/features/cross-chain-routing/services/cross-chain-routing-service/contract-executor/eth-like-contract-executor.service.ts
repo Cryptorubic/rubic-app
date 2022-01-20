@@ -35,9 +35,7 @@ export class EthLikeContractExecutorService {
     targetAddress: string
   ): Promise<string> {
     const toWalletAddress =
-      // @ts-ignore TODO uncomment
       trade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
-      // @ts-ignore TODO uncomment
       trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
         ? targetAddress
         : userAddress;
@@ -60,7 +58,6 @@ export class EthLikeContractExecutorService {
             options.onTransactionHash(hash);
           }
           transactionHash = hash;
-          // @ts-ignore
           if (trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
             this.sendDataToSolana(trade, transactionHash, targetAddress);
           }
@@ -108,7 +105,13 @@ export class EthLikeContractExecutorService {
 
     const methodArguments = (
       this.contracts[fromBlockchain] as EthLikeContractData
-    ).getMethodArguments(trade, isToTokenNative, this.contracts[toBlockchain], toWalletAddress);
+    ).getMethodArguments(
+      trade,
+      isToTokenNative,
+      this.contracts[toBlockchain],
+      toWalletAddress,
+      toBlockchain
+    );
 
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
     const blockchainCryptoFee = Web3Pure.toWei(trade.cryptoFee);

@@ -42,6 +42,10 @@ import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cros
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { TuiNotification } from '@taiga-ui/core';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -93,6 +97,9 @@ export class CrossChainRoutingService {
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
     private readonly gtmService: GoogleTagManagerService
+    private readonly iframeService: IframeService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   private async needApprove(
@@ -115,6 +122,7 @@ export class CrossChainRoutingService {
   }
 
   public approve(options: TransactionOptions = {}): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     const { fromBlockchain, tokenIn: fromToken } = this.currentCrossChainTrade;
     const contractAddress = this.contracts[fromBlockchain].address;
     return from(
@@ -199,7 +207,7 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage = toAmount.dividedBy(fromSlippage);
+    const toAmountWithoutSlippage = toTransitToken ? toAmount : toAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
@@ -587,7 +595,6 @@ export class CrossChainRoutingService {
       throw new CrossChainIsUnavailableWarning();
     }
 
-    // @ts-ignore TODO uncomment
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       const isSolanaWorking = await SolanaContractExecutorService.checkHealth(
         this.solanaPrivateAdapter
@@ -665,6 +672,7 @@ export class CrossChainRoutingService {
     return from(
       (async () => {
         await this.checkTradeParameters();
+        this.checkDeviceAndShowNotification();
 
         let transactionHash;
         try {
@@ -755,5 +763,17 @@ export class CrossChainRoutingService {
 
   public calculateTokenOutAmountMin(): BigNumber {
     return ContractExecutorFacadeService.calculateTokenOutAmountMin(this.currentCrossChainTrade);
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
+    }
   }
 }

@@ -1,8 +1,9 @@
 import { AbiItem } from 'web3-utils';
+import { ContractData } from '@shared/models/blockchain/contract-data';
 
-export const swapRouterContractAddress = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
+const SWAP_ROUTER_CONTRACT_ADDRESS = '0xE592427A0AEce92De3Edee1F18E0157C05861564';
 
-export const swapRouterContractAbi = [
+const SWAP_ROUTER_CONTRACT_ABI = [
   {
     inputs: [
       {
@@ -64,3 +65,8 @@ export const swapRouterContractAbi = [
     type: 'function'
   }
 ] as AbiItem[];
+
+export const UNISWAP_V3_SWAP_ROUTER_CONTRACT: ContractData = {
+  address: SWAP_ROUTER_CONTRACT_ADDRESS,
+  abi: SWAP_ROUTER_CONTRACT_ABI
+};

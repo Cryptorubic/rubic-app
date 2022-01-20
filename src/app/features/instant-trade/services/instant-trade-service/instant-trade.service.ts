@@ -30,7 +30,7 @@ import { SuccessTrxNotificationComponent } from 'src/app/shared/components/succe
 import { EthWethSwapProviderService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { ZrxService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/zrx/zrx.service';
-import { UniSwapV3Service } from 'src/app/features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
+import { UniSwapV3EthereumService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
 import { SolarBeamMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/solarbeam-moonriver/solarbeam-moonriver.service';
 import { SushiSwapMoonRiverService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/moonriver/sushi-swap-moonriver/sushi-swap-moonriver.service';
 import { SushiSwapAvalancheService } from '@features/instant-trade/services/instant-trade-service/providers/avalanche/sushi-swap-avalanche-service/sushi-swap-avalanche.service';
@@ -47,6 +47,8 @@ import { RaydiumService } from '@features/instant-trade/services/instant-trade-s
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +70,8 @@ export class InstantTradeService {
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
     private readonly uniswapV2Service: UniSwapV2Service,
-    private readonly uniswapV3Service: UniSwapV3Service,
+    private readonly uniswapV3EthereumService: UniSwapV3EthereumService,
+    private readonly uniswapV3PolygonService: UniSwapV3PolygonService,
     private readonly oneInchPolygonService: OneInchPolService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
@@ -91,6 +94,7 @@ export class InstantTradeService {
     private readonly algebraService: AlgebraService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
     // Providers end
+    private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -112,7 +116,7 @@ export class InstantTradeService {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchEthService,
         [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: this.uniswapV2Service,
-        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3Service,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3EthereumService,
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapEthService,
         [INSTANT_TRADES_PROVIDERS.ZRX]: this.zrxService
       },
@@ -125,7 +129,8 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchPolygonService,
         [INSTANT_TRADES_PROVIDERS.QUICKSWAP]: this.quickSwapService,
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapPolygonService,
-        [INSTANT_TRADES_PROVIDERS.ALGEBRA]: this.algebraService
+        [INSTANT_TRADES_PROVIDERS.ALGEBRA]: this.algebraService,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniswapV3PolygonService
       },
       [BLOCKCHAIN_NAME.HARMONY]: {
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapHarmonyService,
@@ -199,6 +204,7 @@ export class InstantTradeService {
     trade: InstantTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    this.checkDeviceAndShowNotification();
     let transactionHash: string;
     try {
       const options = {
@@ -318,6 +324,7 @@ export class InstantTradeService {
   }
 
   public async approve(provider: INSTANT_TRADES_PROVIDERS, trade: InstantTrade): Promise<void> {
+    this.checkDeviceAndShowNotification();
     try {
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
@@ -380,5 +387,17 @@ export class InstantTradeService {
       toToken,
       usdPrice
     );
+  }
+  
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
+    }
   }
 }
