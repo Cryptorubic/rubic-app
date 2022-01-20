@@ -1,1 +1,15 @@
-<p>promotion-page works!</p>
+<ng-container>
+  <div *ngIf="($isWalletConnected | async) === false; else promotionContent" class="promotion">
+    <h2 class="promotion__header">Promotion</h2>
+    <div class="promotion__button-wrapper">
+      <app-rubic-button (onClick)="openWalletsModal()" [fullWidth]="true">
+        {{ 'navigation.login' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+
+  <ng-template #promotionContent>
+    <app-promotion-link></app-promotion-link>
+    <app-promotion-table></app-promotion-table>
+  </ng-template>
+</ng-container>
