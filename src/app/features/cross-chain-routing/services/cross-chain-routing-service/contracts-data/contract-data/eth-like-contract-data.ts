@@ -137,19 +137,25 @@ export class EthLikeContractData extends ContractData {
       ]
     ];
 
-    if (this.isProviderOneinch(trade.fromProviderIndex)) {
-      const data = (trade.fromTrade as OneinchInstantTrade).data;
-      methodArguments[0].push(data);
-    } else {
-      methodArguments[0].push(true);
-
-      if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
-        methodArguments[0].push(false);
-      }
-    }
+    this.modifyArgumentsForProvider(trade, methodArguments);
 
     methodArguments[0].push(swapToUserMethodSignature);
 
     return methodArguments;
+  }
+
+  private modifyArgumentsForProvider(trade: CrossChainTrade, methodArguments: unknown[][]): void {
+    const swapExactFor = true;
+
+    if (this.isProviderOneinch(trade.fromProviderIndex)) {
+      const data = (trade.fromTrade as OneinchInstantTrade).data;
+      methodArguments[0].push(data);
+    } else {
+      methodArguments[0].push(swapExactFor);
+
+      if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
+        methodArguments[0].push(!swapExactFor);
+      }
+    }
   }
 }

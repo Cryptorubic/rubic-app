@@ -258,13 +258,13 @@ export class CommonOneinchService {
     try {
       if (shouldCalculateGas) {
         if (!fromAddress) {
-          throw new Error('User has not connected');
+          throw new CustomError('User has not connected');
         }
 
         if (fromTokenAddress !== this.oneInchNativeAddress) {
           const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
           if (new BigNumber(amountAbsolute).gt(allowance)) {
-            throw new Error('User have no allowance');
+            throw new CustomError('User have no allowance');
           }
         }
       }
