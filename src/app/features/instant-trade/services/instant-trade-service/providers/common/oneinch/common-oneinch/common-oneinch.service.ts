@@ -35,6 +35,7 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-error';
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
 import { OneinchQuoteError } from '@core/errors/models/provider/oneinch-quote-error';
+import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -66,7 +67,7 @@ export class CommonOneinchService {
     private readonly tokensService: TokensService
   ) {
     this.oneInchNativeAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
-    this.apiBaseUrl = 'https://api.1inch.exchange/v3.0/';
+    this.apiBaseUrl = 'https://api.1inch.exchange/v4.0/';
 
     this.supportedTokens = {
       [BLOCKCHAIN_NAME.ETHEREUM]: [],
@@ -163,7 +164,8 @@ export class CommonOneinchService {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
-    shouldCalculateGas: boolean
+    shouldCalculateGas: boolean,
+    fromAddress?: string
   ): Promise<InstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       fromToken.address,
@@ -179,14 +181,16 @@ export class CommonOneinchService {
     }
 
     const amountAbsolute = Web3Pure.toWei(fromAmount, fromToken.decimals);
-    const { estimatedGas, toTokenAmount, path } = await this.getTradeInfo(
+    const { estimatedGas, toTokenAmount, path, data } = await this.getTradeInfo(
       blockchain,
       fromTokenAddress,
       toTokenAddress,
-      amountAbsolute
+      amountAbsolute,
+      shouldCalculateGas,
+      fromAddress
     );
 
-    const instantTrade: InstantTrade = {
+    const instantTrade: OneinchInstantTrade = {
       blockchain,
       from: {
         token: fromToken,
@@ -196,7 +200,8 @@ export class CommonOneinchService {
         token: toToken,
         amount: Web3Pure.fromWei(toTokenAmount, toToken.decimals)
       },
-      path
+      path,
+      data
     };
     if (!shouldCalculateGas) {
       return instantTrade;
@@ -225,8 +230,15 @@ export class CommonOneinchService {
     blockchain: BLOCKCHAIN_NAME,
     fromTokenAddress: string,
     toTokenAddress: string,
-    amountAbsolute: string
-  ): Promise<{ estimatedGas: BigNumber; toTokenAmount: string; path: SymbolToken[] }> {
+    amountAbsolute: string,
+    shouldCalculateGas: boolean,
+    fromAddress = this.walletAddress
+  ): Promise<{
+    estimatedGas: BigNumber;
+    toTokenAmount: string;
+    path: SymbolToken[];
+    data: string | null;
+  }> {
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
     const quoteTradeParams: OneinchQuoteRequest = {
       params: {
@@ -242,15 +254,18 @@ export class CommonOneinchService {
     let oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse;
     let estimatedGas: BigNumber;
     let toTokenAmount: string;
+    let data = null;
     try {
-      if (!this.walletAddress) {
-        throw new Error('User has not connected');
-      }
+      if (shouldCalculateGas) {
+        if (!fromAddress) {
+          throw new CustomError('User has not connected');
+        }
 
-      if (fromTokenAddress !== this.oneInchNativeAddress) {
-        const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
-        if (new BigNumber(amountAbsolute).gt(allowance)) {
-          throw new Error('User have no allowance');
+        if (fromTokenAddress !== this.oneInchNativeAddress) {
+          const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
+          if (new BigNumber(amountAbsolute).gt(allowance)) {
+            throw new CustomError('User have no allowance');
+          }
         }
       }
 
@@ -258,7 +273,8 @@ export class CommonOneinchService {
         params: {
           ...quoteTradeParams.params,
           slippage: this.settings.slippageTolerance.toString(),
-          fromAddress: this.walletAddress
+          fromAddress,
+          disableEstimate: !shouldCalculateGas
         }
       };
       oneInchTrade = await this.httpClient
@@ -267,6 +283,7 @@ export class CommonOneinchService {
 
       estimatedGas = new BigNumber(oneInchTrade.tx.gas);
       toTokenAmount = oneInchTrade.toTokenAmount;
+      data = oneInchTrade.tx.data;
     } catch (_err) {
       oneInchTrade = await this.httpClient
         .get<OneinchQuoteResponse>(`${this.apiBaseUrl}${blockchainId}/quote`, quoteTradeParams)
@@ -281,7 +298,7 @@ export class CommonOneinchService {
 
     const path = await this.extractPath(blockchain, fromTokenAddress, toTokenAddress, oneInchTrade);
 
-    return { estimatedGas, toTokenAmount, path };
+    return { estimatedGas, toTokenAmount, path, data };
   }
 
   /**

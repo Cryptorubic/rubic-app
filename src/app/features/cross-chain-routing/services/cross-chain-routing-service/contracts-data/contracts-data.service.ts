@@ -22,6 +22,9 @@ import { SushiSwapMoonRiverService } from '@features/instant-trade/services/inst
 import { SushiSwapFantomService } from '@features/instant-trade/services/instant-trade-service/providers/fantom/sushi-swap-fantom-service/sushi-swap-fantom-service.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
+import { OneInchPolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
+import { OneInchEthService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/one-inch-eth-service/one-inch-eth.service';
+import { OneInchBscService } from '@features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 import { UniSwapV3EthereumService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
@@ -37,14 +40,17 @@ export class ContractsDataService {
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly sushiSwapEthService: SushiSwapEthService,
     private readonly uniSwapV3EthereumService: UniSwapV3EthereumService,
+    private readonly oneinchEthService: OneInchEthService,
 
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly sushiSwapBscService: SushiSwapBscService,
+    private readonly oneinchBscService: OneInchBscService,
 
     private readonly quickSwapService: QuickSwapService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly algebraService: AlgebraService,
     private readonly uniSwapV3PolygonService: UniSwapV3PolygonService,
+    private readonly oneinchPolygonService: OneInchPolygonService,
 
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
@@ -79,6 +85,10 @@ export class ContractsDataService {
           {
             provider: this.uniSwapV3EthereumService,
             methodSuffix: 'V3'
+          },
+          {
+            provider: this.oneinchEthService,
+            methodSuffix: 'Inch'
           }
         ],
         2,
@@ -94,6 +104,10 @@ export class ContractsDataService {
           {
             provider: this.sushiSwapBscService,
             methodSuffix: '1'
+          },
+          {
+            provider: this.oneinchBscService,
+            methodSuffix: 'Inch'
           }
         ],
         1,
@@ -117,6 +131,10 @@ export class ContractsDataService {
           {
             provider: this.uniSwapV3PolygonService,
             methodSuffix: 'V3'
+          },
+          {
+            provider: this.oneinchPolygonService,
+            methodSuffix: 'Inch'
           }
         ],
         3,
