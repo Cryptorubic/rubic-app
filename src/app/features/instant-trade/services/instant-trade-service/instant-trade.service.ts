@@ -49,7 +49,6 @@ import { ViperSwapHarmonyService } from '@features/instant-trade/services/instan
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
-import { FEE_AMOUNT } from '@features/instant-trade/services/instant-trade-service/constants/fee-amount';
 
 @Injectable({
   providedIn: 'root'
@@ -229,11 +228,12 @@ export class InstantTradeService {
       }
 
       const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+      const fee = 0;
       this.notifyGtmOnSuccess(
         transactionHash,
         trade.from.token.symbol,
         trade.to.token.symbol,
-        FEE_AMOUNT,
+        fee,
         usdPrice
       );
       this.modalSubscriptions.pop()?.unsubscribe();
