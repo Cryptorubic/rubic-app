@@ -347,7 +347,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       toAddress: this.toWalletAddress,
       onTransactionHash: () => {
         this.notifyTradeInProgress();
-        this.gtmService.notifySignTransaction();
       }
     };
 

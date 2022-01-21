@@ -50,6 +50,7 @@ import { TargetNetworkAddressService } from '@features/cross-chain-routing/compo
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -383,6 +384,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(first())
       .subscribe(
         async (_: TransactionReceipt) => {
+          this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('notifications.successApprove'),
@@ -418,7 +420,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
       this.notifyTradeInProgress();
-      this.gtmService.notifySignTransaction();
     };
 
     this.crossChainRoutingService

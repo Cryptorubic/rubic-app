@@ -9,6 +9,7 @@ import { DOCUMENT } from '@angular/common';
 import { HealthcheckService } from '@core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
     private readonly iframeService: IframeService,
+    private readonly gtmService: GoogleTagManagerService,
     healthcheckService: HealthcheckService,
     queryParamsService: QueryParamsService,
     activatedRoute: ActivatedRoute,
@@ -58,6 +60,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.removeLiveChatInIframe();
         this.document.getElementById('gradient')?.remove();
         this.document.getElementById('wave').hidden = true;
+      }
+
+      if (!isIframe) {
+        this.gtmService.addGtmToDom();
       }
     });
   }
