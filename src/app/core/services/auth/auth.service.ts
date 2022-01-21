@@ -13,6 +13,7 @@ import { SignRejectError } from '@core/errors/models/provider/sign-reject-error'
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -50,7 +51,8 @@ export class AuthService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly store: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.isAuthProcess = false;
     this.currentUser$ = new BehaviorSubject<UserInterface>(undefined);
@@ -183,6 +185,7 @@ export class AuthService {
 
       this.currentUser$.next({ address: this.walletConnectorService.address });
       this.isAuthProcess = false;
+      this.gtmService.fireConnectWalletEvent(this.walletConnectorService.provider.walletName);
     } catch (err) {
       this.catchSignIn(err);
     }

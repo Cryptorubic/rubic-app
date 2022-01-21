@@ -5,6 +5,7 @@ export interface OneinchSwapRequest {
     amount: string;
     slippage: string;
     fromAddress: string;
+    disableEstimate?: boolean;
     mainRouteParts?: string;
   };
 }
