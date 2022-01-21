@@ -98,7 +98,7 @@
           </td>
 
           <td *tuiCell="'FromTo'" tuiTd class="blockchains">
-            <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
               <ng-container *ngIf="trade.fromToken; else showToTokenChain">
                 <div class="blockchains__blockchain">
                   <div class="img-container">
@@ -149,7 +149,7 @@
           </td>
 
           <td *tuiCell="'Provider'" tuiTd>
-            <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
               <div class="img-container">
                 <img
                   (error)="handleImageError($event)"
@@ -162,7 +162,7 @@
           </td>
 
           <td *tuiCell="'Sent'" tuiTd class="token">
-            <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
               <ng-container *ngIf="trade.fromToken; else none">
                 <span>{{
                   trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
@@ -185,7 +185,7 @@
           </td>
 
           <td *tuiCell="'Expected'" tuiTd class="token">
-            <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
               <span>{{
                 trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
               }}</span>
@@ -203,7 +203,7 @@
           </td>
 
           <td *tuiCell="'Date'" tuiTd class="date">
-            <a class="transaction-link" safetyLink [link]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
               <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
               <span>{{ trade.date | date: 'HH:mm' }}</span>
             </a>
