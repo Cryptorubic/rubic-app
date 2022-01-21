@@ -10,6 +10,7 @@ import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-ch
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -89,8 +90,7 @@ export class EthLikeContractData extends ContractData {
     trade: CrossChainTrade,
     isToTokenNative: boolean,
     toContract: ContractData,
-    toWalletAddress: string,
-    toBlockchain: BLOCKCHAIN_NAME
+    toWalletAddress: string
   ): unknown[] {
     const toNumOfBlockchain = toContract.numOfBlockchain;
 
@@ -101,8 +101,7 @@ export class EthLikeContractData extends ContractData {
     const secondPath = toContract.getSecondPath(
       trade.toProviderIndex,
       trade.toTrade,
-      trade.fromBlockchain,
-      toBlockchain
+      trade.fromBlockchain
     );
 
     const fromTransitTokenAmountMin =
@@ -134,15 +133,30 @@ export class EthLikeContractData extends ContractData {
         fromTransitTokenAmountMinAbsolute,
         tokenOutAmountMinAbsolute,
         toWalletAddressBytes32,
-        isToTokenNative,
-        true
+        isToTokenNative
       ]
     ];
-    if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
-      methodArguments[0].push(false);
-    }
+
+    this.modifyArgumentsForProvider(trade, methodArguments);
+
     methodArguments[0].push(swapToUserMethodSignature);
 
     return methodArguments;
+  }
+
+  private modifyArgumentsForProvider(trade: CrossChainTrade, methodArguments: unknown[][]): void {
+    const exactTokensForTokens = true;
+    const tokensForExactTokens = false;
+
+    if (this.isProviderOneinch(trade.fromProviderIndex)) {
+      const data = (trade.fromTrade as OneinchInstantTrade).data;
+      methodArguments[0].push(data);
+    } else {
+      methodArguments[0].push(exactTokensForTokens);
+
+      if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
+        methodArguments[0].push(tokensForExactTokens);
+      }
+    }
   }
 }
