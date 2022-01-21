@@ -8,6 +8,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { SolflareWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { WalletNotInstalled } from '@core/errors/models/provider/wallet-not-installed';
 
 export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWallet> {
   public get walletName(): WALLET_NAME {
@@ -41,10 +42,10 @@ export class SolflareWalletAdapter extends CommonSolanaWalletAdapter<SolflareWal
 
   private async checkErrors(wallet: SolflareWallet): Promise<void> {
     if (!wallet) {
-      throw new CustomError('Wallet is not instelled');
+      throw new WalletNotInstalled();
     }
     if (!wallet.isSolflare) {
-      throw new CustomError('Phantom is not instelled');
+      throw new CustomError('Solflare is not installed');
     }
 
     if (!wallet.isConnected) {

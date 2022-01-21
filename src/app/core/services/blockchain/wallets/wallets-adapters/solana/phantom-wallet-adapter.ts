@@ -7,6 +7,7 @@ import CustomError from '@core/errors/models/custom-error';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { PhantomWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
+import { WalletNotInstalled } from '@core/errors/models/provider/wallet-not-installed';
 
 export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
@@ -74,7 +75,7 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
 
   private async checkErrors(wallet: PhantomWallet): Promise<void> {
     if (!wallet) {
-      throw new CustomError('Wallet is not instelled');
+      throw new WalletNotInstalled();
     }
     if (!wallet.isPhantom) {
       throw new CustomError('Phantom is not instelled');
