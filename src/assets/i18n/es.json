@@ -84,7 +84,7 @@
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
-    "walletNotInstalled": "Wallet is not installed."
+    "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
     "about": "Información",
