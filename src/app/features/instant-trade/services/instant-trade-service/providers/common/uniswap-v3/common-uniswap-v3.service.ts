@@ -99,13 +99,13 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
         ? initialPool.token0
         : initialPool.token1
     ];
-    path.push(
-      ...route.poolsPath.map(pool => {
-        return !compareAddresses(pool.token0.address, path[path.length - 1].address)
+    route.poolsPath.forEach(pool => {
+      path.push(
+        !compareAddresses(pool.token0.address, path[path.length - 1].address)
           ? pool.token0
-          : pool.token1;
-      })
-    );
+          : pool.token1
+      );
+    });
 
     const trade: UniswapV3InstantTrade = {
       blockchain: this.blockchain,
