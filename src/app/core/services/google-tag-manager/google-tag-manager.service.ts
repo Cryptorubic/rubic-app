@@ -148,8 +148,8 @@ export class GoogleTagManagerService {
     this.forms[eventCategory].next(formStepsInitial);
     this.angularGtmService.pushTag({
       event: 'transactionSigned',
-      ecategory: eventCategory,
-      eaction: `${eventCategory}_success`,
+      ecategory: formEventCategoryMap[eventCategory],
+      eaction: `${formEventCategoryMap[eventCategory]}_success`,
       elabel: undefined,
       eventNoninteraction: false,
       ecommerce: {
@@ -163,7 +163,7 @@ export class GoogleTagManagerService {
             {
               name: `${fromToken} to ${toToken}`,
               price: txUsdAmount,
-              category: eventCategory,
+              category: formEventCategoryMap[eventCategory],
               quantity: 1
             }
           ]
