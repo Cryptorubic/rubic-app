@@ -10,6 +10,7 @@ import { filter, pairwise } from 'rxjs/operators';
 import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { GoogleTagManagerModule } from 'angular-google-tag-manager';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,7 +27,10 @@ import { AppComponent } from './app.component';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    GoogleTagManagerModule.forRoot({
+      id: 'GTM-PZ8NH4J'
+    })
   ],
   bootstrap: [AppComponent]
 })

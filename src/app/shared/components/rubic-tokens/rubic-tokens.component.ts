@@ -19,6 +19,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareObjects } from 'src/app/shared/utils/utils';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 
 @Component({
@@ -82,6 +83,7 @@ export class RubicTokensComponent implements OnInit {
     private readonly tokensSelectService: TokensSelectService,
     private readonly queryParamsService: QueryParamsService,
     private readonly tokensService: TokensService,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -111,6 +113,8 @@ export class RubicTokensComponent implements OnInit {
   public openTokensSelect(idPrefix: string): void {
     const { fromBlockchain, toBlockchain } = this.formService.inputValue;
     const currentBlockchain = this.formType === 'from' ? fromBlockchain : toBlockchain;
+
+    this.gtmService.reloadGtmSession();
 
     this.tokensSelectService
       .showDialog(
