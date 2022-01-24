@@ -227,6 +227,8 @@ export class NearWeb3PrivateService {
     const currentUrl = new URL(this.window.location.href);
     currentUrl.searchParams.set('swap_type', type);
     currentUrl.searchParams.set('toAmount', toAmount);
+    const walletAddress = this.walletConnectorService.address;
+    currentUrl.searchParams.set('walletAddress', walletAddress);
     const newUrl = new URL('sign', NEAR_MAINNET_CONFIG.walletUrl);
     newUrl.searchParams.set(
       'transactions',

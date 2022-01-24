@@ -10,7 +10,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { WalletConnection } from 'near-api-js';
 import { REF_FI_CONTRACT_ID } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
-import { debounceTime, filter, take } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -33,6 +33,8 @@ import InsufficientLiquidityError from '@core/errors/models/instant-trade/insuff
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 export interface NearTransaction {
   receiverId: string;
@@ -69,7 +71,8 @@ export class RefFinanceService implements ItProvider {
     private readonly gtmService: GoogleTagManagerService,
     private readonly notificationsService: NotificationsService,
     private readonly instantTradesApiService: InstantTradesApiService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
     this.handleNearQueryParams();
   }
@@ -231,8 +234,7 @@ export class RefFinanceService implements ItProvider {
     });
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    console.log(tokenAddress);
+  public getAllowance(): Observable<BigNumber> {
     return of(new BigNumber(NaN));
   }
 
@@ -284,8 +286,9 @@ export class RefFinanceService implements ItProvider {
    * Handles near query params, shows success or error notification.
    */
   private handleNearQueryParams(): void {
-    const form$ = this.swapFormService.inputValueChanges.pipe(debounceTime(200), take(1));
-    const nearParams$ = this.queryParamsService.nearQueryParams$.pipe(filter(el => el !== null));
+    const form$ = this.swapFormService.inputValueChanges.pipe(first(el => el !== null));
+    const nearParams$ = this.queryParamsService.nearQueryParams$.pipe(first(el => el !== null));
+
     forkJoin([form$, nearParams$]).subscribe(([form, nearParams]) => {
       const { fromToken, toToken, fromAmount } = form;
       if (!fromToken || !toToken || !fromAmount || 'allKeys' in nearParams) {
@@ -293,49 +296,84 @@ export class RefFinanceService implements ItProvider {
       }
 
       if ('errorCode' in nearParams) {
-        this.errorsService.catch(new CustomError(decodeURI(nearParams.errorMessage)));
+        const error = decodeURI(nearParams.errorMessage);
+        if (error.includes('reject')) {
+          this.errorsService.catch(new UserRejectError());
+        } else {
+          this.errorsService.catch(new CustomError(error));
+        }
         return;
       }
-      const trade: InstantTrade = {
-        blockchain: BLOCKCHAIN_NAME.NEAR,
-        from: {
-          token: fromToken,
-          amount: fromAmount
-        },
-        to: {
-          token: toToken,
-          amount: Web3Pure.fromWei(nearParams.toAmount, toToken.decimals)
-        }
-      };
 
-      this.postNearTransaction(nearParams.hash, trade, nearParams.walletAddress);
+      this.postNearTransaction(nearParams.hash);
     });
   }
 
   /**
    * Posts near transaction params to api.
    * @param txHash Transaction hash.
-   * @param trade Trade params.
-   * @param walletAddress User wallet address.
    */
-  private async postNearTransaction(
-    txHash: string,
-    trade: InstantTrade,
-    walletAddress: string
-  ): Promise<void> {
-    this.gtmService.notifySignTransaction();
+  private async postNearTransaction(txHash: string): Promise<void> {
+    try {
+      this.gtmService.notifySignTransaction();
+      const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
 
-    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-      status: TuiNotification.Success,
-      autoClose: 15000
-    });
+      const trx = await adapter.getTransactionByHash(txHash);
+      const params = new Buffer(
+        trx.transaction?.actions?.[0]?.FunctionCall.args,
+        'base64'
+      ).toString();
+      const paramsObject: {
+        amount: string;
+        msg: string;
+        receiver_id: string;
+      } = JSON.parse(params);
 
-    await this.instantTradesApiService.notifyInstantTradesBot({
-      provider: INSTANT_TRADES_PROVIDERS.REF,
-      blockchain: BLOCKCHAIN_NAME.NEAR,
-      walletAddress,
-      trade,
-      txHash
-    });
+      const actions: {
+        min_amount_out: string;
+        pool_id: number;
+        token_in: string;
+        token_out: string;
+      } = JSON.parse(paramsObject?.msg)?.actions?.[0];
+
+      const trade: InstantTrade = {
+        blockchain: BLOCKCHAIN_NAME.NEAR,
+        from: {
+          token: {
+            address: actions.token_in,
+            symbol: actions.token_in,
+            decimals: 1
+          },
+          amount: new BigNumber(paramsObject.amount)
+        },
+        to: {
+          token: {
+            address: actions.token_out,
+            symbol: actions.token_out,
+            decimals: 1
+          },
+          amount: new BigNumber(actions.min_amount_out)
+        }
+      };
+
+      await this.instantTradesApiService
+        .createTrade(txHash, INSTANT_TRADES_PROVIDERS.REF, trade, BLOCKCHAIN_NAME.NEAR)
+        .toPromise();
+
+      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+        status: TuiNotification.Success,
+        autoClose: 10000
+      });
+
+      await this.instantTradesApiService.notifyInstantTradesBot({
+        provider: INSTANT_TRADES_PROVIDERS.REF,
+        blockchain: BLOCKCHAIN_NAME.NEAR,
+        walletAddress: paramsObject.receiver_id,
+        trade,
+        txHash
+      });
+    } catch (err: unknown) {
+      console.debug(err);
+    }
   }
 }

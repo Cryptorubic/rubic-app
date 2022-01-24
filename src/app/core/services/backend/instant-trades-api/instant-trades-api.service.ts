@@ -37,10 +37,7 @@ export class InstantTradesApiService {
 
   private static getHashObject(blockchain: BLOCKCHAIN_NAME, hash: string): HashObject {
     const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
-    return {
-      ...(blockchainType === 'ethLike' && { hash }),
-      ...(blockchainType === 'solana' && { signature: hash })
-    };
+    return blockchainType === 'solana' ? { signature: hash } : { hash };
   }
 
   constructor(

@@ -226,7 +226,7 @@ export class QueryParamsService {
           ...(queryParams.amount && { amount: queryParams.amount })
         };
 
-        if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
+        if (fromChain === toChain && newParams?.from === newParams.to) {
           if (newParams.from === DEFAULT_PARAMETERS.swap.from[fromChain as DefaultParametersFrom]) {
             newParams.from = DEFAULT_PARAMETERS.swap.to[fromChain as DefaultParametersTo];
           } else {

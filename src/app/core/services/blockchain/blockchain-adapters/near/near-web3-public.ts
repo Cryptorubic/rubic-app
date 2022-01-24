@@ -62,16 +62,11 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
   }
 
   /**
-   * Checks if a given address is a valid Solana address.
+   * Checks if a given address is a valid Near address.
    * @param address The address to check validity.
    */
   public isAddressCorrect(address: string): boolean {
-    try {
-      this._connection.account(address);
-    } catch {
-      return false;
-    }
-    return true;
+    return address.includes('.near') || address.includes('.testnet');
   }
 
   /**
