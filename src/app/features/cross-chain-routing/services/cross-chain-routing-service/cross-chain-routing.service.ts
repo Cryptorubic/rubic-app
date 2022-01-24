@@ -207,7 +207,9 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage = toTransitToken ? toAmount : toAmount.dividedBy(fromSlippage);
+    const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
+      ? toAmount
+      : toAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
