@@ -45,9 +45,12 @@ export class RefFinancePoolsService {
     const pools = (
       await Promise.all([...Array(pages)].map((_, i) => this.getAllPools(i + 1)))
     ).flat();
+
+    const fromTokenAddress = fromToken.address === 'near' ? 'wrap.near' : fromToken.address;
+    const toTokenAddress = toToken.address === 'near' ? 'wrap.near' : toToken.address;
+
     return pools.filter(
-      p =>
-        new BigNumber(p.supplies[fromToken.address]).gte(fromAmount) && p.supplies[toToken.address]
+      p => new BigNumber(p.supplies[fromTokenAddress]).gte(fromAmount) && p.supplies[toTokenAddress]
     );
   }
 

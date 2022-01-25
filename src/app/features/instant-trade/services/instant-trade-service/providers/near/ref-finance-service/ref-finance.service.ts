@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { ItSettingsForm } from '@features/swaps/services/settings-service/settings.service';
-import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RefFinancePoolsService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
 import { RefPool } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
 import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
@@ -10,7 +9,7 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { WalletConnection } from 'near-api-js';
 import { REF_FI_CONTRACT_ID } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -35,6 +34,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
+import { compareAddresses } from '@shared/utils/utils';
 
 export interface NearTransaction {
   receiverId: string;
@@ -102,9 +102,7 @@ export class RefFinanceService implements ItProvider {
 
   public async approve(): Promise<void> {
     const amount = this.swapFormService.inputValue.fromAmount;
-    const decimals = this.swapFormService.inputValue.fromToken.decimals;
-    this.wrapNear(amount, decimals);
-    return;
+    return this.wrapNear(amount);
   }
 
   public async calculateTrade(
@@ -168,10 +166,15 @@ export class RefFinanceService implements ItProvider {
   public async createTrade(trade: InstantTrade): Promise<{}> {
     const pool = this._currentTradePool;
     const minAmountOut = Web3Pure.toWei(trade.to.amount, trade.to.token.decimals);
+
+    const fromTokenAddress =
+      trade.from.token.address === 'near' ? 'wrap.near' : trade.from.token.address;
+    const toTokenAddress = trade.to.token.address === 'near' ? 'wrap.near' : trade.to.token.address;
+
     const swapAction = {
       pool_id: pool?.id,
-      token_in: trade.from.token.address,
-      token_out: trade.to.token.address,
+      token_in: fromTokenAddress,
+      token_out: toTokenAddress,
       min_amount_out: minAmountOut
     };
 
@@ -182,11 +185,9 @@ export class RefFinanceService implements ItProvider {
       'rubic'
     ).account();
 
-    const tokenOutRegistered = await account.viewFunction(
-      trade.to.token.address,
-      'storage_balance_of',
-      { account_id: account.accountId }
-    );
+    const tokenOutRegistered = await account.viewFunction(fromTokenAddress, 'storage_balance_of', {
+      account_id: account.accountId
+    });
 
     if (!tokenOutRegistered || tokenOutRegistered.total === '0') {
       const tokenOutActions: RefFiFunctionCallOptions[] = [
@@ -202,7 +203,7 @@ export class RefFinanceService implements ItProvider {
       ];
 
       transactions.push({
-        receiverId: trade.to.token.address,
+        receiverId: toTokenAddress,
         functionCalls: tokenOutActions
       });
     }
@@ -224,7 +225,7 @@ export class RefFinanceService implements ItProvider {
     ];
 
     transactions.push({
-      receiverId: trade.from.token.address,
+      receiverId: fromTokenAddress,
       functionCalls: tokenInActions
     });
 
@@ -240,92 +241,112 @@ export class RefFinanceService implements ItProvider {
   }
 
   public getAllowance(address: string): Observable<BigNumber> {
-    if (address.toLowerCase() === 'wrap.near') {
+    if (compareAddresses(address, 'near')) {
       const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
       return from(
         adapter.getTokenOrNativeBalance(this.walletConnectorService.address, 'wrap.near')
-      );
+      ).pipe(map(allowance => Web3Pure.fromWei(allowance, 24)));
     }
     return of(new BigNumber(NaN));
   }
 
-  private async wrapNear(amount: BigNumber, decimals: number): Promise<void> {
-    const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
-    const transactions: NearTransaction[] = [];
-    // const neededStorage = await checkTokenNeedsStorageDeposit();
-    // if (neededStorage) {
-    //   transactions.push({
-    //     receiverId: REF_FI_CONTRACT_ID,
-    //     functionCalls: [
-    //       {
-    //         methodName: 'storage_deposit',
-    //         args: {
-    //           account_id: wallet.getAccountId(),
-    //           registration_only: false,
-    //         },
-    //         gas: '30000000000000',
-    //         amount: neededStorage,
-    //       },
-    //     ],
-    //   });
-    // }
+  private async wrapNear(amount: BigNumber): Promise<void> {
+    const stringAmount = amount.toString();
+    const transactions: NearTransaction[] = [
+      {
+        receiverId: 'wrap.near',
+        functionCalls: [
+          {
+            methodName: 'near_deposit',
+            args: {},
+            gas: '50000000000000',
+            amount: stringAmount
+          }
+        ]
+      }
+    ];
 
-    const actions: RefFiFunctionCallOptions[] = [];
-    const balance = await adapter.getTokenOrNativeBalance(
-      this.walletConnectorService.address,
-      'wrap.near'
-    );
-
-    if (!balance || balance.eq(0)) {
-      actions.push({
-        methodName: 'storage_deposit',
-        args: {},
-        gas: '30000000000000',
-        amount: this.newAccountStorageCost
-      });
-    }
-
-    actions.push({
-      methodName: 'near_deposit',
-      args: {},
-      gas: '50000000000000',
-      amount: amount.toFixed()
-    });
-
-    const weiAmount = Web3Pure.toWei(amount, decimals);
-    actions.push({
-      methodName: 'ft_transfer_call',
-      args: {
-        receiver_id: REF_FI_CONTRACT_ID,
-        amount: weiAmount,
-        msg: ''
-      },
-      gas: '50000000000000',
-      amount: this.oneYoctoNear
-    });
-
-    transactions.push({
-      receiverId: 'wrap.near',
-      functionCalls: actions
-    });
-
-    return this.nearPrivateAdapter.executeMultipleTransactions(
+    await this.nearPrivateAdapter.executeMultipleTransactions(
       transactions,
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-      weiAmount
+      stringAmount
     );
+
+    // const transactions: NearTransaction[] = [];
+    // // const neededStorage = await checkTokenNeedsStorageDeposit();
+    // // if (neededStorage) {
+    // //   transactions.push({
+    // //     receiverId: REF_FI_CONTRACT_ID,
+    // //     functionCalls: [
+    // //       {
+    // //         methodName: 'storage_deposit',
+    // //         args: {
+    // //           account_id: wallet.getAccountId(),
+    // //           registration_only: false,
+    // //         },
+    // //         gas: '30000000000000',
+    // //         amount: neededStorage,
+    // //       },
+    // //     ],
+    // //   });
+    // // }
+    //
+    // const actions: RefFiFunctionCallOptions[] = [];
+    // const balance = await adapter.getTokenOrNativeBalance(
+    //   this.walletConnectorService.address,
+    //   'wrap.near'
+    // );
+    //
+    // if (!balance || balance.eq(0)) {
+    //   actions.push({
+    //     methodName: 'storage_deposit',
+    //     args: {},
+    //     gas: '30000000000000',
+    //     amount: this.newAccountStorageCost
+    //   });
+    // }
+    //
+    // actions.push({
+    //   methodName: 'near_deposit',
+    //   args: {},
+    //   gas: '50000000000000',
+    //   amount: amount.toFixed()
+    // });
+    //
+    // const weiAmount = Web3Pure.toWei(amount, decimals);
+    // actions.push({
+    //   methodName: 'ft_transfer_call',
+    //   args: {
+    //     receiver_id: REF_FI_CONTRACT_ID,
+    //     amount: weiAmount,
+    //     msg: ''
+    //   },
+    //   gas: '50000000000000',
+    //   amount: this.oneYoctoNear
+    // });
+    //
+    // transactions.push({
+    //   receiverId: 'wrap.near',
+    //   functionCalls: actions
+    // });
+    //
+    // return this.nearPrivateAdapter.executeMultipleTransactions(
+    //   transactions,
+    //   SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+    //   weiAmount
+    // );
   }
 
   /**
-   * @TODO Fix near.
-   * @param fromAddress
-   * @param toAddress
-   * @private
+   * Can tokens be wrapped or unwrapped.
+   * @param fromAddress From token address.
+   * @param toAddress To token address.
    */
   private isWrap(fromAddress: string, toAddress: string): boolean {
     return (
-      (fromAddress === NATIVE_NEAR_ADDRESS && toAddress === WRAPPED_SOL.mintAddress) ||
-      (fromAddress === WRAPPED_SOL.mintAddress && toAddress === NATIVE_SOLANA_MINT_ADDRESS)
+      (fromAddress.toLowerCase() === NATIVE_NEAR_ADDRESS &&
+        toAddress.toLowerCase() === 'wrap.near') ||
+      (fromAddress.toLowerCase() === 'wrap.near' && toAddress === NATIVE_SOLANA_MINT_ADDRESS)
     );
   }
 
@@ -344,12 +365,14 @@ export class RefFinanceService implements ItProvider {
     toToken: InstantTradeToken
   ): Promise<RefFinanceRoute[]> {
     const FEE_DIVISOR = 10000;
+    const fromTokenAddress = fromToken.address === 'near' ? 'wrap.near' : fromToken.address;
+    const toTokenAddress = toToken.address === 'near' ? 'wrap.near' : toToken.address;
 
     return Promise.all(
       pools.map(pool => {
         const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
-        const inBalance = Web3Pure.fromWei(pool.supplies[fromToken.address], fromToken.decimals);
-        const outBalance = Web3Pure.fromWei(pool.supplies[toToken.address], toToken.decimals);
+        const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
+        const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
         const estimate = amountWithFee
           .multipliedBy(outBalance)
           .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
