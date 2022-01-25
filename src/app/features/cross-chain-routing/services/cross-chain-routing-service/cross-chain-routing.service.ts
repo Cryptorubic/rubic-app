@@ -40,6 +40,12 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { TuiNotification } from '@taiga-ui/core';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -89,7 +95,11 @@ export class CrossChainRoutingService {
     private readonly gasService: GasService,
     private readonly contractExecutorFacade: ContractExecutorFacadeService,
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
-    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService
+    private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly iframeService: IframeService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {}
 
   private async needApprove(
@@ -112,6 +122,7 @@ export class CrossChainRoutingService {
   }
 
   public approve(options: TransactionOptions = {}): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     const { fromBlockchain, tokenIn: fromToken } = this.currentCrossChainTrade;
     const contractAddress = this.contracts[fromBlockchain].address;
     return from(
@@ -196,7 +207,9 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage = toAmount.dividedBy(fromSlippage);
+    const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
+      ? toAmount
+      : toAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
@@ -255,9 +268,10 @@ export class CrossChainRoutingService {
   ): Promise<TradeAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
+        const contractAddress = this.contracts[blockchain].address;
         const instantTrade = await this.contracts[blockchain]
           .getProvider(providerIndex)
-          .calculateTrade(fromToken, fromAmount, toToken, false);
+          .calculateTrade(fromToken, fromAmount, toToken, false, contractAddress);
         return {
           trade: instantTrade,
           toAmount: instantTrade.to.amount
@@ -375,10 +389,11 @@ export class CrossChainRoutingService {
       return new BigNumber(0);
     }
 
+    const contractAddress = this.contracts[blockchain].address;
     return (
       await this.contracts[blockchain]
         .getProvider(providerIndex)
-        .calculateTrade(transitToken, transitTokenAmount, fromToken, false)
+        .calculateTrade(transitToken, transitTokenAmount, fromToken, false, contractAddress)
     ).to.amount;
   }
 
@@ -661,6 +676,7 @@ export class CrossChainRoutingService {
     return from(
       (async () => {
         await this.checkTradeParameters();
+        this.checkDeviceAndShowNotification();
 
         let transactionHash;
         try {
@@ -671,6 +687,8 @@ export class CrossChainRoutingService {
           );
 
           await this.postCrossChainTrade(transactionHash);
+
+          await this.notifyGtmOnSuccess(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
             await this.postCrossChainTrade(transactionHash);
@@ -724,7 +742,38 @@ export class CrossChainRoutingService {
     );
   }
 
+  /**
+   * Notifies GTM about signed transaction.
+   * @param txHash Signed transaction hash.
+   */
+  private async notifyGtmOnSuccess(txHash: string): Promise<void> {
+    const { feeAmount } = await this.getTradeInfo();
+    const { tokenIn, tokenOut } = this.currentCrossChainTrade;
+
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      feeAmount.toNumber(),
+      tokenIn.symbol,
+      tokenOut.symbol,
+      tokenIn.amount.toNumber()
+    );
+    return;
+  }
+
   public calculateTokenOutAmountMin(): BigNumber {
     return ContractExecutorFacadeService.calculateTokenOutAmountMin(this.currentCrossChainTrade);
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
+    }
   }
 }

@@ -10,6 +10,10 @@
   border-radius: 10px;
 
   @include iframe-horizontal {
+    position: absolute;
+    top: 0;
+    left: 0;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,7 +26,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: $iframe-vertical-width;
     height: $iframe-vertical-height;
     margin: 0 auto;
   }

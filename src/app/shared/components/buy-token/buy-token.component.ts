@@ -11,6 +11,7 @@ import { from, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { compareTokens } from '@shared/utils/utils';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 export interface TokenInfo {
   blockchain: BLOCKCHAIN_NAME;
@@ -45,7 +46,8 @@ export class BuyTokenComponent {
   constructor(
     private readonly router: Router,
     private readonly swapsService: SwapsService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.tokensType = 'default';
     this.customTokens = {
@@ -106,6 +108,7 @@ export class BuyTokenComponent {
    * Navigates to swap page and fill in tokens form.
    */
   public buyToken(searchedTokens?: { from: TokenInfo; to: TokenInfo }): void {
+    this.gtmService.reloadGtmSession();
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {

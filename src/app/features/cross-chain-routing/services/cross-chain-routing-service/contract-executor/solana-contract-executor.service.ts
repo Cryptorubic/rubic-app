@@ -226,8 +226,7 @@ export class SolanaContractExecutorService {
       secondPath: this.contracts[trade.toBlockchain].getSecondPath(
         trade.toProviderIndex,
         trade.toTrade,
-        trade.fromBlockchain,
-        trade.toBlockchain
+        trade.fromBlockchain
       ),
       exactRbcTokenOut: middleFinalAmount,
       tokenOutMin: tokenOutAmountAbsolute,

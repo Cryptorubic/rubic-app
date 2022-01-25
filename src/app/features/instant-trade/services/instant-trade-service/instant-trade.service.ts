@@ -10,7 +10,7 @@ import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { OneInchPolService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-pol.service';
+import { OneInchPolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/one-inch-polygon-service/one-inch-polygon.service';
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
@@ -46,6 +46,8 @@ import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manage
 import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { ViperSwapHarmonyService } from '@features/instant-trade/services/instant-trade-service/providers/harmony/viper-swap-harmony/viper-swap-harmony.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { IframeService } from '@core/services/iframe/iframe.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
 import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
@@ -73,7 +75,7 @@ export class InstantTradeService {
     private readonly uniswapV2Service: UniSwapV2Service,
     private readonly uniswapV3EthereumService: UniSwapV3EthereumService,
     private readonly uniswapV3PolygonService: UniSwapV3PolygonService,
-    private readonly oneInchPolygonService: OneInchPolService,
+    private readonly oneInchPolygonService: OneInchPolygonService,
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
     private readonly oneInchBscService: OneInchBscService,
@@ -98,6 +100,7 @@ export class InstantTradeService {
     private readonly oneInchArbitrumService: OneInchArbitrumService,
     private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
     // Providers end
+    private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorService: ErrorsService,
@@ -212,13 +215,13 @@ export class InstantTradeService {
     trade: InstantTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    this.checkDeviceAndShowNotification();
     let transactionHash: string;
     try {
       const options = {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
-          this.gtmService.notifySignTransaction();
 
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
@@ -235,6 +238,15 @@ export class InstantTradeService {
         );
       }
 
+      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+      const fee = 0;
+      this.notifyGtmOnSuccess(
+        transactionHash,
+        trade.from.token.symbol,
+        trade.to.token.symbol,
+        fee,
+        usdPrice
+      );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -323,6 +335,7 @@ export class InstantTradeService {
   }
 
   public async approve(provider: INSTANT_TRADES_PROVIDERS, trade: InstantTrade): Promise<void> {
+    this.checkDeviceAndShowNotification();
     try {
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
@@ -367,6 +380,35 @@ export class InstantTradeService {
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open();
+    }
+  }
+
+  private notifyGtmOnSuccess(
+    txHash: string,
+    fromToken: string,
+    toToken: string,
+    revenue: number,
+    usdPrice: number
+  ): void {
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      txHash,
+      revenue,
+      fromToken,
+      toToken,
+      usdPrice
+    );
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationsService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
     }
   }
 }
