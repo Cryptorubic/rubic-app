@@ -297,7 +297,7 @@ export class InstantTradeService {
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
 
-    const providerApproveData = providers.map((provider: ItProvider) =>
+    const providerApproveData$ = providers.map((provider: ItProvider) =>
       provider.getAllowance(fromToken.address).pipe(
         catchError((err: unknown) => {
           console.debug(err, provider);
@@ -306,7 +306,7 @@ export class InstantTradeService {
       )
     );
 
-    return forkJoin(providerApproveData).pipe(
+    return forkJoin(providerApproveData$).pipe(
       map((approveArray: BigNumber[]) => {
         return approveArray.map(el => fromAmount.gt(el));
       })

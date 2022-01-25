@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, from, Observable, of } from 'rxjs';
 import { ItSettingsForm } from '@features/swaps/services/settings-service/settings.service';
 import { WRAPPED_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RefFinancePoolsService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
@@ -52,6 +52,8 @@ interface RefFinanceRoute {
 export class RefFinanceService implements ItProvider {
   public readonly providerType = INSTANT_TRADES_PROVIDERS.REF;
 
+  private readonly newAccountStorageCost = '0.00125';
+
   private settings: ItSettingsForm;
 
   private _currentTradePool: RefPool;
@@ -98,7 +100,10 @@ export class RefFinanceService implements ItProvider {
     //   .multipliedBy(10 ** fromToken.decimals);
   }
 
-  public approve(): Promise<void> {
+  public async approve(): Promise<void> {
+    const amount = this.swapFormService.inputValue.fromAmount;
+    const decimals = this.swapFormService.inputValue.fromToken.decimals;
+    this.wrapNear(amount, decimals);
     return;
   }
 
@@ -234,8 +239,81 @@ export class RefFinanceService implements ItProvider {
     });
   }
 
-  public getAllowance(): Observable<BigNumber> {
+  public getAllowance(address: string): Observable<BigNumber> {
+    if (address.toLowerCase() === 'wrap.near') {
+      const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
+      return from(
+        adapter.getTokenOrNativeBalance(this.walletConnectorService.address, 'wrap.near')
+      );
+    }
     return of(new BigNumber(NaN));
+  }
+
+  private async wrapNear(amount: BigNumber, decimals: number): Promise<void> {
+    const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
+    const transactions: NearTransaction[] = [];
+    // const neededStorage = await checkTokenNeedsStorageDeposit();
+    // if (neededStorage) {
+    //   transactions.push({
+    //     receiverId: REF_FI_CONTRACT_ID,
+    //     functionCalls: [
+    //       {
+    //         methodName: 'storage_deposit',
+    //         args: {
+    //           account_id: wallet.getAccountId(),
+    //           registration_only: false,
+    //         },
+    //         gas: '30000000000000',
+    //         amount: neededStorage,
+    //       },
+    //     ],
+    //   });
+    // }
+
+    const actions: RefFiFunctionCallOptions[] = [];
+    const balance = await adapter.getTokenOrNativeBalance(
+      this.walletConnectorService.address,
+      'wrap.near'
+    );
+
+    if (!balance || balance.eq(0)) {
+      actions.push({
+        methodName: 'storage_deposit',
+        args: {},
+        gas: '30000000000000',
+        amount: this.newAccountStorageCost
+      });
+    }
+
+    actions.push({
+      methodName: 'near_deposit',
+      args: {},
+      gas: '50000000000000',
+      amount: amount.toFixed()
+    });
+
+    const weiAmount = Web3Pure.toWei(amount, decimals);
+    actions.push({
+      methodName: 'ft_transfer_call',
+      args: {
+        receiver_id: REF_FI_CONTRACT_ID,
+        amount: weiAmount,
+        msg: ''
+      },
+      gas: '50000000000000',
+      amount: this.oneYoctoNear
+    });
+
+    transactions.push({
+      receiverId: 'wrap.near',
+      functionCalls: actions
+    });
+
+    return this.nearPrivateAdapter.executeMultipleTransactions(
+      transactions,
+      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      weiAmount
+    );
   }
 
   /**

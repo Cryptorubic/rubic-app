@@ -3,6 +3,7 @@ import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-tr
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
+import { INSTANT_TRADES_PRESWAP_TEXT } from '@shared/constants/instant-trade/blockchain-preswap-text';
 
 const defaultState: ProviderControllerData = {
   trade: null,
@@ -19,7 +20,8 @@ function getDefaultStateByProviders(
     ...defaultState,
     tradeProviderInfo: {
       label: instantTradesLabels[provider],
-      value: provider
+      value: provider,
+      preswapText: INSTANT_TRADES_PRESWAP_TEXT[provider]
     }
   }));
 }
