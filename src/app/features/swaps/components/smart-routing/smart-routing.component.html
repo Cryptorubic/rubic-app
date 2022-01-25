@@ -1,0 +1,39 @@
+<div class="info">
+  <div class="info__chip">
+    {{ 'crossChainPage.smartRouting.save' | translate: { amount: savings } }}
+  </div>
+  <div class="info__chip">{{ 'crossChainPage.smartRouting.estTime' | translate }}</div>
+</div>
+<div class="route">
+  <div class="dex">
+    <div class="dex__icon">
+      <img [src]="tradesProviders[fromProvider].image" alt="Provider" />
+    </div>
+    <div class="dex__name">
+      {{ tradesProviders[fromProvider].name }}
+    </div>
+  </div>
+  <div
+    class="route__line route__line_left"
+    [style.border-color]="tradesProviders[fromProvider].color"
+  ></div>
+  <div class="dex">
+    <div class="dex__icon">
+      <img src="assets/images/icons/providers/rubic.svg" alt="Provider" />
+    </div>
+    <div class="dex__name">Rubic</div>
+    <div class="dex__cap">Smart Routing</div>
+  </div>
+  <div
+    class="route__line route__line_right"
+    [style.border-color]="tradesProviders[toProvider].color"
+  ></div>
+  <div class="dex">
+    <div class="dex__icon">
+      <img [src]="tradesProviders[toProvider].image" alt="Provider" />
+    </div>
+    <div class="dex__name">
+      {{ tradesProviders[toProvider].name }}
+    </div>
+  </div>
+</div>

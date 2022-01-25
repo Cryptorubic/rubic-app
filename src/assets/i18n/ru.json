@@ -368,6 +368,10 @@
       "minimumReceivedHint": "Minimum amount of tokens to be received\n",
       "platformFee": "Platform fee",
       "platformFeeHint": "Platform commission charges in RBC token\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 2 min"
     }
   },
   "instantTrades": {

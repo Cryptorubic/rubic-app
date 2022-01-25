@@ -9,7 +9,7 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
-import { from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -70,6 +70,10 @@ export class CrossChainRoutingService {
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
+
+  private readonly _smartRoutingSavings$ = new BehaviorSubject<string>(undefined);
+
+  public readonly smartRoutingSavings$ = this._smartRoutingSavings$.asObservable();
 
   private readonly contracts = this.contractsDataService.contracts;
 
@@ -152,10 +156,13 @@ export class CrossChainRoutingService {
     const fromSlippage = 1 - this.slippageTolerance / 2;
     const toSlippage = 1 - this.slippageTolerance / 2;
 
-    const {
-      providerIndex: fromProviderIndex,
-      tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
-    } = await this.getBestProviderIndex(fromBlockchain, fromToken, fromAmount, fromTransitToken);
+    const [
+      {
+        providerIndex: fromProviderIndex,
+        tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
+      },
+      fromProviderWorst
+    ] = await this.getBestProviderIndex(fromBlockchain, fromToken, fromAmount, fromTransitToken);
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
       toBlockchain,
@@ -164,14 +171,24 @@ export class CrossChainRoutingService {
       fromSlippage
     );
 
-    const {
-      providerIndex: toProviderIndex,
-      tradeAndToAmount: { trade: toTrade, toAmount }
-    } = await this.getBestProviderIndex(
+    const [
+      {
+        providerIndex: toProviderIndex,
+        tradeAndToAmount: { trade: toTrade, toAmount }
+      },
+      toProviderWorst
+    ] = await this.getBestProviderIndex(
       toBlockchain,
       toTransitToken,
       toTransitTokenAmount,
       toToken
+    );
+
+    this.calculateSmartRoutingSavings(
+      fromTransitTokenAmount,
+      fromProviderWorst.tradeAndToAmount.toAmount,
+      toAmount,
+      toProviderWorst.tradeAndToAmount.toAmount
     );
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
@@ -226,7 +243,7 @@ export class CrossChainRoutingService {
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken
-  ): Promise<IndexedTradeAndToAmount> {
+  ): Promise<IndexedTradeAndToAmount[]> {
     const promises = this.contracts[blockchain].providersData.map(async (_, providerIndex) => ({
       providerIndex,
       tradeAndToAmount: await this.getTradeAndToAmount(
@@ -247,7 +264,7 @@ export class CrossChainRoutingService {
       if (!sortedResults.length) {
         throw (results[0] as PromiseRejectedResult).reason;
       }
-      return sortedResults[0];
+      return [sortedResults[0], sortedResults[sortedResults.length - 1]];
     });
   }
 
@@ -775,5 +792,26 @@ export class CrossChainRoutingService {
         }
       );
     }
+  }
+
+  private calculateSmartRoutingSavings(
+    fromProviderBestAmount: BigNumber,
+    fromProviderWorstAmount: BigNumber,
+    toProviderBestAmount: BigNumber,
+    toProviderWorstAmount: BigNumber
+  ): void {
+    console.log([...arguments].map(arg => arg.toFixed(2)));
+    console.log(
+      fromProviderBestAmount
+        .minus(fromProviderWorstAmount)
+        .plus(toProviderBestAmount.minus(toProviderWorstAmount))
+        .toFixed(2)
+    );
+    const savings = fromProviderBestAmount
+      .minus(fromProviderWorstAmount)
+      .plus(toProviderBestAmount.minus(toProviderWorstAmount))
+      .toFixed(2);
+
+    this._smartRoutingSavings$.next(savings);
   }
 }
