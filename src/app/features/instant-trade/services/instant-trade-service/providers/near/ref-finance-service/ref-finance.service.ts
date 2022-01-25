@@ -21,10 +21,7 @@ import { InstantTradesApiService } from '@core/services/backend/instant-trades-a
 import { ErrorsService } from '@core/errors/errors.service';
 import CustomError from '@core/errors/models/custom-error';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import {
-  NATIVE_NEAR_ADDRESS,
-  NATIVE_SOLANA_MINT_ADDRESS
-} from '@shared/constants/blockchain/native-token-address';
+import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
@@ -163,7 +160,14 @@ export class RefFinanceService implements ItProvider {
     throw new InsufficientLiquidityError('CrossChainRouting');
   }
 
-  public async createTrade(trade: InstantTrade): Promise<{}> {
+  public async createTrade(trade: InstantTrade): Promise<unknown> {
+    if (this.isWrap(trade.from.token.address, trade.to.token.address)) {
+      if (trade.from.token.address === NATIVE_NEAR_ADDRESS) {
+        await this.wrapNear(trade.from.amount);
+      } else {
+        await this.unwrapNear(trade.from.amount);
+      }
+    }
     const pool = this._currentTradePool;
     const minAmountOut = Web3Pure.toWei(trade.to.amount, trade.to.token.decimals);
 
@@ -271,70 +275,28 @@ export class RefFinanceService implements ItProvider {
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
       stringAmount
     );
+  }
 
-    // const transactions: NearTransaction[] = [];
-    // // const neededStorage = await checkTokenNeedsStorageDeposit();
-    // // if (neededStorage) {
-    // //   transactions.push({
-    // //     receiverId: REF_FI_CONTRACT_ID,
-    // //     functionCalls: [
-    // //       {
-    // //         methodName: 'storage_deposit',
-    // //         args: {
-    // //           account_id: wallet.getAccountId(),
-    // //           registration_only: false,
-    // //         },
-    // //         gas: '30000000000000',
-    // //         amount: neededStorage,
-    // //       },
-    // //     ],
-    // //   });
-    // // }
-    //
-    // const actions: RefFiFunctionCallOptions[] = [];
-    // const balance = await adapter.getTokenOrNativeBalance(
-    //   this.walletConnectorService.address,
-    //   'wrap.near'
-    // );
-    //
-    // if (!balance || balance.eq(0)) {
-    //   actions.push({
-    //     methodName: 'storage_deposit',
-    //     args: {},
-    //     gas: '30000000000000',
-    //     amount: this.newAccountStorageCost
-    //   });
-    // }
-    //
-    // actions.push({
-    //   methodName: 'near_deposit',
-    //   args: {},
-    //   gas: '50000000000000',
-    //   amount: amount.toFixed()
-    // });
-    //
-    // const weiAmount = Web3Pure.toWei(amount, decimals);
-    // actions.push({
-    //   methodName: 'ft_transfer_call',
-    //   args: {
-    //     receiver_id: REF_FI_CONTRACT_ID,
-    //     amount: weiAmount,
-    //     msg: ''
-    //   },
-    //   gas: '50000000000000',
-    //   amount: this.oneYoctoNear
-    // });
-    //
-    // transactions.push({
-    //   receiverId: 'wrap.near',
-    //   functionCalls: actions
-    // });
-    //
-    // return this.nearPrivateAdapter.executeMultipleTransactions(
-    //   transactions,
-    //   SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-    //   weiAmount
-    // );
+  private async unwrapNear(amount: BigNumber): Promise<void> {
+    const weiAmount = Web3Pure.toWei(amount, 24);
+    const transactions: NearTransaction[] = [
+      {
+        receiverId: 'wrap.near',
+        functionCalls: [
+          {
+            methodName: 'near_withdraw',
+            args: { amount: weiAmount },
+            amount: this.oneYoctoNear
+          }
+        ]
+      }
+    ];
+
+    await this.nearPrivateAdapter.executeMultipleTransactions(
+      transactions,
+      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      weiAmount
+    );
   }
 
   /**
@@ -346,7 +308,7 @@ export class RefFinanceService implements ItProvider {
     return (
       (fromAddress.toLowerCase() === NATIVE_NEAR_ADDRESS &&
         toAddress.toLowerCase() === 'wrap.near') ||
-      (fromAddress.toLowerCase() === 'wrap.near' && toAddress === NATIVE_SOLANA_MINT_ADDRESS)
+      (fromAddress.toLowerCase() === 'wrap.near' && toAddress === NATIVE_NEAR_ADDRESS)
     );
   }
 
