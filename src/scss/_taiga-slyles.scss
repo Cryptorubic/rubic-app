@@ -131,4 +131,13 @@ tui-value-decoration {
   right: 11px;
 }
 
+html.iframe-horizontal tui-dialog > div.content {
+  padding: 0 2rem !important;
+}
+
+html.iframe-vertical tui-dialog > div.content {
+  padding: 0 !important;
+}
+
+
 
