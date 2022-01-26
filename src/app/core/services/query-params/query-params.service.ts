@@ -394,7 +394,9 @@ export class QueryParamsService {
       'bsc_tokens',
       'polygon_tokens',
       'harmony_tokens',
-      'avalanche_tokens'
+      'avalanche_tokens',
+      'fantom_tokens',
+      'moonriver_tokens'
     ] as const;
     const tokensQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([key]) =>

@@ -19,7 +19,7 @@
     justify-content: center;
     width: $iframe-vertical-width;
     height: 100vh;
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
 
   &__row {
@@ -60,11 +60,6 @@
       height: 180px;
       max-height: 180px;
       padding: 0 30px;
-
-      app-blockchains-aside {
-        display: block;
-        margin-bottom: 20px;
-      }
     }
 
     @include iframe-vertical {
@@ -76,13 +71,17 @@
 
       app-blockchains-aside {
         display: block;
-        margin-bottom: 10px;
       }
     }
 
     app-blockchains-aside {
       position: relative;
       left: -24px;
+
+      @include iframe {
+        left: 0;
+      }
+
     }
   }
 
