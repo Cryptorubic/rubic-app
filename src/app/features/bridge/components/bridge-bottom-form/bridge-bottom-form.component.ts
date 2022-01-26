@@ -54,6 +54,7 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/models/swap-provider-type';
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -316,6 +317,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         first(),
         tap(() => {
+          this.gtmService.fireFormInteractionEvent(SWAP_PROVIDER_TYPE.BRIDGE, 'approve');
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('bridgePage.approveSuccessMessage'),
@@ -354,7 +356,26 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTradeRequest)
       .pipe(
         first(),
-        tap(() => {
+        tap(async transactionReceipt => {
+          if (transactionReceipt.status) {
+            const revenue = 0;
+            const { fromToken, toToken } = this.swapFormService.inputValue;
+            const { toAmount } = this.swapFormService.outputValue;
+            const toTokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
+              address: toToken.address,
+              blockchain: toToken.blockchain
+            });
+
+            this.gtmService.fireTxSignedEvent(
+              SWAP_PROVIDER_TYPE.BRIDGE,
+              transactionReceipt.transactionHash,
+              revenue,
+              fromToken.symbol,
+              toToken.symbol,
+              toAmount.toNumber() * toTokenUsdPrice
+            );
+          }
+
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),

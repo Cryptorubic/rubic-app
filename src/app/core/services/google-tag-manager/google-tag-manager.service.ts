@@ -25,21 +25,31 @@ const formStepsInitial = {
   providedIn: 'root'
 })
 export class GoogleTagManagerService {
-  private readonly instantTradeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
+  private readonly _instantTradeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
-  private readonly bridgeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
+  private readonly _bridgeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
-  private readonly multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
+  private readonly _multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
   private readonly forms = {
-    [SWAP_PROVIDER_TYPE.BRIDGE]: this.bridgeSteps$,
-    [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: this.multiChainSteps$,
-    [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this.instantTradeSteps$
+    [SWAP_PROVIDER_TYPE.BRIDGE]: this._bridgeSteps$,
+    [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: this._multiChainSteps$,
+    [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: this._instantTradeSteps$
   };
 
   private readonly _windowBeforeUnloadAdded$ = new BehaviorSubject<boolean>(false);
 
   private readonly _localStorageDataFetched$ = new BehaviorSubject<boolean>(false);
+
+  private readonly _needTrackFormEventsNow$ = new BehaviorSubject<boolean>(true);
+
+  set needTrackFormEventsNow(value: boolean) {
+    this._needTrackFormEventsNow$.next(value);
+  }
+
+  get needTrackFormEventsNow(): boolean {
+    return this._needTrackFormEventsNow$.getValue();
+  }
 
   get isGtmSessionActive(): boolean {
     return Boolean(this.cookieService.get('gtmSessionActive'));
@@ -151,7 +161,7 @@ export class GoogleTagManagerService {
       ecategory: formEventCategoryMap[eventCategory],
       eaction: `${formEventCategoryMap[eventCategory]}_success`,
       elabel: undefined,
-      eventNoninteraction: false,
+      interactionType: false,
       ecommerce: {
         currencyCode: 'USD',
         purchase: {
