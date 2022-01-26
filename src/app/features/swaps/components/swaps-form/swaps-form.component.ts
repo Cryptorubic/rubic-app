@@ -415,12 +415,16 @@ export class SwapsFormComponent implements OnInit {
           this.gtmService.clearPassedFormSteps();
         }
 
-        if (fromToken) {
-          this.gtmService.updateFormStep(swapMode, 'token1');
-        }
+        if (this.gtmService.needTrackFormEventsNow) {
+          if (fromToken) {
+            this.gtmService.updateFormStep(swapMode, 'token1');
+          }
 
-        if (toToken) {
-          this.gtmService.updateFormStep(swapMode, 'token2');
+          if (toToken) {
+            this.gtmService.updateFormStep(swapMode, 'token2');
+          }
+        } else {
+          this.gtmService.needTrackFormEventsNow = true;
         }
       });
   }
