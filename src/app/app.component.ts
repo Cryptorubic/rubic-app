@@ -62,9 +62,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.document.getElementById('wave').hidden = true;
       }
 
-      if (!isIframe) {
-        this.gtmService.addGtmToDom();
-      }
+      this.gtmService.addGtmToDom();
     });
   }
 

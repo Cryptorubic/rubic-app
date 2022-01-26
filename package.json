@@ -76,7 +76,7 @@
     "ngx-cookie-service": "^2.4.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.3.0",
-    "rubic-app-maticjs": "^2.0.55",
+    "rubic-app-maticjs": "^2.0.56",
     "rxjs": "~6.6.6",
     "tar": "^4.4.13",
     "ts-cacheable": "^1.0.5",

@@ -207,7 +207,9 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage = toTransitToken ? toAmount : toAmount.dividedBy(fromSlippage);
+    const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
+      ? toAmount
+      : toAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
@@ -747,6 +749,10 @@ export class CrossChainRoutingService {
   private async notifyGtmOnSuccess(txHash: string): Promise<void> {
     const { feeAmount } = await this.getTradeInfo();
     const { tokenIn, tokenOut } = this.currentCrossChainTrade;
+    const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
+      address: tokenIn.address,
+      blockchain: tokenIn.blockchain
+    });
 
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
@@ -754,7 +760,7 @@ export class CrossChainRoutingService {
       feeAmount.toNumber(),
       tokenIn.symbol,
       tokenOut.symbol,
-      tokenIn.amount.toNumber()
+      tokenIn.amount.toNumber() * tokenUsdPrice
     );
     return;
   }
