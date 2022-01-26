@@ -19,7 +19,7 @@
     justify-content: center;
     width: $iframe-vertical-width;
     height: 100vh;
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
 
   &__row {
@@ -71,7 +71,6 @@
 
       app-blockchains-aside {
         display: block;
-        margin-bottom: 10px;
       }
     }
 
