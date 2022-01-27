@@ -46,6 +46,8 @@ import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import { INSTANT_TRADES_PROVIDERS } from '@app/shared/models/instant-trade/instant-trade-providers';
+import { SmartRouting } from './models/smart-routing.interface';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -71,9 +73,11 @@ export class CrossChainRoutingService {
     );
   }
 
-  private readonly _smartRoutingSavings$ = new BehaviorSubject<string>(undefined);
+  private readonly _smartRouting$ = new BehaviorSubject<SmartRouting>(null);
 
-  public readonly smartRoutingSavings$ = this._smartRoutingSavings$.asObservable();
+  get smartRouting$(): Observable<SmartRouting> {
+    return this._smartRouting$.asObservable();
+  }
 
   private readonly contracts = this.contractsDataService.contracts;
 
@@ -184,13 +188,6 @@ export class CrossChainRoutingService {
       toToken
     );
 
-    this.calculateSmartRoutingSavings(
-      fromTransitTokenAmount,
-      fromProviderWorst.tradeAndToAmount.toAmount,
-      toAmount,
-      toProviderWorst.tradeAndToAmount.toAmount
-    );
-
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
     this.currentCrossChainTrade = {
@@ -213,6 +210,16 @@ export class CrossChainRoutingService {
       transitTokenFee: feeInPercents,
       cryptoFee
     };
+
+    this.calculateSmartRoutingSavings(
+      fromTransitTokenAmount,
+      fromProviderWorst.tradeAndToAmount.toAmount,
+      toAmount,
+      toProviderWorst.tradeAndToAmount.toAmount,
+      this.currentCrossChainTrade,
+      toProviderIndex,
+      fromProviderIndex
+    );
 
     const [gasData, minMaxErrors, needApprove] = await Promise.all([
       this.getGasData(this.currentCrossChainTrade),
@@ -798,20 +805,37 @@ export class CrossChainRoutingService {
     fromProviderBestAmount: BigNumber,
     fromProviderWorstAmount: BigNumber,
     toProviderBestAmount: BigNumber,
-    toProviderWorstAmount: BigNumber
+    toProviderWorstAmount: BigNumber,
+    trade: CrossChainTrade,
+    toProviderIndex: number,
+    fromProviderIndex: number
   ): void {
-    console.log([...arguments].map(arg => arg.toFixed(2)));
-    console.log(
-      fromProviderBestAmount
-        .minus(fromProviderWorstAmount)
-        .plus(toProviderBestAmount.minus(toProviderWorstAmount))
-        .toFixed(2)
-    );
     const savings = fromProviderBestAmount
       .minus(fromProviderWorstAmount)
       .plus(toProviderBestAmount.minus(toProviderWorstAmount))
       .toFixed(2);
+    const fromProvider = this.getProviderType(trade.fromBlockchain, fromProviderIndex);
+    const toProvider = this.getProviderType(trade.toBlockchain, toProviderIndex);
+    const fromPath = trade.fromTrade ? trade.fromTrade.path.map(token => token.symbol) : null;
+    const toPath = trade.toTrade ? trade.toTrade.path.map(token => token.symbol) : null;
 
-    this._smartRoutingSavings$.next(savings);
+    this._smartRouting$.next({
+      fromProvider,
+      toProvider,
+      fromPath,
+      toPath,
+      savings
+    });
+  }
+
+  public resetSmartRouting(): void {
+    this._smartRouting$.next(null);
+  }
+
+  private getProviderType(
+    blockchain: SupportedCrossChainBlockchain,
+    providerIndex: number
+  ): INSTANT_TRADES_PROVIDERS {
+    return this.contracts[blockchain].getProvider(providerIndex).providerType;
   }
 }

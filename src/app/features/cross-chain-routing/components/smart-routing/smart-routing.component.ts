@@ -18,6 +18,12 @@ export class SmartRoutingComponent {
   @Input()
   savings: number = 1.25;
 
+  @Input()
+  fromPath: string[];
+
+  @Input()
+  toPath: string[];
+
   public readonly tradesProviders = tradesProviders;
 
   constructor() {}
