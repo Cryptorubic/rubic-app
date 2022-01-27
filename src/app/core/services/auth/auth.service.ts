@@ -169,11 +169,13 @@ export class AuthService {
       await this.walletConnectorService.activate();
 
       const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
+
       if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
         this.currentUser$.next({ address: this.walletConnectorService.provider.address });
         this.isAuthProcess = false;
         return;
       }
+
       const { message } = walletLoginBody.payload;
       const signature = await this.walletConnectorService.signPersonal(message);
       await this.sendSignedNonce(
@@ -206,11 +208,13 @@ export class AuthService {
         await this.walletConnectorService.activate();
 
         const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
+
         if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
           this.currentUser$.next({ address: this.walletConnectorService.provider.address });
           this.isAuthProcess = false;
           return;
         }
+
         const { message } = walletLoginBody.payload;
         const signature = await this.walletConnectorService.signPersonal(message);
         await this.sendSignedNonce(

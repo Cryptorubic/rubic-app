@@ -1,8 +1,9 @@
 import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '@ng-web-apis/common';
+import { IframeParameters } from '@core/services/iframe/models/iframe-parameters';
+import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 
 @Injectable({
   providedIn: 'root'
@@ -12,38 +13,24 @@ export class IframeService implements OnDestroy {
 
   private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
 
-  private readonly _iframeAppearance$ = new BehaviorSubject<'vertical' | 'horizontal'>(undefined);
+  public readonly isIframe$ = this._isIframe$.asObservable();
 
-  private readonly _device$ = new BehaviorSubject<'mobile' | 'desktop'>(undefined);
+  private iframeParameters: IframeParameters;
 
   private readonly _widgetIntoViewport$ = new Subject<boolean>();
 
-  public get isIframe$(): Observable<boolean> {
-    return this._isIframe$.asObservable().pipe(filter(value => value !== undefined));
-  }
+  public readonly widgetIntoViewport$ = this._widgetIntoViewport$.asObservable();
 
   public get isIframe(): boolean {
     return this._isIframe$.getValue();
   }
 
-  public get iframeAppearance$(): Observable<'vertical' | 'horizontal'> {
-    return this._iframeAppearance$.asObservable();
+  public get iframeAppearance(): IframeAppearance | undefined {
+    return this.iframeParameters?.iframeAppearance;
   }
 
-  public get iframeAppearance(): 'vertical' | 'horizontal' | undefined {
-    return this._iframeAppearance$.getValue();
-  }
-
-  public get device$(): Observable<'mobile' | 'desktop'> {
-    return this._device$.asObservable().pipe(filter(value => value !== undefined));
-  }
-
-  public get device(): 'mobile' | 'desktop' {
-    return this._device$.getValue();
-  }
-
-  public get widgetIntoViewport$(): Observable<boolean> {
-    return this._widgetIntoViewport$.asObservable();
+  public get device(): 'mobile' | 'desktop' | undefined {
+    return this.iframeParameters?.device;
   }
 
   public get originDomain(): string {
@@ -55,32 +42,33 @@ export class IframeService implements OnDestroy {
   }
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private rendererFactory2: RendererFactory2,
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly rendererFactory2: RendererFactory2,
     @Inject(WINDOW) private readonly window: Window
-  ) {
-    this.setUpViewportListener();
-  }
+  ) {}
 
   ngOnDestroy() {
     this.documentListener?.();
   }
 
-  public setIframeStatus(iframe: string): void {
-    if (iframe === 'vertical' || iframe === 'horizontal') {
-      this._isIframe$.next(true);
-      this._iframeAppearance$.next(iframe);
-      this.document.getElementsByTagName('html')[0].classList.add('iframe', `iframe-${iframe}`);
-    }
-  }
+  public setIframeInfo(iframeParameters: IframeParameters): void {
+    this.iframeParameters = iframeParameters;
 
-  public setIframeDevice(device: string): void {
+    const { device } = iframeParameters;
     if (device !== 'desktop' && device !== 'mobile') {
       console.error(`Wrong device value: ${device}`);
-      return;
     }
 
-    this._device$.next(device);
+    this.setIframeStatus();
+    this.setUpViewportListener();
+  }
+
+  private setIframeStatus(): void {
+    this._isIframe$.next(true);
+
+    this.document
+      .getElementsByTagName('html')[0]
+      .classList.add('iframe', `iframe-${this.iframeParameters.iframeAppearance}`);
   }
 
   private setUpViewportListener(): void {

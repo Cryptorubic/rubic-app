@@ -7,7 +7,8 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit
+  AfterViewInit,
+  Self
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -38,7 +39,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class HeaderComponent implements AfterViewInit {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
@@ -88,7 +90,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly myTradesService: MyTradesService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService
   ) {
     this.loadUser();

@@ -152,6 +152,9 @@ export class SettingsService {
       this.instantTrade.patchValue({
         autoRefresh: widgetIntoViewport
       });
+      this.crossChainRouting.patchValue({
+        autoRefresh: widgetIntoViewport
+      });
     });
   }
 
