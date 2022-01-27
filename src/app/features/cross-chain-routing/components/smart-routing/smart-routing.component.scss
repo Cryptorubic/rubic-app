@@ -55,7 +55,7 @@
     border-width: 1px;
 
     @include mixins.b(vars.$tablet) {
-      top: 20px;
+      top: 15px;
     }
 
     &_left {
