@@ -47,8 +47,8 @@ export const transitTokens: TransitTokens = {
     symbol: TOKENS.USDC.symbol
   },
   [BLOCKCHAIN_NAME.NEAR]: {
-    address: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
+    address: 'dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near',
     decimals: 6,
-    symbol: 'USDC'
+    symbol: 'USDT'
   }
 };

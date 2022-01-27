@@ -22,6 +22,7 @@ import { AdditionalTokens, QueryParams } from './models/query-params';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 interface QuerySlippage {
   slippageIt: number | null;
@@ -33,6 +34,7 @@ type NearQueryParams =
       hash: string;
       toAmount: string;
       walletAddress: string;
+      type: SWAP_PROVIDER_TYPE;
     }
   | {
       errorCode: string;
@@ -459,6 +461,7 @@ export class QueryParamsService {
       }
       const hash = typeof transactionHashes === 'string' ? transactionHashes : transactionHashes[0];
       this._nearQueryParams$.next({
+        type: queryParams?.swap_type as SWAP_PROVIDER_TYPE,
         toAmount: queryParams.toAmount,
         hash,
         walletAddress: queryParams.walletAddress

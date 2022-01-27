@@ -4,14 +4,18 @@ import {
   RefPool
 } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { REF_FI_CONTRACT_ID } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
-import BigNumber from 'bignumber.js';
+import {
+  REF_FI_CONTRACT_ID,
+  WRAP_NEAR_CONTRACT
+} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
-import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { providers, WalletConnection } from 'near-api-js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
+import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import BigNumber from 'bignumber.js';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 
 @Injectable({
   providedIn: 'root'
@@ -46,8 +50,10 @@ export class RefFinancePoolsService {
       await Promise.all([...Array(pages)].map((_, i) => this.getAllPools(i + 1)))
     ).flat();
 
-    const fromTokenAddress = fromToken.address === 'near' ? 'wrap.near' : fromToken.address;
-    const toTokenAddress = toToken.address === 'near' ? 'wrap.near' : toToken.address;
+    const fromTokenAddress =
+      fromToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : fromToken.address;
+    const toTokenAddress =
+      toToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : toToken.address;
 
     return pools.filter(
       p => new BigNumber(p.supplies[fromTokenAddress]).gte(fromAmount) && p.supplies[toTokenAddress]

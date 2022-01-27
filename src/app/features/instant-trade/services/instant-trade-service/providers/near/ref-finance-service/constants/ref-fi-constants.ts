@@ -19,6 +19,10 @@ import {
 import { PublicKey } from 'near-api-js/lib/utils';
 
 export const REF_FI_CONTRACT_ID = 'v2.ref-finance.near';
+export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
+export const NEW_ACCOUNT_STORAGE_COST = '0.00125';
+export const WRAP_NEAR_CONTRACT = 'wrap.near';
+export const DEFAULT_TRANSFER_CALL_GAS = '150000000000000';
 
 export const SWAP_SCHEMA = new Map<Function, unknown>([
   [

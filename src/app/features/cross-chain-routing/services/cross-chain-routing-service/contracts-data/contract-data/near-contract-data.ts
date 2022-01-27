@@ -8,10 +8,14 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
 import { Contract } from 'near-api-js';
-import { NEAR_CCR_VIEW_METHODS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/near/near-ccr-view-methods';
+import {
+  NEAR_CCR_VIEW_METHODS,
+  NearCcrViewMethods
+} from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/near/near-ccr-view-methods';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
+import { ENVIRONMENT } from 'src/environments/environment';
 
-type NearCrossChainContract = Contract & NEAR_CCR_VIEW_METHODS;
+type NearCrossChainContract = Contract & NearCcrViewMethods;
 
 export class NearContractData extends ContractData {
   private readonly blockchainAdapter: NearWeb3Public;
@@ -35,18 +39,15 @@ export class NearContractData extends ContractData {
   }
 
   public async minTokenAmount(): Promise<string> {
-    return '0';
-    return this._contract.min_token_amount();
+    return this._contract.get_min_token_amount();
   }
 
   public async maxTokenAmount(): Promise<string> {
-    return '1000000000000000000000000000';
-    return this._contract.max_token_amount();
+    return this._contract.get_max_token_amount();
   }
 
   public async feeAmountOfBlockchain(): Promise<string> {
-    return '100';
-    return this._contract.fee_amount_of_blockchain();
+    return this._contract.get_fee_amount_of_blockchain();
   }
 
   public async blockchainCryptoFee(toBlockchainInContract: number): Promise<number> {
@@ -56,17 +57,20 @@ export class NearContractData extends ContractData {
   }
 
   public async isPaused(): Promise<boolean> {
-    return false;
-    return this._contract.is_paused();
+    return this._contract.is_running().then(el => !el);
   }
 
   private loadContract(): NearCrossChainContract {
     const wallet = this.blockchainAdapter.walletConnection;
     const methodOptions = {
-      viewMethods: ['min_token_amount'],
+      viewMethods: NEAR_CCR_VIEW_METHODS as string[],
       changeMethods: ['']
     };
-    return new Contract(wallet.account(), 'rubic', methodOptions) as NearCrossChainContract;
+    return new Contract(
+      wallet.account(),
+      ENVIRONMENT.crossChain.contractAddresses.NEAR,
+      methodOptions
+    ) as NearCrossChainContract;
   }
 
   public getSecondPath(instantTrade: InstantTrade): string[] {

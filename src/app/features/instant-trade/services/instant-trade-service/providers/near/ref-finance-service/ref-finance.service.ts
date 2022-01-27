@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { forkJoin, from, Observable, of } from 'rxjs';
-import { ItSettingsForm } from '@features/swaps/services/settings-service/settings.service';
+import {
+  ItSettingsForm,
+  SettingsService
+} from '@features/swaps/services/settings-service/settings.service';
 import { RefFinancePoolsService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
 import { RefPool } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
 import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletConnection } from 'near-api-js';
-import { REF_FI_CONTRACT_ID } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import {
+  DEFAULT_TRANSFER_CALL_GAS,
+  ONE_YOCTO_NEAR,
+  REF_FI_CONTRACT_ID,
+  WRAP_NEAR_CONTRACT
+} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
-import { first, map } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -49,8 +57,6 @@ interface RefFinanceRoute {
 export class RefFinanceService implements ItProvider {
   public readonly providerType = INSTANT_TRADES_PROVIDERS.REF;
 
-  private readonly newAccountStorageCost = '0.00125';
-
   private settings: ItSettingsForm;
 
   private _currentTradePool: RefPool;
@@ -58,8 +64,6 @@ export class RefFinanceService implements ItProvider {
   public get currentTradePool(): RefPool {
     return this._currentTradePool;
   }
-
-  private readonly oneYoctoNear: string = '0.000000000000000000000001';
 
   constructor(
     private readonly refFinancePoolsService: RefFinancePoolsService,
@@ -71,30 +75,18 @@ export class RefFinanceService implements ItProvider {
     private readonly notificationsService: NotificationsService,
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorsService: ErrorsService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
+    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly settingsService: SettingsService
   ) {
+    this.settingsService.instantTradeValueChanges
+      .pipe(startWith(this.settingsService.instantTradeValue))
+      .subscribe(settingsForm => {
+        this.settings = {
+          ...settingsForm,
+          slippageTolerance: settingsForm.slippageTolerance / 100
+        };
+      });
     this.handleNearQueryParams();
-  }
-
-  public async getFromAmount(
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken,
-    aIn: BigNumber
-  ): Promise<BigNumber> {
-    console.log(fromToken, toToken, aIn);
-    return null;
-    // const pool = this.raydiumRoutingService.currentPoolInfo;
-    // const { amountOut } = this.raydiumRoutingService.getSwapOutAmount(
-    //   pool,
-    //   fromToken.address,
-    //   toToken.address,
-    //   aIn.toString(),
-    //   this.settings.slippageTolerance
-    // );
-    // return new BigNumber(aIn)
-    //   .multipliedBy(100)
-    //   .dividedBy(amountOut)
-    //   .multipliedBy(10 ** fromToken.decimals);
   }
 
   public async approve(): Promise<void> {
@@ -169,11 +161,17 @@ export class RefFinanceService implements ItProvider {
       }
     }
     const pool = this._currentTradePool;
-    const minAmountOut = Web3Pure.toWei(trade.to.amount, trade.to.token.decimals);
+
+    const fromAmountIn = Web3Pure.toWei(trade.from.amount, trade.from.token.decimals);
+    const amountOutWithSlippage = trade.to.amount.multipliedBy(1 - this.settings.slippageTolerance);
+    const minAmountOut = Web3Pure.toWei(amountOutWithSlippage, trade.to.token.decimals);
 
     const fromTokenAddress =
-      trade.from.token.address === 'near' ? 'wrap.near' : trade.from.token.address;
-    const toTokenAddress = trade.to.token.address === 'near' ? 'wrap.near' : trade.to.token.address;
+      trade.from.token.address === NATIVE_NEAR_ADDRESS
+        ? WRAP_NEAR_CONTRACT
+        : trade.from.token.address;
+    const toTokenAddress =
+      trade.to.token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : trade.to.token.address;
 
     const swapAction = {
       pool_id: pool?.id,
@@ -189,7 +187,7 @@ export class RefFinanceService implements ItProvider {
       'rubic'
     ).account();
 
-    const tokenOutRegistered = await account.viewFunction(fromTokenAddress, 'storage_balance_of', {
+    const tokenOutRegistered = await account.viewFunction(toTokenAddress, 'storage_balance_of', {
       account_id: account.accountId
     });
 
@@ -217,14 +215,11 @@ export class RefFinanceService implements ItProvider {
         methodName: 'ft_transfer_call',
         args: {
           receiver_id: REF_FI_CONTRACT_ID,
-          amount: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
-          msg: JSON.stringify({
-            force: 0,
-            actions: [swapAction]
-          })
+          amount: fromAmountIn,
+          msg: JSON.stringify({ force: 0, actions: swapAction })
         },
-        gas: '150000000000000',
-        amount: this.oneYoctoNear
+        gas: DEFAULT_TRANSFER_CALL_GAS,
+        amount: ONE_YOCTO_NEAR
       }
     ];
 
@@ -248,7 +243,7 @@ export class RefFinanceService implements ItProvider {
     if (compareAddresses(address, 'near')) {
       const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
       return from(
-        adapter.getTokenOrNativeBalance(this.walletConnectorService.address, 'wrap.near')
+        adapter.getTokenOrNativeBalance(this.walletConnectorService.address, WRAP_NEAR_CONTRACT)
       ).pipe(map(allowance => Web3Pure.fromWei(allowance, 24)));
     }
     return of(new BigNumber(NaN));
@@ -258,7 +253,7 @@ export class RefFinanceService implements ItProvider {
     const stringAmount = amount.toString();
     const transactions: NearTransaction[] = [
       {
-        receiverId: 'wrap.near',
+        receiverId: WRAP_NEAR_CONTRACT,
         functionCalls: [
           {
             methodName: 'near_deposit',
@@ -281,12 +276,12 @@ export class RefFinanceService implements ItProvider {
     const weiAmount = Web3Pure.toWei(amount, 24);
     const transactions: NearTransaction[] = [
       {
-        receiverId: 'wrap.near',
+        receiverId: WRAP_NEAR_CONTRACT,
         functionCalls: [
           {
             methodName: 'near_withdraw',
             args: { amount: weiAmount },
-            amount: this.oneYoctoNear
+            amount: ONE_YOCTO_NEAR
           }
         ]
       }
@@ -307,8 +302,8 @@ export class RefFinanceService implements ItProvider {
   private isWrap(fromAddress: string, toAddress: string): boolean {
     return (
       (fromAddress.toLowerCase() === NATIVE_NEAR_ADDRESS &&
-        toAddress.toLowerCase() === 'wrap.near') ||
-      (fromAddress.toLowerCase() === 'wrap.near' && toAddress === NATIVE_NEAR_ADDRESS)
+        toAddress.toLowerCase() === WRAP_NEAR_CONTRACT) ||
+      (fromAddress.toLowerCase() === WRAP_NEAR_CONTRACT && toAddress === NATIVE_NEAR_ADDRESS)
     );
   }
 
@@ -327,8 +322,10 @@ export class RefFinanceService implements ItProvider {
     toToken: InstantTradeToken
   ): Promise<RefFinanceRoute[]> {
     const FEE_DIVISOR = 10000;
-    const fromTokenAddress = fromToken.address === 'near' ? 'wrap.near' : fromToken.address;
-    const toTokenAddress = toToken.address === 'near' ? 'wrap.near' : toToken.address;
+    const fromTokenAddress =
+      fromToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : fromToken.address;
+    const toTokenAddress =
+      toToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : toToken.address;
 
     return Promise.all(
       pools.map(pool => {
@@ -368,7 +365,7 @@ export class RefFinanceService implements ItProvider {
         return;
       }
 
-      this.postNearTransaction(nearParams.hash);
+      this.postNearTransaction(nearParams.hash, nearParams.type);
     });
   }
 
@@ -376,7 +373,7 @@ export class RefFinanceService implements ItProvider {
    * Posts near transaction params to api.
    * @param txHash Transaction hash.
    */
-  private async postNearTransaction(txHash: string): Promise<void> {
+  private async postNearTransaction(txHash: string, type: SWAP_PROVIDER_TYPE): Promise<void> {
     try {
       this.gtmService.notifySignTransaction();
       const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
@@ -392,12 +389,41 @@ export class RefFinanceService implements ItProvider {
         receiver_id: string;
       } = JSON.parse(params);
 
+      // type ItRequest = {
+      //   actions?: {
+      //     min_amount_out: string;
+      //     pool_id: number;
+      //     token_in: string;
+      //     token_out: string;
+      //   };
+      // };
+
+      // type swapToParams = {};
+
+      // type CcrRequest = {
+      //   SwapTokensToOther:
+      //     | {
+      //         swap_actions: [];
+      //         swap_to_params: [];
+      //       }
+      //     | {
+      //         SwapTransferTokensToOther: {
+      //           swap_to_params: [];
+      //         };
+      //       };
+      // };
+
+      // const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);
+
       const actions: {
         min_amount_out: string;
         pool_id: number;
         token_in: string;
         token_out: string;
-      } = JSON.parse(paramsObject?.msg)?.actions?.[0];
+      } =
+        type === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+          ? JSON.parse(paramsObject?.msg)?.actions?.[0]
+          : JSON.parse(paramsObject?.msg)?.actions?.[0];
 
       const trade: InstantTrade = {
         blockchain: BLOCKCHAIN_NAME.NEAR,
