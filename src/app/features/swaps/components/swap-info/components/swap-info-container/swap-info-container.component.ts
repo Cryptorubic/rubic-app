@@ -34,6 +34,8 @@ export class SwapInfoContainerComponent implements OnInit {
 
   public loading: boolean;
 
+  public accordionState = false;
+
   public get isInstantTrade(): boolean {
     return this.swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }

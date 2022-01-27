@@ -11,7 +11,8 @@ import {
   TuiTabsModule,
   TuiInputCountModule,
   TuiDataListWrapperModule,
-  TuiBadgeModule
+  TuiBadgeModule,
+  TuiAccordionModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
@@ -141,7 +142,8 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     TuiInputCountModule,
     TuiDataListWrapperModule,
     TuiLoaderModule,
-    TuiBadgeModule
+    TuiBadgeModule,
+    TuiAccordionModule
   ],
   exports: [
     SpinnerComponent,
@@ -181,7 +183,8 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    NotificationBadgeComponent
+    NotificationBadgeComponent,
+    TuiAccordionModule
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]
