@@ -2,11 +2,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Injector,
   Input,
-  OnInit,
-  Output
+  OnInit
 } from '@angular/core';
 import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { Observable } from 'rxjs';
@@ -16,7 +14,6 @@ import {
 } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
-import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { filter, takeUntil } from 'rxjs/operators';
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -35,8 +32,6 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
    * [REQUIRED] Table data to display.
    */
   @Input() tableData$: Observable<TableRow[]>;
-
-  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
@@ -126,11 +121,6 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
       this.sortBy(this.selectedColumn.value, this.sortDirection)
     );
     this.goToPage(this.page);
-  }
-
-  public onReceive(trade: TableTrade, event: Event): void {
-    event.stopPropagation();
-    this.onReceivePolygonBridgeTrade.emit(trade);
   }
 
   public goToPage(page: number): void {
