@@ -214,7 +214,7 @@ export class CrossChainRoutingService {
     this.calculateSmartRoutingSavings(
       fromTransitTokenAmount,
       fromProviderWorst.tradeAndToAmount.toAmount,
-      toTransitTokenAmount,
+      toAmount,
       toProviderWorst.tradeAndToAmount.toAmount,
       this.currentCrossChainTrade,
       toProviderIndex,
