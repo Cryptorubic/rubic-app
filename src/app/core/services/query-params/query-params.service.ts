@@ -19,6 +19,7 @@ import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 
 interface QuerySlippage {
   slippageIt: number | null;
@@ -84,7 +85,8 @@ export class QueryParamsService {
     private readonly swapsService: SwapsService,
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -161,6 +163,7 @@ export class QueryParamsService {
         })
       )
       .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
+        this.gtmService.needTrackFormEventsNow = false;
         this.swapFormService.input.patchValue({
           fromBlockchain,
           toBlockchain,
@@ -391,7 +394,9 @@ export class QueryParamsService {
       'bsc_tokens',
       'polygon_tokens',
       'harmony_tokens',
-      'avalanche_tokens'
+      'avalanche_tokens',
+      'fantom_tokens',
+      'moonriver_tokens'
     ] as const;
     const tokensQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([key]) =>
