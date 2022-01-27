@@ -220,19 +220,19 @@ export class ContractsDataService {
         BLOCKCHAIN_NAME.ARBITRUM,
         [
           {
-            provider: this.oneInchArbitrumService,
+            provider: this.sushiSwapArbitrumService,
             methodSuffix: ''
           },
           {
             provider: this.uniSwapV3ArbitrumService,
-            methodSuffix: ''
+            methodSuffix: 'V3'
           },
           {
-            provider: this.sushiSwapArbitrumService,
+            provider: this.oneInchArbitrumService,
             methodSuffix: 'Inch'
           }
         ],
-        7,
+        10,
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(
