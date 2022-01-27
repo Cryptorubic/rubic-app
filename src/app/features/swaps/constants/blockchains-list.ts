@@ -56,7 +56,7 @@ export const BLOCKCHAINS_LIST: BlockchainItem[] = [
     symbol: BLOCKCHAIN_NAME.ARBITRUM,
     visibleName: 'Arbitrum',
     image: `${imageBaseSrc}arbitrum.svg`,
-    id: 250
+    id: 42161
   },
   {
     symbol: BLOCKCHAIN_NAME.SOLANA,
