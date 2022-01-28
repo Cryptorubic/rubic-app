@@ -21,6 +21,10 @@
     box-shadow: unset;
   }
 
+  @include iframe-vertical {
+    padding-bottom: 0;
+  }
+
   &__scroll {
     max-height: 100%;
   }

@@ -75,8 +75,10 @@
       >
         <app-tokens-list-element [token]="token"></app-tokens-list-element>
       </li>
-      <li class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item-link">
-        <a safetyLink [link]="noFrameLink">More on {{ rubicDomain }}</a>
+      <li class="tokens-list-horizontal-iframe__item-container">
+        <div class="tokens-list-horizontal-iframe__item tokens-list-horizontal-iframe__item-link">
+          <a safetyLink [link]="noFrameLink">More on {{ rubicDomain }}</a>
+        </div>
       </li>
     </ul>
     <!--horizontal iframe -->
