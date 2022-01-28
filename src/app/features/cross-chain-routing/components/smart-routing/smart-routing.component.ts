@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { tradesProviders } from '@shared/constants/common/trades-providers';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-smart-routing',
@@ -26,5 +27,7 @@ export class SmartRoutingComponent {
 
   public readonly tradesProviders = tradesProviders;
 
-  constructor() {}
+  public readonly isMobile$ = this.headerStoreService.getMobileDisplayStatus();
+
+  constructor(private readonly headerStoreService: HeaderStore) {}
 }
