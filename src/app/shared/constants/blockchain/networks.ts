@@ -157,8 +157,9 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.ARBITRUM,
     label: 'Arbitrum One',
     scannerUrl: 'https://arbiscan.io',
-    rpcLink: 'https://arb1.arbitrum.io/rpc',
-    additionalRpcLink: '',
+    rpcLink:
+      'https://late-white-sky.arbitrum-mainnet.quiknode.pro/84da6c33a092bf64d9d72bc52c5db62aac00c81c/',
+    additionalRpcLink: 'https://rpc.ankr.com/arbitrum',
     imagePath: 'assets/images/icons/coins/arbitrum.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.ARBITRUM,
