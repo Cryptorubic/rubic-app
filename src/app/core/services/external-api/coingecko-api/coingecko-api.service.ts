@@ -43,7 +43,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
-      [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum'
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'ethereum'
     };
 
     this.tokenBlockchainId = {
@@ -55,7 +55,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
       [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
-      [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum'
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum-one'
     };
   }
 
