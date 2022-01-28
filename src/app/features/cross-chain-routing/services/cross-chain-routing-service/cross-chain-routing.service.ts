@@ -805,10 +805,6 @@ export class CrossChainRoutingService {
     toBlockchain: SupportedCrossChainBlockchain,
     toToken: string
   ): Promise<void> {
-    console.log(
-      targetBlockchainProviders[0].tradeAndToAmount.toAmount.toFixed(),
-      targetBlockchainProviders
-    );
     const [initialBestProvider, initialWorseProvider] = initialBlockchainProviders;
     const [targetBestProvider, targetWorstProvider] = targetBlockchainProviders;
     const smartRouting = {
