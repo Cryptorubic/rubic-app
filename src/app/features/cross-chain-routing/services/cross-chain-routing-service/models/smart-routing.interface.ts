@@ -1,7 +1,7 @@
 export interface SmartRouting {
   fromProvider: string;
   toProvider: string;
-  fromPath: string[];
-  toPath: string[];
+  fromRubicPool: boolean;
+  toRubicPool: boolean;
   savings: string;
 }

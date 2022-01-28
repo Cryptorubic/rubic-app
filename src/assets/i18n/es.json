@@ -371,7 +371,7 @@
     },
     "smartRouting": {
       "save": "Save ${{amount}} with Smart Routing",
-      "estTime": "Est. time ~ 2 min"
+      "estTime": "Est. time ~ 80 sec"
     }
   },
   "instantTrades": {

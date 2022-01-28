@@ -4,7 +4,11 @@
 .info {
   display: flex;
   align-items: center;
+  width: fit-content;
   margin-bottom: 24px;
+
+  background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
+  border-radius: vars.$border-radius-3;
 
   @include mixins.b(vars.$tablet) {
     flex-wrap: wrap;
@@ -14,11 +18,10 @@
   &__chip {
     padding: 6px 10px;
 
-    color: vars.$rubic-primary;
+    color: #fff;
     font-size: 18px;
     line-height: 22px;
 
-    background: transparentize($color: vars.$rubic-primary, $amount: 0.5);
     border-radius: vars.$border-radius-3;
 
     @include mixins.b(vars.$tablet) {
@@ -31,6 +34,11 @@
       &:not(:last-child) {
         margin-right: 10px;
       }
+    }
+
+    &_colored {
+      background: transparentize($color: vars.$rubic-primary, $amount: 0.85);
+      border-radius: vars.$border-radius-3;
     }
     
     &:not(:last-child) {

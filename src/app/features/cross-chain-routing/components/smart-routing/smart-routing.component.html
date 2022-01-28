@@ -1,11 +1,11 @@
 <div class="info">
-  <div class="info__chip" *ngIf="fromPath || toPath">
+  <div class="info__chip info__chip_colored" *ngIf="fromRubicPool || toRubicPool">
     {{ 'crossChainPage.smartRouting.save' | translate: { amount: savings } }}
   </div>
   <div class="info__chip">{{ 'crossChainPage.smartRouting.estTime' | translate }}</div>
 </div>
 <div class="route">
-  <div class="dex" *ngIf="fromPath; else rubicPool">
+  <div class="dex" *ngIf="fromRubicPool; else rubicPool">
     <div class="dex__icon">
       <img [src]="tradesProviders[fromProvider].image" alt="Provider" />
     </div>
@@ -15,7 +15,7 @@
   </div>
   <div
     class="route__line route__line_left"
-    [style.border-color]="fromPath ? tradesProviders[fromProvider].color : '#4aa956'"
+    [style.border-color]="fromRubicPool ? tradesProviders[fromProvider].color : '#4aa956'"
   ></div>
   <div class="dex">
     <div class="dex__icon">
@@ -26,9 +26,9 @@
   </div>
   <div
     class="route__line route__line_right"
-    [style.border-color]="toPath ? tradesProviders[toProvider].color : '#4aa956'"
+    [style.border-color]="toRubicPool ? tradesProviders[toProvider].color : '#4aa956'"
   ></div>
-  <div class="dex" *ngIf="toPath; else rubicPool">
+  <div class="dex" *ngIf="toRubicPool; else rubicPool">
     <div class="dex__icon">
       <img [src]="tradesProviders[toProvider].image" alt="Provider" />
     </div>
