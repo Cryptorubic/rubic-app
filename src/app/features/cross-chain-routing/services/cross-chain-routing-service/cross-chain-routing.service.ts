@@ -805,17 +805,17 @@ export class CrossChainRoutingService {
     toBlockchain: SupportedCrossChainBlockchain,
     toToken: string
   ): Promise<void> {
-    const [initialBestProvider, initialWorseProvider] = sourceBlockchainProviders;
+    const [sourceBestProvider, sourceWorseProvider] = sourceBlockchainProviders;
     const [targetBestProvider, targetWorstProvider] = targetBlockchainProviders;
     const smartRouting = {
-      fromProvider: this.getProviderType(fromBlockchain, initialBestProvider.providerIndex),
+      fromProvider: this.getProviderType(fromBlockchain, sourceBestProvider.providerIndex),
       toProvider: this.getProviderType(toBlockchain, targetBestProvider.providerIndex),
-      fromHasTrade: Boolean(initialBestProvider?.tradeAndToAmount.trade),
+      fromHasTrade: Boolean(sourceBestProvider?.tradeAndToAmount.trade),
       toHasTrade: Boolean(targetBestProvider?.tradeAndToAmount.trade),
       savings: '0'
     };
-    const initialBestUSDC = initialBestProvider.tradeAndToAmount.toAmount;
-    const initialWorseUSDC = initialWorseProvider?.tradeAndToAmount.toAmount;
+    const sourceBestUSDC = sourceBestProvider.tradeAndToAmount.toAmount;
+    const sourceWorseUSDC = sourceWorseProvider?.tradeAndToAmount.toAmount;
     const toTokenUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
       address: toToken,
       blockchain: toBlockchain
@@ -824,8 +824,8 @@ export class CrossChainRoutingService {
     const hasTargetTrades = Boolean(targetBlockchainProviders[0]?.tradeAndToAmount.trade);
 
     if (hasInitialTrades && !hasTargetTrades) {
-      smartRouting.savings = initialBestProvider.tradeAndToAmount.toAmount
-        .minus(initialWorseProvider.tradeAndToAmount.toAmount)
+      smartRouting.savings = sourceBestProvider.tradeAndToAmount.toAmount
+        .minus(sourceWorseProvider.tradeAndToAmount.toAmount)
         .toFixed(2);
     }
 
@@ -839,8 +839,8 @@ export class CrossChainRoutingService {
     if (hasInitialTrades && hasTargetTrades) {
       if (targetBlockchainProviders.length > 1 && sourceBlockchainProviders.length > 1) {
         const tokenAmountViaWorstProvider = targetWorstProvider?.tradeAndToAmount.trade.to.amount
-          .dividedBy(initialBestUSDC)
-          .multipliedBy(initialWorseUSDC);
+          .dividedBy(sourceBestUSDC)
+          .multipliedBy(sourceWorseUSDC);
 
         smartRouting.savings = targetBestProvider.tradeAndToAmount.trade.to.amount
           .minus(tokenAmountViaWorstProvider)
@@ -849,8 +849,8 @@ export class CrossChainRoutingService {
       }
 
       if (targetBlockchainProviders.length <= 1 && sourceBlockchainProviders.length > 1) {
-        smartRouting.savings = initialBestProvider.tradeAndToAmount.toAmount
-          .minus(initialWorseProvider.tradeAndToAmount.toAmount)
+        smartRouting.savings = sourceBestProvider.tradeAndToAmount.toAmount
+          .minus(sourceWorseProvider.tradeAndToAmount.toAmount)
           .toFixed(2);
       }
 
