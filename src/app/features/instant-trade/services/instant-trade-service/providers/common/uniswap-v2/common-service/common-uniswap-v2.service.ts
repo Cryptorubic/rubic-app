@@ -54,6 +54,7 @@ import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import DEFAULT_UNISWAP_V2_ABI from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
+import { RequiredField } from '@shared/models/utility-types/required-field';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -619,10 +620,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: InstantTrade,
     targetWalletAddress: string,
     options: ItOptions = {}
-  ): Promise<{
-    encodedData: string;
-    transactionOptions?: TransactionOptions;
-  }> {
+  ): Promise<RequiredField<TransactionOptions, 'data'>> {
     const { methodName, methodArguments, transactionOptions } = await this.checkAndGetTradeData(
       trade,
       options,
@@ -630,12 +628,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     );
 
     return {
-      encodedData: EthLikeWeb3Pure.encodeFunctionCall(
-        this.contractAbi,
-        methodName,
-        methodArguments
-      ),
-      transactionOptions
+      ...transactionOptions,
+      data: EthLikeWeb3Pure.encodeFunctionCall(this.contractAbi, methodName, methodArguments)
     };
   }
 

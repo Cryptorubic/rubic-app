@@ -5,6 +5,7 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
+import { RequiredField } from '@shared/models/utility-types/required-field';
 
 export interface ItOptions {
   onConfirm?: (hash: string) => void;
@@ -39,8 +40,5 @@ export interface ItProvider {
     trade: InstantTrade,
     targetWalletAddress: string,
     options: ItOptions
-  ) => Promise<{
-    encodedData: string;
-    transactionOptions?: TransactionOptions;
-  }>;
+  ) => Promise<RequiredField<TransactionOptions, 'data'>>;
 }

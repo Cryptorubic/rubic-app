@@ -36,6 +36,7 @@ import { TokenWithFeeError } from '@core/errors/models/common/token-with-fee-err
 import InsufficientFundsOneinchError from '@core/errors/models/instant-trade/insufficient-funds-oneinch-error';
 import { OneinchQuoteError } from '@core/errors/models/provider/oneinch-quote-error';
 import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
+import { RequiredField } from '@shared/models/utility-types/required-field';
 
 interface SupportedTokens {
   [BLOCKCHAIN_NAME.ETHEREUM]: string[];
@@ -344,6 +345,28 @@ export class CommonOneinchService {
   }
 
   public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
+    const transactionOptions = await this.checkAndGetTradeData(trade, options);
+
+    return this.web3Private.trySendTransaction(
+      transactionOptions.to,
+      transactionOptions.value,
+      transactionOptions
+    );
+  }
+
+  public checkAndEncodeTrade(
+    trade: InstantTrade,
+    targetWalletAddress: string,
+    options: ItOptions
+  ): Promise<RequiredField<TransactionOptions, 'data'>> {
+    return this.checkAndGetTradeData(trade, options, targetWalletAddress);
+  }
+
+  private async checkAndGetTradeData(
+    trade: InstantTrade,
+    options: ItOptions,
+    targetWalletAddress = this.walletAddress
+  ): Promise<RequiredField<TransactionOptions, 'data'>> {
     const { blockchain } = trade;
     this.walletConnectorService.checkSettings(blockchain);
 
@@ -358,13 +381,15 @@ export class CommonOneinchService {
     const fromAmountAbsolute = Web3Pure.toWei(trade.from.amount, trade.from.token.decimals);
 
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
+    const disableEstimate = targetWalletAddress !== this.walletAddress;
     const swapTradeParams: OneinchSwapRequest = {
       params: {
         fromTokenAddress,
         toTokenAddress,
         amount: fromAmountAbsolute,
         slippage: this.settings.slippageTolerance.toString(),
-        fromAddress: this.walletAddress
+        fromAddress: targetWalletAddress,
+        disableEstimate
       }
     };
     if (this.settings.disableMultihops) {
@@ -376,19 +401,15 @@ export class CommonOneinchService {
       .pipe(catchError((err: unknown) => this.specifyError(err as HttpErrorResponse, blockchain)))
       .toPromise()) as OneinchSwapResponse;
 
-    const trxOptions = {
+    return {
+      to: oneInchTrade.tx.to,
       onTransactionHash: options.onConfirm,
       data: oneInchTrade.tx.data,
-      gas: oneInchTrade.tx.gas.toString(),
+      gas: !disableEstimate ? oneInchTrade.tx.gas.toString() : undefined,
+      value: fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmountAbsolute,
       inWei: fromTokenAddress === this.oneInchNativeAddress || undefined,
       ...(trade.gasPrice && { gasPrice: trade.gasPrice })
     };
-
-    return this.web3Private.trySendTransaction(
-      oneInchTrade.tx.to,
-      fromTokenAddress !== this.oneInchNativeAddress ? '0' : fromAmountAbsolute,
-      trxOptions
-    );
   }
 
   private specifyError(err: unknown, blockchain: BLOCKCHAIN_NAME): never {

@@ -290,7 +290,7 @@ export class InstantTradeService {
       IFRAME_FEE_CONTRACT_ADDRESS[trade.blockchain as keyof typeof IFRAME_FEE_CONTRACT_ADDRESS];
     const blockchainProvider = this.blockchainsProviders[trade.blockchain][provider];
 
-    const { encodedData, transactionOptions } = await blockchainProvider.checkAndEncodeTrade(
+    const transactionOptions = await blockchainProvider.checkAndEncodeTrade(
       trade,
       feeContractAddress,
       options
@@ -303,7 +303,7 @@ export class InstantTradeService {
       trade.to.token.address,
       Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
       blockchainProvider.contractAddress,
-      encodedData,
+      transactionOptions.data,
       [fee, feeTarget]
     ];
 
