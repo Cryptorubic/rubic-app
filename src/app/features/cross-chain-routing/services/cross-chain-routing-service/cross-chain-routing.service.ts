@@ -158,7 +158,7 @@ export class CrossChainRoutingService {
     const fromSlippage = 1 - this.slippageTolerance / 2;
     const toSlippage = 1 - this.slippageTolerance / 2;
 
-    const initialBlockchainProviders = await this.getSortedProvidersList(
+    const sourceBlockchainProviders = await this.getSortedProvidersList(
       fromBlockchain,
       fromToken,
       fromAmount,
@@ -167,7 +167,7 @@ export class CrossChainRoutingService {
     const {
       providerIndex: fromProviderIndex,
       tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
-    } = initialBlockchainProviders[0];
+    } = sourceBlockchainProviders[0];
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
       toBlockchain,
@@ -211,7 +211,7 @@ export class CrossChainRoutingService {
     };
 
     await this.calculateSmartRouting(
-      initialBlockchainProviders,
+      sourceBlockchainProviders,
       targetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
@@ -820,23 +820,23 @@ export class CrossChainRoutingService {
       address: toToken,
       blockchain: toBlockchain
     });
-    const hasInitialTrades = Boolean(sourceBlockchainProviders[0]?.tradeAndToAmount.trade);
+    const hasSourceTrades = Boolean(sourceBlockchainProviders[0]?.tradeAndToAmount.trade);
     const hasTargetTrades = Boolean(targetBlockchainProviders[0]?.tradeAndToAmount.trade);
 
-    if (hasInitialTrades && !hasTargetTrades) {
+    if (hasSourceTrades && !hasTargetTrades) {
       smartRouting.savings = sourceBestProvider.tradeAndToAmount.toAmount
         .minus(sourceWorseProvider.tradeAndToAmount.toAmount)
         .toFixed(2);
     }
 
-    if (!hasInitialTrades && hasTargetTrades) {
+    if (!hasSourceTrades && hasTargetTrades) {
       smartRouting.savings = targetBestProvider.tradeAndToAmount.toAmount
         .minus(targetWorstProvider.tradeAndToAmount.toAmount)
         .multipliedBy(toTokenUsdcPrice)
         .toFixed(2);
     }
 
-    if (hasInitialTrades && hasTargetTrades) {
+    if (hasSourceTrades && hasTargetTrades) {
       if (targetBlockchainProviders.length > 1 && sourceBlockchainProviders.length > 1) {
         const tokenAmountViaWorstProvider = targetWorstProvider?.tradeAndToAmount.trade.to.amount
           .dividedBy(sourceBestUSDC)
