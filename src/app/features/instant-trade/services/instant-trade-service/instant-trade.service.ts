@@ -14,7 +14,10 @@ import { OneInchPolygonService } from '@features/instant-trade/services/instant-
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
-import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import {
+  ItOptions,
+  ItProvider
+} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TranslateService } from '@ngx-translate/core';
@@ -49,6 +52,13 @@ import { ViperSwapHarmonyService } from '@features/instant-trade/services/instan
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { TransactionReceipt } from 'web3-eth';
+import {
+  IFRAME_FEE_CONTRACT_ABI,
+  IFRAME_FEE_CONTRACT_ADDRESS
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/iframe-fee-contract';
 
 @Injectable({
   providedIn: 'root'
@@ -105,7 +115,8 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService
   ) {
     this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
@@ -209,11 +220,12 @@ export class InstantTradeService {
     try {
       const options = {
         onConfirm: async (hash: string) => {
+          transactionHash = hash;
+
           confirmCallback();
           this.notifyTradeInProgress();
 
           await this.postTrade(hash, provider, trade);
-          transactionHash = hash;
         }
       };
 
@@ -221,22 +233,13 @@ export class InstantTradeService {
       if (provider === INSTANT_TRADES_PROVIDERS.WRAPPED) {
         receipt = await this.ethWethSwapProvider.createTrade(trade, options);
       } else {
-        receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
-          trade,
-          options
-        );
+        receipt = await this.checkFeeAndCreateTrade(provider, trade, options);
       }
 
-      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-      const fee = 0;
-      this.notifyGtmOnSuccess(
-        transactionHash,
-        trade.from.token.symbol,
-        trade.to.token.symbol,
-        fee,
-        usdPrice
-      );
       this.modalSubscriptions.pop()?.unsubscribe();
+
+      this.notifyGtmOnSuccess(transactionHash, trade);
+
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
@@ -261,6 +264,56 @@ export class InstantTradeService {
 
       throw err;
     }
+  }
+
+  private async checkFeeAndCreateTrade(
+    provider: INSTANT_TRADES_PROVIDERS,
+    trade: InstantTrade,
+    options: ItOptions
+  ): Promise<Partial<TransactionReceipt>> {
+    if (
+      this.iframeService.isIframeWithFee &&
+      trade.blockchain === BLOCKCHAIN_NAME.POLYGON // TODO: update
+    ) {
+      return this.createTradeWithFee(provider, trade, options);
+    }
+
+    return this.blockchainsProviders[trade.blockchain][provider].createTrade(trade, options);
+  }
+
+  private async createTradeWithFee(
+    provider: INSTANT_TRADES_PROVIDERS,
+    trade: InstantTrade,
+    options: ItOptions
+  ): Promise<Partial<TransactionReceipt>> {
+    const feeContractAddress =
+      IFRAME_FEE_CONTRACT_ADDRESS[trade.blockchain as keyof typeof IFRAME_FEE_CONTRACT_ADDRESS];
+    const blockchainProvider = this.blockchainsProviders[trade.blockchain][provider];
+
+    const { encodedData, transactionOptions } = await blockchainProvider.checkAndEncodeTrade(
+      trade,
+      feeContractAddress,
+      options
+    );
+
+    const { fee, feeTarget } = this.iframeService.feeData;
+
+    const methodArguments = [
+      trade.from.token.address,
+      trade.to.token.address,
+      Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
+      blockchainProvider.contractAddress,
+      encodedData,
+      [fee, feeTarget]
+    ];
+
+    return this.web3PrivateService.tryExecuteContractMethod(
+      feeContractAddress,
+      IFRAME_FEE_CONTRACT_ABI,
+      'swap',
+      methodArguments,
+      transactionOptions
+    );
   }
 
   private async postTrade(
@@ -372,19 +425,15 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(
-    txHash: string,
-    fromToken: string,
-    toToken: string,
-    revenue: number,
-    usdPrice: number
-  ): void {
+  private notifyGtmOnSuccess(txHash: string, trade: InstantTrade): void {
+    const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+    const fee = 0;
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
       txHash,
-      revenue,
-      fromToken,
-      toToken,
+      fee,
+      trade.from.token.symbol,
+      trade.to.token.symbol,
       usdPrice
     );
   }

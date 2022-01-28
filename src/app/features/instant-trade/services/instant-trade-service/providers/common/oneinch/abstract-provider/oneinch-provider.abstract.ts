@@ -17,6 +17,8 @@ export abstract class OneinchProviderAbstract implements ItProvider {
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 
+  public readonly contractAddress = '0x1111111254fb6c44bac0bed2854e76f90643097d';
+
   constructor(
     blockchain: BLOCKCHAIN_NAME,
     private readonly commonOneinchService: CommonOneinchService

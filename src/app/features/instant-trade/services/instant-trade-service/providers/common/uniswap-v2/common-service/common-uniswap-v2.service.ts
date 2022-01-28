@@ -53,6 +53,7 @@ import InsufficientLiquidityError from '@core/errors/models/instant-trade/insuff
 import InsufficientLiquidityRubicOptimisation from '@core/errors/models/instant-trade/insufficient-liquidity-rubic-optimisation-error';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import DEFAULT_UNISWAP_V2_ABI from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v2/common-service/constants/default-uniswap-v2-abi';
+import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -87,11 +88,15 @@ export abstract class CommonUniswapV2Service implements ItProvider {
 
   private wethAddress: string;
 
-  protected contractAddress: string;
+  private _contractAddress: string;
 
   private routingProviders: SymbolToken[];
 
   private maxTransitTokens: number;
+
+  public get contractAddress(): string {
+    return this._contractAddress;
+  }
 
   // Injected services
   private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
@@ -141,7 +146,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     ] as EthLikeWeb3Public;
 
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
-    this.contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
+    this._contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
     this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
     this.routingProviders = uniswapConstants.routingProvidersNetMode.mainnet;
 
@@ -151,7 +156,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
           this.blockchain
         ] as EthLikeWeb3Public;
 
-        this.contractAddress = uniswapConstants.contractAddressNetMode.testnet;
+        this._contractAddress = uniswapConstants.contractAddressNetMode.testnet;
         this.wethAddress = uniswapConstants.wethAddressNetMode.testnet;
         this.routingProviders = uniswapConstants.routingProvidersNetMode.testnet;
       }
@@ -166,7 +171,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
    */
   protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
     return this.blockchainAdapter.multicallContractMethods<{ amounts: string[] }>(
-      this.contractAddress,
+      this._contractAddress,
       this.contractAbi,
       routesMethodArguments.map((methodArguments: string[]) => ({
         methodName,
@@ -183,7 +188,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       this.blockchainAdapter.getAllowance({
         tokenAddress,
         ownerAddress: this.walletAddress,
-        spenderAddress: this.contractAddress
+        spenderAddress: this._contractAddress
       })
     );
   }
@@ -192,7 +197,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     this.walletConnectorService.checkSettings(this.blockchain);
     await this.web3PrivateService.approveTokens(
       tokenAddress,
-      this.contractAddress,
+      this._contractAddress,
       'infinity',
       options
     );
@@ -251,7 +256,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     gasPrice?: string
   ) => {
     return {
-      contractAddress: this.contractAddress,
+      contractAddress: this._contractAddress,
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.ETH_TO_TOKENS,
       methodArguments: [trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -271,7 +276,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     gasPrice?: string
   ) => {
     return {
-      contractAddress: this.contractAddress,
+      contractAddress: this._contractAddress,
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.TOKENS_TO_ETH,
       methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -290,7 +295,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     gasPrice?: string
   ) => {
     return {
-      contractAddress: this.contractAddress,
+      contractAddress: this._contractAddress,
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.TOKENS_TO_TOKENS,
       methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -306,7 +311,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: UniswapV2Trade
   ) => {
     return {
-      contractAddress: this.contractAddress,
+      contractAddress: this._contractAddress,
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.ETH_TO_TOKENS_SUPPORTING_FEE,
       methodArguments: [trade.amountOutMin, trade.path, trade.to, trade.deadline],
@@ -320,7 +325,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: UniswapV2Trade
   ) => {
     return {
-      contractAddress: this.contractAddress,
+      contractAddress: this._contractAddress,
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.TOKENS_TO_ETH_SUPPORTING_FEE,
       methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline]
@@ -331,7 +336,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: UniswapV2Trade
   ) => {
     return {
-      contractAddress: this.contractAddress,
+      contractAddress: this._contractAddress,
       contractAbi: this.contractAbi,
       methodName: this.swapsMethod.TOKENS_TO_TOKENS_SUPPORTING_FEE,
       methodArguments: [trade.amountIn, trade.amountOutMin, trade.path, trade.to, trade.deadline]
@@ -445,7 +450,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       if (this.walletAddress) {
         const estimatedGasLimits = await this.blockchainAdapter.batchEstimatedGas(
           this.contractAbi,
-          this.contractAddress,
+          this._contractAddress,
           this.walletAddress,
           gasRequests.map(item => item.callData)
         );
@@ -491,7 +496,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     const estimatedGas = await this.blockchainAdapter
       .getEstimatedGas(
         this.contractAbi,
-        this.contractAddress,
+        this._contractAddress,
         estimateGasParams.callData.contractMethod,
         estimateGasParams.callData.params,
         this.walletAddress,
@@ -595,6 +600,54 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     trade: InstantTrade,
     options: ItOptions = {}
   ): Promise<TransactionReceipt> {
+    const {
+      methodName,
+      methodArguments,
+      transactionOptions: transactionOptions
+    } = await this.checkAndGetTradeData(trade, options);
+
+    return this.web3PrivateService.executeContractMethod(
+      this._contractAddress,
+      this.contractAbi,
+      methodName,
+      methodArguments,
+      transactionOptions
+    );
+  }
+
+  public async checkAndEncodeTrade(
+    trade: InstantTrade,
+    targetWalletAddress: string,
+    options: ItOptions = {}
+  ): Promise<{
+    encodedData: string;
+    transactionOptions?: TransactionOptions;
+  }> {
+    const { methodName, methodArguments, transactionOptions } = await this.checkAndGetTradeData(
+      trade,
+      options,
+      targetWalletAddress
+    );
+
+    return {
+      encodedData: EthLikeWeb3Pure.encodeFunctionCall(
+        this.contractAbi,
+        methodName,
+        methodArguments
+      ),
+      transactionOptions
+    };
+  }
+
+  private async checkAndGetTradeData(
+    trade: InstantTrade,
+    options: ItOptions = {},
+    targetWalletAddress = this.walletAddress
+  ): Promise<{
+    methodName: string;
+    methodArguments: unknown[];
+    transactionOptions?: TransactionOptions;
+  }> {
     this.walletConnectorService.checkSettings(trade.blockchain);
     await this.blockchainAdapter.checkBalance(
       trade.from.token,
@@ -609,7 +662,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         trade.to.token.decimals
       ),
       path: trade.path.map(token => token.address),
-      to: this.walletAddress,
+      to: targetWalletAddress,
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
     };
 
@@ -631,13 +684,11 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       tradeDataSupportingFee
     );
 
-    return this.web3PrivateService.executeContractMethod(
-      this.contractAddress,
-      this.contractAbi,
+    return {
       methodName,
-      tradeData.methodArguments,
-      tradeData.options
-    );
+      methodArguments: tradeData.methodArguments,
+      transactionOptions: tradeData.options
+    };
   }
 
   /**
@@ -656,7 +707,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     }): Promise<boolean> => {
       try {
         await this.blockchainAdapter.tryExecuteContractMethod(
-          this.contractAddress,
+          this._contractAddress,
           this.contractAbi,
           methodData.methodName,
           methodData.methodArguments,

@@ -333,7 +333,9 @@ export class QueryParamsService {
 
     this.iframeService.setIframeInfo({
       iframeAppearance: queryParams.iframe,
-      device: queryParams.device
+      device: queryParams.device,
+      fee: parseInt(queryParams.fee),
+      feeTarget: queryParams.feeTarget
     });
 
     this.setBackgroundStatus(queryParams);

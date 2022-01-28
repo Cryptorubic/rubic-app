@@ -25,12 +25,26 @@ export class IframeService implements OnDestroy {
     return this._isIframe$.getValue();
   }
 
+  public get isIframeWithFee(): boolean {
+    return this.isIframe && Boolean(this.iframeParameters.fee);
+  }
+
   public get iframeAppearance(): IframeAppearance | undefined {
     return this.iframeParameters?.iframeAppearance;
   }
 
   public get device(): 'mobile' | 'desktop' | undefined {
     return this.iframeParameters?.device;
+  }
+
+  public get feeData(): {
+    fee: number;
+    feeTarget: string;
+  } {
+    return {
+      fee: this.iframeParameters.fee,
+      feeTarget: this.iframeParameters.feeTarget
+    };
   }
 
   public get originDomain(): string {
@@ -59,8 +73,13 @@ export class IframeService implements OnDestroy {
       console.error(`Wrong device value: ${device}`);
     }
 
+    const { fee, feeTarget } = iframeParameters;
+    if (Boolean(fee) !== Boolean(feeTarget)) {
+      throw new Error('`fee` or `feeTarget` parameter is missing.');
+    }
+
     this.setIframeStatus();
-    this.setUpViewportListener();
+    this.setupViewportListener();
   }
 
   private setIframeStatus(): void {
@@ -71,7 +90,7 @@ export class IframeService implements OnDestroy {
       .classList.add('iframe', `iframe-${this.iframeParameters.iframeAppearance}`);
   }
 
-  private setUpViewportListener(): void {
+  private setupViewportListener(): void {
     const renderer = this.rendererFactory2.createRenderer(null, null);
     this.documentListener = renderer.listen('window', 'message', ($event: MessageEvent) => {
       const isWidgetIntoViewportEvent = $event.data?.name === 'widget-into-viewport';

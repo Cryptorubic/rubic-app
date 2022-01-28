@@ -55,6 +55,10 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
   protected walletAddress: string;
 
+  public get contractAddress(): string {
+    return this.swapRouterContract.address;
+  }
+
   // Injected services
   private readonly publicBlockchainAdapterService = inject(PublicBlockchainAdapterService);
 

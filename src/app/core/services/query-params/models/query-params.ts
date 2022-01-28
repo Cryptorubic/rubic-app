@@ -27,6 +27,8 @@ interface AllQueryParams {
   background: string;
   theme: string;
   language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
+  fee: string;
+  feeTarget: string;
 }
 
 export type QueryParams = {
