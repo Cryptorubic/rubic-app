@@ -19,10 +19,10 @@ export class SmartRoutingComponent {
   savings: number = 1.25;
 
   @Input()
-  fromRubicPool: boolean;
+  fromHasTrade: boolean;
 
   @Input()
-  toRubicPool: boolean;
+  toHasTrade: boolean;
 
   public readonly tradesProviders = tradesProviders;
 
