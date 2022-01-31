@@ -17,6 +17,16 @@
       *ngIf="displayTargetAddressInput$ | async"
       [targetBlockchain]="toBlockchain"
     ></app-target-network-address>
+
+    <ng-container *ngIf="smartRouting$ | async as smartRoutingInfo">
+      <app-smart-routing
+        [fromProvider]="smartRoutingInfo.fromProvider"
+        [toProvider]="smartRoutingInfo.toProvider"
+        [fromHasTrade]="smartRoutingInfo.fromHasTrade"
+        [toHasTrade]="smartRoutingInfo.toHasTrade"
+        [savings]="smartRoutingInfo.savings"
+      ></app-smart-routing>
+    </ng-container>
   </div>
 
   <div class="bottom-form__footer">

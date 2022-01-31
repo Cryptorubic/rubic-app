@@ -26,18 +26,9 @@
         {{ 'tradesTable.noData' | translate }}
       </div>
 
-      <app-accordion
-        *ngIf="!isDesktop"
-        [tableData$]="tableData$"
-        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
-      ></app-accordion>
+      <app-accordion *ngIf="!isDesktop" [tableData$]="tableData$"></app-accordion>
 
-      <app-table
-        *ngIf="isDesktop"
-        [loading]="loading"
-        [tableData$]="tableData$"
-        (onReceivePolygonBridgeTrade)="receivePolygonBridgeTrade($event)"
-      ></app-table>
+      <app-table *ngIf="isDesktop" [loading]="loading" [tableData$]="tableData$"></app-table>
     </div>
   </tui-loader>
 </div>

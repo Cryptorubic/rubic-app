@@ -7,9 +7,14 @@ import { TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TargetNetworkAddressComponent } from './components/target-network-address/target-network-address.component';
+import { SmartRoutingComponent } from './components/smart-routing/smart-routing.component';
 
 @NgModule({
-  declarations: [CrossChainRoutingBottomFormComponent, TargetNetworkAddressComponent],
+  declarations: [
+    CrossChainRoutingBottomFormComponent,
+    TargetNetworkAddressComponent,
+    SmartRoutingComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,

@@ -6,9 +6,8 @@ import {
   Inject,
   OnInit
 } from '@angular/core';
-import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { TuiNotification } from '@taiga-ui/core';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
@@ -137,59 +136,6 @@ export class MyTradesComponent implements OnInit {
 
   public showConnectWalletModal(): void {
     this.walletsModalService.open$();
-  }
-
-  public receivePolygonBridgeTrade(trade: TableTrade): void {
-    let tableData = this.tableDataSubject$.getValue().map(tableTrade => {
-      if (tableTrade.Date.getTime() === trade.date.getTime()) {
-        return {
-          ...tableTrade,
-          inProgress: true
-        };
-      }
-      return tableTrade;
-    });
-    this.tableDataSubject$.next(tableData);
-
-    let tradeInProgressSubscription$: Subscription;
-    const onTransactionHash = () => {
-      tradeInProgressSubscription$ = this.notificationsService.show(
-        this.translate.instant('bridgePage.progressMessage'),
-        {
-          label: this.translate.instant('notifications.tradeInProgress'),
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      );
-    };
-
-    this.myTradesService
-      .depositPolygonBridgeTradeAfterCheckpoint(trade.fromTransactionHash, onTransactionHash)
-      .subscribe(
-        async _receipt => {
-          tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(this.translate.instant('bridgePage.successMessage'), {
-            label: this.translate.instant('notifications.successfulTradeTitle'),
-            status: TuiNotification.Success,
-            autoClose: 15000
-          });
-
-          this.refreshTable();
-
-          await this.tokensService.calculateTokensBalances();
-        },
-        err => {
-          tradeInProgressSubscription$?.unsubscribe();
-
-          tableData = this.tableDataSubject$.getValue().map(tableTrade => ({
-            ...tableTrade,
-            inProgress: false
-          }));
-          this.tableDataSubject$.next(tableData);
-
-          this.errorsService.catch(err);
-        }
-      );
   }
 
   @HostListener('window:resize')

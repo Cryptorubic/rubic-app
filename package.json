@@ -26,7 +26,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-eslint/eslint-plugin": "^13.0.1",
     "@angular/animations": "^13.0.1",
     "@angular/cdk": "^12.2.13",
     "@angular/common": "^13.0.1",
@@ -76,7 +75,6 @@
     "ngx-cookie-service": "^2.4.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.3.0",
-    "rubic-app-maticjs": "^2.0.56",
     "rxjs": "~6.6.6",
     "tar": "^4.4.13",
     "ts-cacheable": "^1.0.5",
@@ -90,6 +88,7 @@
     "@angular-devkit/build-angular": "^13.0.2",
     "@angular-eslint/builder": "^13.0.0-alpha.0",
     "@angular-eslint/eslint-plugin-template": "^13.0.0-alpha.0",
+    "@angular-eslint/eslint-plugin": "^13.0.1",
     "@angular-eslint/schematics": "^13.0.0-alpha.0",
     "@angular-eslint/template-parser": "^13.0.0-alpha.0",
     "@angular/cli": "^13.0.2",
