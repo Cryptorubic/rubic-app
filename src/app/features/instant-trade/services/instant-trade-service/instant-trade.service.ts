@@ -23,7 +23,7 @@ import { SushiSwapEthService } from 'src/app/features/instant-trade/services/ins
 import { SushiSwapBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/sushi-swap-bsc-service/sushi-swap-bsc.service';
 import { SushiSwapHarmonyService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/harmony/sushi-swap-harmony/sushi-swap-harmony.service';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
-import { SHOULS_CALCULATE_GAS_BLOCKCHAIN } from '@features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
+import { SHOULD_CALCULATE_GAS_BLOCKCHAIN } from '@features/instant-trade/services/instant-trade-service/constants/should-calculate-gas-blockchain';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessTrxNotificationComponent } from 'src/app/shared/components/success-trx-notification/success-trx-notification.component';
@@ -49,6 +49,9 @@ import { ViperSwapHarmonyService } from '@features/instant-trade/services/instan
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
+import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
+import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
+import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +96,9 @@ export class InstantTradeService {
     private readonly raydiumService: RaydiumService,
     private readonly algebraService: AlgebraService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
+    private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
+    private readonly oneInchArbitrumService: OneInchArbitrumService,
+    private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
     // Providers end
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
@@ -150,6 +156,11 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDERS.SPOOKYSWAP]: this.spookySwapFantomService,
         [INSTANT_TRADES_PROVIDERS.SPIRITSWAP]: this.spiritSwapFantomService
       },
+      [BLOCKCHAIN_NAME.ARBITRUM]: {
+        [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchArbitrumService,
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapArbitrumService,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniSwapV3ArbitrumService
+      },
       [BLOCKCHAIN_NAME.SOLANA]: {
         [INSTANT_TRADES_PROVIDERS.RAYDIUM]: this.raydiumService
       }
@@ -186,8 +197,8 @@ export class InstantTradeService {
     const { fromAmount, fromToken, toToken, fromBlockchain } = this.swapFormService.inputValue;
 
     const shouldCalculateGas =
-      SHOULS_CALCULATE_GAS_BLOCKCHAIN[
-        fromBlockchain as keyof typeof SHOULS_CALCULATE_GAS_BLOCKCHAIN
+      SHOULD_CALCULATE_GAS_BLOCKCHAIN[
+        fromBlockchain as keyof typeof SHOULD_CALCULATE_GAS_BLOCKCHAIN
       ];
 
     const providers = providersNames.map(

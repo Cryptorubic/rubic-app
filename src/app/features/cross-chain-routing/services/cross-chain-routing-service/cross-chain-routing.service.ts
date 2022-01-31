@@ -182,10 +182,17 @@ export class CrossChainRoutingService {
       toTransitTokenAmount,
       toToken
     );
+
+    // @TODO fix swap Solana to UniV3
+    const isSolanaToUniV3 =
+      fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
+      this.contracts[toBlockchain].providersData[targetBlockchainProviders[0].providerIndex]
+        .methodSuffix === 'V3';
+
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = targetBlockchainProviders[0];
+    } = isSolanaToUniV3 ? targetBlockchainProviders[1] : targetBlockchainProviders[0];
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
@@ -212,7 +219,11 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      targetBlockchainProviders,
+      isSolanaToUniV3
+        ? targetBlockchainProviders.filter(
+            provider => provider.providerIndex !== targetBlockchainProviders[0].providerIndex
+          )
+        : targetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address

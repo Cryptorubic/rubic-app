@@ -167,7 +167,10 @@ export abstract class ContractData {
 
     if (provider instanceof CommonUniswapV3Service) {
       const route = (instantTrade as UniswapV3InstantTrade).route;
-      const path: string[] = [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
+      const path =
+        fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+          ? [route.initialTokenAddress]
+          : [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
 
       let lastTokenAddress = route.initialTokenAddress;
 
@@ -178,9 +181,11 @@ export abstract class ContractData {
         lastTokenAddress = newToken.address;
 
         path.push(
-          '0x' +
-            pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
-            lastTokenAddress.slice(2).toLowerCase()
+          fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+            ? lastTokenAddress
+            : '0x' +
+                pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
+                lastTokenAddress.slice(2).toLowerCase()
         );
       });
 

@@ -21,6 +21,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
+  [BLOCKCHAIN_NAME.ARBITRUM]: Blockchain;
 };
 
 type DeprecatedBlockchains = {
@@ -77,6 +78,11 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.FANTOM,
     name: 'Fantom',
     img: `${imageBaseSrc}fantom.svg`
+  },
+  [BLOCKCHAIN_NAME.ARBITRUM]: {
+    key: BLOCKCHAIN_NAME.ARBITRUM,
+    name: 'Arbitrum',
+    img: `${imageBaseSrc}arbitrum.svg`
   },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
     key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
