@@ -16,7 +16,7 @@
       [class.transaction-info__header-arrow_opened]="accordionState"
     />
   </div>
-  <ng-template tuiAccordionItemContent>
+  <div tuiAccordionItemContent>
     <tui-loader [showLoader]="loading" [overlay]="true">
       <div class="swaps-info">
         <h1 class="swaps-info__title">Transaction Info</h1>
@@ -34,5 +34,5 @@
         </ng-template>
       </div>
     </tui-loader>
-  </ng-template>
+  </div>
 </tui-accordion-item>
