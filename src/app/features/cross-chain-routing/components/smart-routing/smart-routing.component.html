@@ -1,7 +1,9 @@
 <div class="info" [class.info_transparent]="isMobile$ | async">
-  <div class="info__chip info__chip_colored" *ngIf="savings || fromHasTrade || toHasTrade">
-    {{ 'crossChainPage.smartRouting.save' | translate: { amount: savings } }}
-  </div>
+  <ng-container *ngIf="savings">
+    <div class="info__chip info__chip_colored" *ngIf="fromHasTrade || toHasTrade">
+      {{ 'crossChainPage.smartRouting.save' | translate: { amount: savings } }}
+    </div>
+  </ng-container>
   <div class="info__chip" [class.info__chip_colored]="isMobile$ | async">
     {{ 'crossChainPage.smartRouting.estTime' | translate }}
   </div>
@@ -48,3 +50,5 @@
     <div class="dex__name">Rubic pool</div>
   </div>
 </ng-template>
+
+<div *ngIf="0">123123</div>
