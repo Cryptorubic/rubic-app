@@ -63,6 +63,7 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 import { FalsyPipe } from './pipes/falsy.pipe';
+import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +95,7 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     InfoHintComponent,
     BuyTokenComponent,
     IframeBlockchainIndicatorComponent,
+    RubicContainerComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -181,7 +183,8 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    NotificationBadgeComponent
+    NotificationBadgeComponent,
+    RubicContainerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]

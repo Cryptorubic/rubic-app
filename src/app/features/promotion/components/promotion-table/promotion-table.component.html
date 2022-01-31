@@ -1,6 +1,6 @@
-<section class="container" *ngLet="isLoading$ | async as isLoading">
-  <div class="header">
-    <h2 class="header__text">Invited Projects</h2>
+<app-rubic-container class="rubic-container" *ngLet="isLoading$ | async as isLoading">
+  <div class="header" title>
+    <span>Invited Projects</span>
     <app-rotating-icon
       class="header__refresh"
       [rotating]="isLoading"
@@ -26,8 +26,7 @@
           </td>
           <td *tuiCell="'invitationDate'" tuiTd>
             <div class="table__date">
-              <span>{{ item.invitationDate | date: 'dd.MM.yyyy' }}</span>
-              <span>{{ item.invitationDate | date: 'HH:mm' }}</span>
+              <span>{{ item.invitationDate | date: 'mediumDate' }}</span>
             </div>
           </td>
           <td *tuiCell="'tradingVolume'" tuiTd>
@@ -55,4 +54,4 @@
       </tbody>
     </table>
   </tui-loader>
-</section>
+</app-rubic-container>
