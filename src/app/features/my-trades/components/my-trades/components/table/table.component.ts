@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Injector,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit } from '@angular/core';
 import { TuiComparator } from '@taiga-ui/addon-table';
 import {
   TableRow,
@@ -20,7 +12,6 @@ import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constan
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
-import { TableTrade } from '@shared/models/my-trades/table-trade';
 import { tradesProviders } from '@shared/constants/common/trades-providers';
 
 @Component({
@@ -36,8 +27,6 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
    * [REQUIRED] Table data to display.
    */
   @Input() tableData$: Observable<TableRow[]>;
-
-  @Output() onReceivePolygonBridgeTrade = new EventEmitter<TableTrade>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 

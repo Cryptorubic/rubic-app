@@ -83,6 +83,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
+  public readonly smartRouting$ = this.crossChainRoutingService.smartRouting$;
+
   public toBlockchain: BLOCKCHAIN_NAME;
 
   public fromAmount: BigNumber;
@@ -160,6 +162,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
+        if (!form.fromToken || !form.toToken) {
+          this.crossChainRoutingService.resetSmartRouting();
+        }
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
