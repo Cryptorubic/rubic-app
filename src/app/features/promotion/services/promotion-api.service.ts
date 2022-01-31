@@ -4,12 +4,13 @@ import { Observable, timer } from 'rxjs';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
 import { RBC } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { mapTo } from 'rxjs/operators';
+import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 
 @Injectable()
 export class PromotionApiService {
   constructor(private httpService: HttpService) {}
 
-  public getPromotionData(): Observable<PromotionTableData> {
+  public getPromotionTableData(): Observable<PromotionTableData> {
     return timer(1000).pipe(
       mapTo([
         {
@@ -31,6 +32,16 @@ export class PromotionApiService {
           token: RBC
         }
       ])
+    );
+  }
+
+  public getPromotionStatistics(): Observable<PromotionStatistics> {
+    return timer(1000).pipe(
+      mapTo({
+        integratedProjectsNumber: 2,
+        totalRewards: 123.456789,
+        instantRewards: 99981212.12313
+      })
     );
   }
 }

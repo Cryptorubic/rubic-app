@@ -1,20 +1,29 @@
 <app-rubic-container *ngLet="isWalletConnected$ | async as isWalletConnected">
   <span title>Referral Programm</span>
-  <div class="stats-wrapper">
-    <div class="statistics">
-      <app-rotating-icon class="statistics__spinner"></app-rotating-icon>
+  <div class="stats-wrapper" *ngLet="statistics$ | async as statistics">
+    <div class="statistics" *ngLet="isStatisticsLoading$ | async as isStatisticsLoading">
+      <app-rotating-icon
+        class="statistics__spinner"
+        [rotating]="isStatisticsLoading"
+        [disabled]="!isWalletConnected"
+        (iconClick)="updateStatistics()"
+      ></app-rotating-icon>
       <ul class="statistics__list">
         <li class="statistics__item item">
           <span class="item__label">Invited Projects</span>
-          <span class="item__amount">0</span>
+          <span class="item__amount">{{ statistics.integratedProjectsNumber }}</span>
         </li>
         <li class="statistics__item item">
           <span class="item__label">Total Rewards</span>
-          <span class="item__amount">$0</span>
+          <span class="item__amount">
+            ${{ statistics.totalRewards | bigNumberFormat | withRound: 'toClosestValue' }}
+          </span>
         </li>
         <li class="statistics__item item">
           <span class="item__label">Instant Rewards</span>
-          <span class="item__amount">$0</span>
+          <span class="item__amount">
+            ${{ statistics.instantRewards | bigNumberFormat | withRound: 'toClosestValue' }}
+          </span>
         </li>
       </ul>
     </div>

@@ -12,6 +12,14 @@ button {
 
   background: transparent;
   border: none;
+
+  &[disabled] {
+    cursor: not-allowed;
+
+    img {
+      opacity: 0.5;
+    }
+  }
 }
 
 .icon {

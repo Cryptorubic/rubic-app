@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 import { map } from 'rxjs/operators';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
+import { PromotionService } from '@features/promotion/services/promotion.service';
+import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 
 @Component({
   selector: 'app-promotion-stats',
@@ -18,11 +20,25 @@ export class PromotionStatsComponent {
 
   public readonly isWalletConnected$: Observable<boolean>;
 
-  constructor(authService: AuthService, private readonly walletsModalService: WalletsModalService) {
+  public readonly statistics$: Observable<PromotionStatistics>;
+
+  public readonly isStatisticsLoading$: Observable<boolean>;
+
+  constructor(
+    authService: AuthService,
+    private readonly walletsModalService: WalletsModalService,
+    private readonly promotionService: PromotionService
+  ) {
     this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
+    this.statistics$ = promotionService.statistics$;
+    this.isStatisticsLoading$ = promotionService.isStatisticsLoading$;
   }
 
   public openWalletsModal(): void {
     this.walletsModalService.open$();
+  }
+
+  public updateStatistics(): void {
+    this.promotionService.updatePromotionStatistics();
   }
 }

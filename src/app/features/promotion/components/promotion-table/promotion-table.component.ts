@@ -37,7 +37,7 @@ export class PromotionTableComponent {
     private readonly walletsModalService: WalletsModalService,
     authService: AuthService
   ) {
-    this.isLoading$ = promotionService.isLoading$;
+    this.isLoading$ = promotionService.isTableDataLoading$;
     this.tableData$ = promotionService.tableData$;
     this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
   }
