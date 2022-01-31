@@ -11,7 +11,8 @@ export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.MOONRIVER,
-  BLOCKCHAIN_NAME.FANTOM
+  BLOCKCHAIN_NAME.FANTOM,
+  BLOCKCHAIN_NAME.ARBITRUM
 ] as const;
 
 export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number];
@@ -33,6 +34,8 @@ export class PrivateBlockchainAdapterService {
   public readonly [BLOCKCHAIN_NAME.MOONRIVER]: EthLikeWeb3PrivateService = null;
 
   public readonly [BLOCKCHAIN_NAME.FANTOM]: EthLikeWeb3PrivateService = null;
+
+  public readonly [BLOCKCHAIN_NAME.ARBITRUM]: EthLikeWeb3PrivateService = null;
 
   public readonly [BLOCKCHAIN_NAME.XDAI]: EthLikeWeb3PrivateService = null;
 
