@@ -17,7 +17,7 @@ export class SmartRoutingComponent {
   toProvider: INSTANT_TRADES_PROVIDERS;
 
   @Input()
-  savings: number = 1.25;
+  savings: number;
 
   @Input()
   fromHasTrade: boolean;

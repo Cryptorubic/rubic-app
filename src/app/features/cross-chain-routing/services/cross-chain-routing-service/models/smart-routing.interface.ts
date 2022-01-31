@@ -3,5 +3,5 @@ export interface SmartRouting {
   toProvider: string;
   fromHasTrade: boolean;
   toHasTrade: boolean;
-  savings: string;
+  savings: number;
 }
