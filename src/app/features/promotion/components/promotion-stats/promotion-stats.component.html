@@ -1,4 +1,4 @@
-<app-rubic-container>
+<app-rubic-container *ngLet="isWalletConnected$ | async as isWalletConnected">
   <span title>Referral Programm</span>
   <div class="stats-wrapper">
     <div class="statistics">
@@ -18,15 +18,32 @@
         </li>
       </ul>
     </div>
-    <article class="info">
-      <h3 class="info__header">Earn with our widget</h3>
-      <p class="info__text">
-        Create a referral link and start earning with our widget. Be sure to read the program rules.
-      </p>
-      <div class="info__buttons-container">
-        <app-rubic-button appearance="secondary">Generate Link</app-rubic-button>
-        <app-rubic-button appearance="flat">Faq</app-rubic-button>
+    <div class="info">
+      <article class="description">
+        <h3 class="description__header">Earn with our widget</h3>
+        <p class="description__text">
+          Create a referral link and start earning with our widget. Be sure to read the program
+          rules.
+        </p>
+      </article>
+      <div class="buttons-container">
+        <ng-container *ngIf="!isWalletConnected; else buttons">
+          <app-rubic-button appearance="secondary" (onClick)="openWalletsModal()">
+            Connect Wallet
+          </app-rubic-button>
+          <a [safetyLink]="faqLink">
+            <app-rubic-button appearance="flat"> Faq </app-rubic-button>
+          </a>
+        </ng-container>
+        <ng-template #buttons>
+          <a [safetyLink]="faqLink">
+            <app-rubic-button appearance="secondary">Faq</app-rubic-button>
+          </a>
+          <a [safetyLink]="contactUsLink">
+            <app-rubic-button appearance="flat">Contact Us</app-rubic-button>
+          </a>
+        </ng-template>
       </div>
-    </article>
+    </div>
   </div>
 </app-rubic-container>

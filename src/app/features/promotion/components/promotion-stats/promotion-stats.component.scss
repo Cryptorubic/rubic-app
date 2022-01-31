@@ -60,7 +60,9 @@
 
 .info {
   flex: 1;
+}
 
+.description {
   &__header {
     margin: 0 0 12px;
     padding: 0;
@@ -72,7 +74,7 @@
   }
 
   &__text {
-    margin: 0 0 54px;
+    margin: 0 0 34px;
     padding: 0;
 
     color: var(--rubic-base-02);
@@ -81,17 +83,22 @@
 
     opacity: 0.7;
   }
+}
 
-  &__buttons-container {
-    display: flex;
-    align-items: center;
+.buttons-container {
+  display: flex;
+  align-items: center;
 
-    app-rubic-button {
-      width: 100%;
-    }
+  a {
+    display: block;
+    width: 100%;
+  }
 
-    app-rubic-button:not(:last-child) {
-      margin-right: 12px;
-    }
+  app-rubic-button {
+    width: 100%;
+  }
+
+  > *:not(:last-child) {
+    margin-right: 12px;
   }
 }

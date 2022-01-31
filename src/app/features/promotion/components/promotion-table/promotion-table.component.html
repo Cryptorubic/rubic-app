@@ -1,4 +1,4 @@
-<app-rubic-container class="rubic-container" *ngLet="isLoading$ | async as isLoading">
+<app-rubic-container *ngLet="isLoading$ | async as isLoading">
   <div class="header" title>
     <span>Invited Projects</span>
     <app-rotating-icon
@@ -8,50 +8,60 @@
     ></app-rotating-icon>
   </div>
 
-  <tui-loader [overlay]="true" [showLoader]="isLoading">
-    <table tuiTable class="table" [columns]="columns">
-      <thead>
-        <tr tuiThGroup>
-          <th tuiTh>Project</th>
-          <th tuiTh>Invited</th>
-          <th tuiTh>Trading Volume</th>
-          <th tuiTh>Fee Received</th>
-          <th tuiTh>Tokens Received</th>
-        </tr>
-      </thead>
-      <tbody *ngLet="tableData$ | async as tableData" tuiTbody [data]="tableData">
-        <tr *tuiRow="let item of tableData" tuiTr>
-          <td *tuiCell="'projectUrl'" tuiTd>
-            <a [safetyLink]="item.projectUrl">{{ item.projectName }}</a>
-          </td>
-          <td *tuiCell="'invitationDate'" tuiTd>
-            <div class="table__date">
-              <span>{{ item.invitationDate | date: 'mediumDate' }}</span>
-            </div>
-          </td>
-          <td *tuiCell="'tradingVolume'" tuiTd>
-            ${{ item.tradingVolume | bigNumberFormat | withRound: 'toClosestValue' }}
-          </td>
-          <td *tuiCell="'received'" tuiTd>
-            ${{ item.received | bigNumberFormat | withRound: 'toClosestValue' }}
-          </td>
-          <td *tuiCell="'receivedTokens'" tuiTd>
-            <div class="table__token-container">
-              <span>{{ item.receivedTokens | bigNumberFormat | withRound: 'toClosestValue' }}</span>
-              <div class="table__token">
-                <div class="table__token-img">
-                  <img
-                    [src]="item.token.image || DEFAULT_TOKEN_IMAGE"
-                    alt="to token"
-                    (error)="onTokenImageError($event)"
-                  />
-                </div>
-                <span>{{ item.token.symbol }}</span>
+  <div *ngIf="(isWalletConnected$ | async) === false; else tableContent">
+    <app-rubic-button appearance="secondary" (onClick)="openWalletsModal()">
+      Connect Wallet
+    </app-rubic-button>
+  </div>
+
+  <ng-template #tableContent>
+    <tui-loader [overlay]="true" [showLoader]="isLoading">
+      <table tuiTable class="table" [columns]="columns">
+        <thead>
+          <tr tuiThGroup>
+            <th tuiTh>Project</th>
+            <th tuiTh>Invited</th>
+            <th tuiTh>Trading Volume</th>
+            <th tuiTh>Fee Received</th>
+            <th tuiTh>Tokens Received</th>
+          </tr>
+        </thead>
+        <tbody *ngLet="tableData$ | async as tableData" tuiTbody [data]="tableData">
+          <tr *tuiRow="let item of tableData" tuiTr>
+            <td *tuiCell="'projectUrl'" tuiTd>
+              <a [safetyLink]="item.projectUrl">{{ item.projectName }}</a>
+            </td>
+            <td *tuiCell="'invitationDate'" tuiTd>
+              <div class="table__date">
+                <span>{{ item.invitationDate | date: 'mediumDate' }}</span>
               </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </tui-loader>
+            </td>
+            <td *tuiCell="'tradingVolume'" tuiTd>
+              ${{ item.tradingVolume | bigNumberFormat | withRound: 'toClosestValue' }}
+            </td>
+            <td *tuiCell="'received'" tuiTd>
+              ${{ item.received | bigNumberFormat | withRound: 'toClosestValue' }}
+            </td>
+            <td *tuiCell="'receivedTokens'" tuiTd>
+              <div class="table__token-container">
+                <span>{{
+                  item.receivedTokens | bigNumberFormat | withRound: 'toClosestValue'
+                }}</span>
+                <div class="table__token">
+                  <div class="table__token-img">
+                    <img
+                      [src]="item.token.image || DEFAULT_TOKEN_IMAGE"
+                      alt="to token"
+                      (error)="onTokenImageError($event)"
+                    />
+                  </div>
+                  <span>{{ item.token.symbol }}</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </tui-loader>
+  </ng-template>
 </app-rubic-container>

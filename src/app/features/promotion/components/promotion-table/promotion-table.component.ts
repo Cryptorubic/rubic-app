@@ -4,6 +4,9 @@ import { PromotionTableData } from '@features/promotion/models/promotion-table-d
 import { PromotionService } from '@features/promotion/services/promotion.service';
 import { Observable } from 'rxjs';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { map } from 'rxjs/operators';
+import { AuthService } from '@core/services/auth/auth.service';
+import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
 
 @Component({
   selector: 'app-promotion-table',
@@ -26,12 +29,17 @@ export class PromotionTableComponent {
 
   public readonly tableData$: Observable<PromotionTableData>;
 
+  public readonly isWalletConnected$: Observable<boolean>;
+
   constructor(
     private readonly promotionService: PromotionService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly walletsModalService: WalletsModalService,
+    authService: AuthService
   ) {
     this.isLoading$ = promotionService.isLoading$;
     this.tableData$ = promotionService.tableData$;
+    this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
   }
 
   public onTokenImageError($event: Event): void {
@@ -40,5 +48,9 @@ export class PromotionTableComponent {
 
   public onRefresh(): void {
     this.promotionService.updatePromotionData();
+  }
+
+  public openWalletsModal(): void {
+    this.walletsModalService.open$();
   }
 }

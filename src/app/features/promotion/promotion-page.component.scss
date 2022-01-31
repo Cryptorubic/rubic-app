@@ -1,33 +1,5 @@
 @use 'src/scss/core' as *;
 
-.promotion {
-  display: flex;
-  flex-direction: column;
-
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 10px 35px 40px;
-
-  font-family: $sf-pro-font;
-
-  background: var(--main-form-background);
-  border-radius: $border-radius-1;
-  backdrop-filter: blur(24px);
-
-  &__header {
-    color: var(--form-bright-text-color);
-    font-weight: 300;
-    font-size: 24px;
-    line-height: 29px;
-  }
-
-  &__button-wrapper {
-    width: 245px;
-    height: 50px;
-    margin: 0 auto;
-  }
-}
-
 .promotion-stats {
   display: block;
   margin-bottom: 22px;
