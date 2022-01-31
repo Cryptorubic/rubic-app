@@ -1,4 +1,32 @@
 <app-rubic-container>
   <span title>Referral Programm</span>
-  <div>content</div>
+  <div class="stats-wrapper">
+    <div class="statistics">
+      <app-rotating-icon class="statistics__spinner"></app-rotating-icon>
+      <ul class="statistics__list">
+        <li class="statistics__item item">
+          <span class="item__label">Invited Projects</span>
+          <span class="item__amount">0</span>
+        </li>
+        <li class="statistics__item item">
+          <span class="item__label">Total Rewards</span>
+          <span class="item__amount">$0</span>
+        </li>
+        <li class="statistics__item item">
+          <span class="item__label">Instant Rewards</span>
+          <span class="item__amount">$0</span>
+        </li>
+      </ul>
+    </div>
+    <article class="info">
+      <h3 class="info__header">Earn with our widget</h3>
+      <p class="info__text">
+        Create a referral link and start earning with our widget. Be sure to read the program rules.
+      </p>
+      <div class="info__buttons-container">
+        <app-rubic-button appearance="secondary">Generate Link</app-rubic-button>
+        <app-rubic-button appearance="flat">Faq</app-rubic-button>
+      </div>
+    </article>
+  </div>
 </app-rubic-container>
