@@ -107,7 +107,10 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
     });
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
+  public getAllowance(
+    tokenAddress: string,
+    targetContractAddress = this.contractAddress
+  ): Observable<BigNumber> {
     if (this.blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
@@ -116,16 +119,20 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
       this.blockchainAdapter.getAllowance({
         tokenAddress,
         ownerAddress: this.walletAddress,
-        spenderAddress: this.swapRouterContract.address
+        spenderAddress: targetContractAddress
       })
     );
   }
 
-  public async approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
+  public async approve(
+    tokenAddress: string,
+    options: TransactionOptions,
+    targetContractAddress = this.contractAddress
+  ): Promise<void> {
     this.walletConnectorService.checkSettings(this.blockchain);
     await this.web3PrivateService.approveTokens(
       tokenAddress,
-      this.swapRouterContract.address,
+      targetContractAddress,
       'infinity',
       options
     );
@@ -191,8 +198,8 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
   public async checkAndEncodeTrade(
     trade: UniswapV3AlgebraInstantTrade,
-    targetWalletAddress: string,
-    options: ItOptions = {}
+    options: ItOptions,
+    targetWalletAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
     const { methodName, methodArguments, transactionOptions } = await this.checkAndGetTradeData(
       trade,

@@ -292,8 +292,8 @@ export class InstantTradeService {
 
     const transactionOptions = await blockchainProvider.checkAndEncodeTrade(
       trade,
-      feeContractAddress,
-      options
+      options,
+      feeContractAddress
     );
 
     const { fee, feeTarget } = this.iframeService.feeData;
@@ -359,9 +359,14 @@ export class InstantTradeService {
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
+    // TODO: update
+    const targetContractAddress =
+      this.iframeService.isIframe && fromBlockchain === BLOCKCHAIN_NAME.POLYGON
+        ? IFRAME_FEE_CONTRACT_ADDRESS[fromBlockchain]
+        : undefined;
 
     const providerApproveData = providers.map((provider: ItProvider) =>
-      provider.getAllowance(fromToken.address).pipe(
+      provider.getAllowance(fromToken.address, targetContractAddress).pipe(
         catchError((err: unknown) => {
           console.debug(err, provider);
           return of(null);
@@ -379,6 +384,13 @@ export class InstantTradeService {
   public async approve(provider: INSTANT_TRADES_PROVIDERS, trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
     try {
+      const { fromBlockchain } = this.swapFormService.inputValue;
+      // TODO: update
+      const targetContractAddress =
+        this.iframeService.isIframe && fromBlockchain === BLOCKCHAIN_NAME.POLYGON
+          ? IFRAME_FEE_CONTRACT_ADDRESS[fromBlockchain]
+          : undefined;
+
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
         {
@@ -393,7 +405,8 @@ export class InstantTradeService {
               )
             );
           }
-        }
+        },
+        targetContractAddress
       );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.notificationsService.show(

@@ -18,21 +18,34 @@ export abstract class OneinchProviderAbstract implements ItProvider {
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 
-  public readonly contractAddress = '0x1111111254fb6c44bac0bed2854e76f90643097d';
+  public readonly contractAddress = this.commonOneinchService.contractAddress;
 
-  constructor(
+  protected constructor(
     blockchain: BLOCKCHAIN_NAME,
     private readonly commonOneinchService: CommonOneinchService
   ) {
     this.blockchain = blockchain;
   }
 
-  public getAllowance(tokenAddress: string): Observable<BigNumber> {
-    return this.commonOneinchService.getAllowance(this.blockchain, tokenAddress);
+  public getAllowance(tokenAddress: string, targetContractAddress: string): Observable<BigNumber> {
+    return this.commonOneinchService.getAllowance(
+      this.blockchain,
+      tokenAddress,
+      targetContractAddress
+    );
   }
 
-  public approve(tokenAddress: string, options: TransactionOptions): Promise<void> {
-    return this.commonOneinchService.approve(this.blockchain, tokenAddress, options);
+  public approve(
+    tokenAddress: string,
+    options: TransactionOptions,
+    targetContractAddress: string
+  ): Promise<void> {
+    return this.commonOneinchService.approve(
+      this.blockchain,
+      tokenAddress,
+      options,
+      targetContractAddress
+    );
   }
 
   public calculateTrade(
@@ -58,9 +71,9 @@ export abstract class OneinchProviderAbstract implements ItProvider {
 
   public checkAndEncodeTrade(
     trade: InstantTrade,
-    targetWalletAddress: string,
-    options: ItOptions = {}
+    options: ItOptions,
+    targetWalletAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
-    return this.commonOneinchService.checkAndEncodeTrade(trade, targetWalletAddress, options);
+    return this.commonOneinchService.checkAndEncodeTrade(trade, options, targetWalletAddress);
   }
 }

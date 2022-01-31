@@ -17,13 +17,14 @@ export interface ItProvider {
 
   get contractAddress(): string;
 
-  getAllowance: (tokenAddress: string) => Observable<BigNumber>;
+  getAllowance: (tokenAddress: string, targetContractAddress?: string) => Observable<BigNumber>;
 
   approve: (
     tokenAddress: string,
     options: {
       onTransactionHash?: (hash: string) => void;
-    }
+    },
+    targetContractAddress?: string
   ) => Promise<void>;
 
   calculateTrade: (
@@ -38,7 +39,7 @@ export interface ItProvider {
 
   checkAndEncodeTrade?: (
     trade: InstantTrade,
-    targetWalletAddress: string,
-    options: ItOptions
+    options: ItOptions,
+    targetWalletAddress: string
   ) => Promise<RequiredField<TransactionOptions, 'data'>>;
 }
