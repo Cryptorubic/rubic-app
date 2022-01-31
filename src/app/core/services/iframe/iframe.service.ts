@@ -1,9 +1,11 @@
 import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeParameters } from '@core/services/iframe/models/iframe-parameters';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
+import { IframeApiService } from '@core/services/backend/iframe-api/iframe-api.service';
+import { Cacheable } from 'ts-cacheable';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +60,8 @@ export class IframeService implements OnDestroy {
   constructor(
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly rendererFactory2: RendererFactory2,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly iframeApiService: IframeApiService
   ) {}
 
   ngOnDestroy() {
@@ -99,5 +102,20 @@ export class IframeService implements OnDestroy {
         this._widgetIntoViewport$.next($event.data?.widgetIntoViewport);
       }
     });
+  }
+
+  @Cacheable()
+  public getPromoterAddressByPromoCode(): Observable<string | null> {
+    const { promoCode } = this.iframeParameters;
+    if (!promoCode) {
+      return of(null);
+    }
+
+    try {
+      return this.iframeApiService.getPromoterAddressByPromoCode(promoCode);
+    } catch (err) {
+      console.error('Cannot retrieve promoter address:', err);
+      return of(null);
+    }
   }
 }

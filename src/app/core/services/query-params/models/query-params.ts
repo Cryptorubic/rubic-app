@@ -19,7 +19,7 @@ interface AllQueryParams {
 
   // iframe
   iframe: IframeAppearance;
-  device?: 'mobile' | 'desktop';
+  device: 'mobile' | 'desktop';
   hideSelectionFrom: string;
   hideSelectionTo: string;
   slippageIt: string;
@@ -29,6 +29,7 @@ interface AllQueryParams {
   language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
   fee: string;
   feeTarget: string;
+  promoCode: string;
 }
 
 export type QueryParams = {

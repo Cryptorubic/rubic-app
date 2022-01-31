@@ -298,6 +298,10 @@ export class InstantTradeService {
 
     const { fee, feeTarget } = this.iframeService.feeData;
 
+    const promoterAddress = await this.iframeService.getPromoterAddressByPromoCode().toPromise();
+
+    const methodName = promoterAddress ? 'swapWithPromoter' : 'swap';
+
     const methodArguments = [
       trade.from.token.address,
       trade.to.token.address,
@@ -306,11 +310,14 @@ export class InstantTradeService {
       transactionOptions.data,
       [fee, feeTarget]
     ];
+    if (promoterAddress) {
+      methodArguments.push(promoterAddress);
+    }
 
     return this.web3PrivateService.tryExecuteContractMethod(
       feeContractAddress,
       IFRAME_FEE_CONTRACT_ABI,
-      'swap',
+      methodName,
       methodArguments,
       transactionOptions
     );
