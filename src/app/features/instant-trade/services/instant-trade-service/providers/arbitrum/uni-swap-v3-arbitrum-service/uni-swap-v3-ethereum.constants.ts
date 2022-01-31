@@ -18,7 +18,6 @@ const routerTokensNetMode: Record<NetMode, Record<string, SymbolToken>> = {
     GMX: { address: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a', symbol: 'GMX' },
     USDC: { address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', symbol: 'USDC' },
     WBTC: { address: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f', symbol: 'WBTC' },
-    rETH: { address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', symbol: 'rETH' },
     DAI: { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', symbol: 'DAI' }
   },
   testnet: {}
@@ -66,12 +65,6 @@ const routerLiquidityPoolsNetMode: Record<NetMode, LiquidityPool[]> = {
       mainnetRouterTokens.DAI,
       mainnetRouterTokens.USDC,
       500
-    ),
-    new LiquidityPool(
-      '0xAac7DE2b91293BA1791503d9127d2bDf2159db65',
-      mainnetRouterTokens.WETH,
-      mainnetRouterTokens.rETH,
-      3000
     )
   ],
   testnet: []
