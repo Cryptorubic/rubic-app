@@ -828,14 +828,14 @@ export class CrossChainRoutingService {
     const hasTargetTrades = Boolean(targetBlockchainProviders[0]?.tradeAndToAmount.trade);
 
     if (hasSourceTrades && !hasTargetTrades) {
-      smartRouting.savings = +sourceBestProvider.tradeAndToAmount.toAmount
-        .minus(sourceWorseProvider.tradeAndToAmount.toAmount)
+      smartRouting.savings = +sourceBestProvider?.tradeAndToAmount.toAmount
+        .minus(sourceWorseProvider?.tradeAndToAmount.toAmount)
         .toFixed(2);
     }
 
     if (!hasSourceTrades && hasTargetTrades) {
-      smartRouting.savings = +targetBestProvider.tradeAndToAmount.toAmount
-        .minus(targetWorstProvider.tradeAndToAmount.toAmount)
+      smartRouting.savings = +targetBestProvider?.tradeAndToAmount.toAmount
+        .minus(targetWorstProvider?.tradeAndToAmount.toAmount)
         .multipliedBy(toTokenUsdcPrice)
         .toFixed(2);
     }
