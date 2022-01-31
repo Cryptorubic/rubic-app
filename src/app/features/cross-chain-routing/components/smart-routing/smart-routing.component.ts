@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { tradesProviders } from '@shared/constants/common/trades-providers';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-smart-routing',
@@ -11,19 +12,19 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 })
 export class SmartRoutingComponent {
   @Input()
-  fromProvider: INSTANT_TRADES_PROVIDERS;
+  public fromProvider: INSTANT_TRADES_PROVIDERS;
 
   @Input()
-  toProvider: INSTANT_TRADES_PROVIDERS;
+  public toProvider: INSTANT_TRADES_PROVIDERS;
 
   @Input()
-  savings: number = 1.25;
+  public savings: BigNumber;
 
   @Input()
-  fromHasTrade: boolean;
+  public fromHasTrade: boolean;
 
   @Input()
-  toHasTrade: boolean;
+  public toHasTrade: boolean;
 
   public readonly tradesProviders = tradesProviders;
 
