@@ -4,7 +4,7 @@
   [borders]="null"
   [showArrow]="false"
   [noPadding]="true"
-  [(open)]="accordionState"
+  [(open)]="accordionOpened"
 >
   <div class="transaction-info__header">
     <img src="assets/images/icons/hint.svg" alt="info" class="transaction-info__header-hint" />
@@ -13,7 +13,7 @@
       src="assets/images/icons/arrow-down.svg"
       alt="expand"
       class="transaction-info__header-arrow"
-      [class.transaction-info__header-arrow_opened]="accordionState"
+      [class.transaction-info__header-arrow_opened]="accordionOpened"
     />
   </div>
   <div tuiAccordionItemContent>
