@@ -217,12 +217,21 @@ export class InstantTradeService {
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
     let transactionHash: string;
+    const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+    const fee = 0;
+
     try {
       const options = {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress();
-
+          this.notifyGtmAfterSigningTx(
+            hash,
+            trade.from.token.symbol,
+            trade.to.token.symbol,
+            fee,
+            usdPrice
+          );
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
         }
@@ -237,16 +246,6 @@ export class InstantTradeService {
           options
         );
       }
-
-      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-      const fee = 0;
-      this.notifyGtmOnSuccess(
-        transactionHash,
-        trade.from.token.symbol,
-        trade.to.token.symbol,
-        fee,
-        usdPrice
-      );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -383,7 +382,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(
+  private notifyGtmAfterSigningTx(
     txHash: string,
     fromToken: string,
     toToken: string,
