@@ -38,5 +38,9 @@ export const CROSS_CHAIN_METHODS: { [P: string]: string } = {
   swapTokensToOtherBlockchainALGB: '0xe2acb075',
   swapCryptoToOtherBlockchainALGB: '0x8e07e165',
   swapTokensToUserWithFeeALGB: '0x9b1e0672',
-  swapCryptoToUserWithFeeALGB: '0x50992db0'
+  swapCryptoToUserWithFeeALGB: '0x50992db0',
+  swapTokensToOtherBlockchainInch: '0x99f5ede2',
+  swapCryptoToOtherBlockchainInch: '0xb7626bfd',
+  swapTokensToUserWithFeeInch: '0xe9fc4a5e',
+  swapCryptoToUserWithFeeInch: '0xda0253d5'
 };
