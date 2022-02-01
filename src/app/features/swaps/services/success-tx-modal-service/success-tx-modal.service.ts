@@ -17,13 +17,17 @@ export class SuccessTxModalService {
    * Opens success transaction modal.
    * @param type Type of modal, cross-chain or default.
    */
-  public open(type: SuccessTxModalType = 'default'): void {
+  public open(type: SuccessTxModalType = 'default', callback?: () => void): void {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
         data: { idPrefix: '', type }
       })
-      .subscribe();
+      .subscribe(() => {
+        if (callback) {
+          callback();
+        }
+      });
   }
 }

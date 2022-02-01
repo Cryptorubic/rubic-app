@@ -124,6 +124,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show<{ type: SuccessTxModalType }>(
+      new PolymorpheusComponent(SuccessTrxNotificationComponent),
+      {
+        status: TuiNotification.Success,
+        autoClose: 15000,
+        data: {
+          type: 'cross-chain-routing'
+        }
+      }
+    );
+  };
+
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly errorsService: ErrorsService,
@@ -435,16 +448,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .subscribe(
         async () => {
           this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show<{ type: SuccessTxModalType }>(
-            new PolymorpheusComponent(SuccessTrxNotificationComponent),
-            {
-              status: TuiNotification.Success,
-              autoClose: 15000,
-              data: {
-                type: 'cross-chain-routing'
-              }
-            }
-          );
 
           this.counterNotificationsService.updateUnread();
 
@@ -475,7 +478,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open('cross-chain-routing', this.showSuccessTrxNotification);
     }
   }
 }
