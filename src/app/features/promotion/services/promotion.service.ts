@@ -9,6 +9,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 
 @Injectable()
 export class PromotionService {
+  private readonly promoUrl = 'https://rubic.exchange/widget';
+
   private readonly defaultStatistics: PromotionStatistics = {
     integratedProjectsNumber: 0,
     totalRewards: 0,
@@ -35,12 +37,25 @@ export class PromotionService {
     share()
   );
 
+  private readonly _promoLink$ = new BehaviorSubject<string | null>('');
+
+  public readonly promoLink$ = this._promoLink$.pipe(filter(notNull), share());
+
+  public readonly isPromoLinkLoading$: Observable<boolean> = this._promoLink$.pipe(
+    map(value => !value),
+    share()
+  );
+
   public get tableData(): PromotionTableData | null {
     return this._tableData$.getValue();
   }
 
   public get statistics(): PromotionStatistics | null {
     return this._statistics$.getValue();
+  }
+
+  public get promoLink(): string | null {
+    return this._promoLink$.getValue();
   }
 
   constructor(
@@ -64,6 +79,14 @@ export class PromotionService {
       .subscribe(statistics => this._statistics$.next(statistics));
   }
 
+  public updatePromoLink(): void {
+    this.setPromoLinkLoading();
+    this.promotionApiService
+      .getPromoCode()
+      .pipe(map(promoCode => `${this.promoUrl}?promoCode=${promoCode}`))
+      .subscribe(promoLink => this._promoLink$.next(promoLink));
+  }
+
   private setWalletSubscriptions(): void {
     this.authService
       .getCurrentUser()
@@ -72,25 +95,42 @@ export class PromotionService {
         if (isAuthorized) {
           this.updatePromotionData();
           this.updatePromotionStatistics();
+          this.updatePromoLink();
         } else {
+          this.setDefaultTableData();
           this.setDefaultStatistics();
+          this.setDefaultPromoLink();
         }
       });
   }
 
   private setTableDataLoading(): void {
-    if (this.tableData) {
+    if (this.tableData !== null) {
       this._tableData$.next(null);
     }
   }
 
   private setStatisticsLoading(): void {
-    if (this.statistics) {
+    if (this.statistics !== null) {
       this._statistics$.next(null);
     }
   }
 
+  private setPromoLinkLoading(): void {
+    if (this.promoLink !== null) {
+      this._statistics$.next(null);
+    }
+  }
+
+  private setDefaultTableData(): void {
+    this._tableData$.next([]);
+  }
+
   private setDefaultStatistics(): void {
     this._statistics$.next(this.defaultStatistics);
+  }
+
+  private setDefaultPromoLink(): void {
+    this._promoLink$.next('');
   }
 }

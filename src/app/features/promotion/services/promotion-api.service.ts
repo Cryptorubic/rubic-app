@@ -44,4 +44,8 @@ export class PromotionApiService {
       })
     );
   }
+
+  public getPromoCode(): Observable<string> {
+    return timer(1000).pipe(mapTo('a12b43fec12314gdb1'));
+  }
 }

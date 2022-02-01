@@ -1,40 +1,53 @@
 <app-rubic-container *ngLet="isWalletConnected$ | async as isWalletConnected">
   <span title>Referral Programm</span>
   <div class="stats-wrapper" *ngLet="statistics$ | async as statistics">
-    <div class="statistics" *ngLet="isStatisticsLoading$ | async as isStatisticsLoading">
-      <app-rotating-icon
-        class="statistics__spinner"
-        [rotating]="isStatisticsLoading"
-        [disabled]="!isWalletConnected"
-        (iconClick)="updateStatistics()"
-      ></app-rotating-icon>
-      <ul class="statistics__list">
-        <li class="statistics__item item">
-          <span class="item__label">Invited Projects</span>
-          <span class="item__amount">{{ statistics.integratedProjectsNumber }}</span>
-        </li>
-        <li class="statistics__item item">
-          <span class="item__label">Total Rewards</span>
-          <span class="item__amount">
-            ${{ statistics.totalRewards | bigNumberFormat | withRound: 'toClosestValue' }}
-          </span>
-        </li>
-        <li class="statistics__item item">
-          <span class="item__label">Instant Rewards</span>
-          <span class="item__amount">
-            ${{ statistics.instantRewards | bigNumberFormat | withRound: 'toClosestValue' }}
-          </span>
-        </li>
-      </ul>
-    </div>
+    <tui-loader
+      *ngLet="isStatisticsLoading$ | async as isStatisticsLoading"
+      [showLoader]="isStatisticsLoading"
+      overlay="true"
+    >
+      <div class="statistics">
+        <app-rotating-icon
+          class="statistics__spinner"
+          [rotating]="isStatisticsLoading"
+          [disabled]="!isWalletConnected"
+          (iconClick)="updateStatistics()"
+        ></app-rotating-icon>
+        <ul class="statistics__list">
+          <li class="statistics__item item">
+            <span class="item__label">Invited Projects</span>
+            <span class="item__amount">{{ statistics.integratedProjectsNumber }}</span>
+          </li>
+          <li class="statistics__item item">
+            <span class="item__label">Total Rewards</span>
+            <span class="item__amount">
+              ${{ statistics.totalRewards | bigNumberFormat | shortenAmount: 4:2:true }}
+            </span>
+          </li>
+          <li class="statistics__item item">
+            <span class="item__label">Instant Rewards</span>
+            <span class="item__amount">
+              ${{ statistics.instantRewards | bigNumberFormat | shortenAmount: 4:2:true }}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </tui-loader>
     <div class="info">
-      <article class="description">
+      <article class="description" *ngIf="!isWalletConnected; else promoLinkBlock">
         <h3 class="description__header">Earn with our widget</h3>
         <p class="description__text">
           Create a referral link and start earning with our widget. Be sure to read the program
           rules.
         </p>
       </article>
+      <ng-template #promoLinkBlock>
+        <h3 class="description__header">My Promo Link</h3>
+        <app-copy-container
+          [text]="promoLink$ | async"
+          [loading]="isPromoLinkLoading$ | async"
+        ></app-copy-container>
+      </ng-template>
       <div class="buttons-container">
         <ng-container *ngIf="!isWalletConnected; else buttons">
           <app-rubic-button appearance="secondary" (onClick)="openWalletsModal()">

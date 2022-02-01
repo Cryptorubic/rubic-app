@@ -24,6 +24,10 @@ export class PromotionStatsComponent {
 
   public readonly isStatisticsLoading$: Observable<boolean>;
 
+  public readonly promoLink$: Observable<string>;
+
+  public readonly isPromoLinkLoading$: Observable<boolean>;
+
   constructor(
     authService: AuthService,
     private readonly walletsModalService: WalletsModalService,
@@ -32,6 +36,8 @@ export class PromotionStatsComponent {
     this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
     this.statistics$ = promotionService.statistics$;
     this.isStatisticsLoading$ = promotionService.isStatisticsLoading$;
+    this.promoLink$ = promotionService.promoLink$;
+    this.isPromoLinkLoading$ = promotionService.isPromoLinkLoading$;
   }
 
   public openWalletsModal(): void {
