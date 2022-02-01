@@ -435,9 +435,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    const onTransactionHash = () => {
+    const onTransactionHash = (txHash: string) => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.notifyTradeInProgress();
+      this.notifyTradeInProgress(txHash);
     };
 
     this.crossChainRoutingService
@@ -468,7 +468,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       );
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(txHash: string): void {
+    const { fromBlockchain } = this.swapFormService.inputValue;
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {
@@ -478,7 +479,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open('cross-chain-routing', this.showSuccessTrxNotification);
+      this.successTxModalService.open(
+        'cross-chain-routing',
+        txHash,
+        fromBlockchain,
+        this.showSuccessTrxNotification
+      );
     }
   }
 }

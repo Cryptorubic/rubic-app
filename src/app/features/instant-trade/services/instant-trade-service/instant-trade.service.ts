@@ -69,6 +69,13 @@ export class InstantTradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+      status: TuiNotification.Success,
+      autoClose: 15000
+    });
+  };
+
   constructor(
     // Providers start
     private readonly oneInchEthService: OneInchEthService,
@@ -221,7 +228,7 @@ export class InstantTradeService {
       const options = {
         onConfirm: async (hash: string) => {
           confirmCallback();
-          this.notifyTradeInProgress();
+          this.notifyTradeInProgress(hash, trade.blockchain);
 
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
@@ -249,10 +256,6 @@ export class InstantTradeService {
       );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
-      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-        status: TuiNotification.Success,
-        autoClose: 15000
-      });
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
@@ -367,7 +370,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(txHash: string, blockchain: BLOCKCHAIN_NAME): void {
     this.modalSubscriptions.push(
       this.notificationsService.show(
         this.translateService.instant('notifications.tradeInProgress'),
@@ -379,7 +382,12 @@ export class InstantTradeService {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(
+        'default',
+        txHash,
+        blockchain,
+        this.showSuccessTrxNotification
+      );
     }
   }
 

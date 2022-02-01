@@ -531,7 +531,7 @@
     "successTxModal": {
       "title": "Транзакция успешко отправлена!",
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
-      "seeDetails": "See details in ",
+      "seeDetails": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
       "link": "My Trades"
     },
     "stakingSwapModal": {
