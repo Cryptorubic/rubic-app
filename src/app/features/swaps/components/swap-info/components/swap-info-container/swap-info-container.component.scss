@@ -14,7 +14,7 @@
     line-height: 24px;
 
     border-bottom: 0;
-    border-radius: 19px;
+    border-radius: $border-radius-2;
 
     &-hint {
       width: 20px;
@@ -44,7 +44,7 @@
 
       background: var(--main-form-background);
       border-bottom: 0;
-      border-radius: 19px;
+      border-radius: $border-radius-2;
     }
 
     .content {
@@ -53,7 +53,7 @@
 
     > .wrapper {
       border-color: unset;
-      border-radius: 19px;
+      border-radius: $border-radius-2;
     }
   }
 }
