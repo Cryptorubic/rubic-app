@@ -6,6 +6,7 @@ import { IframeParameters } from '@core/services/iframe/models/iframe-parameters
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { IframeApiService } from '@core/services/backend/iframe-api/iframe-api.service';
 import { Cacheable } from 'ts-cacheable';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -111,11 +112,11 @@ export class IframeService implements OnDestroy {
       return of(null);
     }
 
-    try {
-      return this.iframeApiService.getPromoterAddressByPromoCode(promoCode);
-    } catch (err) {
-      console.error('Cannot retrieve promoter address:', err);
-      return of(null);
-    }
+    return this.iframeApiService.getPromoterAddressByPromoCode(promoCode).pipe(
+      catchError((err: unknown) => {
+        console.error('Cannot retrieve promoter address:', err);
+        return of(null);
+      })
+    );
   }
 }
