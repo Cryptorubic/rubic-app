@@ -8,6 +8,7 @@
       <div
         class="bottom-amount__tokens-container"
         [ngClass]="{
+          'bottom-amount__tokens-container_loading': loading,
           'bottom-amount__tokens-container_error': errorText,
           'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
         }"
@@ -32,6 +33,6 @@
       </div>
     </div>
 
-    <app-usd-price-container [usdPrice]="usdPrice"></app-usd-price-container>
+    <app-usd-price-container [usdPrice]="usdPrice" [loading]="loading"></app-usd-price-container>
   </ng-container>
 </div>

@@ -77,6 +77,10 @@ export class CrossChainRoutingService {
 
   public readonly smartRouting$ = this._smartRouting$.asObservable();
 
+  private readonly _smartRoutingLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly smartRoutingLoading$ = this._smartRoutingLoading$.asObservable();
+
   private readonly contracts = this.contractsDataService.contracts;
 
   private currentCrossChainTrade: CrossChainTrade;
@@ -142,6 +146,7 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    this._smartRoutingLoading$.next(true);
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
@@ -875,6 +880,7 @@ export class CrossChainRoutingService {
     }
 
     this._smartRouting$.next(smartRouting);
+    this._smartRoutingLoading$.next(false);
   }
 
   public resetSmartRouting(): void {

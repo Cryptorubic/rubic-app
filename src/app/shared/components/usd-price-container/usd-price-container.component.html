@@ -1,4 +1,4 @@
-<div class="usd-price-container" *ngIf="usdPrice">
+<div class="usd-price-container" *ngIf="usdPrice" [class.usd-price-container_loading]="loading">
   <div
     *ngIf="usdPrice?.isFinite() && usdPrice.gt(0)"
     class="usd-price-container__price"

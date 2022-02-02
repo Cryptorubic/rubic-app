@@ -34,6 +34,12 @@
   app-smart-routing {
     display: block;
     margin-top: 30px;
+
+    transition: opacity 0.3s;
+
+    &.smart-routing-loading { 
+      opacity: 0.25;
+    }
   }
 
   &__container {

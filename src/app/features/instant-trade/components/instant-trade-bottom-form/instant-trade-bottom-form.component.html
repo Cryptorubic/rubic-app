@@ -29,6 +29,9 @@
 
         <div
           class="instant-trade-bottom-form__token-amount"
+          [class.instant-trade-bottom-form__token-amount_loading]="
+            standardMode && tradeStatus === TRADE_STATUS.LOADING
+          "
           *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
         >
           {{
@@ -50,6 +53,7 @@
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>
             <app-usd-price-container
               [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+              [loading]="tradeStatus === TRADE_STATUS.LOADING"
             ></app-usd-price-container>
           </div>
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>

@@ -81,6 +81,8 @@
 
     text-align: right;
 
+    transition: opacity ease-in-out .3s;
+
     @include iframe-horizontal {
       margin-bottom: 0;
 
@@ -126,6 +128,10 @@
 
     &_placeholder {
       color: rgb(117, 117, 117);
+    }
+
+    &_loading {
+      opacity: .25;
     }
   }
 
