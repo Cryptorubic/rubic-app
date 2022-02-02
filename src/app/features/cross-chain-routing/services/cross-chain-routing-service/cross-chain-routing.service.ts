@@ -189,10 +189,18 @@ export class CrossChainRoutingService {
       this.contracts[toBlockchain].providersData[targetBlockchainProviders[0].providerIndex]
         .methodSuffix === 'V3';
 
+    const isAnyToPolygon1inch =
+      toBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+      this.contracts[toBlockchain].providersData[targetBlockchainProviders[0].providerIndex]
+        .methodSuffix === 'Inch';
+
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = isSolanaToUniV3 ? targetBlockchainProviders[1] : targetBlockchainProviders[0];
+    } =
+      isSolanaToUniV3 || isAnyToPolygon1inch
+        ? targetBlockchainProviders[1]
+        : targetBlockchainProviders[0];
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
@@ -219,7 +227,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      isSolanaToUniV3
+      isSolanaToUniV3 || isAnyToPolygon1inch
         ? targetBlockchainProviders.filter(
             provider => provider.providerIndex !== targetBlockchainProviders[0].providerIndex
           )
