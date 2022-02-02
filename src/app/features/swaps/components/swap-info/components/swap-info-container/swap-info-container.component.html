@@ -1,5 +1,5 @@
 <tui-accordion-item
-  *ngIf="showTransactionInfo"
+  [style.display]="showTransactionInfo ? 'block' : 'none'"
   class="transaction-info"
   [borders]="null"
   [showArrow]="false"
