@@ -186,13 +186,11 @@ export class CrossChainRoutingService {
     // @TODO fix swap Solana to UniV3
     const isSolanaToUniV3 =
       fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
-      this.contracts[toBlockchain].providersData[targetBlockchainProviders[0].providerIndex]
-        .methodSuffix === 'V3';
+      this.contracts[toBlockchain].isProviderUniV3(targetBlockchainProviders[0].providerIndex);
 
     const isAnyToPolygon1inch =
       toBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-      this.contracts[toBlockchain].providersData[targetBlockchainProviders[0].providerIndex]
-        .methodSuffix === 'Inch';
+      this.contracts[toBlockchain].isProviderOneinch(targetBlockchainProviders[0].providerIndex);
 
     const {
       providerIndex: toProviderIndex,
