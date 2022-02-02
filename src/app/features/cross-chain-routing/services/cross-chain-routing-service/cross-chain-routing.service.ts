@@ -183,22 +183,21 @@ export class CrossChainRoutingService {
       toToken
     );
 
-    // @TODO fix swap Solana to UniV3
-    const isSolanaToUniV3 =
-      fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
-      this.contracts[toBlockchain].isProviderUniV3(targetBlockchainProviders[0].providerIndex);
-
-    const isAnyToPolygon1inch =
-      toBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-      this.contracts[toBlockchain].isProviderOneinch(targetBlockchainProviders[0].providerIndex);
+    // @TODO fix excluded providers
+    const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
+      provider =>
+        !(
+          (toBlockchain === BLOCKCHAIN_NAME.POLYGON &&
+            this.contracts[toBlockchain].isProviderOneinch(provider.providerIndex)) ||
+          (fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
+            this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex))
+        )
+    );
 
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } =
-      isSolanaToUniV3 || isAnyToPolygon1inch
-        ? targetBlockchainProviders[1]
-        : targetBlockchainProviders[0];
+    } = filteredTargetBlockchainProviders[0];
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
@@ -225,11 +224,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      isSolanaToUniV3 || isAnyToPolygon1inch
-        ? targetBlockchainProviders.filter(
-            provider => provider.providerIndex !== targetBlockchainProviders[0].providerIndex
-          )
-        : targetBlockchainProviders,
+      filteredTargetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address
