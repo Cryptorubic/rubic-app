@@ -18,10 +18,12 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.AVALANCHE]: Blockchain;
   [BLOCKCHAIN_NAME.MOONRIVER]: Blockchain;
   [BLOCKCHAIN_NAME.FANTOM]: Blockchain;
+  [BLOCKCHAIN_NAME.ARBITRUM]: Blockchain;
+  [BLOCKCHAIN_NAME.AURORA]: Blockchain;
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
+  [BLOCKCHAIN_NAME.AURORA_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
-  [BLOCKCHAIN_NAME.ARBITRUM]: Blockchain;
 };
 
 type DeprecatedBlockchains = {
@@ -84,6 +86,11 @@ export const BLOCKCHAINS: Blockchains = {
     name: 'Arbitrum',
     img: `${imageBaseSrc}arbitrum.svg`
   },
+  [BLOCKCHAIN_NAME.AURORA]: {
+    key: BLOCKCHAIN_NAME.AURORA,
+    name: 'Aurora',
+    img: `${imageBaseSrc}aurora.svg`
+  },
   [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: {
     key: BLOCKCHAIN_NAME.ETHEREUM_TESTNET,
     name: 'Kovan',
@@ -93,6 +100,11 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.AVALANCHE_TESTNET,
     name: 'Avalanche',
     img: `${imageBaseSrc}avalanche-testnet.svg`
+  },
+  [BLOCKCHAIN_NAME.AURORA_TESTNET]: {
+    key: BLOCKCHAIN_NAME.AURORA_TESTNET,
+    name: 'Aurora',
+    img: `${imageBaseSrc}aurora-testnet.svg`
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
     key: BLOCKCHAIN_NAME.SOLANA,

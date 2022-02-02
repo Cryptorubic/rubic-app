@@ -301,6 +301,10 @@ export class WalletConnectorService {
       [BLOCKCHAIN_NAME.ARBITRUM]: {
         name: 'Arbitrum One',
         rpc: 'https://arb1.arbitrum.io/rpc'
+      },
+      [BLOCKCHAIN_NAME.AURORA]: {
+        name: 'Aurora MainNet',
+        rpc: 'https://explorer.mainnet.aurora.dev'
       }
     };
     const params = {

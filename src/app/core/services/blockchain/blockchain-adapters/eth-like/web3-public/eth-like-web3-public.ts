@@ -481,6 +481,19 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     }[]
   > {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
+    // const amountsOut = contract.methods['getAmountsOut']('1000000000000000000', [
+    //   '0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB',
+    //   '0xB12BFcA5A55806AaF64E99521918A4bf0fC40802'
+    // ]).encodeABI();
+    //
+    // const call = [
+    //   {
+    //     callData: amountsOut,
+    //     target: contractAddress
+    //   }
+    // ];
+
     const calls: Call[] = methodsData.map(({ methodName, methodArguments }) => ({
       callData: contract.methods[methodName](...methodArguments).encodeABI(),
       target: contractAddress
