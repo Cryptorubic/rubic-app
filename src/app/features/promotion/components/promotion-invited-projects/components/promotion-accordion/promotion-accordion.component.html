@@ -1,5 +1,5 @@
 <ng-container>
-  <tui-accordion class="accordion" *ngFor="let row of tableData">
+  <tui-accordion class="accordion" *ngFor="let row of pageTableData">
     <tui-accordion-item class="accordion__item">
       <div class="accordion__header header">
         <div class="header__url">
@@ -57,4 +57,11 @@
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>
+
+  <tui-pagination
+    *ngIf="pagesNumber > 1"
+    [length]="pagesNumber"
+    [activePadding]="0"
+    [(index)]="currentPageIndex"
+  ></tui-pagination>
 </ng-container>

@@ -169,3 +169,14 @@
     }
   }
 }
+
+tui-pagination {
+  ::ng-deep {
+    .button {
+      .wrapper[data-appearance='flat'] {
+        color: #808080;
+        font-weight: 500;
+      }
+    }
+  }
+}

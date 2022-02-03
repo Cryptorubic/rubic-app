@@ -4,14 +4,14 @@ import { PromotionPageComponent } from 'src/app/features/promotion/promotion-pag
 import { PromotionRoutingModule } from '@features/promotion/promotion-routing.module';
 import { PromotionTableComponent } from './components/promotion-invited-projects/components/promotion-table/promotion-table.component';
 import { SharedModule } from '@shared/shared.module';
-import { TuiTableModule } from '@taiga-ui/addon-table';
+import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
 import { TuiLoaderModule } from '@taiga-ui/core';
 import { PromotionService } from '@features/promotion/services/promotion.service';
 import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 import { PromotionStatsComponent } from './components/promotion-stats/promotion-stats.component';
 import { PromotionAccordionComponent } from './components/promotion-invited-projects/components/promotion-accordion/promotion-accordion.component';
 import { PromotionInvitedProjectsComponent } from './components/promotion-invited-projects/promotion-invited-projects.component';
-import { TuiAccordionModule } from '@taiga-ui/kit';
+import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,9 @@ import { TuiAccordionModule } from '@taiga-ui/kit';
     SharedModule,
     TuiTableModule,
     TuiLoaderModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiPaginationModule,
+    TuiTablePaginationModule
   ],
   providers: [PromotionService, PromotionApiService]
 })

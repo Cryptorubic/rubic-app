@@ -22,9 +22,32 @@ export class PromotionTableComponent {
     'receivedTokens'
   ];
 
+  private currentPageIndex = 0;
+
+  private pageSize = 10;
+
+  get pageTableData(): PromotionTableData {
+    if (!this.tableData) {
+      return [];
+    }
+
+    const fromIndex = this.currentPageIndex * this.pageSize;
+    const toIndex = Math.min((this.currentPageIndex + 1) * this.pageSize, this.tableData.length);
+
+    return this.tableData.slice(fromIndex, toIndex);
+  }
+
   constructor(private readonly tokensService: TokensService) {}
 
   public onTokenImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
+  }
+
+  public onPageChange(pageIndex: number): void {
+    this.currentPageIndex = pageIndex;
+  }
+
+  public onSizeChange(size: number): void {
+    this.pageSize = size;
   }
 }

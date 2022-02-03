@@ -8,8 +8,8 @@
       <th tuiTh>Tokens Received</th>
     </tr>
   </thead>
-  <tbody tuiTbody [data]="tableData">
-    <tr *tuiRow="let item of tableData" tuiTr>
+  <tbody tuiTbody [data]="pageTableData">
+    <tr *tuiRow="let item of pageTableData" tuiTr>
       <td *tuiCell="'projectUrl'" tuiTd>
         <a [safetyLink]="item.projectUrl">{{ item.projectName }}</a>
       </td>
@@ -41,4 +41,16 @@
       </td>
     </tr>
   </tbody>
+  <tfoot>
+    <tr>
+      <td [colSpan]="columns.length">
+        <tui-table-pagination
+          [total]="tableData.length"
+          (pageChange)="onPageChange($event)"
+          (sizeChange)="onSizeChange($event)"
+        >
+        </tui-table-pagination>
+      </td>
+    </tr>
+  </tfoot>
 </table>
