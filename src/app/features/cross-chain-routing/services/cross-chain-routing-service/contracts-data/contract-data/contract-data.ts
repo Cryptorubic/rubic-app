@@ -71,9 +71,16 @@ export abstract class ContractData {
   }
 
   /**
+   * Returns true, if provider is of `uniswap v3` type.
+   */
+  public isProviderUniV3(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof CommonUniswapV3Service;
+  }
+
+  /**
    * Returns true, if provider is of `1inch` type.
    */
-  protected isProviderOneinch(providerIndex: number): boolean {
+  public isProviderOneinch(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof OneinchProviderAbstract;
   }
 
