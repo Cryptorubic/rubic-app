@@ -315,7 +315,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         filter(el => el === 'hidden'),
         switchMap(() => {
           if (!this.allowTrade) {
-            return null;
+            return of(null);
           }
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
