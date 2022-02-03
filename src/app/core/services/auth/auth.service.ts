@@ -175,6 +175,7 @@ export class AuthService {
         return;
       }
       const { message } = walletLoginBody.payload;
+      // TODO remove auth
       const signature = await this.walletConnectorService.signPersonal(message);
       await this.sendSignedNonce(
         this.walletConnectorService.address,
