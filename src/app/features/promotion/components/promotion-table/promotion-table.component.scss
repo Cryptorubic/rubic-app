@@ -1,3 +1,5 @@
+@use 'src/scss/mixins';
+
 .header {
   display: flex;
   align-items: center;
@@ -135,4 +137,8 @@ app-rubic-button {
   display: block;
   width: 316px;
   margin: 0 auto;
+
+  @include mixins.b(450) {
+    width: 250px;
+  }
 }
