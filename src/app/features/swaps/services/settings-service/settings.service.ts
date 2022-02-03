@@ -10,7 +10,7 @@ import { PromoCode } from '@features/swaps/models/promo-code';
 import { copyObject } from 'src/app/shared/utils/utils';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { filter } from 'rxjs/operators';
+import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -138,18 +138,25 @@ export class SettingsService {
   }
 
   private setupData(): void {
-    const localData = this.storeService.getItem('settings') as string;
-    if (localData && !this.iframeService.isIframe) {
-      this.settingsForm.patchValue(
-        { ...JSON.parse(localData) },
-        {
-          emitEvent: false
-        }
-      );
-    }
-
-    this.settingsForm.valueChanges
-      .pipe(filter(() => Boolean(this.authService?.user?.address)))
+    this.authService
+      .getCurrentUser()
+      .pipe(
+        filter(user => Boolean(user?.address)),
+        tap(() => {
+          const localData = this.storeService.getItem('settings') as string;
+          if (localData && !this.iframeService.isIframe) {
+            this.settingsForm.patchValue(
+              { ...JSON.parse(localData) },
+              {
+                emitEvent: false
+              }
+            );
+          }
+        }),
+        switchMap(() => {
+          return this.settingsForm.valueChanges.pipe(startWith(this.settingsForm.value));
+        })
+      )
       .subscribe(form => {
         this.storeService.setItem('settings', this.serializeForm(form));
       });
