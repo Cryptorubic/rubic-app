@@ -1,11 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-network-error',
   templateUrl: './network-error.component.html',
-  styleUrls: ['./network-error.component.scss']
+  styleUrls: ['./network-error.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NetworkErrorComponent {
   public networkToChoose: string;
