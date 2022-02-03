@@ -80,7 +80,7 @@ export abstract class ContractData {
   /**
    * Returns true, if provider is of `1inch` type.
    */
-  public isProviderOneinch(providerIndex: number): boolean {
+  protected isProviderOneinch(providerIndex: number): boolean {
     return this.getProvider(providerIndex) instanceof OneinchProviderAbstract;
   }
 
