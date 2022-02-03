@@ -190,6 +190,10 @@ $green: rgb(74, 169, 86);
       opacity: 0.25;
     }
 
+    &_placeholder {
+      color: rgb(117, 117, 117);
+    }
+
 
     &::-webkit-scrollbar {
       display: none;

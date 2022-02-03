@@ -29,18 +29,23 @@
 
         <div
           class="instant-trade-bottom-form__token-amount"
-          [class.instant-trade-bottom-form__token-amount_loading]="
-            standardMode && tradeStatus === TRADE_STATUS.LOADING
-          "
+          [ngClass]="{
+            'instant-trade-bottom-form__token-amount_loading':
+              standardMode && tradeStatus === TRADE_STATUS.LOADING,
+            'instant-trade-bottom-form__token-amount_placeholder': !selectedProvider
+          }"
           *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
         >
-          {{
-            wrapProvider
-              ? (fromAmount | bigNumberFormat)
-              : (selectedProvider?.trade.to.amount
-                | bigNumberFormat
-                | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
-          }}
+          <ng-container *ngIf="selectedProvider; else placeholder">
+            {{
+              wrapProvider
+                ? (fromAmount | bigNumberFormat)
+                : (selectedProvider?.trade.to.amount
+                  | bigNumberFormat
+                  | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
+            }}
+          </ng-container>
+          <ng-template #placeholder>0.0</ng-template>
         </div>
 
         <ng-template #iframeSkeleton>
