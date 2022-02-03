@@ -6,6 +6,7 @@ import { notNull } from '@shared/utils/utils';
 import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 import { AuthService } from '@core/services/auth/auth.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class PromotionService {
@@ -60,7 +61,8 @@ export class PromotionService {
 
   constructor(
     private readonly promotionApiService: PromotionApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.setWalletSubscriptions();
   }
@@ -92,7 +94,9 @@ export class PromotionService {
       .getCurrentUser()
       .pipe(map(user => !!user?.address))
       .subscribe(isAuthorized => {
-        if (isAuthorized) {
+        const isEthLikeWalletConnected =
+          isAuthorized && this.walletConnectorService.provider.walletType === 'ethLike';
+        if (isEthLikeWalletConnected) {
           this.updatePromotionData();
           this.updatePromotionStatistics();
           this.updatePromoLink();

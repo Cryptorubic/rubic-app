@@ -7,6 +7,7 @@ import { WalletsModalService } from '@core/wallets/services/wallets-modal.servic
 import { AuthService } from '@core/services/auth/auth.service';
 import { map } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 const DESKTOP_WIDTH_BREAKPOINT = 1000;
 
@@ -25,17 +26,28 @@ export class PromotionInvitedProjectsComponent {
 
   public readonly isWalletConnected$: Observable<boolean>;
 
+  public readonly isEthLikeWalletConnected$: Observable<boolean>;
+
   constructor(
     @Inject(WINDOW) private readonly window: Window,
     private readonly promotionService: PromotionService,
     private readonly tokensService: TokensService,
     private readonly walletsModalService: WalletsModalService,
-    authService: AuthService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService
   ) {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH_BREAKPOINT;
     this.isLoading$ = promotionService.isTableDataLoading$;
     this.tableData$ = promotionService.tableData$;
+
     this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
+    this.isEthLikeWalletConnected$ = authService
+      .getCurrentUser()
+      .pipe(
+        map(
+          user => !!user?.address && this.walletConnectorService.provider.walletType === 'ethLike'
+        )
+      );
   }
 
   public onRefresh(): void {
@@ -44,6 +56,10 @@ export class PromotionInvitedProjectsComponent {
 
   public openWalletsModal(): void {
     this.walletsModalService.open$();
+  }
+
+  public reconnectWallet(): void {
+    this.authService.signOut().subscribe(() => this.openWalletsModal());
   }
 
   @HostListener('window:resize')

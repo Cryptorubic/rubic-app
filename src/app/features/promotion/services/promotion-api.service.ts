@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import { Observable, timer } from 'rxjs';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
-import { RBC } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 import { map, mapTo } from 'rxjs/operators';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
+import { RBC } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 
 @Injectable()
 export class PromotionApiService {

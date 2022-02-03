@@ -1,4 +1,9 @@
-<app-rubic-container *ngLet="isWalletConnected$ | async as isWalletConnected">
+<app-rubic-container
+  *ngLet="{
+    isEthLikeWalletConnected: isEthLikeWalletConnected$ | async,
+    isWalletConnected: isWalletConnected$ | async
+  } as wallet"
+>
   <span title>Referral Programm</span>
   <div class="stats-wrapper" *ngLet="statistics$ | async as statistics">
     <tui-loader
@@ -10,7 +15,7 @@
         <app-rotating-icon
           class="statistics__spinner"
           [rotating]="isStatisticsLoading"
-          [disabled]="!isWalletConnected"
+          [disabled]="!wallet.isEthLikeWalletConnected"
           (iconClick)="updateStatistics()"
         ></app-rotating-icon>
         <ul class="statistics__list">
@@ -34,7 +39,7 @@
       </div>
     </tui-loader>
     <div class="info">
-      <article class="description" *ngIf="!isWalletConnected; else promoLinkBlock">
+      <article class="description" *ngIf="!wallet.isEthLikeWalletConnected; else promoLinkBlock">
         <h3 class="description__header">Earn with our widget</h3>
         <p class="description__text">
           Create a referral link and start earning with our widget. Be sure to read the program
@@ -49,15 +54,24 @@
         ></app-copy-container>
       </ng-template>
       <div class="buttons-container">
-        <ng-container *ngIf="!isWalletConnected; else buttons">
-          <app-rubic-button appearance="secondary" (onClick)="openWalletsModal()">
+        <ng-container *ngIf="!wallet.isEthLikeWalletConnected; else infoButtons">
+          <app-rubic-button
+            *ngIf="!wallet.isWalletConnected; else logOut"
+            appearance="secondary"
+            (onClick)="openWalletsModal()"
+          >
             Connect Wallet
           </app-rubic-button>
+          <ng-template #logOut>
+            <app-rubic-button appearance="secondary" (onClick)="reconnectWallet()">
+              Switch wallet to Ethereum-compatible
+            </app-rubic-button>
+          </ng-template>
           <a [safetyLink]="faqLink">
             <app-rubic-button appearance="flat"> Faq </app-rubic-button>
           </a>
         </ng-container>
-        <ng-template #buttons>
+        <ng-template #infoButtons>
           <a [safetyLink]="faqLink">
             <app-rubic-button appearance="secondary">Faq</app-rubic-button>
           </a>

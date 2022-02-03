@@ -1,3 +1,5 @@
+@use 'src/scss/mixins';
+
 .header {
   display: flex;
   align-items: center;
@@ -5,5 +7,25 @@
   &__refresh {
     display: block;
     margin-left: 10px;
+  }
+}
+
+.no-invited-projects {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+
+  opacity: 0.6;
+}
+
+app-rubic-button {
+  display: block;
+  width: 316px;
+  margin: 0 auto;
+
+  @include mixins.b(450) {
+    width: 250px;
   }
 }

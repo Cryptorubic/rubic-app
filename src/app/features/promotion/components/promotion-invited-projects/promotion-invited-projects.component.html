@@ -1,29 +1,48 @@
-<ng-container *ngLet="isWalletConnected$ | async as isWalletConnected">
+<ng-container
+  *ngLet="{
+    isEthLikeWalletConnected: isEthLikeWalletConnected$ | async,
+    isWalletConnected: isWalletConnected$ | async
+  } as wallet"
+>
   <app-rubic-container *ngLet="isLoading$ | async as isLoading">
     <div class="header" title>
       <span>Invited Projects</span>
       <app-rotating-icon
         class="header__refresh"
         [rotating]="isLoading"
-        [disabled]="!isWalletConnected"
+        [disabled]="!wallet.isEthLikeWalletConnected"
         (iconClick)="onRefresh()"
       ></app-rotating-icon>
     </div>
 
-    <div *ngIf="!isWalletConnected; else tableContent">
-      <app-rubic-button appearance="secondary" (onClick)="openWalletsModal()">
+    <div *ngIf="!wallet.isEthLikeWalletConnected; else tableContent">
+      <app-rubic-button
+        *ngIf="!wallet.isWalletConnected; else logOut"
+        appearance="secondary"
+        (onClick)="openWalletsModal()"
+      >
         Connect Wallet
       </app-rubic-button>
+      <ng-template #logOut>
+        <app-rubic-button appearance="secondary" (onClick)="reconnectWallet()">
+          Switch wallet to Ethereum-compatible
+        </app-rubic-button>
+      </ng-template>
     </div>
 
     <ng-template #tableContent>
       <tui-loader overlay="true" [showLoader]="isLoading" *ngLet="tableData$ | async as tableData">
-        <app-promotion-table
-          *ngIf="isDesktop; else accordion"
-          [tableData]="tableData"
-        ></app-promotion-table>
-        <ng-template #accordion>
-          <app-promotion-accordion [tableData]="tableData"></app-promotion-accordion>
+        <div *ngIf="!tableData?.length; else tableContent" class="no-invited-projects">
+          You haven't invited any projects yet
+        </div>
+        <ng-template #tableContent>
+          <app-promotion-table
+            *ngIf="isDesktop; else accordion"
+            [tableData]="tableData"
+          ></app-promotion-table>
+          <ng-template #accordion>
+            <app-promotion-accordion [tableData]="tableData"></app-promotion-accordion>
+          </ng-template>
         </ng-template>
       </tui-loader>
     </ng-template>
