@@ -18,6 +18,7 @@ const wethAddressNetMode: ContractAddressNetMode = {
 const routingProvidersNetMode: RoutingProvidersNetMode = {
   mainnet: [
     { address: '0xC9BdeEd33CD01541e1eeD10f90519d2C06Fe3feB', symbol: 'WETH' },
+    { address: '0xC42C30aC6Cc15faC9bD938618BcaA1a1FaE8501d', symbol: 'wNEAR' },
     { address: '0xFa94348467f64D5A457F75F8bc40495D33c65aBB', symbol: 'TRI' },
     { address: '0xB12BFcA5A55806AaF64E99521918A4bf0fC40802', symbol: 'USDC' },
     { address: '0x4988a896b1227218e4A686fdE5EabdcAbd91571f', symbol: 'USDT' },
@@ -26,6 +27,7 @@ const routingProvidersNetMode: RoutingProvidersNetMode = {
   ],
   testnet: [
     { address: '0x1b6A3d5B5DCdF7a37CFE35CeBC0C4bD28eA7e946', symbol: 'WETH' },
+    { address: '0x8A65Fcf15Ed8FEb70fBA2D10D2fAFeaD4185835e', symbol: 'wNEAR' },
     { address: '0xf9f129292Ac618C9AbcFf8325517B446d326154d', symbol: 'TRI' },
     { address: '0x9c5061b4Fe43C95783a4Bb2D05D1B789c454c149', symbol: 'USDC' },
     { address: '0xfa1Ee6A11A8Ac851dEd1EF449878d1eE20D135EC', symbol: 'USDT' },
