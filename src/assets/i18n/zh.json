@@ -359,7 +359,7 @@
   "crossChainPage": {
     "targetAddress": {
       "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or past address"
+      "placeholder": "Enter or paste address"
     },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
