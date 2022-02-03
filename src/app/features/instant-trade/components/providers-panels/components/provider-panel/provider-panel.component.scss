@@ -114,6 +114,9 @@ $white: white;
       }
 
       .provider-panel__amount {
+        display: flex;
+        align-items: center;
+
         font-size: 20px;
 
         &_error {
@@ -234,6 +237,7 @@ $white: white;
   &__hint {
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
     margin-left: 10px;
 
     cursor: pointer;
