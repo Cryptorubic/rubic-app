@@ -304,7 +304,7 @@ export class WalletConnectorService {
       },
       [BLOCKCHAIN_NAME.AURORA]: {
         name: 'Aurora MainNet',
-        rpc: 'https://explorer.mainnet.aurora.dev'
+        rpc: 'https://mainnet.aurora.dev'
       }
     };
     const params = {
