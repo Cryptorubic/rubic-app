@@ -1,0 +1,44 @@
+<table tuiTable class="table" [columns]="columns">
+  <thead>
+    <tr tuiThGroup>
+      <th tuiTh>Project</th>
+      <th tuiTh>Invited</th>
+      <th tuiTh>Trading Volume</th>
+      <th tuiTh>Fee Received</th>
+      <th tuiTh>Tokens Received</th>
+    </tr>
+  </thead>
+  <tbody tuiTbody [data]="tableData">
+    <tr *tuiRow="let item of tableData" tuiTr>
+      <td *tuiCell="'projectUrl'" tuiTd>
+        <a [safetyLink]="item.projectUrl">{{ item.projectName }}</a>
+      </td>
+      <td *tuiCell="'invitationDate'" tuiTd>
+        <div class="table__date">
+          <span>{{ item.invitationDate | date: 'mediumDate' }}</span>
+        </div>
+      </td>
+      <td *tuiCell="'tradingVolume'" tuiTd>
+        ${{ item.tradingVolume | bigNumberFormat | withRound: 'toClosestValue' }}
+      </td>
+      <td *tuiCell="'received'" tuiTd>
+        ${{ item.received | bigNumberFormat | withRound: 'toClosestValue' }}
+      </td>
+      <td *tuiCell="'receivedTokens'" tuiTd>
+        <div class="table__token-container">
+          <span>{{ item.receivedTokens | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+          <div class="table__token">
+            <div class="table__token-img">
+              <img
+                [src]="item.token.image || DEFAULT_TOKEN_IMAGE"
+                alt="to token"
+                (error)="onTokenImageError($event)"
+              />
+            </div>
+            <span>{{ item.token.symbol }}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

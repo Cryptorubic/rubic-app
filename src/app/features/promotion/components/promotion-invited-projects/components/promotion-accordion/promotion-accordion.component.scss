@@ -1,0 +1,121 @@
+@use 'src/scss/mixins';
+
+:host {
+  --text-color: rgba(0, 0, 0, 0.7);
+}
+
+:host-context(html.dark) {
+  :host {
+    --text-color: #d4d3d3;
+  }
+}
+
+.accordion {
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  ::ng-deep {
+    tui-accordion-item {
+      &._hovered,
+      &._focused {
+        .header[automation-id='tui-accordion__item-header'] {
+          background: var(--main-background);
+        }
+      }
+    }
+  }
+
+  &__item {
+    color: var(--text-color);
+
+    ::ng-deep {
+      .wrapper[automation-id='tui-accordion__item-wrapper'] {
+        &::after {
+          border: none;
+        }
+      }
+
+      .header[automation-id='tui-accordion__item-header'] {
+        min-height: 88px;
+
+        background: var(--main-background);
+        border: none;
+
+        .title[automation-id='tui-accordion__item-title'] {
+          overflow: visible;
+        }
+      }
+
+      tui-expand {
+        .wrapper {
+          background: rgba(255, 255, 255, 0.2);
+
+          .content {
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+
+    padding: 0 20px;
+  }
+}
+
+.token {
+  display: flex;
+
+  > span {
+    margin-right: 14px;
+  }
+
+  &__img {
+    display: flex;
+
+    width: 18px;
+    min-width: 18px;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+
+      border-radius: 3px;
+    }
+
+  }
+
+
+  &__info {
+    display: flex;
+
+    div {
+      margin-right: 8px;
+    }
+  }
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  color: var(--text-color);
+
+  &__received {
+    @include mixins.b(700) {
+      display: none;
+    }
+  }
+
+  &__token {
+    @include mixins.b(600) {
+      display: none;
+    }
+  }
+}

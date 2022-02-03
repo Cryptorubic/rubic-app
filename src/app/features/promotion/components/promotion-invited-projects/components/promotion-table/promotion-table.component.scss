@@ -1,15 +1,5 @@
 @use 'src/scss/mixins';
 
-.header {
-  display: flex;
-  align-items: center;
-
-  &__refresh {
-    display: block;
-    margin-left: 10px;
-  }
-}
-
 .table {
   width: 100%;
 

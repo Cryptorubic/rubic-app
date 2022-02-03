@@ -1,29 +1,23 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
+import { Component, ChangeDetectionStrategy, HostListener, Inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
 import { PromotionService } from '@features/promotion/services/promotion.service';
-import { Observable } from 'rxjs';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { map } from 'rxjs/operators';
-import { AuthService } from '@core/services/auth/auth.service';
 import { WalletsModalService } from '@core/wallets/services/wallets-modal.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { map } from 'rxjs/operators';
+import { WINDOW } from '@ng-web-apis/common';
+
+const DESKTOP_WIDTH_BREAKPOINT = 1000;
 
 @Component({
-  selector: 'app-promotion-table',
-  templateUrl: './promotion-table.component.html',
-  styleUrls: ['./promotion-table.component.scss'],
+  selector: 'app-promotion-invited-projects',
+  templateUrl: './promotion-invited-projects.component.html',
+  styleUrls: ['./promotion-invited-projects.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PromotionTableComponent {
-  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
-
-  public readonly columns = [
-    'projectUrl',
-    'invitationDate',
-    'tradingVolume',
-    'received',
-    'receivedTokens'
-  ];
+export class PromotionInvitedProjectsComponent {
+  public isDesktop: boolean;
 
   public readonly isLoading$: Observable<boolean>;
 
@@ -32,18 +26,16 @@ export class PromotionTableComponent {
   public readonly isWalletConnected$: Observable<boolean>;
 
   constructor(
+    @Inject(WINDOW) private readonly window: Window,
     private readonly promotionService: PromotionService,
     private readonly tokensService: TokensService,
     private readonly walletsModalService: WalletsModalService,
     authService: AuthService
   ) {
+    this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH_BREAKPOINT;
     this.isLoading$ = promotionService.isTableDataLoading$;
     this.tableData$ = promotionService.tableData$;
     this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
-  }
-
-  public onTokenImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
   }
 
   public onRefresh(): void {
@@ -52,5 +44,10 @@ export class PromotionTableComponent {
 
   public openWalletsModal(): void {
     this.walletsModalService.open$();
+  }
+
+  @HostListener('window:resize')
+  private onResize(): void {
+    this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH_BREAKPOINT;
   }
 }

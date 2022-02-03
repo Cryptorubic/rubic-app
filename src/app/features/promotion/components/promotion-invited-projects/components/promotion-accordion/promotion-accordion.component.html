@@ -1,0 +1,32 @@
+<ng-container>
+  <tui-accordion class="accordion" *ngFor="let row of tableData">
+    <tui-accordion-item class="accordion__item">
+      <div class="accordion__header header">
+        <div class="header__url">
+          <a [safetyLink]="row.projectUrl">{{ row.projectName }}</a>
+        </div>
+        <div class="header__received">
+          ${{ row.received | bigNumberFormat | withRound: 'toClosestValue' }}
+        </div>
+        <div class="token header__token">
+          <span>{{ row.receivedTokens | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+          <div class="token__info">
+            <div class="token__img">
+              <img
+                [src]="row.token.image || DEFAULT_TOKEN_IMAGE"
+                alt="to token"
+                (error)="onTokenImageError($event)"
+              />
+            </div>
+            <span>{{ row.token.symbol }}</span>
+          </div>
+        </div>
+        <div class="header__date">{{ row.invitationDate | date: 'mediumDate' }}</div>
+      </div>
+      <ng-template tuiAccordionItemContent>
+        Development kit consisting of the low level tools and abstractions used to develop Taiga UI
+        Angular entities
+      </ng-template>
+    </tui-accordion-item>
+  </tui-accordion>
+</ng-container>
