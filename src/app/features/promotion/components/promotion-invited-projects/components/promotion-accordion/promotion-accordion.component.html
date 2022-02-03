@@ -24,8 +24,36 @@
         <div class="header__date">{{ row.invitationDate | date: 'mediumDate' }}</div>
       </div>
       <ng-template tuiAccordionItemContent>
-        Development kit consisting of the low level tools and abstractions used to develop Taiga UI
-        Angular entities
+        <div class="accordion-content">
+          <div class="accordion-content__row">
+            <div class="accordion-content__title">Received Tokens</div>
+            <div class="token accordion-content__value">
+              <span>{{ row.receivedTokens | bigNumberFormat | withRound: 'toClosestValue' }}</span>
+              <div class="token__info">
+                <div class="token__img">
+                  <img
+                    [src]="row.token.image || DEFAULT_TOKEN_IMAGE"
+                    alt="to token"
+                    (error)="onTokenImageError($event)"
+                  />
+                </div>
+                <span>{{ row.token.symbol }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-content__row">
+            <div class="accordion-content__title">Received</div>
+            <div class="accordion-content__value">
+              ${{ row.received | bigNumberFormat | withRound: 'toClosestValue' }}
+            </div>
+          </div>
+          <div class="accordion-content__row">
+            <div class="accordion-content__title">Trading Volume</div>
+            <div class="accordion-content__value">
+              {{ row.tradingVolume | bigNumberFormat | withRound: 'toClosestValue' }}
+            </div>
+          </div>
+        </div>
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>

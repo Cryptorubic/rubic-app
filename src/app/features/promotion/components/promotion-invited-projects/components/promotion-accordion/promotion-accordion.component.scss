@@ -2,13 +2,16 @@
 
 :host {
   --text-color: rgba(0, 0, 0, 0.7);
-}
+  --divider-color: #fff;
+  --content-background: #ecf3ec;
 
-:host-context(html.dark) {
-  :host {
+  @include mixins.dark {
     --text-color: #d4d3d3;
+    --divider-color: rgba(255, 255, 255, 0.1);
+    --content-background: #282a28;
   }
 }
+
 
 .accordion {
   &:not(:last-child) {
@@ -100,12 +103,15 @@
   }
 }
 
-
 .header {
   display: flex;
   justify-content: space-between;
 
   color: var(--text-color);
+
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 120%;
 
   &__received {
     @include mixins.b(700) {
@@ -116,6 +122,50 @@
   &__token {
     @include mixins.b(600) {
       display: none;
+    }
+  }
+}
+
+.accordion-content {
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 120%;
+
+  background-color: var(--content-background);
+
+  &__row {
+    display: flex;
+    height: 109px;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--divider-color);
+    }
+  }
+
+  &__title {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    max-width: 208px;
+    padding-right: 10px;
+    padding-left: 25px;
+
+    border-right: 1px solid var(--divider-color);
+
+    @include mixins.b(450) {
+      padding-left: 10px;
+    }
+  }
+
+  &__value {
+    display: flex;
+    align-items: center;
+
+    min-width: 200px;
+    padding-left: 25px;
+
+    @include mixins.b(450) {
+      padding-left: 10px;
     }
   }
 }
