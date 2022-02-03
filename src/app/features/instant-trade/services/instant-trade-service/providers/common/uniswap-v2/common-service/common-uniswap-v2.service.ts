@@ -165,7 +165,6 @@ export abstract class CommonUniswapV2Service implements ItProvider {
    * @return Promise<Multicall[]>
    */
   protected getRoutes(routesMethodArguments: unknown[], methodName: string): Promise<Multicall[]> {
-    console.log(routesMethodArguments);
     return this.blockchainAdapter.multicallContractMethods<{ amounts: string[] }>(
       this.contractAddress,
       this.contractAbi,
