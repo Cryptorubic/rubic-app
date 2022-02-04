@@ -52,6 +52,9 @@ import { ViperSwapHarmonyService } from '@features/instant-trade/services/instan
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
+import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
+import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
+import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TransactionReceipt } from 'web3-eth';
@@ -103,6 +106,9 @@ export class InstantTradeService {
     private readonly raydiumService: RaydiumService,
     private readonly algebraService: AlgebraService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
+    private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
+    private readonly oneInchArbitrumService: OneInchArbitrumService,
+    private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
     // Providers end
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
@@ -161,6 +167,11 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDERS.SPOOKYSWAP]: this.spookySwapFantomService,
         [INSTANT_TRADES_PROVIDERS.SPIRITSWAP]: this.spiritSwapFantomService
       },
+      [BLOCKCHAIN_NAME.ARBITRUM]: {
+        [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchArbitrumService,
+        [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapArbitrumService,
+        [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniSwapV3ArbitrumService
+      },
       [BLOCKCHAIN_NAME.SOLANA]: {
         [INSTANT_TRADES_PROVIDERS.RAYDIUM]: this.raydiumService
       }
@@ -217,6 +228,7 @@ export class InstantTradeService {
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
     let transactionHash: string;
+
     try {
       const options = {
         onConfirm: async (hash: string) => {
@@ -224,7 +236,7 @@ export class InstantTradeService {
 
           confirmCallback();
           this.notifyTradeInProgress();
-
+          this.notifyGtmAfterSigningTx(hash, trade);
           await this.postTrade(hash, provider, trade);
         }
       };
@@ -237,8 +249,6 @@ export class InstantTradeService {
       }
 
       this.modalSubscriptions.pop()?.unsubscribe();
-
-      this.notifyGtmOnSuccess(transactionHash, trade);
 
       this.updateTrade(transactionHash, true);
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
@@ -445,7 +455,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(txHash: string, trade: InstantTrade): void {
+  private notifyGtmAfterSigningTx(txHash: string, trade: InstantTrade): void {
     const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
     const fee = 0;
     this.gtmService.fireTxSignedEvent(

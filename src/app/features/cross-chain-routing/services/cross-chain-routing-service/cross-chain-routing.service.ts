@@ -182,10 +182,20 @@ export class CrossChainRoutingService {
       toTransitTokenAmount,
       toToken
     );
+
+    // @TODO fix excluded providers
+    const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
+      provider =>
+        !(
+          fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
+          this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
+        )
+    );
+
     const {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
-    } = targetBlockchainProviders[0];
+    } = filteredTargetBlockchainProviders[0];
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
@@ -212,7 +222,7 @@ export class CrossChainRoutingService {
 
     await this.calculateSmartRouting(
       sourceBlockchainProviders,
-      targetBlockchainProviders,
+      filteredTargetBlockchainProviders,
       fromBlockchain,
       toBlockchain,
       toToken.address
@@ -708,11 +718,11 @@ export class CrossChainRoutingService {
           );
 
           await this.postCrossChainTrade(transactionHash);
-
-          await this.notifyGtmOnSuccess(transactionHash);
+          await this.notifyGtmAfterSigningTx(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
             await this.postCrossChainTrade(transactionHash);
+            await this.notifyGtmAfterSigningTx(transactionHash);
             return;
           }
 
@@ -767,7 +777,7 @@ export class CrossChainRoutingService {
    * Notifies GTM about signed transaction.
    * @param txHash Signed transaction hash.
    */
-  private async notifyGtmOnSuccess(txHash: string): Promise<void> {
+  private async notifyGtmAfterSigningTx(txHash: string): Promise<void> {
     const { feeAmount } = await this.getTradeInfo();
     const { tokenIn, tokenOut } = this.currentCrossChainTrade;
     const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
