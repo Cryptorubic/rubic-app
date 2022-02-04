@@ -109,12 +109,12 @@ const instantTradesProviders: Record<INSTANT_TRADES_PROVIDERS, Provider> = {
   [INSTANT_TRADES_PROVIDERS.TRISOLARIS]: {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
-    color: '#FACB5B'
+    color: '#00F4FF'
   },
   [INSTANT_TRADES_PROVIDERS.WANNASWAP]: {
     name: 'Wannaswap',
     image: `${imageBasePath}wannaswap.png`,
-    color: '#00F4FF'
+    color: '#FACB5B'
   }
 };
 
