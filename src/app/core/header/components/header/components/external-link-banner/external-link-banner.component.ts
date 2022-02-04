@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 
 @Component({
   selector: 'app-external-link-banner',
@@ -6,5 +6,9 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExternalLinkBannerComponent {
+  @Input() href: string;
+
+  @Input() linkColor: string | undefined;
+
   constructor() {}
 }
