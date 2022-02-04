@@ -22,7 +22,7 @@ interface AllQueryParams {
   slippageCcr: string;
   background: string;
   theme: string;
-  language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
+  language: 'en' | 'es' | 'ko' | 'ru' | 'zh' | 'tr';
   device?: 'mobile' | 'desktop';
 }
 
