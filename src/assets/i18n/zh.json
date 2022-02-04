@@ -76,7 +76,6 @@
     "NoDataMyTradesError": "糟糕，出了點問題，請嘗試重新加載頁面。 如果您在重新加載後仍然遇到此問題，請聯繫我們的支持。",
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "tradingIsNotAvailable": "交易不可用",
-    "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
@@ -531,7 +530,8 @@
     "successTxModal": {
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
     "stakingSwapModal": {

@@ -16,7 +16,10 @@
           *noFrame
           class="modal__footer-text"
           [innerHTML]="
-            'modals.successTxModal.seeDetails'
+            (type === 'default'
+              ? 'modals.successTxModal.seeDetailsItBridge'
+              : 'modals.successTxModal.seeDetailsCCR'
+            )
               | translate
                 : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
           "
