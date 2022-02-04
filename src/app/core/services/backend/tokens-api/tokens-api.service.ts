@@ -134,6 +134,7 @@ export class TokensApiService {
         usd_price: 1,
         used_in_iframe: false
       },
+      // @TODO Fix near.
       {
         address: 'near',
         name: 'Near',
@@ -169,7 +170,7 @@ export class TokensApiService {
     const requests$ = blockchainsToFetch.map(network =>
       this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
     );
-    return forkJoin([...requests$]).pipe(
+    return forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
         const staticTokens = TokensApiService.fetchStaticTokens();
