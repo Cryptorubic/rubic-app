@@ -17,6 +17,7 @@ import { SettingsItComponent } from 'src/app/features/swaps/components/swaps-set
 import { SettingsContainerComponent } from 'src/app/features/swaps/components/swaps-settings/settings-container/settings-container.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  TuiAccordionModule,
   TuiInputModule,
   TuiInputNumberModule,
   TuiSliderModule,
@@ -85,7 +86,8 @@ import { BridgeSwapInfoComponent } from './components/swap-info/components/cross
     TokensSelectModule,
     FormsModule,
     TuiLoaderModule,
-    ClipboardModule
+    ClipboardModule,
+    TuiAccordionModule
   ],
   entryComponents: [
     SettingsItComponent,
