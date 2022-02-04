@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  PoolRPCView,
-  RefPool
-} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
+import { RefPool } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import {
   REF_FI_CONTRACT_ID,
@@ -16,15 +13,31 @@ import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapte
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import BigNumber from 'bignumber.js';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { PoolRPCView } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/pool-rpc-view';
+
+interface PoolsQuery {
+  result: object;
+  block_height: number;
+  block_hash: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class RefFinancePoolsService {
+  /**
+   *  Wallet connection account.
+   */
   private account: WalletConnection;
 
+  /**
+   * Default page limit for pools pagination.
+   */
   private readonly defaultPageLimit: number = 100;
 
+  /**
+   * Near JSON RPC provider.
+   */
   private provider: JsonRpcProvider;
 
   constructor(private readonly walletConnectorService: WalletConnectorService) {
@@ -38,6 +51,12 @@ export class RefFinancePoolsService {
     });
   }
 
+  /**
+   * Gets pools for specific tokens addresses.
+   * @param fromToken From token.
+   * @param amountIn Amount of tokens to trade.
+   * @param toToken To token.
+   */
   public async getPoolsByTokens(
     fromToken: InstantTradeToken,
     amountIn: BigNumber,
@@ -60,34 +79,48 @@ export class RefFinancePoolsService {
     );
   }
 
+  /**
+   * Gets all available tokens pools.
+   * @param page Page number for pagination.
+   * @param perPage Amount of
+   * @private
+   */
   private async getAllPools(
     page: number = 1,
     perPage: number = this.defaultPageLimit
   ): Promise<RefPool[]> {
     const index = (page - 1) * perPage;
     const args = { from_index: index, limit: perPage };
-    const rawResult = (await this.provider.query({
+    const rawResult = await this.provider.query<PoolsQuery>({
       request_type: 'call_function',
       account_id: REF_FI_CONTRACT_ID,
       method_name: 'get_pools',
       finality: 'optimistic',
       args_base64: btoa(JSON.stringify(args))
-    })) as unknown as { result: unknown };
-    const poolData = JSON.parse(Buffer.from(rawResult.result).toString()) as PoolRPCView[];
+    });
+    const poolData: PoolRPCView[] = JSON.parse(Buffer.from(rawResult.result).toString());
     return poolData.map((rawPool, i) => this.parsePool(rawPool, i + index));
   }
 
+  /**
+   * Gets amount of available tokens pools.
+   */
   private async getTotalPools(): Promise<number> {
-    const rawResult = (await this.provider.query({
+    const rawResult = await this.provider.query<PoolsQuery>({
       request_type: 'call_function',
       account_id: REF_FI_CONTRACT_ID,
       method_name: 'get_number_of_pools',
       finality: 'optimistic',
       args_base64: ''
-    })) as unknown as { result: unknown };
+    });
     return JSON.parse(Buffer.from(rawResult.result).toString());
   }
 
+  /**
+   * Parse RPC view pool and transforms to {@link RefPool} object.
+   * @param pool RPC view pool.
+   * @param id Pool identifier.
+   */
   private parsePool(pool: PoolRPCView, id?: number): RefPool {
     return {
       id: id >= 0 ? id : pool.id,

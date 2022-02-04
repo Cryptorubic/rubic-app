@@ -155,7 +155,7 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
 
   /**
    * get balance of multiple tokens via multicall.
-   * @TODO Reduce amount of calls.
+   * @TODO Near. Reduce amount of calls.
    * @param address wallet address
    * @param tokensAddresses tokens addresses
    */

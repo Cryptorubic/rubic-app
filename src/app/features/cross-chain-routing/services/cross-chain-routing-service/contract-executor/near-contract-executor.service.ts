@@ -5,10 +5,7 @@ import { TransactionOptions } from '@shared/models/blockchain/transaction-option
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
-import {
-  NearTransaction,
-  RefFinanceService
-} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 import { tuiPure } from '@taiga-ui/cdk';
@@ -17,12 +14,14 @@ import { NearContractData } from '@features/cross-chain-routing/services/cross-c
 import { CROSS_CHAIN_METHODS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/cross-chain-methods';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import {
+  DEFAULT_CCR_CALL_GAS,
   ONE_YOCTO_NEAR,
   WRAP_NEAR_CONTRACT
 } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +38,7 @@ export class NearContractExecutorService {
     private readonly nearPrivateAdapter: NearWeb3PrivateService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly refFinanceService: RefFinanceService,
+    private readonly refFinanceSwapService: RefFinanceSwapService,
     private readonly contractsDataService: ContractsDataService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {}
@@ -48,8 +48,6 @@ export class NearContractExecutorService {
     options: TransactionOptions,
     targetAddress: string
   ): Promise<string> {
-    const transactions: NearTransaction[] = [];
-
     const tokenInAmountAbsolute = Web3Pure.toWei(trade.tokenInAmount, trade.tokenIn.decimals);
 
     const secondPath = this.contracts[trade.toBlockchain].getSecondPath(
@@ -85,6 +83,7 @@ export class NearContractExecutorService {
       signature: CROSS_CHAIN_METHODS[methodName].slice(2)
     };
 
+    const routes = this.refFinanceService.refRoutes;
     const tokenInActions: RefFiFunctionCallOptions[] = [
       {
         methodName: 'ft_transfer_call',
@@ -95,15 +94,33 @@ export class NearContractExecutorService {
             ...(trade.fromTrade
               ? {
                   SwapTokensToOther: {
-                    swap_actions: [
-                      {
-                        pool_id: this.refFinanceService.currentTradePool.id,
-                        token_in: fromTokenAddress,
-                        amount_in: tokenInAmountAbsolute,
-                        token_out: this.contract.transitToken.address,
-                        min_amount_out: fromTransitTokenAmountMinAbsolute
-                      }
-                    ],
+                    swap_actions:
+                      routes.length > 1
+                        ? [
+                            {
+                              pool_id: routes[0].pool.id,
+                              token_in: fromTokenAddress,
+                              amount_in: tokenInAmountAbsolute,
+                              token_out: WRAP_NEAR_CONTRACT,
+                              min_amount_out: routes[0].estimate
+                            },
+                            {
+                              pool_id: routes[1].pool.id,
+                              token_in: WRAP_NEAR_CONTRACT,
+                              amount_in: routes[0].estimate,
+                              token_out: this.contract.transitToken.address,
+                              min_amount_out: fromTransitTokenAmountMinAbsolute
+                            }
+                          ]
+                        : [
+                            {
+                              pool_id: routes[0].pool.id,
+                              token_in: fromTokenAddress,
+                              amount_in: tokenInAmountAbsolute,
+                              token_out: this.contract.transitToken.address,
+                              min_amount_out: fromTransitTokenAmountMinAbsolute
+                            }
+                          ],
                     swap_to_params: targetParams
                   }
                 }
@@ -114,19 +131,23 @@ export class NearContractExecutorService {
                 })
           })
         },
-        // gas: String(Number(DEFAULT_TRANSFER_CALL_GAS) * 4),
-        gas: '300000000000000',
+        gas: DEFAULT_CCR_CALL_GAS,
         amount: ONE_YOCTO_NEAR
       }
     ];
 
-    transactions.push({
+    const registerTokensTransactions =
+      await this.refFinanceSwapService.createRegisterTokensTransactions(
+        this.contract.transitToken.address,
+        routes
+      );
+    const ccrSwapTransaction = {
       receiverId: fromTokenAddress,
       functionCalls: tokenInActions
-    });
+    };
 
     await this.nearPrivateAdapter.executeMultipleTransactions(
-      transactions,
+      [...registerTokensTransactions, ccrSwapTransaction],
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
       tokenOutAmountMinAbsolute
     );

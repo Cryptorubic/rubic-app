@@ -1,53 +1,25 @@
 import { Inject, Injectable } from '@angular/core';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { ConnectedWalletAccount, Connection, utils, WalletConnection } from 'near-api-js';
-import {
-  AddKey,
-  CreateAccount,
-  createTransaction,
-  DeleteAccount,
-  DeleteKey,
-  DeployContract,
-  FunctionCall,
-  functionCall,
-  Stake,
-  Transaction,
-  Transfer
-} from 'near-api-js/lib/transaction';
-import { Enum } from 'near-api-js/lib/utils/enums';
+import { createTransaction, functionCall, Transaction } from 'near-api-js/lib/transaction';
 import { AccessKeyInfoView, AccessKeyList } from 'near-api-js/lib/providers/provider';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { baseDecode, serialize } from 'borsh';
-import { NearTransaction } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { SWAP_SCHEMA } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import * as BN from 'bn.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
+import { NearTransaction } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/near-transaction';
+import { SWAP_SCHEMA } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-finance-swap-schema';
+import { Action } from '@core/services/blockchain/blockchain-adapters/near/models/near-action';
+import CustomError from '@core/errors/models/custom-error';
+import { Near } from 'near-api-js/lib/near';
 
 interface TransactionParams {
   receiverId: string;
   actions: Action[];
   nonceOffset?: number;
-}
-
-class Action extends Enum {
-  createAccount: CreateAccount;
-
-  deployContract: DeployContract;
-
-  functionCall: FunctionCall;
-
-  transfer: Transfer;
-
-  stake: Stake;
-
-  addKey: AddKey;
-
-  deleteKey: DeleteKey;
-
-  deleteAccount: DeleteAccount;
 }
 
 @Injectable({
@@ -56,11 +28,20 @@ class Action extends Enum {
 export class NearWeb3PrivateService {
   private readonly multisigHasMethod: string = 'add_request_and_confirm';
 
+  private get nearConnection(): Near {
+    return this.walletConnectorService.nearConnection;
+  }
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
+  /**
+   * Creates transaction object.
+   * @param transactionParams Transaction params
+   * @param wallet Connected wallet account.
+   */
   public async createTransaction(
     transactionParams: TransactionParams,
     wallet: ConnectedWalletAccount
@@ -73,7 +54,7 @@ export class NearWeb3PrivateService {
     );
     const accessKey = await this.accessKeyForTransaction(receiverId, actions, wallet, localKey);
     if (!accessKey) {
-      throw new Error(`Cannot find matching key for transaction sent to ${receiverId}`);
+      throw new CustomError(`Cannot find matching key for transaction sent to ${receiverId}`);
     }
 
     const block = await connection.provider.block({ finality: 'final' });
@@ -84,15 +65,18 @@ export class NearWeb3PrivateService {
     return createTransaction(wallet.accountId, publicKey, receiverId, nonce, actions, blockHash);
   }
 
+  /**
+   * Executes multiple transaction per one signature.
+   * @param transactions Transactions to sign.
+   * @param type Swap transaction type.
+   * @param toAmount Amount of received tokens.
+   */
   public async executeMultipleTransactions(
     transactions: NearTransaction[],
     type: SWAP_PROVIDER_TYPE,
     toAmount: string
   ): Promise<void> {
-    const wallet = new WalletConnection(
-      this.walletConnectorService.nearConnection,
-      'rubic'
-    ).account();
+    const wallet = new WalletConnection(this.nearConnection, 'rubic').account();
 
     const nearTransactions = await Promise.all(
       transactions.map((t, i) => {
@@ -117,14 +101,27 @@ export class NearWeb3PrivateService {
     await this.requestSignTransactions(nearTransactions, type, toAmount);
   }
 
+  /**
+   * Gets gas.
+   * @param gas Gas.
+   */
   private static getGas(gas: string): BN {
     return new BN(gas || '100000000000000');
   }
 
+  /**
+   * Gets amount.
+   * @param amount amount.
+   */
   private static getAmount(amount: string): BN {
     return new BN(amount ? utils.format.parseNearAmount(amount) : '0');
   }
 
+  /**
+   * Gets access keys for account.
+   * @param connection Established blockchain connection.
+   * @param accountId Account identifier.
+   */
   private static async getAccessKeys(
     connection: Connection,
     accountId: string
@@ -137,6 +134,14 @@ export class NearWeb3PrivateService {
     return response.keys;
   }
 
+  /**
+   * Gets access keys for transaction.
+   * @param receiverId Receiver wallet identifier.
+   * @param actions List of actions.
+   * @param wallet Wallet connection.
+   * @param localKey Auth key to store in local storage.
+   * @private
+   */
   private async accessKeyForTransaction(
     receiverId: string,
     actions: Action[],
@@ -158,12 +163,12 @@ export class NearWeb3PrivateService {
       }
     }
 
-    const account = new WalletConnection(this.walletConnectorService.nearConnection, 'rubic');
+    const account = new WalletConnection(this.nearConnection, 'rubic');
 
-    const walletKeys = await account._authData.allKeys;
+    const walletKeys: unknown[] = await account._authData.allKeys;
     for (const accessKey of accessKeys) {
       if (
-        walletKeys.indexOf(accessKey.public_key) !== -1 &&
+        walletKeys.some(key => key === accessKey.public_key) &&
         (await this.accessKeyMatchesTransaction(
           accessKey,
           receiverId,
@@ -178,6 +183,13 @@ export class NearWeb3PrivateService {
     return null;
   }
 
+  /**
+   * Checks if access key match transaction.
+   * @param accessKey Access key.
+   * @param receiverId Receiver wallet identifier.
+   * @param actions List of actions.
+   * @param accountId Account identifier.
+   */
   private async accessKeyMatchesTransaction(
     accessKey: AccessKeyInfoView,
     receiverId: string,
@@ -194,10 +206,12 @@ export class NearWeb3PrivateService {
     if (permission.FunctionCall) {
       const { receiver_id: allowedReceiverId, method_names: allowedMethods } =
         permission.FunctionCall;
-      /********************************
-       Accept multisig access keys and let wallets attempt to signAndSendTransaction
-       If an access key has itself as receiverId and method permission add_request_and_confirm, then it is being used in a wallet with multisig contract: https://github.com/near/core-contracts/blob/671c05f09abecabe7a7e58efe942550a35fc3292/multisig/src/lib.rs#L149-L153
-       ********************************/
+      /**
+       * Accept multisig access keys and let wallets attempt to signAndSendTransaction.
+       * If an access key has itself as receiverId and method permission add_request_and_confirm,
+       * then it is being used in a wallet with multisig contract:
+       * https://github.com/near/core-contracts/blob/671c05f09abecabe7a7e58efe942550a35fc3292/multisig/src/lib.rs#L149-L153
+       */
       if (allowedReceiverId === accountId && allowedMethods.includes(this.multisigHasMethod)) {
         return true;
       }
@@ -208,17 +222,21 @@ export class NearWeb3PrivateService {
         const [{ functionCall: fnCall }] = actions;
         return (
           fnCall &&
-          (!fnCall.deposit || fnCall.deposit.toString() === '0') && // TODO: Should support charging amount smaller than allowance?
+          (!fnCall.deposit || fnCall.deposit.toString() === '0') &&
           (allowedMethods.length === 0 || allowedMethods.includes(fnCall.methodName))
         );
-        // TODO: Handle cases when allowance doesn't have enough to pay for gas
       }
     }
-    // TODO: Support other permissions than FunctionCall
 
     return false;
   }
 
+  /**
+   * Makes request to sign transactions list.
+   * @param transactions List of transactions.
+   * @param type Swap transaction type.
+   * @param toAmount Amount of received tokens.
+   */
   public async requestSignTransactions(
     transactions: Transaction[],
     type: SWAP_PROVIDER_TYPE,

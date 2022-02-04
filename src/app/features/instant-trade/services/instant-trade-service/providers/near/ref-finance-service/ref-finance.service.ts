@@ -6,18 +6,10 @@ import {
   SettingsService
 } from '@features/swaps/services/settings-service/settings.service';
 import { RefFinancePoolsService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
-import { RefPool } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-pool';
-import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { WalletConnection } from 'near-api-js';
-import {
-  DEFAULT_TRANSFER_CALL_GAS,
-  ONE_YOCTO_NEAR,
-  REF_FI_CONTRACT_ID,
-  WRAP_NEAR_CONTRACT
-} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
-import { first, map, startWith } from 'rxjs/operators';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -40,16 +32,37 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 import { compareAddresses } from '@shared/utils/utils';
+import { SwapFormInput } from '@features/swaps/models/swap-form';
+import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
+import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
-export interface NearTransaction {
-  receiverId: string;
-  functionCalls: RefFiFunctionCallOptions[];
+interface SwapParams {
+  msg: string;
+  amount: string;
+  receiver_id: string;
 }
 
-interface RefFinanceRoute {
-  estimate: string;
-  pool: RefPool;
-}
+type ItRequest = {
+  actions?: {
+    min_amount_out: string;
+    pool_id: number;
+    token_in: string;
+    token_out: string;
+  }[];
+};
+
+type CcrRequest = {
+  SwapTokensToOther:
+    | {
+        swap_actions: [];
+        swap_to_params: [];
+      }
+    | {
+        SwapTransferTokensToOther: {
+          swap_to_params: [];
+        };
+      };
+};
 
 @Injectable({
   providedIn: 'root'
@@ -59,10 +72,51 @@ export class RefFinanceService implements ItProvider {
 
   private settings: ItSettingsForm;
 
-  private _currentTradePool: RefPool;
+  private _refRoutes: [RefFinanceRoute, RefFinanceRoute] | [RefFinanceRoute];
 
-  public get currentTradePool(): RefPool {
-    return this._currentTradePool;
+  public get refRoutes(): [RefFinanceRoute, RefFinanceRoute] | [RefFinanceRoute] {
+    return this._refRoutes;
+  }
+
+  private set refRoutes(routes: [RefFinanceRoute, RefFinanceRoute] | [RefFinanceRoute]) {
+    this._refRoutes = routes;
+  }
+
+  /**
+   * Parses Instant Trade swap params.
+   * @param msg Instant trade request.
+   * @param form Trade form.
+   * @param fromAmount fromAmount.
+   */
+  private static async parseInstantTradeParams(
+    msg: ItRequest,
+    form: SwapFormInput,
+    fromAmount: string
+  ): Promise<InstantTrade> {
+    const routeIndex = msg.actions.length > 1 ? 1 : 0;
+    const tokenIn = msg.actions[0].token_in;
+    const tokenOut = msg.actions[routeIndex].token_out;
+    const toAmount = msg.actions[routeIndex].min_amount_out;
+
+    return {
+      blockchain: BLOCKCHAIN_NAME.NEAR,
+      from: {
+        token: {
+          address: tokenIn,
+          symbol: form.fromToken.symbol || tokenIn,
+          decimals: 1
+        },
+        amount: new BigNumber(fromAmount)
+      },
+      to: {
+        token: {
+          address: tokenOut,
+          symbol: form.toToken.symbol || tokenOut,
+          decimals: 1
+        },
+        amount: new BigNumber(toAmount)
+      }
+    };
   }
 
   constructor(
@@ -76,7 +130,8 @@ export class RefFinanceService implements ItProvider {
     private readonly instantTradesApiService: InstantTradesApiService,
     private readonly errorsService: ErrorsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly refFinanceSwapService: RefFinanceSwapService
   ) {
     this.settingsService.instantTradeValueChanges
       .pipe(startWith(this.settingsService.instantTradeValue))
@@ -91,7 +146,7 @@ export class RefFinanceService implements ItProvider {
 
   public async approve(): Promise<void> {
     const amount = this.swapFormService.inputValue.fromAmount;
-    return this.wrapNear(amount);
+    return this.refFinanceSwapService.wrapNear(amount);
   }
 
   public async calculateTrade(
@@ -99,22 +154,8 @@ export class RefFinanceService implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken
   ): Promise<InstantTrade> {
-    if (this.isWrap(fromToken.address, toToken.address)) {
-      return {
-        blockchain: BLOCKCHAIN_NAME.NEAR,
-        from: {
-          token: fromToken,
-          amount: fromAmount
-        },
-        to: {
-          token: toToken,
-          amount: fromAmount
-        },
-        path: [
-          { symbol: fromToken.symbol, address: fromToken.address },
-          { symbol: toToken.symbol, address: toToken.address }
-        ]
-      };
+    if (RefFinanceSwapService.isWrap(fromToken.address, toToken.address)) {
+      return RefFinanceSwapService.getWrapTrade(fromToken, toToken, fromAmount);
     }
 
     try {
@@ -124,28 +165,58 @@ export class RefFinanceService implements ItProvider {
         toToken
       );
 
-      const routes = await this.getRoutes(pools, fromAmount, fromToken, toToken);
-      const { estimate, pool } = routes.sort((a, b) =>
-        new BigNumber(b.estimate).gt(a.estimate) ? 1 : -1
-      )[0];
+      if (!pools.length) {
+        const transitToken: InstantTradeToken = {
+          address: 'wrap.near',
+          decimals: 24,
+          symbol: 'wNEAR'
+        };
 
-      this._currentTradePool = pool;
+        const fromPools = await this.refFinancePoolsService.getPoolsByTokens(
+          fromToken,
+          fromAmount,
+          transitToken
+        );
 
-      return {
-        blockchain: BLOCKCHAIN_NAME.NEAR,
-        from: {
-          token: fromToken,
-          amount: fromAmount
-        },
-        to: {
-          token: toToken,
-          amount: new BigNumber(estimate)
-        },
-        path: [
-          { symbol: fromToken.symbol, address: pool.tokenIds[0] },
-          { symbol: toToken.symbol, address: pool.tokenIds[1] }
-        ]
-      };
+        const fromRoute = await this.refFinanceSwapService.getRoutes(
+          fromPools,
+          fromAmount,
+          fromToken,
+          transitToken
+        );
+        const transitAmount = new BigNumber(fromRoute.estimate);
+
+        const toPools = await this.refFinancePoolsService.getPoolsByTokens(
+          transitToken,
+          transitAmount,
+          toToken
+        );
+        const toRoute = await this.refFinanceSwapService.getRoutes(
+          toPools,
+          transitAmount,
+          transitToken,
+          toToken
+        );
+
+        this.refRoutes = [fromRoute, toRoute];
+        return RefFinanceSwapService.getTransitTrade(
+          fromToken,
+          transitToken,
+          toToken,
+          fromAmount,
+          toRoute.estimate
+        );
+      }
+
+      this.refRoutes = [
+        await this.refFinanceSwapService.getRoutes(pools, fromAmount, fromToken, toToken)
+      ];
+      return RefFinanceSwapService.getDirectTrade(
+        fromToken,
+        toToken,
+        fromAmount,
+        this.refRoutes[0].estimate
+      );
     } catch (err) {
       new InsufficientLiquidityError('InstantTrade');
     }
@@ -153,14 +224,7 @@ export class RefFinanceService implements ItProvider {
   }
 
   public async createTrade(trade: InstantTrade): Promise<unknown> {
-    if (this.isWrap(trade.from.token.address, trade.to.token.address)) {
-      if (trade.from.token.address === NATIVE_NEAR_ADDRESS) {
-        await this.wrapNear(trade.from.amount);
-      } else {
-        await this.unwrapNear(trade.from.amount);
-      }
-    }
-    const pool = this._currentTradePool;
+    await this.refFinanceSwapService.handleWrap(trade);
 
     const fromAmountIn = Web3Pure.toWei(trade.from.amount, trade.from.token.decimals);
     const amountOutWithSlippage = trade.to.amount.multipliedBy(1 - this.settings.slippageTolerance);
@@ -173,63 +237,21 @@ export class RefFinanceService implements ItProvider {
     const toTokenAddress =
       trade.to.token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : trade.to.token.address;
 
-    const swapAction = {
-      pool_id: pool?.id,
-      token_in: fromTokenAddress,
-      token_out: toTokenAddress,
-      min_amount_out: minAmountOut
-    };
-
-    const transactions: NearTransaction[] = [];
-
-    const account = new WalletConnection(
-      this.walletConnectorService.nearConnection,
-      'rubic'
-    ).account();
-
-    const tokenOutRegistered = await account.viewFunction(toTokenAddress, 'storage_balance_of', {
-      account_id: account.accountId
-    });
-
-    if (!tokenOutRegistered || tokenOutRegistered.total === '0') {
-      const tokenOutActions: RefFiFunctionCallOptions[] = [
-        {
-          methodName: 'storage_deposit',
-          args: {
-            registration_only: true,
-            account_id: account.accountId
-          },
-          gas: '30000000000000',
-          amount: '0.1'
-        }
-      ];
-
-      transactions.push({
-        receiverId: toTokenAddress,
-        functionCalls: tokenOutActions
-      });
-    }
-
-    const tokenInActions: RefFiFunctionCallOptions[] = [
-      {
-        methodName: 'ft_transfer_call',
-        args: {
-          receiver_id: REF_FI_CONTRACT_ID,
-          amount: fromAmountIn,
-          msg: JSON.stringify({ force: 0, actions: swapAction })
-        },
-        gas: DEFAULT_TRANSFER_CALL_GAS,
-        amount: ONE_YOCTO_NEAR
-      }
-    ];
-
-    transactions.push({
-      receiverId: fromTokenAddress,
-      functionCalls: tokenInActions
-    });
+    const registerTokensTransactions =
+      await this.refFinanceSwapService.createRegisterTokensTransactions(
+        toTokenAddress,
+        this.refRoutes
+      );
+    const swapTransaction = await this.refFinanceSwapService.createSwapTransaction(
+      fromAmountIn,
+      fromTokenAddress,
+      toTokenAddress,
+      minAmountOut,
+      this.refRoutes
+    );
 
     await this.nearPrivateAdapter.executeMultipleTransactions(
-      transactions,
+      [...registerTokensTransactions, swapTransaction],
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
       minAmountOut
     );
@@ -249,99 +271,6 @@ export class RefFinanceService implements ItProvider {
     return of(new BigNumber(NaN));
   }
 
-  private async wrapNear(amount: BigNumber): Promise<void> {
-    const stringAmount = amount.toString();
-    const transactions: NearTransaction[] = [
-      {
-        receiverId: WRAP_NEAR_CONTRACT,
-        functionCalls: [
-          {
-            methodName: 'near_deposit',
-            args: {},
-            gas: '50000000000000',
-            amount: stringAmount
-          }
-        ]
-      }
-    ];
-
-    await this.nearPrivateAdapter.executeMultipleTransactions(
-      transactions,
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-      stringAmount
-    );
-  }
-
-  private async unwrapNear(amount: BigNumber): Promise<void> {
-    const weiAmount = Web3Pure.toWei(amount, 24);
-    const transactions: NearTransaction[] = [
-      {
-        receiverId: WRAP_NEAR_CONTRACT,
-        functionCalls: [
-          {
-            methodName: 'near_withdraw',
-            args: { amount: weiAmount },
-            amount: ONE_YOCTO_NEAR
-          }
-        ]
-      }
-    ];
-
-    await this.nearPrivateAdapter.executeMultipleTransactions(
-      transactions,
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-      weiAmount
-    );
-  }
-
-  /**
-   * Can tokens be wrapped or unwrapped.
-   * @param fromAddress From token address.
-   * @param toAddress To token address.
-   */
-  private isWrap(fromAddress: string, toAddress: string): boolean {
-    return (
-      (fromAddress.toLowerCase() === NATIVE_NEAR_ADDRESS &&
-        toAddress.toLowerCase() === WRAP_NEAR_CONTRACT) ||
-      (fromAddress.toLowerCase() === WRAP_NEAR_CONTRACT && toAddress === NATIVE_NEAR_ADDRESS)
-    );
-  }
-
-  /**
-   * Gets all ref finance routes.
-   * @param pools Available pools.
-   * @param fromAmount Tokens from amount.
-   * @param fromToken From token.
-   * @param toToken To token.
-   * @return Promise<RefFinanceRoute[]> Array of routes.
-   */
-  private async getRoutes(
-    pools: RefPool[],
-    fromAmount: BigNumber,
-    fromToken: InstantTradeToken,
-    toToken: InstantTradeToken
-  ): Promise<RefFinanceRoute[]> {
-    const FEE_DIVISOR = 10000;
-    const fromTokenAddress =
-      fromToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : fromToken.address;
-    const toTokenAddress =
-      toToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : toToken.address;
-
-    return Promise.all(
-      pools.map(pool => {
-        const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
-        const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
-        const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
-        const estimate = amountWithFee
-          .multipliedBy(outBalance)
-          .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
-          .toString();
-
-        return { estimate, pool };
-      })
-    );
-  }
-
   /**
    * Handles near query params, shows success or error notification.
    */
@@ -349,120 +278,93 @@ export class RefFinanceService implements ItProvider {
     const form$ = this.swapFormService.inputValueChanges.pipe(first(el => el !== null));
     const nearParams$ = this.queryParamsService.nearQueryParams$.pipe(first(el => el !== null));
 
-    forkJoin([form$, nearParams$]).subscribe(([form, nearParams]) => {
-      const { fromToken, toToken, fromAmount } = form;
-      if (!fromToken || !toToken || !fromAmount || 'allKeys' in nearParams) {
-        return;
-      }
+    forkJoin([form$, nearParams$])
+      .pipe(
+        switchMap(([form, nearParams]) => {
+          const { fromToken, toToken, fromAmount } = form;
+          if (!fromToken || !toToken || !fromAmount || 'allKeys' in nearParams) {
+            return of(null);
+          }
 
-      if ('errorCode' in nearParams) {
-        const error = decodeURI(nearParams.errorMessage);
-        if (error.includes('reject')) {
-          this.errorsService.catch(new UserRejectError());
-        } else {
-          this.errorsService.catch(new CustomError(error));
-        }
-        return;
-      }
+          if ('errorCode' in nearParams) {
+            const error = decodeURI(nearParams.errorMessage);
+            if (error.includes('reject')) {
+              this.errorsService.catch(new UserRejectError());
+            } else {
+              this.errorsService.catch(new CustomError(error));
+            }
+            return of(null);
+          }
 
-      this.postNearTransaction(nearParams.hash, nearParams.type);
-    });
+          return this.postNearTransaction(nearParams.hash, nearParams.type, form);
+        })
+      )
+      .subscribe(() => {});
   }
 
   /**
    * Posts near transaction params to api.
    * @param txHash Transaction hash.
+   * @param type Transaction swap type.
+   * @param form Swap form.
    */
-  private async postNearTransaction(txHash: string, type: SWAP_PROVIDER_TYPE): Promise<void> {
+  private async postNearTransaction(
+    txHash: string,
+    type: SWAP_PROVIDER_TYPE,
+    form: SwapFormInput
+  ): Promise<void> {
     try {
       this.gtmService.notifySignTransaction();
-      const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
 
-      const trx = await adapter.getTransactionByHash(txHash);
-      const params = new Buffer(
-        trx.transaction?.actions?.[0]?.FunctionCall.args,
-        'base64'
-      ).toString();
-      const paramsObject: {
-        amount: string;
-        msg: string;
-        receiver_id: string;
-      } = JSON.parse(params);
+      const paramsObject = await this.parseSwapParams(txHash);
+      const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);
 
-      // type ItRequest = {
-      //   actions?: {
-      //     min_amount_out: string;
-      //     pool_id: number;
-      //     token_in: string;
-      //     token_out: string;
-      //   };
-      // };
+      if (type === SWAP_PROVIDER_TYPE.INSTANT_TRADE && 'actions' in msg) {
+        const trade = await RefFinanceService.parseInstantTradeParams(
+          msg,
+          form,
+          paramsObject.amount
+        );
 
-      // type swapToParams = {};
+        await this.instantTradesApiService
+          .createTrade(txHash, INSTANT_TRADES_PROVIDERS.REF, trade, BLOCKCHAIN_NAME.NEAR)
+          .toPromise();
 
-      // type CcrRequest = {
-      //   SwapTokensToOther:
-      //     | {
-      //         swap_actions: [];
-      //         swap_to_params: [];
-      //       }
-      //     | {
-      //         SwapTransferTokensToOther: {
-      //           swap_to_params: [];
-      //         };
-      //       };
-      // };
-
-      // const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);
-
-      const actions: {
-        min_amount_out: string;
-        pool_id: number;
-        token_in: string;
-        token_out: string;
-      } =
-        type === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-          ? JSON.parse(paramsObject?.msg)?.actions?.[0]
-          : JSON.parse(paramsObject?.msg)?.actions?.[0];
-
-      const trade: InstantTrade = {
-        blockchain: BLOCKCHAIN_NAME.NEAR,
-        from: {
-          token: {
-            address: actions.token_in,
-            symbol: actions.token_in,
-            decimals: 1
-          },
-          amount: new BigNumber(paramsObject.amount)
-        },
-        to: {
-          token: {
-            address: actions.token_out,
-            symbol: actions.token_out,
-            decimals: 1
-          },
-          amount: new BigNumber(actions.min_amount_out)
+        try {
+          await this.instantTradesApiService.notifyInstantTradesBot({
+            provider: INSTANT_TRADES_PROVIDERS.REF,
+            blockchain: BLOCKCHAIN_NAME.NEAR,
+            walletAddress: paramsObject.receiver_id,
+            trade,
+            txHash
+          });
+        } catch {
+          console.debug('Near transaction bot failed');
         }
-      };
-
-      await this.instantTradesApiService
-        .createTrade(txHash, INSTANT_TRADES_PROVIDERS.REF, trade, BLOCKCHAIN_NAME.NEAR)
-        .toPromise();
+      }
 
       this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
         status: TuiNotification.Success,
         autoClose: 10000
       });
-
-      await this.instantTradesApiService.notifyInstantTradesBot({
-        provider: INSTANT_TRADES_PROVIDERS.REF,
-        blockchain: BLOCKCHAIN_NAME.NEAR,
-        walletAddress: paramsObject.receiver_id,
-        trade,
-        txHash
-      });
     } catch (err: unknown) {
       console.debug(err);
     }
+  }
+
+  /**
+   * Fetch instant trade transaction from blockchain by hash.
+   * @param hash Transaction hash.
+   */
+  private async parseSwapParams(hash: string): Promise<SwapParams> {
+    const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
+
+    const trx = await adapter.getTransactionByHash(hash);
+    const params = new Buffer(
+      trx.transaction?.actions?.[0]?.FunctionCall.args,
+      'base64'
+    ).toString();
+
+    return JSON.parse(params);
   }
 }
