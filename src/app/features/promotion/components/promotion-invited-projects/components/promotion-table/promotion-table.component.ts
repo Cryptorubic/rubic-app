@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
+import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
+import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
+import { promotionTableColumns } from '@features/promotion/constants/PROMOTION_TABLE_COLUMNS';
+import { promotionTableTranslations } from '@features/promotion/constants/PROMOTION_TABLE_TRANSLATIONS';
 
 @Component({
   selector: 'app-promotion-table',
@@ -12,15 +16,15 @@ import { PromotionTableData } from '@features/promotion/models/promotion-table-d
 export class PromotionTableComponent {
   @Input() tableData: PromotionTableData = [];
 
+  @Input() sortParameter: SortParameter | null = null;
+
+  @Output() sortParameterChange = new EventEmitter<PromotionTableColumn>();
+
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  public readonly columns = [
-    'projectUrl',
-    'invitationDate',
-    'tradingVolume',
-    'received',
-    'receivedTokens'
-  ];
+  public readonly columns = promotionTableColumns;
+
+  public readonly translations = promotionTableTranslations;
 
   private currentPageIndex = 0;
 
@@ -49,5 +53,9 @@ export class PromotionTableComponent {
 
   public onSizeChange(size: number): void {
     this.pageSize = size;
+  }
+
+  public onSortClick(column: PromotionTableColumn): void {
+    this.sortParameterChange.emit(column);
   }
 }

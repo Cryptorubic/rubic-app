@@ -347,6 +347,13 @@
       }
     ]
   },
+  "promotionPage": {
+    "projectName": "Project",
+    "invitationDate": "Invited",
+    "tradingVolume": "Trading Volume",
+    "received": "Received",
+    "receivedTokens": "Received Tokens"
+  },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
     "progressMessage": "您已经接受了交易，交易已经开始。请等待，直到交易完成。",

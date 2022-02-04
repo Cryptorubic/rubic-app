@@ -15,7 +15,7 @@
       ></app-rotating-icon>
     </div>
 
-    <div *ngIf="!wallet.isEthLikeWalletConnected; else tableContent">
+    <div *ngIf="!wallet.isEthLikeWalletConnected; else table">
       <app-rubic-button
         *ngIf="!wallet.isWalletConnected; else logOut"
         appearance="secondary"
@@ -30,19 +30,27 @@
       </ng-template>
     </div>
 
-    <ng-template #tableContent>
+    <ng-template #table>
       <tui-loader overlay="true" [showLoader]="isLoading" *ngLet="tableData$ | async as tableData">
         <div *ngIf="!tableData?.length; else tableContent" class="no-invited-projects">
           You haven't invited any projects yet
         </div>
         <ng-template #tableContent>
-          <app-promotion-table
-            *ngIf="isDesktop; else accordion"
-            [tableData]="tableData"
-          ></app-promotion-table>
-          <ng-template #accordion>
-            <app-promotion-accordion [tableData]="tableData"></app-promotion-accordion>
-          </ng-template>
+          <ng-container *ngLet="sortParameter$ | async as sortParameter">
+            <app-promotion-table
+              *ngIf="isDesktop; else accordion"
+              [tableData]="tableData"
+              [sortParameter]="sortParameter"
+              (sortParameterChange)="changeSortParameter($event)"
+            ></app-promotion-table>
+            <ng-template #accordion>
+              <app-promotion-accordion
+                [tableData]="tableData"
+                [sortParameter]="sortParameter"
+                (sortParameterChange)="changeSortParameter($event)"
+              ></app-promotion-accordion>
+            </ng-template>
+          </ng-container>
         </ng-template>
       </tui-loader>
     </ng-template>

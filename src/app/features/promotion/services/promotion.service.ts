@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
 import { filter, map, share } from 'rxjs/operators';
 import { notNull } from '@shared/utils/utils';
@@ -7,6 +7,9 @@ import { PromotionApiService } from '@features/promotion/services/promotion-api.
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
+import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
+import { comparators } from '@features/promotion/table-comporators';
 
 @Injectable()
 export class PromotionService {
@@ -18,9 +21,26 @@ export class PromotionService {
     instantRewards: 0
   };
 
+  private readonly defaultSortParameter: SortParameter = {
+    sortColumn: 'invitationDate',
+    descending: true
+  };
+
+  private readonly _sortParameter$ = new BehaviorSubject<SortParameter>(this.defaultSortParameter);
+
+  public readonly sortParameter$ = this._sortParameter$.asObservable();
+
   private readonly _tableData$ = new BehaviorSubject<PromotionTableData | null>([]);
 
-  public readonly tableData$ = this._tableData$.pipe(filter(notNull), share());
+  public readonly tableData$ = combineLatest([
+    this._tableData$.pipe(filter(notNull)),
+    this._sortParameter$
+  ]).pipe(
+    map(([tableData, sortParameter]) =>
+      tableData.slice().sort(comparators[sortParameter.sortColumn](sortParameter.descending))
+    ),
+    share()
+  );
 
   public readonly isTableDataLoading$: Observable<boolean> = this._tableData$.pipe(
     map(value => !value),
@@ -31,7 +51,7 @@ export class PromotionService {
     this.defaultStatistics
   );
 
-  public readonly statistics$ = this._statistics$.pipe(filter(notNull), share());
+  public readonly statistics$ = this._statistics$.asObservable().pipe(filter(notNull), share());
 
   public readonly isStatisticsLoading$: Observable<boolean> = this._statistics$.pipe(
     map(value => !value),
@@ -40,7 +60,7 @@ export class PromotionService {
 
   private readonly _promoLink$ = new BehaviorSubject<string | null>('');
 
-  public readonly promoLink$ = this._promoLink$.pipe(filter(notNull), share());
+  public readonly promoLink$ = this._promoLink$.asObservable().pipe(filter(notNull), share());
 
   public readonly isPromoLinkLoading$: Observable<boolean> = this._promoLink$.pipe(
     map(value => !value),
@@ -57,6 +77,10 @@ export class PromotionService {
 
   public get promoLink(): string | null {
     return this._promoLink$.getValue();
+  }
+
+  public get sortParameter(): SortParameter {
+    return this._sortParameter$.getValue();
   }
 
   constructor(
@@ -87,6 +111,13 @@ export class PromotionService {
       .getPromoCode()
       .pipe(map(promoCode => `${this.promoUrl}?promoCode=${promoCode}`))
       .subscribe(promoLink => this._promoLink$.next(promoLink));
+  }
+
+  public updateSortParameter(sortColumn: PromotionTableColumn): void {
+    const descending: boolean =
+      this.sortParameter.sortColumn === sortColumn ? !this.sortParameter.descending : true;
+
+    this._sortParameter$.next({ sortColumn, descending });
   }
 
   private setWalletSubscriptions(): void {

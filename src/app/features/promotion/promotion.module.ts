@@ -5,13 +5,21 @@ import { PromotionRoutingModule } from '@features/promotion/promotion-routing.mo
 import { PromotionTableComponent } from './components/promotion-invited-projects/components/promotion-table/promotion-table.component';
 import { SharedModule } from '@shared/shared.module';
 import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
-import { TuiLoaderModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownControllerModule,
+  TuiHostedDropdownModule,
+  TuiLoaderModule,
+  TuiSvgModule
+} from '@taiga-ui/core';
 import { PromotionService } from '@features/promotion/services/promotion.service';
 import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 import { PromotionStatsComponent } from './components/promotion-stats/promotion-stats.component';
 import { PromotionAccordionComponent } from './components/promotion-invited-projects/components/promotion-accordion/promotion-accordion.component';
 import { PromotionInvitedProjectsComponent } from './components/promotion-invited-projects/promotion-invited-projects.component';
 import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 
 @NgModule({
   declarations: [
@@ -29,7 +37,13 @@ import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
     TuiLoaderModule,
     TuiAccordionModule,
     TuiPaginationModule,
-    TuiTablePaginationModule
+    TuiTablePaginationModule,
+    InlineSVGModule,
+    TuiHostedDropdownModule,
+    TuiDropdownControllerModule,
+    TuiSvgModule,
+    TuiDataListModule,
+    TuiButtonModule
   ],
   providers: [PromotionService, PromotionApiService]
 })

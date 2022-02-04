@@ -1,0 +1,21 @@
+@use 'src/scss/vars' as *;
+
+.sort-arrow {
+  ::ng-deep {
+    svg path {
+      opacity: 0.3;
+
+      fill: #808080;
+    }
+  }
+
+  &_green {
+    ::ng-deep {
+      svg path {
+        opacity: 1;
+
+        fill: $rubic-primary;
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 @use 'src/scss/mixins';
 @use 'src/scss/vars' as *;
+@use '../../common-styles';
 
 .table {
   width: 100%;
@@ -7,6 +8,10 @@
   font-weight: 300;
 
   border-radius: 14px;
+
+  &__column-title {
+    margin-right: 10px;
+  }
 
   thead {
     border-top-left-radius: 14px;
@@ -37,6 +42,7 @@
     line-height: 21px;
 
     background-color: var(--main-background);
+    cursor: pointer;
 
     &:first-child {
       border-top-left-radius: 14px;
@@ -147,4 +153,3 @@ tui-table-pagination {
     }
   }
 }
-

@@ -347,6 +347,13 @@
       }
     ]
   },
+  "promotionPage": {
+    "projectName": "Project",
+    "invitationDate": "Invited",
+    "tradingVolume": "Trading Volume",
+    "received": "Received",
+    "receivedTokens": "Received Tokens"
+  },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
     "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",

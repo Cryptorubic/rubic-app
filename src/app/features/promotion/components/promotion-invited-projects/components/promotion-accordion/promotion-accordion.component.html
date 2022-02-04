@@ -1,4 +1,41 @@
 <ng-container>
+  <div *ngIf="tableData?.length" class="sort-container">
+    <tui-hosted-dropdown tuiDropdownAlign="left" [content]="dropdown" [(open)]="isDropdownOpened">
+      <button appearance="flat" tuiButton [iconRight]="icon">
+        <span class="title">{{ translations[sortParameter.sortColumn] | translate }}</span>
+      </button>
+    </tui-hosted-dropdown>
+
+    <ng-template #icon>
+      <tui-svg
+        src="tuiIconChevronDown"
+        class="icon"
+        [class.icon_rotated]="isDropdownOpened"
+      ></tui-svg>
+    </ng-template>
+
+    <ng-template #dropdown>
+      <tui-data-list>
+        <button *ngFor="let column of columns" tuiOption (click)="onSortColumnSelect(column)">
+          <span class="title">{{ translations[column] | translate }}</span>
+        </button>
+      </tui-data-list>
+    </ng-template>
+
+    <div class="sort-container__sort-arrows" (click)="onDescendingChange()">
+      <div
+        class="sort-arrow"
+        [class.sort-arrow_green]="!sortParameter.descending"
+        inlineSVG="assets/images/icons/my-trades/arrow-up.svg"
+      ></div>
+      <div
+        class="sort-arrow"
+        [class.sort-arrow_green]="sortParameter.descending"
+        inlineSVG="assets/images/icons/my-trades/arrow-down.svg"
+      ></div>
+    </div>
+  </div>
+
   <tui-accordion class="accordion" *ngFor="let row of pageTableData">
     <tui-accordion-item class="accordion__item">
       <div class="accordion__header header">

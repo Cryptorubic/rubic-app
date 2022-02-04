@@ -8,6 +8,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { map } from 'rxjs/operators';
 import { WINDOW } from '@ng-web-apis/common';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SortParameter } from '@features/promotion/models/sort-parameter.interface';
+import { PromotionTableColumn } from '@features/promotion/models/table-column.type';
 
 const DESKTOP_WIDTH_BREAKPOINT = 1000;
 
@@ -24,6 +26,8 @@ export class PromotionInvitedProjectsComponent {
 
   public readonly tableData$: Observable<PromotionTableData>;
 
+  public readonly sortParameter$: Observable<SortParameter>;
+
   public readonly isWalletConnected$: Observable<boolean>;
 
   public readonly isEthLikeWalletConnected$: Observable<boolean>;
@@ -39,6 +43,7 @@ export class PromotionInvitedProjectsComponent {
     this.isDesktop = this.window.innerWidth >= DESKTOP_WIDTH_BREAKPOINT;
     this.isLoading$ = promotionService.isTableDataLoading$;
     this.tableData$ = promotionService.tableData$;
+    this.sortParameter$ = promotionService.sortParameter$;
 
     this.isWalletConnected$ = authService.getCurrentUser().pipe(map(user => !!user?.address));
     this.isEthLikeWalletConnected$ = authService
@@ -60,6 +65,10 @@ export class PromotionInvitedProjectsComponent {
 
   public reconnectWallet(): void {
     this.authService.signOut().subscribe(() => this.openWalletsModal());
+  }
+
+  public changeSortParameter(sortColumn: PromotionTableColumn): void {
+    this.promotionService.updateSortParameter(sortColumn);
   }
 
   @HostListener('window:resize')

@@ -6,6 +6,35 @@ import { map, mapTo } from 'rxjs/operators';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 import { RBC } from 'src/test/tokens/blockchain-tokens/ethereum-test-tokens';
 
+const alphabet = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z'
+];
+
 @Injectable()
 export class PromotionApiService {
   constructor(private httpService: HttpService) {}
@@ -13,170 +42,15 @@ export class PromotionApiService {
   public getPromotionTableData(): Observable<PromotionTableData> {
     return timer(1000).pipe(
       map(() => {
-        return [
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 1,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 2,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 3,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 4,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 5,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 6,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 1,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 2,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 3,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 4,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 5,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 6,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 1,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 2,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 3,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 4,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 5,
-            receivedTokens: 132000,
-            token: RBC
-          },
-          {
-            projectName: 'StriceX',
-            projectUrl: 'https://strikex.com/',
-            invitationDate: new Date(),
-            tradingVolume: 10000,
-            received: 6,
-            receivedTokens: 132000,
-            token: RBC
-          }
-        ];
+        return [...new Array(30)].map((_, index) => ({
+          projectName: alphabet[index % alphabet.length],
+          projectUrl: 'https://strikex.com/',
+          invitationDate: new Date(Date.now() + index * 100000000),
+          tradingVolume: index,
+          received: index,
+          receivedTokens: index,
+          token: RBC
+        }));
       })
     );
   }

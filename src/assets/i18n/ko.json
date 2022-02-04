@@ -347,6 +347,13 @@
       }
     ]
   },
+  "promotionPage": {
+    "projectName": "Project",
+    "invitationDate": "Invited",
+    "tradingVolume": "Trading Volume",
+    "received": "Received",
+    "receivedTokens": "Received Tokens"
+  },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
     "progressMessage": "거래를 수락하고 교환이 시작되었습니다. 거래가 완료될 때까지 기다려 주십시오.",
