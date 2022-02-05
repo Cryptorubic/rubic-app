@@ -7,7 +7,8 @@ import {
   TemplateRef,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit
+  AfterViewInit,
+  NgZone
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -89,7 +90,8 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly destroy$: TuiDestroyService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly zone: NgZone
   ) {
     this.loadUser();
     this.advertisementType = 'default';
@@ -100,10 +102,12 @@ export class HeaderComponent implements AfterViewInit {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
-      this.setNotificationPosition();
-      this.window.onscroll = () => {
+      this.zone.runOutsideAngular(() => {
         this.setNotificationPosition();
-      };
+        this.window.onscroll = () => {
+          this.setNotificationPosition();
+        };
+      });
     }
     this.countNotifications$ = this.counterNotificationsService.unread$;
     this.swapType$ = this.swapsService.swapMode$;

@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
-import { catchError, filter, finalize, first, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { filter, finalize, mergeMap, switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { switchIif } from '@shared/utils/utils';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
 import { HttpService } from '../http/http.service';
@@ -13,7 +11,8 @@ import { SignRejectError } from '@core/errors/models/provider/sign-reject-error'
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
-import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@app/shared/utils/rubic-window';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -51,8 +50,7 @@ export class AuthService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly store: StoreService,
     private readonly errorService: ErrorsService,
-    private readonly iframeService: IframeService,
-    private readonly gtmService: GoogleTagManagerService
+    @Inject(WINDOW) private window: RubicWindow
   ) {
     this.isAuthProcess = false;
     this.currentUser$ = new BehaviorSubject<UserInterface>(undefined);
@@ -101,9 +99,9 @@ export class AuthService {
   }
 
   /**
-   * Load user from backend.
+   * Check if user already connected wallet.
    */
-  public async loadUser(): Promise<void> {
+  public async loadUser(walletAddress?: string): Promise<void> {
     this.isAuthProcess = true;
     if (!this.walletConnectorService.provider) {
       try {
@@ -118,34 +116,24 @@ export class AuthService {
         throw error;
       }
     }
-    await this.fetchWalletLoginBody()
-      .pipe(
-        switchIif(
-          walletLoginBody => walletLoginBody.code === this.USER_IS_IN_SESSION_CODE,
-          walletLoginBody => this.activateProviderAndSignIn(walletLoginBody),
-          () => this.setNullAsUser()
-        ),
-        tap(() => (this.isAuthProcess = false)),
-        catchError((err: unknown) => {
-          console.error(err);
-          return this.setNullAsUser();
-        })
-      )
-      .toPromise();
+    const address = walletAddress || this.window.ethereum.selectedAddress;
+    if (address) {
+      this.activateProviderAndSignIn(address).subscribe();
+    }
   }
 
-  private activateProviderAndSignIn(walletLoginBody: WalletLoginInterface): Observable<void> {
-    const { address } = walletLoginBody.payload.user;
+  public setCurrentUser(address: string): void {
+    this.currentUser$.next({ address });
+  }
+
+  private activateProviderAndSignIn(address: string): Observable<void> {
     return from(this.walletConnectorService.activate()).pipe(
       switchMap(() => {
         if (address.toLowerCase() === this.walletConnectorService.address.toLowerCase()) {
           this.currentUser$.next({ address: this.walletConnectorService.address });
           return of() as Observable<void>;
         }
-        return this.signOut().pipe(
-          first(),
-          switchMap(() => this.signIn())
-        );
+        return this.serverlessSignIn();
       })
     );
   }
@@ -160,33 +148,42 @@ export class AuthService {
    */
   public async signIn(): Promise<void> {
     try {
-      if (this.iframeService.isIframe) {
-        await this.iframeSignIn();
-        return;
-      }
-
       this.isAuthProcess = true;
-      await this.walletConnectorService.activate();
-
-      const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
-      if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
-        this.currentUser$.next({ address: this.walletConnectorService.provider.address });
-        this.isAuthProcess = false;
-        return;
-      }
-      const { message } = walletLoginBody.payload;
-      // TODO remove auth
-      const signature = await this.walletConnectorService.signPersonal(message);
-      await this.sendSignedNonce(
-        this.walletConnectorService.address,
-        message,
-        signature,
-        this.walletConnectorService.provider.walletName
+      const permissions = await this.walletConnectorService.requestPermissions();
+      const accountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
       );
-
-      this.currentUser$.next({ address: this.walletConnectorService.address });
+      if (accountsPermission) {
+        await this.walletConnectorService.activate();
+        const { address } = this.walletConnectorService;
+        this.currentUser$.next({ address } || null);
+      } else {
+        this.currentUser$.next(null);
+      }
       this.isAuthProcess = false;
-      this.gtmService.fireConnectWalletEvent(this.walletConnectorService.provider.walletName);
+    } catch (err) {
+      this.catchSignIn(err);
+    }
+  }
+
+  /**
+   * Connect wallet.
+   */
+  public async serverlessSignIn(): Promise<void> {
+    try {
+      this.isAuthProcess = true;
+      const permissions = await this.walletConnectorService.requestPermissions();
+      const accountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      );
+      if (accountsPermission) {
+        await this.walletConnectorService.activate();
+        const { address } = this.walletConnectorService;
+        this.currentUser$.next({ address } || null);
+      } else {
+        this.currentUser$.next(null);
+      }
+      this.isAuthProcess = false;
     } catch (err) {
       this.catchSignIn(err);
     }
@@ -232,29 +229,6 @@ export class AuthService {
   }
 
   /**
-   * Login user without backend request.
-   */
-  public async serverlessSignIn(): Promise<void> {
-    try {
-      this.isAuthProcess = true;
-      const permissions = await this.walletConnectorService.requestPermissions();
-      const accountsPermission = permissions.find(
-        permission => permission.parentCapability === 'eth_accounts'
-      );
-      if (accountsPermission) {
-        await this.walletConnectorService.activate();
-        const { address } = this.walletConnectorService;
-        this.currentUser$.next({ address } || null);
-      } else {
-        this.currentUser$.next(null);
-      }
-      this.isAuthProcess = false;
-    } catch (err) {
-      this.catchSignIn(err);
-    }
-  }
-
-  /**
    * Logout request to backend.
    */
   public signOut(): Observable<string> {
@@ -268,7 +242,7 @@ export class AuthService {
   }
 
   /**
-   * Logout user from provider and application.
+   * Disconnect wallet.
    */
   public serverlessSignOut(): void {
     this.walletConnectorService.deActivate();
