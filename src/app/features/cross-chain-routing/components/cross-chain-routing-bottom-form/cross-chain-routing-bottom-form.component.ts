@@ -424,7 +424,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     const onTransactionHash = () => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.notifyTradeInProgress();
+      this.notifyTradeInProgress('#');
     };
 
     this.crossChainRoutingService
@@ -465,7 +465,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       );
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(hash: string): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {
@@ -475,7 +475,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(hash, 'cross-chain-routing');
     }
   }
 }
