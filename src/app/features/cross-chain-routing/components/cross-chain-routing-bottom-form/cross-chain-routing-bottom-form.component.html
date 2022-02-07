@@ -21,6 +21,7 @@
     <ng-container *ngIf="smartRouting$ | async as smartRoutingInfo">
       <app-smart-routing
         [class.smart-routing-loading]="smartRoutingLoading$ | async"
+        *noFrame
         [fromProvider]="smartRoutingInfo.fromProvider"
         [toProvider]="smartRoutingInfo.toProvider"
         [fromHasTrade]="smartRoutingInfo.fromHasTrade"
