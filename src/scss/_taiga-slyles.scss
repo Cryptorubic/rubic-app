@@ -92,7 +92,7 @@ tui-notification-alert {
     height: 100vh;
 
     .content {
-      height: 100%;
+      height: calc(100vh - 137px);
     }
   }
 

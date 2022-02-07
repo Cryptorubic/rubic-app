@@ -162,10 +162,6 @@ $token-card-height: 55px;
   }
 }
 
-::ng-deep div.content {
-  height: 100% !important;
-}
-
 @include b($mobile-md) {
   .tokens-scrollbar {
     width: 100%;
