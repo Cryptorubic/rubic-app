@@ -378,7 +378,7 @@ export class InstantTradeService {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(hash);
+      this.successTxModalService.open(hash, this.swapFormService.inputValue.fromBlockchain);
     }
   }
 

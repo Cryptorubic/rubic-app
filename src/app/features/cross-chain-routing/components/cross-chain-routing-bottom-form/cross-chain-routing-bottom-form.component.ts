@@ -422,9 +422,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    const onTransactionHash = () => {
+    const onTransactionHash = (hash: string) => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.notifyTradeInProgress('#');
+      this.notifyTradeInProgress(hash);
     };
 
     this.crossChainRoutingService
@@ -475,7 +475,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(hash, 'cross-chain-routing');
+      this.successTxModalService.open(
+        hash,
+        this.swapFormService.inputValue.fromBlockchain,
+        'cross-chain-routing'
+      );
     }
   }
 }

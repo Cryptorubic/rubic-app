@@ -26,9 +26,7 @@ export class SuccessTxModalComponent {
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public toScannerAddress: string;
-
-  public toBlockchain: BLOCKCHAIN_NAME;
+  public blockchain: BLOCKCHAIN_NAME;
 
   private readonly scannerLinkPipe: ScannerLinkPipe;
 
@@ -37,12 +35,13 @@ export class SuccessTxModalComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,
-      { idPrefix: string; type: SuccessTxModalType; hash: string }
+      { idPrefix: string; type: SuccessTxModalType; hash: string; blockchain: BLOCKCHAIN_NAME }
     >
   ) {
     this.idPrefix = context.data.idPrefix;
     this.type = context.data.type;
     this.hash = context.data.hash;
+    this.blockchain = context.data.blockchain;
     timer(MODAL_CONFIG.modalLifetime)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onConfirm());

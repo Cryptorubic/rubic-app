@@ -22,7 +22,7 @@
           *noFrame
           class="modal__footer-link"
           safetyLink
-          [link]="toScannerAddress | scannerLink: toBlockchain:ADDRESS_TYPE.TRANSACTION"
+          [link]="hash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
           target="_blank"
         >
           {{ 'modals.successTxModal.transactionDetailsLink' | translate }}
