@@ -13,7 +13,6 @@ import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-b
 import {
   debounceTime,
   distinctUntilChanged,
-  filter,
   map,
   startWith,
   takeUntil,
@@ -155,17 +154,14 @@ export class SwapsFormComponent implements OnInit {
     this.subscribeOnSettings();
 
     this.swapsService.swapMode$
-      .pipe(
-        filter(() => Boolean(this.authService?.user?.address)),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(swapMode => {
         this.swapType = swapMode;
-        if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-          this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
-        } else {
-          this.autoRefresh = this.settingsService.crossChainRoutingValue.autoRefresh;
+        if (this.authService?.user?.address) {
+          this.autoRefresh =
+            swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+              ? this.settingsService.instantTradeValue.autoRefresh
+              : this.settingsService.crossChainRoutingValue.autoRefresh;
         }
       });
 
