@@ -247,7 +247,6 @@ export class InstantTradeService {
         onConfirm: async (hash: string) => {
           confirmCallback();
           this.notifyTradeInProgress(hash, trade.blockchain);
-
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
         }
