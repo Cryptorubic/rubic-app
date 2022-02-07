@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-iframe-logout-button',
@@ -12,6 +11,6 @@ export class IframeLogoutButtonComponent {
   constructor(private readonly authService: AuthService) {}
 
   public logout(): void {
-    this.authService.signOut().pipe(first()).subscribe();
+    this.authService.serverlessSignOut();
   }
 }

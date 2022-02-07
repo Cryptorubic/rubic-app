@@ -16,21 +16,19 @@
       </h3>
     </main>
     <footer class="modal__footer">
-      <ng-container *noFrame>
-        <span>{{ 'modals.successTxModal.see' | translate }}</span>
-        <a
-          class="modal__footer-link"
-          safetyLink
-          [link]="hash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
-          target="_blank"
-        >
-          {{ 'modals.successTxModal.transactionDetailsLink' | translate }}
-        </a>
-        <span>{{ 'modals.successTxModal.itWillAppearsIn' | translate }}</span>
-        <a class="modal__footer-link" routerLink="/my-trades" target="_blank">
-          {{ 'modals.successTxModal.myTradesLink' | translate }}
-        </a>
-        <span>{{ 'modals.successTxModal.pageSoon' | translate }}</span>
+      <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
+        <div
+          *noFrame
+          class="modal__footer-text"
+          [innerHTML]="
+            (type === 'default'
+              ? 'modals.successTxModal.seeDetailsItBridge'
+              : 'modals.successTxModal.seeDetailsCCR'
+            )
+              | translate
+                : { explorerLink: txHash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION }
+          "
+        ></div>
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
         {{

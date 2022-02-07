@@ -33,11 +33,11 @@
       }
     }
   }
-  
+
   &._no-padding ::ng-deep .header {
     padding: 0;
   }
-  
+
   ::ng-deep {
     .header {
       height: 79px;
@@ -48,6 +48,8 @@
     }
 
     .content {
+      padding: 0 1.25rem 1.25rem;
+
       background: var(--main-form-background);
     }
 
@@ -59,7 +61,7 @@
 }
 
 .swaps-info {
-  padding: 29px 30px;
+  padding: 0 30px 30px;
 
   color: var(--form-bright-text-color);
 

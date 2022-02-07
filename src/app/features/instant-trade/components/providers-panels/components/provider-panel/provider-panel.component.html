@@ -1,10 +1,9 @@
-<div class="provider-panel">
+<div class="provider-panel" [class.provider-panel_loading]="providerData.loading">
   <div
     (click)="!providerData.hasError && activateProvider()"
     class="provider-panel__content"
     [ngClass]="{
       'provider-panel__content_best-rate': isBestRate,
-      'provider-panel__content_loading': providerData.loading,
       'provider-panel__content_selected': providerData.isActive,
       'provider-panel__content_small': providerData.appearance === 'small'
     }"

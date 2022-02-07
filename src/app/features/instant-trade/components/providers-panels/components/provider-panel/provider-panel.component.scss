@@ -6,6 +6,8 @@ $white: white;
 ::ng-deep .provider-panel {
   height: 100%;
 
+  transition: opacity ease-in-out 0.3s;
+
   @include b($mobile-md) {
     .provider-panel {
       &__body {
@@ -26,6 +28,10 @@ $white: white;
         margin-bottom: 5px;
       }
     }
+  }
+
+  &_loading {
+    opacity: 0.45;
   }
 
   &__content {

@@ -33,7 +33,8 @@
     "approve": "Approve",
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "Transaction details"
   },
   "errors": {
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
@@ -59,7 +60,7 @@
     "notSupportedBridge": "This bridge is currently unavailable. Please select a supported bridge.",
     "insufficientLiquidityCCR": "Insufficient liquidity for this trade",
     "insufficientLiquidityIT": "Insufficient liquidity for this trade.",
-    "oneinchRefreshError":  "1inch is currently unavailable. Please try to refresh the trade.",
+    "oneinchRefreshError": "1inch is currently unavailable. Please try to refresh the trade.",
     "1inchNotSupportedToken": "1inch doesn’t support one of the selected tokens.",
     "cancelDeadline": "Your transaction has been reverted because the transaction deadline has expired. Please try to increase transaction deadline time or gas amount.",
     "chooseSupportedBridge": "Choose supported bridge",
@@ -80,7 +81,6 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multi-chain.",
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
     "buttonLink": "Learn more",
@@ -327,7 +327,7 @@
         "title": "Why did I get the ”Expired” status on the scanner?",
         "answer": "The transaction was not mined in the time period allotted for it.\n\nIn this scenario, the transaction should be sent again. Note that during the transaction, the gas spent on its execution is burned, but not completely. A gas fee is also charged for conducting the re-sent transaction."
       },
-     {
+      {
         "title": "Why do I get “Warning! Error Encountered During Contract Execution [Out of Gas]”?",
         "answer": "Reason:\n There was not enough gas for the transaction.\n\n This scanner error means the gas limit you set was above the minimum but still not sufficient to get the transaction to execute. Please try again with a higher gas limit. Also, we recommend not to change the gas limit manually, your wallet will set the needed amount automatically."
       },
@@ -340,7 +340,7 @@
         "answer": "Unfortunately, we don’t support tokens with an included fee to sell via multi-chain routing. We are working on implementing this feature.\n For now we suggest you to sell these types of tokens for stable or native coins via on-chain swap and then do the multi-chain swap with the token you have bought.",
         "id": "unsupportedTokenCCR"
       },
-     {
+      {
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
         "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
         "id": "rpcError"
@@ -535,7 +535,10 @@
       "myTradesLink":"My trades",
       "pageSoon": " page soon.",
       "title": "The transaction was successfully sent!",
-      "ccrTitle": "Successful swap in source network!"
+      "ccrTitle": "Successful swap in source network!",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
+      "link": "My Trades"
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
@@ -563,7 +566,7 @@
       "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
     },
     "crossChainRouting": {
-      "autoRefreshTitle":  "Auto refresh",
+      "autoRefreshTitle": "Auto refresh",
       "autoRefresh": "Updates trade parameters each 15 seconds.",
       "slippageTitle": "Slippage tolerance",
       "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage. (A lower percentage decreases the chances of your transaction being front-run)",
@@ -616,7 +619,8 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Aurora is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!"
+      "text": "Aurora is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!",
+      "link": "_placeholder"
     }
   },
   "volume": {

@@ -4,7 +4,7 @@ import { SuccessTxModalComponent } from 'src/app/shared/components/success-tx-mo
 import { TuiDialogService } from '@taiga-ui/core';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 
 @Injectable()
 export class SuccessTxModalService {
@@ -21,16 +21,21 @@ export class SuccessTxModalService {
    * @param type Type of modal, cross-chain or default.
    */
   public open(
-    hash: string,
-    blockchain: BLOCKCHAIN_NAME,
-    type: SuccessTxModalType = 'default'
+    type: SuccessTxModalType = 'default',
+    txHash?: string,
+    blockchain?: BLOCKCHAIN_NAME,
+    callback?: () => void
   ): void {
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .open(new PolymorpheusComponent(SuccessTxModalComponent, this.injector), {
         size,
-        data: { idPrefix: '', type, hash, blockchain }
+        data: { idPrefix: '', type, txHash, blockchain }
       })
-      .subscribe();
+      .subscribe(() => {
+        if (callback) {
+          callback();
+        }
+      });
   }
 }
