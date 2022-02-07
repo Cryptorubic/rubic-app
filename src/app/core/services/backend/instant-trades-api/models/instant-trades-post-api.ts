@@ -26,7 +26,8 @@ interface SolanaTradesApi {
   to_amount: string;
 }
 
-export type InstantTradesPostApi =
+export type InstantTradesPostApi = (
   | InstantTradesUniswapAbstractApi
   | InstantTradesOneInchApi
-  | SolanaTradesApi;
+  | SolanaTradesApi
+) & { user: string };
