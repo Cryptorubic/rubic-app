@@ -291,7 +291,8 @@ export class AuthService {
             address &&
             user?.address !== address
           ) {
-            return this.signOut().pipe(mergeMap(() => this.signIn()));
+            this.serverlessSignOut();
+            return from(this.serverlessSignIn());
           }
           return of();
         })
