@@ -7,7 +7,7 @@ import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-t
 @Injectable({
   providedIn: 'root'
 })
-export class OneInchPolService extends OneinchProviderAbstract {
+export class OneInchPolygonService extends OneinchProviderAbstract {
   public readonly providerType = INSTANT_TRADES_PROVIDERS.ONEINCH;
 
   constructor(commonOneinchService: CommonOneinchService) {

@@ -83,7 +83,8 @@
     "unsupportedTokenCCR": "嘗試發送交易時發生錯誤。\n 您可能正在嘗試出售當前不受多鏈支持的代幣。點擊鏈接了解更多信息。",
     "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。",
     "buttonLink": "學到更多",
-    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask)."
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
+    "walletNotInstalled": "未安装钱包"
   },
   "navigation": {
     "about": "关于",
@@ -385,7 +386,7 @@
   "crossChainPage": {
     "targetAddress": {
       "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or past address"
+      "placeholder": "Enter or paste address"
     },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
@@ -395,6 +396,10 @@
       "minimumReceivedHint": "Minimum amount of tokens to be received\n",
       "platformFee": "Platform fee",
       "platformFeeHint": "Platform commission charges in RBC token\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -551,10 +556,13 @@
       "text": "请选择一个掉期源网络。 通过连接 Coinbase 钱包，您将无法在当前会话中更改网络。 要在连接 Coinbase 钱包后更改网络，请退出您的帐户并通过选择不同的网络或使用不同的钱包进行连接。"
     },
     "successTxModal": {
+      "see": "看 ",
+      "transactionDetailsLink": "交易明細",
+      "itWillAppearsIn": ". 它會出現在 ",
+      "myTradesLink":"很快頁面",
+      "pageSoon": " 我的交易.",
       "title": "The transaction was successfully sent!",
-      "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See details in ",
-      "link": "My Trades"
+      "ccrTitle": "Successful swap in source network!"
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
@@ -635,8 +643,8 @@
       "link": "今天試試!"
     },
     "external": {
-      "text": "12 月 23 日开始以 80% 或更多的 APR 进行质押。",
-      "link": "學到更多！"
+      "text": "Aurora 現在在 Rubic 直播！ 立即完成鏈上和多鏈交換",
+      "link": ""
     }
   },
   "volume": {
@@ -650,6 +658,8 @@
     "tradeInProgress": "進行中的交易",
     "successfulTradeTitle": "成功的交易",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "交易成功發送！",
+    "successfulCCRSwapTitle": "源網絡交換成功！",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",

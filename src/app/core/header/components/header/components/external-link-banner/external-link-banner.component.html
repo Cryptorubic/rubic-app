@@ -1,4 +1,6 @@
 <ng-container>
-  {{ 'banner.external.text' | translate }}&nbsp;
-  <a [safetyLink]="href" [style.color]="linkColor">{{ 'banner.external.link' | translate }}</a>
+  {{ 'banner.external.text' | translate }}
+  <a *ngIf="href" [safetyLink]="href" [style.color]="linkColor">
+    {{ 'banner.external.link' | translate }}
+  </a>
 </ng-container>

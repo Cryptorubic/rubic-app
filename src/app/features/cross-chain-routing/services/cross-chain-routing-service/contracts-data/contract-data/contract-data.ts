@@ -19,6 +19,8 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3-algebra/common-service/common-uniswap-v3-algebra.service';
 import { CommonUniswapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
+import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
+import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -69,6 +71,20 @@ export abstract class ContractData {
   }
 
   /**
+   * Returns true, if provider is of `uniswap v3` type.
+   */
+  public isProviderUniV3(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof CommonUniswapV3Service;
+  }
+
+  /**
+   * Returns true, if provider is of `1inch` type.
+   */
+  protected isProviderOneinch(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof OneinchProviderAbstract;
+  }
+
+  /**
    * Returns method's name and contract abi to call in source network.
    */
   public getMethodNameAndContractAbi(
@@ -91,6 +107,12 @@ export abstract class ContractData {
       };
     }
 
+    if (this.isProviderOneinch(providerIndex)) {
+      contractAbiMethod = {
+        ...crossChainContractAbiInch.find(method => method.name.startsWith(methodName))
+      };
+    }
+
     methodName = methodName + this.providersData[providerIndex].methodSuffix;
     contractAbiMethod.name = methodName;
 
@@ -107,6 +129,10 @@ export abstract class ContractData {
   public getFirstPath(providerIndex: number, instantTrade: InstantTrade): string | string[] {
     if (!instantTrade) {
       return [this.transitToken.address];
+    }
+
+    if (this.isProviderOneinch(providerIndex)) {
+      return instantTrade.path[0].address;
     }
 
     const provider = this.getProvider(providerIndex);
@@ -134,11 +160,10 @@ export abstract class ContractData {
   public getSecondPath(
     providerIndex: number,
     instantTrade: InstantTrade,
-    fromBlockchain: BLOCKCHAIN_NAME,
-    toBlockchain: BLOCKCHAIN_NAME
+    fromBlockchain: BLOCKCHAIN_NAME
   ): string[] {
     const toBlockchainAdapter =
-      toBlockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
+      this.blockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;
     if (!instantTrade) {
       return fromBlockchain === BLOCKCHAIN_NAME.SOLANA
         ? [this.transitToken.address]
@@ -149,7 +174,10 @@ export abstract class ContractData {
 
     if (provider instanceof CommonUniswapV3Service) {
       const route = (instantTrade as UniswapV3InstantTrade).route;
-      const path: string[] = [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
+      const path =
+        fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+          ? [route.initialTokenAddress]
+          : [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
 
       let lastTokenAddress = route.initialTokenAddress;
 
@@ -160,9 +188,11 @@ export abstract class ContractData {
         lastTokenAddress = newToken.address;
 
         path.push(
-          '0x' +
-            pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
-            lastTokenAddress.slice(2).toLowerCase()
+          fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+            ? lastTokenAddress
+            : '0x' +
+                pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
+                lastTokenAddress.slice(2).toLowerCase()
         );
       });
 

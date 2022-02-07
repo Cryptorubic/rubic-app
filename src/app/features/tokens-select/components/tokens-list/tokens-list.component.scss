@@ -42,6 +42,11 @@ $token-card-height: 55px;
 .tokens-list-horizontal-iframe {
   display: flex;
 
+  &__item-container {
+    min-width: 206px;
+    max-width: 206px;
+  }
+
   &__item {
     min-width: 191px;
     max-width: 191px;
@@ -145,7 +150,7 @@ $token-card-height: 55px;
   }
 
   @include iframe-vertical {
-    height: 375px;
+    height: 350px;
   }
 }
 
@@ -155,10 +160,6 @@ $token-card-height: 55px;
   @include iframe-horizontal {
     height: $token-card-height + 20px;
   }
-}
-
-::ng-deep div.content {
-  height: 100% !important;
 }
 
 @include b($mobile-md) {

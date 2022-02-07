@@ -28,6 +28,7 @@ import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-serv
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
 import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -74,6 +75,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
+    private readonly gtmService: GoogleTagManagerService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
     @Inject(WINDOW) private window: Window
@@ -114,6 +116,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   public menuClickHandler(
     linkType: 'swaps' | 'bridge' | 'cross-chain' | 'staking' | 'promotion'
   ): void {
+    this.handleButtonClick();
     this.closeMenu();
     switch (linkType) {
       case 'swaps':
@@ -131,5 +134,9 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
 
   isLinkActive(url: string): boolean {
     return this.window.location.pathname === url;
+  }
+
+  public handleButtonClick(): void {
+    this.gtmService.reloadGtmSession();
   }
 }

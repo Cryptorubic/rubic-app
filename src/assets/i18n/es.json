@@ -83,7 +83,8 @@
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
-    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask)."
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
+    "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
     "about": "Información",
@@ -385,7 +386,7 @@
   "crossChainPage": {
     "targetAddress": {
       "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or past address"
+      "placeholder": "Enter or paste address"
     },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
@@ -395,6 +396,10 @@
       "minimumReceivedHint": "Minimum amount of tokens to be received\n",
       "platformFee": "Platform fee",
       "platformFeeHint": "Platform commission charges in RBC token\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -551,10 +556,13 @@
       "text": "Seleccione una red de origen de swaps. Al conectar una billetera Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar la billetera Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente o usa una billetera diferente."
     },
     "successTxModal": {
+      "see": "Ver ",
+      "transactionDetailsLink": "Detalles de la transacción",
+      "itWillAppearsIn": ". Aparecerá en ",
+      "myTradesLink": "Mis operaciones",
+      "pageSoon": " página pronto.",
       "title": "The transaction was successfully sent!",
-      "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See details in ",
-      "link": "My Trades"
+      "ccrTitle": "Successful swap in source network!"
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
@@ -635,8 +643,8 @@
       "link": "Pruébalo hoy!"
     },
     "external": {
-      "text": "Las tasas con una tasa de interés del 80% o más comenzaron el 23 de diciembre.",
-      "link": "¡Aprende más!"
+      "text": "Aurora ya está disponible en Rubic! ¡Complete intercambios On-Chain y Multi-Chain ahora!",
+      "link": ""
     }
   },
   "volume": {
@@ -650,6 +658,8 @@
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "¡La transacción fue enviada con éxito!",
+    "successfulCCRSwapTitle": "¡Intercambio exitoso en la red de origen!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",

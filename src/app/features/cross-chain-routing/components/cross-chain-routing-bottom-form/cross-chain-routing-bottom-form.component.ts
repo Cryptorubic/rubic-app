@@ -50,6 +50,7 @@ import { TargetNetworkAddressService } from '@features/cross-chain-routing/compo
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -81,6 +82,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   private readonly hiddenTradeData$ = new BehaviorSubject<{ toAmount: BigNumber }>(undefined);
 
   public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
+
+  public readonly smartRouting$ = this.crossChainRoutingService.smartRouting$;
 
   public toBlockchain: BLOCKCHAIN_NAME;
 
@@ -159,6 +162,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
+        if (!form.fromToken || !form.toToken) {
+          this.crossChainRoutingService.resetSmartRouting();
+        }
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -383,6 +389,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(first())
       .subscribe(
         async (_: TransactionReceipt) => {
+          this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('notifications.successApprove'),
@@ -415,10 +422,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    const onTransactionHash = () => {
+    const onTransactionHash = (hash: string) => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.notifyTradeInProgress();
-      this.gtmService.notifySignTransaction();
+      this.notifyTradeInProgress(hash);
     };
 
     this.crossChainRoutingService
@@ -459,7 +465,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       );
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(hash: string): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('notifications.tradeInProgress'),
       {
@@ -469,7 +475,11 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(
+        hash,
+        this.swapFormService.inputValue.fromBlockchain,
+        'cross-chain-routing'
+      );
     }
   }
 }

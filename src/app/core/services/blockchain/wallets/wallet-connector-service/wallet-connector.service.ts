@@ -54,8 +54,6 @@ export class WalletConnectorService {
 
   public readonly transactionEmitter$ = this._transactionEmitter$.asObservable();
 
-  public providerName: WALLET_NAME;
-
   private privateProvider: CommonWalletAdapter;
 
   public get address(): string | undefined {
@@ -252,16 +250,6 @@ export class WalletConnectorService {
     return walletAdapters[walletName]();
   }
 
-  public async connectDefaultProvider(): Promise<void> {
-    this.provider = new MetamaskWalletAdapter(
-      this.web3,
-      this.networkChangeSubject$,
-      this.addressChangeSubject$,
-      this.errorService
-    );
-    this.providerName = WALLET_NAME.METAMASK;
-  }
-
   public checkSettings(selectedBlockchain: BLOCKCHAIN_NAME): void {
     if (!this.isProviderActive) {
       throw new WalletError();
@@ -275,7 +263,7 @@ export class WalletConnectorService {
       this.networkName !== selectedBlockchain &&
       (!isTestingMode || this.networkName !== `${selectedBlockchain}_TESTNET`)
     ) {
-      if (this.providerName === WALLET_NAME.METAMASK) {
+      if (this.provider.walletName === WALLET_NAME.METAMASK) {
         throw new NetworkError(selectedBlockchain);
       } else if (!this.provider.isMultiChainWallet) {
         throw new NotSupportedNetworkError(selectedBlockchain);
@@ -309,6 +297,14 @@ export class WalletConnectorService {
       [BLOCKCHAIN_NAME.FANTOM]: {
         name: 'Fantom Opera',
         rpc: 'https://rpc.ftm.tools'
+      },
+      [BLOCKCHAIN_NAME.ARBITRUM]: {
+        name: 'Arbitrum One',
+        rpc: 'https://arb1.arbitrum.io/rpc'
+      },
+      [BLOCKCHAIN_NAME.AURORA]: {
+        name: 'Aurora MainNet',
+        rpc: 'https://mainnet.aurora.dev'
       }
     };
     const params = {

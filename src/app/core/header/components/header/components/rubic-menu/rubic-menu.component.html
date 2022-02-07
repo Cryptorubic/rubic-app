@@ -28,13 +28,13 @@
             routerLinkActive="data-list__link_active"
             class="data-list__link"
           >
-            <button tuiOption class="data-list__option">
+            <button tuiOption class="data-list__option" (click)="handleButtonClick()">
               <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
               {{ item.translateKey | translate }}
             </button>
           </a>
           <a *ngIf="item.type === 'external'" [href]="item.link" class="data-list__link">
-            <button tuiOption class="data-list__option">
+            <button tuiOption class="data-list__option" (click)="handleButtonClick()">
               <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
               {{ item.translateKey | translate }}
             </button>

@@ -83,7 +83,8 @@
     "unsupportedTokenCCR": "При попытке отправить транзакцию произошла ошибка.\n С большой вероятностью, вы пытаетесь продать токен, который в настоящее время не поддерживается в multichain.",
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
     "buttonLink": "Узнать больше",
-    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask)."
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
+    "walletNotInstalled": "Кошелек не установлен."
   },
   "navigation": {
     "about": "О компании",
@@ -385,7 +386,7 @@
   "crossChainPage": {
     "targetAddress": {
       "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or past address"
+      "placeholder": "Enter or paste address"
     },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
@@ -395,6 +396,10 @@
       "minimumReceivedHint": "Minimum amount of tokens to be received\n",
       "platformFee": "Platform fee",
       "platformFeeHint": "Platform commission charges in RBC token\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -551,10 +556,13 @@
       "text": "Пожалуйста, выберите исходную сеть для обменов токенов. Подключив кошелек Coinbase, вы не сможете изменить сеть в текущей сессии. Чтобы изменить сеть после подключения кошелька Coinbase, выйдите из своей учетной записи и подключитесь, выбрав другую сеть или используйте другой кошелек."
     },
     "successTxModal": {
-      "title": "Транзакция успешко отправлена!",
-      "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
-      "seeDetails": "See details in ",
-      "link": "My Trades"
+      "see": "Смотрите ",
+      "transactionDetailsLink":"детали транзакции",
+      "itWillAppearsIn": ". Она скоро появится в ",
+      "myTradesLink":"My trades",
+      "pageSoon": " странице.",
+      "title": "The transaction was successfully sent!",
+      "ccrTitle": "Successful swap in source network!"
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
@@ -635,8 +643,8 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Стейкинг с APR 80% или выше стартовал 23.12.",
-      "link": "Узнайте больше!"
+      "text": "Aurora теперь доступен для обмена на Rubic! Выполняйте Он-Чейн и Мульти-Чейн свопы прямо сейчас!",
+      "link": ""
     }
   },
   "volume": {
@@ -650,6 +658,8 @@
     "tradeInProgress": "Сделка в процессе выполнения",
     "successfulTradeTitle": "Сделка проведена успешно",
     "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
+    "successfullySentTransaction": "Транзакция была успешно отправлена!",
+    "successfulCCRSwapTitle": "Успешный обмен в исходной сети!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",

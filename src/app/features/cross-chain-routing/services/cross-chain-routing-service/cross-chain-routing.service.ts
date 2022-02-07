@@ -9,7 +9,7 @@ import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
-import { from, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain-routing/cross-chainIs-unavailable-warning';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -40,10 +40,14 @@ import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import { INSTANT_TRADES_PROVIDERS } from '@app/shared/models/instant-trade/instant-trade-providers';
+import { SmartRouting } from './models/smart-routing.interface';
 
 interface TradeAndToAmount {
   trade: InstantTrade | null;
@@ -68,6 +72,10 @@ export class CrossChainRoutingService {
       supportedBlockchain => supportedBlockchain === blockchain
     );
   }
+
+  private readonly _smartRouting$ = new BehaviorSubject<SmartRouting>(null);
+
+  public readonly smartRouting$ = this._smartRouting$.asObservable();
 
   private readonly contracts = this.contractsDataService.contracts;
 
@@ -94,6 +102,7 @@ export class CrossChainRoutingService {
     private readonly contractExecutorFacade: ContractExecutorFacadeService,
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaPrivateAdapter: SolanaWeb3PrivateService,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly iframeService: IframeService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
@@ -149,10 +158,16 @@ export class CrossChainRoutingService {
     const fromSlippage = 1 - this.slippageTolerance / 2;
     const toSlippage = 1 - this.slippageTolerance / 2;
 
+    const sourceBlockchainProviders = await this.getSortedProvidersList(
+      fromBlockchain,
+      fromToken,
+      fromAmount,
+      fromTransitToken
+    );
     const {
       providerIndex: fromProviderIndex,
       tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
-    } = await this.getBestProviderIndex(fromBlockchain, fromToken, fromAmount, fromTransitToken);
+    } = sourceBlockchainProviders[0];
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
       toBlockchain,
@@ -161,15 +176,26 @@ export class CrossChainRoutingService {
       fromSlippage
     );
 
-    const {
-      providerIndex: toProviderIndex,
-      tradeAndToAmount: { trade: toTrade, toAmount }
-    } = await this.getBestProviderIndex(
+    const targetBlockchainProviders = await this.getSortedProvidersList(
       toBlockchain,
       toTransitToken,
       toTransitTokenAmount,
       toToken
     );
+
+    // @TODO fix excluded providers
+    const filteredTargetBlockchainProviders = targetBlockchainProviders.filter(
+      provider =>
+        !(
+          fromBlockchain === BLOCKCHAIN_NAME.SOLANA &&
+          this.contracts[toBlockchain].isProviderUniV3(provider.providerIndex)
+        )
+    );
+
+    const {
+      providerIndex: toProviderIndex,
+      tradeAndToAmount: { trade: toTrade, toAmount }
+    } = filteredTargetBlockchainProviders[0];
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
@@ -194,6 +220,14 @@ export class CrossChainRoutingService {
       cryptoFee
     };
 
+    await this.calculateSmartRouting(
+      sourceBlockchainProviders,
+      filteredTargetBlockchainProviders,
+      fromBlockchain,
+      toBlockchain,
+      toToken.address
+    );
+
     const [gasData, minMaxErrors, needApprove] = await Promise.all([
       this.getGasData(this.currentCrossChainTrade),
       this.checkMinMaxErrors(this.currentCrossChainTrade),
@@ -204,7 +238,9 @@ export class CrossChainRoutingService {
       ...gasData
     };
 
-    const toAmountWithoutSlippage = toTransitToken ? toAmount : toAmount.dividedBy(fromSlippage);
+    const toAmountWithoutSlippage = compareAddresses(fromToken.address, fromTransitToken.address)
+      ? toAmount
+      : toAmount.dividedBy(fromSlippage);
 
     return {
       toAmount: toAmountWithoutSlippage,
@@ -216,12 +252,12 @@ export class CrossChainRoutingService {
   /**
    * Gets the best provider index in blockchain, based on profit of uniswap provider.
    */
-  private async getBestProviderIndex(
+  private async getSortedProvidersList(
     blockchain: SupportedCrossChainBlockchain,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken
-  ): Promise<IndexedTradeAndToAmount> {
+  ): Promise<IndexedTradeAndToAmount[]> {
     const promises = this.contracts[blockchain].providersData.map(async (_, providerIndex) => ({
       providerIndex,
       tradeAndToAmount: await this.getTradeAndToAmount(
@@ -242,7 +278,7 @@ export class CrossChainRoutingService {
       if (!sortedResults.length) {
         throw (results[0] as PromiseRejectedResult).reason;
       }
-      return sortedResults[0];
+      return sortedResults;
     });
   }
 
@@ -263,9 +299,10 @@ export class CrossChainRoutingService {
   ): Promise<TradeAndToAmount> {
     if (!compareAddresses(fromToken.address, toToken.address)) {
       try {
+        const contractAddress = this.contracts[blockchain].address;
         const instantTrade = await this.contracts[blockchain]
           .getProvider(providerIndex)
-          .calculateTrade(fromToken, fromAmount, toToken, false);
+          .calculateTrade(fromToken, fromAmount, toToken, false, contractAddress);
         return {
           trade: instantTrade,
           toAmount: instantTrade.to.amount
@@ -383,10 +420,11 @@ export class CrossChainRoutingService {
       return new BigNumber(0);
     }
 
+    const contractAddress = this.contracts[blockchain].address;
     return (
       await this.contracts[blockchain]
         .getProvider(providerIndex)
-        .calculateTrade(transitToken, transitTokenAmount, fromToken, false)
+        .calculateTrade(transitToken, transitTokenAmount, fromToken, false, contractAddress)
     ).to.amount;
   }
 
@@ -678,11 +716,12 @@ export class CrossChainRoutingService {
             options,
             this.authService.userAddress
           );
-
           await this.postCrossChainTrade(transactionHash);
+          await this.notifyGtmAfterSigningTx(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
             await this.postCrossChainTrade(transactionHash);
+            await this.notifyGtmAfterSigningTx(transactionHash);
             return;
           }
 
@@ -733,6 +772,29 @@ export class CrossChainRoutingService {
     );
   }
 
+  /**
+   * Notifies GTM about signed transaction.
+   * @param txHash Signed transaction hash.
+   */
+  private async notifyGtmAfterSigningTx(txHash: string): Promise<void> {
+    const { feeAmount } = await this.getTradeInfo();
+    const { tokenIn, tokenOut } = this.currentCrossChainTrade;
+    const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
+      address: tokenIn.address,
+      blockchain: tokenIn.blockchain
+    });
+
+    this.gtmService.fireTxSignedEvent(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      txHash,
+      feeAmount.toNumber(),
+      tokenIn.symbol,
+      tokenOut.symbol,
+      tokenIn.amount.toNumber() * tokenUsdPrice
+    );
+    return;
+  }
+
   public calculateTokenOutAmountMin(): BigNumber {
     return ContractExecutorFacadeService.calculateTokenOutAmountMin(this.currentCrossChainTrade);
   }
@@ -747,5 +809,80 @@ export class CrossChainRoutingService {
         }
       );
     }
+  }
+
+  private async calculateSmartRouting(
+    sourceBlockchainProviders: IndexedTradeAndToAmount[],
+    targetBlockchainProviders: IndexedTradeAndToAmount[],
+    fromBlockchain: SupportedCrossChainBlockchain,
+    toBlockchain: SupportedCrossChainBlockchain,
+    toToken: string
+  ): Promise<void> {
+    const [sourceBestProvider, sourceWorseProvider] = sourceBlockchainProviders;
+    const [targetBestProvider, targetWorstProvider] = targetBlockchainProviders;
+    const smartRouting = {
+      fromProvider: this.getProviderType(fromBlockchain, sourceBestProvider.providerIndex),
+      toProvider: this.getProviderType(toBlockchain, targetBestProvider.providerIndex),
+      fromHasTrade: Boolean(sourceBestProvider?.tradeAndToAmount.trade),
+      toHasTrade: Boolean(targetBestProvider?.tradeAndToAmount.trade),
+      savings: new BigNumber(0)
+    };
+    const sourceBestUSDC = sourceBestProvider.tradeAndToAmount.toAmount;
+    const sourceWorseUSDC = sourceWorseProvider?.tradeAndToAmount.toAmount;
+    const toTokenUsdcPrice = await this.tokensService.getAndUpdateTokenPrice({
+      address: toToken,
+      blockchain: toBlockchain
+    });
+    const hasSourceTrades = Boolean(sourceBlockchainProviders[0]?.tradeAndToAmount.trade);
+    const hasTargetTrades = Boolean(targetBlockchainProviders[0]?.tradeAndToAmount.trade);
+
+    if (hasSourceTrades && !hasTargetTrades) {
+      smartRouting.savings = sourceBestProvider?.tradeAndToAmount.toAmount.minus(
+        sourceWorseProvider?.tradeAndToAmount.toAmount
+      );
+    }
+
+    if (!hasSourceTrades && hasTargetTrades) {
+      smartRouting.savings = targetBestProvider?.tradeAndToAmount.toAmount
+        .minus(targetWorstProvider?.tradeAndToAmount.toAmount)
+        .multipliedBy(toTokenUsdcPrice);
+    }
+
+    if (hasSourceTrades && hasTargetTrades) {
+      if (targetBlockchainProviders.length > 1 && sourceBlockchainProviders.length > 1) {
+        const tokenAmountViaWorstProvider = targetWorstProvider?.tradeAndToAmount.trade.to.amount
+          .dividedBy(sourceBestUSDC)
+          .multipliedBy(sourceWorseUSDC);
+
+        smartRouting.savings = targetBestProvider.tradeAndToAmount.trade.to.amount
+          .minus(tokenAmountViaWorstProvider)
+          .multipliedBy(toTokenUsdcPrice);
+      }
+
+      if (targetBlockchainProviders.length <= 1 && sourceBlockchainProviders.length > 1) {
+        smartRouting.savings = sourceBestProvider.tradeAndToAmount.toAmount.minus(
+          sourceWorseProvider.tradeAndToAmount.toAmount
+        );
+      }
+
+      if (targetBlockchainProviders.length > 1 && sourceBlockchainProviders.length <= 1) {
+        smartRouting.savings = targetBestProvider.tradeAndToAmount.toAmount
+          .minus(targetWorstProvider.tradeAndToAmount.toAmount)
+          .multipliedBy(toTokenUsdcPrice);
+      }
+    }
+
+    this._smartRouting$.next(smartRouting);
+  }
+
+  public resetSmartRouting(): void {
+    this._smartRouting$.next(null);
+  }
+
+  private getProviderType(
+    blockchain: SupportedCrossChainBlockchain,
+    providerIndex: number
+  ): INSTANT_TRADES_PROVIDERS {
+    return this.contracts[blockchain].getProvider(providerIndex).providerType;
   }
 }
