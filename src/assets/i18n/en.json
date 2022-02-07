@@ -350,7 +350,7 @@
   },
   "promotionPage": {
     "common": {
-      "switchWallet": "Switch wallet to Ethereum-compatible"
+      "switchWallet": "Switch to Ethereum-compatible Wallet"
     },
     "invitations": {
       "invitedProjects": "Invited Projects",
@@ -368,8 +368,8 @@
       "invitedProjects": "Invited Projects",
       "totalRewards": "Total Rewards",
       "instantRewards": "Instant Rewards",
-      "earnWithOurWidget": "Earn with our widget",
-      "createAReferralLink": "Create a referral link and start earning with our widget. Be sure to read the program rules.",
+      "earnWithOurWidget": "Earn with our Widget",
+      "createAReferralLink": "Generate a referral link and start earning with our Widget. Make sure to read the Program Rules!",
       "myPromoLink": "My Promo Link",
       "contactUs": "Contact Us"
     }

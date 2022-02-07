@@ -83,7 +83,7 @@
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
-    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
+    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con la red Ethereum. Cierre sesión en su cuenta y cambie a una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
@@ -99,7 +99,7 @@
     "notAvailable": "En construcción - Rediseño de UX.",
     "merch": "Merch shop",
     "staking": "Staking",
-    "promotion": "Promotion"
+    "promotion": "Promocion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -350,28 +350,28 @@
   },
   "promotionPage": {
     "common": {
-      "switchWallet": "Switch wallet to Ethereum-compatible"
+      "switchWallet": "Cambiar a Monedero compatible con Ethereum"
     },
     "invitations": {
-      "invitedProjects": "Invited Projects",
-      "noProjects": "You haven't invited any projects yet",
+      "invitedProjects": "Proyectos invitados",
+      "noProjects": "Todavía no has invitado a ningún proyecto",
       "tableColumns": {
-        "projectName": "Project",
-        "invitationDate": "Invited",
-        "tradingVolume": "Trading Volume",
-        "received": "Received",
-        "receivedTokens": "Received Tokens"
+        "projectName": "Proyecto",
+        "invitationDate": "Invitado",
+        "tradingVolume": "Volumen de negociación",
+        "received": "Recibido",
+        "receivedTokens": "Fichas recibidas"
       }
     },
     "statistics": {
-      "referralProgram": "Referral Program",
-      "invitedProjects": "Invited Projects",
-      "totalRewards": "Total Rewards",
-      "instantRewards": "Instant Rewards",
-      "earnWithOurWidget": "Earn with our widget",
-      "createAReferralLink": "Create a referral link and start earning with our widget. Be sure to read the program rules.",
-      "myPromoLink": "My Promo Link",
-      "contactUs": "Contact Us"
+      "referralProgram": "Programa de referencias",
+      "invitedProjects": "Proyectos invitados",
+      "totalRewards": "Recompensas totales",
+      "instantRewards": "Recompensas instantáneas",
+      "earnWithOurWidget": "Gana con nuestro widget",
+      "createAReferralLink": "Genera un enlace de referencia y comienza a ganar con nuestro widget. ¡Asegúrate de leer las Reglas del Programa!",
+      "myPromoLink": "Mi enlace promocional",
+      "contactUs": "Contáctenos"
     }
   },
   "bridgePage": {

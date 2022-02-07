@@ -83,7 +83,7 @@
     "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
     "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
     "buttonLink": "더 알아보기",
-    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
+    "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다"
   },
   "navigation": {
@@ -99,7 +99,7 @@
     "notAvailable": "공사중-UX 재 설계.",
     "merch": "Merch shop",
     "staking": "Staking",
-    "promotion": "Promotion"
+    "promotion": "프로모션"
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
@@ -350,28 +350,28 @@
   },
   "promotionPage": {
     "common": {
-      "switchWallet": "Switch wallet to Ethereum-compatible"
+      "switchWallet": "이더리움 호환 지갑으로 전환t"
     },
     "invitations": {
-      "invitedProjects": "Invited Projects",
-      "noProjects": "You haven't invited any projects yet",
+      "invitedProjects": "초대된 프로젝트",
+      "noProjects": "아직 프로젝트를 초대하지 않았습니다",
       "tableColumns": {
-        "projectName": "Project",
-        "invitationDate": "Invited",
-        "tradingVolume": "Trading Volume",
-        "received": "Received",
-        "receivedTokens": "Received Tokens"
+        "projectName": "프로젝트",
+        "invitationDate": "초대",
+        "tradingVolume": "거래량",
+        "received": "받음",
+        "receivedTokens": "수신된 토큰"
       }
     },
     "statistics": {
-      "referralProgram": "Referral Program",
-      "invitedProjects": "Invited Projects",
-      "totalRewards": "Total Rewards",
-      "instantRewards": "Instant Rewards",
-      "earnWithOurWidget": "Earn with our widget",
-      "createAReferralLink": "Create a referral link and start earning with our widget. Be sure to read the program rules.",
-      "myPromoLink": "My Promo Link",
-      "contactUs": "Contact Us"
+      "referralProgram": "추천 프로그램",
+      "invitedProjects": "초대된 프로젝트",
+      "totalRewards": "총 보상",
+      "instantRewards": "I즉석 보상",
+      "earnWithOurWidget": "우리 위젯으로 적립",
+      "createAReferralLink": "G추천 링크를 생성하고 위젯으로 수익을 올리세요. 프로그램 규정을 꼭 읽어보세요!",
+      "myPromoLink": "내 프로모션 링크",
+      "contactUs": "문의하기"
     }
   },
   "bridgePage": {
