@@ -454,7 +454,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         txHash,
         this.fromBlockchain,
         this.showSuccessTrxNotification
-      );
+      )
     }
   }
 }

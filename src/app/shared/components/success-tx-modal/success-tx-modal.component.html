@@ -7,7 +7,12 @@
         alt="Success"
       />
       <h3 *noFrame="'horizontal'" class="modal__title">
-        {{ 'notifications.tradeInProgress' | translate }}
+        {{
+          (type === 'cross-chain-routing'
+            ? 'notifications.successfulCCRSwapTitle'
+            : 'notifications.successfullySentTransaction'
+          ) | translate
+        }}
       </h3>
     </main>
     <footer class="modal__footer">

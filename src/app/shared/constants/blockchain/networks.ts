@@ -169,6 +169,22 @@ const networks: ReadonlyArray<Network> = [
       decimals: 18
     }
   },
+  {
+    id: 1313161554,
+    name: BLOCKCHAIN_NAME.AURORA,
+    label: 'Aurora',
+    scannerUrl: 'https://explorer.mainnet.aurora.dev',
+    rpcLink: 'https://mainnet.aurora.dev',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/aurora.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.AURORA,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'aETH',
+      symbol: 'aETH',
+      decimals: 18
+    }
+  },
   // Testnets
   {
     id: 42,
@@ -247,6 +263,22 @@ const networks: ReadonlyArray<Network> = [
       address: NATIVE_TOKEN_ADDRESS,
       name: 'AVAX',
       symbol: 'AVAX',
+      decimals: 18
+    }
+  },
+  {
+    id: 1313161555,
+    name: BLOCKCHAIN_NAME.AURORA_TESTNET,
+    label: 'Aurora testnet',
+    scannerUrl: 'https://explorer.testnet.aurora.dev',
+    rpcLink: 'https://testnet.aurora.dev/',
+    additionalRpcLink: '',
+    imagePath: 'assets/images/icons/coins/aurora-testnet.svg',
+    nativeCoin: {
+      blockchain: BLOCKCHAIN_NAME.AURORA_TESTNET,
+      address: NATIVE_TOKEN_ADDRESS,
+      name: 'aETH',
+      symbol: 'aETH',
       decimals: 18
     }
   },

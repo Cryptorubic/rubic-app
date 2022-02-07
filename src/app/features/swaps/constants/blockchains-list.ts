@@ -59,6 +59,12 @@ export const BLOCKCHAINS_LIST: BlockchainItem[] = [
     id: 42161
   },
   {
+    symbol: BLOCKCHAIN_NAME.AURORA,
+    visibleName: 'Aurora',
+    image: `${imageBaseSrc}aurora.svg`,
+    id: 1313161554
+  },
+  {
     symbol: BLOCKCHAIN_NAME.SOLANA,
     visibleName: 'Solana',
     image: `${imageBaseSrc}solana.svg`,
