@@ -371,16 +371,6 @@ export class InstantTradeService {
   }
 
   private notifyTradeInProgress(txHash: string, blockchain: BLOCKCHAIN_NAME): void {
-    this.modalSubscriptions.push(
-      this.notificationsService.show(
-        this.translateService.instant('notifications.tradeInProgress'),
-        {
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      )
-    );
-
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open(
         'default',

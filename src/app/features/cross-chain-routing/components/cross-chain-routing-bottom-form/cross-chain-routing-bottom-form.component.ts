@@ -107,8 +107,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  private tradeInProgressSubscription$: Subscription;
-
   public isTargetNetworkValid: boolean;
 
   get tradeStatus(): TRADE_STATUS {
@@ -449,8 +447,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(first())
       .subscribe(
         async () => {
-          this.tradeInProgressSubscription$.unsubscribe();
-
           this.counterNotificationsService.updateUnread();
 
           await this.tokensService.calculateTokensBalances();
@@ -461,7 +457,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         err => {
           this.errorsService.catch(err);
 
-          this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
@@ -472,13 +467,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private notifyTradeInProgress(txHash: string): void {
     const { fromBlockchain } = this.swapFormService.inputValue;
-    this.tradeInProgressSubscription$ = this.notificationsService.show(
-      this.translateService.instant('notifications.tradeInProgress'),
-      {
-        status: TuiNotification.Info,
-        autoClose: false
-      }
-    );
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open(
