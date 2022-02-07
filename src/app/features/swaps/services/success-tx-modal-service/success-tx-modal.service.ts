@@ -16,8 +16,8 @@ export class SuccessTxModalService {
 
   /**
    * Opens success transaction modal.
-   * @param hash Type of modal, cross-chain or default.
-   * @param blockchain Type of modal, cross-chain or default.
+   * @param hash Transaction's hash.
+   * @param blockchain Name of blockchain.
    * @param type Type of modal, cross-chain or default.
    */
   public open(
