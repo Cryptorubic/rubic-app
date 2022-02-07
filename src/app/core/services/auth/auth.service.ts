@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
-import { filter, finalize, mergeMap, switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
@@ -54,7 +54,6 @@ export class AuthService {
   ) {
     this.isAuthProcess = false;
     this.currentUser$ = new BehaviorSubject<UserInterface>(undefined);
-    this.initSubscription();
   }
 
   /**
@@ -273,30 +272,5 @@ export class AuthService {
     this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
     this.currentUser$.next(null);
     this.isAuthProcess = false;
-  }
-
-  /**
-   * Init service subscription.
-   */
-  private initSubscription(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        filter(() => !this.isAuthProcess),
-        mergeMap(address => {
-          const user = this.currentUser$.getValue();
-          if (
-            user !== undefined &&
-            user !== null &&
-            user?.address !== null &&
-            address &&
-            user?.address !== address
-          ) {
-            this.serverlessSignOut();
-            return from(this.serverlessSignIn());
-          }
-          return of();
-        })
-      )
-      .subscribe();
   }
 }
