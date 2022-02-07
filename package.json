@@ -44,7 +44,7 @@
     "@project-serum/serum": "^0.13.60",
     "@solana/spl-token-registry": "^0.2.445",
     "@solana/web3.js": "^1.30.2",
-    "@taiga-ui/addon-table": "~2.31.0",
+    "@taiga-ui/addon-table": "~2.32.0",
     "@taiga-ui/cdk": "~2.31.0",
     "@taiga-ui/core": "~2.31.0",
     "@taiga-ui/icons": "~2.31.0",
