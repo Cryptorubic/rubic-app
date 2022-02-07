@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
-import { finalize, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '../../header/services/header.store';
@@ -137,34 +137,6 @@ export class AuthService {
     );
   }
 
-  private setNullAsUser(): Observable<void> {
-    this.currentUser$.next(null);
-    return of();
-  }
-
-  /**
-   * Initiate authentication via wallet message signing
-   */
-  public async signIn(): Promise<void> {
-    try {
-      this.isAuthProcess = true;
-      const permissions = await this.walletConnectorService.requestPermissions();
-      const accountsPermission = permissions.find(
-        permission => permission.parentCapability === 'eth_accounts'
-      );
-      if (accountsPermission) {
-        await this.walletConnectorService.activate();
-        const { address } = this.walletConnectorService;
-        this.currentUser$.next({ address } || null);
-      } else {
-        this.currentUser$.next(null);
-      }
-      this.isAuthProcess = false;
-    } catch (err) {
-      this.catchSignIn(err);
-    }
-  }
-
   /**
    * Connect wallet.
    */
@@ -225,19 +197,6 @@ export class AuthService {
     } catch (err) {
       this.catchSignIn(err);
     }
-  }
-
-  /**
-   * Logout request to backend.
-   */
-  public signOut(): Observable<string> {
-    return this.httpService.post<string>('auth/wallets/logout/', {}).pipe(
-      finalize(() => {
-        this.walletConnectorService.deActivate();
-        this.currentUser$.next(null);
-        this.store.clearStorage();
-      })
-    );
   }
 
   /**
