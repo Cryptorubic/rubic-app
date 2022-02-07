@@ -224,7 +224,7 @@ export class InstantTradeService {
       const options = {
         onConfirm: async (hash: string) => {
           confirmCallback();
-          this.notifyTradeInProgress();
+          this.notifyTradeInProgress(hash);
           this.notifyGtmAfterSigningTx(
             hash,
             trade.from.token.symbol,
@@ -366,7 +366,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(hash: string): void {
     this.modalSubscriptions.push(
       this.notificationsService.show(
         this.translateService.instant('notifications.tradeInProgress'),
@@ -378,7 +378,7 @@ export class InstantTradeService {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(hash, this.swapFormService.inputValue.fromBlockchain);
     }
   }
 

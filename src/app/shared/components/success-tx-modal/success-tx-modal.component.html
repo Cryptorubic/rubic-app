@@ -7,16 +7,30 @@
         alt="Success"
       />
       <h3 *noFrame="'horizontal'" class="modal__title">
-        {{ 'notifications.tradeInProgress' | translate }}
+        {{
+          (type === 'cross-chain-routing'
+            ? 'notifications.successfulCCRSwapTitle'
+            : 'notifications.successfullySentTransaction'
+          ) | translate
+        }}
       </h3>
     </main>
     <footer class="modal__footer">
-      <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
-        <span *noFrame>{{ 'modals.successTxModal.seeDetails' | translate }}</span>
-        <a *noFrame class="modal__footer-link" routerLink="/my-trades" target="_blank">
-          {{ 'modals.successTxModal.link' | translate }}
-          <span inlineSVG="assets/images/icons/link-arrow.svg"></span>
+      <ng-container *noFrame>
+        <span>{{ 'modals.successTxModal.see' | translate }}</span>
+        <a
+          class="modal__footer-link"
+          safetyLink
+          [link]="hash | scannerLink: blockchain:ADDRESS_TYPE.TRANSACTION"
+          target="_blank"
+        >
+          {{ 'modals.successTxModal.transactionDetailsLink' | translate }}
         </a>
+        <span>{{ 'modals.successTxModal.itWillAppearsIn' | translate }}</span>
+        <a class="modal__footer-link" routerLink="/my-trades" target="_blank">
+          {{ 'modals.successTxModal.myTradesLink' | translate }}
+        </a>
+        <span>{{ 'modals.successTxModal.pageSoon' | translate }}</span>
       </ng-container>
       <h3 *onlyFrame="'horizontal'" class="modal__title">
         {{
