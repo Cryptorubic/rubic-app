@@ -345,8 +345,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
-      onTransactionHash: () => {
-        this.notifyTradeInProgress();
+      onTransactionHash: hash => {
+        this.notifyTradeInProgress(hash);
       }
     };
 
@@ -438,7 +438,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(hash: string): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('bridgePage.progressMessage'),
       {
@@ -449,7 +449,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(hash, this.fromBlockchain);
     }
   }
 }
