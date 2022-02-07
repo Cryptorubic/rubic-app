@@ -528,6 +528,11 @@
       "text": "Please select a swaps origin network. By connecting a Coinbase wallet, you will not be able to change the network in the current session. To change the network after connecting the Coinbase wallet, log out of your account and connect by choosing a different network, or use a different wallet."
     },
     "successTxModal": {
+      "see": "See ",
+      "transactionDetailsLink":"transaction details",
+      "itWillAppearsIn": ". It will appears in ",
+      "myTradesLink":"My trades",
+      "pageSoon": " page soon.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
       "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
@@ -613,7 +618,7 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Arbitrum is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!"
+      "text": "Aurora is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!"
     }
   },
   "volume": {
@@ -627,6 +632,8 @@
     "tradeInProgress": "Trade in progress",
     "successfulTradeTitle": "Successful trade",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "The transaction was successfully sent!",
+    "successfulCCRSwapTitle": "Successful swap in source network!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",

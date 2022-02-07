@@ -3,11 +3,11 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { timer } from 'rxjs';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { MODAL_CONFIG } from 'src/app/shared/constants/modals/modal-config';
 import { takeUntil } from 'rxjs/operators';
 import { SuccessTxModalType } from 'src/app/shared/components/success-trx-notification/models/modal-type';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',

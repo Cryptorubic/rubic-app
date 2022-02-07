@@ -613,7 +613,7 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Arbitrum теперь доступен для обмена на Rubic! Выполняйте Он-Чейн и Мульти-Чейн свопы прямо сейчас!"
+      "text": "Aurora теперь доступен для обмена на Rubic! Выполняйте Он-Чейн и Мульти-Чейн свопы прямо сейчас!"
     }
   },
   "volume": {
@@ -627,6 +627,8 @@
     "tradeInProgress": "Сделка в процессе выполнения",
     "successfulTradeTitle": "Сделка проведена успешно",
     "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
+    "successfullySentTransaction": "Транзакция была успешно отправлена!",
+    "successfulCCRSwapTitle": "Успешный обмен в исходной сети!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",

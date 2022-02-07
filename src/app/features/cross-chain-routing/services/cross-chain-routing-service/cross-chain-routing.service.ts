@@ -721,7 +721,6 @@ export class CrossChainRoutingService {
             options,
             this.authService.userAddress
           );
-
           await this.postCrossChainTrade(transactionHash);
 
           await this.notifyGtmOnSuccess(transactionHash);
