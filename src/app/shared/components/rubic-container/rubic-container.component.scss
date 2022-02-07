@@ -1,11 +1,12 @@
 @use 'src/scss/mixins';
+@use 'src/scss/vars' as *;
 
 .rubic-container {
   max-width: 1240px;
   margin: 0 auto;
   padding: 30px 35px 40px;
 
-  font-family: SF-Pro,sans-serif;
+  font-family: $sf-pro-font,sans-serif;
 
   background: var(--main-form-background);
   border-radius: 14px;

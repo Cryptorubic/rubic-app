@@ -112,7 +112,7 @@ export class PromotionService {
   }
 
   /**
-   * Fetches promo code6 constructs promo link and emits to the _promoLink$.
+   * Fetches promo code, constructs promo link and emits to the _promoLink$.
    */
   public updatePromoLink(): void {
     this.setPromoLinkLoading();

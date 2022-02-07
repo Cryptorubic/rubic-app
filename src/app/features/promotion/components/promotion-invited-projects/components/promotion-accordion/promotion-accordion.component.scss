@@ -79,7 +79,7 @@
 tui-dropdown-box {
   ::ng-deep {
     button {
-      color: #808080;
+      color: $rubic-base-11;
     }
   }
 }
@@ -254,7 +254,7 @@ tui-pagination {
   ::ng-deep {
     .button {
       .wrapper[data-appearance='flat'] {
-        color: #808080;
+        color: $rubic-base-11;
         font-weight: 500;
       }
     }
