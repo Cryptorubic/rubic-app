@@ -33,7 +33,8 @@
     "approve": "Aprobar",
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "Detalles de la transacción"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",

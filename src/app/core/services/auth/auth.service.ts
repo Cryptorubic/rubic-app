@@ -115,7 +115,7 @@ export class AuthService {
         throw error;
       }
     }
-    const address = walletAddress || this.window.ethereum.selectedAddress;
+    const address = walletAddress || this.walletConnectorService.provider.address;
     if (address) {
       this.activateProviderAndSignIn(address).subscribe();
     }

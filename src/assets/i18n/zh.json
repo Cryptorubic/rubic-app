@@ -33,7 +33,8 @@
     "approve": "批准",
     "switchTo": "切换到 {{networkName}} 网络",
     "tradeVia": "贸易途径 ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "交易明细"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
