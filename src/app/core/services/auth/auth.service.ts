@@ -117,14 +117,14 @@ export class AuthService {
         throw error;
       }
     }
-    const address = walletAddress || this.cookieService.get('lastAddress');
+    const address = walletAddress || this.cookieService.get('address');
     if (address) {
       this.activateProviderAndSignIn(address).subscribe();
     }
   }
 
   public setCurrentUser(address: string): void {
-    this.cookieService.set('lastAddress', address);
+    this.cookieService.set('address', address, 7, null, null, null, null);
     this.currentUser$.next({ address });
   }
 
@@ -154,6 +154,7 @@ export class AuthService {
         await this.walletConnectorService.activate();
         const { address } = this.walletConnectorService;
         this.currentUser$.next({ address } || null);
+        this.cookieService.set('address', address, 7, null, null, null, null);
       } else {
         this.currentUser$.next(null);
       }
