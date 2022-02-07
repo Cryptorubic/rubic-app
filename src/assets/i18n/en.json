@@ -80,7 +80,6 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multi-chain.",
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
     "buttonLink": "Learn more",
@@ -349,11 +348,30 @@
     ]
   },
   "promotionPage": {
-    "projectName": "Project",
-    "invitationDate": "Invited",
-    "tradingVolume": "Trading Volume",
-    "received": "Received",
-    "receivedTokens": "Received Tokens"
+    "common": {
+      "switchWallet": "Switch wallet to Ethereum-compatible"
+    },
+    "invitations": {
+      "invitedProjects": "Invited Projects",
+      "noProjects": "You haven't invited any projects yet",
+      "tableColumns": {
+        "projectName": "Project",
+        "invitationDate": "Invited",
+        "tradingVolume": "Trading Volume",
+        "received": "Received",
+        "receivedTokens": "Received Tokens"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Referral Program",
+      "invitedProjects": "Invited Projects",
+      "totalRewards": "Total Rewards",
+      "instantRewards": "Instant Rewards",
+      "earnWithOurWidget": "Earn with our widget",
+      "createAReferralLink": "Create a referral link and start earning with our widget. Be sure to read the program rules.",
+      "myPromoLink": "My Promo Link",
+      "contactUs": "Contact Us"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",

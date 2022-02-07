@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "unsupportedTokenCCR": "При попытке отправить транзакцию произошла ошибка.\n С большой вероятностью, вы пытаетесь продать токен, который в настоящее время не поддерживается в multichain.",
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
-    "buttonLink": "Узнать больше"
+    "buttonLink": "Узнать больше",
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask)."
   },
   "navigation": {
     "about": "О компании",
@@ -348,11 +348,30 @@
     ]
   },
   "promotionPage": {
-    "projectName": "Project",
-    "invitationDate": "Invited",
-    "tradingVolume": "Trading Volume",
-    "received": "Received",
-    "receivedTokens": "Received Tokens"
+    "common": {
+      "switchWallet": "Switch wallet to Ethereum-compatible"
+    },
+    "invitations": {
+      "invitedProjects": "Invited Projects",
+      "noProjects": "You haven't invited any projects yet",
+      "tableColumns": {
+        "projectName": "Project",
+        "invitationDate": "Invited",
+        "tradingVolume": "Trading Volume",
+        "received": "Received",
+        "receivedTokens": "Received Tokens"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Referral Program",
+      "invitedProjects": "Invited Projects",
+      "totalRewards": "Total Rewards",
+      "instantRewards": "Instant Rewards",
+      "earnWithOurWidget": "Earn with our widget",
+      "createAReferralLink": "Create a referral link and start earning with our widget. Be sure to read the program rules.",
+      "myPromoLink": "My Promo Link",
+      "contactUs": "Contact Us"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",

@@ -4,7 +4,7 @@
     isWalletConnected: isWalletConnected$ | async
   } as wallet"
 >
-  <span title>Referral Programm</span>
+  <span title>{{ 'promotionPage.statistics.referralProgram' | translate }}</span>
   <div class="stats-wrapper" *ngLet="statistics$ | async as statistics">
     <tui-loader
       *ngLet="isStatisticsLoading$ | async as isStatisticsLoading"
@@ -20,17 +20,23 @@
         ></app-rotating-icon>
         <ul class="statistics__list">
           <li class="statistics__item item">
-            <span class="item__label">Invited Projects</span>
+            <span class="item__label">
+              {{ 'promotionPage.statistics.invitedProjects' | translate }}
+            </span>
             <span class="item__amount">{{ statistics.integratedProjectsNumber }}</span>
           </li>
           <li class="statistics__item item">
-            <span class="item__label">Total Rewards</span>
+            <span class="item__label">
+              {{ 'promotionPage.statistics.totalRewards' | translate }}
+            </span>
             <span class="item__amount">
               ${{ statistics.totalRewards | bigNumberFormat | shortenAmount: 4:2:true }}
             </span>
           </li>
           <li class="statistics__item item">
-            <span class="item__label">Instant Rewards</span>
+            <span class="item__label">
+              {{ 'promotionPage.statistics.instantRewards' | translate }}
+            </span>
             <span class="item__amount">
               ${{ statistics.instantRewards | bigNumberFormat | shortenAmount: 4:2:true }}
             </span>
@@ -40,14 +46,17 @@
     </tui-loader>
     <div class="info">
       <article class="description" *ngIf="!wallet.isEthLikeWalletConnected; else promoLinkBlock">
-        <h3 class="description__header">Earn with our widget</h3>
+        <h3 class="description__header">
+          {{ 'promotionPage.statistics.earnWithOurWidget' | translate }}
+        </h3>
         <p class="description__text">
-          Create a referral link and start earning with our widget. Be sure to read the program
-          rules.
+          {{ 'promotionPage.statistics.createAReferralLink' | translate }}
         </p>
       </article>
       <ng-template #promoLinkBlock>
-        <h3 class="description__header">My Promo Link</h3>
+        <h3 class="description__header">
+          {{ 'promotionPage.statistics.myPromoLink' | translate }}
+        </h3>
         <app-copy-container
           [text]="promoLink$ | async"
           [loading]="isPromoLinkLoading$ | async"
@@ -60,23 +69,29 @@
             appearance="secondary"
             (onClick)="openWalletsModal()"
           >
-            Connect Wallet
+            {{ 'navigation.login' | translate }}
           </app-rubic-button>
           <ng-template #logOut>
             <app-rubic-button appearance="secondary" (onClick)="reconnectWallet()">
-              Switch wallet to Ethereum-compatible
+              {{ 'promotionPage.common.switchWallet' | translate }}
             </app-rubic-button>
           </ng-template>
           <a [safetyLink]="faqLink">
-            <app-rubic-button appearance="flat"> Faq </app-rubic-button>
+            <app-rubic-button appearance="flat">
+              {{ 'navigation.faq' | translate }}
+            </app-rubic-button>
           </a>
         </ng-container>
         <ng-template #infoButtons>
           <a [safetyLink]="faqLink">
-            <app-rubic-button appearance="secondary">Faq</app-rubic-button>
+            <app-rubic-button appearance="secondary">
+              {{ 'navigation.faq' | translate }}
+            </app-rubic-button>
           </a>
           <a [safetyLink]="contactUsLink">
-            <app-rubic-button appearance="flat">Contact Us</app-rubic-button>
+            <app-rubic-button appearance="flat">
+              {{ 'promotionPage.statistics.contactUs' | translate }}
+            </app-rubic-button>
           </a>
         </ng-template>
       </div>

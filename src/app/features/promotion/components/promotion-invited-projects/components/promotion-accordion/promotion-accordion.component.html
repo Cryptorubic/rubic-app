@@ -63,7 +63,9 @@
       <ng-template tuiAccordionItemContent>
         <div class="accordion-content">
           <div class="accordion-content__row">
-            <div class="accordion-content__title">Received Tokens</div>
+            <div class="accordion-content__title">
+              {{ translations.receivedTokens | translate }}
+            </div>
             <div class="token accordion-content__value">
               <span>{{ row.receivedTokens | bigNumberFormat | withRound: 'toClosestValue' }}</span>
               <div class="token__info">
@@ -79,13 +81,13 @@
             </div>
           </div>
           <div class="accordion-content__row">
-            <div class="accordion-content__title">Received</div>
+            <div class="accordion-content__title">{{ translations.received | translate }}</div>
             <div class="accordion-content__value">
               ${{ row.received | bigNumberFormat | withRound: 'toClosestValue' }}
             </div>
           </div>
           <div class="accordion-content__row">
-            <div class="accordion-content__title">Trading Volume</div>
+            <div class="accordion-content__title">{{ translations.tradingVolume | translate }}</div>
             <div class="accordion-content__value">
               {{ row.tradingVolume | bigNumberFormat | withRound: 'toClosestValue' }}
             </div>
