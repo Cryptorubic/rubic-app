@@ -11,6 +11,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WrongWalletError } from '@core/errors/models/promotion/wrong-wallet.error';
 
+/**
+ * Block with promotion statistics and referral link.
+ */
 @Component({
   selector: 'app-promotion-stats',
   templateUrl: './promotion-stats.component.html',

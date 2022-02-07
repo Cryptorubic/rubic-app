@@ -7,6 +7,9 @@ import { SortParameter } from '@features/promotion/models/sort-parameter.interfa
 import { promotionTableColumns } from '@features/promotion/constants/PROMOTION_TABLE_COLUMNS';
 import { promotionTableTranslations } from '@features/promotion/constants/PROMOTION_TABLE_TRANSLATIONS';
 
+/**
+ * Dump component. Table which contains info about projects invited by promoter.
+ */
 @Component({
   selector: 'app-promotion-table',
   templateUrl: './promotion-table.component.html',
@@ -14,10 +17,19 @@ import { promotionTableTranslations } from '@features/promotion/constants/PROMOT
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PromotionTableComponent {
+  /**
+   * Data to show in the accordions.
+   */
   @Input() tableData: PromotionTableData = [];
 
+  /**
+   * Sort parameter to show in the table head.
+   */
   @Input() sortParameter: SortParameter | null = null;
 
+  /**
+   * Emits when user changes sort parameter or sort direction.
+   */
   @Output() sortParameterChange = new EventEmitter<PromotionTableColumn>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;

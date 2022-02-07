@@ -91,6 +91,9 @@ export class PromotionService {
     this.setWalletSubscriptions();
   }
 
+  /**
+   * Fetches promotion table data and emits to the _tableData$.
+   */
   public updatePromotionData(): void {
     this.setTableDataLoading();
     this.promotionApiService
@@ -98,6 +101,9 @@ export class PromotionService {
       .subscribe(promotionData => this._tableData$.next(promotionData));
   }
 
+  /**
+   * Fetches promotion statistics data and emits to the _statistics$.
+   */
   public updatePromotionStatistics(): void {
     this.setStatisticsLoading();
     this.promotionApiService
@@ -105,6 +111,9 @@ export class PromotionService {
       .subscribe(statistics => this._statistics$.next(statistics));
   }
 
+  /**
+   * Fetches promo code6 constructs promo link and emits to the _promoLink$.
+   */
   public updatePromoLink(): void {
     this.setPromoLinkLoading();
     this.promotionApiService
@@ -113,6 +122,10 @@ export class PromotionService {
       .subscribe(promoLink => this._promoLink$.next(promoLink));
   }
 
+  /**
+   * Updates sort parameter, emits to _sortParameter$. After that tableData$ emits sorted table data.
+   * @param sortColumn column to sort. If it equals current sort column, method will change sort direction.
+   */
   public updateSortParameter(sortColumn: PromotionTableColumn): void {
     const descending: boolean =
       this.sortParameter.sortColumn === sortColumn ? !this.sortParameter.descending : true;
@@ -120,6 +133,9 @@ export class PromotionService {
     this._sortParameter$.next({ sortColumn, descending });
   }
 
+  /**
+   * Subscribes to wallet changes and fetches promotion data if needed.
+   */
   private setWalletSubscriptions(): void {
     this.authService
       .getCurrentUser()

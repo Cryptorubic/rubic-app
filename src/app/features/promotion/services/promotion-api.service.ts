@@ -39,6 +39,9 @@ const alphabet = [
 export class PromotionApiService {
   constructor(private httpService: HttpService) {}
 
+  /**
+   * Fetches promotion table data.
+   */
   public getPromotionTableData(): Observable<PromotionTableData> {
     return timer(1000).pipe(
       map(() => {
@@ -55,6 +58,9 @@ export class PromotionApiService {
     );
   }
 
+  /**
+   * Fetches promotion statistics.
+   */
   public getPromotionStatistics(): Observable<PromotionStatistics> {
     return timer(1000).pipe(
       mapTo({
@@ -65,6 +71,9 @@ export class PromotionApiService {
     );
   }
 
+  /**
+   * Fetches promo code by user address
+   */
   public getPromoCode(): Observable<string> {
     return timer(1000).pipe(mapTo('a12b43fec12314gdb1'));
   }

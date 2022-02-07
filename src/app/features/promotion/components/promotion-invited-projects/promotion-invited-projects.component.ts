@@ -13,6 +13,9 @@ import { PromotionTableColumn } from '@features/promotion/models/table-column.ty
 
 const DESKTOP_WIDTH_BREAKPOINT = 1000;
 
+/**
+ * Table or mobile accordions which contains info about projects invited by promoter.
+ */
 @Component({
   selector: 'app-promotion-invited-projects',
   templateUrl: './promotion-invited-projects.component.html',

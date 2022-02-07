@@ -7,6 +7,9 @@ import { PromotionTableColumn } from '@features/promotion/models/table-column.ty
 import { promotionTableTranslations } from '@features/promotion/constants/PROMOTION_TABLE_TRANSLATIONS';
 import { promotionTableColumns } from '@features/promotion/constants/PROMOTION_TABLE_COLUMNS';
 
+/**
+ * Dump component. Accordions which contains info about projects invited by promoter.
+ */
 @Component({
   selector: 'app-promotion-accordion',
   templateUrl: './promotion-accordion.component.html',
@@ -14,10 +17,19 @@ import { promotionTableColumns } from '@features/promotion/constants/PROMOTION_T
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PromotionAccordionComponent {
+  /**
+   * Data to show in the accordions.
+   */
   @Input() tableData: PromotionTableData = [];
 
+  /**
+   * Sort parameter to show above accordions.
+   */
   @Input() sortParameter: SortParameter | null = null;
 
+  /**
+   * Emits when user changes sort parameter or sort direction.
+   */
   @Output() sortParameterChange = new EventEmitter<PromotionTableColumn>();
 
   public currentPageIndex = 0;

@@ -1,5 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
+/**
+ * Promoter info page for referral program.
+ */
 @Component({
   selector: 'app-promotion-page',
   templateUrl: './promotion-page.component.html',
