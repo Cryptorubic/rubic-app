@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 
@@ -17,7 +17,8 @@ export interface ICardContent {
 @Component({
   selector: 'app-team-card',
   templateUrl: './team-card.component.html',
-  styleUrls: ['./team-card.component.scss']
+  styleUrls: ['./team-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TeamCardComponent {
   @Input() content: ICardContent;

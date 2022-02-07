@@ -11,8 +11,14 @@
 
   text-align: right;
 
+  transition: opacity ease-in-out  0.3s;
+
   @include b($mobile-sm) {
     justify-content: flex-start;
+  }
+
+  &_loading {
+    opacity: 0.25;
   }
 
   &__price {

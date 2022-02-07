@@ -21,24 +21,25 @@ export class SuccessTxModalComponent {
 
   public type: SuccessTxModalType;
 
-  public readonly hash: string;
+  public txHash: string;
+
+  public blockchain: BLOCKCHAIN_NAME;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
-
-  public readonly blockchain: BLOCKCHAIN_NAME;
 
   constructor(
     private readonly destroy$: TuiDestroyService,
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       boolean,
-      { idPrefix: string; type: SuccessTxModalType; hash: string; blockchain: BLOCKCHAIN_NAME }
+      { idPrefix: string; type: SuccessTxModalType; txHash: string; blockchain: BLOCKCHAIN_NAME }
     >
   ) {
     this.idPrefix = context.data.idPrefix;
     this.type = context.data.type;
-    this.hash = context.data.hash;
+    this.txHash = context.data.txHash;
     this.blockchain = context.data.blockchain;
+
     timer(MODAL_CONFIG.modalLifetime)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.onConfirm());

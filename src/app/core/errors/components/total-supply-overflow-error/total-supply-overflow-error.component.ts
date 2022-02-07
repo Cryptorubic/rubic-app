@@ -1,11 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-total-supply-overflow-error',
   templateUrl: './total-supply-overflow-error.component.html',
-  styleUrls: ['./total-supply-overflow-error.component.scss']
+  styleUrls: ['./total-supply-overflow-error.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TotalSupplyOverflowErrorComponent {
   public readonly tokenSymbol: string;
