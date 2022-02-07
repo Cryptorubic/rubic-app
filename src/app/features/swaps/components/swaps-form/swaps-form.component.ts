@@ -162,7 +162,6 @@ export class SwapsFormComponent implements OnInit {
       )
       .subscribe(swapMode => {
         this.swapType = swapMode;
-        console.log(swapMode);
         if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
           this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
         } else {
