@@ -135,6 +135,12 @@
     border-bottom-right-radius: 14px;
     border-bottom-left-radius: 14px;
   }
+
+  &__cell {
+    &_bold {
+      font-weight: bold;
+    }
+  }
 }
 
 tui-table-pagination {
