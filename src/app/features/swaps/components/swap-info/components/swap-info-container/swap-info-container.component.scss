@@ -1,8 +1,67 @@
 @use 'src/scss/core' as *;
 @use '../../styles/styles' as *;
 
+.transaction-info {
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    color: $rubic-primary;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+
+    border-bottom: 0;
+    border-radius: $border-radius-2;
+
+    &-hint {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+    }
+
+    &-arrow {
+      width: 12px;
+      margin-left: 10px;
+
+      transition: 0.2s ease-in-out;
+
+      &_opened {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &._no-padding ::ng-deep .header {
+    padding: 0;
+  }
+
+  ::ng-deep {
+    .header {
+      height: 79px;
+
+      background: var(--main-form-background);
+      border-bottom: 0;
+      border-radius: $border-radius-2;
+    }
+
+    .content {
+      padding: 0 1.25rem 1.25rem;
+
+      background: var(--main-form-background);
+    }
+
+    > .wrapper {
+      border-color: unset;
+      border-radius: $border-radius-2;
+    }
+  }
+}
+
 .swaps-info {
-  padding: 29px 30px;
+  padding: 0 30px 30px;
 
   color: var(--form-bright-text-color);
 
