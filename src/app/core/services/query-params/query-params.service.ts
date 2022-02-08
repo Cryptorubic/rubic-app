@@ -336,7 +336,7 @@ export class QueryParamsService {
     this.iframeService.setIframeInfo({
       iframeAppearance: queryParams.iframe,
       device: queryParams.device,
-      fee: queryParams.fee ? parseInt(queryParams.fee) : undefined,
+      fee: queryParams.fee ? parseFloat(queryParams.fee) : undefined,
       feeTarget: queryParams.feeTarget,
       promoCode: queryParams.promoCode
     });

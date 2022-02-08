@@ -8,6 +8,9 @@ import { IframeApiService } from '@core/services/backend/iframe-api/iframe-api.s
 import { Cacheable } from 'ts-cacheable';
 import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +30,6 @@ export class IframeService implements OnDestroy {
 
   public get isIframe(): boolean {
     return this._isIframe$.getValue();
-  }
-
-  public get isIframeWithFee(): boolean {
-    return this.isIframe && Boolean(this.iframeParameters.fee);
   }
 
   public get iframeAppearance(): IframeAppearance | undefined {
@@ -118,6 +117,20 @@ export class IframeService implements OnDestroy {
         console.error('Cannot retrieve promoter address:', err);
         return of(null);
       })
+    );
+  }
+
+  public isIframeWithFee(blockchain: BLOCKCHAIN_NAME, provider: ItProvider): boolean {
+    if (!this.isIframe || !this.iframeParameters.fee) {
+      return false;
+    }
+
+    if (!(blockchain in WHITELIST_PROVIDERS)) {
+      return false;
+    }
+
+    return WHITELIST_PROVIDERS[blockchain as keyof typeof WHITELIST_PROVIDERS].some(
+      whitelistProvider => provider.providerType === whitelistProvider
     );
   }
 }

@@ -305,8 +305,10 @@ export class InstantTradeService {
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
     if (
-      this.iframeService.isIframeWithFee &&
-      trade.blockchain === BLOCKCHAIN_NAME.POLYGON // TODO: update
+      this.iframeService.isIframeWithFee(
+        trade.blockchain,
+        this.blockchainsProviders[trade.blockchain][provider]
+      )
     ) {
       return this.createTradeWithFee(provider, trade, options);
     }
@@ -319,8 +321,7 @@ export class InstantTradeService {
     trade: InstantTrade,
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
-    const feeContractAddress =
-      IT_PROXY_FEE_CONTRACT_ADDRESS[trade.blockchain as keyof typeof IT_PROXY_FEE_CONTRACT_ADDRESS];
+    const feeContractAddress = IT_PROXY_FEE_CONTRACT_ADDRESS;
     const blockchainProvider = this.blockchainsProviders[trade.blockchain][provider];
 
     const transactionOptions = await blockchainProvider.checkAndEncodeTrade(
@@ -329,7 +330,8 @@ export class InstantTradeService {
       feeContractAddress
     );
 
-    const { fee, feeTarget } = this.iframeService.feeData;
+    const { feeData } = this.iframeService;
+    const fee = feeData.fee * 1000;
 
     const promoterAddress = await this.iframeService.getPromoterAddress().toPromise();
 
@@ -343,7 +345,7 @@ export class InstantTradeService {
       Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
       blockchainProvider.contractAddress,
       transactionOptions.data,
-      [fee, feeTarget]
+      [fee, feeData.feeTarget]
     ];
     if (promoterAddress) {
       methodArguments.push(promoterAddress);
@@ -401,20 +403,19 @@ export class InstantTradeService {
     const providers = providersNames.map(
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
-    // TODO: update
-    const targetContractAddress =
-      this.iframeService.isIframe && fromBlockchain === BLOCKCHAIN_NAME.POLYGON
-        ? IT_PROXY_FEE_CONTRACT_ADDRESS[fromBlockchain]
+
+    const providerApproveData = providers.map((provider: ItProvider) => {
+      const targetContractAddress = this.iframeService.isIframeWithFee(fromBlockchain, provider)
+        ? IT_PROXY_FEE_CONTRACT_ADDRESS
         : undefined;
 
-    const providerApproveData = providers.map((provider: ItProvider) =>
-      provider.getAllowance(fromToken.address, targetContractAddress).pipe(
+      return provider.getAllowance(fromToken.address, targetContractAddress).pipe(
         catchError((err: unknown) => {
           console.debug(err, provider);
           return of(null);
         })
-      )
-    );
+      );
+    });
 
     return forkJoin(providerApproveData).pipe(
       map((approveArray: BigNumber[]) => {
@@ -427,11 +428,12 @@ export class InstantTradeService {
     this.checkDeviceAndShowNotification();
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
-      // TODO: update
-      const targetContractAddress =
-        this.iframeService.isIframe && fromBlockchain === BLOCKCHAIN_NAME.POLYGON
-          ? IT_PROXY_FEE_CONTRACT_ADDRESS[fromBlockchain]
-          : undefined;
+      const targetContractAddress = this.iframeService.isIframeWithFee(
+        fromBlockchain,
+        this.blockchainsProviders[trade.blockchain][provider]
+      )
+        ? IT_PROXY_FEE_CONTRACT_ADDRESS
+        : undefined;
 
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,

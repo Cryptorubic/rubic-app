@@ -735,19 +735,18 @@ export abstract class CommonUniswapV2Service implements ItProvider {
             methodData.methodArguments
           );
           const { feeData } = this.iframeService;
+          const fee = feeData.fee * 1000;
           const methodArguments = [
             uniswapV2Trade.path[0],
             uniswapV2Trade.path[uniswapV2Trade.path.length - 1],
             uniswapV2Trade.amountIn,
             this.contractAddress,
             encodedData,
-            [feeData.fee, feeData.feeTarget]
+            [fee, feeData.feeTarget]
           ];
 
           await this.blockchainAdapter.tryExecuteContractMethod(
-            IT_PROXY_FEE_CONTRACT_ADDRESS[
-              this.blockchain as keyof typeof IT_PROXY_FEE_CONTRACT_ADDRESS
-            ],
+            IT_PROXY_FEE_CONTRACT_ADDRESS,
             IT_PROXY_FEE_CONTRACT_ABI,
             IT_PROXY_FEE_CONTRACT_METHOD.SWAP,
             methodArguments,
