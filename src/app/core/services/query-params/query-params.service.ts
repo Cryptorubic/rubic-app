@@ -416,7 +416,7 @@ export class QueryParamsService {
       return;
     }
 
-    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh'];
+    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh', 'tr'];
     const language = supportedLanguages.includes(queryParams.language)
       ? queryParams.language
       : 'en';
