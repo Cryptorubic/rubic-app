@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SwapsService } from 'src/app/features/swaps/services/swaps-service/swaps.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -31,6 +31,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { compareObjects } from '@shared/utils/utils';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 type TokenType = 'from' | 'to';
 
@@ -46,7 +47,8 @@ type AvailableTokens = {
   selector: 'app-swaps-form',
   templateUrl: './swaps-form.component.html',
   styleUrls: ['./swaps-form.component.scss'],
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapsFormComponent implements OnInit {
   public isLoading = true;
@@ -129,7 +131,8 @@ export class SwapsFormComponent implements OnInit {
     private readonly destroy$: TuiDestroyService,
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly authService: AuthService
   ) {
     this.availableTokens = {
       from: [],
@@ -154,10 +157,11 @@ export class SwapsFormComponent implements OnInit {
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(swapMode => {
         this.swapType = swapMode;
-        if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-          this.autoRefresh = this.settingsService.instantTradeValue.autoRefresh;
-        } else {
-          this.autoRefresh = this.settingsService.crossChainRoutingValue.autoRefresh;
+        if (this.authService?.user?.address) {
+          this.autoRefresh =
+            swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
+              ? this.settingsService.instantTradeValue.autoRefresh
+              : this.settingsService.crossChainRoutingValue.autoRefresh;
         }
       });
 
@@ -415,12 +419,16 @@ export class SwapsFormComponent implements OnInit {
           this.gtmService.clearPassedFormSteps();
         }
 
-        if (fromToken) {
-          this.gtmService.updateFormStep(swapMode, 'token1');
-        }
+        if (this.gtmService.needTrackFormEventsNow) {
+          if (fromToken) {
+            this.gtmService.updateFormStep(swapMode, 'token1');
+          }
 
-        if (toToken) {
-          this.gtmService.updateFormStep(swapMode, 'token2');
+          if (toToken) {
+            this.gtmService.updateFormStep(swapMode, 'token2');
+          }
+        } else {
+          this.gtmService.needTrackFormEventsNow = true;
         }
       });
   }

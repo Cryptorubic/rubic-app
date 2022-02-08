@@ -77,7 +77,7 @@ export class RubicRefreshButtonComponent implements OnInit, OnDestroy {
   /**
    * Timeout before next refreshing in seconds
    */
-  public readonly refreshTimeout = 15;
+  public readonly refreshTimeout = 30;
 
   private $refreshIconListener: Subscription;
 

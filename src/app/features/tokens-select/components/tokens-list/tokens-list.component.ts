@@ -136,7 +136,7 @@ export class TokensListComponent implements AfterViewInit {
   ) {
     this.loading = false;
     this.pageUpdate = new EventEmitter();
-    this.scrollSubject$ = new BehaviorSubject(null);
+    this.scrollSubject$ = new BehaviorSubject(undefined);
   }
 
   ngAfterViewInit(): void {
@@ -159,6 +159,7 @@ export class TokensListComponent implements AfterViewInit {
   private observeScroll(): void {
     this.scrollSubject$
       .pipe(
+        filter(value => Boolean(value)),
         switchMap(scroll =>
           scroll.renderedRangeStream.pipe(
             debounceTime(300),

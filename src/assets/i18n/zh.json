@@ -33,7 +33,8 @@
     "approve": "批准",
     "switchTo": "切换到 {{networkName}} 网络",
     "tradeVia": "贸易途径 ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "交易明细"
   },
   "errors": {
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
@@ -76,7 +77,6 @@
     "NoDataMyTradesError": "糟糕，出了點問題，請嘗試重新加載頁面。 如果您在重新加載後仍然遇到此問題，請聯繫我們的支持。",
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "tradingIsNotAvailable": "交易不可用",
-    "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
@@ -359,7 +359,7 @@
   "crossChainPage": {
     "targetAddress": {
       "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or past address"
+      "placeholder": "Enter or paste address"
     },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
@@ -369,6 +369,10 @@
       "minimumReceivedHint": "Minimum amount of tokens to be received\n",
       "platformFee": "Platform fee",
       "platformFeeHint": "Platform commission charges in RBC token\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -525,9 +529,15 @@
       "text": "请选择一个掉期源网络。 通过连接 Coinbase 钱包，您将无法在当前会话中更改网络。 要在连接 Coinbase 钱包后更改网络，请退出您的帐户并通过选择不同的网络或使用不同的钱包进行连接。"
     },
     "successTxModal": {
+      "see": "看 ",
+      "transactionDetailsLink": "交易明細",
+      "itWillAppearsIn": ". 它會出現在 ",
+      "myTradesLink":"很快頁面",
+      "pageSoon": " 我的交易.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See details in ",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
     "stakingSwapModal": {
@@ -609,8 +619,8 @@
       "link": "今天試試!"
     },
     "external": {
-      "text": "12 月 23 日开始以 80% 或更多的 APR 进行质押。",
-      "link": "學到更多！"
+      "text": "Aurora 現在在 Rubic 直播！ 立即完成鏈上和多鏈交換",
+      "link": "_placeholder"
     }
   },
   "volume": {
@@ -624,6 +634,8 @@
     "tradeInProgress": "進行中的交易",
     "successfulTradeTitle": "成功的交易",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "交易成功發送！",
+    "successfulCCRSwapTitle": "源網絡交換成功！",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "正在審批",
     "successApprove": "批准成功",

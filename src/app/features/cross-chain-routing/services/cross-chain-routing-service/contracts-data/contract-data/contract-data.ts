@@ -71,6 +71,13 @@ export abstract class ContractData {
   }
 
   /**
+   * Returns true, if provider is of `uniswap v3` type.
+   */
+  public isProviderUniV3(providerIndex: number): boolean {
+    return this.getProvider(providerIndex) instanceof CommonUniswapV3Service;
+  }
+
+  /**
    * Returns true, if provider is of `1inch` type.
    */
   protected isProviderOneinch(providerIndex: number): boolean {
@@ -167,7 +174,10 @@ export abstract class ContractData {
 
     if (provider instanceof CommonUniswapV3Service) {
       const route = (instantTrade as UniswapV3InstantTrade).route;
-      const path: string[] = [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
+      const path =
+        fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+          ? [route.initialTokenAddress]
+          : [EthLikeWeb3Public.addressToBytes32(route.initialTokenAddress)];
 
       let lastTokenAddress = route.initialTokenAddress;
 
@@ -178,9 +188,11 @@ export abstract class ContractData {
         lastTokenAddress = newToken.address;
 
         path.push(
-          '0x' +
-            pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
-            lastTokenAddress.slice(2).toLowerCase()
+          fromBlockchain === BLOCKCHAIN_NAME.SOLANA
+            ? lastTokenAddress
+            : '0x' +
+                pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
+                lastTokenAddress.slice(2).toLowerCase()
         );
       });
 

@@ -1,11 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-insufficient-funds-error',
   templateUrl: './insufficient-funds-error.component.html',
-  styleUrls: ['./insufficient-funds-error.component.scss']
+  styleUrls: ['./insufficient-funds-error.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InsufficientFundsErrorComponent {
   public readonly tokenSymbol: string;

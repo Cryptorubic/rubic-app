@@ -51,8 +51,13 @@
   &__header {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     height: 30px;
     margin-bottom: 20px;
+  }
+
+  &__refresh {
+    margin-right: 10px;
   }
 
   &__title {
@@ -65,7 +70,7 @@
   }
 
   &__settings {
-    margin-left: auto;
+    display: flex;
 
     cursor: pointer;
   }

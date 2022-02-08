@@ -28,6 +28,11 @@ import { OneInchBscService } from '@features/instant-trade/services/instant-trad
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
 import { UniSwapV3PolygonService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/uni-swap-v3-polygon-service/uni-swap-v3-polygon.service';
 import { UniSwapV3EthereumService } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-ethereum-service/uni-swap-v3-ethereum.service';
+import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
+import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
+import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
+import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
+import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,35 +42,43 @@ export class ContractsDataService {
 
   constructor(
     // providers start
+    // Ethereum
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly sushiSwapEthService: SushiSwapEthService,
     private readonly uniSwapV3EthereumService: UniSwapV3EthereumService,
-    private readonly oneinchEthService: OneInchEthService,
-
+    private readonly oneInchEthService: OneInchEthService,
+    // BSC
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly sushiSwapBscService: SushiSwapBscService,
-    private readonly oneinchBscService: OneInchBscService,
-
+    private readonly oneInchBscService: OneInchBscService,
+    // Polygon
     private readonly quickSwapService: QuickSwapService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly algebraService: AlgebraService,
     private readonly uniSwapV3PolygonService: UniSwapV3PolygonService,
-    private readonly oneinchPolygonService: OneInchPolygonService,
-
+    private readonly oneInchPolygonService: OneInchPolygonService,
+    // Avalanche
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
-
+    // Fantom
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly sushiSwapFantomService: SushiSwapFantomService,
-
+    // Moonriver
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
-
+    // Harmony
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
-
+    // Arbitrum
+    private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
+    private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
+    private readonly oneInchArbitrumService: OneInchArbitrumService,
+    // Aurora
+    private readonly trisolarisAuroraService: TrisolarisAuroraService,
+    private readonly wannaSwapAuroraService: WannaSwapAuroraService,
+    // Solana
     private readonly raydiumService: RaydiumService,
     // providers end
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
@@ -87,7 +100,7 @@ export class ContractsDataService {
             methodSuffix: 'V3'
           },
           {
-            provider: this.oneinchEthService,
+            provider: this.oneInchEthService,
             methodSuffix: 'Inch'
           }
         ],
@@ -106,7 +119,7 @@ export class ContractsDataService {
             methodSuffix: '1'
           },
           {
-            provider: this.oneinchBscService,
+            provider: this.oneInchBscService,
             methodSuffix: 'Inch'
           }
         ],
@@ -133,7 +146,7 @@ export class ContractsDataService {
             methodSuffix: 'V3'
           },
           {
-            provider: this.oneinchPolygonService,
+            provider: this.oneInchPolygonService,
             methodSuffix: 'Inch'
           }
         ],
@@ -206,6 +219,40 @@ export class ContractsDataService {
           }
         ],
         7,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.ARBITRUM]: new EthLikeContractData(
+        BLOCKCHAIN_NAME.ARBITRUM,
+        [
+          {
+            provider: this.sushiSwapArbitrumService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.uniSwapV3ArbitrumService,
+            methodSuffix: 'V3'
+          },
+          {
+            provider: this.oneInchArbitrumService,
+            methodSuffix: 'Inch'
+          }
+        ],
+        10,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.AURORA]: new EthLikeContractData(
+        BLOCKCHAIN_NAME.AURORA,
+        [
+          {
+            provider: this.trisolarisAuroraService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.wannaSwapAuroraService,
+            methodSuffix: '1'
+          }
+        ],
+        11,
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(

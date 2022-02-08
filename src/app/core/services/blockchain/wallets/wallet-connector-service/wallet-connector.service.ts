@@ -297,6 +297,14 @@ export class WalletConnectorService {
       [BLOCKCHAIN_NAME.FANTOM]: {
         name: 'Fantom Opera',
         rpc: 'https://rpc.ftm.tools'
+      },
+      [BLOCKCHAIN_NAME.ARBITRUM]: {
+        name: 'Arbitrum One',
+        rpc: 'https://arb1.arbitrum.io/rpc'
+      },
+      [BLOCKCHAIN_NAME.AURORA]: {
+        name: 'Aurora MainNet',
+        rpc: 'https://mainnet.aurora.dev'
       }
     };
     const params = {

@@ -83,6 +83,10 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   public readonly displayTargetAddressInput$ = this.targetNetworkAddressService.displayAddress$;
 
+  public readonly smartRouting$ = this.crossChainRoutingService.smartRouting$;
+
+  public readonly smartRoutingLoading$ = this.crossChainRoutingService.smartRoutingLoading$;
+
   public toBlockchain: BLOCKCHAIN_NAME;
 
   public fromAmount: BigNumber;
@@ -103,8 +107,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  private tradeInProgressSubscription$: Subscription;
-
   public isTargetNetworkValid: boolean;
 
   get tradeStatus(): TRADE_STATUS {
@@ -121,6 +123,19 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       this.swapFormService.inputValue;
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
+
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show<{ type: SuccessTxModalType }>(
+      new PolymorpheusComponent(SuccessTrxNotificationComponent),
+      {
+        status: TuiNotification.Success,
+        autoClose: 15000,
+        data: {
+          type: 'cross-chain-routing'
+        }
+      }
+    );
+  };
 
   constructor(
     public readonly swapFormService: SwapFormService,
@@ -160,6 +175,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(form => {
+        if (!form.fromToken || !form.toToken || !form.fromAmount || !form.fromAmount.toNumber()) {
+          this.crossChainRoutingService.resetSmartRouting();
+        }
         this.setFormValues(form);
         this.cdr.markForCheck();
       });
@@ -295,7 +313,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         filter(el => el === 'hidden'),
         switchMap(() => {
           if (!this.allowTrade) {
-            return null;
+            return of(null);
           }
 
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.REFRESHING);
@@ -417,9 +435,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
-    const onTransactionHash = () => {
+    const onTransactionHash = (txHash: string) => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      this.notifyTradeInProgress();
+      this.notifyTradeInProgress(txHash);
     };
 
     this.crossChainRoutingService
@@ -429,18 +447,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       .pipe(first())
       .subscribe(
         async () => {
-          this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show<{ type: SuccessTxModalType }>(
-            new PolymorpheusComponent(SuccessTrxNotificationComponent),
-            {
-              status: TuiNotification.Success,
-              autoClose: 15000,
-              data: {
-                type: 'cross-chain-routing'
-              }
-            }
-          );
-
           this.counterNotificationsService.updateUnread();
 
           await this.tokensService.calculateTokensBalances();
@@ -451,7 +457,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         err => {
           this.errorsService.catch(err);
 
-          this.tradeInProgressSubscription$?.unsubscribe();
           this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
           this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
 
@@ -460,17 +465,16 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
       );
   }
 
-  private notifyTradeInProgress(): void {
-    this.tradeInProgressSubscription$ = this.notificationsService.show(
-      this.translateService.instant('notifications.tradeInProgress'),
-      {
-        status: TuiNotification.Info,
-        autoClose: false
-      }
-    );
+  private notifyTradeInProgress(txHash: string): void {
+    const { fromBlockchain } = this.swapFormService.inputValue;
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(
+        'cross-chain-routing',
+        txHash,
+        fromBlockchain,
+        this.showSuccessTrxNotification
+      );
     }
   }
 }

@@ -510,7 +510,9 @@ export class TokensSelectComponent implements OnInit {
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
       [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
-      [BLOCKCHAIN_NAME.FANTOM]: 'fantom'
+      [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum',
+      [BLOCKCHAIN_NAME.AURORA]: 'aurora'
     };
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${
       blockchains[token.blockchain as keyof typeof blockchains]
