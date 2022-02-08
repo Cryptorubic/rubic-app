@@ -13,6 +13,10 @@
     display: none;
   }
 
+  ::ng-deep .t-sort .t-sort-icon {
+    display: none;
+  }
+
   thead {
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;

@@ -76,9 +76,10 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
       this.currentBlockchain = network;
       this.cdr.detectChanges();
     });
-    this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(() =>
-      this.cdr.detectChanges()
-    );
+    this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(address => {
+      this.authService.setCurrentUser(address);
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnDestroy(): void {
@@ -96,7 +97,7 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
   }
 
   public logout(): void {
-    this.authService.signOut().subscribe();
+    this.authService.serverlessSignOut();
   }
 
   public getDropdownStatus(status: boolean): void {

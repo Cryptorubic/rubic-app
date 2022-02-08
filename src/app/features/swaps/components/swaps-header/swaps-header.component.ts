@@ -24,7 +24,9 @@ export class SwapsHeaderComponent {
   }
 
   @Input() public set swapType(type: SWAP_PROVIDER_TYPE) {
-    this.getIconUrl(type);
+    if (type) {
+      this.getIconUrl(type);
+    }
   }
 
   public fromBlockchainItem: BlockchainItem;

@@ -8,36 +8,19 @@
   </div>
 
   <div class="provider-panel__left">
-    <div
-      class="provider-panel__amount"
-      [ngClass]="{
-        'tui-skeleton': providerData.loading,
-        'tui-skeleton-text': providerData.loading
-      }"
-    >
+    <div class="provider-panel__amount">
       {{ tradeData?.amount | bigNumberFormat | withRound: 'toClosestValue' }}
     </div>
   </div>
 
   <div class="provider-panel__right" *ngLet="usdPrice as price">
-    <div
-      *ngIf="price?.isFinite() && price.gt(0)"
-      class="provider-panel__token-usd-price"
-      [ngClass]="{
-        'tui-skeleton': providerData.loading,
-        'tui-skeleton-text': providerData.loading
-      }"
-    >
+    <div *ngIf="price?.isFinite() && price.gt(0)" class="provider-panel__token-usd-price">
       ${{ price | bigNumberFormat: 2:true }}
     </div>
 
     <div
       *ngIf="displayGas && this.tradeData?.gasFeeInEth && this.tradeData?.gasFeeInUsd"
       class="provider-panel__token-gas-fee"
-      [ngClass]="{
-        'tui-skeleton': providerData.loading,
-        'tui-skeleton-text': providerData.loading
-      }"
     >
       {{ 'instantTrades.gasFee' | translate }}
 
