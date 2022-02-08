@@ -7,6 +7,7 @@ import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance
 import { IframeApiService } from '@core/services/backend/iframe-api/iframe-api.service';
 import { Cacheable } from 'ts-cacheable';
 import { catchError } from 'rxjs/operators';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable({
   providedIn: 'root'
@@ -79,7 +80,7 @@ export class IframeService implements OnDestroy {
 
     const { fee, feeTarget } = iframeParameters;
     if (Boolean(fee) !== Boolean(feeTarget)) {
-      throw new Error('`fee` or `feeTarget` parameter is missing.');
+      throw new RubicError(null, null, '`fee` or `feeTarget` parameter is missing.');
     }
 
     this.setIframeStatus();
@@ -106,7 +107,7 @@ export class IframeService implements OnDestroy {
   }
 
   @Cacheable()
-  public getPromoterAddressByPromoCode(): Observable<string | null> {
+  public getPromoterAddress(): Observable<string | null> {
     const { promoCode } = this.iframeParameters;
     if (!promoCode) {
       return of(null);

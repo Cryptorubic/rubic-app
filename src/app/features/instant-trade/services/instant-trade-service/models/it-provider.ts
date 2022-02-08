@@ -40,6 +40,6 @@ export interface ItProvider {
   checkAndEncodeTrade?: (
     trade: InstantTrade,
     options: ItOptions,
-    targetWalletAddress: string
+    receiverAddress: string
   ) => Promise<RequiredField<TransactionOptions, 'data'>>;
 }

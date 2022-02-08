@@ -56,9 +56,11 @@ import DEFAULT_UNISWAP_V2_ABI from '@features/instant-trade/services/instant-tra
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 import {
-  IFRAME_FEE_CONTRACT_ABI,
-  IFRAME_FEE_CONTRACT_ADDRESS
-} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/iframe-fee-contract';
+  IT_PROXY_FEE_CONTRACT_ABI,
+  IT_PROXY_FEE_CONTRACT_ADDRESS,
+  IT_PROXY_FEE_CONTRACT_METHOD
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 interface RecGraphVisitorOptions {
   toToken: InstantTradeToken;
@@ -119,6 +121,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private readonly useTestingModeService = inject(UseTestingModeService);
 
   private readonly gasService = inject(GasService);
+
+  private readonly iframeService = inject(IframeService);
 
   protected constructor(uniswapConstants: UniswapV2Constants) {
     this.contractAbi = DEFAULT_UNISWAP_V2_ABI;
@@ -627,12 +631,12 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   public async checkAndEncodeTrade(
     trade: InstantTrade,
     options: ItOptions,
-    targetWalletAddress: string
+    receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
     const { methodName, methodArguments, transactionOptions } = await this.checkAndGetTradeData(
       trade,
       options,
-      targetWalletAddress
+      receiverAddress
     );
 
     return {
@@ -644,7 +648,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
   private async checkAndGetTradeData(
     trade: InstantTrade,
     options: ItOptions,
-    targetWalletAddress = this.walletAddress
+    receiverAddress = this.walletAddress
   ): Promise<{
     methodName: string;
     methodArguments: unknown[];
@@ -664,7 +668,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
         trade.to.token.decimals
       ),
       path: trade.path.map(token => token.address),
-      to: targetWalletAddress,
+      to: receiverAddress,
       deadline: Math.floor(Date.now() / 1000) + 60 * this.settings.deadline
     };
 
@@ -686,7 +690,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       tradeData,
       tradeDataSupportingFee,
       uniswapV2Trade,
-      targetWalletAddress
+      receiverAddress
     );
 
     return {
@@ -701,13 +705,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
    * @param tradeData Trade data for tokens without fee.
    * @param tradeDataSupportingFee Trade data for tokens with fee.
    * @param uniswapV2Trade Uniswap v2 trade data.
-   * @param targetWalletAddress Wallet address to receive tokens.
+   * @param receiverAddress Address to receive tokens.
    */
   private async tryExecuteTradeAndGetMethodName(
     tradeData: TradeContractData,
     tradeDataSupportingFee: TradeContractData,
     uniswapV2Trade: UniswapV2Trade,
-    targetWalletAddress: string
+    receiverAddress: string
   ): Promise<string | never> {
     const tryExecute = async (methodData: {
       methodName: string;
@@ -715,13 +719,13 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       options?: TransactionOptions;
     }): Promise<boolean> => {
       try {
-        if (targetWalletAddress === this.walletAddress) {
+        if (receiverAddress === this.walletAddress) {
           await this.blockchainAdapter.tryExecuteContractMethod(
             this.contractAddress,
             this.contractAbi,
             methodData.methodName,
             methodData.methodArguments,
-            targetWalletAddress,
+            receiverAddress,
             methodData.options
           );
         } else {
@@ -730,23 +734,22 @@ export abstract class CommonUniswapV2Service implements ItProvider {
             methodData.methodName,
             methodData.methodArguments
           );
-          const fee = 100; // default fee
-          const feeTarget = this.walletAddress; // fee target to pass all checks
+          const { feeData } = this.iframeService;
           const methodArguments = [
             uniswapV2Trade.path[0],
             uniswapV2Trade.path[uniswapV2Trade.path.length - 1],
             uniswapV2Trade.amountIn,
             this.contractAddress,
             encodedData,
-            [fee, feeTarget]
+            [feeData.fee, feeData.feeTarget]
           ];
 
           await this.blockchainAdapter.tryExecuteContractMethod(
-            IFRAME_FEE_CONTRACT_ADDRESS[
-              this.blockchain as keyof typeof IFRAME_FEE_CONTRACT_ADDRESS
+            IT_PROXY_FEE_CONTRACT_ADDRESS[
+              this.blockchain as keyof typeof IT_PROXY_FEE_CONTRACT_ADDRESS
             ],
-            IFRAME_FEE_CONTRACT_ABI,
-            'swap',
+            IT_PROXY_FEE_CONTRACT_ABI,
+            IT_PROXY_FEE_CONTRACT_METHOD.SWAP,
             methodArguments,
             this.walletAddress,
             methodData.options

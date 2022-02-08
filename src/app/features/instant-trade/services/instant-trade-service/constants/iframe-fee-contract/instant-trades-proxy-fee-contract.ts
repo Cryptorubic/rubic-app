@@ -1,11 +1,16 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { AbiItem } from 'web3-utils';
 
-export const IFRAME_FEE_CONTRACT_ADDRESS = {
+export const IT_PROXY_FEE_CONTRACT_ADDRESS = {
   [BLOCKCHAIN_NAME.POLYGON]: '0x0c495AD6B20263AE5CAB2A2bdD615916f9521366'
 };
 
-export const IFRAME_FEE_CONTRACT_ABI = [
+export enum IT_PROXY_FEE_CONTRACT_METHOD {
+  SWAP = 'swap',
+  SWAP_WITH_PROMOTER = 'swapWithPromoter'
+}
+
+export const IT_PROXY_FEE_CONTRACT_ABI = [
   {
     inputs: [
       { internalType: 'address', name: 'fromToken', type: 'address' },

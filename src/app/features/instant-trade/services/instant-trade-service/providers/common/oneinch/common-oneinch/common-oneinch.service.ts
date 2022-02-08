@@ -354,15 +354,15 @@ export class CommonOneinchService {
   public checkAndEncodeTrade(
     trade: InstantTrade,
     options: ItOptions,
-    targetWalletAddress: string
+    receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
-    return this.checkAndGetTradeData(trade, options, targetWalletAddress);
+    return this.checkAndGetTradeData(trade, options, receiverAddress);
   }
 
   private async checkAndGetTradeData(
     trade: InstantTrade,
     options: ItOptions,
-    targetWalletAddress = this.walletAddress
+    receiverAddress = this.walletAddress
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
     const { blockchain } = trade;
     this.walletConnectorService.checkSettings(blockchain);
@@ -378,14 +378,14 @@ export class CommonOneinchService {
     const fromAmountAbsolute = Web3Pure.toWei(trade.from.amount, trade.from.token.decimals);
 
     const blockchainId = BlockchainsInfo.getBlockchainByName(blockchain).id;
-    const disableEstimate = targetWalletAddress !== this.walletAddress;
+    const disableEstimate = receiverAddress !== this.walletAddress;
     const swapTradeParams: OneinchSwapRequest = {
       params: {
         fromTokenAddress,
         toTokenAddress,
         amount: fromAmountAbsolute,
         slippage: this.settings.slippageTolerance.toString(),
-        fromAddress: targetWalletAddress,
+        fromAddress: receiverAddress,
         disableEstimate
       }
     };

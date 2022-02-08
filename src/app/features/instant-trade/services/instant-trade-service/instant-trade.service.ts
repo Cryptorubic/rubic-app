@@ -59,9 +59,10 @@ import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { TransactionReceipt } from 'web3-eth';
 import {
-  IFRAME_FEE_CONTRACT_ABI,
-  IFRAME_FEE_CONTRACT_ADDRESS
-} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/iframe-fee-contract';
+  IT_PROXY_FEE_CONTRACT_ABI,
+  IT_PROXY_FEE_CONTRACT_ADDRESS,
+  IT_PROXY_FEE_CONTRACT_METHOD
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
 import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 
@@ -319,7 +320,7 @@ export class InstantTradeService {
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
     const feeContractAddress =
-      IFRAME_FEE_CONTRACT_ADDRESS[trade.blockchain as keyof typeof IFRAME_FEE_CONTRACT_ADDRESS];
+      IT_PROXY_FEE_CONTRACT_ADDRESS[trade.blockchain as keyof typeof IT_PROXY_FEE_CONTRACT_ADDRESS];
     const blockchainProvider = this.blockchainsProviders[trade.blockchain][provider];
 
     const transactionOptions = await blockchainProvider.checkAndEncodeTrade(
@@ -330,9 +331,11 @@ export class InstantTradeService {
 
     const { fee, feeTarget } = this.iframeService.feeData;
 
-    const promoterAddress = await this.iframeService.getPromoterAddressByPromoCode().toPromise();
+    const promoterAddress = await this.iframeService.getPromoterAddress().toPromise();
 
-    const methodName = promoterAddress ? 'swapWithPromoter' : 'swap';
+    const methodName = promoterAddress
+      ? IT_PROXY_FEE_CONTRACT_METHOD.SWAP_WITH_PROMOTER
+      : IT_PROXY_FEE_CONTRACT_METHOD.SWAP;
 
     const methodArguments = [
       trade.from.token.address,
@@ -348,7 +351,7 @@ export class InstantTradeService {
 
     return this.web3PrivateService.tryExecuteContractMethod(
       feeContractAddress,
-      IFRAME_FEE_CONTRACT_ABI,
+      IT_PROXY_FEE_CONTRACT_ABI,
       methodName,
       methodArguments,
       transactionOptions
@@ -401,7 +404,7 @@ export class InstantTradeService {
     // TODO: update
     const targetContractAddress =
       this.iframeService.isIframe && fromBlockchain === BLOCKCHAIN_NAME.POLYGON
-        ? IFRAME_FEE_CONTRACT_ADDRESS[fromBlockchain]
+        ? IT_PROXY_FEE_CONTRACT_ADDRESS[fromBlockchain]
         : undefined;
 
     const providerApproveData = providers.map((provider: ItProvider) =>
@@ -427,7 +430,7 @@ export class InstantTradeService {
       // TODO: update
       const targetContractAddress =
         this.iframeService.isIframe && fromBlockchain === BLOCKCHAIN_NAME.POLYGON
-          ? IFRAME_FEE_CONTRACT_ADDRESS[fromBlockchain]
+          ? IT_PROXY_FEE_CONTRACT_ADDRESS[fromBlockchain]
           : undefined;
 
       await this.blockchainsProviders[trade.blockchain][provider].approve(

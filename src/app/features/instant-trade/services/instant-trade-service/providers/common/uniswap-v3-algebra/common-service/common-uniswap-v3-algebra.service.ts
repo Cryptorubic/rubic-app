@@ -199,12 +199,12 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
   public async checkAndEncodeTrade(
     trade: UniswapV3AlgebraInstantTrade,
     options: ItOptions,
-    targetWalletAddress: string
+    receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
     const { methodName, methodArguments, transactionOptions } = await this.checkAndGetTradeData(
       trade,
       options,
-      targetWalletAddress
+      receiverAddress
     );
 
     return {
@@ -220,7 +220,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
   private async checkAndGetTradeData(
     trade: UniswapV3AlgebraInstantTrade,
     options: ItOptions,
-    targetWalletAddress = this.walletAddress
+    receiverAddress = this.walletAddress
   ): Promise<{
     methodName: string;
     methodArguments: unknown[];
@@ -245,7 +245,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
       toTokenWrapped.address,
       isEth,
       deadline,
-      targetWalletAddress
+      receiverAddress
     );
     const transactionOptions = {
       value: isEth.from ? fromAmountAbsolute : undefined,
@@ -269,7 +269,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
    * @param isEth Flags, showing if Eth was used as one of tokens.
    * @param isEth Flags, showing if Eth was used as one of tokens.
    * @param deadline Deadline of swap in seconds.
-   * @param targetWalletAddress Wallet address to receive tokens.
+   * @param receiverAddress Address to receive tokens.
    */
   protected getSwapRouterMethodData(
     route: UniswapV3AlgebraRoute,
@@ -277,14 +277,14 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
     toTokenAddress: string,
     isEth: IsEthFromOrTo,
     deadline: number,
-    targetWalletAddress = this.walletAddress
+    receiverAddress = this.walletAddress
   ): MethodData {
     if (!isEth.to) {
       return this.getSwapRouterExactInputMethodParams(
         route,
         fromAmountAbsolute,
         toTokenAddress,
-        targetWalletAddress,
+        receiverAddress,
         deadline
       );
     }
@@ -308,7 +308,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
     const unwrapWETHMethodEncoded = EthLikeWeb3Pure.encodeFunctionCall(
       this.swapRouterContract.abi,
       this.unwrapWethMethodName,
-      [amountOutMin, targetWalletAddress]
+      [amountOutMin, receiverAddress]
     );
 
     return {

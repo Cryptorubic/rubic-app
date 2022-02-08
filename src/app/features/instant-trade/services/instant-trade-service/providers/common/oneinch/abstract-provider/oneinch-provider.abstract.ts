@@ -72,8 +72,8 @@ export abstract class OneinchProviderAbstract implements ItProvider {
   public checkAndEncodeTrade(
     trade: InstantTrade,
     options: ItOptions,
-    targetWalletAddress: string
+    receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
-    return this.commonOneinchService.checkAndEncodeTrade(trade, options, targetWalletAddress);
+    return this.commonOneinchService.checkAndEncodeTrade(trade, options, receiverAddress);
   }
 }
