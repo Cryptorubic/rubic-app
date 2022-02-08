@@ -24,6 +24,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { HttpService } from '../../http/http.service';
+import { AuthService } from '../../auth/auth.service';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -34,7 +35,8 @@ import { HttpService } from '../../http/http.service';
 export class TokensApiService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly authService: AuthService
   ) {}
 
   /**
@@ -74,10 +76,12 @@ export class TokensApiService {
    * @return Observable<BackendToken[]> Favorite Tokens.
    */
   public fetchFavoriteTokens(): Observable<List<Token>> {
-    return this.httpService.get<BackendToken[]>(ENDPOINTS.FAVORITE_TOKENS).pipe(
-      map(tokens => TokensApiService.prepareTokens(tokens)),
-      catchError(() => of(List([])))
-    );
+    return this.httpService
+      .get<BackendToken[]>(ENDPOINTS.FAVORITE_TOKENS, { user: this.authService.userAddress })
+      .pipe(
+        map(tokens => TokensApiService.prepareTokens(tokens)),
+        catchError(() => of(List([])))
+      );
   }
 
   /**
@@ -87,7 +91,8 @@ export class TokensApiService {
   public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
       blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain as ToBackendBlockchain],
-      address: token.address
+      address: token.address,
+      user: this.authService.userAddress
     };
     return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body);
   }
@@ -99,7 +104,8 @@ export class TokensApiService {
   public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
       blockchain_network: TO_BACKEND_BLOCKCHAINS[token.blockchain as ToBackendBlockchain],
-      address: token.address
+      address: token.address,
+      user: this.authService.userAddress
     };
     return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body });
   }
@@ -151,6 +157,7 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.MOONRIVER,
       BLOCKCHAIN_NAME.FANTOM,
       BLOCKCHAIN_NAME.ARBITRUM,
+      BLOCKCHAIN_NAME.AURORA,
       BLOCKCHAIN_NAME.SOLANA
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 

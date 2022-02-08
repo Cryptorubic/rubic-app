@@ -77,6 +77,10 @@ export class CrossChainRoutingService {
 
   public readonly smartRouting$ = this._smartRouting$.asObservable();
 
+  private readonly _smartRoutingLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly smartRoutingLoading$ = this._smartRoutingLoading$.asObservable();
+
   private readonly contracts = this.contractsDataService.contracts;
 
   private currentCrossChainTrade: CrossChainTrade;
@@ -142,6 +146,7 @@ export class CrossChainRoutingService {
     maxAmountError?: BigNumber;
     needApprove?: boolean;
   }> {
+    this._smartRoutingLoading$.next(true);
     const { fromToken, fromAmount, toToken } = this.swapFormService.inputValue;
     const fromBlockchain = fromToken.blockchain;
     const toBlockchain = toToken.blockchain;
@@ -716,13 +721,12 @@ export class CrossChainRoutingService {
             options,
             this.authService.userAddress
           );
-
           await this.postCrossChainTrade(transactionHash);
-          await this.notifyGtmAfterSigningTx(transactionHash);
+
+          await this.notifyGtmOnSuccess(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
             await this.postCrossChainTrade(transactionHash);
-            await this.notifyGtmAfterSigningTx(transactionHash);
             return;
           }
 
@@ -777,7 +781,7 @@ export class CrossChainRoutingService {
    * Notifies GTM about signed transaction.
    * @param txHash Signed transaction hash.
    */
-  private async notifyGtmAfterSigningTx(txHash: string): Promise<void> {
+  private async notifyGtmOnSuccess(txHash: string): Promise<void> {
     const { feeAmount } = await this.getTradeInfo();
     const { tokenIn, tokenOut } = this.currentCrossChainTrade;
     const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
@@ -874,6 +878,7 @@ export class CrossChainRoutingService {
     }
 
     this._smartRouting$.next(smartRouting);
+    this._smartRoutingLoading$.next(false);
   }
 
   public resetSmartRouting(): void {

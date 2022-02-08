@@ -9,6 +9,8 @@ import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from '@features/swaps/models/promo-code';
 import { copyObject } from 'src/app/shared/utils/utils';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;
@@ -93,7 +95,8 @@ export class SettingsService {
   constructor(
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly authService: AuthService
   ) {
     const { slippageIt, slippageCcr } = this.queryParamsService.slippage ?? {};
     this.defaultItSettings = this.getDefaultITSettings(slippageIt);
@@ -111,7 +114,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: true
+      autoRefresh: Boolean(this.authService?.user?.address)
     };
   }
 
@@ -123,7 +126,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       rubicOptimisation: true,
-      autoRefresh: true
+      autoRefresh: Boolean(this.authService?.user?.address)
     };
   }
 
@@ -135,18 +138,28 @@ export class SettingsService {
   }
 
   private setupData(): void {
-    const localData = this.storeService.getItem('settings') as string;
-    if (localData && !this.iframeService.isIframe) {
-      this.settingsForm.patchValue(
-        { ...JSON.parse(localData) },
-        {
-          emitEvent: false
-        }
-      );
-    }
-    this.settingsForm.valueChanges.subscribe(form => {
-      this.storeService.setItem('settings', this.serializeForm(form));
-    });
+    this.authService
+      .getCurrentUser()
+      .pipe(
+        filter(user => Boolean(user?.address)),
+        tap(() => {
+          const localData = this.storeService.getItem('settings') as string;
+          if (localData && !this.iframeService.isIframe) {
+            this.settingsForm.patchValue(
+              { ...JSON.parse(localData) },
+              {
+                emitEvent: false
+              }
+            );
+          }
+        }),
+        switchMap(() => {
+          return this.settingsForm.valueChanges.pipe(startWith(this.settingsForm.value));
+        })
+      )
+      .subscribe(form => {
+        this.storeService.setItem('settings', this.serializeForm(form));
+      });
 
     this.iframeService.widgetIntoViewport$.subscribe(widgetIntoViewport => {
       this.instantTrade.patchValue({

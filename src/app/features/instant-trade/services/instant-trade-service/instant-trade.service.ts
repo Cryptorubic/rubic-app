@@ -62,6 +62,8 @@ import {
   IFRAME_FEE_CONTRACT_ABI,
   IFRAME_FEE_CONTRACT_ADDRESS
 } from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/iframe-fee-contract';
+import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
+import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 
 @Injectable({
   providedIn: 'root'
@@ -79,36 +81,55 @@ export class InstantTradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+      status: TuiNotification.Success,
+      autoClose: 15000
+    });
+  };
+
   constructor(
     // Providers start
+    private readonly ethWethSwapProvider: EthWethSwapProviderService,
+    // Ethereum
     private readonly oneInchEthService: OneInchEthService,
     private readonly uniswapV2Service: UniSwapV2Service,
     private readonly uniswapV3EthereumService: UniSwapV3EthereumService,
+    private readonly sushiSwapEthService: SushiSwapEthService,
+    private readonly zrxService: ZrxService,
+    // BSC
+    private readonly pancakeSwapService: PancakeSwapService,
+    private readonly oneInchBscService: OneInchBscService,
+    private readonly sushiSwapBscService: SushiSwapBscService,
+    // Polygon
     private readonly uniswapV3PolygonService: UniSwapV3PolygonService,
     private readonly oneInchPolygonService: OneInchPolygonService,
-    private readonly pancakeSwapService: PancakeSwapService,
     private readonly quickSwapService: QuickSwapService,
-    private readonly oneInchBscService: OneInchBscService,
-    private readonly sushiSwapEthService: SushiSwapEthService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
-    private readonly sushiSwapBscService: SushiSwapBscService,
+    private readonly algebraService: AlgebraService,
+    // Harmony
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
+    private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
+    // Avalanche
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
+    private readonly pangolinAvalancheService: PangolinAvalancheService,
+    private readonly joeAvalancheService: JoeAvalancheService,
+    // Fantom
     private readonly sushiSwapFantomService: SushiSwapFantomService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
-    private readonly ethWethSwapProvider: EthWethSwapProviderService,
-    private readonly zrxService: ZrxService,
-    private readonly pangolinAvalancheService: PangolinAvalancheService,
-    private readonly joeAvalancheService: JoeAvalancheService,
+    // MoonRiver
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
-    private readonly raydiumService: RaydiumService,
-    private readonly algebraService: AlgebraService,
-    private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
+    // Arbitrum
     private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
     private readonly oneInchArbitrumService: OneInchArbitrumService,
     private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
+    // Aurora
+    private readonly trisolarisAuroraService: TrisolarisAuroraService,
+    private readonly wannaSwapAuroraService: WannaSwapAuroraService,
+    // Solana
+    private readonly raydiumService: RaydiumService,
     // Providers end
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
@@ -171,6 +192,10 @@ export class InstantTradeService {
         [INSTANT_TRADES_PROVIDERS.ONEINCH]: this.oneInchArbitrumService,
         [INSTANT_TRADES_PROVIDERS.SUSHISWAP]: this.sushiSwapArbitrumService,
         [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: this.uniSwapV3ArbitrumService
+      },
+      [BLOCKCHAIN_NAME.AURORA]: {
+        [INSTANT_TRADES_PROVIDERS.TRISOLARIS]: this.trisolarisAuroraService,
+        [INSTANT_TRADES_PROVIDERS.WANNASWAP]: this.wannaSwapAuroraService
       },
       [BLOCKCHAIN_NAME.SOLANA]: {
         [INSTANT_TRADES_PROVIDERS.RAYDIUM]: this.raydiumService
@@ -235,8 +260,7 @@ export class InstantTradeService {
           transactionHash = hash;
 
           confirmCallback();
-          this.notifyTradeInProgress();
-          this.notifyGtmAfterSigningTx(hash, trade);
+          this.notifyTradeInProgress(hash, trade.blockchain);
           await this.postTrade(hash, provider, trade);
         }
       };
@@ -248,13 +272,11 @@ export class InstantTradeService {
         receipt = await this.checkFeeAndCreateTrade(provider, trade, options);
       }
 
+      this.notifyGtmOnSuccess(transactionHash, trade);
+
       this.modalSubscriptions.pop()?.unsubscribe();
 
       this.updateTrade(transactionHash, true);
-      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-        status: TuiNotification.Success,
-        autoClose: 15000
-      });
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
@@ -439,23 +461,18 @@ export class InstantTradeService {
     }
   }
 
-  private notifyTradeInProgress(): void {
-    this.modalSubscriptions.push(
-      this.notificationsService.show(
-        this.translateService.instant('notifications.tradeInProgress'),
-        {
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      )
-    );
-
+  private notifyTradeInProgress(txHash: string, blockchain: BLOCKCHAIN_NAME): void {
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open();
+      this.successTxModalService.open(
+        'default',
+        txHash,
+        blockchain,
+        this.showSuccessTrxNotification
+      );
     }
   }
 
-  private notifyGtmAfterSigningTx(txHash: string, trade: InstantTrade): void {
+  private notifyGtmOnSuccess(txHash: string, trade: InstantTrade): void {
     const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
     const fee = 0;
     this.gtmService.fireTxSignedEvent(
