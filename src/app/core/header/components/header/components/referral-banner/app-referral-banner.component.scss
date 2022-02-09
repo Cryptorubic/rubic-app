@@ -1,17 +1,13 @@
 @use 'src/scss/core' as *;
 
-.highlight {
-  color: var(--main-green);
-}
-
 .banner {
 
   overflow: hidden;
 
-  color: #fff;
+  color: var(--rubic-base-02);
   text-decoration: none;
 
-  background: linear-gradient(97.16deg, #1f2021 5.58%, #1c1c1d 53%, #252d33 94.42%);
+  background: var(--referral-banner-bg);
 
   &__container {
     position: relative;
@@ -21,13 +17,13 @@
     align-items: center;
     justify-content: space-between;
 
-    max-width: 1220px;
+    width: fit-content;
     margin: 0 auto;
     padding: 0 20px;
   }
 
   &__text {
-    margin: 0;
+    margin: 0 30px 0 0;
 
     padding: 15px 0;
 
@@ -39,6 +35,10 @@
     text-transform: uppercase;
   }
 
+  &__highlight {
+    color: var(--main-green);
+  }
+
   &__link {
     display: flex;
     align-items: center;
@@ -46,7 +46,7 @@
     padding: 0 34px;
 
     color: white;
-    font-size: 18px;
+    font-size: $rubic-font-size-02;
 
     white-space: nowrap;
 
@@ -80,6 +80,8 @@
     left: 0;
 
     height: 100%;
+
+    opacity: 0.5;
   }
 
   &__cube_right {
@@ -88,6 +90,8 @@
     right: 0;
 
     height: 100%;
+
+    opacity: 0.5;
   }
 
   &__cube_mobile {
@@ -164,7 +168,7 @@
     &__text {
       margin-right: 35px;
 
-      font-size: 14px;
+      font-size: $rubic-font-size-main;
     }
   }
 }

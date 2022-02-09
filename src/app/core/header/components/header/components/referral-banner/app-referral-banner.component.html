@@ -1,10 +1,38 @@
-<a class="banner" href="https://rubic.exchange/referral" target="_blank" rel="noreferrer noopener">
-  <img class="banner__cube_left" src="assets/referralBanner/banner-icon-left.svg" alt="Cube" />
-  <img class="banner__cube_mobile" src="assets/referralBanner/banner-icon-mobile.svg" alt="Cube" />
+<a
+  *ngLet="isDark$ | async as isDark"
+  class="banner"
+  href="https://rubic.exchange/referral"
+  target="_blank"
+  rel="noreferrer noopener"
+>
+  <img
+    *ngIf="isDark"
+    class="banner__cube_left"
+    src="assets/referralBanner/banner-icon-left.svg"
+    alt="Cube"
+  />
+  <img
+    *ngIf="!isDark"
+    class="banner__cube_left"
+    src="assets/referralBanner/banner-icon-left_light.svg"
+    alt="Cube"
+  />
+  <img
+    *ngIf="isDark"
+    class="banner__cube_mobile"
+    src="assets/referralBanner/banner-icon-mobile.svg"
+    alt="Cube"
+  />
+  <img
+    *ngIf="!isDark"
+    class="banner__cube_mobile"
+    src="assets/referralBanner/banner-icon-mobile_light.svg"
+    alt="Cube"
+  />
   <div class="banner__container">
     <p class="banner__text">
       {{ 'referralBanner.text' | translate }}
-      <span class="highlight">
+      <span class="banner__highlight">
         {{ 'referralBanner.text2' | translate }}
       </span>
     </p>
@@ -20,5 +48,16 @@
       <img src="assets/referralBanner/arrow-banner.svg" width="30" height="15" alt="Subscribe" />
     </a>
   </div>
-  <img class="banner__cube_right" src="assets/referralBanner/banner-icon-right.svg" alt="Cube" />
+  <img
+    *ngIf="isDark"
+    class="banner__cube_right"
+    src="assets/referralBanner/banner-icon-right.svg"
+    alt="Cube"
+  />
+  <img
+    *ngIf="!isDark"
+    class="banner__cube_right"
+    src="assets/referralBanner/banner-icon-right_light.svg"
+    alt="Cube"
+  />
 </a>
