@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
+    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con la red Ethereum. Cierre sesión en su cuenta y cambie a una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
@@ -98,7 +98,8 @@
     "logoutMessage": "¿Deseas Cerrar Sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "Promocion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -346,6 +347,32 @@
         "id": "rpcError"
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Cambiar a Monedero compatible con Ethereum"
+    },
+    "invitations": {
+      "invitedProjects": "Proyectos invitados",
+      "noProjects": "Todavía no has invitado a ningún proyecto",
+      "tableColumns": {
+        "projectName": "Proyecto",
+        "invitationDate": "Invitado",
+        "tradingVolume": "Volumen de negociación",
+        "received": "Recibido",
+        "receivedTokens": "Fichas recibidas"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Programa de referencias",
+      "invitedProjects": "Proyectos invitados",
+      "totalRewards": "Recompensas totales",
+      "instantRewards": "Recompensas instantáneas",
+      "earnWithOurWidget": "Gana con nuestro widget",
+      "createAReferralLink": "Genera un enlace de referencia y comienza a ganar con nuestro widget. ¡Asegúrate de leer las Reglas del Programa!",
+      "myPromoLink": "Mi enlace promocional",
+      "contactUs": "Contáctenos"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -620,7 +647,7 @@
     },
     "external": {
       "text": "Aurora ya está disponible en Rubic! ¡Complete intercambios On-Chain y Multi-Chain ahora!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "volume": {
