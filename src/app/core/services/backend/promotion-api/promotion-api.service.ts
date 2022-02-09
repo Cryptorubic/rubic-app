@@ -14,7 +14,7 @@ import { StatisticResponse } from '@core/services/backend/promotion-api/models/s
   providedIn: 'root'
 })
 export class PromotionApiService {
-  private static baseUrl = 'promo/';
+  public static readonly baseUrl = 'promo/';
 
   constructor(
     private readonly httpService: HttpService,
@@ -63,13 +63,6 @@ export class PromotionApiService {
     return this.sendAuthorizedRequest<PromoResponse>('promo').pipe(
       map(response => response.promocode)
     );
-  }
-
-  /**
-   * Fetches promoter wallet address by promo code
-   */
-  public getPromoterWalletAddress(promocode: string): Observable<string> {
-    return this.httpService.get(PromotionApiService.baseUrl + 'promoter', { promocode });
   }
 
   private sendAuthorizedRequest<T>(endpoint: string): Observable<T> {

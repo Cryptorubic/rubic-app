@@ -17,7 +17,7 @@ import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/instant-trade/constants/providers';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -128,7 +128,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  public isIframe$: Observable<boolean>;
+  public isIframe: boolean;
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -183,7 +183,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService
   ) {
     this.autoSelect = true;
-    this.isIframe$ = iframeService.isIframe$;
+    this.isIframe = this.iframeService.isIframe;
     this.onCalculateTrade$ = new Subject();
     this.hiddenDataAmounts$ = new BehaviorSubject([]);
   }
