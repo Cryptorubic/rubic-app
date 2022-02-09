@@ -4,13 +4,13 @@ import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '@ng-web-apis/common';
 import { IframeParameters } from '@core/services/iframe/models/iframe-parameters';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
-import { IframeApiService } from '@core/services/backend/iframe-api/iframe-api.service';
 import { Cacheable } from 'ts-cacheable';
 import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
+import { PromotionApiService } from '@core/services/backend/promotion-api/promotion-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +62,7 @@ export class IframeService implements OnDestroy {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly rendererFactory2: RendererFactory2,
     @Inject(WINDOW) private readonly window: Window,
-    private readonly iframeApiService: IframeApiService
+    private readonly promotionApiService: PromotionApiService
   ) {}
 
   ngOnDestroy() {
@@ -112,7 +112,7 @@ export class IframeService implements OnDestroy {
       return of(null);
     }
 
-    return this.iframeApiService.getPromoterAddressByPromoCode(promoCode).pipe(
+    return this.promotionApiService.getPromoterWalletAddress(promoCode).pipe(
       catchError((err: unknown) => {
         console.error('Cannot retrieve promoter address:', err);
         return of(null);
