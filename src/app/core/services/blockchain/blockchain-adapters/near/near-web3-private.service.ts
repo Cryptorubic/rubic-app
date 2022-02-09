@@ -8,13 +8,13 @@ import { baseDecode, serialize } from 'borsh';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import * as BN from 'bn.js';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
 import { NearTransaction } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/near-transaction';
 import { SWAP_SCHEMA } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-finance-swap-schema';
 import { Action } from '@core/services/blockchain/blockchain-adapters/near/models/near-action';
 import CustomError from '@core/errors/models/custom-error';
 import { Near } from 'near-api-js/lib/near';
+import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 
 interface TransactionParams {
   receiverId: string;
@@ -73,7 +73,7 @@ export class NearWeb3PrivateService {
    */
   public async executeMultipleTransactions(
     transactions: NearTransaction[],
-    type: SWAP_PROVIDER_TYPE,
+    type: NearTransactionType,
     toAmount: string
   ): Promise<void> {
     const wallet = new WalletConnection(this.nearConnection, 'rubic').account();
@@ -239,7 +239,7 @@ export class NearWeb3PrivateService {
    */
   public async requestSignTransactions(
     transactions: Transaction[],
-    type: SWAP_PROVIDER_TYPE,
+    type: NearTransactionType,
     toAmount: string
   ): Promise<void> {
     const currentUrl = new URL(this.window.location.href);

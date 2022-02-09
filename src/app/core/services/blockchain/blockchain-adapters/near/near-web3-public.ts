@@ -66,7 +66,8 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    * @param address The address to check validity.
    */
   public isAddressCorrect(address: string): boolean {
-    return address.includes('.near') || address.includes('.testnet');
+    const regex = new RegExp('^(([a-z\\d]+[\\-_])*[a-z\\d]+\\.)*([a-z\\d]+[\\-_])*[a-z\\d]+$');
+    return regex.test(address) && address.length > 2 && address.length <= 64;
   }
 
   /**

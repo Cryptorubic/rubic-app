@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import {
+  DEFAULT_DEPOSIT_AMOUNT,
   DEFAULT_TOKEN_DEPOSIT_GAS,
   DEFAULT_TRANSFER_CALL_GAS,
+  NEW_ACCOUNT_STORAGE_COST,
   ONE_YOCTO_NEAR,
   REF_FI_CONTRACT_ID,
   WRAP_NEAR_CONTRACT
 } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
@@ -153,7 +154,17 @@ export class RefFinanceSwapService {
    * @param amount Amount of tokens to wrap.
    */
   public async wrapNear(amount: BigNumber): Promise<void> {
-    const stringAmount = amount.toString();
+    const account = new WalletConnection(
+      this.walletConnectorService.nearConnection,
+      'rubic'
+    ).account();
+    const wNearBalance = await account.viewFunction(WRAP_NEAR_CONTRACT, 'storage_balance_of', {
+      account_id: account.accountId
+    });
+
+    const finalAmount = wNearBalance?.total > 0 ? amount : amount.plus(NEW_ACCOUNT_STORAGE_COST);
+    const stringAmount = finalAmount.toString();
+
     const transactions: NearTransaction[] = [
       {
         receiverId: WRAP_NEAR_CONTRACT,
@@ -168,11 +179,7 @@ export class RefFinanceSwapService {
       }
     ];
 
-    await this.nearPrivateAdapter.executeMultipleTransactions(
-      transactions,
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-      stringAmount
-    );
+    await this.nearPrivateAdapter.executeMultipleTransactions(transactions, 'wrap', stringAmount);
   }
 
   /**
@@ -194,11 +201,7 @@ export class RefFinanceSwapService {
       }
     ];
 
-    await this.nearPrivateAdapter.executeMultipleTransactions(
-      transactions,
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-      weiAmount
-    );
+    await this.nearPrivateAdapter.executeMultipleTransactions(transactions, 'wrap', weiAmount);
   }
 
   /**
@@ -288,7 +291,7 @@ export class RefFinanceSwapService {
               account_id: account.accountId
             },
             gas: DEFAULT_TOKEN_DEPOSIT_GAS,
-            amount: '0.1'
+            amount: DEFAULT_DEPOSIT_AMOUNT
           }
         ];
 
@@ -312,7 +315,7 @@ export class RefFinanceSwapService {
             account_id: account.accountId
           },
           gas: DEFAULT_TOKEN_DEPOSIT_GAS,
-          amount: '0.1'
+          amount: DEFAULT_DEPOSIT_AMOUNT
         }
       ];
 

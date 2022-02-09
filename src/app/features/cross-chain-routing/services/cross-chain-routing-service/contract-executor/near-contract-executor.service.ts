@@ -4,7 +4,6 @@ import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-ch
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
@@ -149,7 +148,7 @@ export class NearContractExecutorService {
 
     await this.nearPrivateAdapter.executeMultipleTransactions(
       [...registerTokensTransactions, ccrSwapTransaction],
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      'ccr',
       tokenOutAmountMinAbsolute
     );
 

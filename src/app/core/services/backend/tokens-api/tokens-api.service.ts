@@ -139,19 +139,6 @@ export class TokensApiService {
         coingecko_id: '0',
         usd_price: 1,
         used_in_iframe: false
-      },
-      // @TODO Fix near.
-      {
-        address: 'near',
-        name: 'Near',
-        symbol: 'Near',
-        decimals: 24,
-        image: 'https://api.rubic.exchange/assets/near/wrap.near/logo.png',
-        rank: 1,
-        blockchain_network: 'near',
-        coingecko_id: null,
-        usd_price: 1,
-        used_in_iframe: false
       }
     ];
   }

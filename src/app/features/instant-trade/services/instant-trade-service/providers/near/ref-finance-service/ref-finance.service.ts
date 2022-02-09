@@ -35,6 +35,7 @@ import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
+import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 
 interface SwapParams {
   msg: string;
@@ -252,7 +253,7 @@ export class RefFinanceService implements ItProvider {
 
     await this.nearPrivateAdapter.executeMultipleTransactions(
       [...registerTokensTransactions, swapTransaction],
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+      'it',
       minAmountOut
     );
 
@@ -310,14 +311,16 @@ export class RefFinanceService implements ItProvider {
    */
   private async postNearTransaction(
     txHash: string,
-    type: SWAP_PROVIDER_TYPE,
+    type: NearTransactionType,
     form: SwapFormInput
   ): Promise<void> {
     try {
       const usdPrice = form.fromToken.amount.multipliedBy(form.fromToken.price).toNumber();
       const fee = 0;
+      const provider =
+        type === 'ccr' ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING : SWAP_PROVIDER_TYPE.INSTANT_TRADE;
       this.gtmService.fireTxSignedEvent(
-        type,
+        provider,
         txHash,
         fee,
         form.fromToken.symbol,
@@ -326,29 +329,35 @@ export class RefFinanceService implements ItProvider {
       );
 
       const paramsObject = await this.parseSwapParams(txHash);
-      const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);
+      if (!paramsObject) {
+        throw new CustomError('Cant parse transaction');
+      }
 
-      if (type === SWAP_PROVIDER_TYPE.INSTANT_TRADE && 'actions' in msg) {
-        const trade = await RefFinanceService.parseInstantTradeParams(
-          msg,
-          form,
-          paramsObject.amount
-        );
+      if (type === 'it' || type === 'ccr') {
+        const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);
 
-        await this.instantTradesApiService
-          .createTrade(txHash, INSTANT_TRADES_PROVIDERS.REF, trade, BLOCKCHAIN_NAME.NEAR)
-          .toPromise();
+        if ('actions' in msg) {
+          const trade = await RefFinanceService.parseInstantTradeParams(
+            msg,
+            form,
+            paramsObject.amount
+          );
 
-        try {
-          await this.instantTradesApiService.notifyInstantTradesBot({
-            provider: INSTANT_TRADES_PROVIDERS.REF,
-            blockchain: BLOCKCHAIN_NAME.NEAR,
-            walletAddress: paramsObject.receiver_id,
-            trade,
-            txHash
-          });
-        } catch {
-          console.debug('Near transaction bot failed');
+          await this.instantTradesApiService
+            .createTrade(txHash, INSTANT_TRADES_PROVIDERS.REF, trade, BLOCKCHAIN_NAME.NEAR)
+            .toPromise();
+
+          try {
+            await this.instantTradesApiService.notifyInstantTradesBot({
+              provider: INSTANT_TRADES_PROVIDERS.REF,
+              blockchain: BLOCKCHAIN_NAME.NEAR,
+              walletAddress: paramsObject.receiver_id,
+              trade,
+              txHash
+            });
+          } catch {
+            console.debug('Near transaction bot failed');
+          }
         }
       }
 
