@@ -14,6 +14,8 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { CookieService } from 'ngx-cookie-service';
+import { BrowserService } from '../browser/browser.service';
+import { BROWSER } from '@app/shared/models/browser/browser';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -52,7 +54,8 @@ export class AuthService {
     private readonly store: StoreService,
     private readonly errorService: ErrorsService,
     private readonly cookieService: CookieService,
-    @Inject(WINDOW) private window: RubicWindow
+    @Inject(WINDOW) private window: RubicWindow,
+    private readonly browserService: BrowserService
   ) {
     this.isAuthProcess = false;
     this.currentUser$ = new BehaviorSubject<UserInterface>(undefined);
@@ -147,9 +150,10 @@ export class AuthService {
     try {
       this.isAuthProcess = true;
       const permissions = await this.walletConnectorService.requestPermissions();
-      const accountsPermission = permissions.find(
-        permission => permission.parentCapability === 'eth_accounts'
-      );
+      const accountsPermission =
+        this.browserService.currentBrowser === BROWSER.METAMASK ||
+        permissions.find(permission => permission.parentCapability === 'eth_accounts');
+
       if (accountsPermission) {
         await this.walletConnectorService.activate();
         const { address } = this.walletConnectorService;
