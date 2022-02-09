@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Self } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Self } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Question } from '../../models/question';
 import { ActivatedRoute } from '@angular/router';
@@ -10,7 +10,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
   selector: 'app-faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaqComponent implements AfterViewInit {
   public questions: Question[] = [];

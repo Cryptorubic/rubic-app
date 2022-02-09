@@ -113,6 +113,13 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatusChange.emit(value);
   }
 
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+      status: TuiNotification.Success,
+      autoClose: 15000
+    });
+  };
+
   get allowTrade(): boolean {
     const { fromBlockchain, toBlockchain, fromToken, toToken, fromAmount } =
       this.swapFormService.inputValue;
@@ -345,8 +352,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
-      onTransactionHash: hash => {
-        this.notifyTradeInProgress(hash);
+      onTransactionHash: (txHash: string) => {
+        this.notifyTradeInProgress(txHash);
       }
     };
 
@@ -375,13 +382,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
           }
 
           this.tradeInProgressSubscription$.unsubscribe();
-          this.notificationsService.show(
-            new PolymorpheusComponent(SuccessTrxNotificationComponent),
-            {
-              status: TuiNotification.Success,
-              autoClose: 15000
-            }
-          );
 
           this.counterNotificationsService.updateUnread();
         }),
@@ -438,7 +438,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyTradeInProgress(hash: string): void {
+  private notifyTradeInProgress(txHash: string): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('bridgePage.progressMessage'),
       {
@@ -449,7 +449,12 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(hash, this.fromBlockchain);
+      this.successTxModalService.open(
+        'bridge',
+        txHash,
+        this.fromBlockchain,
+        this.showSuccessTrxNotification
+      );
     }
   }
 }

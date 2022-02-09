@@ -376,7 +376,10 @@ export class SolanaWeb3PrivateService {
     const resArray: { [key: number]: AccountInfo<Buffer | null>[] } = {};
     await Promise.all(
       keys.map(async (key, index) => {
-        resArray[index] = await this._connection.getMultipleAccountsInfo(key, commitment);
+        resArray[index] = (await this._connection.getMultipleAccountsInfo(
+          key,
+          commitment
+        )) as AccountInfo<Buffer>[];
       })
     );
 

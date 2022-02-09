@@ -161,7 +161,7 @@ export class WalletsModalComponent implements OnInit {
                 provider,
                 BlockchainsInfo.getBlockchainByName(blockchainName).id
               );
-              await this.authService.signIn();
+              await this.authService.serverlessSignIn();
               this.close();
             }
           },
@@ -173,7 +173,7 @@ export class WalletsModalComponent implements OnInit {
     try {
       const connectionSuccessful = await this.walletConnectorService.connectProvider(provider);
       if (connectionSuccessful) {
-        await this.authService.signIn();
+        await this.authService.serverlessSignIn();
       }
     } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);

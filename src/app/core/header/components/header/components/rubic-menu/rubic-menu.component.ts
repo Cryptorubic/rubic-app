@@ -5,7 +5,6 @@ import {
   Component,
   EventEmitter,
   Inject,
-  Injector,
   Input,
   OnDestroy,
   Output,
@@ -13,20 +12,14 @@ import {
   TemplateRef,
   ViewChildren
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { TuiDialogService } from '@taiga-ui/core';
-import { TranslateService } from '@ngx-translate/core';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { NavigationItem } from 'src/app/core/header/components/header/components/rubic-menu/models/navigation-item';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
-import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
-import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { HeaderStore } from '../../../../services/header.store';
 import { NAVIGATION_LIST } from '@core/header/components/header/components/rubic-menu/models/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
@@ -66,18 +59,11 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   public readonly navigationList: NavigationItem[];
 
   constructor(
-    private router: Router,
-    private headerStore: HeaderStore,
     private authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly walletConnectorService: WalletConnectorService,
-    private translateService: TranslateService,
     private readonly counterNotificationsService: CounterNotificationsService,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly swapFormService: SwapFormService,
     private readonly gtmService: GoogleTagManagerService,
-    @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-    @Inject(Injector) private injector: Injector,
     @Inject(WINDOW) private window: Window
   ) {
     this.currentUser$ = this.authService.getCurrentUser();
@@ -127,7 +113,7 @@ export class RubicMenuComponent implements AfterViewInit, OnDestroy {
   }
 
   public logout(): void {
-    this.authService.signOut().subscribe();
+    this.authService.serverlessSignOut();
   }
 
   isLinkActive(url: string): boolean {
