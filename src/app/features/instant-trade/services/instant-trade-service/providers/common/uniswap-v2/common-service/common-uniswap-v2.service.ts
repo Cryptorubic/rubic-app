@@ -662,6 +662,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     );
 
     const uniswapV2Trade: UniswapV2Trade = {
+      tokenIn: trade.from.token.address,
+      tokenOut: trade.to.token.address,
       amountIn: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
       amountOutMin: Web3Pure.toWei(
         subtractPercent(trade.to.amount, this.settings.slippageTolerance),
@@ -737,8 +739,8 @@ export abstract class CommonUniswapV2Service implements ItProvider {
           const { feeData } = this.iframeService;
           const fee = feeData.fee * 1000;
           const methodArguments = [
-            uniswapV2Trade.path[0],
-            uniswapV2Trade.path[uniswapV2Trade.path.length - 1],
+            uniswapV2Trade.tokenIn,
+            uniswapV2Trade.tokenOut,
             uniswapV2Trade.amountIn,
             this.contractAddress,
             encodedData,

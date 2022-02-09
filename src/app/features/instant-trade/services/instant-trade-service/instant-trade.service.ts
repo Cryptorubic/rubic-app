@@ -262,7 +262,18 @@ export class InstantTradeService {
 
           confirmCallback();
           this.notifyTradeInProgress(hash, trade.blockchain);
-          await this.postTrade(hash, provider, trade);
+
+          if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
+            await this.postTrade(
+              hash,
+              provider,
+              trade,
+              this.iframeService.feeData.fee,
+              this.iframeService.promoCode
+            );
+          } else {
+            await this.postTrade(hash, provider, trade);
+          }
         }
       };
 
@@ -304,12 +315,7 @@ export class InstantTradeService {
     trade: InstantTrade,
     options: ItOptions
   ): Promise<Partial<TransactionReceipt>> {
-    if (
-      this.iframeService.isIframeWithFee(
-        trade.blockchain,
-        this.blockchainsProviders[trade.blockchain][provider]
-      )
-    ) {
+    if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
       return this.createTradeWithFee(provider, trade, options);
     }
 
@@ -363,14 +369,23 @@ export class InstantTradeService {
   private async postTrade(
     hash: string,
     provider: INSTANT_TRADES_PROVIDERS,
-    trade: InstantTrade
+    trade: InstantTrade,
+    fee?: number,
+    promoCode?: string
   ): Promise<void> {
     const publicBlockchainAdapter = this.publicBlockchainAdapterService[trade.blockchain];
     await publicBlockchainAdapter.getTransactionByHash(hash, 0, 60, 1000);
     await timer(1000)
       .pipe(
         switchMap(() =>
-          this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
+          this.instantTradesApiService.createTrade(
+            hash,
+            provider,
+            trade,
+            trade.blockchain,
+            fee,
+            promoCode
+          )
         ),
         catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
@@ -405,7 +420,10 @@ export class InstantTradeService {
     );
 
     const providerApproveData = providers.map((provider: ItProvider) => {
-      const targetContractAddress = this.iframeService.isIframeWithFee(fromBlockchain, provider)
+      const targetContractAddress = this.iframeService.isIframeWithFee(
+        fromBlockchain,
+        provider.providerType
+      )
         ? IT_PROXY_FEE_CONTRACT_ADDRESS
         : undefined;
 
@@ -428,10 +446,7 @@ export class InstantTradeService {
     this.checkDeviceAndShowNotification();
     try {
       const { fromBlockchain } = this.swapFormService.inputValue;
-      const targetContractAddress = this.iframeService.isIframeWithFee(
-        fromBlockchain,
-        this.blockchainsProviders[trade.blockchain][provider]
-      )
+      const targetContractAddress = this.iframeService.isIframeWithFee(fromBlockchain, provider)
         ? IT_PROXY_FEE_CONTRACT_ADDRESS
         : undefined;
 

@@ -8,9 +8,9 @@ import { Cacheable } from 'ts-cacheable';
 import { catchError } from 'rxjs/operators';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
-import { PromotionApiService } from '@core/services/backend/promotion-api/promotion-api.service';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +50,10 @@ export class IframeService implements OnDestroy {
     };
   }
 
+  public get promoCode(): string {
+    return this.iframeParameters.promoCode;
+  }
+
   public get originDomain(): string {
     const url =
       this.window.location !== this.window.parent.location
@@ -62,7 +66,7 @@ export class IframeService implements OnDestroy {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly rendererFactory2: RendererFactory2,
     @Inject(WINDOW) private readonly window: Window,
-    private readonly promotionApiService: PromotionApiService
+    private readonly promotionPromoterAddressApiService: PromotionPromoterAddressApiService
   ) {}
 
   ngOnDestroy() {
@@ -112,7 +116,7 @@ export class IframeService implements OnDestroy {
       return of(null);
     }
 
-    return this.promotionApiService.getPromoterWalletAddress(promoCode).pipe(
+    return this.promotionPromoterAddressApiService.getPromoterWalletAddress(promoCode).pipe(
       catchError((err: unknown) => {
         console.error('Cannot retrieve promoter address:', err);
         return of(null);
@@ -120,7 +124,10 @@ export class IframeService implements OnDestroy {
     );
   }
 
-  public isIframeWithFee(blockchain: BLOCKCHAIN_NAME, provider: ItProvider): boolean {
+  public isIframeWithFee(
+    blockchain: BLOCKCHAIN_NAME,
+    providerType: INSTANT_TRADES_PROVIDERS
+  ): boolean {
     if (!this.isIframe || !this.iframeParameters.fee) {
       return false;
     }
@@ -130,7 +137,7 @@ export class IframeService implements OnDestroy {
     }
 
     return WHITELIST_PROVIDERS[blockchain as keyof typeof WHITELIST_PROVIDERS].some(
-      whitelistProvider => provider.providerType === whitelistProvider
+      whitelistProvider => providerType === whitelistProvider
     );
   }
 }
