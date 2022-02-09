@@ -1,0 +1,178 @@
+@use 'src/scss/core' as *;
+
+.highlight {
+  color: var(--main-green);
+}
+
+.banner {
+
+  overflow: hidden;
+
+  color: #fff;
+  text-decoration: none;
+
+  background: linear-gradient(97.16deg, #1f2021 5.58%, #1c1c1d 53%, #252d33 94.42%);
+
+  &__container {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__text {
+    margin: 0;
+
+    padding: 15px 0;
+
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 39px;
+    text-align: left;
+
+    text-transform: uppercase;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+
+    padding: 0 34px;
+
+    color: white;
+    font-size: 18px;
+
+    white-space: nowrap;
+
+    background: var(--main-green);
+    border-radius: 6px;
+
+    img {
+      margin-left: 8px;
+
+      transition: 100ms ease-in;
+    }
+
+    &:hover {
+      text-decoration: none;
+
+      img {
+        transform: translateX(3px);
+      }
+    }
+  }
+
+  &__link_text {
+    margin: 11px 0;
+
+    line-height: 1;
+  }
+
+  &__cube_left {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 100%;
+  }
+
+  &__cube_right {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    height: 100%;
+  }
+
+  &__cube_mobile {
+    display: none;
+  }
+}
+
+@include b($desktop) {
+  .banner {
+    &__text {
+      font-size: 30px;
+    }
+  }
+}
+
+@include b(1070) {
+  .banner {
+    &__text {
+      font-size: 25px;
+      line-height: 30px;
+    }
+
+    &__cube_right {
+      display: none;
+    }
+
+    &__cube_left {
+      display: none;
+    }
+
+    &__cube_mobile {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      display: block;
+    }
+  }
+}
+
+@include b($tablet) {
+  .banner {
+    &__container {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    &__text {
+      font-size: 20px;
+    }
+  }
+}
+
+@include b(510) {
+  .banner {
+    &__text {
+      font-size: 15px;
+      line-height: 1;
+    }
+  }
+}
+
+@include b(480) {
+  .banner {
+    &__link {
+      padding: 0 15px;
+
+      font-size: 15px;
+    }
+
+    &__text {
+      margin-right: 35px;
+
+      font-size: 14px;
+    }
+  }
+}
+
+@include b(400) {
+  .banner {
+    &__text {
+      margin-right: 0;
+    }
+  }
+}

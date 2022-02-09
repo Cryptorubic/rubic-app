@@ -622,6 +622,11 @@
       "link": "_placeholder"
     }
   },
+  "referralBanner": {
+    "text": "Участвуйте в нашей",
+    "text2": "Реферальной Программе и получайте вознаграждение!",
+    "link": "Learn more"
+  },
   "volume": {
     "title": "Накопленный Объем Операций",
     "instantTrades": "Swaps",

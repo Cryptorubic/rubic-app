@@ -627,6 +627,11 @@
       "link": "_placeholder"
     }
   },
+  "referralBanner": {
+    "text": "Take part in our ",
+    "text2": "Referral Program & get rewards!",
+    "link": "Learn more"
+  },
   "volume": {
     "title": "누적 거래량",
     "instantTrades": "Swaps",
