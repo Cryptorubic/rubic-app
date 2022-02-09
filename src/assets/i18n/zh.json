@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "我们面临着从服务器获取交易数据的问题。 如果问题仍然存在，请重新加载页面或联系支持人员。",
     "unsupportedTokenCCR": "嘗試發送交易時發生錯誤。\n 您可能正在嘗試出售當前不受多鏈支持的代幣。點擊鏈接了解更多信息。",
     "rpcError": "發生錯誤，請按照以下鏈接查看您需要做些什麼來修復它。",
     "buttonLink": "學到更多",
+    "wrongPromoterWallet": "你連接了一個不兼容以太坊網絡的錢包。請退出你的賬戶並切換到以太坊兼容的錢包（例如MetaMask）。",
     "walletNotInstalled": "未安装钱包"
   },
   "navigation": {
@@ -98,7 +98,8 @@
     "logoutMessage": "你真的想注销吗？",
     "notAvailable": "建設中 - 用戶體驗重新設計。",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "促銷"
   },
   "aboutPage": {
     "description": "Rubic 是一个支持多链的 DeFi 生态系统，以成为完整的一站式去中心化平台为目标，提供多个不同区块链间的跨链P2P即时兑换功能。",
@@ -344,8 +345,38 @@
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
         "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
         "id": "rpcError"
+      },
+      {
+        "title": "Rubic Autorefund Policy.",
+        "answer": "<strong>RUBIC的多鏈路由技術</strong>\n \nRubic 為其用戶提供了非常方便且有益的多鏈路由系統，該系統允許用戶一鍵在 10 個區塊鏈之間交換超過 15,000 種資產。\n該技術包括 3 個主要步驟：\n1 - Rubic 完成所選代幣到 USDC 的交換。\n2 - 我們在目標網絡中完成了 USDC 代幣到 USDC 的交換。\n3 - 目標網絡中的 USDC 被交換為用戶選擇的代幣。\n我們的多鏈智能路由系統基於連接到協議的多個 DEX。集成 DEX 上列出的每項資產都促進了 Rubic 的交易，因此用戶能夠交換穩定幣和任何其他資產。得益於我們所有的 DEX 集成和智能路由技術，我們為用戶提供了跨集成 DEX 的最優惠價格。\n\n<a href='https://docs.rubic.finance/multi-chain-protocol/supported-tokens-and-networks' target='_blank' rel='noopener noreferrer'>文檔</a> 中找到我們支持的多鍊和鏈上路由的 DEX 列表。\n \n<strong>滑點問題</strong>\n \n不幸的是，並非我們集成的 DEX 上列出的每個代幣都有足夠的流動性來進行正確的交易和掉期。在交易期間，代幣價格可能會發生變化，因此目標網絡中的交易有可能無法完成。\n \n由於區塊鏈的特殊性，Rubic 無法完全影響交易時間：交易過程中 Gas 費會迅速變化，因此會增加交易時間和不通過的可能性。\n \n此外，主要擔憂之一是波動性。這可能會讓人惱火，特別是如果交易在以太坊網絡上進行，用戶花錢來支付汽油費。多虧了穩定幣，交易時間和費用大幅上漲不會對掉期產生太大影響。\n \n<strong>如何避免和降低交易風險</strong>\n \n首先，Rubic 建議將滑點百分比提高到 4%。 Rubic 的多鏈路由的開發將為用戶提供選擇最小和推薦滑點的機會。\n通過接收所選代幣匯率變化的定量和定性數據，我們將能夠為用戶提供最小和推薦的滑點。\n \n<strong>為什麼交易仍然可以恢復？</strong>\n \n不幸的是，仍有一些交易可能無法解決的情況。\n \n-   \t交易在源網絡中恢復。如果發生這種情況，用戶將獲得他發送的代幣，但燃氣費是無法退還的。這是任何 DEX 上鍊上交換的常見機制。\n \n-   \t交易在目標網絡中恢復。\n \n<strong>新的自動退款解決方案</strong>\n \n考慮到所有可能的交易結果，我們提出了自動退款解決方案。 Rubic 將使用 USDC 穩定幣完成退款，這將等於原始代幣數量。由於 USDC 是一種穩定的硬幣，因此即使在市場波動期間，它的美元匯率也不會改變。\n \n此退款政策是從眾多選項中選擇的。我們將與您分享其中的一些：\n \n- 源網絡代幣退款：由於雙方的波動性而存在風險，這可能對代幣的價格產生重大影響。\n\n-   \t忽略退款的滑點：正如我們所經歷的那樣，獲得盡可能多的代幣可以被交換。大多數用戶不支持此解決方案，因為它會導致最終收到的資產數量減少。\n\n-   \t源網絡中的穩定幣退款：\n-   \t用戶已經支付了gas與源網絡中的智能合約進行交互；\n-   \t用戶的雙重索賠（代幣和區塊鏈費用） - 由於費用翻倍，此選項更昂貴。\n \n最後，我們的團隊找到了合適的解決方案。\n \n<strong>RUBIC 的團隊將以 USDC 代幣完成退款。退款金額將等於交易開始時的美元代幣金額。退款將在目標網絡中完成。</strong>\n\n示例：\n\n用戶未能完成從以太坊上的代幣 A 到幣安智能鏈上的代幣 B 的交換。在這種情況下，Rubic 將通過 BSC 網絡上的 USDC 代幣完成對用戶的自動退款。\n \n我們期待著改進這個系統及其機制。稍後，我們正在考慮為用戶提供選擇：在緩存滑點上完成自動交易，在源網絡中完成退款，以及其他選項。\nRubic 的團隊正在聽取社區的意見，欣賞他們的意見，我們欣然接受了引入自動退款系統的想法。\n"
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "切換到以太坊兼容的錢包"
+    },
+    "invitations": {
+      "invitedProjects": "I受邀項目s",
+      "noProjects": "你還沒有邀請任何項目",
+      "tableColumns": {
+        "projectName": "項目",
+        "invitationDate": "被邀請",
+        "tradingVolume": "交易量",
+        "received": "收到",
+        "receivedTokens": "收到的令牌"
+      }
+    },
+    "statistics": {
+      "referralProgram": "推薦計劃",
+      "invitedProjects": "受邀項目",
+      "totalRewards": "總獎勵",
+      "instantRewards": "用我們的小部件賺錢",
+      "earnWithOurWidget": "Earn with our Widget",
+      "createAReferralLink": "生成一個推薦鏈接並開始使用我們的 Widget 賺錢。 請務必閱讀計劃規則！",
+      "myPromoLink": "我的促銷鏈接",
+      "contactUs": "聯繫我們"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -620,7 +651,7 @@
     },
     "external": {
       "text": "Aurora 現在在 Rubic 直播！ 立即完成鏈上和多鏈交換",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "volume": {

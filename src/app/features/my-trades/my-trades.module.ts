@@ -18,7 +18,7 @@ import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { MyTradesPageComponent } from 'src/app/features/my-trades/my-trades-page.component';
 import { GasRefundService } from 'src/app/features/my-trades/services/gas-refund.service';
 import { MyTradesComponent } from './components/my-trades/my-trades.component';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { TableComponent } from './components/my-trades/components/table/table.component';
 import { AccordionComponent } from './components/my-trades/components/accordion/accordion.component';
 import { GasRefundComponent } from './components/gas-refund/gas-refund.component';

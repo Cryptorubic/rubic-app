@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
+    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con la red Ethereum. Cierre sesión en su cuenta y cambie a una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
@@ -98,7 +98,8 @@
     "logoutMessage": "¿Deseas Cerrar Sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "Promocion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -344,8 +345,38 @@
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
         "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
         "id": "rpcError"
+      },
+      {
+        "title": "Rubic Autorefund Policy.",
+        "answer": "<strong>TECNOLOGÍA DE ENRUTAMIENTO MULTICADENA DE RUBIC</strong>\n\n  Rubic ofrece a sus usuarios el sistema de enrutamiento multicadena altamente conveniente y beneficioso , que permite a los usuarios intercambiar más de 15 000 activos entre 10 cadenas de bloques con un solo clic.\nEsta tecnología incluye 3 pasos principales:\n1 - Rubic completa el intercambio del token elegido a USDC.\n2 - Completamos el intercambio del token USDC a USDC en la red de destino.\n3 - el USDC en la red de destino se intercambia por el token que el usuario ha elegido.\nNuestro sistema de enrutamiento inteligente multicadena se basa en varios DEX conectados al protocolo. El comercio en Rubic se ve facilitado por todos los activos enumerados en los DEX integrados, por lo que los usuarios pueden intercambiar monedas estables y cualquier otro activo . Gracias a todas nuestras integraciones DEX y tecnología de enrutamiento inteligente, brindamos a nuestros usuarios las mejores tarifas para transacciones en DEX integrados.\n\nActualmente, puede encontrar la lista de nuestros DEX admitidos para el enrutamiento multicadena y en cadena en nuestros <a href='https://docs.rubic.finance/multi-chain-protocol/supported-tokens-and-networks' target='_blank' rel='noopener noreferrer'>Documentos</a> .\n \n<strong>PROBLEMAS DE DESLIZAMIENTO</strong>\n \nDesafortunadamente, no todos los tokens que figuran en nuestros DEX integrados tienen suficiente liquidez para intercambios y transacciones correctos. Durante el tiempo de la transacción, el precio del token puede cambiar, por lo que la operación en la red de destino tiene la posibilidad de no completarse.\n \nDebido a la especificidad de blockchain, Rubic no puede influir completamente en el tiempo de transacción: la tarifa del gas puede cambiar rápidamente durante la transacción, por lo que aumentará el tiempo de transacción y la posibilidad de no pasar.\n \nAdemás, una de las principales preocupaciones es la volatilidad. Esto puede volverse irritante, especialmente si la transacción se realiza en la red Ethereum, donde los usuarios gastan dinero para cubrir las tarifas de gasolina . Gracias a las monedas estables, los tiempos de transacción y los fuertes saltos en las tarifas no afectan tanto al intercambio.\n \n<strong>CÓMO EVITAR Y REDUCIR LOS RIESGOS COMERCIALES</strong>\n \nEn primer lugar, Rubic recomienda aumentar el porcentaje de deslizamiento hasta un 4%. El desarrollo del enrutamiento multicadena de Rubic brindará al usuario la oportunidad de elegir el deslizamiento mínimo y recomendado.\nAl recibir datos cuantitativos y cualitativos sobre los cambios en la tasa de cambio de los tokens seleccionados, podremos ofrecer al usuario el deslizamiento mínimo y recomendado.\n \n<strong>¿POR QUÉ SE PUEDEN REVERTIR LAS OPERACIONES?</strong>\n \nDesafortunadamente, todavía hay varios casos en los que los intercambios podrían no resolverse.\n \n-   \tLa transacción se revierte en la red de origen. Si esto sucede, el usuario obtendrá los tokens que ha enviado, pero la tarifa del gas no es reembolsable. Esta es una mecánica común para los intercambios en cadena en cualquier DEX.\n \n-   \tLa transacción se revierte en la red de destino.\n \n<strong>NUEVA SOLUCIÓN DE REEMBOLSO AUTOMÁTICO</strong>\n \nTeniendo en cuenta todos los posibles resultados comerciales, llegamos a una solución de reembolso automático. Rubic completará los reembolsos utilizando la moneda estable de USDC, que equivaldrá a la cantidad original de tokens. Dado que USDC es una moneda estable, su tasa en USD no cambiará incluso durante la volatilidad del mercado.[1] \n \nEsta Política de Reembolso fue elegida entre numerosas opciones. Te compartimos algunos de ellos:\n \n-   \tReembolso de tokens de red de origen: arriesgado debido a la volatilidad para ambos lados, lo que puede tener un efecto significativo en el precio del token.\n\n-   \tIgnorando el Slippa ge para el reembolso: Como hemos experimentado, para obtener tantos tokens como se pudieron intercambiar. La mayoría de los usuarios no admiten esta solución, ya que puede reducir la cantidad final de activos recibidos.\n\n-   \tReembolsos de Stablecoin en la red de origen:\n-   \tLos usuarios ya pagaron gas para interactuar con el contrato inteligente en la red de origen;\n-   \tEl doble reclamo del usuario (tanto para tokens como para tarifas de blockchain): esta opción es más costosa debido a las tarifas duplicadas.\n \nFinalmente, nuestro equipo ha llegado a la solución adecuada.\n \n<strong>EL EQUIPO DE RUBIC COMPLETARÁ EL REEMBOLSO EN TOKENS USDC. EL IMPORTE DEL REEMBOLSO SERÁ IGUAL A LA CANTIDAD DE TOKENS EN USD EN EL MOMENTO EN QUE SE INICIÓ LA OPERACIÓN. EL REEMBOLSO SE COMPLETARÁ EN LA RED OBJETIVO.</strong>\n\nEJEMPLO:\n\nEl usuario no puede completar un intercambio de Token A en Ethereum a Token B en Binance Smart Chain. En este caso, Rubic completará el reembolso automático a los usuarios a través del token USDC en la red BSC.\n \nEsperamos mejorar este sistema y su mecánica. Más adelante, estamos considerando brindarles a los usuarios una opción: completar un intercambio automático en el deslizamiento almacenado en caché, completar el reembolso en la red de origen y otras opciones.\nEl equipo de Rubic está escuchando a la comunidad, apreciando su opinión y aceptamos con gusto la idea de introducir un sistema de reembolso automático.\n"
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Cambiar a Monedero compatible con Ethereum"
+    },
+    "invitations": {
+      "invitedProjects": "Proyectos invitados",
+      "noProjects": "Todavía no has invitado a ningún proyecto",
+      "tableColumns": {
+        "projectName": "Proyecto",
+        "invitationDate": "Invitado",
+        "tradingVolume": "Volumen de negociación",
+        "received": "Recibido",
+        "receivedTokens": "Fichas recibidas"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Programa de referencias",
+      "invitedProjects": "Proyectos invitados",
+      "totalRewards": "Recompensas totales",
+      "instantRewards": "Recompensas instantáneas",
+      "earnWithOurWidget": "Gana con nuestro widget",
+      "createAReferralLink": "Genera un enlace de referencia y comienza a ganar con nuestro widget. ¡Asegúrate de leer las Reglas del Programa!",
+      "myPromoLink": "Mi enlace promocional",
+      "contactUs": "Contáctenos"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -620,7 +651,7 @@
     },
     "external": {
       "text": "Aurora ya está disponible en Rubic! ¡Complete intercambios On-Chain y Multi-Chain ahora!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "volume": {
