@@ -459,7 +459,7 @@ export class QueryParamsService {
       await this.walletConnectorService.connectProvider(WALLET_NAME.NEAR);
       this.walletConnectorService.setNearPublicKey(queryParams.all_keys);
       setTimeout(async () => {
-        await this.authService.signIn();
+        await this.authService.serverlessSignIn();
         this.clearNearParams();
       }, 500);
     } else if (transactionHashes) {

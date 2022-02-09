@@ -98,7 +98,7 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.ARBITRUM]: {
-    baseUrl: 'https://arbiscan.io',
+    baseUrl: 'https://arbiscan.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
@@ -106,7 +106,7 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AURORA]: {
-    baseUrl: 'https://explorer.mainnet.aurora.dev',
+    baseUrl: 'https://explorer.mainnet.aurora.dev/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
@@ -122,7 +122,7 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: {
-    baseUrl: 'https://cchain.explorer.avax-test.network',
+    baseUrl: 'https://cchain.explorer.avax-test.network/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
@@ -130,7 +130,7 @@ const blockchainsScanners = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.AURORA_TESTNET]: {
-    baseUrl: 'https://explorer.testnet.aurora.dev',
+    baseUrl: 'https://explorer.testnet.aurora.dev/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',

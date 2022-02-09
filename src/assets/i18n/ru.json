@@ -33,7 +33,8 @@
     "approve": "Утвердить",
     "switchTo": "Переключиться на сеть {{ networkName }}",
     "tradeVia": "Торговать через ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "Детали транзакции"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -75,7 +76,6 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
-    "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "tradingIsNotAvailable": "Торговля недоступна",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
@@ -529,13 +529,11 @@
       "text": "Пожалуйста, выберите исходную сеть для обменов токенов. Подключив кошелек Coinbase, вы не сможете изменить сеть в текущей сессии. Чтобы изменить сеть после подключения кошелька Coinbase, выйдите из своей учетной записи и подключитесь, выбрав другую сеть или используйте другой кошелек."
     },
     "successTxModal": {
-      "see": "Смотрите ",
-      "transactionDetailsLink":"детали транзакции",
-      "itWillAppearsIn": ". Она скоро появится в ",
-      "myTradesLink":"My trades",
-      "pageSoon": " странице.",
-      "title": "The transaction was successfully sent!",
-      "ccrTitle": "Successful swap in source network!"
+      "title": "Транзакция успешко отправлена!",
+      "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
+      "link": "My Trades"
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
@@ -617,7 +615,7 @@
     },
     "external": {
       "text": "Aurora теперь доступен для обмена на Rubic! Выполняйте Он-Чейн и Мульти-Чейн свопы прямо сейчас!",
-      "link": ""
+      "link": "_placeholder"
     }
   },
   "volume": {

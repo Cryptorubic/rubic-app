@@ -20,6 +20,7 @@ import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { AuthService } from '../../auth/auth.service';
 
 type HashObject = { hash: string } | { signature: string };
 
@@ -41,9 +42,10 @@ export class InstantTradesApiService {
   }
 
   constructor(
-    private httpService: HttpService,
-    private useTestingModeService: UseTestingModeService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly httpService: HttpService,
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService
   ) {
     this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
   }
@@ -86,6 +88,7 @@ export class InstantTradesApiService {
       to_token: trade.to.token.address,
       from_amount: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
       to_amount: Web3Pure.toWei(trade.to.amount, trade.to.token.decimals),
+      user: this.authService.userAddress,
       ...hashObject
     };
 
@@ -108,7 +111,11 @@ export class InstantTradesApiService {
       this.walletConnectorService.provider.walletType === 'solana'
         ? BLOCKCHAIN_NAME.SOLANA
         : BLOCKCHAIN_NAME.ETHEREUM;
-    const body = { success, ...InstantTradesApiService.getHashObject(blockchain, hash) };
+    const body = {
+      success,
+      ...InstantTradesApiService.getHashObject(blockchain, hash),
+      user: this.authService.userAddress
+    };
     const url = instantTradesApiRoutes.editData(this.walletConnectorService.provider.walletType);
     return this.httpService.patch(url, body);
   }

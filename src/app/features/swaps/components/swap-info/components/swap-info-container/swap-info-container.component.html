@@ -7,8 +7,7 @@
   [(open)]="accordionOpened"
 >
   <div class="transaction-info__header">
-    <img src="assets/images/icons/hint.svg" alt="info" class="transaction-info__header-hint" />
-    Transaction info
+    {{ 'common.transactionDetails' | translate }}
     <img
       src="assets/images/icons/arrow-down.svg"
       alt="expand"
@@ -19,7 +18,6 @@
   <div tuiAccordionItemContent>
     <tui-loader [showLoader]="loading" [overlay]="true">
       <div class="swaps-info">
-        <h1 class="swaps-info__title">Transaction Info</h1>
         <hr class="delimiter" />
 
         <app-instant-trade-swap-info

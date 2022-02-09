@@ -72,6 +72,13 @@ export class InstantTradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
+  public showSuccessTrxNotification = (): void => {
+    this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
+      status: TuiNotification.Success,
+      autoClose: 15000
+    });
+  };
+
   constructor(
     // Providers start.
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
@@ -241,21 +248,11 @@ export class InstantTradeService {
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
     let transactionHash: string;
-    const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-    const fee = 0;
-
     try {
       const options = {
         onConfirm: async (hash: string) => {
           confirmCallback();
-          this.notifyTradeInProgress(hash);
-          this.notifyGtmAfterSigningTx(
-            hash,
-            trade.from.token.symbol,
-            trade.to.token.symbol,
-            fee,
-            usdPrice
-          );
+          this.notifyTradeInProgress(hash, trade.blockchain);
           await this.postTrade(hash, provider, trade);
           transactionHash = hash;
         }
@@ -270,12 +267,18 @@ export class InstantTradeService {
           options
         );
       }
+
+      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+      const fee = 0;
+      this.notifyGtmOnSuccess(
+        transactionHash,
+        trade.from.token.symbol,
+        trade.to.token.symbol,
+        fee,
+        usdPrice
+      );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
-      this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
-        status: TuiNotification.Success,
-        autoClose: 15000
-      });
 
       await this.instantTradesApiService
         .notifyInstantTradesBot({
@@ -390,23 +393,18 @@ export class InstantTradeService {
     }
   }
 
-  private notifyTradeInProgress(hash: string): void {
-    this.modalSubscriptions.push(
-      this.notificationsService.show(
-        this.translateService.instant('notifications.tradeInProgress'),
-        {
-          status: TuiNotification.Info,
-          autoClose: false
-        }
-      )
-    );
-
+  private notifyTradeInProgress(txHash: string, blockchain: BLOCKCHAIN_NAME): void {
     if (this.window.location.pathname === '/') {
-      this.successTxModalService.open(hash, this.swapFormService.inputValue.fromBlockchain);
+      this.successTxModalService.open(
+        'default',
+        txHash,
+        blockchain,
+        this.showSuccessTrxNotification
+      );
     }
   }
 
-  private notifyGtmAfterSigningTx(
+  private notifyGtmOnSuccess(
     txHash: string,
     fromToken: string,
     toToken: string,

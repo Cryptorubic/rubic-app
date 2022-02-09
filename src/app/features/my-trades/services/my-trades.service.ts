@@ -16,10 +16,8 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { TableProvider, TableTrade } from '@shared/models/my-trades/table-trade';
-import { InstantTradesApiService } from 'src/app/core/services/backend/instant-trades-api/instant-trades-api.service';
 import { BridgeApiService } from 'src/app/core/services/backend/bridge-api/bridge-api.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
-import { HttpClient } from '@angular/common/http';
 import { CrossChainRoutingApiService } from 'src/app/core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { GasRefundApiService } from '@core/services/backend/gas-refund-api/gas-refund-api.service';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
@@ -52,11 +50,9 @@ export class MyTradesService {
   private readonly _warningHandler$ = new Subject<void>();
 
   constructor(
-    private readonly httpClient: HttpClient,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
-    private readonly instantTradesApiService: InstantTradesApiService,
     private readonly bridgeApiService: BridgeApiService,
     private readonly crossChainRoutingApiService: CrossChainRoutingApiService,
     private readonly gasRefundApiService: GasRefundApiService,
@@ -104,10 +100,6 @@ export class MyTradesService {
 
         return forkJoin([
           this.getBridgeTransactions(),
-          this.instantTradesApiService.getUserTrades(this.walletAddress, (err: unknown) => {
-            console.debug(err);
-            this._warningHandler$.next();
-          }),
           this.getCrossChainTrades(),
           this.getGasRefundTrades()
         ]).pipe(
