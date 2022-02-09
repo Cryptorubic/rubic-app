@@ -246,8 +246,22 @@ export class InstantTradeService {
       const options = {
         onConfirm: async (hash: string) => {
           confirmCallback();
+
+          const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+          const fee = 0;
+
           this.notifyTradeInProgress(hash, trade.blockchain);
+
+          this.notifyGtmAfterSignTx(
+            transactionHash,
+            trade.from.token.symbol,
+            trade.to.token.symbol,
+            fee,
+            usdPrice
+          );
+
           await this.postTrade(hash, provider, trade);
+
           transactionHash = hash;
         }
       };
@@ -261,16 +275,6 @@ export class InstantTradeService {
           options
         );
       }
-
-      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-      const fee = 0;
-      this.notifyGtmOnSuccess(
-        transactionHash,
-        trade.from.token.symbol,
-        trade.to.token.symbol,
-        fee,
-        usdPrice
-      );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.updateTrade(transactionHash, true);
 
@@ -398,7 +402,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(
+  private notifyGtmAfterSignTx(
     txHash: string,
     fromToken: string,
     toToken: string,
