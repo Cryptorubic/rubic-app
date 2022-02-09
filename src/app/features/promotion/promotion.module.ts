@@ -14,7 +14,6 @@ import {
   TuiSvgModule
 } from '@taiga-ui/core';
 import { PromotionService } from '@features/promotion/services/promotion.service';
-import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 import { PromotionStatsComponent } from './components/promotion-stats/promotion-stats.component';
 import { PromotionAccordionComponent } from './components/promotion-invited-projects/components/promotion-accordion/promotion-accordion.component';
 import { PromotionInvitedProjectsComponent } from './components/promotion-invited-projects/promotion-invited-projects.component';
@@ -45,6 +44,6 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     TuiDataListModule,
     TuiButtonModule
   ],
-  providers: [PromotionService, PromotionApiService]
+  providers: [PromotionService]
 })
 export class PromotionModule {}

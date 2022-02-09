@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { PromotionTableData } from '@features/promotion/models/promotion-table-data-item.interface';
 import { filter, map, share } from 'rxjs/operators';
 import { notNull } from '@shared/utils/utils';
-import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
+import { PromotionApiService } from '@core/services/backend/promotion-api/promotion-api.service';
 import { PromotionStatistics } from '@features/promotion/models/promotion-statistics.interface';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
