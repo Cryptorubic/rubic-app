@@ -67,7 +67,8 @@ export class PromotionInvitedProjectsComponent {
   }
 
   public reconnectWallet(): void {
-    this.authService.signOut().subscribe(() => this.openWalletsModal());
+    this.authService.serverlessSignOut();
+    this.openWalletsModal();
   }
 
   public changeSortParameter(sortColumn: PromotionTableColumn): void {

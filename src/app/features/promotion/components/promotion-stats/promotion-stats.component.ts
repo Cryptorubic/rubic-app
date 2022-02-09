@@ -76,7 +76,8 @@ export class PromotionStatsComponent implements OnInit {
   }
 
   public reconnectWallet(): void {
-    this.authService.signOut().subscribe(() => this.openWalletsModal());
+    this.authService.serverlessSignOut();
+    this.openWalletsModal();
   }
 
   public updateStatistics(): void {
