@@ -1,1 +1,5 @@
-export type StatisticResponse = {} | string;
+export type StatisticResponse = {
+  integratedProjectsCount: string;
+  totalRewards: string;
+  instantRewards: string;
+};
