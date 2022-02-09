@@ -147,14 +147,17 @@ export class AuthService {
    * Connect wallet.
    */
   public async serverlessSignIn(): Promise<void> {
+    const isMetamaskBrowser = this.browserService.currentBrowser === BROWSER.METAMASK;
     try {
       this.isAuthProcess = true;
-      const permissions = await this.walletConnectorService.requestPermissions();
-      const accountsPermission =
-        this.browserService.currentBrowser === BROWSER.METAMASK ||
-        permissions.find(permission => permission.parentCapability === 'eth_accounts');
 
-      if (accountsPermission) {
+      const permissions = !isMetamaskBrowser
+        ? (await this.walletConnectorService.requestPermissions()).find(
+            permission => permission.parentCapability === 'eth_accounts'
+          )
+        : true;
+
+      if (permissions) {
         await this.walletConnectorService.activate();
         const { address } = this.walletConnectorService;
         this.currentUser$.next({ address } || null);
