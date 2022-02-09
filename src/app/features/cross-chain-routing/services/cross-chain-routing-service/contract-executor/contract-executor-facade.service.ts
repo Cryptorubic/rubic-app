@@ -92,6 +92,25 @@ export class ContractExecutorFacadeService {
         const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
         await this.handleSolanaTransaction(hash, options?.onTransactionHash, trade, isToNative);
 
+        const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
+          trade.toProviderIndex,
+          isToNative
+        );
+        this.sendDataFromSolana(trade.fromBlockchain, hash, swapToUserMethodName);
+
+        await new Promise((resolve, reject) => {
+          this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
+            hash,
+            (signatureResult: SignatureResult) => {
+              if (!signatureResult.err) {
+                resolve(hash);
+              } else {
+                reject(signatureResult.err);
+              }
+            }
+          );
+        });
+
         return hash;
       }
 
@@ -110,18 +129,18 @@ export class ContractExecutorFacadeService {
    * Solana contract method doesn't have `signature` argument. Sends transaction details via http.
    * @param fromBlockchain From blockchain.
    * @param transactionHash Source transaction hash.
-   * @param contractFunction Method signature to call in target network.
+   * @param methodName Method name to call in target network.
    */
   private sendDataFromSolana(
     fromBlockchain: SupportedCrossChainBlockchain,
     transactionHash: string,
-    contractFunction: string
+    methodName: string
   ): void {
     this.apiService
       .postCrossChainDataFromSolana(
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[fromBlockchain],
-        contractFunction
+        methodName
       )
       .subscribe();
   }
@@ -135,11 +154,11 @@ export class ContractExecutorFacadeService {
     if (onTransactionHash) {
       onTransactionHash(hash);
 
-      const methodSignature = this.contracts[trade.toBlockchain].getSwapToUserMethodSignature(
+      const methodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
         trade.toProviderIndex,
         isToNative
       );
-      this.sendDataFromSolana(trade.fromBlockchain, hash, methodSignature);
+      this.sendDataFromSolana(trade.fromBlockchain, hash, methodName);
     }
 
     await new Promise((resolve, reject) => {

@@ -67,9 +67,10 @@ export class NearContractExecutorService {
 
     const toAdapter = this.publicBlockchainAdapterService[trade.toBlockchain];
     const isToNative = toAdapter.isNativeAddress(trade.tokenOut.address);
-    const methodName = this.contracts[trade.toBlockchain]
-      .getSwapToUserMethodSignature(trade.toProviderIndex, isToNative)
-      .split('(')[0];
+    const { methodName } = this.contracts[trade.toBlockchain].getMethodNameAndContractAbi(
+      trade.toProviderIndex,
+      isToNative
+    );
 
     const fromTokenAddress =
       trade.tokenIn.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : trade.tokenIn.address;

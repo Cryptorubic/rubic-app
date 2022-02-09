@@ -87,14 +87,14 @@
               </div>
             </a>
 
-            <app-rubic-button
+            <a
               *ngIf="trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING"
-              size="s"
-              appearance="secondary"
-              [loading]="item.inProgress"
-              (onClick)="onReceivePolygonBridgeTrade.emit(trade)"
-              >{{ 'tradesTable.receive' | translate }}</app-rubic-button
+              href="https://wallet.polygon.technology/transactions"
             >
+              <app-rubic-button size="s" appearance="secondary">{{
+                'tradesTable.receive' | translate
+              }}</app-rubic-button>
+            </a>
           </td>
 
           <td *tuiCell="'FromTo'" tuiTd class="blockchains">

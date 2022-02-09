@@ -479,6 +479,7 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
     }[]
   > {
     const contract = new this.web3.eth.Contract(contractAbi, contractAddress);
+
     const calls: Call[] = methodsData.map(({ methodName, methodArguments }) => ({
       callData: contract.methods[methodName](...methodArguments).encodeABI(),
       target: contractAddress

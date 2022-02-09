@@ -53,7 +53,8 @@ import { TradingBannerComponent } from '@core/header/components/header/component
     ThemeSwitcherComponent,
     TradingBannerComponent,
     ExternalLinkBannerComponent,
-    BannerDirective
+    BannerDirective,
+    ExternalLinkBannerComponent
   ],
   imports: [
     CommonModule,

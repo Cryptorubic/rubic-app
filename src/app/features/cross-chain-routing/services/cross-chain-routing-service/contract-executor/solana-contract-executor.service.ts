@@ -30,7 +30,6 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { SolanaContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/solana-contract-data';
 import { tuiPure } from '@taiga-ui/cdk';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { BLOCKCHAIN_UUID } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-blockchain-accounts-addresses';
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
@@ -216,22 +215,25 @@ export class SolanaContractExecutorService {
     }
 
     const toBlockchainInContractNumber = this.contracts[trade.toBlockchain].numOfBlockchain;
-    const methodName = this.contracts[trade.toBlockchain]
-      .getSwapToUserMethodSignature(trade.toProviderIndex, isToNative)
-      .split('(')[0];
+    const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
+      trade.toProviderIndex,
+      isToNative
+    );
 
     const methodArguments = {
       blockchain: toBlockchainInContractNumber,
       tokenInAmount: fromFinalAmount,
-      secondPath: trade.toTrade.path.map(token =>
-        EthLikeWeb3Public.toChecksumAddress(token.address)
+      secondPath: this.contracts[trade.toBlockchain].getSecondPath(
+        trade.toTrade,
+        trade.toProviderIndex,
+        trade.fromBlockchain
       ),
       exactRbcTokenOut: middleFinalAmount,
       tokenOutMin: tokenOutAmountAbsolute,
       newAddress: targetAddress,
       swapToCrypto: isToNative,
       transferType,
-      methodName: CROSS_CHAIN_METHODS[methodName].slice(2)
+      methodName: CROSS_CHAIN_METHODS[swapToUserMethodName].slice(2)
     };
 
     const { from: fromAccount } =

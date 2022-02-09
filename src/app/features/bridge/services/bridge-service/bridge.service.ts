@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, defer, Observable, of, throwError, zip } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { EthereumBinanceBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/ethereum-binance-bridge-provider.service';
-import { EthereumPolygonBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-polygon-bridge-provider/ethereum-polygon-bridge-provider.service';
 import { EthereumXdaiBridgeProviderService } from 'src/app/features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-xdai-bridge-provider/ethereum-xdai-bridge-provider.service';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { BridgeTokenPairsByBlockchains } from '@features/bridge/models/bridge-token-pairs-by-blockchains';
@@ -23,6 +22,10 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { BinancePolygonBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-bridge-provider.service';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { TuiNotification } from '@taiga-ui/core';
+import { IframeService } from '@core/services/iframe/iframe.service';
+import { TranslateService } from '@ngx-translate/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Injectable()
 export class BridgeService {
@@ -43,7 +46,6 @@ export class BridgeService {
   constructor(
     // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
-    private readonly ethereumPolygonBridgeProviderService: EthereumPolygonBridgeProviderService,
     private readonly ethereumXdaiBridgeProviderService: EthereumXdaiBridgeProviderService,
     private readonly binancePolygonBridgeProviderService: BinancePolygonBridgeProviderService,
     // bridge providers end
@@ -51,7 +53,10 @@ export class BridgeService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly useTestingModeService: UseTestingModeService,
-    private readonly swapFormService: SwapFormService
+    private readonly swapFormService: SwapFormService,
+    private readonly iframeService: IframeService,
+    private readonly translateService: TranslateService,
+    private readonly notificationService: NotificationsService
   ) {
     this.setupBlockchainsProviders();
     this.subscribeToFormChanges();
@@ -70,14 +75,10 @@ export class BridgeService {
     this.blockchainsProviders = {
       [BLOCKCHAIN_NAME.ETHEREUM]: {
         [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.ethereumBinanceBridgeProviderService,
-        [BLOCKCHAIN_NAME.POLYGON]: this.ethereumPolygonBridgeProviderService,
         [BLOCKCHAIN_NAME.XDAI]: this.ethereumXdaiBridgeProviderService
       },
       [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
         [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumBinanceBridgeProviderService
-      },
-      [BLOCKCHAIN_NAME.POLYGON]: {
-        [BLOCKCHAIN_NAME.ETHEREUM]: this.ethereumPolygonBridgeProviderService
       }
     };
   }
@@ -195,6 +196,7 @@ export class BridgeService {
   }
 
   public createTrade(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     return defer(() =>
       this.getBridgeTrade(bridgeTradeRequest).pipe(
         mergeMap(async (bridgeTrade: BridgeTrade) => {
@@ -234,6 +236,7 @@ export class BridgeService {
   }
 
   public approve(bridgeTradeRequest: BridgeTradeRequest): Observable<TransactionReceipt> {
+    this.checkDeviceAndShowNotification();
     return this.getBridgeTrade(bridgeTradeRequest).pipe(
       mergeMap(async (bridgeTrade: BridgeTrade) => {
         this.walletConnectorService.checkSettings(bridgeTrade.fromBlockchain);
@@ -262,5 +265,17 @@ export class BridgeService {
   ): Promise<void> {
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
     return blockchainAdapter.checkBalance(token, amount, this.authService.user.address);
+  }
+
+  private checkDeviceAndShowNotification(): void {
+    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
+      this.notificationService.show(
+        this.translateService.instant('notifications.openMobileWallet'),
+        {
+          status: TuiNotification.Info,
+          autoClose: 5000
+        }
+      );
+    }
   }
 }

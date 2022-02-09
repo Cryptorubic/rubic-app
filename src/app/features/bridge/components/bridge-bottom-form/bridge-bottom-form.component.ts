@@ -39,8 +39,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { ReceiveWarningModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/receive-warning-modal/receive-warning-modal';
-import { TrackTransactionModalComponent } from 'src/app/features/bridge/components/bridge-bottom-form/components/track-transaction-modal/track-transaction-modal';
 import { SuccessTxModalService } from 'src/app/features/swaps/services/success-tx-modal-service/success-tx-modal.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
@@ -54,6 +52,7 @@ import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap
 import { BridgeService } from '../../services/bridge-service/bridge.service';
 import { BridgeTradeRequest } from 'src/app/features/bridge/models/bridge-trade-request';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
+import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/models/swap-provider-type';
 
 @Component({
   selector: 'app-bridge-bottom-form',
@@ -316,6 +315,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .pipe(
         first(),
         tap(() => {
+          this.gtmService.fireFormInteractionEvent(SWAP_PROVIDER_TYPE.BRIDGE, 'approve');
           approveInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             this.translateService.instant('bridgePage.approveSuccessMessage'),
@@ -345,9 +345,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
-      onTransactionHash: () => {
-        this.notifyTradeInProgress();
-        this.gtmService.notifySignTransaction();
+      onTransactionHash: hash => {
+        this.notifyTradeInProgress(hash);
       }
     };
 
@@ -355,7 +354,26 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTradeRequest)
       .pipe(
         first(),
-        tap(() => {
+        tap(async transactionReceipt => {
+          if (transactionReceipt.status) {
+            const revenue = 0;
+            const { fromToken, toToken } = this.swapFormService.inputValue;
+            const { toAmount } = this.swapFormService.outputValue;
+            const toTokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
+              address: toToken.address,
+              blockchain: toToken.blockchain
+            });
+
+            this.gtmService.fireTxSignedEvent(
+              SWAP_PROVIDER_TYPE.BRIDGE,
+              transactionReceipt.transactionHash,
+              revenue,
+              fromToken.symbol,
+              toToken.symbol,
+              toAmount.toNumber() * toTokenUsdPrice
+            );
+          }
+
           this.tradeInProgressSubscription$.unsubscribe();
           this.notificationsService.show(
             new PolymorpheusComponent(SuccessTrxNotificationComponent),
@@ -409,20 +427,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   public handleClick(clickType: 'swap' | 'approve'): void {
-    const isPolygonEthBridge =
-      this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-      this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-    if (isPolygonEthBridge && !this.iframeService.isIframe) {
-      this.dialogService
-        .open(new PolymorpheusComponent(ReceiveWarningModalComponent, this.injector), { size: 's' })
-        .subscribe(allowAction => {
-          if (allowAction) {
-            this.doButtonAction(clickType);
-          }
-        });
-    } else {
-      this.doButtonAction(clickType);
-    }
+    this.doButtonAction(clickType);
   }
 
   private doButtonAction(clickType: 'swap' | 'approve'): void {
@@ -433,7 +438,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  private notifyTradeInProgress(): void {
+  private notifyTradeInProgress(hash: string): void {
     this.tradeInProgressSubscription$ = this.notificationsService.show(
       this.translateService.instant('bridgePage.progressMessage'),
       {
@@ -444,23 +449,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     );
 
     if (this.window.location.pathname === '/') {
-      const isPolygonEthBridge =
-        this.fromBlockchain === BLOCKCHAIN_NAME.POLYGON &&
-        this.toBlockchain === BLOCKCHAIN_NAME.ETHEREUM;
-
-      if (!isPolygonEthBridge) {
-        this.successTxModalService.open();
-        return;
-      }
-
-      if (!this.iframeService.isIframe) {
-        this.dialogService
-          .open(new PolymorpheusComponent(TrackTransactionModalComponent), {
-            size: 's',
-            data: { idPrefix: '' }
-          })
-          .subscribe();
-      }
+      this.successTxModalService.open(hash, this.fromBlockchain);
     }
   }
 }

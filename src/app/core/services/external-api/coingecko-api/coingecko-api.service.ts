@@ -14,7 +14,9 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.XDAI,
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.MOONRIVER,
-  BLOCKCHAIN_NAME.FANTOM
+  BLOCKCHAIN_NAME.FANTOM,
+  BLOCKCHAIN_NAME.ARBITRUM,
+  BLOCKCHAIN_NAME.AURORA
 ] as const;
 
 type SupportedBlockchain = typeof supportedBlockchains[number];
@@ -41,7 +43,9 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.XDAI]: 'xdai',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche-2',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
-      [BLOCKCHAIN_NAME.FANTOM]: 'fantom'
+      [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'ethereum',
+      [BLOCKCHAIN_NAME.AURORA]: 'ethereum'
     };
 
     this.tokenBlockchainId = {
@@ -52,7 +56,9 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.XDAI]: 'xdai',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
       [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
-      [BLOCKCHAIN_NAME.FANTOM]: 'fantom'
+      [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'arbitrum-one',
+      [BLOCKCHAIN_NAME.AURORA]: 'aurora'
     };
   }
 

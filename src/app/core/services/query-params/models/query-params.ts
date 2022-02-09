@@ -5,7 +5,9 @@ export type AdditionalTokens =
   | 'bsc_tokens'
   | 'polygon_tokens'
   | 'harmony_tokens'
-  | 'avalanche_tokens';
+  | 'avalanche_tokens'
+  | 'fantom_tokens'
+  | 'moonriver_tokens';
 
 interface AllQueryParams {
   from: string;

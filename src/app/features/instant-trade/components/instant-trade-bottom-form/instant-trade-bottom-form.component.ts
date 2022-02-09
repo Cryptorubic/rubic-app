@@ -54,6 +54,9 @@ import { SwapInfoService } from '@features/swaps/components/swap-info/services/s
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -175,7 +178,9 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly swapInfoService: SwapInfoService
+    private readonly swapInfoService: SwapInfoService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.autoSelect = true;
     this.isIframe$ = iframeService.isIframe$;
@@ -693,6 +698,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         false
       );
       this.needApprove = false;
+
+      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
     } catch (err) {
       this.errorService.catch(err);
 

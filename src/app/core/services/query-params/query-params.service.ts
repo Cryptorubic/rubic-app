@@ -19,6 +19,7 @@ import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
+import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
@@ -56,7 +57,9 @@ const DEFAULT_PARAMETERS = {
       [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
       [BLOCKCHAIN_NAME.HARMONY]: 'ONE',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'AVAX',
-      [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR'
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR',
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'AETH',
+      [BLOCKCHAIN_NAME.AURORA]: 'aETH'
     },
     to: {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
@@ -112,6 +115,7 @@ export class QueryParamsService {
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
+    private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService
   ) {
@@ -191,6 +195,7 @@ export class QueryParamsService {
         })
       )
       .subscribe(({ fromToken, toToken, fromBlockchain, toBlockchain, protectedParams }) => {
+        this.gtmService.needTrackFormEventsNow = false;
         this.swapFormService.input.patchValue({
           fromBlockchain,
           toBlockchain,
@@ -421,7 +426,9 @@ export class QueryParamsService {
       'bsc_tokens',
       'polygon_tokens',
       'harmony_tokens',
-      'avalanche_tokens'
+      'avalanche_tokens',
+      'fantom_tokens',
+      'moonriver_tokens'
     ] as const;
     const tokensQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([key]) =>

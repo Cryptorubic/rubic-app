@@ -10,10 +10,7 @@ import { CrossChainTrade } from '@features/cross-chain-routing/services/cross-ch
 import { ContractExecutorFacadeService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/contract-executor-facade.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import InstantTrade from '@features/instant-trade/models/instant-trade';
-import { UniSwapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/uni-swap-v3.service';
-import { UniSwapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/ethereum/uni-swap-v3-service/models/uni-swap-v3-instant-trade';
-import { compareAddresses } from '@shared/utils/utils';
+import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -86,38 +83,6 @@ export class EthLikeContractData extends ContractData {
     );
   }
 
-  public getSecondPath(instantTrade: InstantTrade, providerIndex: number): string[] {
-    if (!instantTrade) {
-      return [EthLikeWeb3Public.addressToBytes32(this.transitToken.address)];
-    }
-
-    const provider = this.getProvider(providerIndex);
-
-    if (provider instanceof UniSwapV3Service) {
-      const route = (instantTrade as UniSwapV3InstantTrade).route;
-      const path: string[] = [];
-      let lastTokenAddress = route.initialTokenAddress;
-
-      route.poolsPath.forEach(pool => {
-        path.push(
-          '0x' +
-            pool.fee.toString(16).padStart(6, '0').padEnd(24, '0') +
-            lastTokenAddress.slice(2).toLowerCase()
-        );
-
-        const newToken = compareAddresses(pool.token0.address, lastTokenAddress)
-          ? pool.token1
-          : pool.token0;
-        lastTokenAddress = newToken.address;
-      });
-      path.push(EthLikeWeb3Public.addressToBytes32(lastTokenAddress));
-
-      return path;
-    }
-
-    return instantTrade.path.map(token => EthLikeWeb3Public.addressToBytes32(token.address));
-  }
-
   /**
    * Returns method's arguments to use in source network.
    */
@@ -133,7 +98,11 @@ export class EthLikeContractData extends ContractData {
 
     const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
 
-    const secondPath = toContract.getSecondPath(trade.toTrade, trade.toProviderIndex);
+    const secondPath = toContract.getSecondPath(
+      trade.toTrade,
+      trade.toProviderIndex,
+      trade.fromBlockchain
+    );
 
     const fromTransitTokenAmountMin =
       ContractExecutorFacadeService.calculateFromTransitTokenAmountMin(trade);
@@ -146,12 +115,11 @@ export class EthLikeContractData extends ContractData {
     const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
     const toWalletAddressBytes32 =
-      // @ts-ignore TODO uncomment
-      trade.toBlockchain !== BLOCKCHAIN_NAME.SOLANA
-        ? EthLikeWeb3Public.addressToBytes32(toWalletAddress)
-        : SolanaWeb3Public.addressToBytes32(toWalletAddress);
+      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
+        ? SolanaWeb3Public.addressToBytes32(toWalletAddress)
+        : EthLikeWeb3Public.addressToBytes32(toWalletAddress);
 
-    const swapToUserMethodSignature = toContract.getSwapToUserMethodSignature(
+    const swapToUserMethodSignature = toContract.getSwapToUserMethodName(
       trade.toProviderIndex,
       isToTokenNative
     );
@@ -165,15 +133,30 @@ export class EthLikeContractData extends ContractData {
         fromTransitTokenAmountMinAbsolute,
         tokenOutAmountMinAbsolute,
         toWalletAddressBytes32,
-        isToTokenNative,
-        true
+        isToTokenNative
       ]
     ];
-    if (!this.isProviderV3(trade.fromProviderIndex)) {
-      methodArguments[0].push(false);
-    }
+
+    this.modifyArgumentsForProvider(trade, methodArguments);
+
     methodArguments[0].push(swapToUserMethodSignature);
 
     return methodArguments;
+  }
+
+  private modifyArgumentsForProvider(trade: CrossChainTrade, methodArguments: unknown[][]): void {
+    const exactTokensForTokens = true;
+    const swapTokenWithFee = false;
+
+    if (this.isProviderOneinch(trade.fromProviderIndex)) {
+      const data = (trade.fromTrade as OneinchInstantTrade).data;
+      methodArguments[0].push(data);
+    } else {
+      methodArguments[0].push(exactTokensForTokens);
+
+      if (!this.isProviderV3OrAlgebra(trade.fromProviderIndex)) {
+        methodArguments[0].push(swapTokenWithFee);
+      }
+    }
   }
 }

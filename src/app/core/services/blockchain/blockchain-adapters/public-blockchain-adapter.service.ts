@@ -22,7 +22,9 @@ export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.MOONRIVER,
-  BLOCKCHAIN_NAME.FANTOM
+  BLOCKCHAIN_NAME.FANTOM,
+  BLOCKCHAIN_NAME.ARBITRUM,
+  BLOCKCHAIN_NAME.AURORA
 ] as const;
 
 export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number];
@@ -49,6 +51,10 @@ export class PublicBlockchainAdapterService {
 
   public [BLOCKCHAIN_NAME.FANTOM]: EthLikeWeb3Public;
 
+  public [BLOCKCHAIN_NAME.ARBITRUM]: EthLikeWeb3Public;
+
+  public [BLOCKCHAIN_NAME.AURORA]: EthLikeWeb3Public;
+
   public readonly [BLOCKCHAIN_NAME.XDAI]: EthLikeWeb3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: EthLikeWeb3Public = null;
@@ -60,6 +66,8 @@ export class PublicBlockchainAdapterService {
   public readonly [BLOCKCHAIN_NAME.HARMONY_TESTNET]: EthLikeWeb3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: EthLikeWeb3Public = null;
+
+  public readonly [BLOCKCHAIN_NAME.AURORA_TESTNET]: EthLikeWeb3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 

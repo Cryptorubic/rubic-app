@@ -83,7 +83,8 @@
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multi-chain.",
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
-    "buttonLink": "Learn more"
+    "buttonLink": "Learn more",
+    "walletNotInstalled": "Wallet is not installed."
   },
   "navigation": {
     "about": "About",
@@ -358,7 +359,7 @@
   "crossChainPage": {
     "targetAddress": {
       "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
-      "placeholder": "Enter or past address"
+      "placeholder": "Enter or paste address"
     },
     "swapInfo": {
       "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
@@ -368,6 +369,10 @@
       "minimumReceivedHint": "Minimum amount of tokens to be received\n",
       "platformFee": "Platform fee",
       "platformFeeHint": "Platform commission charges in RBC token\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 80 sec"
     }
   },
   "instantTrades": {
@@ -524,10 +529,13 @@
       "text": "Please select a swaps origin network. By connecting a Coinbase wallet, you will not be able to change the network in the current session. To change the network after connecting the Coinbase wallet, log out of your account and connect by choosing a different network, or use a different wallet."
     },
     "successTxModal": {
+      "see": "See ",
+      "transactionDetailsLink":"transaction details",
+      "itWillAppearsIn": ". It will appears in ",
+      "myTradesLink":"My trades",
+      "pageSoon": " page soon.",
       "title": "The transaction was successfully sent!",
-      "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See details in ",
-      "link": "My Trades"
+      "ccrTitle": "Successful swap in source network!"
     },
     "stakingSwapModal": {
       "title": "For RBC staking, you need to swap in BRBC",
@@ -608,8 +616,8 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Staking with 80% APR or more started on Dec. 23.",
-      "link": "Learn more!"
+      "text": "Aurora is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!",
+      "link": "See more"
     }
   },
   "volume": {
@@ -623,6 +631,8 @@
     "tradeInProgress": "Trade in progress",
     "successfulTradeTitle": "Successful trade",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "The transaction was successfully sent!",
+    "successfulCCRSwapTitle": "Successful swap in source network!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Approve in progress",
     "successApprove": "Successful approve",
@@ -631,7 +641,8 @@
     "stakeInProgress": "Stake in progress",
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
-    "withdrawInProgress": "Withdraw in progress"
+    "withdrawInProgress": "Withdraw in progress",
+    "openMobileWallet": "Please, open mobile wallet application to sign transaction"
   },
   "buyTokens": {
     "default": "Buy RBC",

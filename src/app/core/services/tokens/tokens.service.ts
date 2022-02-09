@@ -551,6 +551,7 @@ export class TokensService {
       ...(!isAddress && { symbol: query }),
       ...(isAddress && { address: query })
     };
+
     return this.tokensApiService.fetchQueryTokens(params);
   }
 

@@ -43,5 +43,17 @@ export const HEALTHCHECK = {
     contractAbi: ERC20_ABI,
     method: 'symbol',
     expected: 'fUSDT'
+  },
+  [BLOCKCHAIN_NAME.ARBITRUM]: {
+    contractAddress: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+    contractAbi: ERC20_ABI,
+    method: 'symbol',
+    expected: 'USDT'
+  },
+  [BLOCKCHAIN_NAME.AURORA]: {
+    contractAddress: '0x4988a896b1227218e4A686fdE5EabdcAbd91571f',
+    contractAbi: ERC20_ABI,
+    method: 'symbol',
+    expected: 'USDT'
   }
 };

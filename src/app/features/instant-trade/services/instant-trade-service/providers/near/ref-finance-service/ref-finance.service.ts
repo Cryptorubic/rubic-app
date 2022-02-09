@@ -314,7 +314,16 @@ export class RefFinanceService implements ItProvider {
     form: SwapFormInput
   ): Promise<void> {
     try {
-      this.gtmService.notifySignTransaction();
+      const usdPrice = form.fromToken.amount.multipliedBy(form.fromToken.price).toNumber();
+      const fee = 0;
+      this.gtmService.fireTxSignedEvent(
+        type,
+        txHash,
+        fee,
+        form.fromToken.symbol,
+        form.toToken.symbol,
+        usdPrice
+      );
 
       const paramsObject = await this.parseSwapParams(txHash);
       const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);

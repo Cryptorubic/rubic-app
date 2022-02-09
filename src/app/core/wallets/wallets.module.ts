@@ -5,6 +5,7 @@ import { WalletsModalComponent } from 'src/app/core/wallets/components/wallets-m
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { IframeWalletsWarningComponent } from './components/iframe-wallets-warning/iframe-wallets-warning.component';
+import { TuiScrollbarModule } from '@taiga-ui/core';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,7 @@ import { IframeWalletsWarningComponent } from './components/iframe-wallets-warni
     CoinbaseConfirmModalComponent,
     IframeWalletsWarningComponent
   ],
-  imports: [CommonModule, SharedModule],
+  imports: [CommonModule, SharedModule, TuiScrollbarModule],
   providers: [WalletsModalService],
   entryComponents: [WalletsModalComponent, IframeWalletsWarningComponent]
 })
