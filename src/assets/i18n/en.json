@@ -84,6 +84,7 @@
     "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multi-chain.",
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
     "buttonLink": "Learn more",
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
     "walletNotInstalled": "Wallet is not installed."
   },
   "navigation": {
@@ -98,7 +99,8 @@
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "Promotion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",
@@ -350,6 +352,32 @@
         "answer": "<strong>RUBIC’S MULTI-CHAIN ROUTING TECHNOLOGY</strong>\n\n Rubic offers its users the highly convenient and beneficial Multi-Chain Routing system, which allows users to swap more than 15,000 assets between 10 blockchains in one simple click.\n\n This technology includes 3 main steps: \n 1 - Rubic completes the swap of chosen token to USDC.\n2 - We complete the swap of the USDC token to USDC in the target network.\n3 - USDC in the target network gets swapped to the token which the user has chosen.\nOur Multi-Chain Smart Routing System is based on several DEXs connected to the protocol. Trade on Rubic is facilitated by every asset listed on integrated DEXs, so users are able to swap stablecoins and any other assets. Thanks to all of our DEX integrations and Smart Routing technology, we give our users the best rates for trades across integrated DEXs.\n\nCurrently, you can find the list of our supported DEXs for Multi-Chain and On-chain Routing in our <a href='https://docs.rubic.finance/multi-chain-protocol/supported-tokens-and-networks' target='_blank' rel='noopener noreferrer'>Documents</a> .\n\n<strong>SLIPPAGE ISSUES</strong>\n\n Unfortunately, not every token which is listed on our integrated DEXs has enough liquidity for correct trades and swaps. During the transaction time, the token price might change, so the trade in the target network has a chance to not be completed. \n\nDue to blockchain specificity, Rubic can’t fully influence the transaction time: the gas fee can change rapidly during the transaction, so it will increase the transaction time and the possibility of not passing through.\n\nAlso, one of the main concerns is volatility. This might get irritating, especially if the transaction goes on the Ethereum network, where users spend money in order to cover gas fees. Thanks to stablecoins, the transaction times and sharp fee jumps don’t affect the swap as much.\n\n<strong>HOW TO AVOID AND REDUCE TRADING RISKS</strong>\n\nFirst of all, Rubic recommends increasing the percentage of slippage up to 4%. The development of Rubic’s Multi-Chain Routing will provide the user with the opportunity to choose the minimum and recommended slippage. \nBy receiving quantitative and qualitative data on the changes in the exchange rate of the selected tokens, we will be able to offer the user the minimum and the recommended slippage.\n\n<strong>WHY CAN TRADES STILL BE REVERTED?</strong>\n\nUnfortunately, there are still several cases where trades might not resolve.\n - The transaction is reverted in the source network. If this happens, the user will get the tokens that he has sent, but the gas fee is unreturnable. This is a common mechanic for on-chain swaps on any DEX. \n \n - The transaction is reverted in the target network. \n\n <strong>NEW AUTO-REFUND SOLUTION</strong>\n\nConsidering all of the possible trade results, we came to an auto-refund solution. Rubic will complete refunds using the USDC stablecoin, which will equal the original amount of tokens. Since USDC is a stable coin, the rate of it in USD will not change even during market volatility.\n\nThis Refund Policy was chosen out of numerous options. We’ll share some of them with you: \n\n - Source network tokens refund: Risky because of volatility for both sides, which can have a significant effect on the price of the token.\n\n - Ignoring the Slippage for the refund: As we have experienced, to get as many tokens as were able to be swapped. Most users don’t support this solution, as it can lead to reducing the final amount of received assets.\n\n - Stablecoin refunds in the source network:\n - The users already paid gas to interact with the smart contract in the source network;\n - The double claim from the user (both for tokens and blockchain fees) - this option is more expensive because of the doubled fees.\n\nFinally, our team has come to the appropriate solution.\n\n<strong>RUBIC’S TEAM WILL COMPLETE THE REFUND IN USDC TOKENS. THE AMOUNT OF THE REFUND WILL BE EQUAL TO THE AMOUNT OF TOKENS IN USD AT THE MOMENT WHEN THE TRADE WAS INITIATED. THE REFUND WILL BE COMPLETED IN THE TARGET NETWORK.</strong>\n\nEXAMPLE:\n\nUser fails to complete a swap from Token A on Ethereum to Token B on Binance Smart Chain. In this case, Rubic will complete the auto-refund to the users via the USDC token on the BSC network. \n\nWe are looking forward to improving this system and the mechanics of it. Later, we are considering providing users a choice: complete an auto trade on cached slippage, complete the refund in the source network, and other options. \nRubic’s team is listening to the community, appreciating it’s opinion, and we gladly accepted the idea of introducing an auto-refund system.\n"
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Switch to Ethereum-compatible Wallet"
+    },
+    "invitations": {
+      "invitedProjects": "Invited Projects",
+      "noProjects": "You haven't invited any projects yet",
+      "tableColumns": {
+        "projectName": "Project",
+        "invitationDate": "Invited",
+        "tradingVolume": "Trading Volume",
+        "received": "Received",
+        "receivedTokens": "Received Tokens"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Referral Program",
+      "invitedProjects": "Invited Projects",
+      "totalRewards": "Total Rewards",
+      "instantRewards": "Instant Rewards",
+      "earnWithOurWidget": "Earn with our Widget",
+      "createAReferralLink": "Generate a referral link and start earning with our Widget. Make sure to read the Program Rules!",
+      "myPromoLink": "My Promo Link",
+      "contactUs": "Contact Us"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -624,7 +652,7 @@
     },
     "external": {
       "text": "Aurora is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "volume": {

@@ -35,6 +35,11 @@ export class RotatingIconComponent implements OnChanges {
   @Input() rotating = false;
 
   /**
+   * Should disable button.
+   */
+  @Input() disabled = false;
+
+  /**
    * Emits when user clicks on the icon-button.
    */
   @Output() iconClick = new EventEmitter<void>();

@@ -15,7 +15,7 @@ files.forEach(filePath => {
   keys.forEach(key => {
     jsons.forEach((obj, index) => {
       const value = _.get(obj, key);
-      if (!value) {
+      if (value == undefined) {
         const msg = `Translation ${key} from ${filePath} not found in ${jsonsPaths[index]}.`;
         throw new Error(msg);
       }
