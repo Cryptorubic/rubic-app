@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { timer } from 'rxjs';
@@ -9,7 +9,8 @@ import { RubicError } from '@core/errors/models/rubic-error';
 @Component({
   selector: 'polymorpheus-unknown-error',
   templateUrl: './unknown-error.component.html',
-  styleUrls: ['./unknown-error.component.scss']
+  styleUrls: ['./unknown-error.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UnknownErrorComponent {
   public error: RubicError<ERROR_TYPE>;

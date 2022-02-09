@@ -1,11 +1,7 @@
-<div class="usd-price-container" *ngIf="usdPrice || loading">
+<div class="usd-price-container" *ngIf="usdPrice" [class.usd-price-container_loading]="loading">
   <div
-    *ngIf="(usdPrice?.isFinite() && usdPrice.gt(0)) || loading"
+    *ngIf="usdPrice?.isFinite() && usdPrice.gt(0)"
     class="usd-price-container__price"
-    [ngClass]="{
-      'tui-skeleton': loading,
-      'tui-skeleton_text': loading
-    }"
     [tuiHint]="usdPriceTooltip"
     tuiHintDirection="top"
     tuiHintMode="onDark"
