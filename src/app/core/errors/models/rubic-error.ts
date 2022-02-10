@@ -5,7 +5,7 @@ type TranslationKey = string;
 
 type Component = Type<object>;
 
-export abstract class RubicError<T extends ERROR_TYPE> extends Error {
+export class RubicError<T extends ERROR_TYPE> extends Error {
   public translateKey: TranslationKey;
 
   public type: ERROR_TYPE;
@@ -18,7 +18,7 @@ export abstract class RubicError<T extends ERROR_TYPE> extends Error {
 
   public code?: number;
 
-  protected constructor(
+  constructor(
     contentProvider: T extends ERROR_TYPE.TEXT
       ? TranslationKey
       : T extends ERROR_TYPE.COMPONENT

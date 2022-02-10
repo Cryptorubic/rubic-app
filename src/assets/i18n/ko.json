@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
     "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
     "buttonLink": "더 알아보기",
+    "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다"
   },
   "navigation": {
@@ -98,7 +98,8 @@
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
     "notAvailable": "공사중-UX 재 설계.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "프로모션"
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
@@ -350,6 +351,32 @@
         "answer": "<strong>RUBIC의 다중 체인 라우팅 기술</strong>\n\n 가 클릭 한 번으로 10개의 블록체인 간에 15,000개 이상의 자산을 교환할 수 있는 매우 편리하고 유익한 다중 체인 라우팅 시스템 을 사용자에게 제공합니다.\n\n 이 기술에는 3가지 주요 단계가 포함됩니다. \n 1 - Rubic은 선택한 토큰을 USDC로 스왑합니다.\n 2 - 대상 네트워크에서 USDC 토큰을 USDC로 스왑을 완료합니다.\n 3 - 대상 네트워크의 USDC는 사용자가 선택한 토큰으로 교환됩니다.\n 우리의 다중 체인 스마트 라우팅 시스템은 프로토콜에 연결된 여러 DEX를 기반으로 합니다. Rubic에서의 거래 는 통합 DEX에 나열된 모든 자산에 의해 촉진되므로 사용자는 스테이블 코인 및 기타 자산을 교환할 수 있습니다. 당사의 모든 DEX 통합 및 스마트 라우팅 기술 덕분에 사용자에게 통합 DEX 전반의 거래에 대해 최상의 요금을 제공합니다.\n\n <a href='https://docs.rubic.finance/multi-chain-protocol/supported-tokens-and-networks' target='_blank' rel='noopener noreferrer'>문서</a> 에서 멀티체인 및 온체인 라우팅을 위해 지원되는 DEX 목록을 찾을 수 있습니다 .\n\n <strong>미끄러짐 문제</strong>\n\n 불행히도 통합 DEX에 나열된 모든 토큰이 올바른 거래와 스왑을 위한 충분한 유동성을 갖고 있지는 않습니다. 거래 시간 동안 토큰 가격이 변동될 수 있으므로 대상 네트워크에서 거래가 완료되지 않을 수 있습니다. \n\n 블록체인 특성으로 인해 Rubic은 거래 시간에 완전히 영향을 미칠 수 없습니다. 가스 요금은 거래 중에 빠르게 변할 수 있으므로 거래 시간과 통과하지 못할 가능성이 증가합니다.\n\n 또한 주요 관심사 중 하나는 변동성입니다. 특히 트랜잭션이 이더리움 네트워크에서 진행되는 경우 사용자가 가스 요금을 충당하기 위해 돈을 쓰는 경우 짜증날 수 있습니다 . 스테이블코인 덕분에 거래 시간과 급격한 수수료 상승은 스왑에 큰 영향을 미치지 않습니다.\n\n <strong>거래 위험을 피하고 줄이는 방법</strong>\n\n 우선 Rubic은 슬리피지 비율을 최대 4%까지 높일 것을 권장합니다. Rubic의 Multi-Chain Routing 개발은 사용자에게 최소 및 권장 슬리피지를 선택할 수 있는 기회를 제공할 것입니다.\n 선택한 토큰의 환율 변화에 대한 양적 및 질적 데이터를 수신하여 사용자에게 최소 및 권장 슬리피지를 제공할 수 있습니다.\n\n <strong>거래가 여전히 취소될 수 있는 이유는 무엇입니까?</strong>\n\n 불행히도 거래가 해결되지 않을 수 있는 몇 가지 경우가 여전히 있습니다.\n - 트랜잭션은 소스 네트워크에서 되돌려집니다. 이 경우 사용자는 자신이 보낸 토큰을 받게 되지만 가스 요금은 반환할 수 없습니다. 이것은 모든 DEX에서 온체인 스왑을 위한 일반적인 메커니즘입니다. \n \n - 트랜잭션은 대상 네트워크에서 되돌려집니다. \n\n <strong>새로운 자동 환불 솔루션</strong>\n\n  가능한 모든 거래 결과를 고려하여 자동 환불 솔루션에 도달했습니다. Rubic은 USDC 스테이블 코인을 사용하여 환불을 완료하며, 이는 원래 토큰 금액과 동일합니다. USDC는 스테이블 코인이기 때문에 시장의 변동성 속에서도 USD의 환율은 변하지 않습니다.\n\n 이 환불 정책은 수많은 옵션 중에서 선택되었습니다. 그 중 일부를 다음과 같이 공유합니다 \n\n - 가격에 상당한 영향을 미칠 수 있는 양측의 변동성으로 인해 위험합니다.\n\n - Slippage 무시: 우리가 경험한 바와 같이, 교환할 수 있는 만큼 많은 토큰을 얻습니다. 대부분의 사용자는 이 솔루션을 지원하지 않습니다. 이 솔루션을 사용하면 받은 자산의 최종 양이 줄어들 수 있기 때문입니다.\n\n - 소스 네트워크에서 Stablecoin 환불:\n - 사용자는 소스 네트워크에서 스마트 계약과 상호 작용하기 위해 이미 가스를 지불했습니다;\n - 사용자의 이중 청구(토큰 및 블록체인 수수료 모두) - 이 옵션은 수수료가 두 배이기 때문에 더 비쌉니다.\n\n 마침내 우리 팀은 적절한 솔루션에 도달했습니다.\n\n <strong>RUBIC의 팀은 USDC 토큰으로 환불을 완료합니다. 환불 금액은 거래가 시작된 순간의 USD 토큰 금액과 동일합니다. 환불은 대상 네트워크에서 완료됩니다.</strong>\n\n 예:\n\n 사용자가 이더리움의 토큰 A에서 바이낸스 스마트 체인의 토큰 B로의 스왑을 완료하지 못했습니다. 이 경우 Rubic은 BSC 네트워크의 USDC 토큰을 통해 사용자에게 자동 환불을 완료합니다.\n\n 우리는 이 시스템과 그 역학을 개선하기를 고대하고 있습니다. 나중에 우리는 사용자에게 선택권을 제공하는 것을 고려하고 있습니다: 캐시된 슬리피지에 대한 자동 거래 완료, 소스 네트워크에서 환불 완료 및 기타 옵션.\n Rubic의 팀은 커뮤니티의 의견에 귀를 기울이고 있으며 자동 환불 시스템 도입에 대한 아이디어를 기꺼이 수락했습니다.\n"
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "이더리움 호환 지갑으로 전환t"
+    },
+    "invitations": {
+      "invitedProjects": "초대된 프로젝트",
+      "noProjects": "아직 프로젝트를 초대하지 않았습니다",
+      "tableColumns": {
+        "projectName": "프로젝트",
+        "invitationDate": "초대",
+        "tradingVolume": "거래량",
+        "received": "받음",
+        "receivedTokens": "수신된 토큰"
+      }
+    },
+    "statistics": {
+      "referralProgram": "추천 프로그램",
+      "invitedProjects": "초대된 프로젝트",
+      "totalRewards": "획득한 보상",
+      "instantRewards": "I즉석 보상",
+      "earnWithOurWidget": "우리 위젯으로 적립",
+      "createAReferralLink": "G추천 링크를 생성하고 위젯으로 수익을 올리세요. 프로그램 규정을 꼭 읽어보세요!",
+      "myPromoLink": "내 프로모션 링크",
+      "contactUs": "문의하기"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -624,7 +651,7 @@
     },
     "external": {
       "text": "Aurora이 이제 Rubic에서 생중계됩니다! 온체인 및 멀티체인 스왑을 지금 완료하십시오!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "referralBanner": {
