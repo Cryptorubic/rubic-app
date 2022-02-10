@@ -146,18 +146,22 @@ export class AuthService {
   public async serverlessSignIn(): Promise<void> {
     try {
       this.isAuthProcess = true;
+
       const permissions = await this.walletConnectorService.requestPermissions();
       const accountsPermission = permissions.find(
         permission => permission.parentCapability === 'eth_accounts'
       );
+
       if (accountsPermission) {
         await this.walletConnectorService.activate();
+
         const { address } = this.walletConnectorService;
         this.currentUser$.next({ address } || null);
         this.cookieService.set('address', address, 7, null, null, null, null);
       } else {
         this.currentUser$.next(null);
       }
+
       this.isAuthProcess = false;
     } catch (err) {
       this.catchSignIn(err);
@@ -179,11 +183,13 @@ export class AuthService {
         await this.walletConnectorService.activate();
 
         const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
+
         if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
           this.currentUser$.next({ address: this.walletConnectorService.provider.address });
           this.isAuthProcess = false;
           return;
         }
+
         const { message } = walletLoginBody.payload;
         const signature = await this.walletConnectorService.signPersonal(message);
         await this.sendSignedNonce(

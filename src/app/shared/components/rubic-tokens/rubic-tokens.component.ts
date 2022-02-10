@@ -92,6 +92,7 @@ export class RubicTokensComponent implements OnInit {
     this.formService.inputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(formValue => {
       this.setFormValues(formValue);
     });
+
     this.queryParamsService.tokensSelectionDisabled$
       .pipe(takeUntil(this.destroy$))
       .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
