@@ -91,7 +91,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
 
-  private readonly IT_PROXY_FEE = 0.3;
+  private readonly IT_PROXY_FEE = 0.003;
 
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
