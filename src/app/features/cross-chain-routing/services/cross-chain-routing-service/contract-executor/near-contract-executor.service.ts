@@ -141,13 +141,16 @@ export class NearContractExecutorService {
         this.contract.transitToken.address,
         routes
       );
+    const depositTransactions = await this.refFinanceSwapService.createDepositTransactions(
+      trade.fromTrade
+    );
     const ccrSwapTransaction = {
       receiverId: fromTokenAddress,
       functionCalls: tokenInActions
     };
 
     await this.nearPrivateAdapter.executeMultipleTransactions(
-      [...registerTokensTransactions, ccrSwapTransaction],
+      [...registerTokensTransactions, ...depositTransactions, ccrSwapTransaction],
       'ccr',
       tokenOutAmountMinAbsolute
     );

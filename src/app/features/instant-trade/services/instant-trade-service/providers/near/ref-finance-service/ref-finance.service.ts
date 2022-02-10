@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import { forkJoin, from, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import {
   ItSettingsForm,
   SettingsService
@@ -9,7 +9,7 @@ import { RefFinancePoolsService } from '@features/instant-trade/services/instant
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { first, startWith, switchMap } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -31,7 +31,6 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
-import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
@@ -146,8 +145,7 @@ export class RefFinanceService implements ItProvider {
   }
 
   public async approve(): Promise<void> {
-    const amount = this.swapFormService.inputValue.fromAmount;
-    return this.refFinanceSwapService.wrapNear(amount);
+    return;
   }
 
   public async calculateTrade(
@@ -243,6 +241,7 @@ export class RefFinanceService implements ItProvider {
         toTokenAddress,
         this.refRoutes
       );
+    const depositTransactions = await this.refFinanceSwapService.createDepositTransactions(trade);
     const swapTransaction = await this.refFinanceSwapService.createSwapTransaction(
       fromAmountIn,
       fromTokenAddress,
@@ -252,7 +251,7 @@ export class RefFinanceService implements ItProvider {
     );
 
     await this.nearPrivateAdapter.executeMultipleTransactions(
-      [...registerTokensTransactions, swapTransaction],
+      [...registerTokensTransactions, ...depositTransactions, swapTransaction],
       'it',
       minAmountOut
     );
@@ -262,14 +261,8 @@ export class RefFinanceService implements ItProvider {
     });
   }
 
-  public getAllowance(address: string): Observable<BigNumber> {
-    if (compareAddresses(address, 'near')) {
-      const adapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.NEAR];
-      return from(
-        adapter.getTokenOrNativeBalance(this.walletConnectorService.address, WRAP_NEAR_CONTRACT)
-      ).pipe(map(allowance => Web3Pure.fromWei(allowance, 24)));
-    }
-    return of(new BigNumber(NaN));
+  public getAllowance(): Observable<BigNumber> {
+    return of(new BigNumber(Infinity));
   }
 
   /**

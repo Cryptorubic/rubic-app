@@ -10,7 +10,6 @@ export interface ProviderControllerData {
   tradeProviderInfo: {
     label: string;
     value: INSTANT_TRADES_PROVIDERS;
-    preswapText: string;
   };
   isSelected: boolean;
   needApprove: boolean;

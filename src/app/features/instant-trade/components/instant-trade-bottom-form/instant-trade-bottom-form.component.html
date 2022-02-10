@@ -91,7 +91,6 @@
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
     [buttonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
-    [preSwapText]="selectedProvider?.tradeProviderInfo?.preswapText"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (updateRatesClick)="onCalculateTrade$.next('normal')"

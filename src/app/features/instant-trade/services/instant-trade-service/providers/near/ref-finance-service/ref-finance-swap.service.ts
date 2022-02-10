@@ -388,4 +388,36 @@ export class RefFinanceSwapService {
       functionCalls: tokenInActions
     };
   }
+
+  public async createDepositTransactions(trade: InstantTrade): Promise<NearTransaction[]> {
+    const transactions: NearTransaction[] = [];
+    if (trade.from.token.address === NATIVE_NEAR_ADDRESS) {
+      const account = new WalletConnection(
+        this.walletConnectorService.nearConnection,
+        'rubic'
+      ).account();
+      const wrappedNearBalance = await account.viewFunction(
+        WRAP_NEAR_CONTRACT,
+        'storage_balance_of',
+        {
+          account_id: account.accountId
+        }
+      );
+      if (trade.from.amount.lt(Web3Pure.fromWei(wrappedNearBalance?.total))) {
+        transactions.push({
+          receiverId: WRAP_NEAR_CONTRACT,
+          functionCalls: [
+            {
+              methodName: 'near_deposit',
+              args: {},
+              gas: '50000000000000',
+              amount: trade.from.amount.toString()
+            }
+          ]
+        });
+      }
+    }
+
+    return transactions;
+  }
 }

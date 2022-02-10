@@ -110,8 +110,6 @@ export class SwapButtonContainerComponent implements OnInit {
 
   @Input() buttonText = 'Swap';
 
-  @Input() preSwapText = 'Approve';
-
   @Output() approveClick = new EventEmitter<void>();
 
   @Output() swapClick = new EventEmitter<void>();
