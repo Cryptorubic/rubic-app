@@ -1,10 +1,4 @@
-<a
-  *ngLet="isDark$ | async as isDark"
-  class="banner"
-  href="https://rubic.exchange/referral"
-  target="_blank"
-  rel="noreferrer noopener"
->
+<a *ngLet="isDark$ | async as isDark" safetyLink [link]="href" class="banner">
   <img
     *ngIf="isDark"
     class="banner__cube_left"
@@ -31,17 +25,12 @@
   />
   <div class="banner__container">
     <p class="banner__text">
-      {{ 'referralBanner.text' | translate }}
+      {{ 'referralBanner.takePartInOur' | translate }}
       <span class="banner__highlight">
-        {{ 'referralBanner.text2' | translate }}
+        {{ 'referralBanner.referralProgram' | translate }}
       </span>
     </p>
-    <a
-      class="banner__link"
-      href="https://rubic.exchange/referral"
-      target="_blank"
-      rel="noreferrer noopener"
-    >
+    <a safetyLink [link]="href" class="banner__link">
       <span class="banner__link_text">
         {{ 'referralBanner.link' | translate }}
       </span>

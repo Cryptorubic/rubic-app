@@ -628,8 +628,8 @@
     }
   },
   "referralBanner": {
-    "text": "Take part in our ",
-    "text2": "Referral Program & get rewards!",
+    "takePartInOur": "Take part in our ",
+    "referralProgram": "Referral Program & get rewards!",
     "link": "Learn more"
   },
   "volume": {

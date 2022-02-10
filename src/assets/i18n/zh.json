@@ -628,9 +628,9 @@
     }
   },
   "referralBanner": {
-    "text": "Take part in our ",
-    "text2": "Referral Program & get rewards!",
-    "link": "Learn more"
+    "takePartInOur": "參加我們的 ",
+    "referralProgram": "推薦計劃並獲得獎勵！",
+    "link": "學到更多"
   },
   "volume": {
     "title": "累計交易量",

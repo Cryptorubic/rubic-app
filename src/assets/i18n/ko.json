@@ -628,9 +628,9 @@
     }
   },
   "referralBanner": {
-    "text": "Take part in our ",
-    "text2": "Referral Program & get rewards!",
-    "link": "Learn more"
+    "takePartInOur": "우리의 참여 ",
+    "referralProgram": "추천 프로그램 및 보상을 받으세요!",
+    "link": "더 알아보기"
   },
   "volume": {
     "title": "누적 거래량",

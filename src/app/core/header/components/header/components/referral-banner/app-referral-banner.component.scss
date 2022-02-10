@@ -9,6 +9,84 @@
 
   background: var(--referral-banner-bg);
 
+  @include b($desktop) {
+    &__text {
+      font-size: 30px;
+    }
+  }
+
+  @include b(1070) {
+    &__text {
+      font-size: 25px;
+      line-height: 30px;
+    }
+
+    &__cube_right {
+      display: none;
+    }
+
+    &__cube_left {
+      display: none;
+    }
+
+    &__cube_mobile {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      display: block;
+      height: 100%;
+
+      opacity: 0.5;
+    }
+  }
+
+  @include b($tablet) {
+    &__container {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    &__text {
+      font-size: 20px;
+    }
+  }
+
+  @include b(700) {
+    &__text {
+      line-height: 1;
+    }
+  }
+
+  @include b(510) {
+    &__text {
+      font-size: 15px;
+    }
+  }
+
+  @include b(480) {
+    &__link {
+      padding: 0 15px;
+
+      font-size: 15px;
+    }
+
+    &__text {
+      margin-right: 35px;
+
+      font-size: $rubic-font-size-main;
+    }
+  }
+
+  @include b(400) {
+    &__text {
+      margin-right: 0;
+    }
+  }
+
   &__container {
     position: relative;
     z-index: 1;
@@ -96,87 +174,5 @@
 
   &__cube_mobile {
     display: none;
-  }
-}
-
-@include b($desktop) {
-  .banner {
-    &__text {
-      font-size: 30px;
-    }
-  }
-}
-
-@include b(1070) {
-  .banner {
-    &__text {
-      font-size: 25px;
-      line-height: 30px;
-    }
-
-    &__cube_right {
-      display: none;
-    }
-
-    &__cube_left {
-      display: none;
-    }
-
-    &__cube_mobile {
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      display: block;
-    }
-  }
-}
-
-@include b($tablet) {
-  .banner {
-    &__container {
-      position: relative;
-
-      display: flex;
-      align-items: center;
-      height: 100%;
-    }
-
-    &__text {
-      font-size: 20px;
-    }
-  }
-}
-
-@include b(510) {
-  .banner {
-    &__text {
-      font-size: 15px;
-      line-height: 1;
-    }
-  }
-}
-
-@include b(480) {
-  .banner {
-    &__link {
-      padding: 0 15px;
-
-      font-size: 15px;
-    }
-
-    &__text {
-      margin-right: 35px;
-
-      font-size: $rubic-font-size-main;
-    }
-  }
-}
-
-@include b(400) {
-  .banner {
-    &__text {
-      margin-right: 0;
-    }
   }
 }

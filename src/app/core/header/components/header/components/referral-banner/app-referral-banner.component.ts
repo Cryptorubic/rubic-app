@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { map } from 'rxjs/operators';
@@ -10,6 +10,8 @@ import { map } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppReferralBannerComponent {
+  @Input() href: string;
+
   public readonly isDark$: Observable<boolean>;
 
   constructor(private readonly themeService: ThemeService) {

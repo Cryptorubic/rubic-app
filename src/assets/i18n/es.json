@@ -628,9 +628,9 @@
     }
   },
   "referralBanner": {
-    "text": "Take part in our ",
-    "text2": "Referral Program & get rewards!",
-    "link": "Learn more"
+    "takePartInOur": "Participa en nuestra ",
+    "referralProgram": "¡Programa de recomendación y obtén recompensas!",
+    "link": "Aprende más"
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
