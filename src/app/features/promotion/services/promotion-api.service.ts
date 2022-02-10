@@ -10,19 +10,17 @@ import { PromotionStatistics } from '@features/promotion/models/promotion-statis
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { UnknownError } from '@core/errors/models/unknown.error';
-import { PromoResponse } from '@core/services/backend/promotion-api/models/promo-response';
-import { StatisticResponse } from '@core/services/backend/promotion-api/models/statistic-response';
+import { PromoResponse } from '@features/promotion/services/models/promo-response';
+import { StatisticResponse } from '@features/promotion/services/models/statistic-response';
 import {
   BackendPromoProject,
   ProjectsResponse
-} from '@core/services/backend/promotion-api/models/projects-response';
+} from '@features/promotion/services/models/projects-response';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { Token } from '@shared/models/tokens/token';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PromotionApiService {
   public static readonly baseUrl = 'promo/';
 
@@ -47,6 +45,11 @@ export class PromotionApiService {
             FROM_BACKEND_BLOCKCHAINS[project.token.blockchain_network]
           );
         });
+
+        if (!tokens$.length) {
+          return of([]);
+        }
+
         return forkJoin(tokens$).pipe(
           map(tokens =>
             tokens.map((token, index) =>
