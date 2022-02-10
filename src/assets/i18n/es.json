@@ -459,6 +459,9 @@
     "tradingNotAvailable": "El comercio no está disponible",
     "rateIsUpdated": "Rate is updated, tap to get the latest rates"
   },
+  "lpProviding": {
+    "liquidityTime": "Liquidity time"
+  },
   "staking": {
     "stake": {
       "stake": "Stake",

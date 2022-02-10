@@ -6,10 +6,11 @@ import { LpProvidingApiService } from './services/lp-providing-api.service';
 import { StakeButtonComponent } from './components/stake-button/stake-button.component';
 import { DepositComponent } from './components/deposit/deposit.component';
 import { LpProvidingPageComponent } from './components/lp-providing-page/lp-providing-page.component';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
   declarations: [StakeButtonComponent, DepositComponent, LpProvidingPageComponent],
-  imports: [CommonModule, LpProvidingRoutingModule],
+  imports: [CommonModule, LpProvidingRoutingModule, SharedModule],
   exports: [],
   providers: [LpProvidingService, LpProvidingApiService]
 })

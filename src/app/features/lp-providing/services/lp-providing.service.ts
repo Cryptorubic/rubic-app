@@ -9,17 +9,24 @@ import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import { TuiDialogService } from '@taiga-ui/core';
 import BigNumber from 'bignumber.js';
-import { from, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { LP_PROVIDING_CONTRACT_ABI } from '../constants/LP_PROVIDING_CONTRACT_ABI';
 import { POOL_TOKENS } from '../constants/POOL_TOKENS';
 import { POOL_TOKENS_RATE } from '../constants/POOL_TOKENS_RATE';
+import { LpError } from '../models/lp-error.enum';
 import { StakePeriod } from '../models/stake-period.enum';
 
 @Injectable()
 export class LpProvidingService {
   private readonly lpProvidingContract = ENVIRONMENT.lpProviding.contractAddress;
+
+  public readonly minEnterAmount = ENVIRONMENT.lpProviding.minEnterAmount;
+
+  public readonly maxEnterAmount = ENVIRONMENT.lpProviding.maxEnterAmount;
+
+  public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
 
   private readonly blockchain = BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
 
@@ -31,11 +38,13 @@ export class LpProvidingService {
     return this.authService.userAddress;
   }
 
-  public readonly minEnterAmount = ENVIRONMENT.lpProviding.minEnterAmount;
+  public readonly needLogin$ = this.authService
+    .getCurrentUser()
+    .pipe(map(({ address }) => Boolean(address)));
 
-  public readonly maxEnterAmount = ENVIRONMENT.lpProviding.maxEnterAmount;
+  public infoLoading$ = new BehaviorSubject<boolean>(true);
 
-  public readonly poolSize = ENVIRONMENT.lpProviding.poolSize;
+  public progressLoading$ = new BehaviorSubject<boolean>(true);
 
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
@@ -150,6 +159,28 @@ export class LpProvidingService {
     );
   }
 
+  // public removeDeposit(nftId: number): void {}
+
+  private checkErrors(amount: BigNumber): LpError {
+    const balance = 10000;
+
+    if (amount.gt(balance)) {
+      return LpError.INSUFFICIENT_BALANCE;
+    }
+
+    if (amount.gt(this.maxEnterAmount)) {
+      return LpError.LIMIT_GT_MAX;
+    }
+
+    if (amount.lt(this.minEnterAmount)) {
+      return LpError.LIMIT_LT_MIN;
+    }
+
+    if (!amount.isFinite()) {
+      return LpError.EMPTY_AMOUNT;
+    }
+  }
+
   private async calculateUsdPrice(value: BigNumber, tokenAddress: string): Promise<BigNumber> {
     const usdPrice = await this.tokensService.getAndUpdateTokenPrice({
       address: tokenAddress,
@@ -159,12 +190,11 @@ export class LpProvidingService {
     return value.multipliedBy(usdPrice);
   }
 
-  private calculateBrbcAmount(value: BigNumber, rate: StakePeriod): BigNumber {
-    return value.multipliedBy(POOL_TOKENS_RATE[rate]);
-  }
-
-  private calculateRelativeAmount(amount: BigNumber, relativeTo: 'usdc' | 'brbc'): BigNumber {
-    const rate = POOL_TOKENS_RATE[StakePeriod.AVERAGE];
-    return relativeTo === 'usdc' ? amount.multipliedBy(rate) : amount.dividedBy(rate);
+  private calculateRelativeAmount(
+    amount: BigNumber,
+    relativeTo: 'usdc' | 'brbc',
+    rate = POOL_TOKENS_RATE[StakePeriod.AVERAGE]
+  ): BigNumber {
+    return relativeTo === 'usdc' ? amount.multipliedBy(rate) : amount.multipliedBy(1 - rate);
   }
 }

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Output, EventEmitter, Input } from '@angular/core';
+import { LpError } from '../../models/lp-error.enum';
 
 @Component({
   selector: 'app-stake-button',
@@ -7,5 +8,17 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakeButtonComponent {
+  @Input() needLogin: boolean;
+
+  @Input() error: LpError;
+
+  @Output() onLogin = new EventEmitter<void>();
+
+  @Output() onApprove = new EventEmitter<void>();
+
+  @Output() onStake = new EventEmitter<void>();
+
+  public readonly errors = LpError;
+
   constructor() {}
 }
