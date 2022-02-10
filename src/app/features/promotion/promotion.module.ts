@@ -19,6 +19,7 @@ import { PromotionAccordionComponent } from './components/promotion-invited-proj
 import { PromotionInvitedProjectsComponent } from './components/promotion-invited-projects/promotion-invited-projects.component';
 import { TuiAccordionModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { PromotionApiService } from '@features/promotion/services/promotion-api.service';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,6 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     TuiDataListModule,
     TuiButtonModule
   ],
-  providers: [PromotionService]
+  providers: [PromotionService, PromotionApiService]
 })
 export class PromotionModule {}
