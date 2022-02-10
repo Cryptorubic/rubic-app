@@ -40,7 +40,6 @@ import {
   switchMap,
   takeUntil
 } from 'rxjs/operators';
-
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
@@ -91,6 +90,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   @Output() instantTradeInfoChange = new EventEmitter<InstantTradeInfo>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
+
+  private readonly IT_PROXY_FEE = 0.3;
 
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
@@ -164,6 +165,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         form.toToken &&
         form.fromAmount?.gt(0)
     );
+  }
+
+  public get toAmount(): BigNumber {
+    if (
+      !this.iframeService.isIframeWithFee(
+        this.currentBlockchain,
+        this.selectedProvider.tradeProviderInfo.value
+      )
+    ) {
+      return this.selectedProvider.trade.to.amount;
+    }
+
+    return this.selectedProvider.trade.to.amount.multipliedBy(1 - this.IT_PROXY_FEE);
   }
 
   constructor(
