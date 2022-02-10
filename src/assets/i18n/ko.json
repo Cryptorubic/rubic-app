@@ -627,6 +627,11 @@
       "link": "_placeholder"
     }
   },
+  "referralBanner": {
+    "takePartInOur": "우리의 참여 ",
+    "referralProgram": "추천 프로그램 및 보상을 받으세요!",
+    "link": "더 알아보기"
+  },
   "volume": {
     "title": "누적 거래량",
     "instantTrades": "Swaps",
