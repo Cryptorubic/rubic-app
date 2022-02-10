@@ -30,7 +30,7 @@
               {{ 'promotionPage.statistics.totalRewards' | translate }}
             </span>
             <span class="item__amount">
-              ${{ statistics.totalRewards | bigNumberFormat | shortenAmount: 4:2:true }}
+              ${{ statistics.totalRewards | bigNumberFormat | shortenAmount: 5:4:true }}
             </span>
           </li>
           <li class="statistics__item item">
@@ -38,7 +38,7 @@
               {{ 'promotionPage.statistics.instantRewards' | translate }}
             </span>
             <span class="item__amount">
-              ${{ statistics.instantRewards | bigNumberFormat | shortenAmount: 4:2:true }}
+              {{ statistics.instantRewards | bigNumberFormat | shortenAmount: 5:4:true }} BRBC
             </span>
           </li>
         </ul>
