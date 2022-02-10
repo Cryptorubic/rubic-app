@@ -102,7 +102,7 @@ export class PromotionApiService {
       invitationDate: new Date(project.update_time),
       tradingVolume: parseFloat(project.trade_volume),
       received: parseFloat(project.promoter_comission),
-      receivedTokens: parseFloat(project.promoter_comission_token),
+      receivedTokens: parseFloat(project.promoter_comission_token) / 10 ** token.decimals,
       token
     };
   }
