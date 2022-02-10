@@ -254,11 +254,11 @@ export class CommonOneinchService {
     let toTokenAmount: string;
     let data = null;
     try {
-      if (shouldCalculateGas) {
-        if (!fromAddress) {
-          throw new CustomError('User has not connected');
-        }
+      if (!fromAddress) {
+        throw new CustomError('User has not connected');
+      }
 
+      if (shouldCalculateGas) {
         if (fromTokenAddress !== this.oneInchNativeAddress) {
           const allowance = await this.getAllowance(blockchain, fromTokenAddress).toPromise();
           if (new BigNumber(amountAbsolute).gt(allowance)) {

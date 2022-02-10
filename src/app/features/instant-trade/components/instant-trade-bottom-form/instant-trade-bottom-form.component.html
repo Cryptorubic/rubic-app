@@ -41,7 +41,7 @@
             {{
               wrapProvider
                 ? (fromAmount | bigNumberFormat)
-                : (selectedProvider?.trade.to.amount
+                : (toAmount
                   | bigNumberFormat
                   | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
             }}
