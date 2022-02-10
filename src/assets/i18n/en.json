@@ -655,6 +655,11 @@
       "link": ""
     }
   },
+  "referralBanner": {
+    "takePartInOur": "Take part in our ",
+    "referralProgram": "Referral Program & get rewards!",
+    "link": "Learn more"
+  },
   "volume": {
     "title": "Accumulated Transaction Volume",
     "instantTrades": "Swaps",

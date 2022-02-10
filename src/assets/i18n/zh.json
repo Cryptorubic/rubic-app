@@ -654,6 +654,11 @@
       "link": ""
     }
   },
+  "referralBanner": {
+    "takePartInOur": "參加我們的 ",
+    "referralProgram": "推薦計劃並獲得獎勵！",
+    "link": "學到更多"
+  },
   "volume": {
     "title": "累計交易量",
     "instantTrades": "Swaps",
