@@ -40,7 +40,7 @@
     <tui-accordion-item class="accordion__item">
       <div class="accordion__header header">
         <div class="header__url">
-          <a [safetyLink]="row.projectUrl">{{ row.projectName }}</a>
+          <span>{{ row.projectName }}</span>
         </div>
         <div class="header__received">
           ${{ row.received | bigNumberFormat | withRound: 'toClosestValue' }}

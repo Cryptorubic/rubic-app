@@ -21,7 +21,7 @@
   <tbody tuiTbody [data]="pageTableData">
     <tr *tuiRow="let item of pageTableData" tuiTr>
       <td *tuiCell="'projectName'" tuiTd>
-        <a [safetyLink]="item.projectUrl" class="table__cell_bold">{{ item.projectName }}</a>
+        <span class="table__cell_bold">{{ item.projectName }}</span>
       </td>
       <td *tuiCell="'invitationDate'" tuiTd>
         <div class="table__date">
