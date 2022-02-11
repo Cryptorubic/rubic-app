@@ -1,11 +1,8 @@
 import { TemplateRef, ViewContainerRef, Directive, OnInit, Input } from '@angular/core';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
 
 @Directive({
-  selector: '[noFrame]',
-  providers: [TuiDestroyService]
+  selector: '[noFrame]'
 })
 export class NoFrameDirective<T> implements OnInit {
   @Input() noFrame: 'horizontal' | 'vertical' | 'any' = 'any';
@@ -15,23 +12,20 @@ export class NoFrameDirective<T> implements OnInit {
   constructor(
     private readonly templateRef: TemplateRef<T>,
     private readonly viewContainer: ViewContainerRef,
-    private readonly iframeService: IframeService,
-    private readonly destroy$: TuiDestroyService
+    private readonly iframeService: IframeService
   ) {}
 
   ngOnInit() {
-    this.iframeService.iframeAppearance$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(iframeAppearance => {
-        if (!this.noFrameAnd) {
-          this.viewContainer.clear();
-          return;
-        }
-        if (!iframeAppearance || (iframeAppearance !== this.noFrame && this.noFrame !== 'any')) {
-          this.viewContainer.createEmbeddedView(this.templateRef);
-        } else {
-          this.viewContainer.clear();
-        }
-      });
+    if (!this.noFrameAnd) {
+      this.viewContainer.clear();
+      return;
+    }
+
+    const iframeAppearance = this.iframeService.iframeAppearance;
+    if (!iframeAppearance || (iframeAppearance !== this.noFrame && this.noFrame !== 'any')) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainer.clear();
+    }
   }
 }
