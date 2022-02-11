@@ -53,7 +53,9 @@
           <td *tuiCell="'Status'" tuiTd class="status">
             <a
               class="transaction-link"
-              [safetyLink]="getTransactionLink(trade)"
+              [href]="getTransactionLink(trade)"
+              rel="noopener"
+              target="_blank"
               title="{{ 'common.checkOnScanner' | translate }}"
             >
               <div class="status__text">
