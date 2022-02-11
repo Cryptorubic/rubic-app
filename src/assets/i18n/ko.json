@@ -473,7 +473,8 @@
       "depositInProgress": "입금 진행 중",
       "withdrawInProgress": "출금 진행 중",
       "waitingForDeposit": "입금을 기다리는 중",
-      "waitingForReceiving": "받기를 기다리고"
+      "waitingForReceiving": "받기를 기다리고",
+      "refunded": "환불"
     },
     "noData": "아직 거래가 없습니다",
     "receive": "받다"

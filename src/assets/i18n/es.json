@@ -473,7 +473,8 @@
       "depositInProgress": "depósito en curso",
       "withdrawInProgress": "retiro en curso",
       "waitingForDeposit": "esperando depósito",
-      "waitingForReceiving": "esperando recibir"
+      "waitingForReceiving": "esperando recibir",
+      "refunded": "reintegrada"
     },
     "noData": "Aún no tienes intercambios",
     "receive": "Recibir"

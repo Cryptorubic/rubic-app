@@ -8,5 +8,6 @@ export const TRANSLATION_STATUS_KEY = {
   [TRANSACTION_STATUS.DEPOSIT_IN_PROGRESS]: 'tradesTable.statuses.depositInProgress',
   [TRANSACTION_STATUS.WITHDRAW_IN_PROGRESS]: 'tradesTable.statuses.withdrawInProgress',
   [TRANSACTION_STATUS.WAITING_FOR_DEPOSIT]: 'tradesTable.statuses.waitingForDeposit',
-  [TRANSACTION_STATUS.WAITING_FOR_RECEIVING]: 'tradesTable.statuses.waitingForReceiving'
+  [TRANSACTION_STATUS.WAITING_FOR_RECEIVING]: 'tradesTable.statuses.waitingForReceiving',
+  [TRANSACTION_STATUS.REFUNDED]: 'tradesTable.statuses.refunded'
 };
