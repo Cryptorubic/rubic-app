@@ -53,8 +53,7 @@
           <td *tuiCell="'Status'" tuiTd class="status">
             <a
               class="transaction-link"
-              safetyLink
-              [link]="getTransactionLink(trade)"
+              [safetyLink]="getTransactionLink(trade)"
               title="{{ 'common.checkOnScanner' | translate }}"
             >
               <div class="status__text">
