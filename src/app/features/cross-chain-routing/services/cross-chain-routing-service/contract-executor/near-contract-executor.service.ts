@@ -67,7 +67,8 @@ export class NearContractExecutorService {
 
     const toAdapter = this.publicBlockchainAdapterService[trade.toBlockchain];
     const isToNative = toAdapter.isNativeAddress(trade.tokenOut.address);
-    const { methodName } = this.contracts[trade.toBlockchain].getMethodNameAndContractAbi(
+
+    const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
       trade.toProviderIndex,
       isToNative
     );
@@ -81,7 +82,7 @@ export class NearContractExecutorService {
       blockchain: this.contracts[trade.toBlockchain].numOfBlockchain,
       new_address: targetAddress,
       swap_to_crypto: isToNative,
-      signature: CROSS_CHAIN_METHODS[methodName].slice(2)
+      signature: CROSS_CHAIN_METHODS[swapToUserMethodName].slice(2)
     };
 
     const routes = this.refFinanceService.refRoutes;
