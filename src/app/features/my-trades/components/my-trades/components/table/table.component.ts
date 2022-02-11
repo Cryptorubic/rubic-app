@@ -13,6 +13,7 @@ import { AbstractTableDataComponent } from 'src/app/features/my-trades/component
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
 import { tradesProviders } from '@shared/constants/common/trades-providers';
+import { TableTrade } from '@app/shared/models/my-trades/table-trade';
 
 @Component({
   selector: 'app-table',
@@ -93,6 +94,10 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   ngOnInit(): void {
     this.initSubscriptions();
+  }
+
+  public getTransactionLink(trade: TableTrade): string {
+    return trade.transactionHashScanUrl;
   }
 
   /**
