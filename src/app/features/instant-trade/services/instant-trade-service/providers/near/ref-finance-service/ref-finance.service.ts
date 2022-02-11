@@ -239,7 +239,9 @@ export class RefFinanceService implements ItProvider {
     const registerTokensTransactions =
       await this.refFinanceSwapService.createRegisterTokensTransactions(
         toTokenAddress,
-        this.refRoutes
+        fromTokenAddress,
+        this.refRoutes,
+        SWAP_PROVIDER_TYPE.INSTANT_TRADE
       );
     const depositTransactions = await this.refFinanceSwapService.createDepositTransactions(trade);
     const swapTransaction = await this.refFinanceSwapService.createSwapTransaction(

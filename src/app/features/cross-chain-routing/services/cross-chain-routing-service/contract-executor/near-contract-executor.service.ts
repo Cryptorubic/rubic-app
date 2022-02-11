@@ -21,6 +21,7 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Injectable({
   providedIn: 'root'
@@ -139,7 +140,9 @@ export class NearContractExecutorService {
     const registerTokensTransactions =
       await this.refFinanceSwapService.createRegisterTokensTransactions(
         this.contract.transitToken.address,
-        routes
+        fromTokenAddress,
+        routes,
+        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
       );
     const depositTransactions = await this.refFinanceSwapService.createDepositTransactions(
       trade.fromTrade

@@ -21,6 +21,7 @@ import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-
 import { WalletConnection } from 'near-api-js';
 import { RefFiFunctionCallOptions } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-function-calls';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 
 @Injectable({
   providedIn: 'root'
@@ -263,11 +264,15 @@ export class RefFinanceSwapService {
   /**
    * Creates transactions to register tokens on swap contract.
    * @param toTokenAddress To token address.
-   * @param routes
+   * @param fromAddress From token address.
+   * @param routes Trade routes.
+   * @param swapType Swap type: CCR or IT.
    */
   public async createRegisterTokensTransactions(
     toTokenAddress: string,
-    routes: [RefFinanceRoute] | [RefFinanceRoute, RefFinanceRoute]
+    fromAddress: string,
+    routes: [RefFinanceRoute] | [RefFinanceRoute, RefFinanceRoute],
+    swapType: SWAP_PROVIDER_TYPE
   ): Promise<NearTransaction[]> {
     const transactions: NearTransaction[] = [];
     const account = new WalletConnection(
@@ -302,28 +307,60 @@ export class RefFinanceSwapService {
       }
     }
 
-    const tokenOutRegistered = await account.viewFunction(toTokenAddress, 'storage_balance_of', {
-      account_id: account.accountId
-    });
-
-    if (!tokenOutRegistered || tokenOutRegistered.total === '0') {
-      const tokenOutActions: RefFiFunctionCallOptions[] = [
+    if (fromAddress === WRAP_NEAR_CONTRACT) {
+      const tokenInRegistered = await account.viewFunction(
+        WRAP_NEAR_CONTRACT,
+        'storage_balance_of',
         {
-          methodName: 'storage_deposit',
-          args: {
-            registration_only: true,
-            account_id: account.accountId
-          },
-          gas: DEFAULT_TOKEN_DEPOSIT_GAS,
-          amount: DEFAULT_DEPOSIT_AMOUNT
+          account_id: account.accountId
         }
-      ];
+      );
 
-      transactions.push({
-        receiverId: toTokenAddress,
-        functionCalls: tokenOutActions
-      });
+      if (!tokenInRegistered || tokenInRegistered.total === '0') {
+        const tokenInActions: RefFiFunctionCallOptions[] = [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              registration_only: true,
+              account_id: account.accountId
+            },
+            gas: DEFAULT_TOKEN_DEPOSIT_GAS,
+            amount: DEFAULT_DEPOSIT_AMOUNT
+          }
+        ];
+
+        transactions.push({
+          receiverId: WRAP_NEAR_CONTRACT,
+          functionCalls: tokenInActions
+        });
+      }
     }
+
+    if (swapType === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+      const tokenOutRegistered = await account.viewFunction(toTokenAddress, 'storage_balance_of', {
+        account_id: account.accountId
+      });
+
+      if (!tokenOutRegistered || tokenOutRegistered.total === '0') {
+        const tokenOutActions: RefFiFunctionCallOptions[] = [
+          {
+            methodName: 'storage_deposit',
+            args: {
+              registration_only: true,
+              account_id: account.accountId
+            },
+            gas: DEFAULT_TOKEN_DEPOSIT_GAS,
+            amount: DEFAULT_DEPOSIT_AMOUNT
+          }
+        ];
+
+        transactions.push({
+          receiverId: toTokenAddress,
+          functionCalls: tokenOutActions
+        });
+      }
+    }
+
     return transactions;
   }
 
@@ -403,7 +440,11 @@ export class RefFinanceSwapService {
           account_id: account.accountId
         }
       );
-      if (trade.from.amount.lt(Web3Pure.fromWei(wrappedNearBalance?.total))) {
+      if (
+        !wrappedNearBalance ||
+        wrappedNearBalance.total === '0' ||
+        trade.from.amount.lt(Web3Pure.fromWei(wrappedNearBalance.total))
+      ) {
         transactions.push({
           receiverId: WRAP_NEAR_CONTRACT,
           functionCalls: [
