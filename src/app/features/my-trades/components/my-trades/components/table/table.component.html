@@ -61,7 +61,9 @@
                 <div
                   class="status-circle"
                   [ngClass]="{
-                    'status-circle_green': trade.status === TRANSACTION_STATUS.COMPLETED,
+                    'status-circle_green':
+                      trade.status === TRANSACTION_STATUS.COMPLETED ||
+                      trade.status === TRANSACTION_STATUS.REFUNDED,
                     'status-circle_yellow':
                       trade.status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT ||
                       trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING ||

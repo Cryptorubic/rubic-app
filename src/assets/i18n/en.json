@@ -474,7 +474,8 @@
       "depositInProgress": "deposit in progress",
       "withdrawInProgress": "withdraw in progress",
       "waitingForDeposit": "waiting for deposit",
-      "waitingForReceiving": "waiting for receiving"
+      "waitingForReceiving": "waiting for receiving",
+      "refunded": "refunded"
     },
     "noData": "You have no trades yet",
     "receive": "Receive"
