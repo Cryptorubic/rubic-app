@@ -30,7 +30,7 @@ export class NearContractData extends ContractData {
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
     public readonly numOfBlockchain: number,
-    publicBlockchainAdapterService: PublicBlockchainAdapterService
+    public readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
     super(blockchain, providersData, numOfBlockchain);
     BlockchainsInfo.checkIsNear(blockchain);

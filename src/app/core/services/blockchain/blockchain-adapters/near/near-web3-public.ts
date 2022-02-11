@@ -155,8 +155,9 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
   }
 
   /**
-   * get balance of multiple tokens via multicall.
-   * @TODO Near. Reduce amount of calls.
+   * Gets balances of multiple tokens.
+   * @TODO Near. Reduce amount of calls. Waiting for lib release:
+   * https://github.com/QuicSwap/near-multicall
    * @param address wallet address
    * @param tokensAddresses tokens addresses
    */
