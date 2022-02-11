@@ -53,15 +53,16 @@
           <td *tuiCell="'Status'" tuiTd class="status">
             <a
               class="transaction-link"
-              safetyLink
-              [link]="getTransactionLink(trade)"
+              [safetyLink]="trade.transactionHashScanUrl"
               title="{{ 'common.checkOnScanner' | translate }}"
             >
               <div class="status__text">
                 <div
                   class="status-circle"
                   [ngClass]="{
-                    'status-circle_green': trade.status === TRANSACTION_STATUS.COMPLETED,
+                    'status-circle_green':
+                      trade.status === TRANSACTION_STATUS.COMPLETED ||
+                      trade.status === TRANSACTION_STATUS.REFUNDED,
                     'status-circle_yellow':
                       trade.status === TRANSACTION_STATUS.WAITING_FOR_DEPOSIT ||
                       trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING ||
@@ -98,7 +99,7 @@
           </td>
 
           <td *tuiCell="'FromTo'" tuiTd class="blockchains">
-            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
               <ng-container *ngIf="trade.fromToken; else showToTokenChain">
                 <div class="blockchains__blockchain">
                   <div class="img-container">
@@ -149,7 +150,7 @@
           </td>
 
           <td *tuiCell="'Provider'" tuiTd>
-            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
               <div class="img-container">
                 <img
                   (error)="handleImageError($event)"
@@ -162,7 +163,7 @@
           </td>
 
           <td *tuiCell="'Sent'" tuiTd class="token">
-            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
               <ng-container *ngIf="trade.fromToken; else none">
                 <span>{{
                   trade.fromToken.amount | bigNumberFormat | withRound: 'toClosestValue'
@@ -185,7 +186,7 @@
           </td>
 
           <td *tuiCell="'Expected'" tuiTd class="token">
-            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
               <span>{{
                 trade.toToken.amount | bigNumberFormat | withRound: 'toClosestValue'
               }}</span>
@@ -203,7 +204,7 @@
           </td>
 
           <td *tuiCell="'Date'" tuiTd class="date">
-            <a class="transaction-link" [safetyLink]="getTransactionLink(trade)">
+            <a class="transaction-link" [safetyLink]="trade.transactionHashScanUrl">
               <span>{{ trade.date | date: 'dd.MM.yyyy' }}</span>
               <span>{{ trade.date | date: 'HH:mm' }}</span>
             </a>

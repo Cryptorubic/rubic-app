@@ -473,7 +473,8 @@
       "depositInProgress": "存款進行中",
       "withdrawInProgress": "撤回進行中",
       "waitingForDeposit": "等待存款",
-      "waitingForReceiving": "等待接收"
+      "waitingForReceiving": "等待接收",
+      "refunded": "已退款"
     },
     "noData": "您還沒有交易",
     "receive": "收到"
