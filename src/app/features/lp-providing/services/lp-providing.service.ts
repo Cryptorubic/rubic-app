@@ -14,9 +14,8 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { LP_PROVIDING_CONTRACT_ABI } from '../constants/LP_PROVIDING_CONTRACT_ABI';
 import { POOL_TOKENS } from '../constants/POOL_TOKENS';
-import { POOL_TOKENS_RATE } from '../constants/POOL_TOKENS_RATE';
 import { LpError } from '../models/lp-error.enum';
-import { StakePeriod } from '../models/stake-period.enum';
+import { LiquidityPeriod } from '../models/stake-period.enum';
 
 @Injectable()
 export class LpProvidingService {
@@ -181,20 +180,28 @@ export class LpProvidingService {
     }
   }
 
-  private async calculateUsdPrice(value: BigNumber, tokenAddress: string): Promise<BigNumber> {
+  public getRate(days: number): number {
+    if (days < LiquidityPeriod.AVERAGE) {
+      return 0.1;
+    }
+
+    if (days < LiquidityPeriod.LONG && days >= LiquidityPeriod.AVERAGE) {
+      return 0.8;
+    }
+
+    return 1;
+  }
+
+  private calculateRelativeAmount(amount: BigNumber, relativeTo: 'usdc' | 'brbc'): BigNumber {
+    return relativeTo === 'usdc' ? amount.multipliedBy(1) : amount.multipliedBy(2);
+  }
+
+  public async calculateUsdPrice(value: BigNumber, token: 'brbc' | 'usdc'): Promise<BigNumber> {
     const usdPrice = await this.tokensService.getAndUpdateTokenPrice({
-      address: tokenAddress,
+      address: token === 'brbc' ? this.brbcAddress : this.usdcAddress,
       blockchain: this.blockchain
     });
 
     return value.multipliedBy(usdPrice);
-  }
-
-  private calculateRelativeAmount(
-    amount: BigNumber,
-    relativeTo: 'usdc' | 'brbc',
-    rate = POOL_TOKENS_RATE[StakePeriod.AVERAGE]
-  ): BigNumber {
-    return relativeTo === 'usdc' ? amount.multipliedBy(rate) : amount.multipliedBy(1 - rate);
   }
 }

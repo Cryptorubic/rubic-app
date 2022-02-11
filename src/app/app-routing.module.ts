@@ -45,6 +45,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/staking/staking.module').then(m => m.StakingModule)
   },
   {
+    path: ROUTE_PATH.LIQUIDITY_PROVIDING,
+    loadChildren: () =>
+      import('./features/lp-providing/lp-providing.module').then(m => m.LpProvidingModule)
+  },
+  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }

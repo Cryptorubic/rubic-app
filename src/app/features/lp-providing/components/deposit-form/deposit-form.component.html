@@ -1,0 +1,78 @@
+<div class="deposit-form">
+  <div class="deposit-form__header">
+    <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
+    <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+    RBC / USDC
+  </div>
+  <div class="asset">
+    <div class="asset__symbol-amount">
+      <div class="asset__symbol">
+        <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
+        RBC
+      </div>
+      <input
+        type="text"
+        class="asset__amount"
+        name="rbc-amount"
+        autocomplete="off"
+        placeholder="0.0"
+        appTokenAmount
+        [decimals]="18"
+        [formControl]="rbcAmountCtrl"
+      />
+    </div>
+    <div class="asset__balance-usd-price">
+      <div class="asset__balance">
+        You have 271,248.38523
+        <span (click)="setMaxTokenAmount('rbc')">MAX</span>
+      </div>
+      <div class="asset__usd-price" *ngIf="rbcAmountUsdPrice$ | async as usdPrice">
+        {{ usdPrice }}$
+      </div>
+    </div>
+  </div>
+  <!-- <div class="deposit-form__divider"></div> -->
+  <div class="asset">
+    <div class="asset__symbol-amount">
+      <div class="asset__symbol">
+        <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+        USDC
+      </div>
+      <div class="asset__amount">
+        <input
+          type="text"
+          class="asset__amount"
+          name="usdc-amount"
+          autocomplete="off"
+          placeholder="0.0"
+          appTokenAmount
+          [decimals]="18"
+          [formControl]="usdcAmountCtrl"
+        />
+      </div>
+    </div>
+    <div class="asset__balance-usd-price">
+      <div class="asset__balance">
+        You have 271,248.38523
+        <span (click)="setMaxTokenAmount('usdc')">MAX</span>
+      </div>
+      <div class="asset__usd-price">$68,218.16</div>
+    </div>
+  </div>
+  <!-- <div class="deposit-form__divider"></div> -->
+  <!-- <div class="hint">If you take the deposit ahead of time, a penalty of 10% will be assigned</div> -->
+  <div class="lp-time">
+    <div class="lp-time__header">
+      <div class="lp-time__header-text">
+        {{ 'lpProviding.liquidityTime' | translate }}
+      </div>
+      <div class="lp-time__header-hotkeys">
+        <ng-container *ngFor="let key of liquidityPeriodHotkeys">
+          <tui-tag [value]="key" (click)="setLiquidityTimeHotkey(key)"></tui-tag>
+        </ng-container>
+      </div>
+    </div>
+    <tui-slider [formControl]="liquidityPeriodCtrl" [max]="180"></tui-slider>
+  </div>
+  <app-rubic-button appearance="secondary" (click)="stake()"> Stake </app-rubic-button>
+</div>
