@@ -73,11 +73,12 @@ app-rubic-button[error=true] {
   }
 }
 
-app-rubic-button[error-min=true] {
+app-rubic-button[error-min-amount=true] {
   @include iframe {
     ::ng-deep button {
       span {
         font-size: 12px;
+        line-height: 1.2;
       }
     }
   }
