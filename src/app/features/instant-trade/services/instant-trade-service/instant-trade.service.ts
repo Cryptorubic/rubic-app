@@ -258,10 +258,21 @@ export class InstantTradeService {
     try {
       const options = {
         onConfirm: async (hash: string) => {
+          const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+          const fee = 0;
           transactionHash = hash;
 
           confirmCallback();
+
           this.notifyTradeInProgress(hash, trade.blockchain);
+
+          this.notifyGtmAfterSignTx(
+            transactionHash,
+            trade.from.token.symbol,
+            trade.to.token.symbol,
+            fee,
+            usdPrice
+          );
 
           if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
             await this.postTrade(
@@ -283,9 +294,6 @@ export class InstantTradeService {
       } else {
         receipt = await this.checkFeeAndCreateTrade(provider, trade, options);
       }
-
-      this.notifyGtmOnSuccess(transactionHash, trade);
-
       this.modalSubscriptions.pop()?.unsubscribe();
 
       this.updateTrade(transactionHash, true);
@@ -492,15 +500,19 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(txHash: string, trade: InstantTrade): void {
-    const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-    const fee = 0;
+  private notifyGtmAfterSignTx(
+    txHash: string,
+    fromToken: string,
+    toToken: string,
+    revenue: number,
+    usdPrice: number
+  ): void {
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
       txHash,
-      fee,
-      trade.from.token.symbol,
-      trade.to.token.symbol,
+      revenue,
+      fromToken,
+      toToken,
       usdPrice
     );
   }
