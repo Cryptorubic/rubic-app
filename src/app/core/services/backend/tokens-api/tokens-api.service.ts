@@ -44,7 +44,7 @@ export class TokensApiService {
    * @param tokens Tokens from backend response.
    * @return List<Token> Useful tokens list.
    */
-  private static prepareTokens(tokens: BackendToken[]): List<Token> {
+  public static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
         .map((token: BackendToken) => ({
