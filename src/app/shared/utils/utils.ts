@@ -92,3 +92,11 @@ export function switchIif<A = void, T = never, F = never>(
 export function getBigNumber(num: unknown): number {
   return num === undefined || num === null ? 0 : parseFloat(num.toString());
 }
+
+export function notNull<T>(value: T | null): value is T {
+  return value !== null;
+}
+
+export function isNull<T>(value: T | null): value is null {
+  return value === null;
+}

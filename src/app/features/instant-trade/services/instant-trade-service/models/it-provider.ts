@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TransactionReceipt } from 'web3-eth';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
+import { RequiredField } from '@shared/models/utility-types/required-field';
 
 export interface ItOptions {
   onConfirm?: (hash: string) => void;
@@ -13,7 +15,17 @@ export interface ItOptions {
 export interface ItProvider {
   readonly providerType: INSTANT_TRADES_PROVIDERS;
 
-  createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
+  get contractAddress(): string;
+
+  getAllowance: (tokenAddress: string, targetContractAddress?: string) => Observable<BigNumber>;
+
+  approve: (
+    tokenAddress: string,
+    options: {
+      onTransactionHash?: (hash: string) => void;
+    },
+    targetContractAddress?: string
+  ) => Promise<void>;
 
   calculateTrade: (
     fromToken: InstantTradeToken,
@@ -23,12 +35,11 @@ export interface ItProvider {
     fromAddress?: string
   ) => Promise<InstantTrade>;
 
-  getAllowance: (tokenAddress: string) => Observable<BigNumber>;
+  createTrade: (trade: InstantTrade, options: ItOptions) => Promise<Partial<TransactionReceipt>>;
 
-  approve: (
-    tokenAddress: string,
-    options: {
-      onTransactionHash?: (hash: string) => void;
-    }
-  ) => Promise<void>;
+  checkAndEncodeTrade?: (
+    trade: InstantTrade,
+    options: ItOptions,
+    receiverAddress: string
+  ) => Promise<RequiredField<TransactionOptions, 'data'>>;
 }
