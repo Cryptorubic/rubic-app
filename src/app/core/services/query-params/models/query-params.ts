@@ -1,4 +1,5 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 
 export type AdditionalTokens =
   | 'eth_tokens'
@@ -15,7 +16,10 @@ interface AllQueryParams {
   fromChain: BLOCKCHAIN_NAME;
   toChain: BLOCKCHAIN_NAME;
   amount: string;
-  iframe: 'vertical' | 'horizontal';
+
+  // iframe
+  iframe: IframeAppearance;
+  device: 'mobile' | 'desktop';
   hideSelectionFrom: string;
   hideSelectionTo: string;
   slippageIt: string;
@@ -23,7 +27,9 @@ interface AllQueryParams {
   background: string;
   theme: string;
   language: 'en' | 'es' | 'ko' | 'ru' | 'zh';
-  device?: 'mobile' | 'desktop';
+  fee: string;
+  feeTarget: string;
+  promoCode: string;
 }
 
 export type QueryParams = {

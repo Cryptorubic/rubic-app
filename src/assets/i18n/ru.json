@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "unsupportedTokenCCR": "При попытке отправить транзакцию произошла ошибка.\n С большой вероятностью, вы пытаетесь продать токен, который в настоящее время не поддерживается в multichain.",
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
     "buttonLink": "Узнать больше",
+    "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
     "walletNotInstalled": "Кошелек не установлен."
   },
   "navigation": {
@@ -98,7 +98,8 @@
     "logoutMessage": "Вы действительно хотите выйти?",
     "notAvailable": "В работе. UX редизайн.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "Промо кампания"
   },
   "aboutPage": {
     "description": "Rubic-это мультичейн экосистема DeFi, которая включает в себя кросс-чейн, P2P, мгновенные обмены и лимит ордера с возможностью использовать разные блокчейны, стремясь обеспечить общую для всех универсальную децентрализованную платформу.",
@@ -350,6 +351,32 @@
         "answer": "Команда Рубика производит возврат средств в токенах USDC. Сумма возврата будет равна количеству токенов в долларах США на момент начала сделки (обмена). Возврат будет совершен в целевой сети. \n\nПодробная информация об условиях возврата средств <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>по ссылке</a>."
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Переключить кошелек на совместимый с Ethereum"
+    },
+    "invitations": {
+      "invitedProjects": "Приглашенные проекты",
+      "noProjects": "Вы еще не пригласили ни одного проекта",
+      "tableColumns": {
+        "projectName": "Проект",
+        "invitationDate": "Приглашен",
+        "tradingVolume": "Объем торгов виджета",
+        "received": "Получено",
+        "receivedTokens": "Полученные токены"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Реферальная программа",
+      "invitedProjects": "Приглашенные проекты",
+      "totalRewards": "Получено вознаграждений",
+      "instantRewards": "Мгновенные вознаграждения",
+      "earnWithOurWidget": "Зарабатывай с помощью нашего виджета",
+      "createAReferralLink": "Создайте реферальную ссылку и начните зарабатывать с помощью своего виджета. Обязательно ознакомьтесь с правилами реферальной программы.",
+      "myPromoLink": "Моя промо-ссылка",
+      "contactUs": "Свяжитесь с нами"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -619,7 +646,7 @@
     },
     "external": {
       "text": "Aurora теперь доступен для обмена на Rubic! Выполняйте Он-Чейн и Мульти-Чейн свопы прямо сейчас!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "referralBanner": {

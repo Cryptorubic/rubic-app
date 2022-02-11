@@ -84,6 +84,7 @@
     "unsupportedTokenCCR": "An error occurred while trying to send a transaction.\nThere is a chance that you are trying to sell a token that is currently not supported in multi-chain.",
     "rpcError": "An error occurred, to know what to do to resolve it follow the link below.",
     "buttonLink": "Learn more",
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
     "walletNotInstalled": "Wallet is not installed."
   },
   "navigation": {
@@ -98,7 +99,8 @@
     "logoutMessage": "Do you really want to Log Out?",
     "notAvailable": "Under Construction - UX Redesign.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "Promotion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform.",
@@ -350,6 +352,32 @@
         "answer": "Rubic’s team will complete the refund in USDC tokens. The amount of the refund will be equal to the amount of tokens in USD at the moment when the trade was initiated. the refund will be completed in the target network. \n\nYou can find the detailed information about the Rubic's auto-refund system by using this <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>link</a>."
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Switch to Ethereum-compatible Wallet"
+    },
+    "invitations": {
+      "invitedProjects": "Invited Projects",
+      "noProjects": "You haven't invited any projects yet",
+      "tableColumns": {
+        "projectName": "Project",
+        "invitationDate": "Invited",
+        "tradingVolume": "Trading Volume",
+        "received": "Received",
+        "receivedTokens": "Received Tokens"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Referral Program",
+      "invitedProjects": "Invited Projects",
+      "totalRewards": "Earned Rewards",
+      "instantRewards": "Instant Rewards",
+      "earnWithOurWidget": "Earn with our Widget",
+      "createAReferralLink": "Generate a referral link and start earning with our Widget. Make sure to read the Program Rules!",
+      "myPromoLink": "My Promo Link",
+      "contactUs": "Contact Us"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -624,7 +652,7 @@
     },
     "external": {
       "text": "Aurora is now live at Rubic! Complete On-Chain and Multi-Chain swaps now!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "referralBanner": {

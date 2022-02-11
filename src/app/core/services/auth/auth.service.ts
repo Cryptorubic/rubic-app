@@ -14,6 +14,8 @@ import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/walle
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { CookieService } from 'ngx-cookie-service';
+import { BrowserService } from '../browser/browser.service';
+import { BROWSER } from '@app/shared/models/browser/browser';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -52,7 +54,8 @@ export class AuthService {
     private readonly store: StoreService,
     private readonly errorService: ErrorsService,
     private readonly cookieService: CookieService,
-    @Inject(WINDOW) private window: RubicWindow
+    @Inject(WINDOW) private window: RubicWindow,
+    private readonly browserService: BrowserService
   ) {
     this.isAuthProcess = false;
     this.currentUser$ = new BehaviorSubject<UserInterface>(undefined);
@@ -144,20 +147,25 @@ export class AuthService {
    * Connect wallet.
    */
   public async serverlessSignIn(): Promise<void> {
+    const isMetamaskBrowser = this.browserService.currentBrowser === BROWSER.METAMASK;
     try {
       this.isAuthProcess = true;
-      const permissions = await this.walletConnectorService.requestPermissions();
-      const accountsPermission = permissions.find(
-        permission => permission.parentCapability === 'eth_accounts'
-      );
-      if (accountsPermission) {
+      const permissions = !isMetamaskBrowser
+        ? (await this.walletConnectorService.requestPermissions()).find(
+            permission => permission.parentCapability === 'eth_accounts'
+          )
+        : true;
+
+      if (permissions) {
         await this.walletConnectorService.activate();
+
         const { address } = this.walletConnectorService;
         this.currentUser$.next({ address } || null);
         this.cookieService.set('address', address, 7, null, null, null, null);
       } else {
         this.currentUser$.next(null);
       }
+
       this.isAuthProcess = false;
     } catch (err) {
       this.catchSignIn(err);
@@ -179,11 +187,13 @@ export class AuthService {
         await this.walletConnectorService.activate();
 
         const walletLoginBody = await this.fetchWalletLoginBody().toPromise();
+
         if (walletLoginBody.code === this.USER_IS_IN_SESSION_CODE) {
           this.currentUser$.next({ address: this.walletConnectorService.provider.address });
           this.isAuthProcess = false;
           return;
         }
+
         const { message } = walletLoginBody.payload;
         const signature = await this.walletConnectorService.signPersonal(message);
         await this.sendSignedNonce(

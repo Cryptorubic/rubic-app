@@ -1,0 +1,58 @@
+<ng-container
+  *ngLet="{
+    isEthLikeWalletConnected: isEthLikeWalletConnected$ | async,
+    isWalletConnected: isWalletConnected$ | async
+  } as wallet"
+>
+  <app-rubic-container *ngLet="isLoading$ | async as isLoading">
+    <div class="header" title>
+      <span>{{ 'promotionPage.invitations.invitedProjects' | translate }}</span>
+      <app-rotating-icon
+        class="header__refresh"
+        [rotating]="isLoading"
+        [disabled]="!wallet.isEthLikeWalletConnected"
+        (iconClick)="onRefresh()"
+      ></app-rotating-icon>
+    </div>
+
+    <div *ngIf="!wallet.isEthLikeWalletConnected; else table">
+      <app-rubic-button
+        *ngIf="!wallet.isWalletConnected; else logOut"
+        appearance="secondary"
+        (onClick)="openWalletsModal()"
+      >
+        {{ 'navigation.login' | translate }}
+      </app-rubic-button>
+      <ng-template #logOut>
+        <app-rubic-button appearance="secondary" (onClick)="reconnectWallet()">
+          {{ 'promotionPage.common.switchWallet' | translate }}
+        </app-rubic-button>
+      </ng-template>
+    </div>
+
+    <ng-template #table>
+      <tui-loader overlay="true" [showLoader]="isLoading" *ngLet="tableData$ | async as tableData">
+        <div *ngIf="!tableData?.length; else tableContent" class="no-invited-projects">
+          {{ 'promotionPage.invitations.noProjects' | translate }}
+        </div>
+        <ng-template #tableContent>
+          <ng-container *ngLet="sortParameter$ | async as sortParameter">
+            <app-promotion-table
+              *ngIf="isDesktop; else accordion"
+              [tableData]="tableData"
+              [sortParameter]="sortParameter"
+              (sortParameterChange)="changeSortParameter($event)"
+            ></app-promotion-table>
+            <ng-template #accordion>
+              <app-promotion-accordion
+                [tableData]="tableData"
+                [sortParameter]="sortParameter"
+                (sortParameterChange)="changeSortParameter($event)"
+              ></app-promotion-accordion>
+            </ng-template>
+          </ng-container>
+        </ng-template>
+      </tui-loader>
+    </ng-template>
+  </app-rubic-container>
+</ng-container>

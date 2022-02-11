@@ -80,10 +80,10 @@
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
     "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
     "buttonLink": "더 알아보기",
+    "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다"
   },
   "navigation": {
@@ -98,7 +98,8 @@
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
     "notAvailable": "공사중-UX 재 설계.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "프로모션"
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
@@ -350,6 +351,32 @@
         "answer": "RUBIC의 팀은 USDC 토큰으로 환불을 완료합니다. 환불 금액은 거래가 시작된 순간의 USD 토큰 금액과 동일합니다. 환불은 대상 네트워크에서 완료됩니다.\n\n루빅의 자동 환불 시스템에 대한 자세한 내용은 링크를 참<a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>조하세요</a>."
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "이더리움 호환 지갑으로 전환t"
+    },
+    "invitations": {
+      "invitedProjects": "초대된 프로젝트",
+      "noProjects": "아직 프로젝트를 초대하지 않았습니다",
+      "tableColumns": {
+        "projectName": "프로젝트",
+        "invitationDate": "초대",
+        "tradingVolume": "거래량",
+        "received": "받음",
+        "receivedTokens": "수신된 토큰"
+      }
+    },
+    "statistics": {
+      "referralProgram": "추천 프로그램",
+      "invitedProjects": "초대된 프로젝트",
+      "totalRewards": "획득한 보상",
+      "instantRewards": "I즉석 보상",
+      "earnWithOurWidget": "우리 위젯으로 적립",
+      "createAReferralLink": "G추천 링크를 생성하고 위젯으로 수익을 올리세요. 프로그램 규정을 꼭 읽어보세요!",
+      "myPromoLink": "내 프로모션 링크",
+      "contactUs": "문의하기"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -624,7 +651,7 @@
     },
     "external": {
       "text": "Aurora이 이제 Rubic에서 생중계됩니다! 온체인 및 멀티체인 스왑을 지금 완료하십시오!",
-      "link": "_placeholder"
+      "link": ""
     }
   },
   "referralBanner": {

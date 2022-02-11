@@ -16,6 +16,9 @@ declare global {
       web3PublicSettings: {
         setRpcTimeout: (timeout: number) => void;
       };
+      iframeSettings: {
+        setDomain: (domain: string) => void;
+      };
     };
     tu: void;
     ts: void;
@@ -35,6 +38,10 @@ export class UseTestingModeService {
 
   public web3PublicSettings = {
     rpcTimeout: new Subject<number>()
+  };
+
+  public iframeSettings = {
+    domain: new BehaviorSubject<string>('')
   };
 
   constructor(
@@ -60,6 +67,9 @@ export class UseTestingModeService {
       },
       web3PublicSettings: {
         setRpcTimeout: (timeout: number) => this.web3PublicSettings.rpcTimeout.next(timeout)
+      },
+      iframeSettings: {
+        setDomain: (domain: string) => this.iframeSettings.domain.next(domain)
       }
     };
 

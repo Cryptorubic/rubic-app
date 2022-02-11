@@ -1,4 +1,4 @@
-<a *ngLet="isDark$ | async as isDark" safetyLink [link]="href" class="banner">
+<a *ngLet="isDark$ | async as isDark" [safetyLink]="href" class="banner">
   <img
     *ngIf="isDark"
     class="banner__cube_left"
@@ -30,7 +30,7 @@
         {{ 'referralBanner.referralProgram' | translate }}
       </span>
     </p>
-    <a safetyLink [link]="href" class="banner__link">
+    <a [safetyLink]="href" class="banner__link">
       <span class="banner__link_text">
         {{ 'referralBanner.link' | translate }}
       </span>

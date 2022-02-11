@@ -310,7 +310,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     this.hiddenCalculateTradeSubscription$ = this.onCalculateTrade$
       .pipe(
-        filter(el => el === 'hidden'),
+        filter(el => el === 'hidden' && Boolean(this.authService.userAddress)),
         switchMap(() => {
           if (!this.allowTrade) {
             return of(null);
