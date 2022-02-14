@@ -27,16 +27,7 @@ export class ErrorsService {
     private readonly notificationsService: NotificationsService,
     @Inject(Injector) private injector: Injector,
     private translateService: TranslateService
-  ) {
-    const options = {
-      label: this.translateService.instant('common.error'),
-      status: TuiNotification.Error,
-      data: {},
-      autoClose: 7000
-    };
-    const errorComponent = new PolymorpheusComponent(UnknownErrorComponent, this.injector);
-    this.notificationsService.show(errorComponent, options);
-  }
+  ) {}
 
   /**
    * @deprecated
