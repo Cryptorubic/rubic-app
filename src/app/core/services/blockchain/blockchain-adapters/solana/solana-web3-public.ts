@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
-
 import {
   Account,
   AccountInfo,
@@ -18,7 +17,7 @@ import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-a
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
-import { base58 } from 'ethers/lib/utils';
+import { base58 } from '@scure/base';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<
