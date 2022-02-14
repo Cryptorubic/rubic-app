@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { HealthcheckService } from '@core/services/backend/healthcheck/healthcheck.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -16,10 +15,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit, OnDestroy {
+export class AppComponent implements AfterViewInit {
   public isBackendAvailable: boolean;
-
-  private $iframeSubscription: Subscription;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -55,19 +52,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.$iframeSubscription = this.iframeService.isIframe$.subscribe(isIframe => {
-      if (isIframe) {
-        this.removeLiveChatInIframe();
-        this.document.getElementById('gradient')?.remove();
-        this.document.getElementById('wave').hidden = true;
-      }
+    this.gtmService.addGtmToDom();
 
-      this.gtmService.addGtmToDom();
-    });
-  }
-
-  ngOnDestroy() {
-    this.$iframeSubscription.unsubscribe();
+    if (this.iframeService.isIframe) {
+      this.removeLiveChatInIframe();
+      this.document.getElementById('gradient')?.remove();
+      this.document.getElementById('wave').hidden = true;
+    }
   }
 
   private removeLiveChatInIframe(): void {

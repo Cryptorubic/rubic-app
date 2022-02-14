@@ -1,4 +1,4 @@
-<div class="token-card" *ngLet="isHorizontalFrame$ | async as isHorizontalFrame">
+<div class="token-card" *ngLet="isHorizontalFrame as isHorizontalFrame">
   <div class="token-card__image-container">
     <img
       [src]="token.image || DEFAULT_TOKEN_IMAGE"

@@ -36,7 +36,9 @@ const DEFAULT_PARAMETERS = {
       [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
       [BLOCKCHAIN_NAME.HARMONY]: 'ONE',
       [BLOCKCHAIN_NAME.AVALANCHE]: 'AVAX',
-      [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR'
+      [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR',
+      [BLOCKCHAIN_NAME.ARBITRUM]: 'AETH',
+      [BLOCKCHAIN_NAME.AURORA]: 'aETH'
     },
     to: {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
@@ -60,15 +62,11 @@ export class QueryParamsService {
     false
   ]);
 
-  public get tokensSelectionDisabled$(): Observable<[boolean, boolean]> {
-    return this._tokensSelectionDisabled$.asObservable();
-  }
+  public tokensSelectionDisabled$ = this._tokensSelectionDisabled$.asObservable();
 
   private readonly _slippage$ = new BehaviorSubject<QuerySlippage>(null);
 
-  public get slippage(): QuerySlippage {
-    return this._slippage$.getValue();
-  }
+  public slippage = this._slippage$.getValue();
 
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
@@ -104,12 +102,6 @@ export class QueryParamsService {
   public setupQueryParams(queryParams: QueryParams): void {
     if (queryParams && Object.keys(queryParams).length !== 0) {
       this.setIframeInfo(queryParams);
-      this.setBackgroundStatus(queryParams);
-      this.setHideSelectionStatus(queryParams);
-      this.setSlippage(queryParams);
-      this.setThemeStatus(queryParams);
-      this.setAdditionalIframeTokens(queryParams);
-      this.setLanguage(queryParams);
 
       const route = this.router.url.split('?')[0].substr(1);
       const hasParams = Object.keys(queryParams).length !== 0;
@@ -336,19 +328,38 @@ export class QueryParamsService {
       return;
     }
 
-    this.iframeService.setIframeStatus(queryParams.iframe);
-    this.iframeService.setIframeDevice(queryParams.device);
+    const { iframe } = queryParams;
+    if (iframe !== 'vertical' && iframe !== 'horizontal') {
+      return;
+    }
+
+    this.iframeService.setIframeInfo({
+      iframeAppearance: queryParams.iframe,
+      device: queryParams.device,
+      fee: queryParams.fee ? parseFloat(queryParams.fee) : undefined,
+      feeTarget: queryParams.feeTarget,
+      promoCode: queryParams.promoCode
+    });
+
+    this.setBackgroundStatus(queryParams);
+    this.setHideSelectionStatus(queryParams);
+    this.setSlippage(queryParams);
+    this.setAdditionalIframeTokens(queryParams);
+    this.setThemeStatus(queryParams);
+    this.setLanguage(queryParams);
   }
 
   private setBackgroundStatus(queryParams: QueryParams): void {
-    if (this.iframeService.isIframe) {
-      const { background } = queryParams;
-      if (this.isBackgroundValid(background)) {
-        this.document.body.style.background = background;
-        return;
-      }
-      this.document.body.classList.add('default-iframe-background');
+    if (!this.iframeService.isIframe) {
+      return;
     }
+
+    const { background } = queryParams;
+    if (this.isBackgroundValid(background)) {
+      this.document.body.style.background = background;
+      return;
+    }
+    this.document.body.classList.add('default-iframe-background');
   }
 
   private setHideSelectionStatus(queryParams: QueryParams): void {
@@ -377,13 +388,6 @@ export class QueryParamsService {
     });
   }
 
-  private setThemeStatus(queryParams: QueryParams): void {
-    const { theme } = queryParams;
-    if (theme && (theme === 'dark' || theme === 'light')) {
-      this.themeService.setTheme(theme);
-    }
-  }
-
   private setAdditionalIframeTokens(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
@@ -406,6 +410,17 @@ export class QueryParamsService {
 
     if (Object.keys(tokensQueryParams).length !== 0) {
       this.tokensService.tokensRequestParameters = tokensQueryParams;
+    }
+  }
+
+  private setThemeStatus(queryParams: QueryParams): void {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const { theme } = queryParams;
+    if (theme && (theme === 'dark' || theme === 'light')) {
+      this.themeService.setTheme(theme);
     }
   }
 

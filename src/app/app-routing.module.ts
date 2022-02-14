@@ -50,6 +50,10 @@ const routes: Routes = [
       import('./features/lp-providing/lp-providing.module').then(m => m.LpProvidingModule)
   },
   {
+    path: ROUTE_PATH.PROMOTION,
+    loadChildren: () => import('./features/promotion/promotion.module').then(m => m.PromotionModule)
+  },
+  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }

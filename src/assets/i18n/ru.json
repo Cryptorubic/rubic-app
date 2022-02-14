@@ -33,7 +33,8 @@
     "approve": "Утвердить",
     "switchTo": "Переключиться на сеть {{ networkName }}",
     "tradeVia": "Торговать через ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "Детали транзакции"
   },
   "errors": {
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
@@ -75,15 +76,14 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
-    "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "tradingIsNotAvailable": "Торговля недоступна",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "Мы столкнулись с проблемой получения данных о транзакциях с сервера. Пожалуйста, перезагрузите страницу или обратитесь в службу поддержки, если проблема не исчезнет.",
     "unsupportedTokenCCR": "При попытке отправить транзакцию произошла ошибка.\n С большой вероятностью, вы пытаетесь продать токен, который в настоящее время не поддерживается в multichain.",
     "rpcError": "Произошла ошибка, перейдите по ссылке ниже, чтобы узнать, что нужно сделать для ее устранения",
     "buttonLink": "Узнать больше",
+    "wrongPromoterWallet": "Вы подключили кошелек, который несовместим с сетью Ethereum. Пожалуйста, выйдите из нынешнего кошелька и переключитесь на кошелек, совместимый с Ethereum (например, Metal Mask).",
     "walletNotInstalled": "Кошелек не установлен."
   },
   "navigation": {
@@ -99,7 +99,8 @@
     "notAvailable": "В работе. UX редизайн.",
     "merch": "Merch shop",
     "staking": "Staking",
-    "lpProviding": "Liquidity Providing"
+    "lpProviding": "Liquidity Providing",
+    "promotion": "Промо кампания"
   },
   "aboutPage": {
     "description": "Rubic-это мультичейн экосистема DeFi, которая включает в себя кросс-чейн, P2P, мгновенные обмены и лимит ордера с возможностью использовать разные блокчейны, стремясь обеспечить общую для всех универсальную децентрализованную платформу.",
@@ -345,8 +346,38 @@
         "title": "Как устранить ошибку Method execution error: Error: Internal JSON-RPC error.",
         "answer": "Временная неисправность RPC, используемого в кошельке для выбранной сети. Если эта ошибка возникла, транзакция не была отправлена \u200B\u200Bи деньги не будут списаны с вашего кошелька. ; \\n Попробуйте отправить транзакцию еще раз. Если проблема не исчезла, попробуйте выполнить следующие действия: \n Очистить кэш; \n Очистить куки",
         "id": "rpcError"
+      },
+      {
+        "title": "Политика автовозврата Rubic.",
+        "answer": "Команда Рубика производит возврат средств в токенах USDC. Сумма возврата будет равна количеству токенов в долларах США на момент начала сделки (обмена). Возврат будет совершен в целевой сети. \n\nПодробная информация об условиях возврата средств <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>по ссылке</a>."
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Переключить кошелек на совместимый с Ethereum"
+    },
+    "invitations": {
+      "invitedProjects": "Приглашенные проекты",
+      "noProjects": "Вы еще не пригласили ни одного проекта",
+      "tableColumns": {
+        "projectName": "Проект",
+        "invitationDate": "Приглашен",
+        "tradingVolume": "Объем торгов виджета",
+        "received": "Получено",
+        "receivedTokens": "Полученные токены"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Реферальная программа",
+      "invitedProjects": "Приглашенные проекты",
+      "totalRewards": "Получено вознаграждений",
+      "instantRewards": "Мгновенные вознаграждения",
+      "earnWithOurWidget": "Зарабатывай с помощью нашего виджета",
+      "createAReferralLink": "Создайте реферальную ссылку и начните зарабатывать с помощью своего виджета. Обязательно ознакомьтесь с правилами реферальной программы.",
+      "myPromoLink": "Моя промо-ссылка",
+      "contactUs": "Свяжитесь с нами"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -443,7 +474,8 @@
       "depositInProgress": "депозит в процессе",
       "withdrawInProgress": "вывод в процессе",
       "waitingForDeposit": "ожидание депозита",
-      "waitingForReceiving": "ожидание получения"
+      "waitingForReceiving": "ожидание получения",
+      "refunded": "возврат"
     },
     "noData": "У вас еще нет сделок",
     "receive": "Получить"
@@ -535,7 +567,8 @@
     "successTxModal": {
       "title": "Транзакция успешко отправлена!",
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
-      "seeDetails": "See details in ",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
     "stakingSwapModal": {
@@ -617,9 +650,14 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Стейкинг с APR 80% или выше стартовал 23.12.",
-      "link": "Узнайте больше!"
+      "text": "Aurora теперь доступен для обмена на Rubic! Выполняйте Он-Чейн и Мульти-Чейн свопы прямо сейчас!",
+      "link": ""
     }
+  },
+  "referralBanner": {
+    "takePartInOur": "Примите участие в нашей ",
+    "referralProgram": "Реферальной программе и получите награды!",
+    "link": "Узнать больше"
   },
   "volume": {
     "title": "Накопленный Объем Операций",
@@ -632,6 +670,8 @@
     "tradeInProgress": "Сделка в процессе выполнения",
     "successfulTradeTitle": "Сделка проведена успешно",
     "successfulCCRTradeTitle": "Сделка в исходной сети проведена успешно",
+    "successfullySentTransaction": "Транзакция была успешно отправлена!",
+    "successfulCCRSwapTitle": "Успешный обмен в исходной сети!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Идёт процесс подтверждения сделки",
     "successApprove": "Сделка одобрена успешно",

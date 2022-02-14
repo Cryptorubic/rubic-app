@@ -33,7 +33,8 @@
     "approve": "승인",
     "switchTo": "{{ networkName }} 네트워크로 전환",
     "tradeVia": "무역을 통해 ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "상세 거래 내역"
   },
   "errors": {
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
@@ -75,15 +76,14 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요.",
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
-    "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "tradingIsNotAvailable": "거래 불가",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "우리는 서버에서 트랜잭션 데이터를 가져오는 문제에 직면해 있습니다. 문제가 계속되면 페이지를 새로고침하거나 지원팀에 문의하세요.",
     "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
     "rpcError": "오류가 발생했습니다. 아래 링크를 따라 오류를 수정하기 위해 수행해야 할 작업을 알아보세요.",
     "buttonLink": "더 알아보기",
+    "wrongPromoterWallet": "이더리움과 이더리움이 호환되지 않습니다. 이더리움과 호환이 가능합니다(예: MetaMask).",
     "walletNotInstalled": "지갑이 설치되지 않았습니다"
   },
   "navigation": {
@@ -99,7 +99,8 @@
     "notAvailable": "공사중-UX 재 설계.",
     "merch": "Merch shop",
     "staking": "Staking",
-    "lpProviding": "Liquidity Providing"
+    "lpProviding": "Liquidity Providing",
+    "promotion": "프로모션"
   },
   "aboutPage": {
     "description": "Rubic은 완전한 원스톱 분산화 플랫폼을 제공하는 것을 목표로 하는 크로스 체인, P2P, 즉시 스왑 및 지정가 주문을 여러 블록체인에 제공하는 멀티체인 DeFi 생태계입니다.",
@@ -345,8 +346,38 @@
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
         "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
         "id": "rpcError"
+      },
+      {
+        "title": "Rubic Autorefund Policy.",
+        "answer": "RUBIC의 팀은 USDC 토큰으로 환불을 완료합니다. 환불 금액은 거래가 시작된 순간의 USD 토큰 금액과 동일합니다. 환불은 대상 네트워크에서 완료됩니다.\n\n루빅의 자동 환불 시스템에 대한 자세한 내용은 링크를 참<a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>조하세요</a>."
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "이더리움 호환 지갑으로 전환t"
+    },
+    "invitations": {
+      "invitedProjects": "초대된 프로젝트",
+      "noProjects": "아직 프로젝트를 초대하지 않았습니다",
+      "tableColumns": {
+        "projectName": "프로젝트",
+        "invitationDate": "초대",
+        "tradingVolume": "거래량",
+        "received": "받음",
+        "receivedTokens": "수신된 토큰"
+      }
+    },
+    "statistics": {
+      "referralProgram": "추천 프로그램",
+      "invitedProjects": "초대된 프로젝트",
+      "totalRewards": "획득한 보상",
+      "instantRewards": "I즉석 보상",
+      "earnWithOurWidget": "우리 위젯으로 적립",
+      "createAReferralLink": "G추천 링크를 생성하고 위젯으로 수익을 올리세요. 프로그램 규정을 꼭 읽어보세요!",
+      "myPromoLink": "내 프로모션 링크",
+      "contactUs": "문의하기"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -443,7 +474,8 @@
       "depositInProgress": "입금 진행 중",
       "withdrawInProgress": "출금 진행 중",
       "waitingForDeposit": "입금을 기다리는 중",
-      "waitingForReceiving": "받기를 기다리고"
+      "waitingForReceiving": "받기를 기다리고",
+      "refunded": "환불"
     },
     "noData": "아직 거래가 없습니다",
     "receive": "받다"
@@ -533,9 +565,15 @@
       "text": "스왑 원본 네트워크를 선택하십시오. Coinbase 지갑을 연결하면 현재 세션에서 네트워크를 변경할 수 없습니다. 코인베이스 지갑 연결 후 네트워크 변경을 위해서는 계정에서 로그아웃한 후 다른 네트워크를 선택하여 연결하거나 다른 지갑을 사용하세요."
     },
     "successTxModal": {
+      "see": "보다 ",
+      "transactionDetailsLink": "상세 거래 내역",
+      "itWillAppearsIn": ". 에 나타날 것입니다 ",
+      "myTradesLink": "곧 페이지",
+      "pageSoon": " 내 거래.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See details in ",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
     "stakingSwapModal": {
@@ -617,9 +655,14 @@
       "link": "더 알아보기!"
     },
     "external": {
-      "text": "80% 이상의 요금은 12월 23일부터 시작되었습니다.",
-      "link": "참여하려면 구독하십시오!"
+      "text": "Aurora이 이제 Rubic에서 생중계됩니다! 온체인 및 멀티체인 스왑을 지금 완료하십시오!",
+      "link": ""
     }
+  },
+  "referralBanner": {
+    "takePartInOur": "우리의 참여 ",
+    "referralProgram": "추천 프로그램 및 보상을 받으세요!",
+    "link": "더 알아보기"
   },
   "volume": {
     "title": "누적 거래량",
@@ -632,6 +675,8 @@
     "tradeInProgress": "진행중인 거래",
     "successfulTradeTitle": "성공적인 거래",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "거래가 성공적으로 전송되었습니다!",
+    "successfulCCRSwapTitle": "소스 네트워크에서 성공적인 스왑!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "진행중인 승인",
     "successApprove": "성공적인 승인",

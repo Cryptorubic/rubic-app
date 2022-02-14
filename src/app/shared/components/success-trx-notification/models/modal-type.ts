@@ -1,1 +1,1 @@
-export type SuccessTxModalType = 'default' | 'cross-chain-routing';
+export type SuccessTxModalType = 'default' | 'cross-chain-routing' | 'bridge';

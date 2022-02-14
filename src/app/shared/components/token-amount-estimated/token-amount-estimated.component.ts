@@ -63,7 +63,6 @@ export class AmountEstimatedComponent implements OnInit {
   private subscribeOnOutputChange(): void {
     this.swapFormService.outputValueChanges.pipe(takeUntil(this.destroy$)).subscribe(form => {
       if (!form?.toAmount.isFinite()) {
-        this.hidden = true;
         this.tokenAmount = null;
         this.usdPrice = null;
         this.cdr.markForCheck();

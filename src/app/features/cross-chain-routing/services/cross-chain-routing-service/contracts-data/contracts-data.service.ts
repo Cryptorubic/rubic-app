@@ -31,6 +31,8 @@ import { UniSwapV3EthereumService } from '@features/instant-trade/services/insta
 import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
 import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
 import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
+import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
+import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +75,9 @@ export class ContractsDataService {
     private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
     private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
     private readonly oneInchArbitrumService: OneInchArbitrumService,
+    // Aurora
+    private readonly trisolarisAuroraService: TrisolarisAuroraService,
+    private readonly wannaSwapAuroraService: WannaSwapAuroraService,
     // Solana
     private readonly raydiumService: RaydiumService,
     // providers end
@@ -233,6 +238,21 @@ export class ContractsDataService {
           }
         ],
         10,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.AURORA]: new EthLikeContractData(
+        BLOCKCHAIN_NAME.AURORA,
+        [
+          {
+            provider: this.trisolarisAuroraService,
+            methodSuffix: ''
+          },
+          {
+            provider: this.wannaSwapAuroraService,
+            methodSuffix: '1'
+          }
+        ],
+        11,
         this.publicBlockchainAdapterService
       ),
       [BLOCKCHAIN_NAME.SOLANA]: new SolanaContractData(

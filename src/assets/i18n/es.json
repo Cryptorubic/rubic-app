@@ -33,7 +33,8 @@
     "approve": "Aprobar",
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "transactionDetails": "Detalles de la transacción"
   },
   "errors": {
     "noMetamaskAccess": "No nos has dado acceso a tu cuenta de Metamask. Para realizar un intercambio, es necesario que apruebes la transacción. Por favor haz click en Confirmar si deseas continuar.",
@@ -75,15 +76,14 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Vaya, algo salió mal, intente volver a cargar la página. Póngase en contacto con nuestro soporte si aún tiene este problema después de la recarga.",
     "rubicOptimisation": "Liquidez insuficiente para esta operación. Intente deshabilitar la optimización de Rubic.",
-    "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
     "tradingIsNotAvailable": "El comercio no está disponible",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
-    "partialTradesData": "Nos enfrentamos al problema de obtener datos de transacciones del servidor. Vuelva a cargar la página o póngase en contacto con el servicio de asistencia si el problema persiste.",
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
+    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con la red Ethereum. Cierre sesión en su cuenta y cambie a una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
@@ -99,7 +99,8 @@
     "notAvailable": "En construcción - Rediseño de UX.",
     "merch": "Merch shop",
     "staking": "Staking",
-    "lpProviding": "Liquidity Providing"
+    "lpProviding": "Liquidity Providing",
+    "promotion": "Promocion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -345,8 +346,38 @@
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
         "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
         "id": "rpcError"
+      },
+      {
+        "title": "Rubic Autorefund Policy.",
+        "answer": "El equipo de rubic completará el reembolso en tokens USDC. El importe del reembolso será igual a la cantidad de tokens en USD en el momento en que se inició la operación. El reembolso se completará en la red objetivo.\n\nLa información detallada sobre el sistema de reembolso automático de Rubic se encuentra <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>en el enlace</a>. "
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Cambiar a Monedero compatible con Ethereum"
+    },
+    "invitations": {
+      "invitedProjects": "Proyectos invitados",
+      "noProjects": "Todavía no has invitado a ningún proyecto",
+      "tableColumns": {
+        "projectName": "Proyecto",
+        "invitationDate": "Invitado",
+        "tradingVolume": "Volumen de negociación",
+        "received": "Recibido",
+        "receivedTokens": "Fichas recibidas"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Programa de referencias",
+      "invitedProjects": "Proyectos invitados",
+      "totalRewards": "Recompensas ganadas",
+      "instantRewards": "Recompensas instantáneas",
+      "earnWithOurWidget": "Gana con nuestro widget",
+      "createAReferralLink": "Genera un enlace de referencia y comienza a ganar con nuestro widget. ¡Asegúrate de leer las Reglas del Programa!",
+      "myPromoLink": "Mi enlace promocional",
+      "contactUs": "Contáctenos"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -443,7 +474,8 @@
       "depositInProgress": "depósito en curso",
       "withdrawInProgress": "retiro en curso",
       "waitingForDeposit": "esperando depósito",
-      "waitingForReceiving": "esperando recibir"
+      "waitingForReceiving": "esperando recibir",
+      "refunded": "reintegrada"
     },
     "noData": "Aún no tienes intercambios",
     "receive": "Recibir"
@@ -533,9 +565,15 @@
       "text": "Seleccione una red de origen de swaps. Al conectar una billetera Coinbase, no podrá cambiar la red en la sesión actual. Para cambiar la red después de conectar la billetera Coinbase, cierre la sesión de su cuenta y conéctese eligiendo una red diferente o usa una billetera diferente."
     },
     "successTxModal": {
+      "see": "Ver ",
+      "transactionDetailsLink": "Detalles de la transacción",
+      "itWillAppearsIn": ". Aparecerá en ",
+      "myTradesLink": "Mis operaciones",
+      "pageSoon": " página pronto.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
-      "seeDetails": "See details in ",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
       "link": "My Trades"
     },
     "stakingSwapModal": {
@@ -617,9 +655,14 @@
       "link": "Pruébalo hoy!"
     },
     "external": {
-      "text": "Las tasas con una tasa de interés del 80% o más comenzaron el 23 de diciembre.",
-      "link": "¡Aprende más!"
+      "text": "Aurora ya está disponible en Rubic! ¡Complete intercambios On-Chain y Multi-Chain ahora!",
+      "link": ""
     }
+  },
+  "referralBanner": {
+    "takePartInOur": "Participa en nuestra ",
+    "referralProgram": "¡Programa de recomendación y obtén recompensas!",
+    "link": "Aprende más"
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",
@@ -632,6 +675,8 @@
     "tradeInProgress": "Comercio en curso",
     "successfulTradeTitle": "Comercio exitoso",
     "successfulCCRTradeTitle": "Successful trade in source network",
+    "successfullySentTransaction": "¡La transacción fue enviada con éxito!",
+    "successfulCCRSwapTitle": "¡Intercambio exitoso en la red de origen!",
     "successfulTradeParagraph": "Check transaction in <a target=\"_blank\" href=\"/my-trades\">My trades</a>",
     "approveInProgress": "Aprobar en progreso",
     "successApprove": "Aprobación exitosa",

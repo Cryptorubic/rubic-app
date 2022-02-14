@@ -296,3 +296,8 @@ html.dark {
     background: rgb(56, 56, 56) !important;
   }
 }
+
+html.iframe body .gradient {
+  display: none;
+}
+
