@@ -696,15 +696,15 @@ export class CrossChainRoutingService {
    */
   private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
-
-    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
-    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    // @TODO Near.
+    // const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
+    // const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
     await Promise.all([
       this.checkIfPaused(),
       this.checkGasPrice(),
-      this.checkContractBalance(),
-      blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
+      this.checkContractBalance()
+      // blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
     ]);
   }
 

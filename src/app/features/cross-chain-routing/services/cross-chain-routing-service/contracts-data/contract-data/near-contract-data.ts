@@ -19,6 +19,8 @@ import {
   DEFAULT_NEAR_DEPOSIT_GAS,
   DEFAULT_TOKEN_DEPOSIT_GAS
 } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 type NearCrossChainContract = Contract & NearCcrViewMethods;
 
@@ -80,9 +82,13 @@ export class NearContractData extends ContractData {
   }
 
   public getSecondPath(instantTrade: InstantTrade): string[] {
+    const emptyAddress = EMPTY_ADDRESS;
     if (!instantTrade) {
-      return [NearWeb3Public.addressToBytes32(this.transitToken.address)];
+      return [EthLikeWeb3Public.addressToBytes32(emptyAddress)];
     }
-    return instantTrade.path.map(token => NearWeb3Public.addressToBytes32(token.address));
+    return [
+      EthLikeWeb3Public.addressToBytes32(emptyAddress),
+      EthLikeWeb3Public.addressToBytes32(emptyAddress)
+    ];
   }
 }
