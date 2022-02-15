@@ -720,10 +720,11 @@ export class CrossChainRoutingService {
             (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
               this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.NEAR) ||
             (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
-              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
+              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
+            this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR
           ) {
             throw new CustomError(
-              'The swap between NEAR and SOLANA is currently not available. The support is coming soon.'
+              'The swap between is currently not available. The support is coming soon.'
             );
           }
           transactionHash = await this.contractExecutorFacade.executeTrade(
