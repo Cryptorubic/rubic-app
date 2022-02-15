@@ -15,6 +15,8 @@ import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blo
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -163,7 +165,9 @@ export class EthLikeContractExecutorService {
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
         targetAddress,
-        trade.toTrade?.path?.map(token => token.address) || [trade.tokenOut.address],
+        trade.toTrade?.path?.map(token =>
+          token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : token.address
+        ) || [trade.tokenOut.address],
         this.refFinanceService.refRoutes
       )
       .subscribe();
