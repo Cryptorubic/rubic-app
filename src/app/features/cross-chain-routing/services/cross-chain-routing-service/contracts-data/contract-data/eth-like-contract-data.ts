@@ -11,7 +11,6 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -118,7 +117,9 @@ export class EthLikeContractData extends ContractData {
     let toWalletAddressBytes32: string;
     const { toBlockchain } = trade;
     if (toBlockchain === BLOCKCHAIN_NAME.NEAR) {
-      toWalletAddressBytes32 = EthLikeWeb3Public.addressToBytes32(EMPTY_ADDRESS);
+      toWalletAddressBytes32 = EthLikeWeb3Public.addressToBytes32(
+        '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+      );
     } else if (toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       toWalletAddressBytes32 = SolanaWeb3Public.addressToBytes32(toWalletAddress);
     } else {

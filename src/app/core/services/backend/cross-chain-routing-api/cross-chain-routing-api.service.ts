@@ -141,7 +141,7 @@ export class CrossChainRoutingApiService {
         network: toBackendBlockchain,
         walletAddress: targetAddress,
         secondPath,
-        pool: refRoutes.map(el => el.pool.id)
+        pool: refRoutes?.map(el => el.pool.id) || []
       },
       BASE_URL
     );
