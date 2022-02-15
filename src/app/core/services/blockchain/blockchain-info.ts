@@ -21,6 +21,9 @@ export class BlockchainsInfo {
     if (name === BLOCKCHAIN_NAME.SOLANA) {
       return 'solana';
     }
+    if (name === BLOCKCHAIN_NAME.NEAR) {
+      return 'near';
+    }
     throw new CustomError('Unknown network');
   }
 
@@ -36,6 +39,12 @@ export class BlockchainsInfo {
 
   static checkIsSolana(name: BLOCKCHAIN_NAME): void | never {
     if (this.getBlockchainType(name) !== 'solana') {
+      throw new CustomError('Wrong blockchain error');
+    }
+  }
+
+  static checkIsNear(name: BLOCKCHAIN_NAME): void | never {
+    if (this.getBlockchainType(name) !== 'near') {
       throw new CustomError('Wrong blockchain error');
     }
   }

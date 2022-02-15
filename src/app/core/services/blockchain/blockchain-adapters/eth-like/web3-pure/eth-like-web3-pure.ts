@@ -26,6 +26,11 @@ export class EthLikeWeb3Pure {
     );
   }
 
+  public static asciiToBytes32(address: string): string {
+    const bytes = this.web3.utils.fromAscii(address);
+    return `0x${bytes.slice(2).padStart(64, '0')}`;
+  }
+
   /**
    * Encodes passed parameter to solidity type.
    * @param type Solidity type.

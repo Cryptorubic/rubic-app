@@ -1,1 +1,1 @@
-export type BlockchainType = 'solana' | 'ethLike';
+export type BlockchainType = 'solana' | 'ethLike' | 'near';

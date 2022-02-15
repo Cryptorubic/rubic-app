@@ -24,6 +24,7 @@ type Blockchains = {
   [BLOCKCHAIN_NAME.AVALANCHE_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.AURORA_TESTNET]: Blockchain;
   [BLOCKCHAIN_NAME.SOLANA]: Blockchain;
+  [BLOCKCHAIN_NAME.NEAR]: Blockchain;
 };
 
 type DeprecatedBlockchains = {
@@ -110,5 +111,10 @@ export const BLOCKCHAINS: Blockchains = {
     key: BLOCKCHAIN_NAME.SOLANA,
     name: 'Solana',
     img: `${imageBaseSrc}solana.svg`
+  },
+  [BLOCKCHAIN_NAME.NEAR]: {
+    key: BLOCKCHAIN_NAME.NEAR,
+    name: 'Near',
+    img: `${imageBaseSrc}near.svg`
   }
 };

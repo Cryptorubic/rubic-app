@@ -13,7 +13,7 @@ interface TargetAddress {
   providedIn: 'root'
 })
 export class TargetNetworkAddressService {
-  private readonly networksRequiresAddress = [BLOCKCHAIN_NAME.SOLANA];
+  private readonly networksRequiresAddress = [BLOCKCHAIN_NAME.SOLANA, BLOCKCHAIN_NAME.NEAR];
 
   private readonly _targetNetworkAddress$ = new BehaviorSubject<TargetAddress | null>(null);
 

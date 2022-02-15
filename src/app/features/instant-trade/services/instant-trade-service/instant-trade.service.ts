@@ -65,6 +65,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
 import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
+import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 
 @Injectable({
   providedIn: 'root'
@@ -90,48 +91,50 @@ export class InstantTradeService {
   };
 
   constructor(
-    // Providers start
+    // Providers start.
     private readonly ethWethSwapProvider: EthWethSwapProviderService,
-    // Ethereum
+    // Ethereum.
     private readonly oneInchEthService: OneInchEthService,
     private readonly uniswapV2Service: UniSwapV2Service,
     private readonly uniswapV3EthereumService: UniSwapV3EthereumService,
     private readonly sushiSwapEthService: SushiSwapEthService,
     private readonly zrxService: ZrxService,
-    // BSC
+    // BSC.
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly oneInchBscService: OneInchBscService,
     private readonly sushiSwapBscService: SushiSwapBscService,
-    // Polygon
+    // Polygon.
     private readonly uniswapV3PolygonService: UniSwapV3PolygonService,
     private readonly oneInchPolygonService: OneInchPolygonService,
     private readonly quickSwapService: QuickSwapService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly algebraService: AlgebraService,
-    // Harmony
+    // Harmony.
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
-    // Avalanche
+    // Avalanche.
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
-    // Fantom
+    // Fantom.
     private readonly sushiSwapFantomService: SushiSwapFantomService,
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
-    // MoonRiver
+    // MoonRiver.
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
     private readonly solarBeamMoonriverService: SolarBeamMoonRiverService,
-    // Arbitrum
+    // Arbitrum.
     private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
     private readonly oneInchArbitrumService: OneInchArbitrumService,
     private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
-    // Aurora
+    // Aurora.
     private readonly trisolarisAuroraService: TrisolarisAuroraService,
     private readonly wannaSwapAuroraService: WannaSwapAuroraService,
-    // Solana
+    // Solana.
     private readonly raydiumService: RaydiumService,
-    // Providers end
+    // Near.
+    private readonly refFinanceService: RefFinanceService,
+    // Providers end.
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly instantTradesApiService: InstantTradesApiService,
@@ -200,6 +203,9 @@ export class InstantTradeService {
       },
       [BLOCKCHAIN_NAME.SOLANA]: {
         [INSTANT_TRADES_PROVIDERS.RAYDIUM]: this.raydiumService
+      },
+      [BLOCKCHAIN_NAME.NEAR]: {
+        [INSTANT_TRADES_PROVIDERS.REF]: this.refFinanceService
       }
     };
   }
