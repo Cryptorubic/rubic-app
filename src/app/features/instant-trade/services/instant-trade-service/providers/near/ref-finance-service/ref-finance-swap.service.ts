@@ -248,17 +248,19 @@ export class RefFinanceSwapService {
       toToken.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : toToken.address;
 
     return Promise.all(
-      pools.map(pool => {
-        const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
-        const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
-        const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
-        const estimate = amountWithFee
-          .multipliedBy(outBalance)
-          .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
-          .toString();
+      pools
+        .map(pool => {
+          const amountWithFee = fromAmount.multipliedBy(FEE_DIVISOR - pool.fee);
+          const inBalance = Web3Pure.fromWei(pool.supplies[fromTokenAddress], fromToken.decimals);
+          const outBalance = Web3Pure.fromWei(pool.supplies[toTokenAddress], toToken.decimals);
+          const estimate = amountWithFee
+            .multipliedBy(outBalance)
+            .dividedBy(new BigNumber(inBalance).multipliedBy(FEE_DIVISOR).plus(amountWithFee))
+            .toString();
 
-        return { estimate, pool };
-      })
+          return { estimate, pool };
+        })
+        .filter(el => el.pool.tokenIds.length === 2) // @TODO Near. Add stable swap support.
     );
   }
 

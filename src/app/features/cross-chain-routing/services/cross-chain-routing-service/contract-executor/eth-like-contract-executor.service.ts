@@ -15,8 +15,6 @@ import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blo
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
-import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 @Injectable({
   providedIn: 'root'
@@ -165,9 +163,7 @@ export class EthLikeContractExecutorService {
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
         targetAddress,
-        trade.toTrade?.path?.map(token => token.address) || [
-          EthLikeWeb3Public.addressToBytes32(EMPTY_ADDRESS)
-        ],
+        trade.toTrade?.path?.map(token => token.address) || [trade.tokenOut.address],
         this.refFinanceService.refRoutes
       )
       .subscribe();
