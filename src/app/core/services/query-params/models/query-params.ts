@@ -28,7 +28,7 @@ interface AllQueryParams {
   // Transaction.
   nearLogin: string;
   toAmount: string;
-  transactionHashes: string | Array<string>;
+  transactionHashes: string;
   walletAddress: string;
   errorCode: string;
   errorMessage: string;

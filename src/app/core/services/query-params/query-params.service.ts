@@ -466,7 +466,7 @@ export class QueryParamsService {
       if (!queryParams.toAmount || !queryParams.walletAddress) {
         return;
       }
-      const hash = typeof transactionHashes === 'string' ? transactionHashes : transactionHashes[0];
+      const hash = transactionHashes.split(',').pop();
       this._nearQueryParams$.next({
         type: queryParams.swap_type as NearTransactionType,
         toAmount: queryParams.toAmount,

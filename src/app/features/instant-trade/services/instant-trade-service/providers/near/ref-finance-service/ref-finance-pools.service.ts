@@ -82,8 +82,7 @@ export class RefFinancePoolsService {
   /**
    * Gets all available tokens pools.
    * @param page Page number for pagination.
-   * @param perPage Amount of
-   * @private
+   * @param perPage Amount of pools per page.
    */
   private async getAllPools(
     page: number = 1,

@@ -11,6 +11,7 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
+import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -114,10 +115,15 @@ export class EthLikeContractData extends ContractData {
     const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
     const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const toWalletAddressBytes32 =
-      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
-        ? SolanaWeb3Public.addressToBytes32(toWalletAddress)
-        : EthLikeWeb3Public.addressToBytes32(toWalletAddress);
+    let toWalletAddressBytes32: string;
+    const { toBlockchain } = trade;
+    if (toBlockchain === BLOCKCHAIN_NAME.NEAR) {
+      toWalletAddressBytes32 = NearWeb3Public.addressToBytes32(toWalletAddress);
+    } else if (toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      toWalletAddressBytes32 = SolanaWeb3Public.addressToBytes32(toWalletAddress);
+    } else {
+      toWalletAddressBytes32 = EthLikeWeb3Public.addressToBytes32(toWalletAddress);
+    }
 
     const swapToUserMethodSignature = toContract.getSwapToUserMethodName(
       trade.toProviderIndex,

@@ -26,8 +26,6 @@ interface TransactionParams {
   providedIn: 'root'
 })
 export class NearWeb3PrivateService {
-  private readonly multisigHasMethod: string = 'add_request_and_confirm';
-
   private get nearConnection(): Near {
     return this.walletConnectorService.nearConnection;
   }
@@ -88,8 +86,8 @@ export class NearWeb3PrivateService {
               functionCall(
                 fc.methodName,
                 fc.args,
-                NearWeb3PrivateService.getGas(fc.gas),
-                NearWeb3PrivateService.getAmount(fc.amount)
+                new BN(fc.gas || '100000000000000'),
+                new BN(fc.amount ? utils.format.parseNearAmount(fc.amount) : '0')
               )
             )
           },
@@ -99,22 +97,6 @@ export class NearWeb3PrivateService {
     );
 
     await this.requestSignTransactions(nearTransactions, type, toAmount);
-  }
-
-  /**
-   * Gets gas.
-   * @param gas Gas.
-   */
-  private static getGas(gas: string): BN {
-    return new BN(gas || '100000000000000');
-  }
-
-  /**
-   * Gets amount.
-   * @param amount amount.
-   */
-  private static getAmount(amount: string): BN {
-    return new BN(amount ? utils.format.parseNearAmount(amount) : '0');
   }
 
   /**
@@ -212,7 +194,8 @@ export class NearWeb3PrivateService {
        * then it is being used in a wallet with multisig contract:
        * https://github.com/near/core-contracts/blob/671c05f09abecabe7a7e58efe942550a35fc3292/multisig/src/lib.rs#L149-L153
        */
-      if (allowedReceiverId === accountId && allowedMethods.includes(this.multisigHasMethod)) {
+      const multiSigHasMethod = 'add_request_and_confirm';
+      if (allowedReceiverId === accountId && allowedMethods.includes(multiSigHasMethod)) {
         return true;
       }
       if (allowedReceiverId === receiverId) {

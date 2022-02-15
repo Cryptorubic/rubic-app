@@ -8,16 +8,11 @@ import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
-import { base58 } from 'ethers/lib/utils';
+import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 
 export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
   public static addressToBytes32(address: string): string {
-    return (
-      '0x' +
-      Array.from(base58.decode(address))
-        .map(num => num.toString(16).padStart(2, '0'))
-        .reduce((acc, hexNum) => acc + hexNum, '')
-    );
+    return EthLikeWeb3Pure.asciiToBytes32(address);
   }
 
   /**
@@ -67,7 +62,7 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    */
   public isAddressCorrect(address: string): boolean {
     const regex = new RegExp('^(([a-z\\d]+[\\-_])*[a-z\\d]+\\.)*([a-z\\d]+[\\-_])*[a-z\\d]+$');
-    return regex.test(address) && address.length > 2 && address.length <= 64;
+    return regex.test(address) && address?.length > 2 && address?.length <= 64;
   }
 
   /**
@@ -104,13 +99,17 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    * @return Promise<BigNumber> Tokens balance.
    */
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
-    const balance: string =
-      tokenAddress === NATIVE_NEAR_ADDRESS
-        ? (await this._walletConnection.account().getAccountBalance()).available
-        : await this._walletConnection.account().viewFunction(tokenAddress, 'ft_balance_of', {
-            account_id: address
-          });
-    return new BigNumber(balance);
+    if (tokenAddress === NATIVE_NEAR_ADDRESS) {
+      const balance = await this._walletConnection.account().getAccountBalance();
+      const availableBalance = new BigNumber(balance?.available).minus('0.05');
+      return availableBalance.gt(0) ? availableBalance : new BigNumber(0);
+    }
+    const tokenBalance = await this._walletConnection
+      .account()
+      .viewFunction(tokenAddress, 'ft_balance_of', {
+        account_id: address
+      });
+    return new BigNumber(tokenBalance);
   }
 
   /**
@@ -176,7 +175,8 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
 
     return tokensAddresses.map((tokenAddress, index) => {
       if (tokenAddress === NATIVE_NEAR_ADDRESS) {
-        return new BigNumber(nativeNearBalance.available);
+        const availableBalance = new BigNumber(nativeNearBalance?.available).minus('0.05');
+        return availableBalance.gt(0) ? availableBalance : new BigNumber(0);
       }
       return new BigNumber(tokensBalances[index]);
     });

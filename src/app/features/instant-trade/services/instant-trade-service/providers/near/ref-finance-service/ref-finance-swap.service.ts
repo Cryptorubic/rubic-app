@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import {
   DEFAULT_DEPOSIT_AMOUNT,
+  DEFAULT_NEAR_DEPOSIT_GAS,
   DEFAULT_TOKEN_DEPOSIT_GAS,
   DEFAULT_TRANSFER_CALL_GAS,
   NEW_ACCOUNT_STORAGE_COST,
@@ -173,7 +174,7 @@ export class RefFinanceSwapService {
           {
             methodName: 'near_deposit',
             args: {},
-            gas: '50000000000000',
+            gas: DEFAULT_NEAR_DEPOSIT_GAS,
             amount: stringAmount
           }
         ]
@@ -426,6 +427,10 @@ export class RefFinanceSwapService {
     };
   }
 
+  /**
+   * Creates swap transaction.
+   * @param trade Trade object.
+   */
   public async createDepositTransactions(trade: InstantTrade): Promise<NearTransaction[]> {
     const transactions: NearTransaction[] = [];
     if (trade.from.token.address === NATIVE_NEAR_ADDRESS) {
@@ -451,7 +456,7 @@ export class RefFinanceSwapService {
             {
               methodName: 'near_deposit',
               args: {},
-              gas: '50000000000000',
+              gas: DEFAULT_NEAR_DEPOSIT_GAS,
               amount: trade.from.amount.toString()
             }
           ]
