@@ -15,6 +15,7 @@ import { SolanaContractExecutorService } from '@features/cross-chain-routing/ser
 import CustomError from '@core/errors/models/custom-error';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SignatureResult } from '@solana/web3.js';
+import { NearContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,8 +51,11 @@ export class ContractExecutorFacadeService {
   }
 
   constructor(
+    // Executors.
     private readonly ethLikeContractExecutor: EthLikeContractExecutorService,
     private readonly solanaContractExecutor: SolanaContractExecutorService,
+    private readonly nearContractExecutor: NearContractExecutorService,
+    // Other services.
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly raydiumService: RaydiumService,
     private readonly targetAddressService: TargetNetworkAddressService,
@@ -64,51 +68,55 @@ export class ContractExecutorFacadeService {
     options: TransactionOptions,
     userAddress: string
   ): Promise<string> {
-    if (BlockchainsInfo.getBlockchainType(trade.fromBlockchain) === 'ethLike') {
-      return this.ethLikeContractExecutor.executeTrade(
-        trade,
-        options,
-        userAddress,
-        this.targetAddress
-      );
-    }
-
-    // solana
     try {
-      const isToNative = this.publicBlockchainAdapterService[trade.toBlockchain].isNativeAddress(
-        trade.tokenOut.address
-      );
-      const { transaction, signers } = await this.solanaContractExecutor.executeTrade(
-        trade,
-        userAddress,
-        this.targetAddress,
-        isToNative
-      );
+      const blockchainType = BlockchainsInfo.getBlockchainType(trade.fromBlockchain);
+      const blockchainAdapter = this.publicBlockchainAdapterService[trade.toBlockchain];
 
-      const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
-      if (options.onTransactionHash) {
-        options.onTransactionHash(hash);
+      if (blockchainType === 'ethLike') {
+        return this.ethLikeContractExecutor.executeTrade(
+          trade,
+          options,
+          userAddress,
+          this.targetAddress
+        );
+      }
+
+      if (blockchainType === 'solana') {
+        const isToNative = blockchainAdapter.isNativeAddress(trade.tokenOut.address);
+        const { transaction, signers } = await this.solanaContractExecutor.executeTrade(
+          trade,
+          userAddress,
+          this.targetAddress,
+          isToNative
+        );
+        const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
+        await this.handleSolanaTransaction(hash, options?.onTransactionHash, trade, isToNative);
 
         const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
           trade.toProviderIndex,
           isToNative
         );
         this.sendDataFromSolana(trade.fromBlockchain, hash, swapToUserMethodName);
+
+        await new Promise((resolve, reject) => {
+          this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
+            hash,
+            (signatureResult: SignatureResult) => {
+              if (!signatureResult.err) {
+                resolve(hash);
+              } else {
+                reject(signatureResult.err);
+              }
+            }
+          );
+        });
+
+        return hash;
       }
 
-      await new Promise((resolve, reject) => {
-        this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
-          hash,
-          (signatureResult: SignatureResult) => {
-            if (!signatureResult.err) {
-              resolve(hash);
-            } else {
-              reject(signatureResult.err);
-            }
-          }
-        );
-      });
-      return hash;
+      if (blockchainType === 'near') {
+        return this.nearContractExecutor.executeTrade(trade, options, this.targetAddress);
+      }
     } catch (err) {
       console.debug(err);
       if ('message' in err) {
@@ -121,19 +129,49 @@ export class ContractExecutorFacadeService {
    * Solana contract method doesn't have `signature` argument. Sends transaction details via http.
    * @param fromBlockchain From blockchain.
    * @param transactionHash Source transaction hash.
-   * @param contractFunction Method signature to call in target network.
+   * @param methodName Method name to call in target network.
    */
   private sendDataFromSolana(
     fromBlockchain: SupportedCrossChainBlockchain,
     transactionHash: string,
-    contractFunction: string
+    methodName: string
   ): void {
     this.apiService
       .postCrossChainDataFromSolana(
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[fromBlockchain],
-        contractFunction
+        methodName
       )
       .subscribe();
+  }
+
+  private async handleSolanaTransaction(
+    hash: string,
+    onTransactionHash: ((hash: string) => void) | undefined,
+    trade: CrossChainTrade,
+    isToNative: boolean
+  ): Promise<void> {
+    if (onTransactionHash) {
+      onTransactionHash(hash);
+
+      const methodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
+        trade.toProviderIndex,
+        isToNative
+      );
+      this.sendDataFromSolana(trade.fromBlockchain, hash, methodName);
+    }
+
+    await new Promise((resolve, reject) => {
+      this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
+        hash,
+        (signatureResult: SignatureResult) => {
+          if (!signatureResult.err) {
+            resolve(hash);
+          } else {
+            reject(signatureResult.err);
+          }
+        }
+      );
+    });
   }
 }

@@ -33,6 +33,8 @@ import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/insta
 import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
 import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
+import { NearContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/near-contract-data';
+import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,44 +44,46 @@ export class ContractsDataService {
 
   constructor(
     // providers start
-    // Ethereum
+    // Ethereum.
     private readonly uniSwapV2Service: UniSwapV2Service,
     private readonly sushiSwapEthService: SushiSwapEthService,
     private readonly uniSwapV3EthereumService: UniSwapV3EthereumService,
     private readonly oneInchEthService: OneInchEthService,
-    // BSC
+    // BSC.
     private readonly pancakeSwapService: PancakeSwapService,
     private readonly sushiSwapBscService: SushiSwapBscService,
     private readonly oneInchBscService: OneInchBscService,
-    // Polygon
+    // Polygon.
     private readonly quickSwapService: QuickSwapService,
     private readonly sushiSwapPolygonService: SushiSwapPolygonService,
     private readonly algebraService: AlgebraService,
     private readonly uniSwapV3PolygonService: UniSwapV3PolygonService,
     private readonly oneInchPolygonService: OneInchPolygonService,
-    // Avalanche
+    // Avalanche.
     private readonly pangolinAvalancheService: PangolinAvalancheService,
     private readonly joeAvalancheService: JoeAvalancheService,
     private readonly sushiSwapAvalancheService: SushiSwapAvalancheService,
-    // Fantom
+    // Fantom.
     private readonly spookySwapFantomService: SpookySwapFantomService,
     private readonly spiritSwapFantomService: SpiritSwapFantomService,
     private readonly sushiSwapFantomService: SushiSwapFantomService,
-    // Moonriver
+    // Moonriver.
     private readonly solarBeamMoonRiverService: SolarBeamMoonRiverService,
     private readonly sushiSwapMoonRiverService: SushiSwapMoonRiverService,
-    // Harmony
+    // Harmony.
     private readonly sushiSwapHarmonyService: SushiSwapHarmonyService,
     private readonly viperSwapHarmonyService: ViperSwapHarmonyService,
-    // Arbitrum
+    // Arbitrum.
     private readonly sushiSwapArbitrumService: SushiSwapArbitrumService,
     private readonly uniSwapV3ArbitrumService: UniSwapV3ArbitrumService,
     private readonly oneInchArbitrumService: OneInchArbitrumService,
-    // Aurora
+    // Aurora.
     private readonly trisolarisAuroraService: TrisolarisAuroraService,
     private readonly wannaSwapAuroraService: WannaSwapAuroraService,
-    // Solana
+    // Solana.
     private readonly raydiumService: RaydiumService,
+    // Near.
+    private readonly refFinanceService: RefFinanceService,
     // providers end
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
@@ -264,6 +268,17 @@ export class ContractsDataService {
           }
         ],
         8,
+        this.publicBlockchainAdapterService
+      ),
+      [BLOCKCHAIN_NAME.NEAR]: new NearContractData(
+        BLOCKCHAIN_NAME.NEAR,
+        [
+          {
+            provider: this.refFinanceService,
+            methodSuffix: ''
+          }
+        ],
+        9,
         this.publicBlockchainAdapterService
       )
     };

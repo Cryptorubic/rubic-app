@@ -15,7 +15,8 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { CoingeckoApiService } from 'src/app/core/services/external-api/coingecko-api/coingecko-api.service';
 import {
   NATIVE_TOKEN_ADDRESS,
-  NATIVE_SOLANA_MINT_ADDRESS
+  NATIVE_SOLANA_MINT_ADDRESS,
+  NATIVE_NEAR_ADDRESS
 } from '@shared/constants/blockchain/native-token-address';
 import { TOKENS_PAGINATION } from '@core/services/tokens/tokens-pagination';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
@@ -112,7 +113,7 @@ export class TokensService {
   ): boolean {
     return (
       token0?.blockchain === token1?.blockchain &&
-      token0?.address.toLowerCase() === token1?.address.toLowerCase()
+      token0?.address?.toLowerCase() === token1?.address?.toLowerCase()
     );
   }
 
@@ -365,7 +366,10 @@ export class TokensService {
       nativeCoinAddress = NATIVE_SOLANA_MINT_ADDRESS;
     } else if (blockchainType === 'ethLike') {
       nativeCoinAddress = NATIVE_TOKEN_ADDRESS;
+    } else if (blockchainType === 'near') {
+      nativeCoinAddress = NATIVE_NEAR_ADDRESS;
     }
+
     const nativeCoin = this.tokens.find(token =>
       TokensService.areTokensEqual(token, { blockchain, address: nativeCoinAddress })
     );
