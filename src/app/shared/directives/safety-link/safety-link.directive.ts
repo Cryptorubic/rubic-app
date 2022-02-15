@@ -11,7 +11,7 @@ export class SafetyLinkDirective {
 
   @HostBinding('attr.href') hrefAttr: string = null;
 
-  @Input() set link(link: string) {
+  @Input() set safetyLink(link: string) {
     this._link = link;
 
     this.hrefAttr = link;
