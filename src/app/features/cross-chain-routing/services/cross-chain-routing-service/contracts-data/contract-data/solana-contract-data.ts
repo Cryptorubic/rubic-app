@@ -48,7 +48,7 @@ export class SolanaContractData extends ContractData {
     return bridgeData.max_token_amount.toString();
   }
 
-  public async feeAmountOfBlockchain(_numOfToBlockchain: number): Promise<string> {
+  public async feeAmountOfBlockchain(): Promise<string> {
     const { data } = await this.blockchainAdapter.connection.getAccountInfo(
       new PublicKey(PDA_CONFIG)
     );
