@@ -175,6 +175,7 @@ export class CrossChainRoutingService {
     } = sourceBlockchainProviders[0];
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
+      fromBlockchain,
       toBlockchain,
       fromTransitTokenAmount,
       fromTrade === null,
@@ -435,18 +436,20 @@ export class CrossChainRoutingService {
 
   /**
    * Calculates transit token's amount in target blockchain, based on transit token's amount is source blockchain.
+   * @param fromBlockchain Source blockchain
    * @param toBlockchain Target blockchain
    * @param fromTransitTokenAmount Amount of transit token in source blockchain.
    * @param isDirectTrade True, if first transit token is traded directrly.
    * @param fromSlippage Slippage in source blockchain.
    */
   private async getToTransitTokenAmount(
+    fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain,
     fromTransitTokenAmount: BigNumber,
     isDirectTrade: boolean,
     fromSlippage: number
   ): Promise<{ toTransitTokenAmount: BigNumber; feeInPercents: number }> {
-    const feeInPercents = await this.getFeeInPercents(toBlockchain);
+    const feeInPercents = await this.getFeeInPercents(fromBlockchain, toBlockchain);
     let toTransitTokenAmount = fromTransitTokenAmount
       .multipliedBy(100 - feeInPercents)
       .dividedBy(100);
@@ -463,11 +466,22 @@ export class CrossChainRoutingService {
 
   /**
    * Gets fee amount of transit token in percents in target blockchain.
+   * @param fromBlockchain Source blockchain.
    * @param toBlockchain Target blockchain.
    */
-  private async getFeeInPercents(toBlockchain: SupportedCrossChainBlockchain): Promise<number> {
-    const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain();
-    return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
+  private async getFeeInPercents(
+    fromBlockchain: SupportedCrossChainBlockchain,
+    toBlockchain: SupportedCrossChainBlockchain
+  ): Promise<number> {
+    const contract =
+      fromBlockchain !== BLOCKCHAIN_NAME.SOLANA
+        ? this.contracts[fromBlockchain]
+        : this.contracts[toBlockchain];
+    const numOfToBlockchain = this.contracts[toBlockchain].numOfBlockchain;
+
+    const feeAmountAbsolute = await contract.feeAmountOfBlockchain(numOfToBlockchain);
+
+    return parseInt(feeAmountAbsolute) / 10000; // to %
   }
 
   /**

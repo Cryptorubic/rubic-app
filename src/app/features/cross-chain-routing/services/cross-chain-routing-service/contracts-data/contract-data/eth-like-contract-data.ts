@@ -43,13 +43,13 @@ export class EthLikeContractData extends ContractData {
     );
   }
 
-  public feeAmountOfBlockchain(): Promise<string> {
+  public feeAmountOfBlockchain(numOfToBlockchain: number): Promise<string> {
     return this.blockchainAdapter.callContractMethod(
       this.address,
       crossChainContractAbi,
       'feeAmountOfBlockchain',
       {
-        methodArguments: [this.numOfBlockchain]
+        methodArguments: [numOfToBlockchain]
       }
     );
   }
