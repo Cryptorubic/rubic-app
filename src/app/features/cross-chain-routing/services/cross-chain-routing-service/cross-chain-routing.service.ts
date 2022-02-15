@@ -436,10 +436,10 @@ export class CrossChainRoutingService {
 
   /**
    * Calculates transit token's amount in target blockchain, based on transit token's amount is source blockchain.
-   * @param fromBlockchain Source blockchain
-   * @param toBlockchain Target blockchain
+   * @param fromBlockchain Source blockchain.
+   * @param toBlockchain Target blockchain.
    * @param fromTransitTokenAmount Amount of transit token in source blockchain.
-   * @param isDirectTrade True, if first transit token is traded directrly.
+   * @param isDirectTrade True, if first transit token is traded directly.
    * @param fromSlippage Slippage in source blockchain.
    */
   private async getToTransitTokenAmount(
