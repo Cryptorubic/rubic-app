@@ -5,15 +5,25 @@
 }
 
 button {
+  display: block;
   width: 100%;
   height: 100%;
   padding: 0;
 
   background: transparent;
   border: none;
+
+  &[disabled] {
+    cursor: not-allowed;
+
+    img {
+      opacity: 0.5;
+    }
+  }
 }
 
 .icon {
+  display: block;
   width: 100%;
   height: 100%;
 

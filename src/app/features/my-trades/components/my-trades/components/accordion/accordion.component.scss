@@ -69,7 +69,7 @@
 tui-dropdown-box {
   ::ng-deep {
     button {
-      color: #808080;
+      color: $rubic-base-11;
     }
   }
 }
@@ -89,7 +89,7 @@ tui-data-list {
 }
 
 .item {
-  color: #808080;
+  color: $rubic-base-11;
 
   ::ng-deep {
     .wrapper[automation-id='tui-accordion__item-wrapper'] {
@@ -125,7 +125,7 @@ tui-data-list {
   display: flex;
   align-items: center;
 
-  color: #808080;
+  color: $rubic-base-11;
   font-size: 15px;
 
   &__status {
@@ -294,7 +294,7 @@ tui-pagination {
   ::ng-deep {
     .button {
       .wrapper[data-appearance='flat'] {
-        color: #808080;
+        color: $rubic-base-11;
         font-weight: 500;
       }
     }

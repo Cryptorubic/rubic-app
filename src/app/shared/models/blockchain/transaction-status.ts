@@ -6,5 +6,6 @@ export enum TRANSACTION_STATUS {
   WAITING_FOR_RECEIVING = 'waiting for receiving',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
-  REJECTED = 'rejected'
+  REJECTED = 'rejected',
+  REFUNDED = 'refunded'
 }
