@@ -188,7 +188,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
-
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
   }

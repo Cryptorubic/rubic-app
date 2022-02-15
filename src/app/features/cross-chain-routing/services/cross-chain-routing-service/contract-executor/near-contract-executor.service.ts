@@ -17,7 +17,6 @@ import {
   ONE_YOCTO_NEAR,
   WRAP_NEAR_CONTRACT
 } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { RefFinanceSwapService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-swap.service';
@@ -90,7 +89,7 @@ export class NearContractExecutorService {
       {
         methodName: 'ft_transfer_call',
         args: {
-          receiver_id: ENVIRONMENT.crossChain.contractAddresses.NEAR,
+          receiver_id: this.contract.address,
           amount: tokenInAmountAbsolute,
           msg: JSON.stringify({
             ...(trade.fromTrade

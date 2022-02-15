@@ -13,7 +13,6 @@ import {
   NearCcrViewMethods
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/near/near-ccr-view-methods';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import { ENVIRONMENT } from 'src/environments/environment';
 import {
   DEFAULT_CCR_CALL_GAS,
   DEFAULT_NEAR_DEPOSIT_GAS,
@@ -74,11 +73,7 @@ export class NearContractData extends ContractData {
       viewMethods: NEAR_CCR_VIEW_METHODS as string[],
       changeMethods: ['']
     };
-    return new Contract(
-      wallet.account(),
-      ENVIRONMENT.crossChain.contractAddresses.NEAR,
-      methodOptions
-    ) as NearCrossChainContract;
+    return new Contract(wallet.account(), this.address, methodOptions) as NearCrossChainContract;
   }
 
   public getSecondPath(instantTrade: InstantTrade): string[] {

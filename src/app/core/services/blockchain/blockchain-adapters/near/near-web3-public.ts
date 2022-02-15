@@ -162,23 +162,8 @@ export class NearWeb3Public extends Web3Public<null, FinalExecutionOutcome> {
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const tokensBalances = await Promise.all(
-      tokensAddresses.map(id =>
-        id === NATIVE_NEAR_ADDRESS
-          ? null
-          : this._walletConnection.account().viewFunction(id, 'ft_balance_of', {
-              account_id: address
-            })
-      )
+      tokensAddresses.map(id => this.getTokenBalance(address, id))
     );
-
-    const nativeNearBalance = await this._walletConnection.account().getAccountBalance();
-
-    return tokensAddresses.map((tokenAddress, index) => {
-      if (tokenAddress === NATIVE_NEAR_ADDRESS) {
-        const availableBalance = new BigNumber(nativeNearBalance?.available).minus('0.05');
-        return availableBalance.gt(0) ? availableBalance : new BigNumber(0);
-      }
-      return new BigNumber(tokensBalances[index]);
-    });
+    return tokensBalances.map(balance => new BigNumber(balance));
   }
 }

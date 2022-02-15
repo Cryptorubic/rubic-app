@@ -44,7 +44,7 @@ export abstract class Web3Public<AllowanceParams, TransactionResponse> {
     amount: BigNumber,
     userAddress: string
   ): Promise<void> {
-    const balance = await this.getTokenBalance(userAddress, token.address);
+    const balance = await this.getTokenOrNativeBalance(userAddress, token.address);
     const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
 
     if (balance.lt(amountAbsolute)) {

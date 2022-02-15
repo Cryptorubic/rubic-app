@@ -280,6 +280,9 @@ export class RefFinanceSwapService {
       this.walletConnectorService.nearConnection,
       'rubic'
     ).account();
+    if (!routes) {
+      return transactions;
+    }
     if (routes.length > 1) {
       const transitTokenOutRegistered = await account.viewFunction(
         WRAP_NEAR_CONTRACT,
@@ -433,6 +436,9 @@ export class RefFinanceSwapService {
    */
   public async createDepositTransactions(trade: InstantTrade): Promise<NearTransaction[]> {
     const transactions: NearTransaction[] = [];
+    if (!trade?.from) {
+      return transactions;
+    }
     if (trade.from.token.address === NATIVE_NEAR_ADDRESS) {
       const account = new WalletConnection(
         this.walletConnectorService.nearConnection,

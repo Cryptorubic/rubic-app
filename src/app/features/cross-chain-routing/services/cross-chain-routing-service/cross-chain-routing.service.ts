@@ -696,15 +696,14 @@ export class CrossChainRoutingService {
    */
   private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
-    // @TODO Near.
-    // const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
-    // const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
+    const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
+    const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
     await Promise.all([
       this.checkIfPaused(),
       this.checkGasPrice(),
-      this.checkContractBalance()
-      // blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
+      this.checkContractBalance(),
+      blockchainAdapter.checkBalance(tokenIn, tokenInAmount, this.authService.userAddress)
     ]);
   }
 
@@ -716,6 +715,17 @@ export class CrossChainRoutingService {
 
         let transactionHash;
         try {
+          // @TODO Near fix. Near addresses is not supported by Solana contracts yet.
+          if (
+            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
+              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.NEAR) ||
+            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
+              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
+          ) {
+            throw new CustomError(
+              'The swap between NEAR and SOLANA is currently not available. The support is coming soon.'
+            );
+          }
           transactionHash = await this.contractExecutorFacade.executeTrade(
             this.currentCrossChainTrade,
             options,

@@ -452,9 +452,9 @@ export class QueryParamsService {
         return;
       }
       this._nearQueryParams$.next({
-        accountId: queryParams.account_id,
-        publicKey: queryParams.all_keys,
-        allKeys: queryParams.all_keys
+        accountId: queryParams?.account_id,
+        publicKey: queryParams?.public_key,
+        allKeys: queryParams?.all_keys
       });
       await this.walletConnectorService.connectProvider(WALLET_NAME.NEAR);
       this.walletConnectorService.setNearPublicKey(queryParams.all_keys);
