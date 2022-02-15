@@ -78,7 +78,9 @@ export class InstantTradesApiService {
     hash: string,
     provider: INSTANT_TRADES_PROVIDERS,
     trade: InstantTrade,
-    blockchain: BLOCKCHAIN_NAME
+    blockchain: BLOCKCHAIN_NAME,
+    fee?: number,
+    promoCode?: string
   ): Observable<InstantTradesResponseApi> {
     const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
@@ -89,6 +91,8 @@ export class InstantTradesApiService {
       from_amount: Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
       to_amount: Web3Pure.toWei(trade.to.amount, trade.to.token.decimals),
       user: this.authService.userAddress,
+      fee,
+      promocode: promoCode,
       ...hashObject
     };
 

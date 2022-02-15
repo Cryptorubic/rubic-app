@@ -34,6 +34,7 @@ import { ThemeSwitcherComponent } from './components/header/components/theme-swi
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
+import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,7 @@ import { TradingBannerComponent } from '@core/header/components/header/component
     TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    ExternalLinkBannerComponent
+    AppReferralBannerComponent
   ],
   imports: [
     CommonModule,

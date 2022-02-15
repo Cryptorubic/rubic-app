@@ -1,0 +1,16 @@
+<button class="container" ngxClipboard [cbContent]="text" (click)="openHint()">
+  <ng-container *ngIf="!loading; else loader">
+    <tui-svg
+      class="icon"
+      src="tuiIconCopyLarge"
+      [tuiManualHint]="tooltip"
+      [tuiManualHintShow]="hintShown"
+    ></tui-svg>
+    <span>{{ text }}</span>
+  </ng-container>
+  <ng-template #loader>
+    <tui-loader></tui-loader>
+  </ng-template>
+</button>
+
+<ng-template #tooltip> Copied! </ng-template>

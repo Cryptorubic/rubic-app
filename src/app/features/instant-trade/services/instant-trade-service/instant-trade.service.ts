@@ -14,7 +14,10 @@ import { OneInchPolygonService } from '@features/instant-trade/services/instant-
 import { QuickSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/polygon/quick-swap-service/quick-swap.service';
 import { PancakeSwapService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/pancake-swap-service/pancake-swap.service';
 import { OneInchBscService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/bsc/one-inch-bsc-service/one-inch-bsc.service';
-import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
+import {
+  ItOptions,
+  ItProvider
+} from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TranslateService } from '@ngx-translate/core';
@@ -52,6 +55,14 @@ import { UniSwapV3PolygonService } from '@features/instant-trade/services/instan
 import { SushiSwapArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/sushi-swap-arbitrum-service/sushi-swap-arbitrum.service';
 import { OneInchArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/one-inch-arbitrum-service/one-inch-arbitrum.service';
 import { UniSwapV3ArbitrumService } from '@features/instant-trade/services/instant-trade-service/providers/arbitrum/uni-swap-v3-arbitrum-service/uni-swap-v3-arbitrum.service';
+import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
+import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
+import { TransactionReceipt } from 'web3-eth';
+import {
+  IT_PROXY_FEE_CONTRACT_ABI,
+  IT_PROXY_FEE_CONTRACT_ADDRESS,
+  IT_PROXY_FEE_CONTRACT_METHOD
+} from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
 import { TrisolarisAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/trisolaris-aurora-service/trisolaris-aurora.service';
 import { WannaSwapAuroraService } from '@features/instant-trade/services/instant-trade-service/providers/aurora/wanna-swap-aurora-service/wanna-swap-aurora.service';
 import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
@@ -135,7 +146,8 @@ export class InstantTradeService {
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly successTxModalService: SuccessTxModalService,
-    @Inject(WINDOW) private readonly window: RubicWindow
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly web3PrivateService: EthLikeWeb3PrivateService
   ) {
     this.modalSubscriptions = new Queue<Subscription>();
     this.setBlockchainsProviders();
@@ -248,13 +260,37 @@ export class InstantTradeService {
   ): Promise<void> {
     this.checkDeviceAndShowNotification();
     let transactionHash: string;
+
     try {
       const options = {
         onConfirm: async (hash: string) => {
-          confirmCallback();
-          this.notifyTradeInProgress(hash, trade.blockchain);
-          await this.postTrade(hash, provider, trade);
+          const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
+          const fee = 0;
           transactionHash = hash;
+
+          confirmCallback();
+
+          this.notifyTradeInProgress(hash, trade.blockchain);
+
+          this.notifyGtmAfterSignTx(
+            transactionHash,
+            trade.from.token.symbol,
+            trade.to.token.symbol,
+            fee,
+            usdPrice
+          );
+
+          if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
+            await this.postTrade(
+              hash,
+              provider,
+              trade,
+              this.iframeService.feeData.fee,
+              this.iframeService.promoCode
+            );
+          } else {
+            await this.postTrade(hash, provider, trade);
+          }
         }
       };
 
@@ -262,22 +298,10 @@ export class InstantTradeService {
       if (provider === INSTANT_TRADES_PROVIDERS.WRAPPED) {
         receipt = await this.ethWethSwapProvider.createTrade(trade, options);
       } else {
-        receipt = await this.blockchainsProviders[trade.blockchain][provider].createTrade(
-          trade,
-          options
-        );
+        receipt = await this.checkFeeAndCreateTrade(provider, trade, options);
       }
-
-      const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-      const fee = 0;
-      this.notifyGtmOnSuccess(
-        transactionHash,
-        trade.from.token.symbol,
-        trade.to.token.symbol,
-        fee,
-        usdPrice
-      );
       this.modalSubscriptions.pop()?.unsubscribe();
+
       this.updateTrade(transactionHash, true);
 
       await this.instantTradesApiService
@@ -300,17 +324,82 @@ export class InstantTradeService {
     }
   }
 
+  private async checkFeeAndCreateTrade(
+    provider: INSTANT_TRADES_PROVIDERS,
+    trade: InstantTrade,
+    options: ItOptions
+  ): Promise<Partial<TransactionReceipt>> {
+    if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
+      return this.createTradeWithFee(provider, trade, options);
+    }
+
+    return this.blockchainsProviders[trade.blockchain][provider].createTrade(trade, options);
+  }
+
+  private async createTradeWithFee(
+    provider: INSTANT_TRADES_PROVIDERS,
+    trade: InstantTrade,
+    options: ItOptions
+  ): Promise<Partial<TransactionReceipt>> {
+    const feeContractAddress = IT_PROXY_FEE_CONTRACT_ADDRESS;
+    const blockchainProvider = this.blockchainsProviders[trade.blockchain][provider];
+
+    const transactionOptions = await blockchainProvider.checkAndEncodeTrade(
+      trade,
+      options,
+      feeContractAddress
+    );
+
+    const { feeData } = this.iframeService;
+    const fee = feeData.fee * 1000;
+
+    const promoterAddress = await this.iframeService.getPromoterAddress().toPromise();
+
+    const methodName = promoterAddress
+      ? IT_PROXY_FEE_CONTRACT_METHOD.SWAP_WITH_PROMOTER
+      : IT_PROXY_FEE_CONTRACT_METHOD.SWAP;
+
+    const methodArguments = [
+      trade.from.token.address,
+      trade.to.token.address,
+      Web3Pure.toWei(trade.from.amount, trade.from.token.decimals),
+      blockchainProvider.contractAddress,
+      transactionOptions.data,
+      [fee, feeData.feeTarget]
+    ];
+    if (promoterAddress) {
+      methodArguments.push(promoterAddress);
+    }
+
+    return this.web3PrivateService.tryExecuteContractMethod(
+      feeContractAddress,
+      IT_PROXY_FEE_CONTRACT_ABI,
+      methodName,
+      methodArguments,
+      transactionOptions
+    );
+  }
+
   private async postTrade(
     hash: string,
     provider: INSTANT_TRADES_PROVIDERS,
-    trade: InstantTrade
+    trade: InstantTrade,
+    fee?: number,
+    promoCode?: string
   ): Promise<void> {
     const publicBlockchainAdapter = this.publicBlockchainAdapterService[trade.blockchain];
     await publicBlockchainAdapter.getTransactionByHash(hash, 0, 60, 1000);
     await timer(1000)
       .pipe(
         switchMap(() =>
-          this.instantTradesApiService.createTrade(hash, provider, trade, trade.blockchain)
+          this.instantTradesApiService.createTrade(
+            hash,
+            provider,
+            trade,
+            trade.blockchain,
+            fee,
+            promoCode
+          )
         ),
         catchError((err: unknown) => of(new CustomError((err as Error)?.message)))
       )
@@ -344,16 +433,23 @@ export class InstantTradeService {
       providerName => this.blockchainsProviders[fromBlockchain][providerName]
     );
 
-    const providerApproveData$ = providers.map((provider: ItProvider) =>
-      provider.getAllowance(fromToken.address).pipe(
+    const providerApproveData = providers.map((provider: ItProvider) => {
+      const targetContractAddress = this.iframeService.isIframeWithFee(
+        fromBlockchain,
+        provider.providerType
+      )
+        ? IT_PROXY_FEE_CONTRACT_ADDRESS
+        : undefined;
+
+      return provider.getAllowance(fromToken.address, targetContractAddress).pipe(
         catchError((err: unknown) => {
           console.debug(err, provider);
           return of(null);
         })
-      )
-    );
+      );
+    });
 
-    return forkJoin(providerApproveData$).pipe(
+    return forkJoin(providerApproveData).pipe(
       map((approveArray: BigNumber[]) => {
         return approveArray.map(el => fromAmount.gt(el));
       })
@@ -363,6 +459,11 @@ export class InstantTradeService {
   public async approve(provider: INSTANT_TRADES_PROVIDERS, trade: InstantTrade): Promise<void> {
     this.checkDeviceAndShowNotification();
     try {
+      const { fromBlockchain } = this.swapFormService.inputValue;
+      const targetContractAddress = this.iframeService.isIframeWithFee(fromBlockchain, provider)
+        ? IT_PROXY_FEE_CONTRACT_ADDRESS
+        : undefined;
+
       await this.blockchainsProviders[trade.blockchain][provider].approve(
         trade.from.token.address,
         {
@@ -377,7 +478,8 @@ export class InstantTradeService {
               )
             );
           }
-        }
+        },
+        targetContractAddress
       );
       this.modalSubscriptions.pop()?.unsubscribe();
       this.notificationsService.show(
@@ -404,7 +506,7 @@ export class InstantTradeService {
     }
   }
 
-  private notifyGtmOnSuccess(
+  private notifyGtmAfterSignTx(
     txHash: string,
     fromToken: string,
     toToken: string,

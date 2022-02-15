@@ -7,7 +7,10 @@ import {
 } from '@features/swaps/services/settings-service/settings.service';
 import { RefFinancePoolsService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance-pools.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
+import {
+  REF_FI_CONTRACT_ID,
+  WRAP_NEAR_CONTRACT
+} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { NearWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/near/near-web3-private.service';
 import { first, startWith, switchMap } from 'rxjs/operators';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
@@ -69,6 +72,10 @@ type CcrRequest = {
 })
 export class RefFinanceService implements ItProvider {
   public readonly providerType = INSTANT_TRADES_PROVIDERS.REF;
+
+  get contractAddress(): string {
+    return REF_FI_CONTRACT_ID;
+  }
 
   private settings: ItSettingsForm;
 

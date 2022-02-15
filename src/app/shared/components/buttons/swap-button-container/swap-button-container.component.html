@@ -127,6 +127,9 @@
             <app-rubic-button
               class="error-button"
               [attr.error]="true"
+              [attr.error-min-max]="
+                errorType[ERROR_TYPE.LESS_THAN_MINIMUM] || errorType[ERROR_TYPE.MORE_THAN_MAXIMUM]
+              "
               appearance="secondary"
               [disabled]="true"
             >

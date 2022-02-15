@@ -30,4 +30,4 @@ export type InstantTradesPostApi = (
   | InstantTradesUniswapAbstractApi
   | InstantTradesOneInchApi
   | SolanaTradesApi
-) & { user: string };
+) & { user: string; fee?: number; promocode?: string };

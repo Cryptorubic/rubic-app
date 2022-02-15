@@ -731,12 +731,11 @@ export class CrossChainRoutingService {
             options,
             this.authService.userAddress
           );
-          await this.postCrossChainTrade(transactionHash);
 
-          await this.notifyGtmOnSuccess(transactionHash);
+          await this.postCrossChainTradeAndNotifyGtm(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
-            await this.postCrossChainTrade(transactionHash);
+            await this.postCrossChainTradeAndNotifyGtm(transactionHash);
             return;
           }
 
@@ -778,20 +777,22 @@ export class CrossChainRoutingService {
    * Posts trade data to log widget domain, or to apply promo code.
    * @param transactionHash Hash of checked transaction.
    */
-  private async postCrossChainTrade(transactionHash: string): Promise<void> {
+  private async postCrossChainTradeAndNotifyGtm(transactionHash: string): Promise<void> {
     const settings = this.settingsService.crossChainRoutingValue;
     await this.apiService.postTrade(
       transactionHash,
       this.currentCrossChainTrade.fromBlockchain,
       settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
+
+    await this.notifyGtmAfterSignTx(transactionHash);
   }
 
   /**
    * Notifies GTM about signed transaction.
    * @param txHash Signed transaction hash.
    */
-  private async notifyGtmOnSuccess(txHash: string): Promise<void> {
+  private async notifyGtmAfterSignTx(txHash: string): Promise<void> {
     const { feeAmount } = await this.getTradeInfo();
     const { tokenIn, tokenOut } = this.currentCrossChainTrade;
     const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({

@@ -24,7 +24,15 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <div class="user-profile__logout" (click)="logout()">{{ 'navigation.logout' | translate }}</div>
+  <a class="user-profile__dropdown-item" routerLink="promotion">
+    {{ 'navigation.promotion' | translate }}
+  </a>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate>
+  <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
+    {{ 'navigation.logout' | translate }}
+  </button>
 </ng-template>
 
 <ng-container *onlyFrame>
