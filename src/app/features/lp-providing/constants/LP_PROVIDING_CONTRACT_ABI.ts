@@ -245,9 +245,30 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [],
+    name: 'getRequestArray',
+    outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'bytes32', name: 'role', type: 'bytes32' }],
     name: 'getRoleAdmin',
     outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
+    name: 'getTokensByOwner',
+    outputs: [{ internalType: 'uint256[]', name: 'tokenList', type: 'uint256[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
+    name: 'getUSDCAmountOf',
+    outputs: [{ internalType: 'uint256', name: 'USDCAmount', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
@@ -280,7 +301,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
           { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
           { internalType: 'uint256', name: 'USDCAmount', type: 'uint256' },
           { internalType: 'uint256', name: 'BRBCAmount', type: 'uint256' },
-          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
           { internalType: 'uint32', name: 'deadline', type: 'uint32' },
           { internalType: 'bool', name: 'isStaked', type: 'bool' },
           { internalType: 'uint256', name: 'lastRewardGrowth', type: 'uint256' }
@@ -535,7 +555,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
       { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
       { internalType: 'uint256', name: 'USDCAmount', type: 'uint256' },
       { internalType: 'uint256', name: 'BRBCAmount', type: 'uint256' },
-      { internalType: 'uint32', name: 'startTime', type: 'uint32' },
       { internalType: 'uint32', name: 'deadline', type: 'uint32' },
       { internalType: 'bool', name: 'isStaked', type: 'bool' },
       { internalType: 'uint256', name: 'lastRewardGrowth', type: 'uint256' }
@@ -596,13 +615,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'viewRequestArray',
-    outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
     inputs: [
       { internalType: 'address', name: '_from', type: 'address' },
       { internalType: 'uint256', name: '_tokenId', type: 'uint256' }
@@ -623,27 +635,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
     name: 'viewRewardsTotal',
     outputs: [{ internalType: 'uint256', name: 'totalRewardsAmount', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
-    name: 'viewTokenOwner',
-    outputs: [{ internalType: 'address', name: 'tokenOwner', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
-    name: 'viewTokensByOwner',
-    outputs: [{ internalType: 'uint256[]', name: 'tokenList', type: 'uint256[]' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
-    name: 'viewUSDCAmountOf',
-    outputs: [{ internalType: 'uint256', name: 'USDCAmount', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },

@@ -9,7 +9,7 @@ export const LP_PROVIDING_CONFIG_PROD = {
 };
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
-  contractAddress: '0xed4e15568BAe295712eb0f038871cC348fD21795',
+  contractAddress: '0x0Bcb03F6b2b8fb700B9869CFE6063EbE52c27fa1',
   brbcAddress: '0xf3f3b70bf06082dd5b951009e7144b2d4cb6972d',
   usdcAddress: '0xe782afd525a5984124808bc0834db25081b03df3',
   apiUrl: '//dev-staking.rubic.exchange/api/',

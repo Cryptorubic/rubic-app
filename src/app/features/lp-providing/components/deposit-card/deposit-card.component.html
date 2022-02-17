@@ -5,7 +5,9 @@
       <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
       <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
       RBC / USDC
-      <div class="deposit-card__title-start">Feb. 8, 2022 at 14:32</div>
+      <div class="deposit-card__title-start">
+        {{ start | date: 'dd LLLL' }} at {{ start | date: 'shortTime' }}
+      </div>
     </div>
     <div class="deposit-card__stats">
       <div class="stat">
@@ -18,7 +20,7 @@
       </div>
       <div class="stat">
         <span class="stat__name">Term: </span>
-        <span class="stat__data">2 month</span>
+        <span class="stat__data">{{ period }} days</span>
       </div>
       <div class="stat">
         <span class="stat__name">ID: </span>

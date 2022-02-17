@@ -111,6 +111,7 @@
   &__balance-usd-price {
     display: flex;
     justify-content: space-between;
+    height: 22px;
 
     color: #bdbebd;
     font-size: 18px;
@@ -193,6 +194,12 @@
           }
         }
       }
+    }
+  }
+
+  &__slider ::ng-deep {
+    .dot:active {
+      background-color: $rubic-primary;
     }
   }
 }

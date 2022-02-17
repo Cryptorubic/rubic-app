@@ -21,11 +21,5 @@ export const NAVIGATION_LIST = [
     type: 'internal',
     link: 'faq',
     imagePath: `${defaultSrc}faq.svg`
-  },
-  {
-    translateKey: 'navigation.faq',
-    type: 'internal',
-    link: 'staking',
-    imagePath: `${defaultSrc}faq.svg`
   }
 ] as NavigationItem[];

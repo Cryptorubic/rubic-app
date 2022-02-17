@@ -21,13 +21,13 @@ export class DepositCardComponent {
   rewardsToCollect: BigNumber;
 
   @Input()
-  term: string;
+  period: number;
 
   @Input()
   id: number;
 
   @Input()
-  start: string;
+  start: Date;
 
   @Input()
   status: string;

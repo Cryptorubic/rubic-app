@@ -68,13 +68,13 @@
         </a>
 
         <a
-          routerLink="/staking"
+          routerLink="/liquidity-providing"
           routerLinkActive="data-list__link_active"
           class="data-list__link"
-          (click)="menuClickHandler('staking')"
+          (click)="menuClickHandler('liquidityProviding')"
         >
           <button tuiOption class="data-list__option">
-            {{ 'navigation.staking' | translate }}
+            {{ 'navigation.lpProviding' | translate }}
           </button>
         </a>
       </tui-opt-group>
@@ -118,6 +118,17 @@
         >
           <button tuiOption class="data-list__option">
             {{ 'navigation.promotion' | translate }}
+          </button>
+        </a>
+
+        <a
+          routerLink="staking"
+          routerLinkActive="data-list__link_active"
+          class="data-list__link"
+          (click)="menuClickHandler('staking')"
+        >
+          <button tuiOption class="data-list__option">
+            {{ 'navigation.staking' | translate }}
           </button>
         </a>
 

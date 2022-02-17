@@ -7,6 +7,7 @@ export interface TokenLp {
   isStaked: boolean;
   lastRewardGrowth: number;
   tokenId: number;
+  startTime: string;
 }
 
 export interface TokenLpParsed {
@@ -18,4 +19,6 @@ export interface TokenLpParsed {
   isStaked: boolean;
   lastRewardGrowth: number;
   tokenId: number;
+  start: Date;
+  period: number;
 }

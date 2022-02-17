@@ -91,7 +91,12 @@
         </ng-container>
       </div>
     </div>
-    <tui-slider [formControl]="liquidityPeriodCtrl" [max]="180" [steps]="180"></tui-slider>
+    <tui-slider
+      class="lp-time__slider"
+      [formControl]="liquidityPeriodCtrl"
+      [max]="180"
+      [steps]="180"
+    ></tui-slider>
   </div>
   <app-stake-button
     [usdcAmountCtrl]="usdcAmount$"

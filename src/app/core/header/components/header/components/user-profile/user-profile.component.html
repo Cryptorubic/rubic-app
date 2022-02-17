@@ -30,6 +30,12 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
+  <a class="user-profile__dropdown-item" routerLink="staking">
+    {{ 'navigation.staking' | translate }}
+  </a>
+</ng-template>
+
+<ng-template #dropdownOptionTemplate>
   <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
     {{ 'navigation.logout' | translate }}
   </button>

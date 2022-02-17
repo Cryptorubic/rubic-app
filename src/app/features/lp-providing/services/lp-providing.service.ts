@@ -356,12 +356,18 @@ export class LpProvidingService {
     const [tokensInfo, tokensCollectedRewards, tokensRewardsToCollect] = Object.values(deposits);
 
     return tokensInfo.map((tokenInfo: TokenLp, i: string | number) => {
+      const { startTime, deadline } = tokenInfo;
+      const start = new Date(Number(startTime) * 1000);
+      const period = Math.floor((Number(deadline) - Number(startTime)) / (3600 * 24));
+
       return {
         ...tokenInfo,
         USDCAmount: Web3Pure.fromWei(tokenInfo.USDCAmount),
         BRBCAmount: Web3Pure.fromWei(tokenInfo.BRBCAmount),
         collectedRewards: Web3Pure.fromWei(tokensCollectedRewards[i]),
-        rewardsToCollect: Web3Pure.fromWei(tokensRewardsToCollect[i])
+        rewardsToCollect: Web3Pure.fromWei(tokensRewardsToCollect[i]),
+        start,
+        period
       };
     });
   }
