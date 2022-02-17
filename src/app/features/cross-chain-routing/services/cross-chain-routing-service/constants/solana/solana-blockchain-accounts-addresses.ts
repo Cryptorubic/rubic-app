@@ -1,4 +1,6 @@
-export const BLOCKCHAIN_UUID: Partial<Record<number, string>> = {
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
+
+export const BLOCKCHAIN_UUID: Partial<Record<BlockchainNumber, string>> = {
   2: '3gB5xUoME2BhCXdaArynKutftLnN5mWLw9dnB2dpw2yx',
   1: '4JCZAgsC5XwXxgexidRmJmdtMCBSAcMqHAUF152x5a71',
   3: 'CaXfJCA4ccnvmMDFxf9V57SxjAXDe9JC1TgYWXcuyxs1',
