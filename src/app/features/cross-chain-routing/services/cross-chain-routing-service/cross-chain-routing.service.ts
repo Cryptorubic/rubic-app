@@ -779,13 +779,12 @@ export class CrossChainRoutingService {
    */
   private async postCrossChainTradeAndNotifyGtm(transactionHash: string): Promise<void> {
     const settings = this.settingsService.crossChainRoutingValue;
+    await this.notifyGtmAfterSignTx(transactionHash);
     await this.apiService.postTrade(
       transactionHash,
       this.currentCrossChainTrade.fromBlockchain,
       settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
-
-    await this.notifyGtmAfterSignTx(transactionHash);
   }
 
   /**
