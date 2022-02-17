@@ -378,6 +378,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             this.autoSelect = true;
             this.needApprove = false;
             this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+            this.swapFormService.output.patchValue({
+              toAmount: this.fromAmount
+            });
+
             this.cdr.markForCheck();
             return of(null);
           }
