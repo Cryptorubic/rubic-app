@@ -6,6 +6,8 @@ export const BLOCKCHAIN_UUID: Partial<Record<number, string>> = {
   5: 'HrZBcgtD2uzVxays2pEYmBg5UVCYtvmodw2b8oLZJD1B',
   6: '3TTcYbjj879vMa8XGt6pcPBTFzAkdhYNEpq4K9YCR7eo',
   7: '2q7db16qoCbGfqEgQ5A8WMnqi9p1vgecL7V2DotDoPPu',
+  8: null, // Solana.
+  9: 'Cx7Xfmv9pY2FcbdNQW86dZMWiZZ4rYVwgT1XNqKDsQ6b',
   10: 'DHsqFC6KG3HzyTWcFUm5emNRN6267czoqE19ZYinC8Hg',
   11: 'DmeJNiquohZQkrZ1E4bDsamKyBizWaLXQ93EFGH2tYRi'
 };

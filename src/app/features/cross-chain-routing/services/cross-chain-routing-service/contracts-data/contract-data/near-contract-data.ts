@@ -76,8 +76,18 @@ export class NearContractData extends ContractData {
     return new Contract(wallet.account(), this.address, methodOptions) as NearCrossChainContract;
   }
 
-  public getSecondPath(instantTrade: InstantTrade): string[] {
+  public getSecondPath(
+    instantTrade: InstantTrade,
+    _: number,
+    fromBlockchain: BLOCKCHAIN_NAME
+  ): string[] {
     const emptyAddress = EMPTY_ADDRESS;
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      if (!instantTrade) {
+        return [emptyAddress];
+      }
+      return [emptyAddress, emptyAddress];
+    }
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(emptyAddress)];
     }

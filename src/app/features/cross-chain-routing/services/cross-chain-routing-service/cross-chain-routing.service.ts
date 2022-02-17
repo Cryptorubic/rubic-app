@@ -715,18 +715,6 @@ export class CrossChainRoutingService {
 
         let transactionHash;
         try {
-          // @TODO Near fix. Near addresses is not supported by Solana contracts yet.
-          if (
-            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
-              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.NEAR) ||
-            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
-              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) ||
-            this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR
-          ) {
-            throw new CustomError(
-              'The swap between is currently not available. The support is coming soon.'
-            );
-          }
           transactionHash = await this.contractExecutorFacade.executeTrade(
             this.currentCrossChainTrade,
             options,

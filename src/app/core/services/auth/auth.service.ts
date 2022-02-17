@@ -120,9 +120,16 @@ export class AuthService {
         throw error;
       }
     }
-    const address = walletAddress || this.cookieService.get('address');
+    const address =
+      walletAddress || this.cookieService.get('address') === 'null'
+        ? null
+        : this.cookieService.get('address');
+
     if (address) {
       this.activateProviderAndSignIn(address).subscribe();
+    } else {
+      this.currentUser$.next(null);
+      this.isAuthProcess = false;
     }
   }
 
