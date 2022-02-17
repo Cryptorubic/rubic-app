@@ -92,8 +92,8 @@ export class CrossChainRoutingApiService {
     network: string,
     contractFunction: string,
     secondPath?: string[],
-    targetAddress?: string,
-    pools?: number[]
+    walletAddress?: string,
+    pool?: number[]
   ): Observable<void> {
     return this.httpService.post(
       'trades/params',
@@ -102,8 +102,8 @@ export class CrossChainRoutingApiService {
         network,
         contractFunction,
         secondPath,
-        targetAddress,
-        pools
+        walletAddress,
+        pool
       },
       BASE_URL
     );
