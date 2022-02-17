@@ -11,6 +11,7 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
+import BigNumber from 'bignumber.js';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -54,7 +55,7 @@ export class EthLikeContractData extends ContractData {
     );
   }
 
-  public async blockchainCryptoFee(toBlockchainInContract: number): Promise<number> {
+  public async blockchainCryptoFee(toBlockchainInContract: number): Promise<BigNumber> {
     const fee = await this.blockchainAdapter.callContractMethod(
       this.address,
       crossChainContractAbi,
@@ -64,7 +65,7 @@ export class EthLikeContractData extends ContractData {
       }
     );
 
-    return Web3Pure.fromWei(fee).toNumber();
+    return Web3Pure.fromWei(fee);
   }
 
   public isPaused(): Promise<boolean> {
