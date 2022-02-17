@@ -5,19 +5,29 @@ import { LpProvidingService } from './services/lp-providing.service';
 import { LpProvidingApiService } from './services/lp-providing-api.service';
 import { StakeButtonComponent } from './components/stake-button/stake-button.component';
 import { DepositCardComponent } from './components/deposit-card/deposit-card.component';
-import { LpProvidingPageComponent } from './components/lp-providing-page/lp-providing-page.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
-import { TuiProgressModule, TuiSliderModule, TuiTagModule } from '@taiga-ui/kit';
+import { TuiProgressModule, TuiSliderModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
 import { TuiLoaderModule } from '@taiga-ui/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LpLandingComponent } from './components/lp-landing/lp-landing.component';
+import { LpProgressComponent } from './components/lp-progress/lp-progress.component';
+import { LpInfoComponent } from './components/lp-info/lp-info.component';
+import { LpStepsComponent } from './components/lp-steps/lp-steps.component';
+import { DepositsComponent } from './components/deposits/deposits.component';
+import { LpProvidingNotificationsService } from './services/lp-providing-notifications.service';
+import { LpProvidingModalsService } from './services/lp-providing-modals.service';
 
 @NgModule({
   declarations: [
     StakeButtonComponent,
     DepositCardComponent,
-    LpProvidingPageComponent,
-    DepositFormComponent
+    DepositFormComponent,
+    LpLandingComponent,
+    LpProgressComponent,
+    LpInfoComponent,
+    LpStepsComponent,
+    DepositsComponent
   ],
   imports: [
     CommonModule,
@@ -29,9 +39,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     TuiLoaderModule,
     TuiSliderModule,
     TuiProgressModule,
-    TuiTagModule
+    TuiTagModule,
+    TuiToggleModule
   ],
   exports: [],
-  providers: [LpProvidingService, LpProvidingApiService]
+  providers: [
+    LpProvidingService,
+    LpProvidingApiService,
+    LpProvidingNotificationsService,
+    LpProvidingModalsService
+  ]
 })
 export class LpProvidingModule {}

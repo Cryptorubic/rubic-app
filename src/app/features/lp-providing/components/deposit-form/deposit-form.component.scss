@@ -1,12 +1,25 @@
 @use 'src/scss/core' as *;
 
 .deposit-form {
+
+  position: relative;
+
   max-width: 612px;
   margin: 0 auto;
   padding: 40px 36px;
 
-  background: $background-black;
+  background: #181a19;
   border-radius: $border-radius-2;
+
+  &__back {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+
+    width: 22px;
+
+    cursor: pointer;
+  }
 
   &__header {
     position: relative;
@@ -105,17 +118,35 @@
     letter-spacing: -0.03em;
   }
 
-  // &__balance {
+  &__balance-max {
+    margin-left: 12px;
 
-  // }
+    color: $rubic-primary;
 
-  // &__usd-price {
+    cursor: pointer;
+  }
+}
 
-  // } 
+.hint {
+  display: flex;
+  margin-bottom: 22px;
+  padding: 15px;
+
+  color: #f3ba2f;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+
+  background: rgba(243, 186, 47, 0.15);
+  border-radius: 12px;
+
+  &__icon {
+    margin-right: 14px;
+  }
 }
 
 .lp-time {
-  margin-bottom: 100px;
+  margin-bottom: 60px;
 
   &__header {
     display: flex;
@@ -133,8 +164,34 @@
       display: flex;
       align-items: center;
 
-      tui-tag:not(:last-child) {
-        margin-right: 8px;
+      tui-tag {
+        &:not(:last-child) {
+          margin-right: 8px;
+        }
+
+        &.tag {
+          display: flex;
+          align-items: center;
+          height: 44px;
+          padding: 12px 15px;
+
+          font-weight: 500;
+          font-size: 18px;
+          line-height: 20px;
+
+          background: #202622;
+          border: 1px solid transparent;
+          border-radius: 10px;
+          cursor: pointer;
+
+          &_selected {
+            border: 1px solid $rubic-primary;
+          }
+
+          ::ng-deep .tag {
+            padding: 0;
+          }
+        }
       }
     }
   }

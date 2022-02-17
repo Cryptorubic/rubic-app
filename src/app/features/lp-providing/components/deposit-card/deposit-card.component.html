@@ -1,0 +1,52 @@
+<div class="deposit-card">
+  <div class="status" [ngClass]="{ status_active: status, status_closed: !status }">Active</div>
+  <div class="deposit-card__front">
+    <div class="deposit-card__title">
+      <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
+      <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+      RBC / USDC
+      <div class="deposit-card__title-start">Feb. 8, 2022 at 14:32</div>
+    </div>
+    <div class="deposit-card__stats">
+      <div class="stat">
+        <span class="stat__name">RBC: </span>
+        <span class="stat__data">{{ brbcAmount | bigNumberFormat: 2:true }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat__name">USDC: </span>
+        <span class="stat__data">{{ usdcAmount | bigNumberFormat: 2:true }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat__name">Term: </span>
+        <span class="stat__data">2 month</span>
+      </div>
+      <div class="stat">
+        <span class="stat__name">ID: </span>
+        <span class="stat__data">{{ id }}</span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="deposit-card__back"
+    [ngClass]="{ 'deposit-card__back_active': true, 'deposit-card__back_closed': false }"
+  >
+    <div class="deposit-card__back-amounts">
+      <div class="deposit-card__amount">
+        <div class="deposit-card__amount-name">Collect now</div>
+        <div class="deposit-card__amount-value">
+          {{ rewardsToCollect | bigNumberFormat: 2:true }} USDC
+        </div>
+      </div>
+      <div class="deposit-card__amount">
+        <div class="deposit-card__amount-name">Total collected</div>
+        <div class="deposit-card__amount-value">
+          {{ collectedRewards | bigNumberFormat: 2:true }} USDC
+        </div>
+      </div>
+    </div>
+    <div class="deposit-card__back-actions">
+      <app-rubic-button (click)="onCollectReward.emit()">Collect rewards</app-rubic-button>
+      <app-rubic-button (click)="onRemoveDeposit.emit()">Remove deposit</app-rubic-button>
+    </div>
+  </div>
+</div>

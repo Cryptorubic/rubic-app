@@ -1,12 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LpProvidingPageComponent } from './components/lp-providing-page/lp-providing-page.component';
+import { LpLandingComponent } from './components/lp-landing/lp-landing.component';
+import { DepositFormComponent } from './components/deposit-form/deposit-form.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: LpProvidingPageComponent
+    component: LpLandingComponent
+  },
+  {
+    path: 'deposit',
+    component: DepositFormComponent
   }
 ];
 

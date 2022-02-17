@@ -1,0 +1,40 @@
+@use 'src/scss/core' as *;
+
+.info {
+  width: 100%;
+  height: 100%;
+  padding: 43px;
+
+  background: #181a19;
+  border-radius: 36px;
+
+  &__row {
+    display: flex;
+
+    &:first-child {
+      margin-bottom: 42px;
+    }
+
+    .info__stat:first-child {
+      margin-right: 147px;
+    }
+  }
+
+  &__stat {
+    &-title {
+      margin-bottom: 10px;
+
+      color: $rubic-primary;
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 22px;
+    }
+
+    &-data {
+      color: #fff;
+      font-weight: 800;
+      font-size: 20px;
+      line-height: 24px;
+    }
+  }
+}

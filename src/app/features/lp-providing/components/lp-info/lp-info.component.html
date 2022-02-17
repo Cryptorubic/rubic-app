@@ -1,0 +1,28 @@
+<div class="info">
+  <tui-loader [overlay]="true" [showLoader]="loading$ | async">
+    <div class="info__row">
+      <div class="info__stat">
+        <div class="info__stat-title">Balance</div>
+        <div class="info__stat-data">{{ balance$ | async | percent }} of Pool</div>
+      </div>
+      <div class="info__stat">
+        <div class="info__stat-title">APR</div>
+        <div class="info__stat-data">{{ apr$ | async | percent }}</div>
+      </div>
+    </div>
+    <div class="info__row">
+      <div class="info__stat">
+        <div class="info__stat-title">Collect now</div>
+        <div class="info__stat-data">
+          {{ (amountToCollect$ | async | bigNumberFormat: 2:true) || 0 }} USDC
+        </div>
+      </div>
+      <div class="info__stat">
+        <div class="info__stat-title">Total collected</div>
+        <div class="info__stat-data">
+          {{ (totalCollectedAmount$ | async | bigNumberFormat: 2:true) || 0 }} USDC
+        </div>
+      </div>
+    </div>
+  </tui-loader>
+</div>
