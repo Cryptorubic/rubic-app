@@ -124,7 +124,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
-  public showSuccessTrxNotification = (): void => {
+  public showSuccessTrxNotification = (txHash: string): void => {
+    this.notifyGtmAfterSignTx(txHash);
     this.notificationsService.show<{ type: SuccessTxModalType }>(
       new PolymorpheusComponent(SuccessTrxNotificationComponent),
       {
@@ -473,8 +474,12 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         'cross-chain-routing',
         txHash,
         fromBlockchain,
-        this.showSuccessTrxNotification
+        this.showSuccessTrxNotification.bind(txHash)
       );
     }
+  }
+
+  private notifyGtmAfterSignTx(txHash: string): void {
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, txHash);
   }
 }
