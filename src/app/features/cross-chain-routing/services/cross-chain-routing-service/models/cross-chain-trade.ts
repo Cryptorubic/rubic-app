@@ -24,7 +24,7 @@ export interface CrossChainTrade {
 
   // fee data
   transitTokenFee: number; // in percents
-  cryptoFee: number; // in Eth units
+  cryptoFee: BigNumber; // in Eth units
 
   // gas data
   gasLimit?: BigNumber;
