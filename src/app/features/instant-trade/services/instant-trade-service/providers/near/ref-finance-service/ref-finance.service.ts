@@ -317,23 +317,15 @@ export class RefFinanceService implements ItProvider {
     form: SwapFormInput
   ): Promise<void> {
     try {
-      const usdPrice = form.fromToken.amount.multipliedBy(form.fromToken.price).toNumber();
-      const fee = 0;
       const provider =
         type === 'ccr' ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING : SWAP_PROVIDER_TYPE.INSTANT_TRADE;
-      this.gtmService.fireTxSignedEvent(
-        provider,
-        txHash,
-        fee,
-        form.fromToken.symbol,
-        form.toToken.symbol,
-        usdPrice
-      );
 
       const paramsObject = await this.parseSwapParams(txHash);
       if (!paramsObject) {
         throw new CustomError('Cant parse transaction');
       }
+
+      this.gtmService.fireTxSignedEvent(provider, txHash);
 
       if (type === 'it' || type === 'ccr') {
         const msg: ItRequest | CcrRequest = JSON.parse(paramsObject?.msg);

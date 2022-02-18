@@ -41,7 +41,6 @@ import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -779,35 +778,11 @@ export class CrossChainRoutingService {
    */
   private async postCrossChainTradeAndNotifyGtm(transactionHash: string): Promise<void> {
     const settings = this.settingsService.crossChainRoutingValue;
-    await this.notifyGtmAfterSignTx(transactionHash);
     await this.apiService.postTrade(
       transactionHash,
       this.currentCrossChainTrade.fromBlockchain,
       settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
-  }
-
-  /**
-   * Notifies GTM about signed transaction.
-   * @param txHash Signed transaction hash.
-   */
-  private async notifyGtmAfterSignTx(txHash: string): Promise<void> {
-    const { feeAmount } = await this.getTradeInfo();
-    const { tokenIn, tokenOut } = this.currentCrossChainTrade;
-    const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
-      address: tokenIn.address,
-      blockchain: tokenIn.blockchain
-    });
-
-    this.gtmService.fireTxSignedEvent(
-      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-      txHash,
-      feeAmount.toNumber(),
-      tokenIn.symbol,
-      tokenOut.symbol,
-      tokenIn.amount.toNumber() * tokenUsdPrice
-    );
-    return;
   }
 
   public calculateTokenOutAmountMin(): BigNumber {
