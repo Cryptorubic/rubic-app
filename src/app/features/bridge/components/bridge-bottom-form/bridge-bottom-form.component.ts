@@ -440,6 +440,6 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, txHash);
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
   }
 }
