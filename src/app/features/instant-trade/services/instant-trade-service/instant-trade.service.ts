@@ -83,7 +83,8 @@ export class InstantTradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
-  public showSuccessTrxNotification = (): void => {
+  public showSuccessTrxNotification = (txHash: string): void => {
+    this.notifyGtmAfterSignTx(txHash);
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000
@@ -264,21 +265,11 @@ export class InstantTradeService {
     try {
       const options = {
         onConfirm: async (hash: string) => {
-          const usdPrice = trade.from.amount.multipliedBy(trade.from.token.price).toNumber();
-          const fee = 0;
           transactionHash = hash;
 
           confirmCallback();
 
           this.notifyTradeInProgress(hash, trade.blockchain);
-
-          this.notifyGtmAfterSignTx(
-            transactionHash,
-            trade.from.token.symbol,
-            trade.to.token.symbol,
-            fee,
-            usdPrice
-          );
 
           if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
             await this.postTrade(
@@ -501,26 +492,13 @@ export class InstantTradeService {
         'default',
         txHash,
         blockchain,
-        this.showSuccessTrxNotification
+        this.showSuccessTrxNotification.bind(txHash)
       );
     }
   }
 
-  private notifyGtmAfterSignTx(
-    txHash: string,
-    fromToken: string,
-    toToken: string,
-    revenue: number,
-    usdPrice: number
-  ): void {
-    this.gtmService.fireTxSignedEvent(
-      SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-      txHash,
-      revenue,
-      fromToken,
-      toToken,
-      usdPrice
-    );
+  private notifyGtmAfterSignTx(txHash: string): void {
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, txHash);
   }
 
   private checkDeviceAndShowNotification(): void {
