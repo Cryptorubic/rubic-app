@@ -67,5 +67,16 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsInHorizontalIframe: true,
     supportsInVerticalIframe: true,
     supportsInVerticalMobileIframe: false
+  },
+  {
+    name: 'Near',
+    value: WALLET_NAME.NEAR,
+    img: './assets/images/icons/wallets/near.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    supportsInHorizontalIframe: true,
+    supportsInVerticalIframe: true,
+    supportsInVerticalMobileIframe: true
   }
 ];

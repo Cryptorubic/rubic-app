@@ -437,6 +437,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     const onTransactionHash = (txHash: string) => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+      this.notifyGtmAfterSignTx(txHash);
       this.notifyTradeInProgress(txHash);
     };
 
@@ -476,5 +478,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         this.showSuccessTrxNotification
       );
     }
+  }
+
+  private notifyGtmAfterSignTx(txHash: string): void {
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, txHash);
   }
 }

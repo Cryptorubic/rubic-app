@@ -33,11 +33,13 @@
           [ngClass]="{
             'instant-trade-bottom-form__token-amount_loading':
               standardMode && tradeStatus === TRADE_STATUS.LOADING,
-            'instant-trade-bottom-form__token-amount_placeholder': !selectedProvider
+            'instant-trade-bottom-form__token-amount_placeholder': !(
+              selectedProvider || wrapProvider
+            )
           }"
           *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
         >
-          <ng-container *ngIf="selectedProvider; else placeholder">
+          <ng-container *ngIf="selectedProvider || wrapProvider; else placeholder">
             {{
               wrapProvider
                 ? (fromAmount | bigNumberFormat)

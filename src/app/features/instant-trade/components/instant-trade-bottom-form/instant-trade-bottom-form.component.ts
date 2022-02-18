@@ -49,13 +49,13 @@ import { ProviderControllerData } from '@features/instant-trade/models/providers
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -269,12 +269,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
-    if (this.instantTradeService.getEthAndWethTrade()) {
-      this.allowRefreshChange.emit(false);
-    } else {
-      this.ethAndWethTrade = null;
-      this.allowRefreshChange.emit(true);
-    }
+    this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
+    this.allowRefreshChange.emit(!this.ethAndWethTrade);
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&
@@ -372,12 +368,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             return of(null);
           }
 
-          this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
             this.selectedProvider = null;
             this.autoSelect = true;
             this.needApprove = false;
             this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+            this.swapFormService.output.patchValue({
+              toAmount: this.fromAmount
+            });
+
             this.cdr.markForCheck();
             return of(null);
           }

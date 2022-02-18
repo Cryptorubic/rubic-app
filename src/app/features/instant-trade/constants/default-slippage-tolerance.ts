@@ -1,7 +1,11 @@
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 
-export const DEFAULT_SLIPPAGE_TOLERANCE = {
+export const DEFAULT_SLIPPAGE_TOLERANCE: Record<
+  SupportedCrossChainBlockchain,
+  Partial<Record<INSTANT_TRADES_PROVIDERS, number>>
+> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: {
     [INSTANT_TRADES_PROVIDERS.ONEINCH]: 2,
     [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: 2,
@@ -51,5 +55,8 @@ export const DEFAULT_SLIPPAGE_TOLERANCE = {
   },
   [BLOCKCHAIN_NAME.SOLANA]: {
     [INSTANT_TRADES_PROVIDERS.RAYDIUM]: 2
+  },
+  [BLOCKCHAIN_NAME.NEAR]: {
+    [INSTANT_TRADES_PROVIDERS.REF]: 2
   }
 };

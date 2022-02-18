@@ -69,5 +69,11 @@ export const BLOCKCHAINS_LIST: BlockchainItem[] = [
     visibleName: 'Solana',
     image: `${imageBaseSrc}solana.svg`,
     id: 999999
+  },
+  {
+    symbol: BLOCKCHAIN_NAME.NEAR,
+    visibleName: 'Near',
+    image: `${imageBaseSrc}near.svg`,
+    id: NaN
   }
 ];

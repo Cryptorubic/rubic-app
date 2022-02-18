@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
-import { tradesProviders } from '@shared/constants/common/trades-providers';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import BigNumber from 'bignumber.js';
+import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 
 @Component({
   selector: 'app-smart-routing',
@@ -26,7 +26,7 @@ export class SmartRoutingComponent {
   @Input()
   public toHasTrade: boolean;
 
-  public readonly tradesProviders = tradesProviders;
+  public readonly tradesProviders = TRADES_PROVIDERS;
 
   public readonly isMobile$ = this.headerStoreService.getMobileDisplayStatus();
 

@@ -147,14 +147,7 @@ export class GoogleTagManagerService {
    * @param toToken What token user wants to buy.
    * @param txUsdAmount Amount of trade in USD.
    */
-  public fireTxSignedEvent(
-    eventCategory: SWAP_PROVIDER_TYPE,
-    txId: string,
-    revenue: number,
-    fromToken: string,
-    toToken: string,
-    txUsdAmount: number
-  ): void {
+  public fireTxSignedEvent(eventCategory: SWAP_PROVIDER_TYPE, txId: string): void {
     this.forms[eventCategory].next(formStepsInitial);
     this.angularGtmService.pushTag({
       event: 'transactionSigned',
@@ -166,15 +159,11 @@ export class GoogleTagManagerService {
         currencyCode: 'USD',
         purchase: {
           actionField: {
-            id: txId,
-            revenue: revenue
+            id: txId
           },
           products: [
             {
-              name: `${fromToken} to ${toToken}`,
-              price: txUsdAmount,
-              category: formEventCategoryMap[eventCategory],
-              quantity: 1
+              category: formEventCategoryMap[eventCategory]
             }
           ]
         }
