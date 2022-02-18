@@ -113,8 +113,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     this.tradeStatusChange.emit(value);
   }
 
-  public showSuccessTrxNotification = (txHash: string): void => {
-    this.notifyGtmAfterSignTx(txHash);
+  public showSuccessTrxNotification = (): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000
@@ -354,6 +353,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
       onTransactionHash: (txHash: string) => {
+        this.notifyGtmAfterSignTx(txHash);
         this.notifyTradeInProgress(txHash);
       }
     };
@@ -434,7 +434,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         'bridge',
         txHash,
         this.fromBlockchain,
-        this.showSuccessTrxNotification.bind(txHash)
+        this.showSuccessTrxNotification
       );
     }
   }

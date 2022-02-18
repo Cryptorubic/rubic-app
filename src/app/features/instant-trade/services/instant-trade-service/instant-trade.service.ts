@@ -83,8 +83,7 @@ export class InstantTradeService {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 
-  public showSuccessTrxNotification = (txHash: string): void => {
-    this.notifyGtmAfterSignTx(txHash);
+  public showSuccessTrxNotification = (): void => {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000
@@ -269,6 +268,7 @@ export class InstantTradeService {
 
           confirmCallback();
 
+          this.notifyGtmAfterSignTx(transactionHash);
           this.notifyTradeInProgress(hash, trade.blockchain);
 
           if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
@@ -492,7 +492,7 @@ export class InstantTradeService {
         'default',
         txHash,
         blockchain,
-        this.showSuccessTrxNotification.bind(txHash)
+        this.showSuccessTrxNotification
       );
     }
   }

@@ -124,8 +124,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
     return fromBlockchain && toBlockchain && fromToken && toToken && fromAmount?.gt(0);
   }
 
-  public showSuccessTrxNotification = (txHash: string): void => {
-    this.notifyGtmAfterSignTx(txHash);
+  public showSuccessTrxNotification = (): void => {
     this.notificationsService.show<{ type: SuccessTxModalType }>(
       new PolymorpheusComponent(SuccessTrxNotificationComponent),
       {
@@ -438,6 +437,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     const onTransactionHash = (txHash: string) => {
       this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+      this.notifyGtmAfterSignTx(txHash);
       this.notifyTradeInProgress(txHash);
     };
 
@@ -474,7 +475,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
         'cross-chain-routing',
         txHash,
         fromBlockchain,
-        this.showSuccessTrxNotification.bind(txHash)
+        this.showSuccessTrxNotification
       );
     }
   }
