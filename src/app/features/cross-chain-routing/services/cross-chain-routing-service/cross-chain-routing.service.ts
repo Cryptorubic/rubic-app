@@ -478,7 +478,7 @@ export class CrossChainRoutingService {
   private async getCryptoFee(
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
-  ): Promise<number> {
+  ): Promise<BigNumber> {
     return this.contracts[fromBlockchain].blockchainCryptoFee(
       this.contracts[toBlockchain].numOfBlockchain
     );
@@ -578,7 +578,7 @@ export class CrossChainRoutingService {
       feePercent,
       feeAmount,
       feeTokenSymbol: secondTransitToken.symbol,
-      cryptoFee: trade.cryptoFee,
+      cryptoFee: trade.cryptoFee.toNumber(),
       estimatedGas,
       priceImpactFrom,
       priceImpactTo,
