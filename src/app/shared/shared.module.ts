@@ -66,7 +66,6 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
 import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
-import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
@@ -148,8 +147,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     TuiDataListWrapperModule,
     TuiLoaderModule,
     TuiBadgeModule,
-    TuiManualHintModule,
-    ClipboardModule
+    TuiManualHintModule
   ],
   exports: [
     SpinnerComponent,

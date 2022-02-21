@@ -127,5 +127,11 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'off'
       }
     }
-  ]
+  ],
+  parserOptions: {
+    ecmaVersion: 2017
+  },
+  env: {
+    es6: true
+  }
 };
