@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
@@ -10,6 +10,15 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { WALLET_NAME } from '@app/core/wallets/components/wallets-modal/models/wallet-name';
+import { delay } from 'rxjs/operators';
+
+interface SignInOptions {
+  contractId?: string;
+  methodNames?: string[];
+  // TODO: Replace following with single callbackUrl
+  successUrl?: string;
+  failureUrl?: string;
+}
 
 export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
   private _publicKey: string;
@@ -41,7 +50,8 @@ export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
     onNetworkChanges$: BehaviorSubject<BlockchainData>,
     onAddressChanges$: BehaviorSubject<string>,
     errorsService: ErrorsService,
-    private readonly window: RubicWindow
+    private readonly window: RubicWindow,
+    private readonly isIframe: boolean
   ) {
     super(errorsService, onAddressChanges$, onNetworkChanges$);
   }
@@ -57,13 +67,18 @@ export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
     if (!wallet.isSignedIn()) {
       const successUrl = new URL(this.window.location.href);
       successUrl.searchParams.set('nearLogin', 'true');
-      await wallet.requestSignIn(
-        {
-          successUrl: successUrl.href
-        },
-        'rubic',
-        successUrl.href
-      );
+      if (this.isIframe) {
+        await this.requestSignIn({ successUrl: successUrl.href });
+        this.window.location.reload();
+      } else {
+        await wallet.requestSignIn(
+          {
+            successUrl: successUrl.href
+          },
+          'rubic',
+          successUrl.href
+        );
+      }
     } else {
       this.isEnabled = true;
       this.wallet = wallet;
@@ -91,5 +106,15 @@ export class NearWalletAdapter extends CommonWalletAdapter<WalletConnection> {
 
   public async addToken(): Promise<void> {
     return;
+  }
+
+  private async requestSignIn(options: SignInOptions): Promise<boolean> {
+    const currentUrl = new URL(this.window.location.href);
+    const newUrl = new URL(`${NEAR_MAINNET_CONFIG.walletUrl}/login/`);
+    newUrl.searchParams.set('success_url', options.successUrl || currentUrl.href);
+    newUrl.searchParams.set('failure_url', options.failureUrl || currentUrl.href);
+    this.window.open(newUrl.toString(), '_blank').focus();
+
+    return of(false).pipe(delay(10000)).toPromise();
   }
 }
