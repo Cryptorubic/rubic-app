@@ -481,6 +481,6 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   }
 
   private notifyGtmAfterSignTx(txHash: string): void {
-    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.INSTANT_TRADE, txHash);
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, txHash);
   }
 }
