@@ -168,12 +168,16 @@ export class StakingService {
   /**
    * Loading state for whole progress block.
    */
-  public readonly stakingProgressLoading$ = new BehaviorSubject<boolean>(true);
+  private readonly _stakingProgressLoading$ = new BehaviorSubject<boolean>(true);
+
+  public readonly stakingProgressLoading$ = this._stakingProgressLoading$.asObservable();
 
   /**
    * Loading state for whole statistics block.
    */
-  public readonly stakingStatisticsLoading$ = new BehaviorSubject<boolean>(false);
+  private readonly _stakingStatisticsLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly stakingStatisticsLoading$ = this._stakingStatisticsLoading$.asObservable();
 
   /**
    * Balance of token selected for stake [from contract].
@@ -209,7 +213,7 @@ export class StakingService {
     @Inject(Injector) private readonly injector: Injector
   ) {
     forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]).subscribe(() =>
-      this.stakingProgressLoading$.next(false)
+      this._stakingProgressLoading$.next(false)
     );
 
     this.authService
@@ -229,7 +233,7 @@ export class StakingService {
         }),
         switchMap(([amountWithRewards]) => this.getEarnedRewards(amountWithRewards))
       )
-      .subscribe(() => this.stakingStatisticsLoading$.next(false));
+      .subscribe(() => this._stakingStatisticsLoading$.next(false));
 
     this.stakingApiService.getBridgeContractAddress().subscribe(address => {
       this.bridgeContractAddress = address;
@@ -381,7 +385,7 @@ export class StakingService {
    * @return Observable<number | BigNumber>
    */
   public reloadStakingStatistics(): Observable<number | BigNumber> {
-    this.stakingStatisticsLoading$.next(true);
+    this._stakingStatisticsLoading$.next(true);
     this.getApr().subscribe();
     return this.needLogin$.pipe(
       take(1),
@@ -394,7 +398,7 @@ export class StakingService {
           switchMap(() => this.getEarnedRewards())
         );
       }),
-      finalize(() => this.stakingStatisticsLoading$.next(false))
+      finalize(() => this._stakingStatisticsLoading$.next(false))
     );
   }
 
@@ -403,7 +407,7 @@ export class StakingService {
    * @return Observable<unknown>
    */
   public reloadStakingProgress(): Observable<unknown> {
-    this.stakingProgressLoading$.next(true);
+    this._stakingProgressLoading$.next(true);
     return this.needLogin$.pipe(
       take(1),
       switchMap(needLogin => {
@@ -412,7 +416,7 @@ export class StakingService {
         }
         return forkJoin([this.getTotalRBCEntered(), this.getUserEnteredAmount()]);
       }),
-      finalize(() => this.stakingProgressLoading$.next(false))
+      finalize(() => this._stakingProgressLoading$.next(false))
     );
   }
 

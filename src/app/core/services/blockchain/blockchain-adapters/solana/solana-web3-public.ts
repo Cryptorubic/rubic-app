@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-
 import {
   Account,
   AccountInfo,
@@ -15,7 +14,7 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
-import { base58 } from 'ethers/lib/utils';
+import { base58 } from '@scure/base';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<

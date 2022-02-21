@@ -1,4 +1,4 @@
-<button class="container" ngxClipboard [cbContent]="text" (click)="openHint()">
+<button class="container" (click)="copyToClipboard()">
   <ng-container *ngIf="!loading; else loader">
     <tui-svg
       class="icon"
