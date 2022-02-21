@@ -353,6 +353,7 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
     const bridgeTradeRequest: BridgeTradeRequest = {
       toAddress: this.toWalletAddress,
       onTransactionHash: (txHash: string) => {
+        this.notifyGtmAfterSignTx(txHash);
         this.notifyTradeInProgress(txHash);
       }
     };
@@ -361,28 +362,8 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
       .createTrade(bridgeTradeRequest)
       .pipe(
         first(),
-        tap(async transactionReceipt => {
-          if (transactionReceipt.status) {
-            const revenue = 0;
-            const { fromToken, toToken } = this.swapFormService.inputValue;
-            const { toAmount } = this.swapFormService.outputValue;
-            const toTokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
-              address: toToken.address,
-              blockchain: toToken.blockchain
-            });
-
-            this.gtmService.fireTxSignedEvent(
-              SWAP_PROVIDER_TYPE.BRIDGE,
-              transactionReceipt.transactionHash,
-              revenue,
-              fromToken.symbol,
-              toToken.symbol,
-              toAmount.toNumber() * toTokenUsdPrice
-            );
-          }
-
+        tap(() => {
           this.tradeInProgressSubscription$.unsubscribe();
-
           this.counterNotificationsService.updateUnread();
         }),
         switchMap(() => this.tokensService.calculateTokensBalances()),
@@ -456,5 +437,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
         this.showSuccessTrxNotification
       );
     }
+  }
+
+  private notifyGtmAfterSignTx(txHash: string): void {
+    this.gtmService.fireTxSignedEvent(SWAP_PROVIDER_TYPE.BRIDGE, txHash);
   }
 }
