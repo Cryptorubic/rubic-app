@@ -9,7 +9,6 @@ import { AbiItem, isAddress, toChecksumAddress } from 'web3-utils';
 import { BlockTransactionString } from 'web3-eth';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { UndefinedError } from '@core/errors/models/undefined.error';
-import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 import { from, Observable, of } from 'rxjs';
 import { HEALTHCHECK } from '@core/services/blockchain/constants/healthcheck';
 import { catchError, map, timeout } from 'rxjs/operators';
@@ -30,7 +29,6 @@ import { UseTestingModeService } from '@core/services/use-testing-mode/use-testi
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import InsufficientFundsError from '@core/errors/models/instant-trade/insufficient-funds-error';
 
 type AllowanceParams = {
   /**
@@ -190,7 +188,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
    */
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
     const contract = new this.web3.eth.Contract(ERC20_TOKEN_ABI, tokenAddress);
-
     const balance = await contract.methods.balanceOf(address).call();
     return new BigNumber(balance);
   }
@@ -554,40 +551,6 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
       this.multicallAddresses[this.blockchain.name]
     );
     return contract.methods.tryAggregate(false, calls).call();
-  }
-
-  /**
-   * Checks if the specified address contains the required amount of these tokens.
-   * Throws an InsufficientFundsError if the balance is insufficient
-   * @param token token balance for which you need to check
-   * @param amount required balance
-   * @param userAddress the address where the required balance should be
-   */
-  public async checkBalance(
-    token: { address: string; symbol: string; decimals: number },
-    amount: BigNumber,
-    userAddress: string
-  ): Promise<void> {
-    let balance: BigNumber;
-    if (this.isNativeAddress(token.address)) {
-      balance = await this.getBalance(userAddress, {
-        inWei: true
-      });
-    } else {
-      balance = await this.getTokenBalance(userAddress, token.address);
-    }
-
-    const amountAbsolute = Web3Pure.toWei(amount, token.decimals);
-    if (balance.lt(amountAbsolute)) {
-      const formattedTokensBalance = Web3Pure.fromWei(balance, token.decimals).toFormat(
-        BIG_NUMBER_FORMAT
-      );
-      throw new InsufficientFundsError(
-        token.symbol,
-        formattedTokensBalance,
-        amount.toFormat(BIG_NUMBER_FORMAT)
-      );
-    }
   }
 
   /**

@@ -1,8 +1,17 @@
 import { Inject, Injectable, OnDestroy, RendererFactory2 } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from '@ng-web-apis/common';
+import { IframeParameters } from '@core/services/iframe/models/iframe-parameters';
+import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
+import { Cacheable } from 'ts-cacheable';
+import { catchError } from 'rxjs/operators';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { WHITELIST_PROVIDERS } from '@core/services/iframe/constants/whitelist-providers';
+import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { PromotionPromoterAddressApiService } from '@core/services/backend/promotion-api/promotion-promoter-address-api.service';
+import { UseTestingModeService } from '@core/services/use-testing-mode/use-testing-mode.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,41 +21,46 @@ export class IframeService implements OnDestroy {
 
   private readonly _isIframe$ = new BehaviorSubject<boolean>(false);
 
-  private readonly _iframeAppearance$ = new BehaviorSubject<'vertical' | 'horizontal'>(undefined);
+  public readonly isIframe$ = this._isIframe$.asObservable();
 
-  private readonly _device$ = new BehaviorSubject<'mobile' | 'desktop'>(undefined);
+  private iframeParameters: IframeParameters;
 
   private readonly _widgetIntoViewport$ = new Subject<boolean>();
 
-  public get isIframe$(): Observable<boolean> {
-    return this._isIframe$.asObservable().pipe(filter(value => value !== undefined));
-  }
+  public readonly widgetIntoViewport$ = this._widgetIntoViewport$.asObservable();
 
   public get isIframe(): boolean {
     return this._isIframe$.getValue();
   }
 
-  public get iframeAppearance$(): Observable<'vertical' | 'horizontal'> {
-    return this._iframeAppearance$.asObservable();
+  public get iframeAppearance(): IframeAppearance | undefined {
+    return this.iframeParameters?.iframeAppearance;
   }
 
-  public get iframeAppearance(): 'vertical' | 'horizontal' | undefined {
-    return this._iframeAppearance$.getValue();
+  public get device(): 'mobile' | 'desktop' | undefined {
+    return this.iframeParameters?.device;
   }
 
-  public get device$(): Observable<'mobile' | 'desktop'> {
-    return this._device$.asObservable().pipe(filter(value => value !== undefined));
+  public get feeData(): {
+    fee: number;
+    feeTarget: string;
+  } {
+    return {
+      fee: this.iframeParameters.fee,
+      feeTarget: this.iframeParameters.feeTarget
+    };
   }
 
-  public get device(): 'mobile' | 'desktop' {
-    return this._device$.getValue();
-  }
-
-  public get widgetIntoViewport$(): Observable<boolean> {
-    return this._widgetIntoViewport$.asObservable();
+  public get promoCode(): string {
+    return this.iframeParameters.promoCode;
   }
 
   public get originDomain(): string {
+    const testingModeDomain = this.testingModeService.iframeSettings.domain.getValue();
+    if (testingModeDomain) {
+      return testingModeDomain;
+    }
+
     const url =
       this.window.location !== this.window.parent.location
         ? document.referrer
@@ -55,35 +69,43 @@ export class IframeService implements OnDestroy {
   }
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private rendererFactory2: RendererFactory2,
-    @Inject(WINDOW) private readonly window: Window
-  ) {
-    this.setUpViewportListener();
-  }
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly rendererFactory2: RendererFactory2,
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly promotionPromoterAddressApiService: PromotionPromoterAddressApiService,
+    private readonly testingModeService: UseTestingModeService
+  ) {}
 
   ngOnDestroy() {
     this.documentListener?.();
   }
 
-  public setIframeStatus(iframe: string): void {
-    if (iframe === 'vertical' || iframe === 'horizontal') {
-      this._isIframe$.next(true);
-      this._iframeAppearance$.next(iframe);
-      this.document.getElementsByTagName('html')[0].classList.add('iframe', `iframe-${iframe}`);
-    }
-  }
+  public setIframeInfo(iframeParameters: IframeParameters): void {
+    this.iframeParameters = iframeParameters;
 
-  public setIframeDevice(device: string): void {
+    const { device } = iframeParameters;
     if (device !== 'desktop' && device !== 'mobile') {
       console.error(`Wrong device value: ${device}`);
-      return;
     }
 
-    this._device$.next(device);
+    const { fee, feeTarget } = iframeParameters;
+    if (Boolean(fee) !== Boolean(feeTarget)) {
+      throw new RubicError(null, null, '`fee` or `feeTarget` parameter is missing.');
+    }
+
+    this.setIframeStatus();
+    this.setupViewportListener();
   }
 
-  private setUpViewportListener(): void {
+  private setIframeStatus(): void {
+    this._isIframe$.next(true);
+
+    this.document
+      .getElementsByTagName('html')[0]
+      .classList.add('iframe', `iframe-${this.iframeParameters.iframeAppearance}`);
+  }
+
+  private setupViewportListener(): void {
     const renderer = this.rendererFactory2.createRenderer(null, null);
     this.documentListener = renderer.listen('window', 'message', ($event: MessageEvent) => {
       const isWidgetIntoViewportEvent = $event.data?.name === 'widget-into-viewport';
@@ -92,5 +114,37 @@ export class IframeService implements OnDestroy {
         this._widgetIntoViewport$.next($event.data?.widgetIntoViewport);
       }
     });
+  }
+
+  @Cacheable()
+  public getPromoterAddress(): Observable<string | null> {
+    const { promoCode } = this.iframeParameters;
+    if (!promoCode) {
+      return of(null);
+    }
+
+    return this.promotionPromoterAddressApiService.getPromoterWalletAddress(promoCode).pipe(
+      catchError((err: unknown) => {
+        console.error('Cannot retrieve promoter address:', err);
+        return of(null);
+      })
+    );
+  }
+
+  public isIframeWithFee(
+    blockchain: BLOCKCHAIN_NAME,
+    providerType: INSTANT_TRADES_PROVIDERS
+  ): boolean {
+    if (!this.isIframe || !this.iframeParameters.fee) {
+      return false;
+    }
+
+    if (!(blockchain in WHITELIST_PROVIDERS)) {
+      return false;
+    }
+
+    return WHITELIST_PROVIDERS[blockchain as keyof typeof WHITELIST_PROVIDERS].some(
+      whitelistProvider => providerType === whitelistProvider
+    );
   }
 }

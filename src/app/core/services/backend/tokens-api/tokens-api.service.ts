@@ -44,7 +44,7 @@ export class TokensApiService {
    * @param tokens Tokens from backend response.
    * @return List<Token> Useful tokens list.
    */
-  private static prepareTokens(tokens: BackendToken[]): List<Token> {
+  public static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
         .map((token: BackendToken) => ({
@@ -158,7 +158,8 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.FANTOM,
       BLOCKCHAIN_NAME.ARBITRUM,
       BLOCKCHAIN_NAME.AURORA,
-      BLOCKCHAIN_NAME.SOLANA
+      BLOCKCHAIN_NAME.SOLANA,
+      BLOCKCHAIN_NAME.NEAR
     ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
 
     const requests$ = blockchainsToFetch.map(network =>

@@ -12,7 +12,7 @@ import { BLOCKCHAINS, DEPRECATED_BLOCKCHAINS } from '@features/my-trades/constan
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { COLUMNS } from '@features/my-trades/components/my-trades/constants/columns';
 import { TRANSLATION_STATUS_KEY } from '@features/my-trades/components/my-trades/constants/translation-status-keys';
-import { tradesProviders } from '@shared/constants/common/trades-providers';
+import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 
 @Component({
   selector: 'app-table',
@@ -32,7 +32,7 @@ export class TableComponent extends AbstractTableDataComponent implements OnInit
 
   public BLOCKCHAINS = { ...BLOCKCHAINS, ...DEPRECATED_BLOCKCHAINS };
 
-  public readonly tradesProviders = tradesProviders;
+  public readonly tradesProviders = TRADES_PROVIDERS;
 
   public readonly columns = COLUMNS;
 

@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   AfterViewInit,
+  Self,
   NgZone
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
@@ -39,7 +40,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class HeaderComponent implements AfterViewInit {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
@@ -89,7 +91,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly myTradesService: MyTradesService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly destroy$: TuiDestroyService,
+    @Self() private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly zone: NgZone
   ) {

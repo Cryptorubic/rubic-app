@@ -97,9 +97,11 @@ export class StakeButtonContainerComponent implements OnInit {
     map(([selectedToken]) => selectedToken.blockchain !== this?.walletConnectorService?.networkName)
   );
 
-  public readonly errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(
+  private readonly _errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(
     ErrorTypeEnum.EMPTY_AMOUNT
   );
+
+  public readonly errorType$ = this._errorType$.asObservable();
 
   public readonly errorTypeEnum = ErrorTypeEnum;
 
@@ -161,12 +163,12 @@ export class StakeButtonContainerComponent implements OnInit {
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber, limit: BigNumber): void {
     if (!amount.isFinite()) {
-      this.errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
+      this._errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
       return;
     }
 
     if (balance.lt(amount)) {
-      this.errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
+      this._errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
       return;
     }
 
@@ -180,10 +182,10 @@ export class StakeButtonContainerComponent implements OnInit {
         )
       )
     ) {
-      this.errorType$.next(ErrorTypeEnum.LIMIT);
+      this._errorType$.next(ErrorTypeEnum.LIMIT);
       return;
     } else {
-      this.errorType$.next(null);
+      this._errorType$.next(null);
       return;
     }
   }

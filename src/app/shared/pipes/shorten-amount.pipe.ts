@@ -42,14 +42,24 @@ export class ShortenAmountPipe implements PipeTransform {
       lengthToShorten -= decimalPart.length;
     }
 
+    let slicedAmount = `${integerPart.slice(0, -10)}b`;
+
     if (lengthToShorten <= 3) {
-      return `${integerPart.slice(0, -4)}k`;
+      slicedAmount = `${integerPart.slice(0, -4)}k`;
     }
 
     if (lengthToShorten <= 6) {
-      return `${integerPart.slice(0, -7)}m`;
+      slicedAmount = `${integerPart.slice(0, -7)}m`;
     }
 
-    return `${integerPart.slice(0, -10)}b`;
+    if (
+      slicedAmount[slicedAmount.length - 2] === ',' ||
+      slicedAmount[slicedAmount.length - 2] === '.'
+    ) {
+      const suffix = slicedAmount[slicedAmount.length - 1];
+      slicedAmount = slicedAmount.slice(0, slicedAmount.length - 2) + suffix;
+    }
+
+    return slicedAmount;
   }
 }

@@ -21,7 +21,8 @@ import {
   TuiSvgModule,
   TuiTooltipModule,
   TuiHostedDropdownModule,
-  TuiLoaderModule
+  TuiLoaderModule,
+  TuiManualHintModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { AmountEstimatedComponent } from 'src/app/shared/components/token-amount-estimated/token-amount-estimated.component';
@@ -63,6 +64,8 @@ import { InfoHintComponent } from './components/info-hint/info-hint.component';
 import { BuyTokenComponent } from './components/buy-token/buy-token.component';
 import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 import { FalsyPipe } from './pipes/falsy.pipe';
+import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
+import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +97,14 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     InfoHintComponent,
     BuyTokenComponent,
     IframeBlockchainIndicatorComponent,
+    RubicContainerComponent,
+    SwapButtonComponent,
+    RotatingIconComponent,
+    InfoHintComponent,
+    SwapButtonComponent,
+    NotificationBadgeComponent,
+    CopyContainerComponent,
+    IframeBlockchainIndicatorComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -102,19 +113,13 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     ShortenAmountPipe,
     ThemedIconPipe,
     FalsyPipe,
+    ThemedIconPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
     NoFrameDirective,
-    OnlyFrameDirective,
-    IframeBlockchainIndicatorComponent,
-    ThemedIconPipe,
-    SwapButtonComponent,
-    RotatingIconComponent,
-    InfoHintComponent,
-    SwapButtonComponent,
-    NotificationBadgeComponent
+    OnlyFrameDirective
   ],
   imports: [
     CommonModule,
@@ -141,7 +146,8 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     TuiInputCountModule,
     TuiDataListWrapperModule,
     TuiLoaderModule,
-    TuiBadgeModule
+    TuiBadgeModule,
+    TuiManualHintModule
   ],
   exports: [
     SpinnerComponent,
@@ -181,7 +187,9 @@ import { FalsyPipe } from './pipes/falsy.pipe';
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    NotificationBadgeComponent
+    NotificationBadgeComponent,
+    RubicContainerComponent,
+    CopyContainerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]

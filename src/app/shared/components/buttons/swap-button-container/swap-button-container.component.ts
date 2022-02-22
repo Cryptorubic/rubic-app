@@ -331,7 +331,7 @@ export class SwapButtonContainerComponent implements OnInit {
   }
 
   private async checkErrors(): Promise<void> {
-    this.checkWalletError();
+    await this.checkWalletError();
     await this.checkInsufficientFundsError();
   }
 
@@ -396,12 +396,12 @@ export class SwapButtonContainerComponent implements OnInit {
     }
   }
 
-  private checkWalletError(): boolean {
+  private async checkWalletError(): Promise<boolean> {
     const blockchainAdapter =
       this.publicBlockchainAdapterService[this.formService.inputValue.fromBlockchain];
     this.errorType[ERROR_TYPE.WRONG_WALLET] =
       Boolean(this.walletConnectorService.address) &&
-      !blockchainAdapter.isAddressCorrect(this.walletConnectorService.address);
+      !(await blockchainAdapter.isAddressCorrect(this.walletConnectorService.address));
     this.cdr.detectChanges();
     return this.errorType[ERROR_TYPE.WRONG_WALLET];
   }

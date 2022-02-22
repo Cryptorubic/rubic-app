@@ -13,6 +13,10 @@ import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/w
 import { EthLikeContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/eth-like-contract-data';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
+import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +29,8 @@ export class EthLikeContractExecutorService {
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly raydiumRoutingService: RaydiumRoutingService
+    private readonly raydiumRoutingService: RaydiumRoutingService,
+    private readonly refFinanceService: RefFinanceService
   ) {}
 
   public async executeTrade(
@@ -34,11 +39,8 @@ export class EthLikeContractExecutorService {
     userAddress: string,
     targetAddress: string
   ): Promise<string> {
-    const toWalletAddress =
-      trade.fromBlockchain === BLOCKCHAIN_NAME.SOLANA ||
-      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
-        ? targetAddress
-        : userAddress;
+    const isEthLike = BlockchainsInfo.getBlockchainType(trade.toBlockchain) === 'ethLike';
+    const toWalletAddress = isEthLike ? userAddress : targetAddress;
     const { contractAddress, contractAbi, methodName, methodArguments, value } =
       await this.getContractParams(trade, toWalletAddress);
 
@@ -60,6 +62,9 @@ export class EthLikeContractExecutorService {
           transactionHash = hash;
           if (trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
             this.sendDataToSolana(trade, transactionHash, targetAddress);
+          }
+          if (trade.toBlockchain === BLOCKCHAIN_NAME.NEAR) {
+            this.sendDataToNear(trade, transactionHash, targetAddress);
           }
         }
       },
@@ -140,6 +145,30 @@ export class EthLikeContractExecutorService {
         targetAddress,
         trade.toTrade.path.map(token => token.address),
         this.raydiumRoutingService.currentPoolInfo
+      )
+      .subscribe();
+  }
+
+  /**
+   * Near addresses are not supported by eth like blockchain contracts. Sends transaction details via http.
+   * @param trade Cross-chain trade.
+   * @param transactionHash Source transaction hash.
+   * @param targetAddress Target network wallet address.
+   */
+  private sendDataToNear(
+    trade: CrossChainTrade,
+    transactionHash: string,
+    targetAddress: string
+  ): void {
+    this.apiService
+      .postCrossChainDataToNear(
+        transactionHash,
+        TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
+        targetAddress,
+        trade.toTrade?.path?.map(token =>
+          token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : token.address
+        ) || [trade.tokenOut.address],
+        this.refFinanceService.refRoutes
       )
       .subscribe();
   }

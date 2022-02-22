@@ -41,7 +41,6 @@ import { TransactionReceipt } from 'web3-eth';
 import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/cross-chain-trade-info';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { TuiNotification } from '@taiga-ui/core';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -479,7 +478,7 @@ export class CrossChainRoutingService {
   private async getCryptoFee(
     fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain
-  ): Promise<number> {
+  ): Promise<BigNumber> {
     return this.contracts[fromBlockchain].blockchainCryptoFee(
       this.contracts[toBlockchain].numOfBlockchain
     );
@@ -579,7 +578,7 @@ export class CrossChainRoutingService {
       feePercent,
       feeAmount,
       feeTokenSymbol: secondTransitToken.symbol,
-      cryptoFee: trade.cryptoFee,
+      cryptoFee: trade.cryptoFee.toNumber(),
       estimatedGas,
       priceImpactFrom,
       priceImpactTo,
@@ -696,7 +695,6 @@ export class CrossChainRoutingService {
    */
   private async checkTradeParameters(): Promise<void | never> {
     this.walletConnectorService.checkSettings(this.currentCrossChainTrade.fromBlockchain);
-
     const { fromBlockchain, tokenIn, tokenInAmount } = this.currentCrossChainTrade;
     const blockchainAdapter = this.publicBlockchainAdapterService[fromBlockchain];
 
@@ -716,17 +714,27 @@ export class CrossChainRoutingService {
 
         let transactionHash;
         try {
+          // @TODO Near fix. Near addresses is not supported by Solana contracts yet.
+          if (
+            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
+              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.NEAR) ||
+            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
+              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
+          ) {
+            throw new CustomError(
+              'The swap between NEAR and SOLANA is currently not available. The support is coming soon.'
+            );
+          }
           transactionHash = await this.contractExecutorFacade.executeTrade(
             this.currentCrossChainTrade,
             options,
             this.authService.userAddress
           );
-          await this.postCrossChainTrade(transactionHash);
 
-          await this.notifyGtmOnSuccess(transactionHash);
+          await this.postCrossChainTradeAndNotifyGtm(transactionHash);
         } catch (err) {
           if (err instanceof FailedToCheckForTransactionReceiptError) {
-            await this.postCrossChainTrade(transactionHash);
+            await this.postCrossChainTradeAndNotifyGtm(transactionHash);
             return;
           }
 
@@ -768,36 +776,13 @@ export class CrossChainRoutingService {
    * Posts trade data to log widget domain, or to apply promo code.
    * @param transactionHash Hash of checked transaction.
    */
-  private async postCrossChainTrade(transactionHash: string): Promise<void> {
+  private async postCrossChainTradeAndNotifyGtm(transactionHash: string): Promise<void> {
     const settings = this.settingsService.crossChainRoutingValue;
     await this.apiService.postTrade(
       transactionHash,
       this.currentCrossChainTrade.fromBlockchain,
       settings.promoCode?.status === 'accepted' ? settings.promoCode.text : undefined
     );
-  }
-
-  /**
-   * Notifies GTM about signed transaction.
-   * @param txHash Signed transaction hash.
-   */
-  private async notifyGtmOnSuccess(txHash: string): Promise<void> {
-    const { feeAmount } = await this.getTradeInfo();
-    const { tokenIn, tokenOut } = this.currentCrossChainTrade;
-    const tokenUsdPrice = await this.tokensService.getAndUpdateTokenPrice({
-      address: tokenIn.address,
-      blockchain: tokenIn.blockchain
-    });
-
-    this.gtmService.fireTxSignedEvent(
-      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-      txHash,
-      feeAmount.toNumber(),
-      tokenIn.symbol,
-      tokenOut.symbol,
-      tokenIn.amount.toNumber() * tokenUsdPrice
-    );
-    return;
   }
 
   public calculateTokenOutAmountMin(): BigNumber {

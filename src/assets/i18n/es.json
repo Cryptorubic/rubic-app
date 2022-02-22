@@ -83,6 +83,7 @@
     "unsupportedTokenCCR": "Se produjo un error al intentar enviar una transacción. \n Existe la posibilidad de que esté tratando de vender un token que actualmente no es compatible con la cadena múltiple.",
     "rpcError": "Se ha producido un error, siga el enlace a continuación para averiguar qué debe hacer para solucionarlo.",
     "buttonLink": "Aprende más",
+    "wrongPromoterWallet": "Ha conectado una billetera que no es compatible con la red Ethereum. Cierre sesión en su cuenta y cambie a una billetera compatible con Ethereum (por ejemplo, MetaMask).",
     "walletNotInstalled": "La billetera no está instalada."
   },
   "navigation": {
@@ -97,7 +98,8 @@
     "logoutMessage": "¿Deseas Cerrar Sesión?",
     "notAvailable": "En construcción - Rediseño de UX.",
     "merch": "Merch shop",
-    "staking": "Staking"
+    "staking": "Staking",
+    "promotion": "Promocion"
   },
   "aboutPage": {
     "description": "Rubic is a multichain DeFi ecosystem, which features cross-chain, P2P, instant swaps and limit orders across multiple blockchains, aiming to deliver a complete ONE-STOP decentralized platform",
@@ -343,8 +345,38 @@
         "title": "Why do I get Method Execution Error: Error: Internal JSON-RPC error.",
         "answer": "Temporal malfunction of the RPC used in the wallet for the chosen network. \nIf this error occurs, the transaction has not been sent and the money will not be debited from your wallet. ;\n Try sending your transaction again. If the problem still exists, try these steps:\n 1. Clear cache;\n 2. Increase slippage;\n 3. Increase gas limit.",
         "id": "rpcError"
+      },
+      {
+        "title": "Rubic Autorefund Policy.",
+        "answer": "El equipo de rubic completará el reembolso en tokens USDC. El importe del reembolso será igual a la cantidad de tokens en USD en el momento en que se inició la operación. El reembolso se completará en la red objetivo.\n\nLa información detallada sobre el sistema de reembolso automático de Rubic se encuentra <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>en el enlace</a>. "
       }
     ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Cambiar a Monedero compatible con Ethereum"
+    },
+    "invitations": {
+      "invitedProjects": "Proyectos invitados",
+      "noProjects": "Todavía no has invitado a ningún proyecto",
+      "tableColumns": {
+        "projectName": "Proyecto",
+        "invitationDate": "Invitado",
+        "tradingVolume": "Volumen de negociación",
+        "received": "Recibido",
+        "receivedTokens": "Fichas recibidas"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Programa de referencias",
+      "invitedProjects": "Proyectos invitados",
+      "totalRewards": "Recompensas ganadas",
+      "instantRewards": "Recompensas instantáneas",
+      "earnWithOurWidget": "Gana con nuestro widget",
+      "createAReferralLink": "Genera un enlace de referencia y comienza a ganar con nuestro widget. ¡Asegúrate de leer las Reglas del Programa!",
+      "myPromoLink": "Mi enlace promocional",
+      "contactUs": "Contáctenos"
+    }
   },
   "bridgePage": {
     "title": "Bridge assets with low gas fees",
@@ -441,7 +473,8 @@
       "depositInProgress": "depósito en curso",
       "withdrawInProgress": "retiro en curso",
       "waitingForDeposit": "esperando depósito",
-      "waitingForReceiving": "esperando recibir"
+      "waitingForReceiving": "esperando recibir",
+      "refunded": "reintegrada"
     },
     "noData": "Aún no tienes intercambios",
     "receive": "Recibir"
@@ -618,9 +651,14 @@
       "link": "Pruébalo hoy!"
     },
     "external": {
-      "text": "Aurora ya está disponible en Rubic! ¡Complete intercambios On-Chain y Multi-Chain ahora!",
-      "link": "_placeholder"
+      "text": "Intercambia cualquier token con 0% de tarifas de protocolo. ¡Negocia ahora!",
+      "link": ""
     }
+  },
+  "referralBanner": {
+    "takePartInOur": "Participa en nuestra ",
+    "referralProgram": "¡Programa de recomendación y obtén recompensas!",
+    "link": "Aprende más"
   },
   "volume": {
     "title": "Volumen de transacciones acumuladas",

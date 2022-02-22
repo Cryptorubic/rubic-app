@@ -8,8 +8,6 @@ import {
 } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -37,7 +35,7 @@ export class TokensListElementComponent {
   /**
    * Is iframe has horizontal view.
    */
-  public readonly isHorizontalFrame$: Observable<boolean>;
+  public readonly isHorizontalFrame: boolean;
 
   constructor(
     iframeService: IframeService,
@@ -47,9 +45,7 @@ export class TokensListElementComponent {
     private readonly authService: AuthService
   ) {
     this.loadingFavoriteToken = false;
-    this.isHorizontalFrame$ = iframeService.iframeAppearance$.pipe(
-      map(appearance => appearance === 'horizontal')
-    );
+    this.isHorizontalFrame = iframeService.iframeAppearance === 'horizontal';
   }
 
   public onImageError($event: Event): void {

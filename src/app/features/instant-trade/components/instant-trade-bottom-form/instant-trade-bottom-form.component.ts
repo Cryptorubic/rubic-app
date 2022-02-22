@@ -17,7 +17,7 @@ import { SwapFormInput } from '@features/swaps/models/swap-form';
 import { INSTANT_TRADE_PROVIDERS } from '@features/instant-trade/constants/providers';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -40,7 +40,6 @@ import {
   switchMap,
   takeUntil
 } from 'rxjs/operators';
-
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
@@ -50,13 +49,13 @@ import { ProviderControllerData } from '@features/instant-trade/models/providers
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/instant-trade/models/instant-trade-info';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapInfoService } from '@features/swaps/components/swap-info/services/swap-info.service';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -91,6 +90,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
   @Output() instantTradeInfoChange = new EventEmitter<InstantTradeInfo>();
 
   @Output() tradeStatusChange = new EventEmitter<TRADE_STATUS>();
+
+  private readonly IT_PROXY_FEE = 0.003;
 
   // eslint-disable-next-line rxjs/no-exposed-subjects
   public readonly onCalculateTrade$: Subject<'normal' | 'hidden'>;
@@ -128,7 +129,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
 
   private hiddenCalculateTradeSubscription$: Subscription;
 
-  public isIframe$: Observable<boolean>;
+  public isIframe: boolean;
 
   public TRADE_STATUS = TRADE_STATUS;
 
@@ -166,6 +167,19 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get toAmount(): BigNumber {
+    if (
+      !this.iframeService.isIframeWithFee(
+        this.currentBlockchain,
+        this.selectedProvider.tradeProviderInfo.value
+      )
+    ) {
+      return this.selectedProvider.trade.to.amount;
+    }
+
+    return this.selectedProvider.trade.to.amount.multipliedBy(1 - this.IT_PROXY_FEE);
+  }
+
   constructor(
     public readonly swapFormService: SwapFormService,
     private readonly instantTradeService: InstantTradeService,
@@ -183,7 +197,7 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService
   ) {
     this.autoSelect = true;
-    this.isIframe$ = iframeService.isIframe$;
+    this.isIframe = this.iframeService.isIframe;
     this.onCalculateTrade$ = new Subject();
     this.hiddenDataAmounts$ = new BehaviorSubject([]);
   }
@@ -255,12 +269,8 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
       to: this.toToken?.address === NATIVE_TOKEN_ADDRESS
     };
 
-    if (this.instantTradeService.getEthAndWethTrade()) {
-      this.allowRefreshChange.emit(false);
-    } else {
-      this.ethAndWethTrade = null;
-      this.allowRefreshChange.emit(true);
-    }
+    this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
+    this.allowRefreshChange.emit(!this.ethAndWethTrade);
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&
@@ -358,12 +368,16 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
             return of(null);
           }
 
-          this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
           if (this.ethAndWethTrade) {
             this.selectedProvider = null;
             this.autoSelect = true;
             this.needApprove = false;
             this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+
+            this.swapFormService.output.patchValue({
+              toAmount: this.fromAmount
+            });
+
             this.cdr.markForCheck();
             return of(null);
           }

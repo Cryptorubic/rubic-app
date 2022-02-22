@@ -53,6 +53,8 @@ export class ZrxService implements ItProvider {
 
   public readonly providerType = INSTANT_TRADES_PROVIDERS.ZRX;
 
+  public readonly contractAddress = '0xdef1c0ded9bec7f1a1670819833240f027b25eff';
+
   private readonly gasMargin: number;
 
   private fromBlockchainAdapter: EthLikeWeb3Public;

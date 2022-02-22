@@ -1,4 +1,4 @@
-<div class="instant-trade-bottom-form" *ngLet="(isIframe$ | async) !== true as standardMode">
+<div class="instant-trade-bottom-form" *ngLet="isIframe !== true as standardMode">
   <main class="instant-trade-bottom-form__body">
     <div class="instant-trade-bottom-form__body-top">
       <div class="instant-trade-bottom-form__left-part">
@@ -9,6 +9,7 @@
           [favoriteTokens]="favoriteTokens"
           [formService]="swapFormService"
         ></app-rubic-tokens>
+
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
             {{ 'common.tradeVia' | translate }} {{ selectedProvider.tradeProviderInfo.label }}
@@ -32,15 +33,17 @@
           [ngClass]="{
             'instant-trade-bottom-form__token-amount_loading':
               standardMode && tradeStatus === TRADE_STATUS.LOADING,
-            'instant-trade-bottom-form__token-amount_placeholder': !selectedProvider
+            'instant-trade-bottom-form__token-amount_placeholder': !(
+              selectedProvider || wrapProvider
+            )
           }"
           *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
         >
-          <ng-container *ngIf="selectedProvider; else placeholder">
+          <ng-container *ngIf="selectedProvider || wrapProvider; else placeholder">
             {{
               wrapProvider
                 ? (fromAmount | bigNumberFormat)
-                : (selectedProvider?.trade.to.amount
+                : (toAmount
                   | bigNumberFormat
                   | withRound: 'toClosestValue':selectedProvider?.trade.to.token.decimals || 1)
             }}
@@ -61,10 +64,12 @@
               [loading]="tradeStatus === TRADE_STATUS.LOADING"
             ></app-usd-price-container>
           </div>
+
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
             <app-usd-price-container
               [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
             ></app-usd-price-container>
+
             <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
               Est. fee ${{ selectedProvider?.trade.gasFeeInUsd.toFixed(2) }}
             </div>
@@ -72,6 +77,7 @@
         </ng-container>
       </div>
     </div>
+
     <ng-container *noFrame>
       <app-providers-panels-container
         *ngIf="allowTrade && !ethAndWethTrade"
@@ -82,8 +88,8 @@
       </app-providers-panels-container>
     </ng-container>
   </main>
-  <footer class="instant-trade-bottom-form__footer"></footer>
 </div>
+
 <div class="instant-trade-bottom-form__swap">
   <app-swap-button-container
     [needApprove]="needApprove"
