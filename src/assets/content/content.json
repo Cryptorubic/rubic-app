@@ -148,17 +148,6 @@
       ]
     },
     {
-      "img": "KutirinRoman.jpg",
-      "name": "Roman Kutirin",
-      "role": "Backend Developer",
-      "links": [
-        {
-          "icon": "Github.svg",
-          "url": "https://github.com/RomanK96"
-        }
-      ]
-    },
-    {
       "img": "AndreyAksenov.png",
       "name": "Andrey Aksenov",
       "role": "Marketing",

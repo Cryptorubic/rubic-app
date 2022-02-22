@@ -22,6 +22,7 @@ import { crossChainContractAbiInch } from '@features/cross-chain-routing/service
 import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
 import { compareAddresses } from '@shared/utils/utils';
 import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
+import BigNumber from 'bignumber.js';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -56,7 +57,7 @@ export abstract class ContractData {
 
   public abstract feeAmountOfBlockchain(): Promise<string>;
 
-  public abstract blockchainCryptoFee(toBlockchainInContract: number): Promise<number>;
+  public abstract blockchainCryptoFee(toBlockchainInContract: number): Promise<BigNumber>;
 
   public abstract isPaused(): Promise<boolean>;
 

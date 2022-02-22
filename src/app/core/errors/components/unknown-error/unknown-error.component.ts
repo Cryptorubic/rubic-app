@@ -41,7 +41,7 @@ export class UnknownErrorComponent {
     this.hintShown = true;
     timer(1500).subscribe(() => {
       this.hintShown = false;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 }

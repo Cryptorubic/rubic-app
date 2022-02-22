@@ -17,6 +17,7 @@ import {
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
+import BigNumber from 'bignumber.js';
 import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 
 export class SolanaContractData extends ContractData {
@@ -58,14 +59,14 @@ export class SolanaContractData extends ContractData {
     return bridgeData.fee_amount_of_blockchain.toString();
   }
 
-  public async blockchainCryptoFee(toBlockchainInContract: BlockchainNumber): Promise<number> {
+  public async blockchainCryptoFee(toBlockchainInContract: BlockchainNumber): Promise<BigNumber> {
     const account = new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContract]);
     const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
     const blockchainData = BLOCKCHAIN_LAYOUT.decode(data) as SolanaBlockchainConfig;
     const fee = blockchainData.crypto_fee.toNumber();
     const decimals = NATIVE_SOL.decimals;
 
-    return Web3Pure.fromWei(fee, decimals).toNumber();
+    return Web3Pure.fromWei(fee, decimals);
   }
 
   public async isPaused(): Promise<boolean> {
