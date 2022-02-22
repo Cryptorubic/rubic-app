@@ -30,6 +30,7 @@
       "os": ["./node_modules/os-browserify"],
       "http": ["./node_modules/stream-http"],
       "crypto": ["./node_modules/crypto-browserify"],
+      "url": ["./node_modules/url"],
       "@app/*": ["./src/app/*"],
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],

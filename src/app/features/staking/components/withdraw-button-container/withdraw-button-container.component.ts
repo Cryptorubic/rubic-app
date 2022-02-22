@@ -78,9 +78,11 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   public readonly errorTypeEnum = ErrorTypeEnum;
 
-  public readonly needChangeNetwork$ = new BehaviorSubject<boolean>(
+  private readonly _needChangeNetwork$ = new BehaviorSubject<boolean>(
     this.walletConnectorService.networkName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
   );
+
+  public readonly needChangeNetwork$ = this._needChangeNetwork$.asObservable();
 
   constructor(
     private readonly stakingService: StakingService,
@@ -104,9 +106,9 @@ export class WithdrawButtonContainerComponent implements OnInit {
       .pipe(
         tap(() => {
           if (this.walletConnectorService.networkName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) {
-            this.needChangeNetwork$.next(true);
+            this._needChangeNetwork$.next(true);
           } else {
-            this.needChangeNetwork$.next(false);
+            this._needChangeNetwork$.next(false);
           }
         }),
         takeUntil(this.destroy$)

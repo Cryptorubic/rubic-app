@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, Input, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  Input,
+  ChangeDetectorRef,
+  Inject
+} from '@angular/core';
+import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Component({
   selector: 'app-copy-container',
@@ -13,7 +20,15 @@ export class CopyContainerComponent {
 
   public hintShown = false;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator
+  ) {}
+
+  public copyToClipboard(): void {
+    this.openHint();
+    this.navigator.clipboard.writeText(this.text);
+  }
 
   public openHint(): void {
     this.hintShown = true;
@@ -21,7 +36,7 @@ export class CopyContainerComponent {
 
     setTimeout(() => {
       this.hintShown = false;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     }, 1000);
   }
 }
