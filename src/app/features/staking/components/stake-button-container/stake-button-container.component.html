@@ -33,7 +33,7 @@
           <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
             <span class="error-button" *ngLet="limit$ | async as limit">{{
               'staking.stake.overLimit'
-                | translate: { max: limit.max | bigNumberFormat, min: limit.min }
+                | translate: { max: limit.max | bigNumberFormat: 2:true, min: limit.min }
             }}</span>
           </ng-container>
           <ng-container *ngSwitchCase="null">

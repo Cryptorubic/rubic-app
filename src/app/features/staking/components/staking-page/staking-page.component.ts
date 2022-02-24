@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { StakingService } from '../../services/staking.service';
 
 /**
  * Page component for staking.
@@ -9,4 +10,15 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./staking-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StakingPageComponent {}
+export class StakingPageComponent {
+  constructor(
+    private readonly stakingService: StakingService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.stakingService.handleAddressChange().subscribe(() => {
+      this.cdr.detectChanges();
+    });
+  }
+}

@@ -2,7 +2,7 @@
   <div class="total__total-staked">
     <div class="total__title">{{ 'staking.stats.total' | translate }}</div>
     <div class="total__amount">
-      {{ stakingProgress.totalRbcEntered | bigNumberFormat }} BRBC of
+      {{ stakingProgress.totalRbcEntered | bigNumberFormat: 2:true }} BRBC of
       {{ BRBCTotal | bigNumberFormat }} BRBC
     </div>
     <progress
@@ -19,7 +19,7 @@
         {{ 'staking.stats.connectWallet' | translate }}
       </ng-container>
       <ng-template #userTotalStaked>
-        {{ stakingProgress.userEnteredAmount | bigNumberFormat }} BRBC of
+        {{ stakingProgress.userEnteredAmount | bigNumberFormat: 2:true }} BRBC of
         {{ stakeLimitMax | bigNumberFormat }} BRBC
       </ng-template>
     </div>

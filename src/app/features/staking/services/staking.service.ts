@@ -47,6 +47,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import { STAKING_TOKENS } from '@features/staking/constants/staking-tokens';
+import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class StakingService {
@@ -209,6 +210,7 @@ export class StakingService {
     private readonly notificationsService: NotificationsService,
     private readonly polygonBinanceBridge: BinancePolygonRubicBridgeProviderService,
     private readonly ethereumBinanceBridge: EthereumBinanceRubicBridgeProviderService,
+    private readonly walletConnectorService: WalletConnectorService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {
@@ -355,7 +357,10 @@ export class StakingService {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber('0'));
       }),
-      tap(balance => this._stakingTokenBalance$.next(Web3Pure.fromWei(balance)))
+      tap(balance => {
+        console.log(Web3Pure.fromWei(balance).toNumber());
+        this._stakingTokenBalance$.next(Web3Pure.fromWei(balance));
+      })
     );
   }
 
@@ -504,6 +509,23 @@ export class StakingService {
    */
   public calculateBRBCUsdPrice(amount: BigNumber): BigNumber {
     return amount.multipliedBy(this.BRBCUsdPrice);
+  }
+
+  /**
+   * Reloads staking statistics and info when user changes address.
+   * @return Observable<[unknown, number | BigNumber, BigNumber]>
+   */
+  public handleAddressChange(): Observable<[unknown, number | BigNumber, BigNumber]> {
+    return this.walletConnectorService.addressChange$.pipe(
+      tap(address => (this.walletAddress = address)),
+      switchMap(() => {
+        return forkJoin([
+          this.reloadStakingProgress(),
+          this.reloadStakingStatistics(),
+          this.getMaxAmountForWithdraw()
+        ]);
+      })
+    );
   }
 
   /**
