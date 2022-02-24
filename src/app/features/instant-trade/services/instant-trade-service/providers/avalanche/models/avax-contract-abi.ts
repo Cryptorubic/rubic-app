@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export default [
+const AVAX_CONTRACT_ABI: AbiItem[] = [
   {
     type: 'function',
     stateMutability: 'view',
@@ -97,4 +97,6 @@ export default [
       { type: 'uint256', name: 'deadline', internalType: 'uint256' }
     ]
   }
-] as AbiItem[];
+];
+
+export default AVAX_CONTRACT_ABI;

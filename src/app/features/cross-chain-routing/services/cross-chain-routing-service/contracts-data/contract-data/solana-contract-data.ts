@@ -16,6 +16,9 @@ import {
   SolanaBlockchainConfig
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import InstantTrade from '@features/instant-trade/models/instant-trade';
+import BigNumber from 'bignumber.js';
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 
 export class SolanaContractData extends ContractData {
   private readonly blockchainAdapter: SolanaWeb3Public;
@@ -23,7 +26,7 @@ export class SolanaContractData extends ContractData {
   constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
-    public readonly numOfBlockchain: number,
+    public readonly numOfBlockchain: BlockchainNumber,
     publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
     super(blockchain, providersData, numOfBlockchain);
@@ -56,14 +59,14 @@ export class SolanaContractData extends ContractData {
     return bridgeData.fee_amount_of_blockchain.toString();
   }
 
-  public async blockchainCryptoFee(toBlockchainInContract: number): Promise<number> {
+  public async blockchainCryptoFee(toBlockchainInContract: BlockchainNumber): Promise<BigNumber> {
     const account = new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContract]);
     const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
     const blockchainData = BLOCKCHAIN_LAYOUT.decode(data) as SolanaBlockchainConfig;
     const fee = blockchainData.crypto_fee.toNumber();
     const decimals = NATIVE_SOL.decimals;
 
-    return Web3Pure.fromWei(fee, decimals).toNumber();
+    return Web3Pure.fromWei(fee, decimals);
   }
 
   public async isPaused(): Promise<boolean> {
@@ -72,5 +75,12 @@ export class SolanaContractData extends ContractData {
     );
     const bridgeData = BRIDGE_CONFIG.decode(data) as BridgeConfigData;
     return bridgeData?.is_paused || false;
+  }
+
+  public getSecondPath(instantTrade: InstantTrade): string[] {
+    if (!instantTrade) {
+      return [SolanaWeb3Public.addressToBytes32(this.transitToken.address)];
+    }
+    return instantTrade.path.map(token => SolanaWeb3Public.addressToBytes32(token.address));
   }
 }

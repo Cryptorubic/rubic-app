@@ -14,7 +14,7 @@ import { CrossChainTradeInfo } from '@features/cross-chain-routing/services/cros
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
-import { tradesProviders } from '@shared/constants/common/trades-providers';
+import { TRADES_PROVIDERS } from '@shared/constants/common/trades-providers';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 
 @Component({
@@ -60,11 +60,11 @@ export class CrossChainSwapInfoComponent implements OnInit {
   public toPath: string[] | null;
 
   public get fromProviderImg(): string {
-    return tradesProviders[this.fromProvider].image;
+    return TRADES_PROVIDERS[this.fromProvider].image;
   }
 
   public get toProviderImg(): string {
-    return tradesProviders[this.toProvider].image;
+    return TRADES_PROVIDERS[this.toProvider].image;
   }
 
   public get fromProviderLabel(): string {

@@ -11,6 +11,8 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
+import BigNumber from 'bignumber.js';
 
 export class EthLikeContractData extends ContractData {
   private readonly blockchainAdapter: EthLikeWeb3Public;
@@ -18,7 +20,7 @@ export class EthLikeContractData extends ContractData {
   constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
-    public readonly numOfBlockchain: number,
+    public readonly numOfBlockchain: BlockchainNumber,
     publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
     super(blockchain, providersData, numOfBlockchain);
@@ -54,7 +56,7 @@ export class EthLikeContractData extends ContractData {
     );
   }
 
-  public async blockchainCryptoFee(toBlockchainInContract: number): Promise<number> {
+  public async blockchainCryptoFee(toBlockchainInContract: number): Promise<BigNumber> {
     const fee = await this.blockchainAdapter.callContractMethod(
       this.address,
       crossChainContractAbi,
@@ -64,7 +66,7 @@ export class EthLikeContractData extends ContractData {
       }
     );
 
-    return Web3Pure.fromWei(fee).toNumber();
+    return Web3Pure.fromWei(fee);
   }
 
   public isPaused(): Promise<boolean> {
@@ -99,8 +101,8 @@ export class EthLikeContractData extends ContractData {
     const firstPath = this.getFirstPath(trade.fromProviderIndex, trade.fromTrade);
 
     const secondPath = toContract.getSecondPath(
-      trade.toProviderIndex,
       trade.toTrade,
+      trade.toProviderIndex,
       trade.fromBlockchain
     );
 
@@ -114,10 +116,17 @@ export class EthLikeContractData extends ContractData {
     const tokenOutAmountMin = ContractExecutorFacadeService.calculateTokenOutAmountMin(trade);
     const tokenOutAmountMinAbsolute = Web3Pure.toWei(tokenOutAmountMin, trade.tokenOut.decimals);
 
-    const toWalletAddressBytes32 =
-      trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA
-        ? SolanaWeb3Public.addressToBytes32(toWalletAddress)
-        : EthLikeWeb3Public.addressToBytes32(toWalletAddress);
+    let toWalletAddressBytes32: string;
+    const { toBlockchain } = trade;
+    if (toBlockchain === BLOCKCHAIN_NAME.NEAR) {
+      toWalletAddressBytes32 = EthLikeWeb3Public.addressToBytes32(
+        '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+      );
+    } else if (toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      toWalletAddressBytes32 = SolanaWeb3Public.addressToBytes32(toWalletAddress);
+    } else {
+      toWalletAddressBytes32 = EthLikeWeb3Public.addressToBytes32(toWalletAddress);
+    }
 
     const swapToUserMethodSignature = toContract.getSwapToUserMethodName(
       trade.toProviderIndex,

@@ -11,7 +11,6 @@ import { UniSwapV3QuoterController } from '@features/instant-trade/services/inst
 import { UniswapV3InstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-instant-trade';
 import { AlgebraQuoterController } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/utils/quoter-controller/algebra-quoter-controller';
 import { AlgebraService } from '@features/instant-trade/services/instant-trade-service/providers/polygon/algebra-service/algebra.service';
-import { compareAddresses } from '@shared/utils/utils';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
@@ -21,6 +20,9 @@ import { CommonUniswapV3AlgebraService } from '@features/instant-trade/services/
 import { CommonUniswapV3Service } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/common-uniswap-v3.service';
 import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
 import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
+import { compareAddresses } from '@shared/utils/utils';
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
+import BigNumber from 'bignumber.js';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
   SWAP_TOKENS = 'swapTokensToOtherBlockchain',
@@ -46,7 +48,7 @@ export abstract class ContractData {
   protected constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
-    public readonly numOfBlockchain: number
+    public readonly numOfBlockchain: BlockchainNumber
   ) {}
 
   public abstract minTokenAmount(): Promise<string>;
@@ -55,7 +57,7 @@ export abstract class ContractData {
 
   public abstract feeAmountOfBlockchain(): Promise<string>;
 
-  public abstract blockchainCryptoFee(toBlockchainInContract: number): Promise<number>;
+  public abstract blockchainCryptoFee(toBlockchainInContract: number): Promise<BigNumber>;
 
   public abstract isPaused(): Promise<boolean>;
 
@@ -158,9 +160,9 @@ export abstract class ContractData {
    * Must be called on target contract.
    */
   public getSecondPath(
-    providerIndex: number,
     instantTrade: InstantTrade,
-    fromBlockchain: BLOCKCHAIN_NAME
+    providerIndex?: number,
+    fromBlockchain?: BLOCKCHAIN_NAME
   ): string[] {
     const toBlockchainAdapter =
       this.blockchain === BLOCKCHAIN_NAME.SOLANA ? SolanaWeb3Public : EthLikeWeb3Public;

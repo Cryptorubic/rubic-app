@@ -77,6 +77,7 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요.",
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
+    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "거래 불가",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
@@ -656,7 +657,7 @@
       "link": "더 알아보기!"
     },
     "external": {
-      "text": "Aurora이 이제 Rubic에서 생중계됩니다! 온체인 및 멀티체인 스왑을 지금 완료하십시오!",
+      "text": "프로토콜 수수료가 0%인 모든 토큰을 교환하십시오. 지금 거래하세요!",
       "link": ""
     }
   },

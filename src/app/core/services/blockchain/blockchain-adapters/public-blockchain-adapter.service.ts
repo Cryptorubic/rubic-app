@@ -12,6 +12,8 @@ import networks from '@shared/constants/blockchain/networks';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { Connection } from '@solana/web3.js';
+import { NearWeb3Public } from '@core/services/blockchain/blockchain-adapters/near/near-web3-public';
+import { NEAR_MAINNET_CONFIG } from '@core/services/blockchain/blockchain-adapters/near/near-config';
 
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -70,6 +72,8 @@ export class PublicBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 
+  public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3Public = null;
+
   constructor(
     private useTestingModeService: UseTestingModeService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -93,12 +97,16 @@ export class PublicBlockchainAdapterService {
       api: { url: 'https://api.rpcpool.com', weight: 10 },
       solanaApi: { url: 'https://solana-api.projectserum.com', weight: 10 },
       raydium: { url: 'https://raydium.rpcpool.com', weight: 50 },
-      apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 10 },
+      apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 1 },
       devnet: { url: 'https://api.devnet.solana.com', weight: 0 }
     };
-    const solanaConnection = new Connection(solanaRpc.solanaApi.url);
+    const solanaConnection = new Connection(solanaRpc.apiBeta.url);
     this.walletConnectorService.solanaWeb3Connection = solanaConnection;
     this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(solanaConnection);
+
+    this[BLOCKCHAIN_NAME.NEAR] = new NearWeb3Public(NEAR_MAINNET_CONFIG, connection => {
+      this.walletConnectorService.nearConnection = connection;
+    });
 
     this.checkAllRpcProviders();
 

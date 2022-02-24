@@ -4,5 +4,6 @@ export enum WALLET_NAME {
   WALLET_CONNECT = 'walletconnect',
   TRUST_WALLET = 'trustwallet',
   PHANTOM = 'phantom',
-  SOLFLARE = 'solflare'
+  SOLFLARE = 'solflare',
+  NEAR = 'nearwallet'
 }

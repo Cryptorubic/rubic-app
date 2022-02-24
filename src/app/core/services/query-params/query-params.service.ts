@@ -20,11 +20,32 @@ import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-token
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { AdditionalTokens, QueryParams } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
+import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 
 interface QuerySlippage {
   slippageIt: number | null;
   slippageCcr: number | null;
 }
+
+type NearQueryParams =
+  | {
+      hash: string;
+      toAmount: string;
+      walletAddress: string;
+      type: NearTransactionType;
+    }
+  | {
+      errorCode: string;
+      errorMessage: string;
+    }
+  | {
+      accountId: string;
+      publicKey: string;
+      allKeys: string;
+    };
 
 const DEFAULT_PARAMETERS = {
   swap: {
@@ -64,6 +85,12 @@ export class QueryParamsService {
 
   public tokensSelectionDisabled$ = this._tokensSelectionDisabled$.asObservable();
 
+  private readonly _nearQueryParams$ = new BehaviorSubject<NearQueryParams>(null);
+
+  public readonly nearQueryParams$ = this._nearQueryParams$.asObservable();
+
+  public readonly nearQueryParams = this._nearQueryParams$.value;
+
   private readonly _slippage$ = new BehaviorSubject<QuerySlippage>(null);
 
   public slippage = this._slippage$.getValue();
@@ -84,7 +111,9 @@ export class QueryParamsService {
     private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly authService: AuthService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -107,6 +136,7 @@ export class QueryParamsService {
       const hasParams = Object.keys(queryParams).length !== 0;
       if (hasParams && route === '') {
         this.initiateTradesParams(queryParams);
+        this.setNearParams(queryParams);
       }
     }
   }
@@ -424,12 +454,57 @@ export class QueryParamsService {
     }
   }
 
+  /**
+   * Sets specific query params after near transaction or login.
+   * @param queryParams Query params with specific for near fields.
+   */
+  private async setNearParams(queryParams: QueryParams): Promise<void> {
+    const { nearLogin, transactionHashes = undefined, errorCode = undefined } = queryParams;
+    if (nearLogin === 'true') {
+      if (!queryParams?.all_keys || !queryParams.account_id) {
+        return;
+      }
+      this._nearQueryParams$.next({
+        accountId: queryParams?.account_id,
+        publicKey: queryParams?.public_key,
+        allKeys: queryParams?.all_keys
+      });
+      await this.walletConnectorService.connectProvider(WALLET_NAME.NEAR);
+      this.walletConnectorService.setNearPublicKey(queryParams.all_keys);
+      setTimeout(async () => {
+        await this.authService.serverlessSignIn();
+        this.clearNearParams();
+      }, 500);
+    } else if (transactionHashes) {
+      if (!queryParams.toAmount || !queryParams.walletAddress) {
+        return;
+      }
+      const hash = transactionHashes.split(',').pop();
+      this._nearQueryParams$.next({
+        type: queryParams.swap_type as NearTransactionType,
+        toAmount: queryParams.toAmount,
+        hash,
+        walletAddress: queryParams.walletAddress
+      });
+      this.clearNearParams();
+    } else if (errorCode) {
+      if (!queryParams.errorMessage || !queryParams.walletAddress) {
+        return;
+      }
+      this._nearQueryParams$.next({
+        errorMessage: queryParams.errorMessage,
+        errorCode: queryParams.errorCode
+      });
+      this.clearNearParams();
+    }
+  }
+
   private setLanguage(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
 
-    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh'];
+    const supportedLanguages = ['en', 'es', 'ko', 'ru', 'zh', 'tr'];
     const language = supportedLanguages.includes(queryParams.language)
       ? queryParams.language
       : 'en';
@@ -456,5 +531,24 @@ export class QueryParamsService {
     image.style.background = 'rgb(255, 255, 255)';
     image.style.background = stringToTest;
     return image.style.background !== 'rgb(255, 255, 255)';
+  }
+
+  /**
+   * Clears all near query params.
+   */
+  private clearNearParams(): void {
+    this.setQueryParams({
+      errorCode: null,
+      errorMessage: null,
+      toAmount: null,
+      transactionHashes: null,
+      walletAddress: null,
+      swap_type: null,
+      nearLogin: null,
+      account_id: null,
+      all_keys: null,
+      public_key: null
+    });
+    this.navigate();
   }
 }
