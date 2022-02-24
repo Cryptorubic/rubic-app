@@ -76,6 +76,7 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "Упс, что-то пошло не так, пожалуйста, попробуйте перезагрузить страницу. Обратитесь в нашу службу поддержки, если проблема не исправилась после перезагрузки.",
     "rubicOptimisation": "Недостаточная ликвидность для этой сделки. Попробуйте отключить Rubic оптимизацию.",
+    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "Торговля недоступна",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
@@ -561,6 +562,11 @@
       "text": "Пожалуйста, выберите исходную сеть для обменов токенов. Подключив кошелек Coinbase, вы не сможете изменить сеть в текущей сессии. Чтобы изменить сеть после подключения кошелька Coinbase, выйдите из своей учетной записи и подключитесь, выбрав другую сеть или используйте другой кошелек."
     },
     "successTxModal": {
+      "see": "See ",
+      "transactionDetailsLink":"transaction details",
+      "itWillAppearsIn": ". It will appears in ",
+      "myTradesLink":"My trades",
+      "pageSoon": " page soon.",
       "title": "Транзакция успешко отправлена!",
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
       "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",

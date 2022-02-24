@@ -78,7 +78,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   private setupLanguage(): void {
-    const supportedLanguages = ['en', 'ko', 'ru', 'zh', 'es'];
+    const supportedLanguages = ['en', 'ko', 'ru', 'zh', 'es', 'tr'];
     let userRegionLanguage = navigator.language?.split('-')[0];
     userRegionLanguage = supportedLanguages.includes(userRegionLanguage)
       ? userRegionLanguage
