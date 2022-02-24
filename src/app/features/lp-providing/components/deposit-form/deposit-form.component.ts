@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
+  filter,
   finalize,
   map,
   startWith,
@@ -16,6 +17,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { LiquidityPeriod } from '../../models/lp-period.enum';
 import { Router } from '@angular/router';
 import { LpProvidingNotificationsService } from '../../services/lp-providing-notifications.service';
+import { LpProvidingModalsService } from '../../services/lp-providing-modals.service';
+import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 enum LiquidityPeriodInMonth {
   SHORT = '1m',
@@ -81,7 +85,7 @@ export class DepositFormComponent implements OnInit {
     takeUntil(this.destroy$)
   );
 
-  private readonly _liquidityPeriod$ = this.liquidityPeriodCtrl.valueChanges.pipe(
+  public readonly liquidityPeriod$ = this.liquidityPeriodCtrl.valueChanges.pipe(
     startWith(this.liquidityPeriodCtrl.value),
     takeUntil(this.destroy$)
   );
@@ -90,23 +94,27 @@ export class DepositFormComponent implements OnInit {
     private readonly service: LpProvidingService,
     private readonly notificationService: LpProvidingNotificationsService,
     private readonly router: Router,
-    private readonly destroy$: TuiDestroyService
+    private readonly lpProvidingModalService: LpProvidingModalsService,
+    private readonly destroy$: TuiDestroyService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly auth: AuthService
   ) {}
 
   ngOnInit(): void {
     this.service.userAddress$
       .pipe(
+        filter(user => Boolean(user?.address)),
         switchMap(() => {
           return forkJoin([
             this.service.getAndUpdatePoolTokensBalances(),
             this.service.getNeedTokensApprove()
           ]);
-        }),
-        takeUntil(this.destroy$)
+        })
       )
       .subscribe();
 
-    this._liquidityPeriod$
+    this.liquidityPeriod$
       .pipe(withLatestFrom(this.usdcAmount$))
       .subscribe(([liquidityPeriod, usdcAmount]) => {
         const rate = this.service.getRate(liquidityPeriod);
@@ -115,7 +123,7 @@ export class DepositFormComponent implements OnInit {
       });
 
     this.brbcAmount$
-      .pipe(withLatestFrom(this._liquidityPeriod$))
+      .pipe(withLatestFrom(this.liquidityPeriod$))
       .subscribe(([brbcAmount, liquidityPeriod]) => {
         const rate = this.service.getRate(liquidityPeriod);
         const usdcAmount = brbcAmount.multipliedBy(1 / rate).toFixed(2);
@@ -125,7 +133,7 @@ export class DepositFormComponent implements OnInit {
       });
 
     this.usdcAmount$
-      .pipe(withLatestFrom(this._liquidityPeriod$))
+      .pipe(withLatestFrom(this.liquidityPeriod$))
       .subscribe(([usdcAmount, liquidityPeriod]) => {
         if (!usdcAmount.isFinite()) {
           this.brbcAmountCtrl.setValue('', { emitEvent: false });
@@ -160,7 +168,10 @@ export class DepositFormComponent implements OnInit {
       this.notificationService.showApproveInProgressNotification();
     this.service
       .approvePoolToken(token)
-      .pipe(finalize(() => this.buttonLoading$.next(false)))
+      .pipe(
+        switchMap(() => this.service.getNeedTokensApprove()),
+        finalize(() => this.buttonLoading$.next(false))
+      )
       .subscribe(() => {
         approveInProgressNotification$.unsubscribe();
         this.notificationService.showSuccessApproveNotification();

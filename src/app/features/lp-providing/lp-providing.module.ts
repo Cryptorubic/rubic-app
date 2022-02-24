@@ -17,6 +17,8 @@ import { LpStepsComponent } from './components/lp-steps/lp-steps.component';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { LpProvidingNotificationsService } from './services/lp-providing-notifications.service';
 import { LpProvidingModalsService } from './services/lp-providing-modals.service';
+import { StakeModalComponent } from './components/stake-modal/stake-modal.component';
+import { WithdrawModalComponent } from './components/withdraw-modal/withdraw-modal.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { LpProvidingModalsService } from './services/lp-providing-modals.service
     LpProgressComponent,
     LpInfoComponent,
     LpStepsComponent,
-    DepositsComponent
+    DepositsComponent,
+    StakeModalComponent,
+    WithdrawModalComponent
   ],
   imports: [
     CommonModule,

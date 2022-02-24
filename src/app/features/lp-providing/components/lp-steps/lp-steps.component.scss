@@ -61,4 +61,10 @@
       text-align: center;
     }
   }
+
+  > app-rubic-button {
+    display: block;
+    max-width: 480px;
+    margin: 0 auto;
+  }
 }

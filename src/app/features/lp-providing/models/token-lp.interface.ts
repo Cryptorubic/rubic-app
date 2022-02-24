@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 
 export interface TokenLp {
-  BRBCAmount: number;
-  USDCAmount: number;
-  deadline: number;
+  BRBCAmount: string;
+  USDCAmount: string;
+  deadline: string;
   isStaked: boolean;
-  lastRewardGrowth: number;
-  tokenId: number;
+  lastRewardGrowth: string;
+  tokenId: string;
   startTime: string;
 }
 
@@ -15,10 +15,10 @@ export interface TokenLpParsed {
   USDCAmount: BigNumber;
   collectedRewards: BigNumber;
   rewardsToCollect: BigNumber;
-  deadline: number;
+  deadline: string;
   isStaked: boolean;
-  lastRewardGrowth: number;
-  tokenId: number;
+  lastRewardGrowth: string;
+  tokenId: string;
   start: Date;
   period: number;
 }

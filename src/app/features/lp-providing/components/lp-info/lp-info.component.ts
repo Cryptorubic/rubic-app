@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 import { LpProvidingService } from '../../services/lp-providing.service';
 
 @Component({
@@ -18,7 +19,7 @@ export class LpInfoComponent implements OnInit {
 
   public readonly apr$ = this.service.apr$;
 
-  public readonly loading$ = this.service.infoLoading$;
+  public readonly infoLoading$ = this.service.infoLoading$;
 
   constructor(
     private readonly service: LpProvidingService,
@@ -26,8 +27,11 @@ export class LpInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.service.getLpProvidingInfo().subscribe(() => {
-      this.loading$.next(false);
-    });
+    this.service
+      .getLpProvidingInfo()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.service.setInfoLoading(false);
+      });
   }
 }

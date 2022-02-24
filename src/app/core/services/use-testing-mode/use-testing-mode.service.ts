@@ -104,8 +104,6 @@ export class UseTestingModeService {
     if (!this.isTestingMode.getValue()) {
       this.isTestingMode.next(true);
     }
-    this.zone.run(() => {
-      setTimeout(() => this.appRef.tick(), 100);
-    });
+    this.appRef.tick();
   }
 }

@@ -69,6 +69,7 @@
 
   &__symbol-amount {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 14px;
   }
@@ -155,6 +156,19 @@
     justify-content: space-between;
     margin-bottom: 29px;
 
+    &-days {
+      margin-left: 12px;
+      padding: 9px 14px;
+
+      color: #fff;
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 20px;
+
+      background: #202622;
+      border-radius: 100px;
+    }
+
     &-text {
       font-weight: 500;
       font-size: 24px;
@@ -179,10 +193,12 @@
           font-weight: 500;
           font-size: 18px;
           line-height: 20px;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
 
-          background: #202622;
+          background: transparent;
           border: 1px solid transparent;
-          border-radius: 10px;
+          border-radius: 100px;
           cursor: pointer;
 
           &_selected {

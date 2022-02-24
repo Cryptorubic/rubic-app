@@ -16,6 +16,7 @@ import { Connection } from '@solana/web3.js';
 export const WEB3_SUPPORTED_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+  BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET,
   BLOCKCHAIN_NAME.POLYGON,
   BLOCKCHAIN_NAME.HARMONY,
   BLOCKCHAIN_NAME.AVALANCHE,
@@ -55,9 +56,9 @@ export class PublicBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.XDAI]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: EthLikeWeb3Public = null;
+  public [BLOCKCHAIN_NAME.ETHEREUM_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: EthLikeWeb3Public = null;
+  public [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: EthLikeWeb3Public = null;
 
   public readonly [BLOCKCHAIN_NAME.POLYGON_TESTNET]: EthLikeWeb3Public = null;
 

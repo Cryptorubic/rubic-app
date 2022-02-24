@@ -7,8 +7,16 @@ import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wa
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, from, Observable, of } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, forkJoin, from, Observable, Subject } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  take,
+  tap
+} from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { LP_PROVIDING_CONTRACT_ABI } from '../constants/LP_PROVIDING_CONTRACT_ABI';
 import { POOL_TOKENS } from '../constants/POOL_TOKENS';
@@ -18,11 +26,12 @@ import { TransactionReceipt } from 'web3-eth';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { TokenLp, TokenLpParsed } from '../models/token-lp.interface';
 import { StakingInfo } from '../models/staking-info.interface';
+import { LpRateEnum } from '../models/lp-rate.enum';
 
 interface DepositsResult {
-  '0': Array<TokenLp & { [index: number]: boolean | number | string }>;
-  '1': Array<string>;
-  '2': Array<string>;
+  collectedRewards: Array<string>;
+  parsedArrayOfTokens: Array<TokenLp>;
+  rewardsToCollect: Array<string>;
 }
 
 @Injectable()
@@ -41,13 +50,15 @@ export class LpProvidingService {
 
   private readonly usdcAddress = POOL_TOKENS[1].address;
 
-  public readonly userAddress$ = this.authService.getCurrentUser().pipe(distinctUntilChanged());
+  public readonly userAddress$ = this.authService.getCurrentUser().pipe(
+    distinctUntilChanged((x, y) => {
+      return x?.address === y?.address;
+    })
+  );
 
   public readonly needLogin$ = this.authService
     .getCurrentUser()
     .pipe(map(user => !Boolean(user?.address)));
-
-  //----
 
   private _usdcBalance$ = new BehaviorSubject<BigNumber>(undefined);
 
@@ -57,35 +68,57 @@ export class LpProvidingService {
 
   public brbcBalance$ = this._brbcBalance$.asObservable();
 
-  //----
+  private readonly _infoLoading$ = new BehaviorSubject<boolean>(true);
 
-  public infoLoading$ = new BehaviorSubject<boolean>(true);
+  public readonly infoLoading$ = this._infoLoading$.asObservable();
 
-  public progressLoading$ = new BehaviorSubject<boolean>(true);
+  private readonly _progressLoading$ = new BehaviorSubject<boolean>(true);
 
-  public depositsLoading$ = new BehaviorSubject<boolean>(false);
+  public readonly progressLoading$ = this._progressLoading$.asObservable();
+
+  private readonly _depositsLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly depositsLoading$ = this._depositsLoading$.asObservable();
 
   private readonly _deposits$ = new BehaviorSubject<TokenLpParsed[]>(undefined);
 
   public readonly deposits$ = this._deposits$.asObservable();
 
-  public readonly totalCollectedAmount$ = new BehaviorSubject<BigNumber>(undefined);
+  private readonly _totalCollectedAmount$ = new BehaviorSubject<BigNumber>(undefined);
 
-  public readonly amountToCollect$ = new BehaviorSubject<BigNumber>(undefined);
+  public readonly totalCollectedAmount$ = this._totalCollectedAmount$.asObservable();
 
-  public readonly totalStaked$ = new BehaviorSubject<number>(undefined);
+  private readonly _amountToCollect$ = new BehaviorSubject<BigNumber>(undefined);
 
-  public readonly userTotalStaked$ = new BehaviorSubject<number>(undefined);
+  public readonly amountToCollect$ = this._amountToCollect$.asObservable();
 
-  public readonly apr$ = new BehaviorSubject<number>(undefined);
+  private readonly _totalStaked$ = new BehaviorSubject<number>(0);
 
-  public readonly balance$ = new BehaviorSubject<number>(0);
+  public readonly totalStaked$ = this._totalStaked$.asObservable();
 
-  //----
+  private readonly _userTotalStaked$ = new BehaviorSubject<number>(0);
 
-  public readonly needBrbcApprove$ = new BehaviorSubject<boolean>(true);
+  public readonly userTotalStaked$ = this._userTotalStaked$.asObservable();
 
-  public readonly needUsdcApprove$ = new BehaviorSubject<boolean>(true);
+  private readonly _apr$ = new BehaviorSubject<number>(undefined);
+
+  public readonly apr$ = this._apr$.asObservable();
+
+  private readonly _balance$ = new BehaviorSubject<number>(0);
+
+  public readonly balance$ = this._balance$.asObservable();
+
+  public readonly _brbcAllowance$ = new Subject<BigNumber>();
+
+  public readonly needBrbcApprove$ = this._brbcAllowance$
+    .asObservable()
+    .pipe(map(allowance => allowance.lt(Web3Pure.toWei(this.maxEnterAmount))));
+
+  public readonly _usdcAllowance$ = new Subject<BigNumber>();
+
+  public readonly needUsdcApprove$ = this._usdcAllowance$
+    .asObservable()
+    .pipe(map(allowance => allowance.lt(Web3Pure.toWei(this.maxEnterAmount))));
 
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
@@ -96,65 +129,68 @@ export class LpProvidingService {
     private readonly errorService: ErrorsService
   ) {}
 
-  public getLpProvidingInfo(): Observable<(number | BigNumber)[] | number> {
+  public getLpProvidingInfo(): Observable<(number | BigNumber)[] | string> {
     return this.userAddress$.pipe(
-      tap(() => this.infoLoading$.next(true)),
+      tap(() => this.setInfoLoading(true)),
       switchMap(user => {
         if (user?.address) {
-          return combineLatest([this.totalStaked$, this.userTotalStaked$]).pipe(
-            switchMap(([totalStaked, userTotalStaked]) => {
-              return from(
-                this.web3PublicService[this.blockchain].callContractMethod<StakingInfo>(
-                  this.lpProvidingContract,
-                  LP_PROVIDING_CONTRACT_ABI,
-                  'stakingInfoParsed',
-                  { methodArguments: [user.address], from: user.address }
-                )
-              ).pipe(
-                map(result => {
-                  const { amountToCollectTotal, amountCollectedTotal, aprInfo } = result;
-                  return [
-                    userTotalStaked / totalStaked,
-                    Web3Pure.fromWei(amountToCollectTotal),
-                    Web3Pure.fromWei(amountCollectedTotal),
-                    this.parseApr(aprInfo)
-                  ];
-                })
-              );
+          return from(
+            this.web3PublicService[this.blockchain].callContractMethod<StakingInfo>(
+              this.lpProvidingContract,
+              LP_PROVIDING_CONTRACT_ABI,
+              'stakingInfoParsed',
+              { methodArguments: [user.address], from: user.address }
+            )
+          ).pipe(
+            catchError((error: unknown) => {
+              this.errorService.catchAnyError(error as Error);
+              return EMPTY;
             }),
-            tap(([balance, amountToCollect, amountCollectedTotal, apr]) => {
-              this.balance$.next(balance as number);
-              this.amountToCollect$.next(amountToCollect as BigNumber);
-              this.totalCollectedAmount$.next(amountCollectedTotal as BigNumber);
-              this.apr$.next(apr as number);
+            map(result => {
+              const { amountToCollectTotal, amountCollectedTotal, aprInfo } = result;
+              return [
+                Web3Pure.fromWei(amountToCollectTotal),
+                Web3Pure.fromWei(amountCollectedTotal),
+                this.parseApr(aprInfo)
+              ];
+            }),
+            tap(([amountToCollect, amountCollectedTotal, apr]) => {
+              this._amountToCollect$.next(amountToCollect as BigNumber);
+              this._totalCollectedAmount$.next(amountCollectedTotal as BigNumber);
+              this._apr$.next(apr as number);
             })
           );
         } else {
-          return this.getApr();
+          return this.getApr().pipe(
+            tap(() => {
+              if (user?.address === null) {
+                this._balance$.next(0);
+              }
+            })
+          );
         }
       })
     );
   }
 
-  public getApr(): Observable<number> {
+  public getApr(): Observable<string> {
     return from(
       this.web3PublicService[this.blockchain].callContractMethod<string>(
         this.lpProvidingContract,
         LP_PROVIDING_CONTRACT_ABI,
         'apr'
       )
-    ).pipe(
-      map(apr => {
-        return this.parseApr(apr);
-      }),
-      tap(apr => this.apr$.next(apr))
-    );
+    ).pipe(tap(apr => this._apr$.next(this.parseApr(apr))));
   }
 
-  public getLpProvidingProgress(): Observable<BigNumber[]> {
+  public setInfoLoading(value: boolean): void {
+    this._infoLoading$.next(value);
+  }
+
+  public getLpProvidingProgress(): Observable<BigNumber[] | BigNumber> {
     return this.userAddress$.pipe(
+      tap(() => this.setProgressLoading(true)),
       switchMap(user => {
-        this.progressLoading$.next(true);
         if (user?.address) {
           return from(
             this.web3PublicService[this.blockchain].callContractMethod<BigNumber[]>(
@@ -171,14 +207,40 @@ export class LpProvidingService {
             })
           );
         } else {
-          return of([new BigNumber(1), new BigNumber(1)]);
+          return this.getTotalStaked();
         }
       }),
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as Error);
+        return EMPTY;
+      }),
       tap(data => {
-        const [usersTotalStaked, totalStaked] = data;
-        this.totalStaked$.next(Web3Pure.fromWei(totalStaked).toNumber());
-        this.userTotalStaked$.next(Web3Pure.fromWei(usersTotalStaked).toNumber());
+        if (Array.isArray(data)) {
+          const [usersTotalStaked, totalStaked] = data;
+          const usersTotalStakedInTokens = Web3Pure.fromWei(usersTotalStaked).toNumber();
+          const totalStakedInTokens = Web3Pure.fromWei(totalStaked).toNumber();
+
+          this._totalStaked$.next(totalStakedInTokens);
+          this._userTotalStaked$.next(usersTotalStakedInTokens);
+          this._balance$.next(usersTotalStakedInTokens / totalStakedInTokens);
+        } else {
+          this._totalStaked$.next(Web3Pure.fromWei(data).toNumber());
+        }
       })
+    );
+  }
+
+  public setProgressLoading(value: boolean): void {
+    this._progressLoading$.next(value);
+  }
+
+  public getTotalStaked(): Observable<BigNumber> {
+    return from(
+      this.web3PublicService[this.blockchain].callContractMethod<BigNumber>(
+        this.lpProvidingContract,
+        LP_PROVIDING_CONTRACT_ABI,
+        'totalPoolStakedUSDC'
+      )
     );
   }
 
@@ -199,7 +261,7 @@ export class LpProvidingService {
   public getDeposits(): Observable<TokenLpParsed[]> {
     return this.userAddress$.pipe(
       filter(user => Boolean(user?.address)),
-      tap(() => this.depositsLoading$.next(true)),
+      tap(() => this.setDepositsLoading(true)),
       switchMap(user => {
         return from(
           this.web3PublicService[this.blockchain].callContractMethod<DepositsResult>(
@@ -209,14 +271,22 @@ export class LpProvidingService {
             { methodArguments: [user.address], from: user.address }
           )
         ).pipe(
+          catchError((error: unknown) => {
+            this.errorService.catchAnyError(error as Error);
+            return EMPTY;
+          }),
           map(deposits => this.parseDeposits(deposits)),
           tap(deposits => {
+            console.log(deposits);
             this._deposits$.next(deposits);
-            this.depositsLoading$.next(false);
           })
         );
       })
     );
+  }
+
+  public setDepositsLoading(value: boolean): void {
+    this._depositsLoading$.next(value);
   }
 
   public getNeedTokensApprove(): Observable<BigNumber[]> {
@@ -237,8 +307,8 @@ export class LpProvidingService {
       )
     ]).pipe(
       tap(([usdcAllowance, brbcAllowance]) => {
-        this.needBrbcApprove$.next(brbcAllowance.lt(Web3Pure.toWei(this.maxEnterAmount)));
-        this.needUsdcApprove$.next(usdcAllowance.lt(Web3Pure.toWei(this.maxEnterAmount)));
+        this._usdcAllowance$.next(usdcAllowance);
+        this._brbcAllowance$.next(brbcAllowance);
       })
     );
   }
@@ -262,27 +332,37 @@ export class LpProvidingService {
     );
   }
 
-  public requestWithdraw(nftId: number): void {
-    this.web3PrivateService[this.blockchain].tryExecuteContractMethod(
-      this.lpProvidingContract,
-      LP_PROVIDING_CONTRACT_ABI,
-      'requestWithdraw',
-      [nftId]
-    );
-  }
+  public requestWithdraw(tokenId: string): Observable<unknown> {
+    return from(
+      this.web3PrivateService[this.blockchain].executeContractMethod(
+        this.lpProvidingContract,
+        LP_PROVIDING_CONTRACT_ABI,
+        'requestWithdraw',
+        [tokenId]
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as Error);
+        return EMPTY;
+      }),
+      tap(() => {
+        const deposits = this._deposits$.getValue();
+        const updatedDeposits = deposits.map(deposit => {
+          if (deposit.tokenId === tokenId) {
+            return { ...deposit, isStaked: false };
+          } else {
+            return deposit;
+          }
+        });
 
-  public withdraw(nftId: number): void {
-    this.web3PrivateService[this.blockchain].tryExecuteContractMethod(
-      this.lpProvidingContract,
-      LP_PROVIDING_CONTRACT_ABI,
-      'claimRewards',
-      [nftId]
+        this._deposits$.next(updatedDeposits);
+      })
     );
   }
 
   public stake(amount: BigNumber, period: number): Observable<BigNumber[]> {
     return from(
-      this.web3PrivateService[this.blockchain].tryExecuteContractMethod(
+      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
         this.lpProvidingContract,
         LP_PROVIDING_CONTRACT_ABI,
         'stake',
@@ -297,13 +377,39 @@ export class LpProvidingService {
     );
   }
 
+  public collectRewards(tokenId: string): Observable<unknown> {
+    return from(
+      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
+        this.lpProvidingContract,
+        LP_PROVIDING_CONTRACT_ABI,
+        'claimRewards',
+        [tokenId]
+      )
+    ).pipe(
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as Error);
+        return EMPTY;
+      }),
+      switchMap(() => this.getDeposits()),
+      take(1)
+    );
+  }
+
   public async switchNetwork(): Promise<boolean> {
     return await this.walletConnectorService.switchChain(
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET
     );
   }
 
-  public checkAmountForErrors(amount: BigNumber, balance: BigNumber): LpError | null {
+  public checkAmountAndPeriodForErrors(
+    amount: BigNumber,
+    balance: BigNumber,
+    period: number
+  ): LpError | null {
+    if (period < LiquidityPeriod.SHORT) {
+      return LpError.INVALID_PERIOD;
+    }
+
     if (amount.gt(this.maxEnterAmount)) {
       return LpError.LIMIT_GT_MAX;
     }
@@ -325,14 +431,14 @@ export class LpProvidingService {
 
   public getRate(days: number): number {
     if (days < LiquidityPeriod.AVERAGE) {
-      return 1;
+      return LpRateEnum.SHORT;
     }
 
     if (days < LiquidityPeriod.LONG && days >= LiquidityPeriod.AVERAGE) {
-      return 0.85;
+      return LpRateEnum.AVERAGE;
     }
 
-    return 0.7;
+    return LpRateEnum.LONG;
   }
 
   public async calculateUsdPrice(value: BigNumber, token: 'brbc' | 'usdc'): Promise<BigNumber> {
@@ -353,19 +459,18 @@ export class LpProvidingService {
   }
 
   private parseDeposits(deposits: DepositsResult): TokenLpParsed[] {
-    const [tokensInfo, tokensCollectedRewards, tokensRewardsToCollect] = Object.values(deposits);
+    const { parsedArrayOfTokens, collectedRewards, rewardsToCollect } = deposits;
 
-    return tokensInfo.map((tokenInfo: TokenLp, i: string | number) => {
+    return parsedArrayOfTokens.map((tokenInfo: TokenLp, i: number) => {
       const { startTime, deadline } = tokenInfo;
       const start = new Date(Number(startTime) * 1000);
       const period = Math.floor((Number(deadline) - Number(startTime)) / (3600 * 24));
-
       return {
         ...tokenInfo,
         USDCAmount: Web3Pure.fromWei(tokenInfo.USDCAmount),
         BRBCAmount: Web3Pure.fromWei(tokenInfo.BRBCAmount),
-        collectedRewards: Web3Pure.fromWei(tokensCollectedRewards[i]),
-        rewardsToCollect: Web3Pure.fromWei(tokensRewardsToCollect[i]),
+        collectedRewards: Web3Pure.fromWei(collectedRewards[i]),
+        rewardsToCollect: Web3Pure.fromWei(rewardsToCollect[i]),
         start,
         period
       };
@@ -373,6 +478,6 @@ export class LpProvidingService {
   }
 
   private parseApr(apr: string): number {
-    return Number(apr) / Math.pow(10, 11);
+    return Number(apr) / Math.pow(10, 29);
   }
 }

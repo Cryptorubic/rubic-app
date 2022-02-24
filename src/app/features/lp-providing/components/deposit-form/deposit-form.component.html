@@ -16,18 +16,16 @@
         <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
         USDC
       </div>
-      <div class="asset__amount">
-        <input
-          type="text"
-          class="asset__amount"
-          name="usdc-amount"
-          autocomplete="off"
-          placeholder="0.0"
-          appTokenAmount
-          [decimals]="18"
-          [formControl]="usdcAmountCtrl"
-        />
-      </div>
+      <input
+        type="text"
+        class="asset__amount"
+        name="usdc-amount"
+        autocomplete="off"
+        placeholder="0.0"
+        appTokenAmount
+        [decimals]="18"
+        [formControl]="usdcAmountCtrl"
+      />
     </div>
     <div class="asset__balance-usd-price">
       <div class="asset__balance" *ngIf="usdcBalance$ | async as usdcBalance">
@@ -78,6 +76,7 @@
     <div class="lp-time__header">
       <div class="lp-time__header-text">
         {{ 'lpProviding.liquidityTime' | translate }}
+        <span class="lp-time__header-days">{{ liquidityPeriodCtrl.value }} Days</span>
       </div>
       <div class="lp-time__header-hotkeys">
         <ng-container *ngFor="let key of liquidityPeriodHotkeys">
@@ -99,8 +98,9 @@
     ></tui-slider>
   </div>
   <app-stake-button
-    [usdcAmountCtrl]="usdcAmount$"
-    [brbcAmountCtrl]="brbcAmount$"
+    [usdcAmount$]="usdcAmount$"
+    [brbcAmount$]="brbcAmount$"
+    [liquidityPeriod$]="liquidityPeriod$"
     [loading]="buttonLoading$ | async"
     (onApprove)="approveTokens($event)"
     (onStake)="stake()"

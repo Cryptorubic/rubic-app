@@ -24,7 +24,7 @@ export class DepositCardComponent {
   period: number;
 
   @Input()
-  id: number;
+  id: string;
 
   @Input()
   start: Date;
@@ -32,8 +32,14 @@ export class DepositCardComponent {
   @Input()
   status: string;
 
+  @Input()
+  collectingRewardsForToken: string;
+
+  @Input()
+  requestingWithdrawForToken: string;
+
   @Output()
-  onCollectReward = new EventEmitter<void>();
+  onCollectRewards = new EventEmitter<void>();
 
   @Output()
   onRemoveDeposit = new EventEmitter<void>();

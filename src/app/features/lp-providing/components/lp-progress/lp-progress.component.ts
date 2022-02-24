@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { takeUntil } from 'rxjs/operators';
 import { LpProvidingService } from '../../services/lp-providing.service';
 
 @Component({
   selector: 'app-lp-progress',
   templateUrl: './lp-progress.component.html',
   styleUrls: ['./lp-progress.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class LpProgressComponent implements OnInit {
   public readonly poolSize = this.service.poolSize;
@@ -20,9 +23,17 @@ export class LpProgressComponent implements OnInit {
 
   public readonly progressLoading$ = this.service.progressLoading$;
 
-  constructor(private readonly service: LpProvidingService) {}
+  constructor(
+    private readonly service: LpProvidingService,
+    private readonly destroy$: TuiDestroyService
+  ) {}
 
   public ngOnInit(): void {
-    this.service.getLpProvidingProgress().subscribe(() => this.progressLoading$.next(false));
+    this.service
+      .getLpProvidingProgress()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.service.setProgressLoading(false);
+      });
   }
 }

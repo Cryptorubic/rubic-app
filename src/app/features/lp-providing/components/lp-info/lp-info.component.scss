@@ -1,6 +1,6 @@
 @use 'src/scss/core' as *;
 
-.info {
+.info-wrapper {
   width: 100%;
   height: 100%;
   padding: 43px;
@@ -8,33 +8,37 @@
   background: #181a19;
   border-radius: 36px;
 
-  &__row {
-    display: flex;
-
-    &:first-child {
-      margin-bottom: 42px;
-    }
-
-    .info__stat:first-child {
-      margin-right: 147px;
-    }
+  tui-loader {
+    height: 100%;
   }
 
-  &__stat {
-    &-title {
-      margin-bottom: 10px;
+  .info {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    row-gap: 42px;
 
-      color: $rubic-primary;
-      font-weight: 800;
-      font-size: 18px;
-      line-height: 22px;
-    }
+    &__stat {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
-    &-data {
-      color: #fff;
-      font-weight: 800;
-      font-size: 20px;
-      line-height: 24px;
+      &-title {
+        margin-bottom: 10px;
+
+        color: $rubic-primary;
+        font-weight: 800;
+        font-size: 18px;
+        line-height: 22px;
+      }
+
+      &-data {
+        color: #fff;
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 24px;
+      }
     }
   }
 }

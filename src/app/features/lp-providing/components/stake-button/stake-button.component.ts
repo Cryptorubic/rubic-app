@@ -24,9 +24,11 @@ import { LpProvidingService } from '../../services/lp-providing.service';
   providers: [TuiDestroyService]
 })
 export class StakeButtonComponent implements OnInit {
-  @Input() usdcAmountCtrl: Observable<BigNumber>;
+  @Input() usdcAmount$: Observable<BigNumber>;
 
-  @Input() brbcAmountCtrl: Observable<BigNumber>;
+  @Input() brbcAmount$: Observable<BigNumber>;
+
+  @Input() liquidityPeriod$: Observable<number>;
 
   @Input() loading: boolean;
 
@@ -55,6 +57,8 @@ export class StakeButtonComponent implements OnInit {
     takeUntil(this.destroy$)
   );
 
+  public readonly needLogin$ = this.service.needLogin$;
+
   constructor(
     private readonly service: LpProvidingService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -62,18 +66,22 @@ export class StakeButtonComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    combineLatest([this.brbcAmountCtrl, this.service.brbcBalance$])
+    combineLatest([this.brbcAmount$, this.service.brbcBalance$, this.liquidityPeriod$])
       .pipe(
-        tap(([brbcAmount, brbcBalance]) =>
-          this.error$.next(this.service.checkAmountForErrors(brbcAmount, brbcBalance))
+        tap(([brbcAmount, brbcBalance, period]) =>
+          this.error$.next(
+            this.service.checkAmountAndPeriodForErrors(brbcAmount, brbcBalance, period)
+          )
         )
       )
       .subscribe();
 
-    combineLatest([this.usdcAmountCtrl, this.service.usdcBalance$])
+    combineLatest([this.usdcAmount$, this.service.usdcBalance$, this.liquidityPeriod$])
       .pipe(
-        tap(([usdcAmount, usdcBalance]) =>
-          this.error$.next(this.service.checkAmountForErrors(usdcAmount, usdcBalance))
+        tap(([usdcAmount, usdcBalance, period]) =>
+          this.error$.next(
+            this.service.checkAmountAndPeriodForErrors(usdcAmount, usdcBalance, period)
+          )
         )
       )
       .subscribe();

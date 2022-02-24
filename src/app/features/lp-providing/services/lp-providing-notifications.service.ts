@@ -21,14 +21,14 @@ export class LpProvidingNotificationsService {
   }
 
   public showSuccessApproveNotification(): void {
-    this.notificationsService.show(this.translate.instant('notifications.successfulStake'), {
+    this.notificationsService.show(this.translate.instant('notifications.successApprove'), {
       status: TuiNotification.Success,
       autoClose: 5000
     });
   }
 
   public showDepositInProgressNotification(): Subscription {
-    return this.notificationsService.show(this.translate.instant('notifications.successfulStake'), {
+    return this.notificationsService.show(this.translate.instant('notifications.stakeInProgress'), {
       status: TuiNotification.Info,
       autoClose: 5000
     });
@@ -41,5 +41,20 @@ export class LpProvidingNotificationsService {
     });
   }
 
-  public showRequestWithdrawNotification(): void {}
+  public showSuccessRewardsClaimNotification(): void {
+    this.notificationsService.show(this.translate.instant('notifications.successClaimRewards'), {
+      status: TuiNotification.Success,
+      autoClose: 5000
+    });
+  }
+
+  public showSuccessWithdrawRequestNotification(): void {
+    this.notificationsService.show(
+      this.translate.instant('notifications.successDepositWithdrawRequest'),
+      {
+        status: TuiNotification.Success,
+        autoClose: 5000
+      }
+    );
+  }
 }
