@@ -22,20 +22,17 @@ import {
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { TuiDialogService } from '@taiga-ui/core';
-
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { STAKING_CONTRACT_ABI } from 'src/app/features/staking/constants/xbrbc-contract-abi';
+import { STAKING_CONTRACT_ABI } from '@app/features/staking/constants/XBRBC_CONTRACT_ABI';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TransactionReceipt } from 'web3-eth';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ErrorsService } from '@core/errors/errors.service';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
-import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
@@ -46,7 +43,7 @@ import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
-import { STAKING_TOKENS } from '@features/staking/constants/staking-tokens';
+import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
@@ -204,10 +201,8 @@ export class StakingService {
     private readonly web3PrivateService: PrivateBlockchainAdapterService,
     private readonly authService: AuthService,
     private readonly stakingApiService: StakingApiService,
-    private readonly tokensApiService: TokensApiService,
     private readonly tokensService: TokensService,
     private readonly errorService: ErrorsService,
-    private readonly notificationsService: NotificationsService,
     private readonly polygonBinanceBridge: BinancePolygonRubicBridgeProviderService,
     private readonly ethereumBinanceBridge: EthereumBinanceRubicBridgeProviderService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -358,7 +353,6 @@ export class StakingService {
         return of(new BigNumber('0'));
       }),
       tap(balance => {
-        console.log(Web3Pure.fromWei(balance).toNumber());
         this._stakingTokenBalance$.next(Web3Pure.fromWei(balance));
       })
     );

@@ -7,16 +7,12 @@ import {
   Output,
   Self
 } from '@angular/core';
-import {
-  STAKE_LIMIT_MAX,
-  STAKE_LIMIT_MIN
-} from 'src/app/features/staking/constants/staking-limits';
+import { STAKE_LIMIT_MAX, STAKE_LIMIT_MIN } from '@app/features/staking/constants/STAKING_LIMITS';
 import BigNumber from 'bignumber.js';
-
-import { ErrorTypeEnum } from '../../enums/error-type.enum';
+import { ErrorType } from '../../enums/error-type.enum';
 import { StakingService } from '@features/staking/services/staking.service';
 import { BehaviorSubject, combineLatest, from, Observable, of, zip } from 'rxjs';
-import { map, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { map, pluck, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
@@ -90,6 +86,10 @@ export class StakeButtonContainerComponent implements OnInit {
     return this._needApprove$.asObservable();
   }
 
+  public readonly selectedTokenBlockchain$ = this.stakingService.selectedToken$.pipe(
+    pluck('blockchain')
+  );
+
   public readonly needChangeNetwork$ = combineLatest([
     this.stakingService.selectedToken$,
     this.walletConnectorService.networkChange$
@@ -97,13 +97,11 @@ export class StakeButtonContainerComponent implements OnInit {
     map(([selectedToken]) => selectedToken.blockchain !== this?.walletConnectorService?.networkName)
   );
 
-  private readonly _errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(
-    ErrorTypeEnum.EMPTY_AMOUNT
-  );
+  private readonly _errorType$ = new BehaviorSubject<ErrorType | null>(ErrorType.EMPTY_AMOUNT);
 
   public readonly errorType$ = this._errorType$.asObservable();
 
-  public readonly errorTypeEnum = ErrorTypeEnum;
+  public readonly errorTypeEnum = ErrorType;
 
   private readonly selectedToken$ = this.stakingService.selectedToken$;
 
@@ -163,12 +161,12 @@ export class StakeButtonContainerComponent implements OnInit {
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber, limit: BigNumber): void {
     if (!amount.isFinite()) {
-      this._errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
+      this._errorType$.next(ErrorType.EMPTY_AMOUNT);
       return;
     }
 
     if (balance.lt(amount)) {
-      this._errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
+      this._errorType$.next(ErrorType.INSUFFICIENT_BALANCE);
       return;
     }
 
@@ -182,7 +180,7 @@ export class StakeButtonContainerComponent implements OnInit {
         )
       )
     ) {
-      this._errorType$.next(ErrorTypeEnum.LIMIT);
+      this._errorType$.next(ErrorType.LIMIT);
       return;
     } else {
       this._errorType$.next(null);

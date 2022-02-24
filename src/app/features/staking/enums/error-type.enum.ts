@@ -1,4 +1,4 @@
-export enum ErrorTypeEnum {
+export enum ErrorType {
   INSUFFICIENT_BALANCE = 'INSUFFICIENT',
   EMPTY_AMOUNT = 'EMPTY_AMOUNT',
   LIMIT = 'LIMIT',

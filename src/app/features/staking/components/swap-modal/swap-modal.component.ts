@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -34,7 +34,6 @@ export class SwapModalComponent {
     >,
     private readonly router: Router,
     private readonly stakingService: StakingService,
-    private readonly dialogService: TuiDialogService,
     private readonly notificationsService: NotificationsService
   ) {
     this.isEthBlockchain = this.context.data.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
