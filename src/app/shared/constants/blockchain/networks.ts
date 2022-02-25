@@ -130,7 +130,7 @@ const networks: ReadonlyArray<Network> = [
     label: 'Moonriver',
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
     rpcLink: 'https://rpc.moonriver.moonbeam.network',
-    additionalRpcLink: '',
+    additionalRpcLink: 'https://pub.elara.patract.io/moonriver',
     imagePath: 'assets/images/icons/coins/moonriver.webp',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.MOONRIVER,
