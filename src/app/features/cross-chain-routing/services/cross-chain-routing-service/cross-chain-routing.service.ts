@@ -175,7 +175,7 @@ export class CrossChainRoutingService {
 
     const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
-    let finalTransitAmount = cryptoFee;
+    let finalTransitAmount = fromTransitTokenAmount;
 
     /**
      * @TODO Take crypto fee on contract.
