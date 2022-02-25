@@ -246,11 +246,15 @@ export class StakingService {
   }
 
   /**
-   * Enter stake with provided amount of tokens.
+   * Enter stake with provided amount of tokens as regular user or as whitelisted user.
    * @param amount Amount of tokens that user wants to stake.
-   * @return Observable<TransactionReceipt | number>
+   * @return Observable<TransactionReceipt | unknown>
    */
-  public enterStake(amount: BigNumber): Observable<TransactionReceipt | unknown> {
+  public enterStake(
+    amount: BigNumber,
+    viaWhitelist: boolean = false
+  ): Observable<TransactionReceipt | unknown> {
+    const enterStakeMethod = viaWhitelist ? 'enterWhitelist' : 'enter';
     const tokenBlockchain = this.selectedToken.blockchain;
     const needSwap =
       tokenBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET &&
@@ -264,7 +268,7 @@ export class StakingService {
         this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
           this.stakingContractAddress,
           STAKING_CONTRACT_ABI,
-          'enter',
+          enterStakeMethod,
           [amountInWei]
         )
       ).pipe(
@@ -456,7 +460,10 @@ export class StakingService {
         }
       )
     ).pipe(
-      catchError(() => EMPTY),
+      catchError((error: unknown) => {
+        this.errorService.catchAnyError(error as RubicError<ERROR_TYPE.RAW_MESSAGE>);
+        return EMPTY;
+      }),
       map(res => Web3Pure.fromWei(res))
     );
   }
@@ -510,8 +517,11 @@ export class StakingService {
    * @return Observable<[unknown, number | BigNumber, BigNumber]>
    */
   public handleAddressChange(): Observable<[unknown, number | BigNumber, BigNumber]> {
-    return this.walletConnectorService.addressChange$.pipe(
-      tap(address => (this.walletAddress = address)),
+    return combineLatest([
+      this.authService.getCurrentUser(),
+      this.walletConnectorService.addressChange$
+    ]).pipe(
+      tap(([_, address]) => (this.walletAddress = address)),
       switchMap(() => {
         return forkJoin([
           this.reloadStakingProgress(),
