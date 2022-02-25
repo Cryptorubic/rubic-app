@@ -1,6 +1,6 @@
 export enum PRICE_IMPACT_RANGE {
   LOW = 0.02,
-  MEDIUM = 4.5,
-  HIGH = 15,
+  MEDIUM = 20,
+  HIGH = 30,
   HIGH_DISABLED = 40
 }
