@@ -120,9 +120,18 @@ export class AuthService {
         throw error;
       }
     }
-    const address = walletAddress || this.cookieService.get('address');
+
+    let address = walletAddress;
+    if (!address) {
+      const cookieAddress = this.cookieService.get('address');
+      address = cookieAddress === 'null' ? null : cookieAddress;
+    }
+
     if (address) {
       this.activateProviderAndSignIn(address).subscribe();
+    } else {
+      this.currentUser$.next(null);
+      this.isAuthProcess = false;
     }
   }
 

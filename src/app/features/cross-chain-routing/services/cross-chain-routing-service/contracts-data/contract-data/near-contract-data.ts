@@ -20,6 +20,7 @@ import {
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import BigNumber from 'bignumber.js';
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 
 type NearCrossChainContract = Contract & NearCcrViewMethods;
 
@@ -35,7 +36,7 @@ export class NearContractData extends ContractData {
   constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
-    public readonly numOfBlockchain: number,
+    public readonly numOfBlockchain: BlockchainNumber,
     public readonly publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
     super(blockchain, providersData, numOfBlockchain);
@@ -76,8 +77,18 @@ export class NearContractData extends ContractData {
     return new Contract(wallet.account(), this.address, methodOptions) as NearCrossChainContract;
   }
 
-  public getSecondPath(instantTrade: InstantTrade): string[] {
+  public getSecondPath(
+    instantTrade: InstantTrade,
+    _: number,
+    fromBlockchain: BLOCKCHAIN_NAME
+  ): string[] {
     const emptyAddress = EMPTY_ADDRESS;
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      if (!instantTrade) {
+        return [emptyAddress];
+      }
+      return [emptyAddress, emptyAddress];
+    }
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(emptyAddress)];
     }

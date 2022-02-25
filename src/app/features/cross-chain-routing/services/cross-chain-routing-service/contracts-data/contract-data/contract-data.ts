@@ -21,6 +21,7 @@ import { CommonUniswapV3Service } from '@features/instant-trade/services/instant
 import { crossChainContractAbiInch } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/constants/contract-abi/cross-chain-contract-abi-inch';
 import { OneinchProviderAbstract } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/abstract-provider/oneinch-provider.abstract';
 import { compareAddresses } from '@shared/utils/utils';
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 import BigNumber from 'bignumber.js';
 
 enum TO_OTHER_BLOCKCHAIN_SWAP_METHOD {
@@ -47,7 +48,7 @@ export abstract class ContractData {
   protected constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
-    public readonly numOfBlockchain: number
+    public readonly numOfBlockchain: BlockchainNumber
   ) {}
 
   public abstract minTokenAmount(): Promise<string>;
