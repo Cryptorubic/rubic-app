@@ -31,6 +31,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { NotSupportedNetworkError } from '@core/errors/models/provider/not-supported-network';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { Token } from '@shared/models/tokens/token';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 interface WCWallets {
   [P: string]: {
@@ -121,6 +122,7 @@ export class WalletConnectorService {
     private readonly errorService: ErrorsService,
     private readonly useTestingModeService: UseTestingModeService,
     private readonly httpService: HttpService,
+    private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean
   ) {
@@ -247,7 +249,8 @@ export class WalletConnectorService {
           this.networkChangeSubject$,
           this.addressChangeSubject$,
           this.errorService,
-          this.window
+          this.window,
+          this.iframeService.isIframe
         ),
       [WALLET_NAME.METAMASK]: async () => {
         const metamaskWalletAdapter = new MetamaskWalletAdapter(

@@ -69,6 +69,8 @@ export class SolanaContractExecutorService {
     raydiumAmm: PublicKey,
     pdaDelegate: PublicKey,
     systemProgram: PublicKey,
+    wrappedSolMint: PublicKey,
+    pdaWrapped: PublicKey,
     swapParams: {
       blockchain: number;
       tokenInAmount: number;
@@ -86,8 +88,7 @@ export class SolanaContractExecutorService {
       { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
       { pubkey: splProgramId, isSigner: false, isWritable: false }
     ];
-    const optionalNonTransferAccountsAccounts = [
-      ...optionalTransferAccounts,
+    const optionalSwapAccounts = [
       { pubkey: ammId, isSigner: false, isWritable: true },
       { pubkey: ammAuthority, isSigner: false, isWritable: false },
       { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
@@ -104,6 +105,13 @@ export class SolanaContractExecutorService {
       { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
       { pubkey: raydiumAmm, isSigner: false, isWritable: false }
     ];
+    const optionalNativeAccounts: Array<AccountMeta> = [
+      { pubkey: wrappedSolMint, isSigner: false, isWritable: false },
+      { pubkey: pdaWrapped, isSigner: false, isWritable: true },
+      { pubkey: splProgramId, isSigner: false, isWritable: false },
+      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: splProgramId, isSigner: false, isWritable: false }
+    ];
     const requiredKeys: Array<AccountMeta> = [
       { pubkey: pdaConfig, isSigner: false, isWritable: false },
       { pubkey: pdaBlockchainConfig, isSigner: false, isWritable: false },
@@ -118,11 +126,11 @@ export class SolanaContractExecutorService {
 
     let keys: AccountMeta[];
     if (swapParams.transferType === TransferDataType.NATIVE) {
-      keys = [...requiredKeys];
+      keys = [...requiredKeys, ...optionalNativeAccounts, ...optionalSwapAccounts];
     } else if (swapParams.transferType === TransferDataType.TRANSFER_TOKEN) {
       keys = [...requiredKeys, ...optionalTransferAccounts];
     } else if (swapParams.transferType === TransferDataType.NON_TRANSFER_TOKEN) {
-      keys = [...requiredKeys, ...optionalNonTransferAccountsAccounts];
+      keys = [...requiredKeys, ...optionalTransferAccounts, ...optionalSwapAccounts];
     }
 
     return new TransactionInstruction({
@@ -275,6 +283,8 @@ export class SolanaContractExecutorService {
         new PublicKey(poolInfo?.programId || NATIVE_SOL.mintAddress),
         new PublicKey(PDA_DELEGATE),
         new PublicKey(SYSTEM_PROGRAM_ID),
+        new PublicKey(TOKENS.WSOL.mintAddress),
+        new PublicKey('6jVSCbM1MVZWCSepdBXY65U4uszY7rY6Lm3oEU5ZeE7q'),
         methodArguments
       )
     );
