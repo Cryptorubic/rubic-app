@@ -64,30 +64,6 @@ export const SOLANA_CCR_LAYOUT = struct([
   str('methodName')
 ]);
 
-export const INSTRUCTION_NUMBER = struct([u8('instruction')]);
-
 export const UUID = struct([bufferLayout.nu64('version'), bufferLayout.nu64('uuid')]);
 
-export const SECOND_PATH = struct([str('firstString'), str('secondString')]);
-
 export const VECTOR = struct([vec(str(), 'second_path')]);
-
-export const FIRST_CCR_DATA_LAYOUT = struct([
-  bufferLayout.nu64('blockchain'),
-  bufferLayout.nu64('token_in_amount')
-]);
-
-export const SWAP_TO_CRYPTO = struct([bool('swap_to_crypto')]);
-
-export const SECOND_CCR_DATA_LAYOUT = struct([
-  bufferLayout.nu64('exact_rbc_token_out'),
-  bufferLayout.nu64('token_out_min')
-]);
-
-export const TEST_LAYOUT = struct([
-  bufferLayout.nu64('blockchain'),
-  bufferLayout.nu64('token_in_amount'),
-  bufferLayout.nu64('exact_rbc_token_out'),
-  bufferLayout.nu64('token_out_min'),
-  bool('swap_to_crypto')
-]);
