@@ -16,6 +16,9 @@ import CustomError from '@core/errors/models/custom-error';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SignatureResult } from '@solana/web3.js';
 import { NearContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
+import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +63,8 @@ export class ContractExecutorFacadeService {
     private readonly raydiumService: RaydiumService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly apiService: CrossChainRoutingApiService,
-    private readonly contractsDataService: ContractsDataService
+    private readonly contractsDataService: ContractsDataService,
+    private readonly refFinanceService: RefFinanceService
   ) {}
 
   public async executeTrade(
@@ -92,25 +96,6 @@ export class ContractExecutorFacadeService {
         const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
         await this.handleSolanaTransaction(hash, options?.onTransactionHash, trade, isToNative);
 
-        const swapToUserMethodName = this.contracts[trade.toBlockchain].getSwapToUserMethodName(
-          trade.toProviderIndex,
-          isToNative
-        );
-        this.sendDataFromSolana(trade.fromBlockchain, hash, swapToUserMethodName);
-
-        await new Promise((resolve, reject) => {
-          this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
-            hash,
-            (signatureResult: SignatureResult) => {
-              if (!signatureResult.err) {
-                resolve(hash);
-              } else {
-                reject(signatureResult.err);
-              }
-            }
-          );
-        });
-
         return hash;
       }
 
@@ -130,17 +115,26 @@ export class ContractExecutorFacadeService {
    * @param fromBlockchain From blockchain.
    * @param transactionHash Source transaction hash.
    * @param methodName Method name to call in target network.
+   * @param secondPath Second path for trade.
+   * @param targetAddress Wallet address in target network.
+   * @param pools To trade tokens pools.
    */
   private sendDataFromSolana(
     fromBlockchain: SupportedCrossChainBlockchain,
     transactionHash: string,
-    methodName: string
+    methodName: string,
+    secondPath?: string[],
+    targetAddress?: string,
+    pools?: number[]
   ): void {
     this.apiService
       .postCrossChainDataFromSolana(
         transactionHash,
         TO_BACKEND_BLOCKCHAINS[fromBlockchain],
-        methodName
+        methodName,
+        secondPath,
+        targetAddress,
+        pools
       )
       .subscribe();
   }
@@ -158,7 +152,16 @@ export class ContractExecutorFacadeService {
         trade.toProviderIndex,
         isToNative
       );
-      this.sendDataFromSolana(trade.fromBlockchain, hash, methodName);
+      this.sendDataFromSolana(
+        trade.fromBlockchain,
+        hash,
+        methodName,
+        trade.toTrade?.path?.map(token =>
+          token.address === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : token.address
+        ),
+        this.targetAddress,
+        this.refFinanceService.refRoutes?.map(el => el.pool.id) || []
+      );
     }
 
     await new Promise((resolve, reject) => {
