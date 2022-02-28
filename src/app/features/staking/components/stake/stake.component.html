@@ -19,7 +19,7 @@
     <div class="stake__balance" *ngLet="selectedTokenBalance$ | async as tokenBalance">
       {{
         'staking.stake.balance'
-          | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount: 9:4:true }
+          | translate: { amount: tokenBalance || 0 | bigNumberFormat | shortenAmount: 9:4:true }
       }}
       <span (click)="setMaxAmount(tokenBalance)">MAX</span>
     </div>
