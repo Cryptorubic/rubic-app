@@ -337,7 +337,7 @@ export class QueryParamsService {
       : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
-            () => of(tokens.first()),
+            backendTokens => of(backendTokens.first()),
             () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
