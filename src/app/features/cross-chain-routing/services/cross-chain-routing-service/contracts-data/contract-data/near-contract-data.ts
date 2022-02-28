@@ -12,11 +12,6 @@ import {
   NearCcrViewMethods
 } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/near/near-ccr-view-methods';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
-import {
-  DEFAULT_CCR_CALL_GAS,
-  DEFAULT_NEAR_DEPOSIT_GAS,
-  DEFAULT_TOKEN_DEPOSIT_GAS
-} from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import BigNumber from 'bignumber.js';
@@ -57,11 +52,11 @@ export class NearContractData extends ContractData {
     return this._contract.get_fee_amount_of_blockchain();
   }
 
-  public async blockchainCryptoFee(): Promise<BigNumber> {
-    const nearDepositGas = Web3Pure.fromWei(DEFAULT_NEAR_DEPOSIT_GAS, 24);
-    const ccrCallGas = Web3Pure.fromWei(DEFAULT_CCR_CALL_GAS, 24);
-    const tokenRegisterGas = Web3Pure.fromWei(DEFAULT_TOKEN_DEPOSIT_GAS, 24);
-    return ccrCallGas.plus(nearDepositGas.plus(tokenRegisterGas).dividedBy(2));
+  public async blockchainCryptoFee(toBlockchainNumber: BlockchainNumber): Promise<BigNumber> {
+    const fee = await this._contract.get_blockchain_crypto_fee({
+      blockchain_id: toBlockchainNumber
+    });
+    return Web3Pure.fromWei(fee, 24);
   }
 
   public async isPaused(): Promise<boolean> {
