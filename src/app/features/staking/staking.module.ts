@@ -26,9 +26,12 @@ import { StakingStatisticsComponent } from './components/staking-statistics/stak
 import { StakingInfoComponent } from './components/staking-info/staking-info.component';
 import { StakeButtonContainerComponent } from './components/stake-button-container/stake-button-container.component';
 import { WithdrawButtonContainerComponent } from './components/withdraw-button-container/withdraw-button-container.component';
-import { StakingPageComponent } from './components/staking-page/staking-page.component';
+import { StakingRoundComponent } from './components/staking-round/staking-round.component';
 import { StakingService } from './services/staking.service';
 import { StakingApiService } from './services/staking-api.service';
+import { StakingPageComponent } from './components/staking-page/staking-page.component';
+import { RouterModule } from '@angular/router';
+import { StakingRoundResolver } from './services/staking-round.resolver';
 
 @NgModule({
   declarations: [
@@ -40,11 +43,13 @@ import { StakingApiService } from './services/staking-api.service';
     StakingStatisticsComponent,
     StakingInfoComponent,
     StakeButtonContainerComponent,
+    StakingRoundComponent,
     StakingPageComponent,
     WithdrawButtonContainerComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
     ReactiveFormsModule,
     StakingRoutingModule,
     SharedModule,
@@ -59,6 +64,6 @@ import { StakingApiService } from './services/staking-api.service';
     TuiProgressModule,
     TuiLoaderModule
   ],
-  providers: [StakingService, StakingApiService]
+  providers: [StakingService, StakingApiService, StakingRoundResolver]
 })
 export class StakingModule {}

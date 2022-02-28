@@ -5,5 +5,7 @@ export const STAKING_CONFIG_PROD = {
 
 export const STAKING_CONFIG_DEVELOP = {
   stakingContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570',
-  apiUrl: '//dev-staking.rubic.exchange/api/'
+  apiUrl: '//dev-staking.rubic.exchange/api/',
+  roundOneContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570',
+  roundTwoContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570'
 };

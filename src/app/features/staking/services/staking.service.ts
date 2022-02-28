@@ -11,6 +11,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  distinctUntilChanged,
   filter,
   finalize,
   first,
@@ -33,7 +34,6 @@ import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockc
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { BinancePolygonRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/binance-polygon-bridge-provider/binance-polygon-rubic-bridge-provider/binance-polygon-rubic-bridge-provider.service';
 import { EthereumBinanceRubicBridgeProviderService } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/ethereum-binance-bridge-provider/rubic-bridge-provider/ethereum-binance-rubic-bridge-provider.service';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { SwapModalComponent } from '@features/staking/components/swap-modal/swap-modal.component';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -45,6 +45,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class StakingService {
@@ -56,7 +57,23 @@ export class StakingService {
   /**
    * Staking contract address.
    */
-  private readonly stakingContractAddress = ENVIRONMENT.staking.stakingContractAddress;
+  private readonly _stakingContractAddress$ = new BehaviorSubject<string>(undefined);
+
+  get stakingContractAddress(): string {
+    return this._stakingContractAddress$.getValue();
+  }
+
+  /**
+   * Current staking round.
+   */
+  get stakingRound(): number {
+    return this.router.url.includes('round-one') ? 1 : 2;
+  }
+
+  /**
+   * Staking round 2 hardcoded APR.
+   */
+  private readonly stakingRoundTwoApr = 30;
 
   /**
    * Contract address for staking via bridge [from api].
@@ -206,19 +223,26 @@ export class StakingService {
     private readonly polygonBinanceBridge: BinancePolygonRubicBridgeProviderService,
     private readonly ethereumBinanceBridge: EthereumBinanceRubicBridgeProviderService,
     private readonly walletConnectorService: WalletConnectorService,
+    private readonly router: Router,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
   ) {
-    forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]).subscribe(() =>
-      this._stakingProgressLoading$.next(false)
-    );
-
-    this.authService
-      .getCurrentUser()
+    this._stakingContractAddress$
+      .asObservable()
       .pipe(
         filter(Boolean),
+        distinctUntilChanged(),
+        switchMap(() => {
+          return forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]);
+        })
+      )
+      .subscribe();
+
+    combineLatest([this.authService.getCurrentUser(), this._stakingContractAddress$.asObservable()])
+      .pipe(
+        filter(([user, address]) => Boolean(user) && Boolean(address)),
         take(1),
-        tap(({ address }) => (this.walletAddress = address)),
+        tap(([{ address }]) => (this.walletAddress = address)),
         switchMap(() => {
           return forkJoin([
             this.getStakingTokenBalance().pipe(
@@ -235,6 +259,10 @@ export class StakingService {
     this.stakingApiService.getBridgeContractAddress().subscribe(address => {
       this.bridgeContractAddress = address;
     });
+  }
+
+  public setStakingContractAddress(address: string): void {
+    this._stakingContractAddress$.next(address);
   }
 
   /**
@@ -624,13 +652,20 @@ export class StakingService {
    * @return Observable<number>
    */
   private getApr(): Observable<number> {
-    return this.stakingApiService.getApr().pipe(
-      catchError((err: unknown) => {
-        console.debug(err);
-        return EMPTY;
-      }),
-      tap(apr => this._apr$.next(apr))
-    );
+    console.log(this.stakingRound);
+    if (this.stakingRound === 1) {
+      return this.stakingApiService.getApr().pipe(
+        catchError((err: unknown) => {
+          console.debug(err);
+          return EMPTY;
+        }),
+        tap(apr => this._apr$.next(apr))
+      );
+    }
+
+    if (this.stakingRound === 2) {
+      return of(this.stakingRoundTwoApr).pipe(tap(apr => this._apr$.next(apr)));
+    }
   }
 
   /**
