@@ -91,7 +91,6 @@
     "about": "소개",
     "features": "기능",
     "faq": "FAQ",
-    "team": "팀",
     "project": "프로젝트",
     "login": "메타마스크로 로그인",
     "myTrades": "내 거래",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "팀"
   },
   "faqPage": {
     "title": "FAQ",

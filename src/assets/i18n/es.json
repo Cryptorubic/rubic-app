@@ -91,7 +91,6 @@
     "about": "Información",
     "faq": "Preguntas Frecuentes",
     "features": "Funciones",
-    "team": "Equipo",
     "project": "Proyecto",
     "login": "Conecta tu Billetera",
     "myTrades": "Mis Intercambios",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Equipo"
   },
   "faqPage": {
     "title": "Preguntas Frecuentes",

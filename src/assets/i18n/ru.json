@@ -91,7 +91,6 @@
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
-    "team": "Команда",
     "project": "Проект",
     "login": "Подключить кошелек",
     "myTrades": "Мои Сделки",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Команда"
   },
   "faqPage": {
     "title": "FAQ",
