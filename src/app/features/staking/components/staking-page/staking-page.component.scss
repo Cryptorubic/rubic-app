@@ -37,13 +37,19 @@
   }
 
   &__tabs {
+    --background-color: var(--form-header-color-1);
+
     display: flex;
     width: 100%;
     max-width: 358px;
     padding: 6px;
-
-    background: #2e322f;
+    
+    background: var(--background-color);
     border-radius: 100px;
+
+    @include dark {
+      --background-color: #2e322f;
+    }
 
     &-tab {
       width: 100%;
