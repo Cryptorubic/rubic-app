@@ -66,7 +66,6 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
 import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
-import { UntilTimeGuard } from './guards/until-time.guard';
 
 @NgModule({
   declarations: [
@@ -192,7 +191,7 @@ import { UntilTimeGuard } from './guards/until-time.guard';
     RubicContainerComponent,
     CopyContainerComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, UntilTimeGuard],
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]
 })
 export class SharedModule {}

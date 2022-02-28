@@ -32,6 +32,7 @@ import { StakingApiService } from './services/staking-api.service';
 import { StakingPageComponent } from './components/staking-page/staking-page.component';
 import { RouterModule } from '@angular/router';
 import { StakingRoundResolver } from './services/staking-round.resolver';
+import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,6 @@ import { StakingRoundResolver } from './services/staking-round.resolver';
     TuiProgressModule,
     TuiLoaderModule
   ],
-  providers: [StakingService, StakingApiService, StakingRoundResolver]
+  providers: [StakingService, StakingApiService, StakingRoundResolver, UntilTimeGuard]
 })
 export class StakingModule {}
