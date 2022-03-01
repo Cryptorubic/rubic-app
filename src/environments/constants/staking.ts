@@ -15,7 +15,7 @@ export const STAKING_CONFIG_PROD = {
   roundTwoContractAddress: '0x96a5Eac3fa7BB87c61881Dc093884C06719Bcd1E',
   whitelist: [
     '0x3483ed7d3444a311a7585f0e59c9a74d6c111218',
-    '0x7c8bf1eb559228b8bbd324fb3fdb5c3f9ddb07c5',
+    '0x8796e04d35ba0251fa71d9bc89937bed766970e3',
     '0xa6708e277703659fda62aa12403f952fcbe739fe',
     '0x2a2036fcf77491a980c0197baf33c785937db6f4',
     '0x54419c76bd2a09e5879159a31b5999355cccce60',
