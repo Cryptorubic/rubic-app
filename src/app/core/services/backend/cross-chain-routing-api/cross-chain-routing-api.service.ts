@@ -90,14 +90,20 @@ export class CrossChainRoutingApiService {
   public postCrossChainDataFromSolana(
     transactionHash: string,
     network: string,
-    contractFunction: string
+    contractFunction: string,
+    secondPath?: string[],
+    walletAddress?: string,
+    pool?: number[]
   ): Observable<void> {
     return this.httpService.post(
       'trades/params',
       {
         fromTxHash: transactionHash,
         network,
-        contractFunction
+        contractFunction,
+        secondPath,
+        walletAddress,
+        pool
       },
       BASE_URL
     );

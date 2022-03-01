@@ -25,5 +25,10 @@ export const LANGUAGES_LIST: LanguageListElement[] = [
     lng: 'es',
     title: 'Español',
     imgSrc: 'assets/images/icons/languages/es.svg'
+  },
+  {
+    lng: 'tr',
+    title: 'Türkce',
+    imgSrc: 'assets/images/icons/languages/tr.svg'
   }
 ];

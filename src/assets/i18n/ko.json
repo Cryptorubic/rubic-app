@@ -76,6 +76,7 @@
     "insufficientFoundsGasPriceValue": "Insufficient funds for the gas fee. Please top-up you {{nativeToken}} balance.",
     "NoDataMyTradesError": "죄송합니다. 문제가 발생했습니다. 페이지를 새로고침해 보세요. 다시 로드한 후에도 이 문제가 계속 발생하면 지원팀에 문의하세요.",
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
+    "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "거래 불가",
     "wrongWallet": "Please log in with wallet that supports {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
@@ -90,7 +91,6 @@
     "about": "소개",
     "features": "기능",
     "faq": "FAQ",
-    "team": "팀",
     "project": "프로젝트",
     "login": "메타마스크로 로그인",
     "myTrades": "내 거래",
@@ -273,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "팀"
   },
   "faqPage": {
     "title": "FAQ",

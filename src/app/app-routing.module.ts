@@ -24,11 +24,6 @@ const routes: Routes = [
     }
   },
   {
-    path: ROUTE_PATH.TEAM,
-    loadChildren: () =>
-      import('./features/team-page-old/team-page.module').then(m => m.TeamPageModule)
-  },
-  {
     path: ROUTE_PATH.CONTRACTS,
     redirectTo: '/trades-old/contracts'
   },

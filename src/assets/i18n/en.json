@@ -91,7 +91,6 @@
     "about": "About",
     "faq": "FAQ",
     "features": "Features",
-    "team": "Team",
     "project": "Project",
     "login": "Connect Wallet",
     "myTrades": "My Trades",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Team"
   },
   "faqPage": {
     "title": "FAQ",

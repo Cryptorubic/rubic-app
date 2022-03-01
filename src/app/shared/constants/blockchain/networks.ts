@@ -129,8 +129,8 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.MOONRIVER,
     label: 'Moonriver',
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
-    rpcLink: 'https://rpc.moonriver.moonbeam.network',
-    additionalRpcLink: 'https://moonriver-api.bwarelabs.com/e72ceb4c-1e99-4e9f-8f3c-83f0152ad69f',
+    rpcLink: 'https://moonriver-api.bwarelabs.com/e72ceb4c-1e99-4e9f-8f3c-83f0152ad69f',
+    additionalRpcLink: 'https://rpc.moonriver.moonbeam.network',
     imagePath: 'assets/images/icons/coins/moonriver.webp',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.MOONRIVER,
@@ -291,8 +291,8 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.SOLANA,
     label: 'Solana',
     scannerUrl: 'https://explorer.solana.com',
-    rpcLink: 'https:/https://api.mainnet-beta.solana.com',
-    additionalRpcLink: '',
+    rpcLink: 'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    additionalRpcLink: 'https://api.mainnet-beta.solana.com',
     imagePath: 'assets/images/icons/coins/solana.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.SOLANA,
