@@ -30,6 +30,10 @@
     }
   }
 
+  &__closed {
+    color: $rubic-text-error;
+  }
+
   &__title {
     font-weight: 800;
     font-size: 24px;

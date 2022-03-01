@@ -650,10 +650,15 @@ export class StakingService {
       map(([usersDeposit, totalAmount]) => {
         const usersDepositInTokens = Web3Pure.fromWei(usersDeposit);
         const earnedRewards = totalAmount.minus(usersDepositInTokens);
-        if (earnedRewards.s === -1 || earnedRewards.s === null) {
+
+        if (Number(usersDeposit) === 0) {
           return new BigNumber(0);
+        } else {
+          if (earnedRewards.s === -1 || earnedRewards.s === null) {
+            return new BigNumber(0);
+          }
+          return earnedRewards;
         }
-        return earnedRewards;
       }),
       tap(earnedRewards => this._earnedRewards$.next(earnedRewards))
     );
