@@ -624,20 +624,20 @@
     },
     "header": {
       "switchTheme": {
-        "title": "Switch Theme",
-        "desc": "Theme for the web"
+        "title": "Cambiar tema",
+        "desc": "Tema para la web"
       },
       "language": {
-        "title": "Language",
-        "desc": "Choose language"
+        "title": "Idioma",
+        "desc": "Elige lengua"
       },
       "gasPrice": {
         "title": "Gas price",
         "desc": "In Ethereum chain"
       },
       "tutorials": {
-        "title": "Tutorials",
-        "desc": "How to use"
+        "title": "Tutoriales",
+        "desc": "Cómo utilizar"
       }
     }
   },
