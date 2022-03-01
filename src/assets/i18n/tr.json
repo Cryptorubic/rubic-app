@@ -91,7 +91,6 @@
     "about": "Hakkında",
     "faq": "FAQ",
     "features": "Özellikler",
-    "team": "Team",
     "project": "Proje",
     "login": "Cüzdanı Bağla",
     "myTrades": "Benim işlemlerim",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Team"
   },
   "faqPage": {
     "title": "FAQ",
