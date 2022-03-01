@@ -91,7 +91,6 @@
     "about": "About",
     "faq": "FAQ",
     "features": "Features",
-    "team": "Team",
     "project": "Project",
     "login": "Connect Wallet",
     "myTrades": "My Trades",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Team"
   },
   "faqPage": {
     "title": "FAQ",
@@ -498,6 +494,7 @@
       "balance": "You have {{amount}}",
       "unstakeBalance": "Available to unstake {{amount}}",
       "confirmStake": "Confirm stake",
+      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
       "unstake": "Unstake",
       "overLimit": "One stake limits {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Update",
@@ -680,6 +677,7 @@
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
     "stakeInProgress": "Stake in progress",
+    "bridgeStakeInProgress": "Stake in progress. View transaction in <a target=\"_blank\" href=\"{{url}}\">explorer</a>",
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",

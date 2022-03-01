@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { TuiDialogContext, TuiDialogService, TuiNotification } from '@taiga-ui/core';
+import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { Router } from '@angular/router';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { StakingService } from '@features/staking/services/staking.service';
+import { finalize, map, switchMap } from 'rxjs/operators';
 
 /**
  * The modal which allows user to choose staking method.
@@ -34,7 +35,6 @@ export class SwapModalComponent {
     >,
     private readonly router: Router,
     private readonly stakingService: StakingService,
-    private readonly dialogService: TuiDialogService,
     private readonly notificationsService: NotificationsService
   ) {
     this.isEthBlockchain = this.context.data.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
@@ -45,36 +45,40 @@ export class SwapModalComponent {
   }
 
   public swapViaPlatform(): void {
-    this.notificationsService.show('Staking is disabled due to Staking contract is full.', {
-      status: TuiNotification.Warning,
-      autoClose: 10000
-    });
-    // this._bridgeSwapButtonLoading$.next(true);
-    // this.stakingService.stakingProgress$
-    //   .pipe(
-    //     switchMap(stakingProgress => {
-    //       return stakingProgress.totalRbcEntered > 6_000_000
-    //         ? of(false)
-    //         : this.stakingService.enterStakeViaBridge(this.context.data.amount).pipe(
-    //             map(() => true),
-    //             finalize(() => this._bridgeSwapButtonLoading$.next(false))
-    //           );
-    //     })
-    //   )
-    //   .subscribe(allowBridge => {
-    //     if (allowBridge) {
-    //       this.context.completeWith(false);
-    //       this.notificationsService.show('Staking', {
-    //         label: 'The transaction was successful',
-    //         status: TuiNotification.Success,
-    //         autoClose: 5000
-    //       });
-    //     } else {
-    //       this.notificationsService.show('Staking is disabled due to Staking contract is full.', {
-    //         status: TuiNotification.Warning,
-    //         autoClose: 10000
-    //       });
-    //     }
-    //   });
+    if (this.stakingService.stakingRound === 1) {
+      this.notificationsService.show('Staking is disabled due to Staking contract is full.', {
+        status: TuiNotification.Warning,
+        autoClose: 10000
+      });
+    } else {
+      this._bridgeSwapButtonLoading$.next(true);
+      this.context.completeWith(false);
+      this.stakingService.stakingProgress$
+        .pipe(
+          switchMap(stakingProgress => {
+            return stakingProgress.totalRbcEntered > 6_000_000
+              ? of(false)
+              : this.stakingService.enterStakeViaBridge(this.context.data.amount).pipe(
+                  map(() => true),
+                  finalize(() => this._bridgeSwapButtonLoading$.next(false))
+                );
+          })
+        )
+        .subscribe(allowBridge => {
+          if (allowBridge) {
+            this.context.completeWith(false);
+            this.notificationsService.show('Staking', {
+              label: 'The transaction was successful',
+              status: TuiNotification.Success,
+              autoClose: 5000
+            });
+          } else {
+            this.notificationsService.show('Staking is disabled due to Staking contract is full.', {
+              status: TuiNotification.Warning,
+              autoClose: 10000
+            });
+          }
+        });
+    }
   }
 }

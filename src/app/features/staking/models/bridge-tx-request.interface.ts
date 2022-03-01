@@ -1,4 +1,4 @@
-export interface BridgeTxRequestInterface {
+export interface BridgeTxRequest {
   network: string;
   txHash: string;
 }

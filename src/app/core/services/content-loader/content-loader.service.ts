@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Content, VolumeContent, TeamCardContent } from 'src/app/shared/models/content';
+import { Content, VolumeContent } from 'src/app/shared/models/content';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -10,10 +10,6 @@ export class ContentLoaderService {
 
   get volumeContent(): VolumeContent {
     return this.content.volume;
-  }
-
-  get teamCardsContent(): TeamCardContent[] {
-    return this.content.team;
   }
 
   constructor(private httpClient: HttpClient) {}

@@ -1,0 +1,7 @@
+<div
+  class="bridge-stake-notification"
+  [innerHTML]="
+    'notifications.bridgeStakeInProgress'
+      | translate: { url: txHash | scannerLink: blockchain:addressType.TRANSACTION }
+  "
+></div>

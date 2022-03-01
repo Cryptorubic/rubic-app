@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
+import { map, pluck, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { FormControl } from '@angular/forms';
 import { StakingService } from '@features/staking/services/staking.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { ErrorTypeEnum } from '../../enums/error-type.enum';
+import { ErrorType } from '../../enums/error-type.enum';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 /**
@@ -68,18 +68,20 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   public readonly stakingTokenBalance$ = this.stakingService.stakingTokenBalance$;
 
-  private readonly _errorType$ = new BehaviorSubject<ErrorTypeEnum | null>(
-    ErrorTypeEnum.EMPTY_AMOUNT
-  );
+  private readonly _errorType$ = new BehaviorSubject<ErrorType | null>(ErrorType.EMPTY_AMOUNT);
 
-  get errorType$(): Observable<ErrorTypeEnum | null> {
+  get errorType$(): Observable<ErrorType | null> {
     return this._errorType$.asObservable();
   }
 
-  public readonly errorTypeEnum = ErrorTypeEnum;
+  public readonly errorTypeEnum = ErrorType;
 
   private readonly _needChangeNetwork$ = new BehaviorSubject<boolean>(
     this.walletConnectorService.networkName !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+  );
+
+  public readonly selectedTokenBlockchain$ = this.stakingService.selectedToken$.pipe(
+    pluck('blockchain')
   );
 
   public readonly needChangeNetwork$ = this._needChangeNetwork$.asObservable();
@@ -118,17 +120,17 @@ export class WithdrawButtonContainerComponent implements OnInit {
 
   private checkAmountAndBalance(amount: BigNumber, balance: BigNumber): void {
     if (amount.isZero()) {
-      this._errorType$.next(ErrorTypeEnum.ZERO);
+      this._errorType$.next(ErrorType.ZERO);
       return;
     }
 
     if (amount.isNaN()) {
-      this._errorType$.next(ErrorTypeEnum.EMPTY_AMOUNT);
+      this._errorType$.next(ErrorType.EMPTY_AMOUNT);
       return;
     }
 
     if (balance.lt(amount) || this.maxAmountForWithdraw.lt(amount)) {
-      this._errorType$.next(ErrorTypeEnum.INSUFFICIENT_BALANCE);
+      this._errorType$.next(ErrorType.INSUFFICIENT_BALANCE);
       return;
     }
 

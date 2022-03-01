@@ -91,7 +91,6 @@
     "about": "소개",
     "features": "기능",
     "faq": "FAQ",
-    "team": "팀",
     "project": "프로젝트",
     "login": "메타마스크로 로그인",
     "myTrades": "내 거래",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "팀"
   },
   "faqPage": {
     "title": "FAQ",
@@ -498,6 +494,7 @@
       "balance": "You have {{amount}}",
       "unstakeBalance": "Available to unstake {{amount}}",
       "confirmStake": "Confirm stake",
+      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
       "unstake": "Unstake",
       "overLimit": "One stake limits {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Update",
@@ -680,6 +677,7 @@
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
     "stakeInProgress": "Stake in progress",
+    "bridgeStakeInProgress": "Stake in progress. View transaction in <a target=\"_blank\" href=\"{{url}}\">explorer</a>",
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",
