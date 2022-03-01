@@ -1,5 +1,10 @@
 <div class="staking-navigation">
-  <div class="staking-navigation__title">Rubic Staking Round {{ round }}</div>
+  <div class="staking-navigation__title">
+    Rubic Staking Round {{ round
+    }}<ng-container *ngIf="round === 1"
+      >. <span class="staking-navigation__closed">Closed</span></ng-container
+    >
+  </div>
   <div class="staking-navigation__tabs">
     <div
       class="staking-navigation__tabs-tab"

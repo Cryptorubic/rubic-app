@@ -27,6 +27,8 @@ export class StakingStatisticsComponent {
 
   public readonly earnedRewards$ = this.stakingService.earnedRewards$;
 
+  public readonly stakingRound = this.stakingService.stakingRound;
+
   constructor(private readonly stakingService: StakingService) {}
 
   public reloadStakingStatistics(): void {
