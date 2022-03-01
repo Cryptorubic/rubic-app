@@ -11,7 +11,7 @@ export const STAKING_CONFIG_DEVELOP = {
 
 export const STAKING_CONFIG_PROD = {
   apiUrl: '//staking.rubic.exchange/api/',
-  roundOneContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570',
+  roundOneContractAddress: '0x8d9Ae5a2Ecc16A66740A53Cc9080CcE29a7fD9F5',
   roundTwoContractAddress: '0xA96cDB86332b105065ca99432916e631e469CF5D',
   whitelist: [
     '0x3483ed7d3444a311a7585f0e59c9a74d6c111218',
