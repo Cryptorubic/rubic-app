@@ -2,7 +2,7 @@
   <div class="total__total-staked">
     <div class="total__title">{{ 'staking.stats.total' | translate }}</div>
     <div class="total__amount">
-      {{ stakingProgress.totalRbcEntered | bigNumberFormat }} BRBC of
+      {{ stakingProgress.totalRbcEntered | bigNumberFormat: 2:true }} BRBC of
       {{ BRBCTotal | bigNumberFormat }} BRBC
     </div>
     <progress
@@ -19,7 +19,7 @@
         {{ 'staking.stats.connectWallet' | translate }}
       </ng-container>
       <ng-template #userTotalStaked>
-        {{ stakingProgress.userEnteredAmount | bigNumberFormat }} BRBC of
+        {{ stakingProgress.userEnteredAmount | bigNumberFormat: 2:true }} BRBC of
         {{ stakeLimitMax | bigNumberFormat }} BRBC
       </ng-template>
     </div>
@@ -37,7 +37,7 @@
   ></app-rotating-icon>
 </div>
 
-<div class="features">
+<div class="features" *ngIf="isFirstStakingRound; else secondStakingRound">
   <div class="feature">
     <img
       [src]="
@@ -88,3 +88,59 @@
     </div>
   </div>
 </div>
+
+<ng-template #secondStakingRound>
+  <div class="features">
+    <div class="feature">
+      <img
+        [src]="
+          (isDark$ | async)
+            ? 'assets/images/icons/staking/apr.svg'
+            : 'assets/images/icons/staking/apr-light.svg'
+        "
+        alt="High APR"
+        class="feature__icon feature__icon_top"
+      />
+      <div class="feature__content">
+        <div class="feature__title">High APR: 30%</div>
+        <div class="feature__text">Predicted APR is 30% or more for the period of 6 months</div>
+      </div>
+    </div>
+    <div class="feature">
+      <img
+        [src]="
+          (isDark$ | async)
+            ? 'assets/images/icons/staking/rewards.svg'
+            : 'assets/images/icons/staking/rewards-light.svg'
+        "
+        alt="BRBC"
+        class="feature__icon feature__icon_brbc"
+      />
+      <div class="feature__content">
+        <div class="feature__title">
+          {{ 'staking.features.brbcRewards' | translate }}
+        </div>
+        <div class="feature__text">
+          {{ 'staking.features.stakeTokens' | translate }}
+        </div>
+      </div>
+    </div>
+    <div class="feature">
+      <img
+        [src]="
+          (isDark$ | async)
+            ? 'assets/images/icons/staking/buybacks.svg'
+            : 'assets/images/icons/staking/buybacks-light.svg'
+        "
+        alt="Team Buybacks"
+        class="feature__icon feature__icon_graph"
+      />
+      <div class="feature__content">
+        <div class="feature__title">Flexible Unstaking</div>
+        <div class="feature__text">
+          You can unstake at any time; rewards will be distributed accordingly
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

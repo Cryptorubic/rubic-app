@@ -26,9 +26,14 @@ import { StakingStatisticsComponent } from './components/staking-statistics/stak
 import { StakingInfoComponent } from './components/staking-info/staking-info.component';
 import { StakeButtonContainerComponent } from './components/stake-button-container/stake-button-container.component';
 import { WithdrawButtonContainerComponent } from './components/withdraw-button-container/withdraw-button-container.component';
-import { StakingPageComponent } from './components/staking-page/staking-page.component';
+import { StakingRoundComponent } from './components/staking-round/staking-round.component';
 import { StakingService } from './services/staking.service';
 import { StakingApiService } from './services/staking-api.service';
+import { StakingPageComponent } from './components/staking-page/staking-page.component';
+import { RouterModule } from '@angular/router';
+import { StakingRoundResolver } from './services/staking-round.resolver';
+import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
+import { BridgeStakeNotificationComponent } from './components/bridge-stake-notification/bridge-stake-notification.component';
 
 @NgModule({
   declarations: [
@@ -40,11 +45,14 @@ import { StakingApiService } from './services/staking-api.service';
     StakingStatisticsComponent,
     StakingInfoComponent,
     StakeButtonContainerComponent,
+    StakingRoundComponent,
     StakingPageComponent,
-    WithdrawButtonContainerComponent
+    WithdrawButtonContainerComponent,
+    BridgeStakeNotificationComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
     ReactiveFormsModule,
     StakingRoutingModule,
     SharedModule,
@@ -59,6 +67,6 @@ import { StakingApiService } from './services/staking-api.service';
     TuiProgressModule,
     TuiLoaderModule
   ],
-  providers: [StakingService, StakingApiService]
+  providers: [StakingService, StakingApiService, StakingRoundResolver, UntilTimeGuard]
 })
 export class StakingModule {}

@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StakingService } from '@features/staking/services/staking.service';
-
-import { BRBC_TOTAL } from '@features/staking/constants/brbc_total';
-import { STAKE_LIMIT_MAX } from '@features/staking/constants/staking-limits';
+import { STAKE_LIMIT_MAX } from '@app/features/staking/constants/STAKING_LIMITS';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ThemeService } from '@core/services/theme/theme.service';
 
@@ -18,7 +16,7 @@ import { ThemeService } from '@core/services/theme/theme.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingInfoComponent {
-  public readonly BRBCTotal = BRBC_TOTAL;
+  public readonly BRBCTotal = 7000000;
 
   public readonly stakeLimitMax = STAKE_LIMIT_MAX[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN];
 
@@ -29,6 +27,8 @@ export class StakingInfoComponent {
   public readonly loading$ = this.stakingService.stakingProgressLoading$;
 
   public readonly isDark$: Observable<boolean>;
+
+  public readonly isFirstStakingRound = this.stakingService.stakingRound === 1;
 
   constructor(
     private readonly stakingService: StakingService,

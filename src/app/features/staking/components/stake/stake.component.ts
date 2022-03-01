@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Self } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
 import { TuiNotification } from '@taiga-ui/core';
 import { FormControl } from '@angular/forms';
-
 import { TranslateService } from '@ngx-translate/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
@@ -10,7 +9,7 @@ import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { StakingService } from '../../services/staking.service';
 import { WalletsModalService } from '@app/core/wallets/services/wallets-modal.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { STAKING_TOKENS } from '@features/staking/constants/staking-tokens';
+import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 
 /**
  * Stake form component.
@@ -37,6 +36,7 @@ export class StakeComponent {
 
   public readonly needApprove$ = this.amount.valueChanges.pipe(
     switchMap(amount => this.stakingService.needApprove(new BigNumber(amount.split(',').join('')))),
+    // tap(needApprove => (this.approvedTokens = needApprove)),
     takeUntil(this.destroy$)
   );
 
@@ -46,6 +46,12 @@ export class StakeComponent {
     return this._stakeButtonLoading$.asObservable();
   }
 
+  private readonly _whitelistStakeButtonLoading$ = new BehaviorSubject(false);
+
+  get whitelistStakeButtonLoading$(): Observable<boolean> {
+    return this._whitelistStakeButtonLoading$.asObservable();
+  }
+
   public approvedTokens: boolean = false;
 
   constructor(
@@ -53,35 +59,37 @@ export class StakeComponent {
     private readonly walletsModalService: WalletsModalService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
+    private readonly cdr: ChangeDetectorRef,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
-  public confirmStake(): void {
-    this._stakeButtonLoading$.next(true);
-    const stakeNotification$ = this.notificationsService.show(
-      this.translateService.instant('notifications.stakeInProgress'),
-      {
-        status: TuiNotification.Info,
-        autoClose: false
-      }
-    );
+  public confirmStake(viaWhitelist: boolean): void {
+    if (viaWhitelist) {
+      this._whitelistStakeButtonLoading$.next(true);
+    } else {
+      this._stakeButtonLoading$.next(true);
+    }
+
     this.stakingService
-      .enterStake(new BigNumber(this.amount.value.split(',').join('')))
+      .enterStake(new BigNumber(this.amount.value.split(',').join('')), viaWhitelist)
       .pipe(
         finalize(() => {
-          stakeNotification$.unsubscribe();
+          this._whitelistStakeButtonLoading$.next(false);
           this._stakeButtonLoading$.next(false);
+          this.cdr.detectChanges();
         })
       )
-      .subscribe(() => {
+      .subscribe(result => {
         this.amount.reset();
-        this.notificationsService.show(
-          this.translateService.instant('notifications.successfulStake'),
-          {
-            status: TuiNotification.Success,
-            autoClose: 5000
-          }
-        );
+        if (typeof result !== 'boolean') {
+          this.notificationsService.show(
+            this.translateService.instant('notifications.successfulStake'),
+            {
+              status: TuiNotification.Success,
+              autoClose: 5000
+            }
+          );
+        }
       });
   }
 
@@ -115,6 +123,8 @@ export class StakeComponent {
             autoClose: 5000
           }
         );
+        this.amount.patchValue(this.amount.value);
+        this.cdr.detectChanges();
       });
   }
 

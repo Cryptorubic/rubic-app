@@ -1,4 +1,4 @@
-export interface UpdateDepositRequestInterface {
+export interface UpdateDepositRequest {
   walletAddress: string;
   amount: string;
   txHash: string;
