@@ -29,6 +29,8 @@ export class StakingInfoComponent {
 
   public readonly isDark$: Observable<boolean>;
 
+  public readonly isFirstStakingRound = this.stakingService.stakingRound === 1;
+
   constructor(
     private readonly stakingService: StakingService,
     private readonly themeService: ThemeService

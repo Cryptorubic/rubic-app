@@ -130,7 +130,7 @@ const networks: ReadonlyArray<Network> = [
     label: 'Moonriver',
     scannerUrl: 'https://blockscout.moonriver.moonbeam.network/',
     rpcLink: 'https://rpc.moonriver.moonbeam.network',
-    additionalRpcLink: '',
+    additionalRpcLink: 'https://moonriver-api.bwarelabs.com/e72ceb4c-1e99-4e9f-8f3c-83f0152ad69f',
     imagePath: 'assets/images/icons/coins/moonriver.webp',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.MOONRIVER,

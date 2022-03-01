@@ -22,9 +22,8 @@ import {
   tap
 } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
-import { TuiDialogService } from '@taiga-ui/core';
+import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { STAKING_CONTRACT_ABI } from '@app/features/staking/constants/XBRBC_CONTRACT_ABI';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { TransactionReceipt } from 'web3-eth';
 import { StakingApiService } from '@features/staking/services/staking-api.service';
@@ -46,6 +45,13 @@ import { TOKEN_RANK } from '@shared/models/tokens/token-rank';
 import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { Router } from '@angular/router';
+import { ENVIRONMENT } from 'src/environments/environment';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
+import { BridgeStakeNotificationComponent } from '../components/bridge-stake-notification/bridge-stake-notification.component';
+import { ROUND_ONE_STAKING_CONTRACT_ABI } from '../constants/ROUND_ONE_STAKING_CONTRACT_ABI';
+import { ROUND_TWO_STAKING_CONTRACT_ABI } from '../constants/ROUND_TWO_STAKING_CONTRACT_ABI';
+import { AbiItem } from 'web3-utils';
 
 @Injectable()
 export class StakingService {
@@ -70,10 +76,11 @@ export class StakingService {
     return this.router.url.includes('round-one') ? 1 : 2;
   }
 
-  /**
-   * Staking round 2 hardcoded APR.
-   */
-  private readonly stakingRoundTwoApr = 30;
+  get stakingContractAbi(): AbiItem[] {
+    return this.stakingRound === 1
+      ? ROUND_ONE_STAKING_CONTRACT_ABI
+      : ROUND_TWO_STAKING_CONTRACT_ABI;
+  }
 
   /**
    * Contract address for staking via bridge [from api].
@@ -107,6 +114,23 @@ export class StakingService {
   private readonly _userEnteredAmount$ = new BehaviorSubject<number>(0);
 
   public readonly userEnteredAmount$ = this._userEnteredAmount$.asObservable();
+
+  /**
+   * How much RBC user already staked via whitelist [from contract].
+   */
+  private readonly _whitelistUserEnteredAmount$ = new BehaviorSubject<number>(0);
+
+  public readonly whitelistUserEnteredAmount$ = this._whitelistUserEnteredAmount$.asObservable();
+
+  private readonly whitelist = ENVIRONMENT.staking.whitelist;
+
+  private readonly _isUserWhitelisted$ = new BehaviorSubject(false);
+
+  public readonly isUserWhitelisted$ = this._isUserWhitelisted$.asObservable();
+
+  get isUserWhitelisted(): boolean {
+    return this._isUserWhitelisted$.getValue();
+  }
 
   /**
    * Total RBC amount in stake [from contract].
@@ -178,7 +202,11 @@ export class StakingService {
   /**
    * Is user need to connect wallet.
    */
-  public readonly needLogin$ = this.authService.getCurrentUser().pipe(map(user => !user?.address));
+  public readonly needLogin$ = this.authService.getCurrentUser().pipe(
+    map(user => {
+      return !user?.address;
+    })
+  );
 
   /**
    * Loading state for whole progress block.
@@ -200,7 +228,8 @@ export class StakingService {
   public readonly selectedTokenBalance$ = combineLatest([
     this.selectedToken$,
     this.needLogin$,
-    this.updateTokenBalance$.asObservable()
+    this.updateTokenBalance$.asObservable(),
+    this.walletConnectorService.addressChange$
   ]).pipe(
     switchMap(([selectedToken, needLogin]) => {
       if (needLogin) {
@@ -223,6 +252,8 @@ export class StakingService {
     private readonly polygonBinanceBridge: BinancePolygonRubicBridgeProviderService,
     private readonly ethereumBinanceBridge: EthereumBinanceRubicBridgeProviderService,
     private readonly walletConnectorService: WalletConnectorService,
+    private readonly notificationService: NotificationsService,
+    private readonly translateService: TranslateService,
     private readonly router: Router,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private readonly injector: Injector
@@ -233,7 +264,7 @@ export class StakingService {
         filter(Boolean),
         distinctUntilChanged(),
         switchMap(() => {
-          return forkJoin([this.getTotalRBCEntered(), this.getApr(), this.getRefillTime()]);
+          return forkJoin([this.getTotalRBCEntered(), this.getApr()]);
         })
       )
       .subscribe();
@@ -242,7 +273,10 @@ export class StakingService {
       .pipe(
         filter(([user, address]) => Boolean(user) && Boolean(address)),
         take(1),
-        tap(([{ address }]) => (this.walletAddress = address)),
+        tap(([{ address }]) => {
+          this.walletAddress = address;
+          this.checkIsUserWhitelisted(this.walletAddress);
+        }),
         switchMap(() => {
           return forkJoin([
             this.getStakingTokenBalance().pipe(
@@ -261,6 +295,10 @@ export class StakingService {
     });
   }
 
+  /**
+   * Set staking contract address.
+   * @param address contract address.
+   */
   public setStakingContractAddress(address: string): void {
     this._stakingContractAddress$.next(address);
   }
@@ -292,21 +330,33 @@ export class StakingService {
     if (needSwap) {
       return this.openSwapModal(amount, tokenBlockchain);
     } else {
+      const stakeNotification$ = this.notificationService.show(
+        this.translateService.instant('notifications.stakeInProgress'),
+        {
+          status: TuiNotification.Info,
+          autoClose: false
+        }
+      );
+
       return from(
         this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
           this.stakingContractAddress,
-          STAKING_CONTRACT_ABI,
+          this.stakingContractAbi,
           enterStakeMethod,
           [amountInWei]
         )
       ).pipe(
+        switchMap(receipt => {
+          stakeNotification$.unsubscribe();
+          return this.updateUsersDeposit(amountInWei, receipt.transactionHash);
+        }),
+        switchMap(() => this.reloadStakingProgress()),
+        switchMap(() => this.reloadStakingStatistics()),
         catchError((error: unknown) => {
+          stakeNotification$?.unsubscribe();
           this.errorService.catchAnyError(error as Error);
           return EMPTY;
         }),
-        switchMap(receipt => this.updateUsersDeposit(amountInWei, receipt.transactionHash)),
-        switchMap(() => this.reloadStakingProgress()),
-        switchMap(() => this.reloadStakingStatistics()),
         tap(() => this.updateTokenBalance$.next())
       );
     }
@@ -322,7 +372,7 @@ export class StakingService {
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
         this.stakingContractAddress,
-        STAKING_CONTRACT_ABI,
+        this.stakingContractAbi,
         'leave',
         [amountInWei]
       )
@@ -341,13 +391,17 @@ export class StakingService {
    * @return Observable<boolean>
    */
   public needApprove(amount: BigNumber): Observable<boolean> {
-    return from(
-      this.web3PublicService[this.selectedToken.blockchain].getAllowance({
-        tokenAddress: this.selectedToken.address,
-        ownerAddress: this.walletAddress,
-        spenderAddress: this.stakingContractAddress
-      })
-    ).pipe(map(allowance => allowance.lt(Web3Pure.fromWei(amount))));
+    if (this.walletAddress) {
+      return from(
+        this.web3PublicService[this.selectedToken.blockchain].getAllowance({
+          tokenAddress: this.selectedToken.address,
+          ownerAddress: this.walletAddress,
+          spenderAddress: this.stakingContractAddress
+        })
+      ).pipe(map(allowance => allowance.lt(Web3Pure.fromWei(amount))));
+    } else {
+      return of(true);
+    }
   }
 
   /**
@@ -398,7 +452,7 @@ export class StakingService {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
-        STAKING_CONTRACT_ABI,
+        this.stakingContractAbi,
         'actualBalanceOf',
         {
           methodArguments: [this.walletAddress],
@@ -480,11 +534,10 @@ export class StakingService {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
-        STAKING_CONTRACT_ABI,
+        this.stakingContractAbi,
         'canReceive',
         {
-          methodArguments: [amount.toFixed(0)],
-          from: this.walletAddress
+          methodArguments: [amount.toFixed(0)]
         }
       )
     ).pipe(
@@ -549,7 +602,14 @@ export class StakingService {
       this.authService.getCurrentUser(),
       this.walletConnectorService.addressChange$
     ]).pipe(
-      tap(([_, address]) => (this.walletAddress = address)),
+      tap(([currentAddress, newAddress]) => {
+        if (newAddress || currentAddress?.address) {
+          this.walletAddress = newAddress;
+          this.checkIsUserWhitelisted(newAddress);
+        } else {
+          this._userEnteredAmount$.next(0);
+        }
+      }),
       switchMap(() => {
         return forkJoin([
           this.reloadStakingProgress(),
@@ -607,7 +667,7 @@ export class StakingService {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
-        STAKING_CONTRACT_ABI,
+        this.stakingContractAbi,
         'userEnteredAmount',
         {
           methodArguments: [this.walletAddress]
@@ -632,8 +692,8 @@ export class StakingService {
     return from(
       this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
         this.stakingContractAddress,
-        STAKING_CONTRACT_ABI,
-        'totalRBCEntered'
+        this.stakingContractAbi,
+        this.stakingRound === 1 ? 'totalRBCEntered' : 'total'
       )
     ).pipe(
       catchError((error: unknown) => {
@@ -652,20 +712,13 @@ export class StakingService {
    * @return Observable<number>
    */
   private getApr(): Observable<number> {
-    console.log(this.stakingRound);
-    if (this.stakingRound === 1) {
-      return this.stakingApiService.getApr().pipe(
-        catchError((err: unknown) => {
-          console.debug(err);
-          return EMPTY;
-        }),
-        tap(apr => this._apr$.next(apr))
-      );
-    }
-
-    if (this.stakingRound === 2) {
-      return of(this.stakingRoundTwoApr).pipe(tap(apr => this._apr$.next(apr)));
-    }
+    return this.stakingApiService.getApr().pipe(
+      catchError((err: unknown) => {
+        console.debug(err);
+        return EMPTY;
+      }),
+      tap(apr => this._apr$.next(apr))
+    );
   }
 
   /**
@@ -724,11 +777,14 @@ export class StakingService {
    * @param blockchain Blockchain of selected token.
    * @return Observable<unknown>
    */
-  private openSwapModal(amount: BigNumber, blockchain: BLOCKCHAIN_NAME): Observable<unknown> {
-    return this.dialogService.open(new PolymorpheusComponent(SwapModalComponent, this.injector), {
-      size: 'l',
-      data: { amount, blockchain }
-    });
+  private openSwapModal(amount: BigNumber, blockchain: BLOCKCHAIN_NAME): Observable<boolean> {
+    return this.dialogService.open<boolean>(
+      new PolymorpheusComponent(SwapModalComponent, this.injector),
+      {
+        size: 'l',
+        data: { amount, blockchain }
+      }
+    );
   }
 
   /**
@@ -774,6 +830,14 @@ export class StakingService {
           amount,
           toAddress: this.bridgeContractAddress,
           onTransactionHash: async (txHash: string) => {
+            this.notificationService.show(
+              new PolymorpheusComponent(BridgeStakeNotificationComponent),
+              {
+                status: TuiNotification.Info,
+                autoClose: 10000,
+                data: { txHash, fromBlockchain }
+              }
+            );
             await this.stakingApiService
               .sendBridgeTxHash({ txHash, network: 'polygon' })
               .toPromise();
@@ -814,6 +878,14 @@ export class StakingService {
           amount,
           toAddress: this.bridgeContractAddress,
           onTransactionHash: async (txHash: string) => {
+            this.notificationService.show(
+              new PolymorpheusComponent(BridgeStakeNotificationComponent),
+              {
+                status: TuiNotification.Info,
+                autoClose: 10000,
+                data: { txHash, fromBlockchain }
+              }
+            );
             await this.stakingApiService
               .sendBridgeTxHash({ txHash, network: 'ethereum' })
               .toPromise();
@@ -850,5 +922,9 @@ export class StakingService {
       ),
       tap(response => (this.BRBCUsdPrice = response))
     );
+  }
+
+  private checkIsUserWhitelisted(address: string): void {
+    this._isUserWhitelisted$.next(this.whitelist.includes(address));
   }
 }

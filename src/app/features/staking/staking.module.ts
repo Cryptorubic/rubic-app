@@ -33,6 +33,7 @@ import { StakingPageComponent } from './components/staking-page/staking-page.com
 import { RouterModule } from '@angular/router';
 import { StakingRoundResolver } from './services/staking-round.resolver';
 import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
+import { BridgeStakeNotificationComponent } from './components/bridge-stake-notification/bridge-stake-notification.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { UntilTimeGuard } from '@app/shared/guards/until-time.guard';
     StakeButtonContainerComponent,
     StakingRoundComponent,
     StakingPageComponent,
-    WithdrawButtonContainerComponent
+    WithdrawButtonContainerComponent,
+    BridgeStakeNotificationComponent
   ],
   imports: [
     CommonModule,
