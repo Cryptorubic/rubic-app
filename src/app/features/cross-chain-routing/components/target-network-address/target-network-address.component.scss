@@ -13,6 +13,14 @@
     right: 0;
   }
 
+  tui-input {
+    ::ng-deep {
+      input {
+        padding: 0;
+      }
+    }
+  }
+
   ::ng-deep .network-container {
     &__input-status-icon {
       width: 26px;

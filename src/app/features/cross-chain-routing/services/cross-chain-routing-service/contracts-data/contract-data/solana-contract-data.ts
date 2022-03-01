@@ -18,6 +18,7 @@ import {
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import BigNumber from 'bignumber.js';
+import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
 
 export class SolanaContractData extends ContractData {
   private readonly blockchainAdapter: SolanaWeb3Public;
@@ -25,7 +26,7 @@ export class SolanaContractData extends ContractData {
   constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
-    public readonly numOfBlockchain: number,
+    public readonly numOfBlockchain: BlockchainNumber,
     publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
     super(blockchain, providersData, numOfBlockchain);
@@ -58,7 +59,7 @@ export class SolanaContractData extends ContractData {
     return bridgeData.fee_amount_of_blockchain.toString();
   }
 
-  public async blockchainCryptoFee(toBlockchainInContract: number): Promise<BigNumber> {
+  public async blockchainCryptoFee(toBlockchainInContract: BlockchainNumber): Promise<BigNumber> {
     const account = new PublicKey(BLOCKCHAIN_UUID[toBlockchainInContract]);
     const { data } = await this.blockchainAdapter.connection.getAccountInfo(account);
     const blockchainData = BLOCKCHAIN_LAYOUT.decode(data) as SolanaBlockchainConfig;

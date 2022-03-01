@@ -173,9 +173,23 @@ export class CrossChainRoutingService {
       tradeAndToAmount: { trade: fromTrade, toAmount: fromTransitTokenAmount }
     } = sourceBlockchainProviders[0];
 
+    const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
+
+    let finalTransitAmount = fromTransitTokenAmount;
+
+    /**
+     * @TODO Take crypto fee on contract.
+     */
+    if (fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
+      const nativeUsdPrice = await this.tokensService.getNativeCoinPriceInUsd(BLOCKCHAIN_NAME.NEAR);
+      const feeInUsd = cryptoFee.multipliedBy(nativeUsdPrice);
+
+      finalTransitAmount = fromTransitTokenAmount.minus(feeInUsd);
+    }
+
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
       toBlockchain,
-      fromTransitTokenAmount,
+      finalTransitAmount,
       fromTrade === null,
       fromSlippage
     );
@@ -200,8 +214,6 @@ export class CrossChainRoutingService {
       providerIndex: toProviderIndex,
       tradeAndToAmount: { trade: toTrade, toAmount }
     } = filteredTargetBlockchainProviders[0];
-
-    const cryptoFee = await this.getCryptoFee(fromBlockchain, toBlockchain);
 
     this.currentCrossChainTrade = {
       fromBlockchain,
@@ -714,17 +726,6 @@ export class CrossChainRoutingService {
 
         let transactionHash;
         try {
-          // @TODO Near fix. Near addresses is not supported by Solana contracts yet.
-          if (
-            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
-              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.NEAR) ||
-            (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR &&
-              this.currentCrossChainTrade.toBlockchain === BLOCKCHAIN_NAME.SOLANA)
-          ) {
-            throw new CustomError(
-              'The swap between NEAR and SOLANA is currently not available. The support is coming soon.'
-            );
-          }
           transactionHash = await this.contractExecutorFacade.executeTrade(
             this.currentCrossChainTrade,
             options,

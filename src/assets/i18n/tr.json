@@ -1,0 +1,688 @@
+{
+  "common": {
+    "from": "Kimden",
+    "to": "Kime",
+    "yes": "Evet",
+    "no": "Hayır",
+    "any": "Herhangi",
+    "error": "Hata",
+    "have": "Sahipsin",
+    "get": "Aldın",
+    "want": "Almak istiyorsun",
+    "confirm": "Onayla",
+    "copy": "Kopyala",
+    "accept": "Kabulet",
+    "copyright": "Telif hakkı",
+    "privacyPolicy": "Gizlilik politikası",
+    "close": "Kapat",
+    "send": "Gönder ",
+    "left": "sol",
+    "checkOnScanner": "Tarayıcıyı kontrol et",
+    "cancel": "İptal",
+    "add": "Ekle",
+    "via": "Aracıyla ",
+    "address": "adres",
+    "chooseToken": "Token seç",
+    "clearToken": "Token temizle",
+    "warning": "Uyarı",
+    "customerSupport": "müşteri desteği",
+    "OK": "OK",
+    "analytics": "Analytics",
+    "minutes": "dakika",
+    "swap": "Takas",
+    "approve": "Onayla",
+    "switchTo": " {{ networkName }} ağına geç",
+    "tradeVia": "Trade Via ",
+    "bridge": "Köprü",
+    "transactionDetails": "Transaction details"
+  },
+  "errors": {
+    "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın",
+    "noMetamaskInstalled": "Lütfen metamask eklentisinin kurulu ve kilidinin açık olduğundan emin olun.\n İndirebilirsiniz",
+    "removeCoinbaseExtension": "Coinbase tarayıcı uzantısı Metamask uzantısıyla çakışıyor. Devam etmek için lütfen Conibase uzantısını devre dışı bırakın veya kaldırın veya bağlanmak için başka bir cüzdan seçin.",
+    "wrongNetwork": "Yanlış ağı seçtiniz. Lütfen MetaMask'tan {{ networkToChoose }} öğesini seçin.",
+    "OverQueryLimit": "Kısa bir süre içinde çok fazla işlem gerçekleştirmeye çalıştınız ve 30 dakika içinde maksimum 3 işlem olan Binance köprü kısıtlamalarını aştınız.\nLütfen bekleyin ve tekrar deneyin, hala sorun yaşıyorsanız lütfen bizimle iletişime geçin.",
+    "userReject": "İşlemin yürütülmesini reddettiniz. Lütfen işlemi tamamlamak için önce onaylayın.",
+    "rubicError": "Lütfen daha sonra tekrar deneyin veya başka bir cihaz kullanmayı deneyin. Hala sorun yaşıyorsanız, lütfen bize ulaşın",
+    "insufficientFunds": "Yeterli {{ tokenSymbol }} yok. Bakiyeniz {{balance}} {{tokenSymbol}}, ancak {{requiredBalance}} {{tokenSymbol}} gerekli.",
+    "insufficientFunds1inch": "Transfer ve gaz ücreti için yeterli miktarda {{ nativeToken }} yok. İşlem için daha az miktar girin veya {{ nativeToken }} bakiyenizi doldurun.",
+    "noQrCode": "Lütfen QR kodunu taradığınızdan emin olun. ",
+    "walletlinkWrongNetwork": "Lütfen Coinbase uygulamasında {{ networkToChoose }} ağının seçili olduğundan emin olun. Coinbase uygulamasında ağı değiştirmek için alt paneldeki ayarlara gidin ve \"Aktif Ağ\" sekmesini seçin.",
+    "noWallet": "Herhangi bir cüzdan bağlamadınız. Site işlevselliğini kullanabilmek için lütfen cüzdanınızı bağlayın. ",
+    "retrievingTokensError": "Jetonlar alınırken hata oluştu",
+    "wrongToken": "Rubik köprüsü yalnızca rubik belirtecini destekler",
+    "oneInchQuote": "1 inç alıntı hatası",
+    "notSupportedNetwork": "{{networkToChoose}}, seçilen cüzdan sağlayıcısı tarafından desteklenmiyor.",
+    "signReject": "Cüzdanınızla oturum açmayı reddettiniz. Uygulamamızı tam olarak kullanabilmek için lütfen cüzdanınızla oturum açtığınızı onaylayın.",
+    "lowGas": "İşlem gazı çok düşük. İşlemin minimum maliyetini karşılayacak kadar gaz yok. Verilen gazı artırmayı deneyin",
+    "noSelectedProvider": "Takas sağlayıcı seçin",
+    "notSupportedItNetwork": "Seçilen ağ, anlık işlemler için desteklenmiyor",
+    "notSupportedBridge": "Bu köprü şu anda kullanılamıyor. Lütfen desteklenen bir köprü seçin",
+    "insufficientLiquidityCCR": "Bu ticaret için yetersiz likidite",
+    "insufficientLiquidityIT": "Bu ticaret için yetersiz likidite.",
+    "oneinchRefreshError": "1 inç şu anda kullanılamıyor. Lütfen takası yenilemeyi deneyin",
+    "1inchNotSupportedToken": "1 inç, seçilen jetonlardan birini desteklemiyor.",
+    "cancelDeadline": "İşlemin son tarihi geçtiği için işleminiz geri alındı. Lütfen işlem bitiş süresini veya gaz miktarını artırmaya çalışın.",
+    "chooseSupportedBridge": "Desteklenen köprüyü seçin",
+    "InsufficientBalance": "Yetersiz bakiye",
+    "chooseNetworkWallet": "Cüzdanınızda {{blockchain}} ağını seçin",
+    "noEnteredAmount": "Bir miktar girin",
+    "minimumAmount": "Minimum miktar {{amount}} {{token}}",
+    "maximumAmount": "Maksimum miktar {{amount}} {{token}}",
+    "maxGasPriceOverflow": "{{toBlockchain}}'deki gaz fiyatı çok yüksek. Lütfen bekleyin ve daha sonra deneyin.",
+    "crossChainIsUnavailable": "Çapraz Zincir şu anda kullanılamıyor. Lütfen bekleyin ve daha sonra deneyin.",
+    "multichainWallet": "Rubic henüz çok zincirli cüzdanları desteklemiyor. Şu anda yalnızca Ethereum ağında işlem yapabilirsiniz.",
+    "unknown": "Hata, bir şeyler ters gitti, lütfen tekrar deneyin",
+    "insufficientFoundsGasPriceValue": "Gaz ücreti için yetersiz fon. Lütfen {{nativeToken}} bakiyenizi doldurun.",
+    "NoDataMyTradesError": "Hata! Bir şeyler ters gitti, lütfen sayfayı yeniden yüklemeyi deneyin. Yeniden yükledikten sonra hala bu sorunu yaşıyorsanız desteğimizle iletişime geçin. ",
+    "rubicOptimisation": "Bu ticaret için yetersiz likidite. Rubik optimizasyonunu devre dışı bırakmayı deneyin..",
+    "partialTradesData": "Sunucudan işlem verilerini alma sorunu ile karşı karşıyayız. Lütfen sayfayı yeniden yükleyin veya sorun devam ederse desteğe başvurun.",
+    "tradingIsNotAvailable": "Ticaret yapılamıyor",
+    "wrongWallet": "Lütfen {{network}} ağını destekleyen cüzdan ile giriş yapın",
+    "invalidTargetAddress": "Geçersiz hedef ağ adresi",
+    "solSwap": "Değiştirmek için SOL jetonunu açın. İkinci belirteç olarak SOL'u seçin",
+    "unsupportedTokenCCR": "Bir işlem göndermeye çalışırken bir hata oluştu.\nŞu anda çoklu zincirde desteklenmeyen bir jetonu satmaya çalışıyor olabilirsiniz.",
+    "rpcError": "Bir hata oluştu, bunu çözmek için ne yapacağınızı öğrenmek için aşağıdaki bağlantıyı takip edin.",
+    "buttonLink": "Daha fazla bilgi edin",
+    "wrongPromoterWallet": "You have connected a wallet that is not compatible with Ethereum. Please log out of your account and connect an Ethereum-compatible wallet (e.g. MetaMask).",
+    "walletNotInstalled": "Wallet is not installed."
+  },
+  "navigation": {
+    "about": "Hakkında",
+    "faq": "FAQ",
+    "features": "Özellikler",
+    "project": "Proje",
+    "login": "Cüzdanı Bağla",
+    "myTrades": "Benim işlemlerim",
+    "logout": "Çıkış Yap",
+    "logoutMessage": "Gerçekten Oturumu Kapatmak istiyor musunuz?",
+    "notAvailable": "Yapım Aşamasında - UX Yeniden Tasarımı",
+    "merch": "Ek ürün mağazası",
+    "staking": "Staking",
+    "promotion": "Promotion"
+  },
+  "aboutPage": {
+    "description": "Rubic, birden fazla blok zincirinde çapraz zincir, P2P, anında takas ve limit emirleri içeren ve eksiksiz bir  merkezi olmayan bir platform sunmayı amaçlayan çok zincirli bir DeFi ekosistemidir.",
+    "benefits": {
+      "0": {
+        "title": "Özel yönlendirme",
+        "description": "Rubic, kullanıcıların herhangi bir belirteçle ticaret yapmasına izin verecek bir yönlendirme çözümü yarattı. Ana avantajı, gaz fiyatlarını hesaplama ve kullanıcılara en az miktarda gaz ödeyerek en iyi optimize edilmiş çözümü gösterme yeteneğidir."
+      },
+      "1": {
+        "title": "Anında Ticaret",
+        "description": "Harici DEX'leri kullanarak anında ticaret yapın (en iyi oranlarla alın)  "
+      },
+      "2": {
+        "title": "Çoklu zincir desteği",
+        "description": "Şu anda desteklenen blok zincirler: Ethereum, Binance Akıllı Zincir ve Çokgen) "
+      },
+      "3": {
+        "title": "Zincirler arası takaslar",
+        "description": "Bu ağlar arasında tam takaslar: BSC <-> Ethereum & Polygon <-> Ethereum"
+      },
+      "4": {
+        "title": "Musluk",
+        "description": "Musluk özelliğimiz, kullanıcıların KYC olmadan RBC veya ETH kullanarak jeton satın almalarına olanak tanır. Şu anda kullanıcılar BNB satın alabiliyor, ancak daha fazlası gelecek!"
+      },
+      "5": {
+        "title": "P2P Ticareti",
+        "description": "Ticaretinizi oluşturun ve kendi şartlarınızı seçin"
+      },
+      "6": {
+        "title": "Limit Emri",
+        "description": "İstediğiniz oranı ayarlayın ve DEX'lerden biri anlaşmanızın parametrelerini karşıladığında anlaşmanız otomatik olarak yürütülecektir."
+      }
+    },
+    "features": {
+      "title": "Rubic'in DEX Özellikleri",
+      "data": {
+        "0": "iFrame Widget'ı",
+        "1": "Özel yönlendirme",
+        "2": "Zincirler arası takaslar",
+        "3": "Çoklu Zincir Desteği: Ethereum, Binance Akıllı Zincir ve Çokgen ağları",
+        "4": "Kitlesel satış yapabilme",
+        "5": "Platform gelirinin yüzdesi düzenlenebilir",
+        "6": "Instant Trades",
+        "7": "Genel/Özel fırsatlar",
+        "8": "Brokers support",
+        "9": "Broker desteği",
+        "10": "Özel jetonlar",
+        "11": "Dolandırıcılıkların ve \"rugpulls\" olmasını engeller",
+        "12": "Ethereum için Limit Emirleri",
+        "13": "Özel Köprülerin Oluşturulması",
+        "14": "BNB faucet"
+      }
+    },
+    "contract": {
+      "title": "Rubik sözleşmesi"
+    },
+    "roadmap": {
+      "title": "Yol Haritası",
+      "data": {
+        "0": {
+          "quarter": "Q1. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yeni Blockchain ve DEX Entegrasyonları",
+            "Binance Smart Chain Instant Trades",
+            "Cross-chain Solutions For ETH And BSC",
+            "Mobile Support",
+            "Limit Orders For ETH",
+            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System"
+          ]
+        },
+        "1": {
+          "quarter": "Q2. 2021",
+          "month": "April",
+          "done": true,
+          "data": [
+            "Custom Token Support",
+            "Custom Bridges Feature",
+            "Custom Routing System"
+          ]
+        },
+        "2": {
+          "quarter": "Q2. 2021",
+          "month": "May",
+          "done": true,
+          "data": [
+            "CoinGecko And Coin Market Cap API For ETH<>RBC",
+            "BNB Faucet",
+            "Instant Trades Table",
+            "UI Simple Update",
+            "BSC Limit Orders"
+          ]
+        },
+        "3": {
+          "quarter": "Q2. 2021",
+          "month": "June",
+          "done": true,
+          "data": [
+            "UI Update stage 2",
+            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
+            "Merch Shop",
+            "CoinGecko & CMC All Pairs Reporting",
+            "FIAT Integration",
+            "Uniswap V3",
+            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
+            "MATIC Faucet",
+            "Usecase Updates"
+          ]
+        },
+        "4": {
+          "quarter": "Q3. 2021",
+          "month": "July",
+          "done": true,
+          "data": [
+            "Cross-Chain Routing",
+            "New Blockchain/Bridge Integrations",
+            "UI Update Stage 3",
+            "Commission In RBC - Stage 1"
+          ]
+        },
+        "5": {
+          "quarter": "Q3. 2021",
+          "month": "August",
+          "done": true,
+          "data": [
+            "Commission In RBC - stage 2",
+            "Anonymizer V1 - Polygon"
+          ]
+        },
+        "6": {
+          "quarter": "Q3. 2021",
+          "month": "September",
+          "done": true,
+          "data": [
+            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
+            "AutoRefund system release",
+            "Creating a 24/7 technical support team for our community",
+            "Beginning of a new blockchain integration",
+            "Rubic Relay Widget partners and integrations",
+            "Beginning of Widget development: SDK/API",
+            "Cross-chain fixes and improvements"
+          ]
+        },
+        "7": {
+          "quarter": "Q4. 2021",
+          "month": "",
+          "done": true,
+          "data": [
+            "0x integration and gas fee reductions",
+            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
+            "RBC Staking",
+            "Widget: SDK/API release"
+          ]
+        },
+        "8": {
+          "quarter": "Q1-Q2. 2022",
+          "month": "",
+          "done": true,
+          "data": [
+            "Yield Farming and/or Lending Product integrations",
+            "Governance",
+            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
+            "RBC Staking 2.0",
+            "Mobile version (iOS, Android)",
+            "BTC bridge integration"
+          ]
+        }
+      }
+    }
+  },
+  "faqPage": {
+    "title": "FAQ",
+    "questions": [
+      {
+        "title": "Rubik nedir?",
+        "answer": "Rubic, çok zincirli takaslar, zincir üstü takaslar ve çok daha fazlasını içeren çok zincirli bir DeFi ekosistemidir. Amacımız, eksiksiz bir ONE-STOP merkezi olmayan ticaret platformu sunmaktır. Rubic platformu, kullanıcıların farklı çözümler kullanarak çok zincirli takasları tamamlayabilecekleri, kullanıcıların önde gelen tüm takas protokollerinden (DEX toplayıcı uygulaması sayesinde) en iyi oranları alacağı ve aynı zamanda benzersiz çoklu zincir özelliğimizden yararlanabilecekleri bir yerdir. Desteklenen tüm jetonları 1 tıklamayla değiştirme fırsatı verir!"
+      },
+      {
+        "title": "Hizmetimizi kimler kullanabilir?",
+        "answer": "Hizmetimiz, dünyanın herhangi bir yerinde, farklı ağlarda alım satım yapmak ve aralarındaki çok zincirli takasları tamamlamak isteyen kripto kullanıcıları tarafından kullanılabilir. Özelliklerimiz ayrıca diğer projeler için hizmetleri de içerir: özel köprülerin oluşturulması ve kullanıcıların Rubic kullanarak doğrudan hizmet web sitesinde alım satımları tamamlamasına olanak tanıyan Rubic Relay widget'ının entegrasyonu. app.rubic.exchange'te herhangi bir işlem için \tKYC gerekli değildir"
+      },
+      {
+        "title": "Rubic, farklı DEX platformlarını nasıl birleştiriyor?",
+        "answer": "Kullanıcılar, en düşük gaz fiyatları ile en iyi jeton oranlarını elde etmek için uygun DEX protokolünü seçebilecekler. Rubic her zaman tüm varyantları analiz eder ve karşılaştırır ve en iyi oranı bulur. Lütfen tüm alternatifleri kontrol ederken GAS ücretini dikkate aldığımızı unutmayın. Rubic, kullanıcılara en iyi değişim fırsatlarını sunmaya çalışır."
+      },
+      {
+        "title": "Neden farklı sağlayıcılar arasında bir seçim yapmamız gerekiyor? ",
+        "answer": "Bu protokollerin gas ücretleri ve fiyat oranları farklıdır, bu nedenle daha fazla seçeneğe sahip olma fırsatı, kullanıcıların daha iyi ticaret kararları almalarını sağlar.\n\nAyrıca, Rubic, kullanıcıların farklı ağlarda herhangi bir jeton ticareti yapmasına olanak tanıyan bir yönlendirme çözümü yarattı. Ethereum için kendi oluşturduğumuz yönlendirme sistemimiz, Uniswap yönlendirme sistemine göre çeşitli avantajlara sahiptir. Başlıca avantajı, gaz fiyatlarını hesaplama ve kullanıcılara en az miktarda gaz ödeyerek en iyi optimize edilmiş çözümü gösterme yeteneğidir.\n\nYönlendirme sistemimiz, kullanıcılara takaslarında çoğu DEX'ten daha düşük fiyatlar verir. Kullanıcılar, farklı takas sonuçları arasındaki fiyat farkının madenci komisyon ücretleri için BEKLENEN fiyat farkından daha pahalı olduğu durumlarda daha düşük fiyatlar için teklifler alacaklardır. Swap fiyatındaki bu fark madenci komisyon ücretlerindeki farktan fazla olduğunda, kullanıcıya daha ucuz bir takas yolu seçeneği sunulacaktır. Bunun meydana geldiği durumlarda, likidite ile ilgili olası sorunlar nedeniyle, kullanıcılara daha pahalı bir gaz ücreti ve takası gerçekleştirmeleri için daha uzun bir rota içeren bir seçenek de sunulacak."
+      },
+      {
+        "title": "Destek ile Nasıl İletişime Geçilir?",
+        "answer": "Yardıma ihtiyacınız olursa, web sitemizde veya Telegram'ımızda bir bilet göndererek buradan destek ekibimizle iletişime geçmekten çekinmeyin: <a href='https://t.me/RubicSupportBot' target='_blank'>https:// t.me/RubicSupportBot</a>\n\n Canlı sohbet - Sohbeti kullanarak anında yardım almak için Rubic ekibiyle iletişime geçin. 7/24 ulaşılabilir.\n\nE-posta Desteği - <a href='mailto:support@rubic.finance'>support@rubic.finance</a>. Daha karmaşık veya teknik sorularla istediğiniz zaman Rubic Desteğine mesaj gönderin. Yardım etmek için buradayız"
+      },
+      {
+        "title": "Rubic Relay widget'ı nedir ve nasıl entegre edebiliriz?",
+        "answer": "Rubic Relay, projelerin düşük kullanıcı cirosu ile ilgili karşılaştığı problemler için harika bir çözümdür.\nKullanıcıları web sitenizde tutar, alım satımları basit bir eyleme dönüştürür: Relay, kullanıcılara ve proje sahiplerine kendi projelerinde jeton alıp satma işlevi sunar. web sayfası, kullanıcıların sırf yardımcı program dışında web sitenizde daha uzun süre kalmasına neden olur.\nRelay ayrıca farklı cihazlar arasında ölçeklenebilir ve Relay widget'ının kendisinin de renklerini ve boyutunu değiştirmek mümkündür.\n\nBurada ayrıntılı bir bilgi verilmiştir. Rölenin entegrasyonu için talimat kılavuzu:\n <a href='https://drive.google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing' target='_blank'>https://drive. google.com/file/d/1ULxjzN3sVc2indb5-_PtR7v7jui_tCJ7/view?usp=sharing</a>"
+      },
+      {
+        "title": "“İşlem yapılamaz” mesajını gördüğümde ne yapmalıyım?",
+        "answer": "Bu mesajı alırsanız, aşağıdaki yöntemleri deneyin:\n1. Sayfayı yeniden yükleyin.\n2. Web sitesi önbelleğini temizleyin.\n\n Yardımcı olmadıysa, takas etmeye çalıştığınız tokenlerden birinin muhtemelen bu ticaret için yeterli likiditesi yoktur."
+      },
+      {
+        "title": "On-Chain takasım neden uzun süreli “Beklemede” durumuna sahip?",
+        "answer": "Sebep:\nAyarlanan gaz ücreti işleminizi gerçekleştirmek için yeterli olmayabilir.\n\n Nasıl çözülür:\n İşlem ”Beklemede” ise, en iyisi şu şekilde değiştirerek işlemi manuel olarak hızlandırmaktır. işlemin tamamlanmasını zorlamak için istenen gaz değeri. Cüzdanınız üzerinden yapılabilir. Ek bir gaz ücreti ödeyebileceksiniz.\n\nHâlâ yardıma ihtiyacınız varsa, buradan bir bilet göndererek veya Telegram <a href='https://t.me/RubicSupportBot' hedefinden destek ekibimizle iletişime geçmekten çekinmeyin. ='_blank'>https://t.me/RubicSupportBot</a>"
+      },
+      {
+        "title": "Neden “Yetersiz Bakiye” hatası alıyorum? ",
+        "answer": "Yerel bir jetonu değiştirirseniz ve bu hatayla karşılaşırsanız, işlem ücretleri için yeterli bakiye bırakmadan tüm aktarılabilir fonlarınızı göndermeye çalışıyorsunuz demektir. Yerel olmayan bir jeton aktarırsanız, “Miktar” alanına mevcut bakiyeyi aşan bir değer girilmiştir. \nAyrıca lütfen uygun cüzdanı bağladığınızdan ve takas için yeterli jetonunuz olduğundan emin olun.\nTransferi onaylamadan önce ücret transfer ekranında gösterilir. Gönderdiğiniz toplam tutardan bu tutarı düşerseniz transferiniz gerçekleşir."
+      },
+      {
+        "title": "“Fiyat Etkisi Çok Yüksek” hatası alırsam ne yapmalıyım?",
+        "answer": "Sebep:\n Bu hata düşük likiditeden kaynaklanır.\n\nDaha az miktarda alım satım yapmayı deneyin veya ayarlar simgesi aracılığıyla kayma toleransını artırın ve tekrar deneyin. Bu işe yaramadıysa, jetonun likiditesi takas için çok düşük."
+      },
+      {
+        "title": "“Fiyat Etkisi Çok Yüksek” hatası alırsam ne yapmalıyım?",
+        "answer": "Bırakıldı ve Değiştirildi\", işlemin yenisiyle değiştirildiği anlamına gelir.\n\n Bu durumun iki olası nedeni vardır:\n1. Cüzdanınızdaki işlemi hızlandırdınız ve istediğiniz jetonları alacaksınız. “Değiştirildi by Txn Hash\" sekmesinde işlemle ilgili bilgileri görüntüleyin.\n2. Muhtemelen işlemi yanlışlıkla iptal ettiniz. Varlıklar adresinizden borçlandırılmayacaktır, ancak gaz ücreti size geri iade edilmeyecektir."
+      },
+      {
+        "title": "Tarayıcıda neden “Süresi Doldu“ durumunu aldım?",
+        "answer": "İşlem, kendisine ayrılan süre içinde çıkarılmadı.\n\nBu senaryoda, işlem yeniden gönderilmelidir. İşlem sırasında, yürütülmesi için harcanan gazın yakıldığını, ancak tamamen olmadığını unutmayın. Yeniden gönderilen işlemin gerçekleştirilmesi için ayrıca bir gaz ücreti alınır."
+      },
+      {
+        "title": "Neden “Uyarı! Sözleşme Yürütme Sırasında Karşılaşılan Hata [Gazsız]”?",
+        "answer": "Sebep:\n İşlem için yeterli gaz yoktu.\n\n Bu tarayıcı hatası, belirlediğiniz gaz sınırının minimumun üzerinde olduğu, ancak işlemin yürütülmesi için hala yeterli olmadığı anlamına gelir. Lütfen daha yüksek bir gaz limiti ile tekrar deneyin. Ayrıca, gaz limitini manuel olarak değiştirmemenizi öneririz, cüzdanınız gerekli miktarı otomatik olarak ayarlayacaktır."
+      },
+      {
+        "title": "Neden Çok Zincirli bir işlemin uzun süreli “Beklemede” statüsüne sahibim?",
+        "answer": "Presumably, gas prices increased dramatically during that time. \nIf the above methods did not help, please contact our support team via chat on the website or Telegram: <a href='https://t.me/RubicSupportBot' target='_blank'>https://t.me/RubicSupportBot</a>."
+      },
+      {
+        "title": "Neden çoklu zincir takasını yapamıyorum?",
+        "answer": "Ne yazık ki, çok zincirli yönlendirme yoluyla satmak için ücrete dahil olan jetonları desteklemiyoruz. Bu özelliği uygulamak için çalışıyoruz.\n Şimdilik bu tür jetonları sabit veya yerel madeni paralar için zincir üstü takas yoluyla satmanızı ve ardından satın aldığınız jetonla çok zincirli takas yapmanızı öneririz.",
+        "id": "unsupportedTokenCCR"
+      },
+      {
+        "title": "Neden Yöntem Yürütme Hatası: Hata: Dahili JSON-RPC hatası alıyorum.",
+        "answer": "Seçilen ağ için cüzdanda kullanılan RPC'nin geçici arızası. \nBu hata oluşursa, işlem gönderilmemiştir ve para cüzdanınızdan çekilmeyecektir. ;\n İşleminizi tekrar göndermeyi deneyin. Sorun devam ederse, şu adımları deneyin:\n 1. Önbelleği temizle;\n 2. Kaymayı artırın;\n 3. Gaz sınırını artırın.",
+        "id": "rpcError"
+      },
+      {
+        "title": "Rubic Autorefund Policy.",
+        "answer": "Rubic’s team will complete the refund in USDC tokens. The amount of the refund will be equal to the amount of tokens in USD at the moment when the trade was initiated. the refund will be completed in the target network. \n\nYou can find the detailed information about the Rubic's auto-refund system by using this <a href='https://docs.rubic.finance/multi-chain-protocol/rubic-auto-refund-policy' target='_blank' rel='noopener noreferrer'>link</a>."
+      }
+    ]
+  },
+  "promotionPage": {
+    "common": {
+      "switchWallet": "Switch to Ethereum-compatible Wallet"
+    },
+    "invitations": {
+      "invitedProjects": "Invited Projects",
+      "noProjects": "You haven't invited any projects yet",
+      "tableColumns": {
+        "projectName": "Project",
+        "invitationDate": "Invited",
+        "tradingVolume": "Trading Volume",
+        "received": "Received",
+        "receivedTokens": "Received Tokens"
+      }
+    },
+    "statistics": {
+      "referralProgram": "Referral Program",
+      "invitedProjects": "Invited Projects",
+      "totalRewards": "Earned Rewards",
+      "instantRewards": "Instant Rewards",
+      "earnWithOurWidget": "Earn with our Widget",
+      "createAReferralLink": "Generate a referral link and start earning with our Widget. Make sure to read the Program Rules!",
+      "myPromoLink": "My Promo Link",
+      "contactUs": "Contact Us"
+    }
+  },
+  "bridgePage": {
+    "title": "Düşük gaz ücretleri ile köprü varlıkları",
+    "progressMessage": "İşlemi kabul ettiniz ve değişim başladı. Lütfen işlem tamamlanana kadar bekleyin",
+    "successMessage": "Zincirler arası takas süreci başladı. Lütfen ticaret her iki blok zinciri tarafından tamamlanana kadar bekleyin. ",
+    "approveProgressMessage": "Onay işlemini kabul ettiniz ve değişim başladı. Lütfen işlem tamamlanana kadar bekleyin.",
+    "approveSuccessMessage": "Onaylanmış jetonlarınız var. Ticarete devam etmek için takas düğmesine basın.",
+    "whatIs": "Nedir",
+    "getTokens": "Bu adrese {{ toBlockchainName }} jeton alacaksınız"
+  },
+  "crossChainPage": {
+    "targetAddress": {
+      "hint": "{{network}}'ü destekleyen cüzdan adresini girin. Jetonlarınızı bu cüzdanda alacaksınız.",
+      "placeholder": "Adres girin veya geçmiş"
+    },
+    "swapInfo": {
+      "title": "Ethereum blok zincirinde jeton almak için tahmini süre, Gaz fiyatına bağlıdır ve 10 dakikaya kadar çıkabilir\n",
+      "maximumSent": "Maksimum Gönderilen ",
+      "maximumSentHint": "Gönderilecek maksimum jeton miktarı\n",
+      "minimumReceived": "Minimum alınan",
+      "minimumReceivedHint": "Alınacak minimum jeton miktarı\n",
+      "platformFee": "Platform ücreti",
+      "platformFeeHint": "RBC belirtecinde platform komisyon ücretleri\n"
+    },
+    "smartRouting": {
+      "save": "Save ${{amount}} with Smart Routing",
+      "estTime": "Est. time ~ 80 sec"
+    }
+  },
+  "instantTrades": {
+    "title": "Varlıkları 1 tıklamayla değiştirin",
+    "gasFeeMessage": "Tahmini gaz ücreti miktarı. Ticareti tamamlamak için MetaMask'ta daha fazla gaz sağlanması gerekecek, işlem tamamlandıktan sonra fazla gaz iade edilecektir. ",
+    "gasFee": "Est. gas fee",
+    "useOptimization": "Rubik optimizasyonunu kullanın",
+    "notAvailableBefore": "Trading on ",
+    "notAvailableAfter": " mevcut değil."
+  },
+  "myTrades": {
+    "title": "Benim işlemlerim"
+  },
+  "gasRefund": {
+    "title": "Gaz İadesi",
+    "body": {
+      "refundAmount": "İade Tutarı",
+      "transactions": "işlemler",
+      "more": "daha fazla"
+    },
+    "button": {
+      "refundAfter": "Sonra talep et",
+      "refund": "Talep"
+    },
+    "promoActions": {
+      "1": {
+        "label": "CRYPTOLOVE",
+        "description": "Platformumuzdaki ilk Çoklu Zincir takasını tamamladığınız için gaz para iadesi alın!  "
+      },
+      "2": {
+        "label": "Avalanche Gaz iadesi",
+        "description": "Çığ ağında Rubic Çok Zincirli yönlendirmenin lansmanını kutlamak için projemiz yeni bir Gaz Geri Ödeme Kampanyası başlatıyor! 19 Ekim'den 2 Kasım'a kadar kullanıcılarımız, Rubic Multi-Chain Routing kullanarak Avalanche ağındaki favori tokenlerini kullanarak takas işlemini tamamlayabilecek ve GAS iadesini alabilecekler.."
+      }
+    },
+    "notifications": {
+      "progress": {
+        "label": "Gaz iadesi devam ediyor",
+        "message": "Rubic bir gaz iadesini tamamlıyor. Lütfen tamamlanana kadar bekleyin."
+      },
+      "complete": {
+        "label": "Gaz iadesi tamamlandı",
+        "message": "Gaz iadeniz tamamlandı! Rubic'i kullandığınız için teşekkürler!"
+      }
+    }
+  },
+  "tradesTable": {
+    "columns": {
+      "status": "Durum",
+      "from": "Kimden",
+      "to": "Kime",
+      "get": "Al",
+      "send": "Gönder ",
+      "expiresIn": "Süresi doluyor",
+      "volume": "Hacim",
+      "network": "Network",
+      "spent": "Harcandı",
+      "expected": "Beklenen",
+      "date": "Date",
+      "provider": "Sağlayıcı",
+      "explorerLink": "Gezgin bağlantısı"
+    },
+    "statuses": {
+      "completed": "tamamlandı",
+      "pending": "beklemede",
+      "canceled": "iptal edild",
+      "rejected": "reddedildi",
+      "depositInProgress": "para yatırma işlemi devam ediyor",
+      "withdrawInProgress": "geri çekme işlemi devam ediyor",
+      "waitingForDeposit": "depozito bekleniyor",
+      "waitingForReceiving": "almayı bekliyor",
+      "refunded": "refunded"
+    },
+    "noData": "Henüz işleminiz yok",
+    "receive": "Almak"
+  },
+  "tradePage": {
+    "getBefore": "Alacaksın",
+    "getMiddle": "jeton bu adrese ",
+    "getAfter": "ticaret tamamlandıktan sonra",
+    "providerFee": "sağlayıcı ücreti",
+    "rbcLowFees": "Düşük ücretler için RBC kullanın",
+    "discountRBC": "RBC ile indirim",
+    "blockchainsHint": "Daha fazla blok zinciri",
+    "tradingNotAvailable": "Ticaret yapılamıyor",
+    "rateIsUpdated": "Fiyat güncellendi, en son fiyatları almak için dokunun"
+  },
+  "staking": {
+    "stake": {
+      "stake": "Stake",
+      "withdraw": "Withdraw",
+      "balance": "{{amount}} hakkınız var ",
+      "unstakeBalance": "{{amount}} miktarı kaldırılabilir",
+      "confirmStake": "Stake onayla",
+      "unstake": "Unstake",
+      "overLimit": "Bir stake limiti {{min}} - {{max}} BRBC",
+      "globalUpdate": "Global Güncelleme",
+      "globalUpdateHint": "Global Güncelleme hakkında",
+      "getBrbc": "BRBC alın",
+      "calculateProfitability": "Karlılığı hesaplayın",
+      "refillTime": "{{hours}} saat {{dakika}} dakika",
+      "addXbrbc": "xBRBC ekle",
+      "canUnstake": "{{amount}} stake kaldırabilir"
+    },
+    "stats": {
+      "profitTime": "Dünkü  APR",
+      "calc": "Hesapla",
+      "balance": "Balance",
+      "canReceive": "Ödüllü Tutar",
+      "rewards": "Kazanılan Ödüller",
+      "apr": "APR",
+      "usersTotal": "toplam yaptığın stake",
+      "total": "toplam   stake",
+      "connectWallet": "Bilgi almak için cüzdanı bağlayın"
+    },
+    "features": {
+      "highApr": "Yüksek  APR",
+      "minimumApr": "RBC/USDT fiyatına ve Çoklu Zincir hacmine bağlı olarak 2 aylık dönem için tahmini APR %80 veya daha fazladır\n",
+      "brbcRewards": "BRBC ödüller",
+      "stakeTokens": "BRBC'de ödüller almak için 1.000 - 100.000 RBC/BRBC/wRBC yatırın",
+      "teamBuybacks": "Takım Geri Alımları",
+      "chainFeeUsage": "%0,6 Çoklu Zincir ücretimizin %0,5'i RBC'yi geri almak ve ödül havuzuna dağıtmak için kullanılacak"
+    }
+  },
+  "maintenance": {
+    "title": "Site bakımda",
+    "text": "Birlikte kripto dünyasını değiştirelim.."
+  },
+  "modals": {
+    "confirmImportModal": {
+      "title": "Lütfen eklediğinizi onaylayın!",
+      "text": "Bu jeton Rubic.exchange'te listelenmiyor.\nBunu özel bir jeton olarak ekleyerek, onunla ticaret yaptığınızı onaylamış olursunuz"
+    },
+    "bridge": {
+      "receiveWarning": "Bu köprü iki işlemden oluşmaktadır. İşlemi başlatırsanız, iptal edemezsiniz.",
+      "trackTrx": "<a target=\"_blank\" href=\"/my-trades\">İşlemlerim</a>'de işlem durumunu izleyin ve Ethereum ağındaki belirteçleri talep etmek için göründüğünde «Al» seçeneğine dokunun"
+    },
+    "tokensListModal": {
+      "defaultTitle": "Jeton Listesi",
+      "favoriteTokensTitle": "Favori Jetonlar",
+      "unsupportedPairsHint": "Bu belirteç takas için kullanılamaz. Lütfen desteklenen çiftleri seçin.",
+      "clearParamsHint": "Bu belirteci seçmek için diğer form parametrelerini temizleyin",
+      "searchPlaceholder": "Adı arayın veya adresi yapıştırın",
+      "noSearchData": "Gösterilecek bir şey yok  ",
+      "noFavoriteData": "Seçili ağda favori jetonunuz yok, ",
+      "backToTokens": "tüm belirteçler listesine geri dön",
+      "unauthorized": "Kullanıcının yetkisi yoktur. Jetonları favori yapmak için lütfen giriş yapın  "
+    },
+    "walletsModal": {
+      "title": "Cüzdanı bağla",
+      "new": "Ethereum'da Yeni?",
+      "learnMore": "Cüzdanlar hakkında daha fazla bilgi edinin"
+    },
+    "coinbaseSelectNetworkModal": {
+      "title": "Kaynak ağı seçin",
+      "text": "Lütfen bir takas kaynağı ağı seçin. Bir Coinbase cüzdanı bağlayarak, mevcut oturumda ağı değiştiremezsiniz. Coinbase cüzdanını bağladıktan sonra ağı değiştirmek için hesabınızdan çıkış yapın ve farklı bir ağ seçerek bağlanın veya farklı bir cüzdan kullanın"
+    },
+    "successTxModal": {
+      "see": "See ",
+      "transactionDetailsLink":"transaction details",
+      "itWillAppearsIn": ". It will appears in ",
+      "myTradesLink":"My trades",
+      "pageSoon": " page soon.",
+      "title": "İşlem başarıyla gönderildi!",
+      "ccrTitle": "Kaynak ağda başarılı takas!",
+      "seeDetailsCCR": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>. It will appears in <a class='modal__footer-link' href='./my-trades' target='_blank'>My trades</a> page soon.",
+      "seeDetailsItBridge": "See transaction <a class='modal__footer-link' href='{{explorerLink}}' target='_blank'>details</a>.",
+      "link": "benim işlemlerim"
+    },
+    "stakingSwapModal": {
+      "title": "RBC stake için BRBC'de takas yapmanız gerekir",
+      "aboutSwap": "<b>Her şeyi otomatik olarak yapacağız</b> <br> İşlem ~7 dakika sürecektir. ",
+      "aboutSign": "İki işlemi imzalamanız gerekecek: onaylayın ve değiştirin.",
+      "aboutMyself": "Ancak jetonları kendiniz değiştirebilirsiniz. ",
+      "agree": "Tamam, katılıyorum",
+      "swapMyself": "kendim değiştiririm"
+    }
+  },
+  "settings": {
+    "instantTrades": {
+      "slippageTitle": "Kayma toleransı",
+      "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir. (Daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır)",
+      "multihopsTitle": "Çoklu atlamaları devre dışı bırak",
+      "multihops": "Takas işleminiz yalnızca doğrudan çiftlerle tamamlanacaktır.",
+      "rubicOptimisationTitle": "Rubik optimizasyonunu kullanın ",
+      "rubicOptimisation": "Rubik optimizasyonu varsayılan olarak etkindir. Ancak, gaz maliyetini hesaba katmadan en uygun ticaret yolunun yürütülmesi için bunu devre dışı bırakabilirsiniz.",
+      "deadlineTitle": "İşlem son tarihi",
+      "deadline": "İşleminiz bu süreden daha uzun süre beklemedeyse işleminiz geri alınacaktır.",
+      "autoRefreshTitle": "Otomatik yenileme",
+      "autoRefresh": "Her 15 saniyede bir ticaret parametrelerini günceller"
+    },
+    "bridge": {
+      "walletAddress": "Belirteçlerin sağlanacağı TRON blok zincirindeki cüzdan adresi. "
+    },
+    "crossChainRouting": {
+      "autoRefreshTitle": "Otomatik yenileme",
+      "autoRefresh": "Her 15 saniyede bir ticaret parametrelerini günceller",
+      "slippageTitle": "kayma toleransı",
+      "slippage": "Fiyatın girilen yüzdeden daha fazla olumsuz değişmesi durumunda işleminiz iptal edilecektir. (Daha düşük bir yüzde, işleminizin ön çalıştırma olasılığını azaltır)",
+      "promoCodeTitle": "Promosyon kodu",
+      "promoCodeHint": "Ticaret için gaz iadesi almak için promosyon kodunu buraya girin.",
+      "promoCodeLoginRequired": "Promosyon kodunu kullanmak için cüzdanınızı bağlamanız gerekir.",
+      "promoCode": {
+        "accepted": {
+          "usesLeft": "Uses left",
+          "validUntil": "Şu tarihe kadar geçerlidir:"
+        },
+        "rejected": {
+          "text": "Promosyon kodunuz geçerli değil..",
+          "reason": {
+            "4000": "Promosyon kodunu daha önce kullandınız. Bu promosyon kodunu yalnızca bir kez kullanabilirsiniz.",
+            "4001": "Promosyon kodu maksimum kullanım sayısına ulaştı."
+          }
+        },
+        "outdated": {
+          "text": "Bu promosyon kodunun süresi doldu."
+        },
+        "wrong": {
+          "text": "Promosyon kodu yanlış girilmiş veya mevcut değil."
+        }
+      }
+    },
+    "header": {
+      "switchTheme": {
+        "title": "Tema Değiştir",
+        "desc": "web için tema "
+      },
+      "language": {
+        "title": "Dil",
+        "desc": "Dil seçiniz"
+      },
+      "gasPrice": {
+        "title": "Gaz fiyatı",
+        "desc": "Ethereum zincirinde"
+      },
+      "tutorials": {
+        "title": "Öğreticiler",
+        "desc": "Nasıl kullanılır"
+      }
+    }
+  },
+  "banner": {
+    "trading": {
+      "defaultText": "Rubic, Ethereum, BSC, Polygon, Avalanche, MoonRiver ve Fantom arasında 10.000 jetondan herhangi birini değiştirmenize izin veren bir Çok Zincirli Takas Protokolüdür.",
+      "customText": "Fantom artık Çok Zincirli ve Zincirli Takaslar için kullanılabilir..",
+      "link": "bugün dene!"
+    },
+    "external": {
+      "text": "Herhangi bir jetonu %0 protokol ücretiyle değiştirin. Şimdi ticaret yapın!",
+      "link": ""
+    }
+  },
+  "referralBanner": {
+    "takePartInOur": "Take part in our ",
+    "referralProgram": "Referral Program & get rewards!",
+    "link": "Learn more"
+  },
+  "volume": {
+    "title": "Birikmiş İşlem Hacmi",
+    "instantTrades": "Swaps",
+    "bridges": "Köprüler",
+    "crossChain": "Çapraz Zincir Takasları",
+    "description": "Her zaman "
+  },
+  "notifications": {
+    "tradeInProgress": "İşlem devam ediyor",
+    "successfulTradeTitle": "Başarılı ticaret",
+    "successfulCCRTradeTitle": "Kaynak ağda başarılı ticaret",
+    "successfullySentTransaction": "The transaction was successfully sent!",
+    "successfulCCRSwapTitle": "Successful swap in source network!",
+    "successfulTradeParagraph": "<a target=\"_blank\" href=\"/my-trades\">İşlemlerim</a> içindeki işlemi kontrol edin  ",
+    "approveInProgress": "Onaylama işlemi devam ediyor",
+    "successApprove": "Başarılı onay",
+    "minerFee": "1 inç, gaz ücretinde artan maliyetleri ayarlar. İşlem için daha az {{ nativeToken }} tutarı girin veya {{ nativeToken }} bakiyenizi doldurun",
+    "solanaBeta": "Solana ağı şu anda beta aşamasında. Kendi sorumluluğunuzda kullanın.",
+    "stakeInProgress": "Bahis devam ediyor",
+    "successfulStake": "Başarılı bahis",
+    "successfulWithdraw": "Başarılı geri çekilme",
+    "withdrawInProgress": "Geri çekilme işlemi devam ediyor",
+    "openMobileWallet": "Lütfen işlemi imzalamak için mobil cüzdan uygulamasını açın"
+  },
+  "buyTokens": {
+    "default": "RBC satın al",
+    "custom": "FTM satın al"
+  }
+}
