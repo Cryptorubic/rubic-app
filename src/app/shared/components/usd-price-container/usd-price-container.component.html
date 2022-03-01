@@ -3,10 +3,9 @@
     *ngIf="usdPrice?.isFinite() && usdPrice.gt(0)"
     class="usd-price-container__price"
     [tuiHint]="usdPriceTooltip"
-    tuiHintDirection="top"
     tuiHintMode="onDark"
   >
-    ${{ usdPrice | bigNumberFormat: 2:true }}
+    ${{ usdPrice | bigNumberFormat | withRound: 'toClosestValue':18:2:2 }}
   </div>
   <ng-template #usdPriceTooltip>${{ usdPrice | bigNumberFormat }}</ng-template>
 
