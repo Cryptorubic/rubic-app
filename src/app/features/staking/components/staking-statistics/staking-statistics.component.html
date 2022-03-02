@@ -13,7 +13,9 @@
   </div>
   <div class="statistics__item">
     <div class="statistics__value">
-      {{ earnedRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
+      <ng-container *ngIf="stakingRound === 1; else zero">
+        {{ earnedRewards$ | async | bigNumberFormat | shortenAmount: 9:4:true }} BRBC
+      </ng-container>
     </div>
     <div class="statistics__caption">{{ 'staking.stats.rewards' | translate }}</div>
   </div>
@@ -27,3 +29,5 @@
     [rotating]="loading$ | async"
   ></app-rotating-icon>
 </div>
+
+<ng-template #zero> 0 BRBC </ng-template>

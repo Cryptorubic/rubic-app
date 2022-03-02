@@ -12,7 +12,9 @@
     *ngIf="needChangeNetwork$ | async; else leaveStakeBtn"
     (click)="switchNetwork()"
   >
-    Switch Network
+    <ng-container *ngLet="selectedTokenBlockchain$ | async as blockchain">
+      {{ 'common.switchTo' | translate: { networkName: blockchain } }}
+    </ng-container>
   </app-rubic-button>
   <ng-template #leaveStakeBtn>
     <app-rubic-button

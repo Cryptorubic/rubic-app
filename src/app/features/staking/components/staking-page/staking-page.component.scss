@@ -1,48 +1,79 @@
-@use 'src/scss/mixins';
-@use 'src/scss/vars';
+@use 'src/scss/vars' as *;
+@use 'src/scss/mixins' as *;
 
-/* stylelint-disable */
 :host {
-  display: grid;
-  grid-template: 'stats stats' 1fr
-                 'container features';
+  display: block;
   width: 100%;
   max-width: 985px;
   margin: 0 auto;
   padding-top: 16px;
-
-  @include mixins.b(vars.$tablet) {
-    grid-template: 'stats'
-                   'container'
-                   'features';
-  }
-}
-/* stylelint-enable */
-
-app-staking-statistics {
-  grid-area: stats;
-  margin-bottom: 20px;
-
-  @include mixins.b(vars.$tablet) {
-    margin-bottom: 18px;
-  }
 }
 
-app-staking-container {
-  grid-area: container;
-  height: fit-content;
-  margin-right: 8px;
+.staking-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 62px;
 
-  @include mixins.b(vars.$tablet) {
-    margin: 0 0 18px;
+  background: var(--rubic-base-19);
+  border-radius: 22px;
+  box-shadow: var(--shadow-light);
+
+  @include b($tablet) {
+    flex-direction: column;
+    padding: 18px 24px 16px;
+
+    &__title {
+      margin-bottom: 18px;
+
+      font-size: 20px;
+    }
   }
-}
 
-app-staking-info {
-  grid-area: features;
-  width: 432px;
+  &__closed {
+    color: $rubic-text-error;
+  }
 
-  @include mixins.b(vars.$laptop) {
+  &__title {
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  &__tabs {
+    --background-color: var(--form-header-color-1);
+
+    display: flex;
     width: 100%;
+    max-width: 358px;
+    padding: 6px;
+    
+    background: var(--background-color);
+    border-radius: 100px;
+
+    @include dark {
+      --background-color: #2e322f;
+    }
+
+    &-tab {
+      width: 100%;
+      padding: 10.5px 0px;
+
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 21px;
+      text-align: center;
+
+      border-radius: 100px;
+      cursor: pointer;
+
+      &:first-child {
+        margin-right: 6px;
+      }
+
+      &_active {
+        background-color: $rubic-primary;
+      }
+    }
   }
 }

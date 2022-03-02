@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { UpdateDepositRequestInterface } from '@features/staking/models/update-deposit-request.interface';
-import { BridgeTxRequestInterface } from '@features/staking/models/bridge-tx-request.interface';
+import { UpdateDepositRequest } from '@features/staking/models/update-deposit-request.interface';
+import { BridgeTxRequest } from '@features/staking/models/bridge-tx-request.interface';
 import { pluck } from 'rxjs/operators';
 import { ENVIRONMENT } from 'src/environments/environment';
 
@@ -46,7 +46,7 @@ export class StakingApiService {
    * @param request
    * @return Observable<void>
    */
-  public updateUsersDeposit(request: UpdateDepositRequestInterface): Observable<void> {
+  public updateUsersDeposit(request: UpdateDepositRequest): Observable<void> {
     return this.httpService.post<void>('balance/deposit', { ...request }, this.stakingApiPath);
   }
 
@@ -55,7 +55,7 @@ export class StakingApiService {
    * @param request
    * @return Observable<void>
    */
-  public updateUsersDepositAfterWithdraw(request: UpdateDepositRequestInterface): Observable<void> {
+  public updateUsersDepositAfterWithdraw(request: UpdateDepositRequest): Observable<void> {
     return this.httpService.post<void>('balance/withdraw', { ...request }, this.stakingApiPath);
   }
 
@@ -64,7 +64,7 @@ export class StakingApiService {
    * @param request
    * @return Observable<void>
    */
-  public sendBridgeTxHash(request: BridgeTxRequestInterface): Observable<void> {
+  public sendBridgeTxHash(request: BridgeTxRequest): Observable<void> {
     return this.httpService.post<void>('transfer-crypto/', { ...request }, this.stakingApiPath);
   }
 

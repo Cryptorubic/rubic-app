@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
 import { Router } from '@angular/router';
-import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { StakingService } from '@features/staking/services/staking.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -14,7 +13,6 @@ import { SwapFormService } from '@features/swaps/services/swaps-form-service/swa
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -39,21 +37,12 @@ enum STAKING_NAV_ENUM {
 export class StakingContainerComponent implements OnInit {
   public activeItemIndex = STAKING_NAV_ENUM.STAKE;
 
-  public readonly isLoggedIn$ = this.authService.getCurrentUser();
-
-  public readonly refillTime$ = this.stakingService.refillTime$.pipe(
-    map(refillTime => {
-      if (!refillTime) {
-        return 0;
-      }
-      const date = new Date(Number(refillTime));
-      return { hours: date.getHours(), minutes: date.getMinutes() };
-    })
-  );
+  public readonly isLoggedIn$ = this.authService
+    .getCurrentUser()
+    .pipe(map(user => Boolean(user?.address)));
 
   constructor(
     private readonly router: Router,
-    private readonly queryParamsService: QueryParamsService,
     private readonly stakingService: StakingService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
@@ -96,7 +85,7 @@ export class StakingContainerComponent implements OnInit {
     const xBRBC: Token = {
       symbol: 'xBRBC',
       blockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      address: ENVIRONMENT.staking.stakingContractAddress,
+      address: this.stakingService.stakingContractAddress,
       decimals: 18,
       image: `${this.window.location.origin}/assets/images/icons/staking/brbc.svg`,
       rank: 0,

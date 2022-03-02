@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
-
-import { STAKING_TOKENS } from 'src/app/features/staking/constants/staking-tokens';
+import { STAKING_TOKENS } from '@app/features/staking/constants/STAKING_TOKENS';
 import { StakingService } from '../../services/staking.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 

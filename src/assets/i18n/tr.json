@@ -494,6 +494,7 @@
       "balance": "{{amount}} hakkınız var ",
       "unstakeBalance": "{{amount}} miktarı kaldırılabilir",
       "confirmStake": "Stake onayla",
+      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
       "unstake": "Unstake",
       "overLimit": "Bir stake limiti {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Güncelleme",
