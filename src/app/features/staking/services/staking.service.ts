@@ -16,6 +16,7 @@ import {
   finalize,
   first,
   map,
+  retry,
   startWith,
   switchMap,
   take,
@@ -286,7 +287,13 @@ export class StakingService {
             this.getMaxAmountForWithdraw()
           ]);
         }),
-        switchMap(([amountWithRewards]) => this.getEarnedRewards(amountWithRewards))
+        switchMap(([amountWithRewards, _, maxAmountForWithdraw]) => {
+          if (this.stakingRound === 1) {
+            return this.getEarnedRewards(amountWithRewards);
+          } else {
+            return this.getEarnedRewards(maxAmountForWithdraw);
+          }
+        })
       )
       .subscribe(() => this._stakingStatisticsLoading$.next(false));
 
@@ -480,7 +487,7 @@ export class StakingService {
         }
         return this.getStakingTokenBalance().pipe(
           switchMap(stakingTokenBalance => this.getAmountWithRewards(stakingTokenBalance)),
-          switchMap(() => this.getEarnedRewards())
+          switchMap(amountWithRewards => this.getEarnedRewards(amountWithRewards))
         );
       }),
       finalize(() => this._stakingStatisticsLoading$.next(false))
@@ -642,26 +649,32 @@ export class StakingService {
    * @return Observable<BigNumber>
    */
   private getEarnedRewards(amountWithRewards?: BigNumber): Observable<BigNumber> {
-    return combineLatest([
-      this.getUsersDeposit(),
-      amountWithRewards ? of(amountWithRewards) : this._amountWithRewards$
-    ]).pipe(
-      first(),
-      map(([usersDeposit, totalAmount]) => {
-        const usersDepositInTokens = Web3Pure.fromWei(usersDeposit);
-        const earnedRewards = totalAmount.minus(usersDepositInTokens);
+    if (this.stakingRound === 1) {
+      const amount = amountWithRewards ? amountWithRewards : this._amountWithRewards$.getValue();
+      return combineLatest([this.getUsersDeposit(), of(amount)]).pipe(
+        first(),
+        map(([usersDeposit, totalAmount]) => {
+          const usersDepositInTokens = Web3Pure.fromWei(usersDeposit);
+          const earnedRewards = totalAmount.minus(usersDepositInTokens);
 
-        if (Number(usersDeposit) === 0) {
-          return new BigNumber(0);
-        } else {
-          if (earnedRewards.s === -1 || earnedRewards.s === null) {
+          if (Number(usersDeposit) === 0) {
             return new BigNumber(0);
+          } else {
+            if (earnedRewards.s === -1 || earnedRewards.s === null) {
+              return new BigNumber(0);
+            }
+            return earnedRewards;
           }
-          return earnedRewards;
-        }
-      }),
-      tap(earnedRewards => this._earnedRewards$.next(earnedRewards))
-    );
+        }),
+        tap(earnedRewards => this._earnedRewards$.next(earnedRewards))
+      );
+    } else {
+      if (this.walletAddress && amountWithRewards) {
+        const earnedRewards = amountWithRewards.toNumber() - this._userEnteredAmount$.getValue();
+        this._earnedRewards$.next(new BigNumber(earnedRewards <= 0 ? 0 : earnedRewards));
+      }
+      return of(new BigNumber(0));
+    }
   }
 
   /**
@@ -753,12 +766,20 @@ export class StakingService {
    * @return Observable<void>
    */
   private updateUsersDeposit(amount: string, txHash: string): Observable<void> {
-    return this.stakingApiService.updateUsersDeposit({
-      walletAddress: this.walletAddress,
-      amount,
-      txHash,
-      network: 'binance-smart-chain'
-    });
+    return this.stakingApiService
+      .updateUsersDeposit({
+        walletAddress: this.walletAddress,
+        amount,
+        txHash,
+        network: 'binance-smart-chain'
+      })
+      .pipe(
+        retry(2),
+        catchError((error: unknown) => {
+          console.error('update deposit request failed:', error);
+          return of(null);
+        })
+      );
   }
 
   /**
