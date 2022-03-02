@@ -1,7 +1,8 @@
 export const STAKING_CONFIG_DEVELOP = {
   apiUrl: '//dev-staking.rubic.exchange/api/',
-  roundOneContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570',
-  roundTwoContractAddress: '0xd82bf61411Ce2F6bd46Fd1e3b0459979809D4787',
+  roundOneDeprecatedContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570',
+  roundOneContractAddress: '0x8d9Ae5a2Ecc16A66740A53Cc9080CcE29a7fD9F5',
+  roundTwoContractAddress: '0x71397f142B98d18DED26089CA81d318B166502a0',
   whitelist: [
     '0x449ab89a9c1dee7822580dad3cb6c0852210793a',
     '0x7c8bf1eb559228b8bbd324fb3fdb5c3f9ddb07c5',
@@ -11,6 +12,7 @@ export const STAKING_CONFIG_DEVELOP = {
 
 export const STAKING_CONFIG_PROD = {
   apiUrl: '//staking.rubic.exchange/api/',
+  roundOneDeprecatedContractAddress: '0x4a953B4EB1680885Ee51D58bCb9B97Ebf6260570',
   roundOneContractAddress: '0x8d9Ae5a2Ecc16A66740A53Cc9080CcE29a7fD9F5',
   roundTwoContractAddress: '0xA96cDB86332b105065ca99432916e631e469CF5D',
   whitelist: [

@@ -70,6 +70,11 @@ export class StakingService {
     return this._stakingContractAddress$.getValue();
   }
 
+  private readonly stakingFirstRoundDeprecatedContractAddress =
+    ENVIRONMENT.staking.roundOneDeprecatedContractAddress;
+
+  private firstRoundContractForWithdraw: string;
+
   /**
    * Current staking round.
    */
@@ -376,9 +381,12 @@ export class StakingService {
    */
   public leaveStake(amount: BigNumber): Observable<unknown> {
     const amountInWei = Web3Pure.toWei(amount);
+    const stakingContractAddress =
+      this.stakingRound === 1 ? this.firstRoundContractForWithdraw : this.stakingContractAddress;
+    debugger;
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
-        this.stakingContractAddress,
+        stakingContractAddress,
         this.stakingContractAbi,
         'leave',
         [amountInWei]
@@ -435,19 +443,37 @@ export class StakingService {
    * @return Observable<BigNumber>
    */
   public getStakingTokenBalance(): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].getTokenBalance(
-        this.walletAddress,
-        this.stakingContractAddress
-      )
-    ).pipe(
+    if (this.stakingRound === 1) {
+      return from(this.getBalanceRequest(this.stakingFirstRoundDeprecatedContractAddress)).pipe(
+        switchMap(balance => {
+          if (balance.gt(0)) {
+            this.firstRoundContractForWithdraw = this.stakingFirstRoundDeprecatedContractAddress;
+            return of(balance);
+          } else {
+            this.firstRoundContractForWithdraw = this.stakingContractAddress;
+            return from(this.getBalanceRequest(this.stakingContractAddress));
+          }
+        }),
+        catchError((error: unknown) => {
+          this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+          return of(new BigNumber('0'));
+        }),
+        tap(balance => this._stakingTokenBalance$.next(Web3Pure.fromWei(balance)))
+      );
+    }
+    return from(this.getBalanceRequest(this.stakingContractAddress)).pipe(
       catchError((error: unknown) => {
         this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
         return of(new BigNumber('0'));
       }),
-      tap(balance => {
-        this._stakingTokenBalance$.next(Web3Pure.fromWei(balance));
-      })
+      tap(balance => this._stakingTokenBalance$.next(Web3Pure.fromWei(balance)))
+    );
+  }
+
+  private getBalanceRequest(contractAddress: string): Promise<BigNumber> {
+    return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].getTokenBalance(
+      this.walletAddress,
+      contractAddress
     );
   }
 
@@ -456,17 +482,35 @@ export class StakingService {
    * @return Observable<BigNumber>
    */
   public getMaxAmountForWithdraw(): Observable<BigNumber> {
-    return from(
-      this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
-        this.stakingContractAddress,
+    const getRequestFn = (contractAddress: string) => {
+      return this.web3PublicService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].callContractMethod(
+        contractAddress,
         this.stakingContractAbi,
         'actualBalanceOf',
         {
           methodArguments: [this.walletAddress],
           from: this.walletAddress
         }
-      )
-    ).pipe(
+      );
+    };
+
+    if (this.stakingRound === 1) {
+      return from(getRequestFn(this.stakingFirstRoundDeprecatedContractAddress)).pipe(
+        map(actualBalance => Web3Pure.fromWei(actualBalance)),
+        switchMap(actualBalance => {
+          if (actualBalance.gt(0)) {
+            return of(actualBalance);
+          } else {
+            return from(getRequestFn(this.stakingContractAddress)).pipe(
+              map(balance => Web3Pure.fromWei(balance))
+            );
+          }
+        }),
+        tap(actualBalance => this._maxAmountForWithdraw$.next(actualBalance))
+      );
+    }
+
+    return from(getRequestFn(this.stakingContractAddress)).pipe(
       map(actualBalance => Web3Pure.fromWei(actualBalance)),
       tap(actualBalance => this._maxAmountForWithdraw$.next(actualBalance))
     );
