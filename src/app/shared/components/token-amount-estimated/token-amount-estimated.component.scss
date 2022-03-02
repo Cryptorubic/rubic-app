@@ -17,12 +17,13 @@
   max-width: 350px;
   height: 100%;
 
+  padding-left: 2px;
+
   @include b($mobile-sm) {
     align-items: flex-start;
   }
 
   @include iframe-vertical {
-
     align-items: flex-start;
     max-width: unset;
 
@@ -63,7 +64,7 @@
 
       span {
         margin-left: 0;
-      };
+      }
     }
   }
 
@@ -81,7 +82,7 @@
 
     text-align: right;
 
-    transition: opacity ease-in-out .3s;
+    transition: opacity ease-in-out 0.3s;
 
     @include iframe-horizontal {
       margin-bottom: 0;
@@ -131,12 +132,11 @@
     }
 
     &_loading {
-      opacity: .25;
+      opacity: 0.25;
     }
   }
 
   &__output {
-    overflow: hidden;
   }
 
   &__hint {
@@ -181,6 +181,7 @@
 
 @include b($mobile-sm) {
   .bottom-amount {
+    padding-left: 0;
     &__tokens-container {
       text-align: left;
     }
