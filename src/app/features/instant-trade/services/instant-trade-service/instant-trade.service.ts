@@ -269,6 +269,7 @@ export class InstantTradeService {
           confirmCallback();
 
           this.notifyGtmAfterSignTx(transactionHash);
+          console.log(this.window.dataLayer);
           this.notifyTradeInProgress(hash, trade.blockchain);
 
           if (this.iframeService.isIframeWithFee(trade.blockchain, provider)) {
