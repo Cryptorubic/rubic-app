@@ -29,6 +29,9 @@
       min-height: auto;
     }
 
+    @include b($mobile-sm) {
+      flex-direction: column;
+    }
   }
 
   app-smart-routing {
@@ -37,7 +40,7 @@
 
     transition: opacity 0.3s;
 
-    &.smart-routing-loading { 
+    &.smart-routing-loading {
       opacity: 0.25;
     }
   }
