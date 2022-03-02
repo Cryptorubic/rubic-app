@@ -625,20 +625,20 @@
     },
     "header": {
       "switchTheme": {
-        "title": "Switch Theme",
-        "desc": "Theme for the web"
+        "title": "切換主題",
+        "desc": "網絡主題"
       },
       "language": {
-        "title": "Language",
-        "desc": "Choose language"
+        "title": "語言",
+        "desc": "選擇語言"
       },
       "gasPrice": {
         "title": "Gas price",
         "desc": "In Ethereum chain"
       },
       "tutorials": {
-        "title": "Tutorials",
-        "desc": "How to use"
+        "title": "教程",
+        "desc": "如何使用"
       }
     }
   },
