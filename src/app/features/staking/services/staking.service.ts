@@ -758,9 +758,7 @@ export class StakingService {
         this.stakingRound === 1 ? 'totalRBCEntered' : 'total'
       )
     ).pipe(
-      catchError((error: unknown) => {
-        console.debug('get total rbc entered');
-        this.errorService.catch(error as RubicError<ERROR_TYPE.TEXT>);
+      catchError(() => {
         return EMPTY;
       }),
       tap(totalRbcEntered =>
