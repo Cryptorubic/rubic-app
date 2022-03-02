@@ -27,7 +27,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'round-one'
+        redirectTo: 'round-two'
       }
     ]
   }
