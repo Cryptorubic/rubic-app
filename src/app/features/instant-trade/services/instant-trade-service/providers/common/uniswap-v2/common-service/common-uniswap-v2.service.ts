@@ -619,7 +619,7 @@ export abstract class CommonUniswapV2Service implements ItProvider {
       transactionOptions: transactionOptions
     } = await this.checkAndGetTradeData(trade, options);
 
-    return this.web3PrivateService.executeContractMethod(
+    return this.web3PrivateService.tryExecuteContractMethod(
       this.contractAddress,
       this.contractAbi,
       methodName,

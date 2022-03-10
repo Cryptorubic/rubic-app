@@ -55,7 +55,7 @@ export abstract class ContractData {
 
   public abstract maxTokenAmount(): Promise<string>;
 
-  public abstract feeAmountOfBlockchain(): Promise<string>;
+  public abstract feeAmountOfBlockchain(numOfFromBlockchain: number): Promise<string>;
 
   public abstract blockchainCryptoFee(toBlockchainInContract: number): Promise<BigNumber>;
 
