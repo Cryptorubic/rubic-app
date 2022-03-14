@@ -7,6 +7,7 @@
           [disabled]="blockchain === blockchainName"
           [border]="blockchain === blockchainName"
           (iconButtonClick)="onBlockchainSelect(blockchainName)"
+          [blockchainLabel]="blockchainName"
         >
         </app-icon-button>
       </li>
