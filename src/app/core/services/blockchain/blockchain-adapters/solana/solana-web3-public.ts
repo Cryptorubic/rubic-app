@@ -15,6 +15,8 @@ import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { base58 } from '@scure/base';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map, timeout } from 'rxjs/operators';
 
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<
@@ -57,6 +59,30 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
    */
   public async getAllowance(): Promise<BigNumber> {
     return new BigNumber(Infinity);
+  }
+
+  /**
+   * HealthCheck Solana RPC node.
+   * @param timeoutMs Acceptable node response timeout.
+   * @return null if healthcheck is not defined for current blockchain, else is node works status.
+   */
+  public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
+    const request = this.connection.getBalanceAndContext(
+      new PublicKey('DVLwQbEaw5txuduQwvfbNP3sXvjawHqaoMuGMKZx15bQ'),
+      'confirmed'
+    );
+    return from(request).pipe(
+      timeout(timeoutMs),
+      map(result => Boolean(result)),
+      catchError((err: unknown) => {
+        if ((err as Error)?.name === 'TimeoutError') {
+          console.debug(`Solana node healthcheck timeout (${timeoutMs}ms) has occurred.`);
+        } else {
+          console.debug(`Solana node healthcheck fail: ${err}`);
+        }
+        return of(false);
+      })
+    );
   }
 
   /**
@@ -151,8 +177,8 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
 
   /**
    * get balance of multiple tokens via multicall.
-   * @param address wallet address
-   * @param tokensAddresses tokens addresses
+   * @param address wallet address.
+   * @param tokensAddresses tokens addresses.
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const resp = await (
