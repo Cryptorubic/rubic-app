@@ -230,7 +230,6 @@ export class GoogleTagManagerService {
   }
 
   public checkGtm(): void {
-    debugger;
     // @ts-ignore
     const ehi_ga = window[window['GoogleAnalyticsObject'] || 'ga'];
     // @ts-ignore

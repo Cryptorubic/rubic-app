@@ -49,7 +49,6 @@ export class AppComponent implements AfterViewInit {
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
     });
-    console.log('gtm');
   }
 
   ngAfterViewInit() {
