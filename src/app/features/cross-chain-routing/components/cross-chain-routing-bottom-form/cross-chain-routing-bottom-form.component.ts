@@ -257,7 +257,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([crossChainTrade$, balance$]).pipe(
             map(([{ toAmount, minAmountError, maxAmountError, needApprove }]) => {
               if (
-                (minAmountError && fromAmount.gte(minAmountError)) ||
+                (minAmountError &&
+                  fromAmount.gte(minAmountError) &&
+                  fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
               ) {
                 this.onCalculateTrade$.next('normal');
@@ -327,7 +329,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([crossChainTrade$, balance$]).pipe(
             map(([{ toAmount, minAmountError, maxAmountError }]) => {
               if (
-                (minAmountError && fromAmount.gte(minAmountError)) ||
+                (minAmountError &&
+                  fromAmount.gte(minAmountError) &&
+                  this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
               ) {
                 this.onCalculateTrade$.next('hidden');
