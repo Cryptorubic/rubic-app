@@ -1,9 +1,8 @@
 @use 'src/scss/core' as *;
 
 .blockchain-aside {
-  width: 85px;
-  height: calc(100% + 33px);
-  padding: 14px 0;
+  width: 152px;
+  padding: 14px 10px;
 
   background: rgba(170, 170, 170, 0.13);
   border-radius: 0 10px 0 15px;
@@ -31,8 +30,8 @@
 
   &__blockchains-list {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    grid-row-gap: 14px;
 
     @include iframe {
       flex-direction: row;
@@ -52,12 +51,36 @@
       }
     }
 
-    li:not(:last-child) {
-      margin-bottom: 14px;
+    li {
+      margin: 0 5px 14px;
+      margin-bottom: 0;
 
       @include iframe {
         margin-right: 15px;
         margin-bottom: unset;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .blockchain-aside {
+    width: 85px;
+    height: calc(100% + 33px);
+    padding: 14px 0;
+
+    &__blockchains-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      li:not(:last-child) {
+        margin-bottom: 14px;
+
+        @include iframe {
+          margin-right: 15px;
+          margin-bottom: unset;
+        }
       }
     }
   }
