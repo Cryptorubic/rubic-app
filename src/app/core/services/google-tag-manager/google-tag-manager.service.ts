@@ -235,13 +235,17 @@ export class GoogleTagManagerService {
     const ehi_ga = window[window['GoogleAnalyticsObject'] || 'ga'];
     // @ts-ignore
     if (typeof ehi_ga !== 'function' || ehi_ga.loaded !== true || !ehi_ga.create) {
-      this.httpService.post<void>('total_values/stats/google-analytics/users', {
-        googleAnalytics: false
-      });
+      this.httpService
+        .post<void>('total_values/stats/google-analytics/users', {
+          googleAnalytics: false
+        })
+        .subscribe();
     } else {
-      this.httpService.post<void>('total_values/stats/google-analytics/users', {
-        googleAnalytics: true
-      });
+      this.httpService
+        .post<void>('total_values/stats/google-analytics/users', {
+          googleAnalytics: true
+        })
+        .subscribe();
     }
   }
 }
