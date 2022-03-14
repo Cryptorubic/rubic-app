@@ -8,6 +8,7 @@ import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { WINDOW } from '@ng-web-apis/common';
+import { HttpService } from 'src/app/core/services/http/http.service';
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
@@ -59,6 +60,7 @@ export class GoogleTagManagerService {
     private readonly angularGtmService: AngularGoogleTagManagerService,
     private readonly cookieService: CookieService,
     private readonly storeService: StoreService,
+    private readonly httpService: HttpService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 
@@ -225,5 +227,21 @@ export class GoogleTagManagerService {
    */
   public addGtmToDom(): void {
     this.angularGtmService.addGtmToDom();
+  }
+
+  public checkGtm(): void {
+    debugger;
+    // @ts-ignore
+    const ehi_ga = window[window['GoogleAnalyticsObject'] || 'ga'];
+    // @ts-ignore
+    if (typeof ehi_ga !== 'function' || ehi_ga.loaded !== true || !ehi_ga.create) {
+      this.httpService.post<void>('total_values/stats/google-analytics/users', {
+        googleAnalytics: false
+      });
+    } else {
+      this.httpService.post<void>('total_values/stats/google-analytics/users', {
+        googleAnalytics: true
+      });
+    }
   }
 }
