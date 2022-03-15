@@ -119,9 +119,9 @@ export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> 
   }
 
   /**
-   * HealthCheck current rpc node
-   * @param timeoutMs acceptable node response timeout
-   * @return null if healthcheck is not defined for current blockchain, else is node works status
+   * HealthCheck current rpc node.
+   * @param timeoutMs Acceptable node response timeout.
+   * @return null If Healthcheck is not defined for current blockchain, else is node works status.
    */
   public healthCheck(timeoutMs: number = 4000): Observable<boolean> {
     const healthcheckData = HEALTHCHECK[this.blockchain.name as Web3SupportedBlockchains];
