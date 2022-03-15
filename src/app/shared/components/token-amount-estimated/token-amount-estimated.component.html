@@ -13,7 +13,12 @@
           'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
         }"
       >
-        <div class="bottom-amount__output" [attr.tradingNotAvailable]="errorText">
+        <div
+          class="bottom-amount__output"
+          [ngClass]="{
+            'bottom-amount__output_errorText': errorText
+          }"
+        >
           <ng-container *ngIf="errorText; else tokenAmountTpl">
             {{ 'tradePage.tradingNotAvailable' | translate }}
           </ng-container>
