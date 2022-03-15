@@ -52,6 +52,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -202,7 +203,8 @@ export class TokensSelectComponent implements OnInit {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    private readonly authService: AuthService
   ) {
     this.searchQueryLoading = false;
     this.listType = 'default';
@@ -341,10 +343,13 @@ export class TokensSelectComponent implements OnInit {
           if (backendTokens?.length) {
             const tokensWithFavorite = await Promise.all(
               backendTokens.map(async token => {
-                const balance = await this.tokensService.getAndUpdateTokenBalance({
-                  address: token.address,
-                  blockchain: token.blockchain
-                });
+                let balance = token.amount;
+                if (this.authService.userAddress) {
+                  balance = await this.tokensService.getAndUpdateTokenBalance({
+                    address: token.address,
+                    blockchain: token.blockchain
+                  });
+                }
                 return {
                   ...token,
                   amount: balance,
@@ -357,8 +362,8 @@ export class TokensSelectComponent implements OnInit {
             return { backendTokens: tokensWithFavorite, customToken: null };
           }
           const customToken = await this.tryParseQueryAsCustomToken();
-          let customTokenBalance: BigNumber;
-          if (customToken?.address && customToken?.blockchain) {
+          let customTokenBalance = customToken.amount;
+          if (customToken?.address && customToken?.blockchain && this.authService.userAddress) {
             customTokenBalance = await this.tokensService.getAndUpdateTokenBalance({
               address: customToken.address,
               blockchain: customToken.blockchain
