@@ -357,11 +357,14 @@ export class TokensSelectComponent implements OnInit {
             return { backendTokens: tokensWithFavorite, customToken: null };
           }
           const customToken = await this.tryParseQueryAsCustomToken();
-          const tokenBalance = await this.tokensService.getAndUpdateTokenBalance({
-            address: customToken.address,
-            blockchain: customToken.blockchain
-          });
-          return { tokens: null, customToken: { ...customToken, amount: tokenBalance } };
+          let customTokenBalance: BigNumber;
+          if (customToken?.address && customToken?.blockchain) {
+            customTokenBalance = await this.tokensService.getAndUpdateTokenBalance({
+              address: customToken.address,
+              blockchain: customToken.blockchain
+            });
+          }
+          return { tokens: null, customToken: { ...customToken, amount: customTokenBalance } };
         }),
         takeUntil(this.destroy$)
       )
