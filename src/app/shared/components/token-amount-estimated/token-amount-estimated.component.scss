@@ -136,7 +136,8 @@
     }
   }
 
-  &__output {
+  &__output[tradingNotAvailable="errors.insufficientLiquidityCCR"] {
+    font-size: 16px;
   }
 
   &__hint {
