@@ -343,7 +343,7 @@ export class TokensSelectComponent implements OnInit {
           if (backendTokens?.length) {
             const tokensWithFavorite = await Promise.all(
               backendTokens.map(async token => {
-                let balance = token.amount;
+                let balance = token?.amount;
                 if (this.authService.userAddress) {
                   balance = await this.tokensService.getAndUpdateTokenBalance({
                     address: token.address,
@@ -361,15 +361,22 @@ export class TokensSelectComponent implements OnInit {
             );
             return { backendTokens: tokensWithFavorite, customToken: null };
           }
+
           const customToken = await this.tryParseQueryAsCustomToken();
-          let customTokenBalance = customToken.amount;
-          if (customToken?.address && customToken?.blockchain && this.authService.userAddress) {
-            customTokenBalance = await this.tokensService.getAndUpdateTokenBalance({
+          const result: { tokens: null; customToken: AvailableTokenAmount } = {
+            tokens: null,
+            customToken: customToken
+          };
+          if (customToken !== null && this.authService.userAddress) {
+            const customTokenBalance = await this.tokensService.getAndUpdateTokenBalance({
               address: customToken.address,
               blockchain: customToken.blockchain
             });
+            if (customTokenBalance) {
+              result.customToken.amount = customTokenBalance;
+            }
           }
-          return { tokens: null, customToken: { ...customToken, amount: customTokenBalance } };
+          return { tokens: null, customToken };
         }),
         takeUntil(this.destroy$)
       )
