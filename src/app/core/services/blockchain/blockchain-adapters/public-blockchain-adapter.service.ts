@@ -91,6 +91,9 @@ export class PublicBlockchainAdapterService {
 
     // @TODO Solana. remove hardcode.
     const solanaRpc = {
+      private: {
+        url: 'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
+      },
       free: { url: 'https://free.rpcpool.com', weight: 10 },
       mainnet: { url: 'https://mainnet.rpcpool.com', weight: 10 },
       api: { url: 'https://api.rpcpool.com', weight: 10 },
@@ -99,7 +102,7 @@ export class PublicBlockchainAdapterService {
       apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 1 },
       devnet: { url: 'https://api.devnet.solana.com', weight: 0 }
     };
-    const solanaConnection = new Connection(solanaRpc.apiBeta.url);
+    const solanaConnection = new Connection(solanaRpc.private.url);
     this.walletConnectorService.solanaWeb3Connection = solanaConnection;
     this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(solanaConnection);
 
