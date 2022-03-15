@@ -353,7 +353,8 @@ export class CrossChainRoutingService {
         fromBlockchain,
         trade.fromProviderIndex,
         trade.tokenIn,
-        minTransitTokenAmount
+        minTransitTokenAmount,
+        'min'
       );
       if (!minAmount?.isFinite()) {
         throw new InsufficientLiquidityError('CrossChainRouting');
@@ -368,7 +369,8 @@ export class CrossChainRoutingService {
         fromBlockchain,
         trade.fromProviderIndex,
         trade.tokenIn,
-        maxTransitTokenAmount
+        maxTransitTokenAmount,
+        'max'
       );
       return {
         maxAmountError: maxAmount
@@ -421,12 +423,14 @@ export class CrossChainRoutingService {
    * @param providerIndex Index of provider to use.
    * @param fromToken From token.
    * @param transitTokenAmount Output amount of transit token.
+   * @param type Type of min or max amount calculation.
    */
   private async getFromTokenAmount(
     blockchain: SupportedCrossChainBlockchain,
     providerIndex: number,
     fromToken: BlockchainToken,
-    transitTokenAmount: BigNumber
+    transitTokenAmount: BigNumber,
+    type: 'min' | 'max'
   ): Promise<BigNumber> {
     const transitToken = this.contracts[blockchain].transitToken;
     if (compareAddresses(fromToken.address, transitToken.address)) {
@@ -438,11 +442,17 @@ export class CrossChainRoutingService {
     }
 
     const contractAddress = this.contracts[blockchain].address;
-    return (
+    const amount = (
       await this.contracts[blockchain]
         .getProvider(providerIndex)
         .calculateTrade(transitToken, transitTokenAmount, fromToken, false, contractAddress)
     ).to.amount;
+    const approximatePercentDifference = 0.02;
+
+    if (type === 'min') {
+      return amount.multipliedBy(1 + approximatePercentDifference);
+    }
+    return amount.multipliedBy(1 - approximatePercentDifference);
   }
 
   /**
