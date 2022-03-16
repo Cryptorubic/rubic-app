@@ -9,6 +9,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { WINDOW } from '@ng-web-apis/common';
 import { HttpService } from 'src/app/core/services/http/http.service';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
@@ -61,7 +62,7 @@ export class GoogleTagManagerService {
     private readonly cookieService: CookieService,
     private readonly storeService: StoreService,
     private readonly httpService: HttpService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   /**
@@ -144,10 +145,6 @@ export class GoogleTagManagerService {
    * Fires "transaction signed" GTM event and resets steps of swap type's form.
    * @param eventCategory Swap type.
    * @param txId Transaction hash.
-   * @param revenue Platform's commission.
-   * @param fromToken What token user wants to sell.
-   * @param toToken What token user wants to buy.
-   * @param txUsdAmount Amount of trade in USD.
    */
   public fireTxSignedEvent(eventCategory: SWAP_PROVIDER_TYPE, txId: string): void {
     this.forms[eventCategory].next(formStepsInitial);
@@ -230,10 +227,9 @@ export class GoogleTagManagerService {
   }
 
   public checkGtm(): void {
-    // @ts-ignore
-    const ehi_ga = window[window['GoogleAnalyticsObject'] || 'ga'];
-    // @ts-ignore
-    if (typeof ehi_ga !== 'function' || ehi_ga.loaded !== true || !ehi_ga.create) {
+    const ehiGa = this.window?.ga;
+    const isGaObjectLoaded = 'loaded' in ehiGa && ehiGa.loaded !== true && !ehiGa.create;
+    if (typeof ehiGa !== 'function' || isGaObjectLoaded) {
       this.httpService
         .post<void>('total_values/stats/google-analytics/users', {
           googleAnalytics: false
