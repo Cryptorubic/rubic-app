@@ -53,7 +53,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     const minimumReceivedFormatter = this.withRoundPipe.transform(
       this.bigNumberFormatPipe.transform(this.minimumReceived),
       'toClosestValue',
-      toToken.decimals
+      { decimals: toToken.decimals }
     );
     return `${minimumReceivedFormatter} ${toToken.symbol}`;
   }
@@ -69,7 +69,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
       const rateFormatted = this.withRoundPipe.transform(
         this.bigNumberFormatPipe.transform(toAmount.dividedBy(fromAmount)),
         'toClosestValue',
-        toToken.decimals
+        { decimals: toToken.decimals }
       );
       return `1 ${fromToken.symbol} = ${rateFormatted} ${toToken.symbol}`;
     }
@@ -77,7 +77,7 @@ export class InstantTradeSwapInfoComponent implements OnInit {
     const rateFormatted = this.withRoundPipe.transform(
       this.bigNumberFormatPipe.transform(fromAmount.dividedBy(toAmount)),
       'toClosestValue',
-      fromToken.decimals
+      { decimals: fromToken.decimals }
     );
     return `${rateFormatted} ${fromToken.symbol} = 1 ${toToken.symbol}`;
   }
