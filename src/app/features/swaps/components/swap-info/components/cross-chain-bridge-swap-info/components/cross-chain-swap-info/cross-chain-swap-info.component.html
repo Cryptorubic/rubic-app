@@ -8,9 +8,9 @@
     />
   </div>
   <div class="info-line__value" *ngIf="estimateGasInEth">
-    {{ estimateGasInEth | bigNumberFormat | withRound: 'toClosestValue':18 }}
+    {{ estimateGasInEth | bigNumberFormat | withRound: 'toClosestValue' }}
     {{ nativeCoinSymbol }} ≈ ${{
-      estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3
+      estimateGasInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
     }}
   </div>
 </div>
@@ -25,8 +25,10 @@
     />
   </div>
   <div class="info-line__value" *ngIf="cryptoFeeInEth !== undefined">
-    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue':18 }} {{ nativeCoinSymbol }} ≈
-    ${{ cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
+    {{ cryptoFeeInEth | bigNumberFormat | withRound: 'toClosestValue' }} {{ nativeCoinSymbol }} ≈
+    ${{
+      cryptoFeeInUsd | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 }
+    }}
   </div>
 </div>
 
@@ -40,7 +42,8 @@
     />
   </div>
   <div class="info-line__value" *ngIf="feePercent !== undefined">
-    {{ feePercent }}% ≈ {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':18:2:3 }}
+    {{ feePercent }}% ≈
+    {{ feeAmount | bigNumberFormat | withRound: 'toClosestValue':{ minRound: 2, maxRound: 3 } }}
     {{ feeTokenSymbol }}
   </div>
 </div>
@@ -66,7 +69,9 @@
 <div
   class="info-line"
   *ngLet="
-    (minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals) +
+    (minimumReceived
+      | bigNumberFormat
+      | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
     ' ' +
     toToken.symbol as minimumReceivedFormatted
   "
