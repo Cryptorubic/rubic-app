@@ -1,7 +1,7 @@
 <div *ngIf="token?.amount.gt(0)" class="user-balance-container">
   <span class="user-balance-container__balance" *ngIf="hide !== 'balance'"
     >{{ 'common.have' | translate }}
-    {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':token.decimals }}
+    {{ token?.amount | bigNumberFormat | withRound: 'toClosestValue':{ decimals: token.decimals } }}
   </span>
 
   <button
