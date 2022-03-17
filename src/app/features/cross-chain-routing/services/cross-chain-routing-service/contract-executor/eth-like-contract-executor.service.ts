@@ -60,9 +60,6 @@ export class EthLikeContractExecutorService {
             options.onTransactionHash(hash);
           }
           transactionHash = hash;
-          if (trade.toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-            this.sendDataToSolana(trade, transactionHash, targetAddress);
-          }
           if (trade.toBlockchain === BLOCKCHAIN_NAME.NEAR) {
             this.sendDataToNear(trade, transactionHash, targetAddress);
           }
@@ -125,28 +122,6 @@ export class EthLikeContractExecutorService {
       methodArguments,
       value
     };
-  }
-
-  /**
-   * Solana addresses are not supported by eth like blockchain contracts. Sends transaction details via http.
-   * @param trade Cross-chain trade.
-   * @param transactionHash Source transaction hash.
-   * @param targetAddress Target network wallet address.
-   */
-  private sendDataToSolana(
-    trade: CrossChainTrade,
-    transactionHash: string,
-    targetAddress: string
-  ): void {
-    this.apiService
-      .postCrossChainDataToSolana(
-        transactionHash,
-        TO_BACKEND_BLOCKCHAINS[trade.fromBlockchain],
-        targetAddress,
-        trade.toTrade.path.map(token => token.address),
-        this.raydiumRoutingService.currentPoolInfo
-      )
-      .subscribe();
   }
 
   /**
