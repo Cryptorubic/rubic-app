@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   Self,
   ViewChild
@@ -72,7 +73,7 @@ type ComponentContext = TuiDialogContext<AvailableTokenAmount, ComponentInput>;
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class TokensSelectComponent implements OnInit {
+export class TokensSelectComponent implements OnInit, OnDestroy {
   @ViewChild(TokensListComponent) private tokensList: TokensListComponent;
 
   public idPrefix: string;
@@ -211,7 +212,24 @@ export class TokensSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setWindowHeight();
     this.initSubscriptions();
+  }
+
+  ngOnDestroy(): void {
+    this.resetWindowHeight();
+  }
+
+  /**
+   * Sets window height through html class name, to prevent broken scroll in Safari.
+   */
+  private setWindowHeight(): void {
+    document.documentElement.style.setProperty('--window-inner-height', `${window.innerHeight}px`);
+    document.documentElement.classList.add('is-locked');
+  }
+
+  private resetWindowHeight(): void {
+    document.documentElement.classList.remove('is-locked');
   }
 
   /**
@@ -291,8 +309,6 @@ export class TokensSelectComponent implements OnInit {
         [blockchainType]: this._blockchain
       });
     }
-
-    this.updateTokensList();
   }
 
   /**
@@ -330,6 +346,7 @@ export class TokensSelectComponent implements OnInit {
     if (this.updateTokensByQuerySubscription$) {
       return;
     }
+
     this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
       .pipe(
         tap(() => {
