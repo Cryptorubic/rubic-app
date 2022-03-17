@@ -236,7 +236,7 @@ export class GoogleTagManagerService {
     const gaObject = this.window[this.window['GoogleAnalyticsObject'] || 'ga'] as GaObject;
     const isGaNotLoaded = !gaObject?.loaded || !gaObject?.create || typeof gaObject !== 'function';
     this.httpService
-      .post<void>('total_values/stats/template/users', {
+      .post<void>('total_values/stats/ga/users', {
         googleAnalytics: !isGaNotLoaded
       })
       .subscribe();
