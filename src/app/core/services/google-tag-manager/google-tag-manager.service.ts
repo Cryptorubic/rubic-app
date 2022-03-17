@@ -25,7 +25,7 @@ const formStepsInitial = {
 
 interface GaObject {
   loaded: boolean;
-  create: unknown;
+  create: Function;
 }
 
 @Injectable({
@@ -232,7 +232,7 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Checks if Google Analytics is working for the user
+   * Checks if Google Analytics is working for the user.
    */
   public checkGtm(): void {
     // @ts-ignore
