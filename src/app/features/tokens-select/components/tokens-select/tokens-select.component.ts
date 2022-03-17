@@ -53,6 +53,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import { DOCUMENT } from '@angular/common';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -203,7 +204,8 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.searchQueryLoading = false;
     this.listType = 'default';
@@ -224,12 +226,15 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
    * Sets window height through html class name, to prevent broken scroll in Safari.
    */
   private setWindowHeight(): void {
-    document.documentElement.style.setProperty('--window-inner-height', `${window.innerHeight}px`);
-    document.documentElement.classList.add('is-locked');
+    this.document.documentElement.style.setProperty(
+      '--window-inner-height',
+      `${window.innerHeight}px`
+    );
+    this.document.documentElement.classList.add('is-locked');
   }
 
   private resetWindowHeight(): void {
-    document.documentElement.classList.remove('is-locked');
+    this.document.documentElement.classList.remove('is-locked');
   }
 
   /**
