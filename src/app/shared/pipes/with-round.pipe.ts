@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import BigNumber from 'bignumber.js';
+import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
 type RoundMode = 'toClosestValue' | 'fixedValue';
 
@@ -12,10 +13,17 @@ export class WithRoundPipe implements PipeTransform {
   transform(
     value: string,
     roundMode: RoundMode,
-    decimals = this.DEFAULT_DECIMAL_LENGTH,
-    minRound = 5,
-    maxRound = 6
+    additionalArgs?: {
+      decimals?: number;
+      minRound?: number;
+      maxRound?: number;
+      roundingMode?: BigNumber.RoundingMode;
+    }
   ): string {
+    const decimals = additionalArgs?.decimals || this.DEFAULT_DECIMAL_LENGTH;
+    const minRound = additionalArgs?.minRound || 5;
+    const maxRound = additionalArgs?.maxRound || 6;
+
     if (value?.includes('.')) {
       const startIndex = value.indexOf('.') + 1;
 
@@ -23,9 +31,10 @@ export class WithRoundPipe implements PipeTransform {
         return value.slice(0, value.length - 1);
       }
 
+      const bnValue = new BigNumber(value.split(',').join(''));
       let decimalSymbols: number;
       if (roundMode === 'toClosestValue') {
-        if (new BigNumber(value).isGreaterThanOrEqualTo(1)) {
+        if (bnValue.isGreaterThanOrEqualTo(1)) {
           decimalSymbols = minRound;
         } else {
           let startZeroesAmount = 0;
@@ -39,6 +48,10 @@ export class WithRoundPipe implements PipeTransform {
           decimalSymbols = startZeroesAmount + maxRound;
         }
         decimalSymbols = Math.min(decimalSymbols, decimals);
+
+        value = bnValue
+          .dp(decimalSymbols, additionalArgs?.roundingMode)
+          .toFormat(BIG_NUMBER_FORMAT);
       } else {
         decimalSymbols = decimals;
       }
