@@ -341,16 +341,14 @@ export class TokensSelectComponent implements OnInit {
         switchMap(() => this.tryParseQueryAsBackendTokens()),
         switchMap(async backendTokens => {
           if (backendTokens?.length) {
-            const tokensWithFavorite = await Promise.all(
-              backendTokens.map(async token => {
-                return {
-                  ...token,
-                  favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
-                    compareTokens(token, favoriteToken)
-                  )
-                } as AvailableTokenAmount;
-              })
-            );
+            const tokensWithFavorite = backendTokens.map(token => {
+              return {
+                ...token,
+                favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
+                  compareTokens(token, favoriteToken)
+                )
+              } as AvailableTokenAmount;
+            });
             return { backendTokens: tokensWithFavorite, customToken: null };
           }
 
