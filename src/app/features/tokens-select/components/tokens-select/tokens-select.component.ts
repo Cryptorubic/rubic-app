@@ -343,16 +343,8 @@ export class TokensSelectComponent implements OnInit {
           if (backendTokens?.length) {
             const tokensWithFavorite = await Promise.all(
               backendTokens.map(async token => {
-                let balance = token?.amount;
-                if (this.authService.userAddress) {
-                  balance = await this.tokensService.getAndUpdateTokenBalance({
-                    address: token.address,
-                    blockchain: token.blockchain
-                  });
-                }
                 return {
                   ...token,
-                  amount: balance,
                   favorite: this.favoriteTokensToShowSubject$.value.some(favoriteToken =>
                     compareTokens(token, favoriteToken)
                   )
