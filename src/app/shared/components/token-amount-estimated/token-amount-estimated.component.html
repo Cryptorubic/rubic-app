@@ -16,7 +16,7 @@
         <div
           class="bottom-amount__output"
           [ngClass]="{
-            'bottom-amount__output_errorText': errorText
+            'bottom-amount__output_error-text': errorText
           }"
         >
           <ng-container *ngIf="errorText; else tokenAmountTpl">
