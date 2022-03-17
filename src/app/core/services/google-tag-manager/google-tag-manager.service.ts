@@ -231,6 +231,9 @@ export class GoogleTagManagerService {
     this.angularGtmService.addGtmToDom();
   }
 
+  /**
+   * Checks if Google Analytics is working for the user
+   */
   public checkGtm(): void {
     // @ts-ignore
     const gaObject = this.window[this.window['GoogleAnalyticsObject'] || 'ga'] as GaObject;
