@@ -68,3 +68,4 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window'; // Included wit
 (window as RubicWindow).dataLayer = (window as any).dataLayer;
 (window as RubicWindow).process = window.process || require('process');
 (window as RubicWindow).Buffer = (window as any).Buffer || require('buffer').Buffer;
+(window as RubicWindow).ga = (window as any)?.ga;

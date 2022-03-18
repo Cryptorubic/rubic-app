@@ -9,7 +9,6 @@
     overflow: hidden;
   }
 
-
   &:hover {
     img {
       transform: scale(1.2);
@@ -17,8 +16,6 @@
   }
 
   ::ng-deep tui-wrapper {
-    border-radius: 0;
-
     &[data-state='hovered'] {
       background-color: var(--rubic-secondary);
     }

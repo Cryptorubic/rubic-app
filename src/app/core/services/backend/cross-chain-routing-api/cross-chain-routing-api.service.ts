@@ -14,7 +14,6 @@ import {
 } from '@core/services/backend/cross-chain-routing-api/models/cross-chain-trades-response-api';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 import { RefFinanceRoute } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/models/ref-finance-route';
 
 export const BASE_URL = `${ENVIRONMENT.crossChain.apiBaseUrl}/`;
@@ -65,48 +64,6 @@ export class CrossChainRoutingApiService {
           trades.map(trade => CrossChainRoutingApiService.parseTradeApiToTableTrade(trade))
         )
       );
-  }
-
-  public postCrossChainDataToSolana(
-    transactionHash: string,
-    network: string,
-    targetAddress: string,
-    secondPath: string[],
-    pool: LiquidityPoolInfo
-  ): Observable<void> {
-    return this.httpService.post(
-      'trades/params',
-      {
-        fromTxHash: transactionHash,
-        network,
-        walletAddress: targetAddress,
-        secondPath,
-        pool
-      },
-      BASE_URL
-    );
-  }
-
-  public postCrossChainDataFromSolana(
-    transactionHash: string,
-    network: string,
-    contractFunction: string,
-    secondPath?: string[],
-    walletAddress?: string,
-    pool?: number[]
-  ): Observable<void> {
-    return this.httpService.post(
-      'trades/params',
-      {
-        fromTxHash: transactionHash,
-        network,
-        contractFunction,
-        secondPath,
-        walletAddress,
-        pool
-      },
-      BASE_URL
-    );
   }
 
   /**
