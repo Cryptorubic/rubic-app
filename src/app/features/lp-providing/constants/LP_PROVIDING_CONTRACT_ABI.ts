@@ -1,14 +1,7 @@
 import { AbiItem } from 'web3-utils';
 
 export const LP_PROVIDING_CONTRACT_ABI = [
-  {
-    inputs: [
-      { internalType: 'address', name: '_tokenAddrUSDC', type: 'address' },
-      { internalType: 'address', name: '_tokenAddrBRBC', type: 'address' }
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor'
-  },
+  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,
     inputs: [
@@ -38,17 +31,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
       { indexed: false, internalType: 'uint256', name: 'userReward', type: 'uint256' }
     ],
     name: 'ClaimRewards',
-    type: 'event'
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: false, internalType: 'address', name: 'from', type: 'address' },
-      { indexed: false, internalType: 'address', name: 'to', type: 'address' },
-      { indexed: false, internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'userReward', type: 'uint256' }
-    ],
-    name: 'FromClaimRewards',
     type: 'event'
   },
   {
@@ -182,7 +164,7 @@ export const LP_PROVIDING_CONTRACT_ABI = [
   {
     inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
     name: 'claimRewards',
-    outputs: [{ internalType: 'bool', name: 'isClaimed', type: 'bool' }],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
   },
@@ -306,7 +288,7 @@ export const LP_PROVIDING_CONTRACT_ABI = [
   },
   {
     inputs: [],
-    name: 'penaltyReciver',
+    name: 'penaltyReceiver',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function'
@@ -320,14 +302,42 @@ export const LP_PROVIDING_CONTRACT_ABI = [
   },
   {
     inputs: [],
+    name: 'poolBRBCWhitelist',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'poolUSDC',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    name: 'rate',
+    inputs: [],
+    name: 'poolUSDCWhitelist',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'rate1Month',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'rate3Month',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'rate6Month',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
@@ -427,13 +437,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [{ internalType: 'uint32', name: '_whitelistTime', type: 'uint32' }],
-    name: 'setStartTimeWhitelisted',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
     inputs: [
       { internalType: 'uint32', name: '_startTime', type: 'uint32' },
       { internalType: 'uint32', name: '_endTime', type: 'uint32' }
@@ -484,13 +487,6 @@ export const LP_PROVIDING_CONTRACT_ABI = [
   {
     inputs: [],
     name: 'startTime',
-    outputs: [{ internalType: 'uint32', name: '', type: 'uint32' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'startTimeWhitelisted',
     outputs: [{ internalType: 'uint32', name: '', type: 'uint32' }],
     stateMutability: 'view',
     type: 'function'
@@ -581,10 +577,7 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'address', name: '_from', type: 'address' },
-      { internalType: 'uint256', name: '_tokenId', type: 'uint256' }
-    ],
+    inputs: [{ internalType: 'uint256', name: '_tokenId', type: 'uint256' }],
     name: 'viewRequestTokenId',
     outputs: [{ internalType: 'bool', name: 'isRequested', type: 'bool' }],
     stateMutability: 'view',
@@ -615,6 +608,16 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     inputs: [{ internalType: 'address', name: '_tokenOwner', type: 'address' }],
     name: 'viewTokensByOwner',
     outputs: [{ internalType: 'uint256[]', name: 'tokenList', type: 'uint256[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'viewTotalEntered',
+    outputs: [
+      { internalType: 'uint256', name: 'totalPoolUSDC', type: 'uint256' },
+      { internalType: 'uint256', name: 'totalPoolBRBC', type: 'uint256' }
+    ],
     stateMutability: 'view',
     type: 'function'
   },
@@ -664,10 +667,7 @@ export const LP_PROVIDING_CONTRACT_ABI = [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'uint256', name: '', type: 'uint256' }
-    ],
+    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     name: 'withdrawRequestList',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',

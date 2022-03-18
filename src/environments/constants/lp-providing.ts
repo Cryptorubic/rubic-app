@@ -9,11 +9,11 @@ export const LP_PROVIDING_CONFIG_PROD = {
 };
 
 export const LP_PROVIDING_CONFIG_DEVELOP = {
-  contractAddress: '0x64a7C897117030aE830c737549f0Da9cf4F3d158',
-  brbcAddress: '0xf3f3b70bf06082dd5b951009e7144b2d4cb6972d',
-  usdcAddress: '0xe782afd525a5984124808bc0834db25081b03df3',
-  minEnterAmount: 10000,
-  maxEnterAmount: 100000,
-  poolSize: 3000000,
+  contractAddress: '0x36684Be8C3980097Bf193795b94c14FA8569347e',
+  brbcAddress: '0x8E3BCC334657560253B83f08331d85267316e08a',
+  usdcAddress: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+  minEnterAmount: 1,
+  maxEnterAmount: 10,
+  poolSize: 90,
   whitelist: ['0x449Ab89a9c1dee7822580dAD3Cb6c0852210793a']
 };

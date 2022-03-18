@@ -7,7 +7,7 @@ import { WalletConnectorService } from '@app/core/services/blockchain/wallets/wa
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { BLOCKCHAIN_NAME } from '@app/shared/models/blockchain/blockchain-name';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, EMPTY, forkJoin, from, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, forkJoin, from, interval, Observable, Subject } from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
@@ -108,17 +108,29 @@ export class LpProvidingService {
 
   public readonly balance$ = this._balance$.asObservable();
 
-  public readonly _brbcAllowance$ = new Subject<BigNumber>();
+  private readonly _brbcAllowance$ = new Subject<BigNumber>();
 
   public readonly needBrbcApprove$ = this._brbcAllowance$
     .asObservable()
     .pipe(map(allowance => allowance.lt(Web3Pure.toWei(this.maxEnterAmount))));
 
-  public readonly _usdcAllowance$ = new Subject<BigNumber>();
+  private readonly _usdcAllowance$ = new Subject<BigNumber>();
 
   public readonly needUsdcApprove$ = this._usdcAllowance$
     .asObservable()
     .pipe(map(allowance => allowance.lt(Web3Pure.toWei(this.maxEnterAmount))));
+
+  private waitForReceipt$ = (hash: string) => {
+    return interval(3000).pipe(
+      switchMap(async () => {
+        const tx = await this.web3PublicService[this.blockchain].getTransactionReceipt(hash);
+        console.log(tx);
+        return tx;
+      }),
+      filter(Boolean),
+      take(1)
+    );
+  };
 
   constructor(
     private readonly web3PublicService: PublicBlockchainAdapterService,
@@ -366,12 +378,15 @@ export class LpProvidingService {
         this.lpProvidingContract,
         LP_PROVIDING_CONTRACT_ABI,
         'stake',
-        [Web3Pure.toWei(amount), period * 24 * 60 * 60]
+        [Web3Pure.toWei(amount), period * 10]
       )
     ).pipe(
       catchError((error: unknown) => {
         this.errorService.catchAnyError(error as Error);
         return EMPTY;
+      }),
+      switchMap((hash: string) => {
+        return this.waitForReceipt$(hash);
       }),
       switchMap(() => this.getAndUpdatePoolTokensBalances())
     );
@@ -390,15 +405,16 @@ export class LpProvidingService {
         this.errorService.catchAnyError(error as Error);
         return EMPTY;
       }),
+      switchMap((hash: string) => {
+        return this.waitForReceipt$(hash);
+      }),
       switchMap(() => this.getDeposits()),
       take(1)
     );
   }
 
   public async switchNetwork(): Promise<boolean> {
-    return await this.walletConnectorService.switchChain(
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET
-    );
+    return await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN);
   }
 
   public checkAmountAndPeriodForErrors(

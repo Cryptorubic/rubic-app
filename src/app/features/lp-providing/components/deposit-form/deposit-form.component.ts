@@ -63,7 +63,9 @@ export class DepositFormComponent implements OnInit {
 
   public readonly brbcBalance$ = this.service.brbcBalance$;
 
-  public readonly buttonLoading$ = new BehaviorSubject<boolean>(false);
+  private readonly _buttonLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly buttonLoading$ = this._buttonLoading$.asObservable();
 
   public readonly brbcAmount$ = this.brbcAmountCtrl.valueChanges.pipe(
     startWith(this.brbcAmountCtrl.value),
@@ -151,26 +153,26 @@ export class DepositFormComponent implements OnInit {
     const period = this.liquidityPeriodCtrl.value;
     const depositInProgressNotification$ =
       this.notificationService.showDepositInProgressNotification();
-    this.buttonLoading$.next(true);
+    this._buttonLoading$.next(true);
     this.service
       .stake(usdcAmount, period)
-      .pipe(finalize(() => this.buttonLoading$.next(false)))
+      .pipe(finalize(() => this._buttonLoading$.next(false)))
       .subscribe(v => {
-        console.log('stake', v);
+        console.log('balances', v);
         depositInProgressNotification$.unsubscribe();
         this.notificationService.showSuccessDepositNotification();
       });
   }
 
   public approveTokens(token: 'brbc' | 'usdc'): void {
-    this.buttonLoading$.next(true);
+    this._buttonLoading$.next(true);
     const approveInProgressNotification$ =
       this.notificationService.showApproveInProgressNotification();
     this.service
       .approvePoolToken(token)
       .pipe(
         switchMap(() => this.service.getNeedTokensApprove()),
-        finalize(() => this.buttonLoading$.next(false))
+        finalize(() => this._buttonLoading$.next(false))
       )
       .subscribe(() => {
         approveInProgressNotification$.unsubscribe();

@@ -40,7 +40,9 @@ export class StakeButtonComponent implements OnInit {
 
   @Output() onStake = new EventEmitter<void>();
 
-  public readonly error$ = new BehaviorSubject<LpError | null>(null);
+  private readonly _error$ = new BehaviorSubject<LpError | null>(null);
+
+  public readonly error$ = this._error$.asObservable();
 
   public readonly errors = LpError;
 
@@ -52,7 +54,7 @@ export class StakeButtonComponent implements OnInit {
     startWith(this.walletConnectorService.network),
     filter<BlockchainData>(Boolean),
     map(network => {
-      return network?.name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET;
+      return network?.name !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN;
     }),
     takeUntil(this.destroy$)
   );
@@ -69,7 +71,7 @@ export class StakeButtonComponent implements OnInit {
     combineLatest([this.brbcAmount$, this.service.brbcBalance$, this.liquidityPeriod$])
       .pipe(
         tap(([brbcAmount, brbcBalance, period]) =>
-          this.error$.next(
+          this._error$.next(
             this.service.checkAmountAndPeriodForErrors(brbcAmount, brbcBalance, period)
           )
         )
@@ -79,7 +81,7 @@ export class StakeButtonComponent implements OnInit {
     combineLatest([this.usdcAmount$, this.service.usdcBalance$, this.liquidityPeriod$])
       .pipe(
         tap(([usdcAmount, usdcBalance, period]) =>
-          this.error$.next(
+          this._error$.next(
             this.service.checkAmountAndPeriodForErrors(usdcAmount, usdcBalance, period)
           )
         )

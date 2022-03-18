@@ -7,7 +7,7 @@
           tuiProgressBar
           class="progress__progress-bar"
           [max]="poolSize"
-          [value]="totalStaked || 100000"
+          [value]="totalStaked || 1"
         ></progress>
         <div class="progress__caption">
           {{ totalStaked | bigNumberFormat: 0:true }} of {{ poolSize | bigNumberFormat }} USDC
@@ -21,7 +21,7 @@
           tuiProgressBar
           class="progress__progress-bar"
           [max]="maxEnterAmount"
-          [value]="usersTotalStaked || 3500"
+          [value]="usersTotalStaked || 0.1"
         ></progress>
         <div class="progress__caption">
           <ng-container *ngIf="(needLogin$ | async) === false; else connectWallet">
