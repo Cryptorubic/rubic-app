@@ -8,4 +8,5 @@ export interface RubicWindow extends Window {
   process?: Process;
   Buffer?: Buffer;
   dataLayer?: unknown[];
+  ga?: Function | { create: Function; loaded: boolean };
 }
