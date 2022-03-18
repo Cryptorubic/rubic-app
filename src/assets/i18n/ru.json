@@ -68,8 +68,8 @@
     "InsufficientBalance": "Баланс недостаточен",
     "chooseNetworkWallet": "Выберите {{blockchain}} сеть в вашем кошельке",
     "noEnteredAmount": "Enter an amount",
-    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic не поддерживает multi-chain кошельки в данный момент. Вам доступна только торговля в сети Ethereum",
@@ -92,7 +92,6 @@
     "about": "О компании",
     "faq": "FAQ",
     "features": "Функции",
-    "team": "Команда",
     "project": "Проект",
     "login": "Подключить кошелек",
     "myTrades": "Мои Сделки",
@@ -276,9 +275,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Команда"
   },
   "faqPage": {
     "title": "FAQ",
@@ -503,6 +499,7 @@
       "balance": "You have {{amount}}",
       "unstakeBalance": "Available to unstake {{amount}}",
       "confirmStake": "Confirm stake",
+      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
       "unstake": "Unstake",
       "overLimit": "One stake limits {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Update",
@@ -633,20 +630,20 @@
     },
     "header": {
       "switchTheme": {
-        "title": "Switch Theme",
-        "desc": "Theme for the web"
+        "title": "Изменить тему",
+        "desc": "Тема сайта"
       },
       "language": {
-        "title": "Language",
-        "desc": "Choose language"
+        "title": "Язык",
+        "desc": "Выбрать язык"
       },
       "gasPrice": {
         "title": "Gas price",
         "desc": "In Ethereum chain"
       },
       "tutorials": {
-        "title": "Tutorials",
-        "desc": "How to use"
+        "title": "Обучение",
+        "desc": "Как использовать"
       }
     }
   },
@@ -657,7 +654,7 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Обменивайте любой токен с комиссией платоформы - 0%. Торгуйте сейчас!",
+      "text": "Обменивайте любой токен с комиссией платформы - 0%. Торгуйте сейчас!",
       "link": ""
     }
   },
@@ -685,6 +682,7 @@
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
     "stakeInProgress": "Stake in progress",
+    "bridgeStakeInProgress": "Stake in progress. View transaction in <a target=\"_blank\" href=\"{{url}}\">explorer</a>",
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",

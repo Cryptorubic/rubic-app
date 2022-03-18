@@ -1,3 +1,27 @@
-<app-staking-statistics></app-staking-statistics>
-<app-staking-container></app-staking-container>
-<app-staking-info></app-staking-info>
+<div class="staking-navigation">
+  <div class="staking-navigation__title">
+    Rubic Staking Round {{ round
+    }}<ng-container *ngIf="round === 1"
+      >. <span class="staking-navigation__closed">Closed</span></ng-container
+    >
+  </div>
+  <div class="staking-navigation__tabs">
+    <div
+      class="staking-navigation__tabs-tab"
+      [class.staking-navigation__tabs-tab_active]="round === 1"
+      [routerLink]="'/staking/round-one'"
+      (click)="handleRoundChange(1)"
+    >
+      Round 1
+    </div>
+    <div
+      class="staking-navigation__tabs-tab"
+      [class.staking-navigation__tabs-tab_active]="round === 2"
+      [routerLink]="'/staking/round-two'"
+      (click)="handleRoundChange(2)"
+    >
+      Round 2
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

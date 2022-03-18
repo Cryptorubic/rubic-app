@@ -300,13 +300,15 @@ export class QueryParamsService {
 
     if (!similarTokens.size) {
       return this.tokensService.fetchQueryTokens(symbol, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
-        map(foundedTokens => {
-          if (foundedTokens?.size) {
+        map(foundTokens => {
+          if (foundTokens?.size) {
             const token =
-              foundedTokens?.size > 1
-                ? foundedTokens.find(el => el.symbol === symbol)
-                : foundedTokens.first();
-            return { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+              foundTokens?.size > 1
+                ? foundTokens.find(el => el.symbol === symbol)
+                : foundTokens.first();
+            const newToken = { ...token, amount: new BigNumber(NaN) } as TokenAmount;
+            this.tokensService.addToken(newToken);
+            return newToken;
           }
           return null;
         })
@@ -337,11 +339,13 @@ export class QueryParamsService {
       : this.tokensService.fetchQueryTokens(address, chain as PAGINATED_BLOCKCHAIN_NAME).pipe(
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
-            () => of(tokens.first()),
+            backendTokens => of(backendTokens.first()),
             () => this.tokensService.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
-            return { ...fetchedToken, amount: new BigNumber(NaN) } as TokenAmount;
+            const newToken = { ...fetchedToken, amount: new BigNumber(NaN) } as TokenAmount;
+            this.tokensService.addToken(newToken);
+            return newToken;
           })
         );
   }

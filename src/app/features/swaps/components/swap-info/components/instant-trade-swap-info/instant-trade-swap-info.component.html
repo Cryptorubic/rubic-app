@@ -1,7 +1,9 @@
 <div
   class="info-line"
   *ngLet="
-    (minimumReceived | bigNumberFormat | withRound: 'toClosestValue':toToken.decimals) +
+    (minimumReceived
+      | bigNumberFormat
+      | withRound: 'toClosestValue':{ decimals: toToken.decimals }) +
     ' ' +
     toToken.symbol as minimumReceivedFormatted
   "

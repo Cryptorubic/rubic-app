@@ -68,8 +68,8 @@
     "InsufficientBalance": "Saldo insuficiente",
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
     "noEnteredAmount": "Enter an amount",
-    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
@@ -92,7 +92,6 @@
     "about": "Información",
     "faq": "Preguntas Frecuentes",
     "features": "Funciones",
-    "team": "Equipo",
     "project": "Proyecto",
     "login": "Conecta tu Billetera",
     "myTrades": "Mis Intercambios",
@@ -276,9 +275,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Equipo"
   },
   "faqPage": {
     "title": "Preguntas Frecuentes",
@@ -503,6 +499,7 @@
       "balance": "You have {{amount}}",
       "unstakeBalance": "Available to unstake {{amount}}",
       "confirmStake": "Confirm stake",
+      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
       "unstake": "Unstake",
       "overLimit": "One stake limits {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Update",
@@ -633,20 +630,20 @@
     },
     "header": {
       "switchTheme": {
-        "title": "Switch Theme",
-        "desc": "Theme for the web"
+        "title": "Cambiar tema",
+        "desc": "Tema para la web"
       },
       "language": {
-        "title": "Language",
-        "desc": "Choose language"
+        "title": "Idioma",
+        "desc": "Elige lengua"
       },
       "gasPrice": {
         "title": "Gas price",
         "desc": "In Ethereum chain"
       },
       "tutorials": {
-        "title": "Tutorials",
-        "desc": "How to use"
+        "title": "Tutoriales",
+        "desc": "Cómo utilizar"
       }
     }
   },
@@ -685,6 +682,7 @@
     "minerFee": "1inch sets increased costs on gas fee. For transaction enter less {{ nativeToken }} amount or top up your {{ nativeToken }} balance.",
     "solanaBeta": "Solana network is in beta now. Use it at your own risk.",
     "stakeInProgress": "Stake in progress",
+    "bridgeStakeInProgress": "Stake in progress. View transaction in <a target=\"_blank\" href=\"{{url}}\">explorer</a>",
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",

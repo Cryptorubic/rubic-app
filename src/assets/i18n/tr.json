@@ -91,7 +91,6 @@
     "about": "Hakkında",
     "faq": "FAQ",
     "features": "Özellikler",
-    "team": "Team",
     "project": "Proje",
     "login": "Cüzdanı Bağla",
     "myTrades": "Benim işlemlerim",
@@ -274,9 +273,6 @@
         }
       }
     }
-  },
-  "teamPage": {
-    "title": "Team"
   },
   "faqPage": {
     "title": "FAQ",
@@ -498,6 +494,7 @@
       "balance": "{{amount}} hakkınız var ",
       "unstakeBalance": "{{amount}} miktarı kaldırılabilir",
       "confirmStake": "Stake onayla",
+      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
       "unstake": "Unstake",
       "overLimit": "Bir stake limiti {{min}} - {{max}} BRBC",
       "globalUpdate": "Global Güncelleme",
@@ -629,15 +626,15 @@
     "header": {
       "switchTheme": {
         "title": "Tema Değiştir",
-        "desc": "web için tema "
+        "desc": "web için tema"
       },
       "language": {
-        "title": "Dil",
+        "title": "Dilim",
         "desc": "Dil seçiniz"
       },
       "gasPrice": {
-        "title": "Gaz fiyatı",
-        "desc": "Ethereum zincirinde"
+        "title": "Gas price",
+        "desc": "In Ethereum chain"
       },
       "tutorials": {
         "title": "Öğreticiler",

@@ -1,51 +1,101 @@
-<app-rubic-button
-  *ngIf="needLogin$ | async; else stakeBtn"
-  appearance="secondary"
-  (onClick)="onLogin.emit()"
->
-  {{ 'navigation.login' | translate }}
-</app-rubic-button>
-
-<ng-template #stakeBtn>
-  <app-rubic-button
-    *ngIf="needChangeNetwork$ | async; else enterStake"
-    (click)="switchNetwork()"
-    appearance="secondary"
-  >
-    Switch network
+<ng-container *ngIf="!isNotFirstStakingRound; else stakingRoundTwo">
+  <app-rubic-button appearance="secondary" [disabled]="true">
+    <span class="error-button">First staking round closed</span>
   </app-rubic-button>
-  <ng-template #enterStake>
-    <ng-container *ngLet="needApprove$ | async as needApprove">
-      <app-rubic-button
-        *ngLet="errorType$ | async as errorType"
-        [disabled]="errorType | falsy"
-        [loading]="loading"
-        appearance="secondary"
-        (onClick)="onStake(needApprove && !approvedTokens)"
-      >
-        <ng-container [ngSwitch]="errorType">
-          <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
-            <span class="error-button">{{ 'errors.InsufficientBalance' | translate }}</span>
-          </ng-container>
-          <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
-            {{ 'errors.noEnteredAmount' | translate }}
-          </ng-container>
-          <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
-            <span class="error-button" *ngLet="limit$ | async as limit">{{
-              'staking.stake.overLimit'
-                | translate: { max: limit.max | bigNumberFormat, min: limit.min }
-            }}</span>
-          </ng-container>
-          <ng-container *ngSwitchCase="null">
-            <ng-container *ngIf="(needApprove$ | async) && !approvedTokens; else confirmStake"
-              >Approve</ng-container
+</ng-container>
+<ng-template #stakingRoundTwo>
+  <app-rubic-button
+    *ngIf="needLogin$ | async; else stakeBtn"
+    appearance="secondary"
+    (onClick)="onLogin.emit()"
+  >
+    {{ 'navigation.login' | translate }}
+  </app-rubic-button>
+
+  <ng-template #stakeBtn>
+    <app-rubic-button
+      *ngIf="needChangeNetwork$ | async; else enterStake"
+      (click)="switchNetwork()"
+      appearance="secondary"
+    >
+      <ng-container *ngLet="selectedTokenBlockchain$ | async as blockchain">
+        {{ 'common.switchTo' | translate: { networkName: blockchain } }}
+      </ng-container>
+    </app-rubic-button>
+    <ng-template #enterStake>
+      <ng-container *ngLet="needApprove$ | async as needApprove">
+        <ng-container
+          *ngIf="
+            (isBridgeTokenSelected$ | async) === false && (isUserWhitelisted$ | async) === true
+          "
+        >
+          <ng-container *ngLet="errorTypeWhitelist$ | async as errorTypeWhitelist">
+            <app-rubic-button
+              class="enter-whitelist"
+              *ngIf="(isUserWhitelisted$ | async) && isNotFirstStakingRound"
+              (onClick)="onStake(needApprove && !approvedTokens, true)"
+              [loading]="whitelistStakeLoading"
+              [disabled]="loading || needApprove || errorTypeWhitelist !== null"
+              appearance="secondary"
             >
-            <ng-template #confirmStake>
-              {{ 'staking.stake.confirmStake' | translate }}
-            </ng-template>
+              <ng-container [ngSwitch]="errorTypeWhitelist">
+                <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
+                  <span class="error-button">{{ 'errors.InsufficientBalance' | translate }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
+                  {{ 'staking.stake.confirmStakeViaWhitelist' | translate }}
+                </ng-container>
+                <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
+                  <span class="error-button" *ngLet="limit$ | async as limit">{{
+                    'staking.stake.overLimit'
+                      | translate
+                        : {
+                            max: limit.maxWhitelist | bigNumberFormat: 2:true,
+                            min: limit.minWhitelist
+                          }
+                  }}</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="null">
+                  {{ 'staking.stake.confirmStakeViaWhitelist' | translate }}
+                </ng-container>
+              </ng-container>
+            </app-rubic-button>
           </ng-container>
         </ng-container>
-      </app-rubic-button>
-    </ng-container>
+        <app-rubic-button
+          *ngLet="errorType$ | async as errorType"
+          [disabled]="(errorType | falsy) || whitelistStakeLoading"
+          [loading]="loading"
+          appearance="secondary"
+          (onClick)="onStake(needApprove && !approvedTokens)"
+        >
+          <ng-container [ngSwitch]="errorType">
+            <ng-container *ngSwitchCase="errorTypeEnum.LIMIT_REACHED">
+              <span class="error-button">Limit has been reached</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="errorTypeEnum.INSUFFICIENT_BALANCE">
+              <span class="error-button">{{ 'errors.InsufficientBalance' | translate }}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="errorTypeEnum.EMPTY_AMOUNT">
+              {{ 'errors.noEnteredAmount' | translate }}
+            </ng-container>
+            <ng-container *ngSwitchCase="errorTypeEnum.LIMIT">
+              <span class="error-button" *ngLet="limit$ | async as limit">{{
+                'staking.stake.overLimit'
+                  | translate: { max: limit.max | bigNumberFormat: 2:true, min: limit.min }
+              }}</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="null">
+              <ng-container *ngIf="(needApprove$ | async) && !approvedTokens; else confirmStake">{{
+                'common.approve' | translate
+              }}</ng-container>
+              <ng-template #confirmStake>
+                {{ 'staking.stake.confirmStake' | translate }}
+              </ng-template>
+            </ng-container>
+          </ng-container>
+        </app-rubic-button>
+      </ng-container>
+    </ng-template>
   </ng-template>
 </ng-template>

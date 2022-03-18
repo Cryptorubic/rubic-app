@@ -36,7 +36,7 @@ export type Web3SupportedBlockchains = typeof WEB3_SUPPORTED_BLOCKCHAINS[number]
 export class PublicBlockchainAdapterService {
   private readonly _nodesChecked$ = new BehaviorSubject<boolean>(false);
 
-  private readonly connectionLinks: ConnectionLink[];
+  private connectionLinks: ConnectionLink[];
 
   public [BLOCKCHAIN_NAME.ETHEREUM]: EthLikeWeb3Public;
 
@@ -70,99 +70,57 @@ export class PublicBlockchainAdapterService {
 
   public readonly [BLOCKCHAIN_NAME.AURORA_TESTNET]: EthLikeWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
+  public [BLOCKCHAIN_NAME.SOLANA]: SolanaWeb3Public = null;
 
-  public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3Public = null;
+  public [BLOCKCHAIN_NAME.NEAR]: NearWeb3Public = null;
 
   constructor(
     private useTestingModeService: UseTestingModeService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpClient: HttpClient
   ) {
-    this.connectionLinks = networks
-      .filter(network => WEB3_SUPPORTED_BLOCKCHAINS.some(el => el === network.name))
-      .map(network => ({
-        blockchainName: network.name as Web3SupportedBlockchains,
-        rpcLink: network.rpcLink,
-        additionalRpcLink: network.additionalRpcLink
-      }));
-    this.connectionLinks.forEach(connection =>
-      this.addWeb3(connection.rpcLink, connection.blockchainName)
-    );
-
-    // @TODO Solana. remove hardcode.
-    const solanaRpc = {
-      free: { url: 'https://free.rpcpool.com', weight: 10 },
-      mainnet: { url: 'https://mainnet.rpcpool.com', weight: 10 },
-      api: { url: 'https://api.rpcpool.com', weight: 10 },
-      solanaApi: { url: 'https://solana-api.projectserum.com', weight: 10 },
-      raydium: { url: 'https://raydium.rpcpool.com', weight: 50 },
-      apiBeta: { url: 'https://api.mainnet-beta.solana.com', weight: 1 },
-      devnet: { url: 'https://api.devnet.solana.com', weight: 0 }
-    };
-    const solanaConnection = new Connection(solanaRpc.apiBeta.url);
-    this.walletConnectorService.solanaWeb3Connection = solanaConnection;
-    this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(solanaConnection);
-
-    this[BLOCKCHAIN_NAME.NEAR] = new NearWeb3Public(NEAR_MAINNET_CONFIG, connection => {
-      this.walletConnectorService.nearConnection = connection;
-    });
-
+    this.setEthLikeWeb3();
+    this.setSolanaWeb3();
+    this.setNearWeb3();
     this.checkAllRpcProviders();
 
-    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.connectionLinks.forEach(connection => {
-          const testingConnection = this.connectionLinks.find(
-            c => c.blockchainName === `${connection.blockchainName}_TESTNET`
-          );
-          if (!testingConnection) {
-            return;
-          }
-
-          this[connection.blockchainName as Web3SupportedBlockchains] = new EthLikeWeb3Public(
-            new Web3(testingConnection.rpcLink),
-            BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName),
-            this.useTestingModeService,
-            this.httpClient
-          );
-
-          this[`${connection.blockchainName}_TESTNET` as Web3SupportedBlockchains] =
-            this[connection.blockchainName];
-        });
-      }
-    });
-
-    this.useTestingModeService.web3PublicSettings.rpcTimeout.subscribe(
-      this.checkAllRpcProviders.bind(this)
-    );
+    this.initTestingMode();
   }
 
   private checkAllRpcProviders(timeout?: number): void {
     const web3List = WEB3_SUPPORTED_BLOCKCHAINS.map(key => this[key]).filter(i => i);
 
-    const checkNode$ = (web3Public: EthLikeWeb3Public) =>
+    const checkNode$ = (web3Public: EthLikeWeb3Public | SolanaWeb3Public) =>
       web3Public.healthCheck(timeout).pipe(
         tap(isNodeWorks => {
           if (isNodeWorks === null) {
             return;
           }
 
-          const blockchainName = web3Public.blockchain.name as Web3SupportedBlockchains;
-          const connector = this.connectionLinks.find(
-            item => item.blockchainName === blockchainName
-          );
-          if (!isNodeWorks && connector?.additionalRpcLink) {
-            this[blockchainName].setProvider(connector.additionalRpcLink);
-
-            console.debug(
-              `Broken ${web3Public.blockchain.name} node has been replaced with a spare.`
+          if (web3Public instanceof SolanaWeb3Public) {
+            if (!isNodeWorks) {
+              this.setSolanaWeb3('additional');
+              console.debug(`Broken Solana node has been replaced with a spare.`);
+            }
+          } else if (web3Public instanceof EthLikeWeb3Public) {
+            const blockchainName = web3Public.blockchain.name as Web3SupportedBlockchains;
+            const connector = this.connectionLinks.find(
+              item => item.blockchainName === blockchainName
             );
+            if (!isNodeWorks && connector?.additionalRpcLink) {
+              this[blockchainName].setProvider(connector.additionalRpcLink);
+
+              console.debug(
+                `Broken ${web3Public.blockchain.name} node has been replaced with a spare.`
+              );
+            }
           }
         })
       );
 
-    forkJoin(web3List.map(checkNode$)).subscribe(() => this._nodesChecked$.next(true));
+    forkJoin([...web3List.map(checkNode$), checkNode$(this[BLOCKCHAIN_NAME.SOLANA])]).subscribe(
+      () => this._nodesChecked$.next(true)
+    );
   }
 
   private addWeb3(rpcLink: string, blockchainName: Web3SupportedBlockchains): void {
@@ -198,5 +156,61 @@ export class PublicBlockchainAdapterService {
         return target[prop];
       }
     });
+  }
+
+  private setNearWeb3(): void {
+    this[BLOCKCHAIN_NAME.NEAR] = new NearWeb3Public(NEAR_MAINNET_CONFIG, connection => {
+      this.walletConnectorService.nearConnection = connection;
+    });
+  }
+
+  private setSolanaWeb3(rpc: 'primary' | 'additional' = 'primary'): void {
+    const blockchain = networks.find(el => el.name === BLOCKCHAIN_NAME.SOLANA);
+    const url = rpc === 'primary' ? blockchain.rpcLink : blockchain.additionalRpcLink;
+    const solanaConnection = new Connection(url);
+    this.walletConnectorService.solanaWeb3Connection = solanaConnection;
+    this[BLOCKCHAIN_NAME.SOLANA] = new SolanaWeb3Public(solanaConnection);
+  }
+
+  private setEthLikeWeb3(): void {
+    this.connectionLinks = networks
+      .filter(network => WEB3_SUPPORTED_BLOCKCHAINS.some(el => el === network.name))
+      .map(network => ({
+        blockchainName: network.name as Web3SupportedBlockchains,
+        rpcLink: network.rpcLink,
+        additionalRpcLink: network.additionalRpcLink
+      }));
+    this.connectionLinks.forEach(connection =>
+      this.addWeb3(connection.rpcLink, connection.blockchainName)
+    );
+  }
+
+  private initTestingMode(): void {
+    this.useTestingModeService.isTestingMode.subscribe(isTestingMode => {
+      if (isTestingMode) {
+        this.connectionLinks.forEach(connection => {
+          const testingConnection = this.connectionLinks.find(
+            c => c.blockchainName === `${connection.blockchainName}_TESTNET`
+          );
+          if (!testingConnection) {
+            return;
+          }
+
+          this[connection.blockchainName as Web3SupportedBlockchains] = new EthLikeWeb3Public(
+            new Web3(testingConnection.rpcLink),
+            BlockchainsInfo.getBlockchainByName(testingConnection.blockchainName),
+            this.useTestingModeService,
+            this.httpClient
+          );
+
+          this[`${connection.blockchainName}_TESTNET` as Web3SupportedBlockchains] =
+            this[connection.blockchainName];
+        });
+      }
+    });
+
+    this.useTestingModeService.web3PublicSettings.rpcTimeout.subscribe(
+      this.checkAllRpcProviders.bind(this)
+    );
   }
 }

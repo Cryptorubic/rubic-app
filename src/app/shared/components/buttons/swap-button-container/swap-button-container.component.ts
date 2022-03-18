@@ -93,7 +93,8 @@ export class SwapButtonContainerComponent implements OnInit {
       } else {
         this.maxAmountValue = this.withRoundPipe.transform(
           value.toFormat(BIG_NUMBER_FORMAT),
-          'toClosestValue'
+          'toClosestValue',
+          { roundingMode: BigNumber.ROUND_HALF_UP }
         );
       }
       this.errorType[ERROR_TYPE.MORE_THAN_MAXIMUM] = true;

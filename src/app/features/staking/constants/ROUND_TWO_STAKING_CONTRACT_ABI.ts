@@ -1,6 +1,6 @@
 import { AbiItem } from 'web3-utils';
 
-export const STAKING_CONTRACT_ABI = [
+export const ROUND_TWO_STAKING_CONTRACT_ABI = [
   {
     inputs: [{ internalType: 'contract IERC20Minimal', name: '_BRBC', type: 'address' }],
     stateMutability: 'nonpayable',
@@ -140,6 +140,13 @@ export const STAKING_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [],
+    name: 'endWhitelist',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
     name: 'enter',
     outputs: [],
@@ -152,6 +159,13 @@ export const STAKING_CONTRACT_ABI = [
       { internalType: 'address', name: '_to', type: 'address' }
     ],
     name: 'enterTo',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_amount', type: 'uint256' }],
+    name: 'enterWhitelist',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -209,6 +223,20 @@ export const STAKING_CONTRACT_ABI = [
   },
   {
     inputs: [],
+    name: 'maxRBCTotal',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'maxRBCWhitelist',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'name',
     outputs: [{ internalType: 'string', name: '', type: 'string' }],
     stateMutability: 'view',
@@ -243,6 +271,13 @@ export const STAKING_CONTRACT_ABI = [
     type: 'function'
   },
   {
+    inputs: [{ internalType: 'address[]', name: 'whitelistedAddresses', type: 'address[]' }],
+    name: 'setWhitelist',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [],
     name: 'startDate',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -265,7 +300,21 @@ export const STAKING_CONTRACT_ABI = [
   },
   {
     inputs: [],
+    name: 'total',
+    outputs: [{ internalType: 'uint256', name: 'totalSum', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
     name: 'totalRBCEntered',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'totalRBCWhitelistEntered',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
@@ -309,6 +358,20 @@ export const STAKING_CONTRACT_ABI = [
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
     name: 'userEnteredAmount',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'userEnteredWhitelisted',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'address', name: '_whitelistAddress', type: 'address' }],
+    name: 'whitelistedAddress',
+    outputs: [{ internalType: 'bool', name: 'whitelisted', type: 'bool' }],
     stateMutability: 'view',
     type: 'function'
   }

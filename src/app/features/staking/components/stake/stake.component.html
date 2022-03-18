@@ -19,15 +19,16 @@
     <div class="stake__balance" *ngLet="selectedTokenBalance$ | async as tokenBalance">
       {{
         'staking.stake.balance'
-          | translate: { amount: tokenBalance | bigNumberFormat | shortenAmount: 9:4:true }
+          | translate: { amount: tokenBalance || 0 | bigNumberFormat | shortenAmount: 9:4:true }
       }}
       <span (click)="setMaxAmount(tokenBalance)">MAX</span>
     </div>
   </ng-container>
   <app-stake-button-container
     [loading]="stakeButtonLoading$ | async"
+    [whitelistStakeLoading]="whitelistStakeButtonLoading$ | async"
     [amountFormControl]="amount"
-    (onConfirmStake)="confirmStake()"
+    (onConfirmStake)="confirmStake($event)"
     (onLogin)="login()"
     (onApprove)="approve()"
     [approvedTokens]="approvedTokens"
