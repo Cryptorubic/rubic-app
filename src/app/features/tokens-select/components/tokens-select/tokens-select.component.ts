@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   Self,
   ViewChild
@@ -52,6 +53,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { CrossChainRoutingService } from '@features/cross-chain-routing/services/cross-chain-routing-service/cross-chain-routing.service';
 import { TokensListType } from '@features/tokens-select/models/tokens-list-type';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import { DOCUMENT } from '@angular/common';
 
 type ComponentInput = {
   tokens$: Observable<AvailableTokenAmount[]>;
@@ -72,7 +74,7 @@ type ComponentContext = TuiDialogContext<AvailableTokenAmount, ComponentInput>;
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class TokensSelectComponent implements OnInit {
+export class TokensSelectComponent implements OnInit, OnDestroy {
   @ViewChild(TokensListComponent) private tokensList: TokensListComponent;
 
   public idPrefix: string;
@@ -202,7 +204,8 @@ export class TokensSelectComponent implements OnInit {
     private readonly httpClient: HttpClient,
     private readonly tokensService: TokensService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly useTestingModeService: UseTestingModeService
+    private readonly useTestingModeService: UseTestingModeService,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.searchQueryLoading = false;
     this.listType = 'default';
@@ -211,7 +214,27 @@ export class TokensSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setWindowHeight();
     this.initSubscriptions();
+  }
+
+  ngOnDestroy(): void {
+    this.resetWindowHeight();
+  }
+
+  /**
+   * Sets window height through html class name, to prevent broken scroll in Safari.
+   */
+  private setWindowHeight(): void {
+    this.document.documentElement.style.setProperty(
+      '--window-inner-height',
+      `${window.innerHeight}px`
+    );
+    this.document.documentElement.classList.add('is-locked');
+  }
+
+  private resetWindowHeight(): void {
+    this.document.documentElement.classList.remove('is-locked');
   }
 
   /**
@@ -291,8 +314,6 @@ export class TokensSelectComponent implements OnInit {
         [blockchainType]: this._blockchain
       });
     }
-
-    this.updateTokensList();
   }
 
   /**
@@ -330,6 +351,7 @@ export class TokensSelectComponent implements OnInit {
     if (this.updateTokensByQuerySubscription$) {
       return;
     }
+
     this.updateTokensByQuerySubscription$ = this.updateTokensByQuery$
       .pipe(
         tap(() => {
