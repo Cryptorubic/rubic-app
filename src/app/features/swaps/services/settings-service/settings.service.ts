@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from '@features/swaps/models/promo-code';
 import { copyObject } from 'src/app/shared/utils/utils';
-import { QuerySlippage } from '@core/services/query-params/query-params.service';
+import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 
@@ -97,8 +97,8 @@ export class SettingsService {
     private readonly iframeService: IframeService,
     private readonly authService: AuthService
   ) {
-    this.defaultItSettings = this.getDefaultITSettings(this.defaultSlippageTolerance.instantTrades);
-    this.defaultCcrSettings = this.getDefaultCCRSettings(this.defaultSlippageTolerance.crossChain);
+    this.defaultItSettings = this.getDefaultITSettings();
+    this.defaultCcrSettings = this.getDefaultCCRSettings();
 
     this.createForm();
     this.setupData();

@@ -18,18 +18,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { AdditionalTokens, QueryParams } from './models/query-params';
+import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
 import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
-
-export interface QuerySlippage {
-  slippageIt: number | null;
-  slippageCcr: number | null;
-}
 
 type NearQueryParams =
   | {
