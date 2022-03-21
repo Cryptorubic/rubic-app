@@ -188,6 +188,7 @@ export class CrossChainRoutingService {
     }
 
     const { toTransitTokenAmount, feeInPercents } = await this.getToTransitTokenAmount(
+      fromBlockchain,
       toBlockchain,
       finalTransitAmount,
       fromTrade === null,
@@ -352,7 +353,8 @@ export class CrossChainRoutingService {
         fromBlockchain,
         trade.fromProviderIndex,
         trade.tokenIn,
-        minTransitTokenAmount
+        minTransitTokenAmount,
+        'min'
       );
       if (!minAmount?.isFinite()) {
         throw new InsufficientLiquidityError('CrossChainRouting');
@@ -367,7 +369,8 @@ export class CrossChainRoutingService {
         fromBlockchain,
         trade.fromProviderIndex,
         trade.tokenIn,
-        maxTransitTokenAmount
+        maxTransitTokenAmount,
+        'max'
       );
       return {
         maxAmountError: maxAmount
@@ -420,12 +423,14 @@ export class CrossChainRoutingService {
    * @param providerIndex Index of provider to use.
    * @param fromToken From token.
    * @param transitTokenAmount Output amount of transit token.
+   * @param type Type of min or max amount calculation.
    */
   private async getFromTokenAmount(
     blockchain: SupportedCrossChainBlockchain,
     providerIndex: number,
     fromToken: BlockchainToken,
-    transitTokenAmount: BigNumber
+    transitTokenAmount: BigNumber,
+    type: 'min' | 'max'
   ): Promise<BigNumber> {
     const transitToken = this.contracts[blockchain].transitToken;
     if (compareAddresses(fromToken.address, transitToken.address)) {
@@ -437,27 +442,35 @@ export class CrossChainRoutingService {
     }
 
     const contractAddress = this.contracts[blockchain].address;
-    return (
+    const amount = (
       await this.contracts[blockchain]
         .getProvider(providerIndex)
         .calculateTrade(transitToken, transitTokenAmount, fromToken, false, contractAddress)
     ).to.amount;
+    const approximatePercentDifference = 0.02;
+
+    if (type === 'min') {
+      return amount.multipliedBy(1 + approximatePercentDifference);
+    }
+    return amount.multipliedBy(1 - approximatePercentDifference);
   }
 
   /**
    * Calculates transit token's amount in target blockchain, based on transit token's amount is source blockchain.
+   * @param fromBlockchain Source blockchain
    * @param toBlockchain Target blockchain
    * @param fromTransitTokenAmount Amount of transit token in source blockchain.
    * @param isDirectTrade True, if first transit token is traded directrly.
    * @param fromSlippage Slippage in source blockchain.
    */
   private async getToTransitTokenAmount(
+    fromBlockchain: SupportedCrossChainBlockchain,
     toBlockchain: SupportedCrossChainBlockchain,
     fromTransitTokenAmount: BigNumber,
     isDirectTrade: boolean,
     fromSlippage: number
   ): Promise<{ toTransitTokenAmount: BigNumber; feeInPercents: number }> {
-    const feeInPercents = await this.getFeeInPercents(toBlockchain);
+    const feeInPercents = await this.getFeeInPercents(fromBlockchain, toBlockchain);
     let toTransitTokenAmount = fromTransitTokenAmount
       .multipliedBy(100 - feeInPercents)
       .dividedBy(100);
@@ -474,10 +487,17 @@ export class CrossChainRoutingService {
 
   /**
    * Gets fee amount of transit token in percents in target blockchain.
+   * @param fromBlockchain Source blockchain.
    * @param toBlockchain Target blockchain.
    */
-  private async getFeeInPercents(toBlockchain: SupportedCrossChainBlockchain): Promise<number> {
-    const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain();
+  private async getFeeInPercents(
+    fromBlockchain: SupportedCrossChainBlockchain,
+    toBlockchain: SupportedCrossChainBlockchain
+  ): Promise<number> {
+    const numOfFromBlockchain = this.contracts[fromBlockchain].numOfBlockchain;
+    const feeOfToBlockchainAbsolute = await this.contracts[toBlockchain].feeAmountOfBlockchain(
+      numOfFromBlockchain
+    );
     return parseInt(feeOfToBlockchainAbsolute) / 10000; // to %
   }
 
@@ -721,6 +741,9 @@ export class CrossChainRoutingService {
   public createTrade(options: TransactionOptions = {}): Observable<void> {
     return from(
       (async () => {
+        if (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
+          throw new CustomError('Swaps from Near are not available now. Try again later.');
+        }
         await this.checkTradeParameters();
         this.checkDeviceAndShowNotification();
 

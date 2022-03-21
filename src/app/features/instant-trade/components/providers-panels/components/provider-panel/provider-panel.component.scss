@@ -200,6 +200,8 @@ $white: white;
 
   &__amount {
     display: flex;
+
+    padding-left: 2px;
     overflow-x: auto;
 
     font-weight: 300;
@@ -212,7 +214,6 @@ $white: white;
     &::-webkit-scrollbar {
       display: none;
     }
-
 
     &_error {
       display: block;
@@ -262,7 +263,6 @@ $white: white;
     }
   }
 
-
   .tui-skeleton {
     &.provider-panel__amount {
       width: 100%;
@@ -275,4 +275,3 @@ $white: white;
     }
   }
 }
-

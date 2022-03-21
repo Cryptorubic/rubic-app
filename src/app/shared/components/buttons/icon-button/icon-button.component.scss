@@ -17,16 +17,12 @@
   }
 
   ::ng-deep tui-wrapper {
-    border-radius: 0;
-
     .content {
-      padding: 6px;
       flex-direction: column;
 
+      padding: 6px;
+
       .wrapper {
-        //width: 52px;
-        //margin-right: 10px;
-        //padding-left: 10px;
         overflow: hidden;
       }
 

@@ -19,7 +19,7 @@ import { BlockchainsAsideComponent } from './components/blockchains-aside/blockc
 import { TokensSearchBarComponent } from './components/tokens-search-bar/tokens-search-bar.component';
 import { TokensListComponent } from './components/tokens-list/tokens-list.component';
 import { TokensListElementComponent } from './components/tokens-list-element/tokens-list-element.component';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { CustomTokenComponent } from './components/custom-token/custom-token.component';
 import { CustomTokenWarningModalComponent } from './components/custom-token-warning-modal/custom-token-warning-modal.component';
 

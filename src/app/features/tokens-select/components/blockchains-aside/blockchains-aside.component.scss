@@ -2,6 +2,7 @@
 
 .blockchain-aside {
   width: 180px;
+  height: 100%;
   padding: 14px 10px;
 
   background: rgba(170, 170, 170, 0.13);
@@ -82,5 +83,11 @@
         }
       }
     }
+  }
+}
+
+@include b($mobile-md-minus) {
+  .blockchain-aside {
+    border-radius: unset;
   }
 }

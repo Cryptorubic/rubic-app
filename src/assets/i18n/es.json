@@ -67,8 +67,8 @@
     "InsufficientBalance": "Saldo insuficiente",
     "chooseNetworkWallet": "Elija la red {{blockchain}} en su billetera",
     "noEnteredAmount": "Enter an amount",
-    "minimumAmount": "Minimum amount is {{amount}} {{token}}",
-    "maximumAmount": "Maximum amount is {{amount}} {{token}}",
+    "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
+    "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
     "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
     "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
     "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
@@ -625,20 +625,20 @@
     },
     "header": {
       "switchTheme": {
-        "title": "Switch Theme",
-        "desc": "Theme for the web"
+        "title": "Cambiar tema",
+        "desc": "Tema para la web"
       },
       "language": {
-        "title": "Language",
-        "desc": "Choose language"
+        "title": "Idioma",
+        "desc": "Elige lengua"
       },
       "gasPrice": {
         "title": "Gas price",
         "desc": "In Ethereum chain"
       },
       "tutorials": {
-        "title": "Tutorials",
-        "desc": "How to use"
+        "title": "Tutoriales",
+        "desc": "Cómo utilizar"
       }
     }
   },

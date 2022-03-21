@@ -8,6 +8,8 @@ import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { WINDOW } from '@ng-web-apis/common';
+import { HttpService } from 'src/app/core/services/http/http.service';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 const formEventCategoryMap = {
   [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: 'multi-chain-swap',
@@ -20,6 +22,11 @@ const formStepsInitial = {
   token2: false,
   approve: false
 };
+
+interface GaObject {
+  loaded: boolean;
+  create: Function;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +66,8 @@ export class GoogleTagManagerService {
     private readonly angularGtmService: AngularGoogleTagManagerService,
     private readonly cookieService: CookieService,
     private readonly storeService: StoreService,
-    @Inject(WINDOW) private readonly window: Window
+    private readonly httpService: HttpService,
+    @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
 
   /**
@@ -142,10 +150,6 @@ export class GoogleTagManagerService {
    * Fires "transaction signed" GTM event and resets steps of swap type's form.
    * @param eventCategory Swap type.
    * @param txId Transaction hash.
-   * @param revenue Platform's commission.
-   * @param fromToken What token user wants to sell.
-   * @param toToken What token user wants to buy.
-   * @param txUsdAmount Amount of trade in USD.
    */
   public fireTxSignedEvent(eventCategory: SWAP_PROVIDER_TYPE, txId: string): void {
     this.forms[eventCategory].next(formStepsInitial);
@@ -225,5 +229,19 @@ export class GoogleTagManagerService {
    */
   public addGtmToDom(): void {
     this.angularGtmService.addGtmToDom();
+  }
+
+  /**
+   * Checks if Google Analytics is working for the user.
+   */
+  public checkGtm(): void {
+    // @ts-ignore
+    const gaObject = this.window[this.window['GoogleAnalyticsObject'] || 'ga'] as GaObject;
+    const isGaNotLoaded = !gaObject?.loaded || !gaObject?.create || typeof gaObject !== 'function';
+    this.httpService
+      .post<void>('total_values/stats/ga/users', {
+        googleAnalytics: !isGaNotLoaded
+      })
+      .subscribe();
   }
 }

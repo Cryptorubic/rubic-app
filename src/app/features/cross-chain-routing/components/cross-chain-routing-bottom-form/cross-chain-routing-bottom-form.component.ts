@@ -51,6 +51,7 @@ import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 type CalculateTradeType = 'normal' | 'hidden';
 
@@ -88,6 +89,8 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
   public readonly smartRoutingLoading$ = this.crossChainRoutingService.smartRoutingLoading$;
 
   public toBlockchain: BLOCKCHAIN_NAME;
+
+  public toToken: TokenAmount;
 
   public fromAmount: BigNumber;
 
@@ -200,6 +203,7 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
   private setFormValues(form: SwapFormInput): void {
     this.toBlockchain = form.toBlockchain;
+    this.toToken = form.toToken;
     this.fromAmount = form.fromAmount;
     this.conditionalCalculate('normal');
   }
@@ -257,7 +261,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([crossChainTrade$, balance$]).pipe(
             map(([{ toAmount, minAmountError, maxAmountError, needApprove }]) => {
               if (
-                (minAmountError && fromAmount.gte(minAmountError)) ||
+                (minAmountError &&
+                  fromAmount.gte(minAmountError) &&
+                  fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
               ) {
                 this.onCalculateTrade$.next('normal');
@@ -327,7 +333,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
           return forkJoin([crossChainTrade$, balance$]).pipe(
             map(([{ toAmount, minAmountError, maxAmountError }]) => {
               if (
-                (minAmountError && fromAmount.gte(minAmountError)) ||
+                (minAmountError &&
+                  fromAmount.gte(minAmountError) &&
+                  this.swapFormService.inputValue.fromBlockchain !== BLOCKCHAIN_NAME.NEAR) ||
                 (maxAmountError && fromAmount.lte(maxAmountError))
               ) {
                 this.onCalculateTrade$.next('hidden');

@@ -41,6 +41,11 @@ export const crossChainContractAbiV3 = [
             type: 'bytes32'
           },
           {
+            internalType: 'address',
+            name: 'provider',
+            type: 'address'
+          },
+          {
             internalType: 'bool',
             name: 'swapToCrypto',
             type: 'bool'
@@ -104,6 +109,11 @@ export const crossChainContractAbiV3 = [
             internalType: 'bytes32',
             name: 'newAddress',
             type: 'bytes32'
+          },
+          {
+            internalType: 'address',
+            name: 'provider',
+            type: 'address'
           },
           {
             internalType: 'bool',

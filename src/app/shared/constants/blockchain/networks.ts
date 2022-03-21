@@ -291,8 +291,9 @@ const networks: ReadonlyArray<Network> = [
     name: BLOCKCHAIN_NAME.SOLANA,
     label: 'Solana',
     scannerUrl: 'https://explorer.solana.com',
-    rpcLink: 'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
-    additionalRpcLink: 'https://api.mainnet-beta.solana.com',
+    rpcLink: 'https://green-hidden-shape.solana-mainnet.quiknode.pro/',
+    additionalRpcLink:
+      'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
     imagePath: 'assets/images/icons/coins/solana.svg',
     nativeCoin: {
       blockchain: BLOCKCHAIN_NAME.SOLANA,

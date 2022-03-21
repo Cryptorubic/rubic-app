@@ -5,6 +5,7 @@
         *onlyFrame="'vertical'"
         [blockchain]="blockchain"
       ></app-iframe-blockchain-indicator>
+
       <div
         class="bottom-amount__tokens-container"
         [ngClass]="{
@@ -13,13 +14,22 @@
           'bottom-amount__tokens-container_placeholder': !errorText && !tokenAmount
         }"
       >
-        <div class="bottom-amount__output">
+        <div
+          class="bottom-amount__output"
+          [ngClass]="{
+            'bottom-amount__output_error-text': errorText
+          }"
+        >
           <ng-container *ngIf="errorText; else tokenAmountTpl">
             {{ 'tradePage.tradingNotAvailable' | translate }}
           </ng-container>
           <ng-template #tokenAmountTpl>
             {{
-              tokenAmount ? (tokenAmount | bigNumberFormat | withRound: 'toClosestValue') : '0.0'
+              tokenAmount
+                ? (tokenAmount
+                  | bigNumberFormat
+                  | withRound: 'toClosestValue':{ decimals: tokenDecimals })
+                : '0.0'
             }}
           </ng-template>
         </div>
