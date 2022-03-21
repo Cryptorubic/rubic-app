@@ -36,6 +36,8 @@ export class AmountEstimatedComponent implements OnInit {
 
   @Input() errorText = '';
 
+  @Input() tokenDecimals = 18;
+
   private _loading: boolean;
 
   public usdPrice: BigNumber;
