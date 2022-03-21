@@ -62,12 +62,25 @@
       }
     }
   }
+
+  ::ng-deep app-icon-button {
+    button {
+      width: 70px !important;
+    }
+
+    .content {
+      padding-bottom: 3px;
+    }
+
+    .bordered .content {
+      padding-bottom: 1px;
+    }
+  }
 }
 
 @media (max-width: 600px) {
   .blockchain-aside {
     width: 85px;
-    height: calc(100% + 33px);
     padding: 14px 0;
 
     &__blockchains-list {

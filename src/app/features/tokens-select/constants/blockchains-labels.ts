@@ -1,21 +1,8 @@
-interface temp {
-  ETH: string;
-  BSC: string;
-  POLYGON: string;
-  XDAI: string;
-  HARMONY: string;
-  AVALANCHE: string;
-  MOONRIVER: string;
-  FANTOM: string;
-  ARBITRUM: string;
-  AURORA: string;
-  SOLANA: string;
-  NEAR: string;
-}
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
-export const BLOCKCHAIN_LABEL: temp = {
+export const BLOCKCHAIN_LABEL: Partial<Record<BLOCKCHAIN_NAME, string>> = {
   ETH: 'Ethereum',
-  BSC: 'BSC',
+  BSC: 'Binance',
   POLYGON: 'Polygon',
   XDAI: 'XDai',
   HARMONY: 'Harmony',

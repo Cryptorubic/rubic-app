@@ -12,7 +12,7 @@
 
   &:hover {
     img {
-      transform: scale(1.2);
+      transform: scale(1.1);
     }
   }
 
@@ -22,14 +22,15 @@
 
       padding: 6px;
 
-      .wrapper {
+      .label-container {
+        margin-top: 2px;
         overflow: hidden;
-      }
 
-      .token-name {
-        color: var(--rubic-base-02);
-        font-weight: normal;
-        font-size: $rubic-font-size-main;
+        .label {
+          color: var(--rubic-base-02);
+          font-weight: normal;
+          font-size: $rubic-font-size-main;
+        }
       }
     }
 
@@ -67,4 +68,10 @@
 
 .bordered {
   border: 2px solid var(--main-green);
+
+  ::ng-deep tui-wrapper {
+    .content {
+      padding: 4px 6px;
+    }
+  }
 }

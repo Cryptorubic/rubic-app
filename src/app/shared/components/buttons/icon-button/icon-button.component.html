@@ -7,7 +7,7 @@
   [size]="buttonSize"
 >
   <img [src]="icon" alt="" />
-  <div class="wrapper">
-    <span class="token-name">{{ _blockchainLabel }}</span>
+  <div class="label-container" *ngIf="label">
+    <span class="label">{{ label }}</span>
   </div>
 </button>

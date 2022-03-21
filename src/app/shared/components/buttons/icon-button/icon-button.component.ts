@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { TuiSizeXXL, TuiSizeXS } from '@taiga-ui/core/types';
-import { BLOCKCHAIN_LABEL } from 'src/app/features/tokens-select/constants/blockchains-labels';
+import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types/size';
 
 @Component({
   selector: 'app-icon-button',
@@ -13,17 +12,13 @@ export class IconButtonComponent {
 
   public _border: boolean;
 
-  public _blockchainLabel: string;
-
-  @Input() public buttonSize: TuiSizeXS | TuiSizeXXL = 'xxl';
+  @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'xl';
 
   @Input() icon: string;
 
   @Input() scale: number = 1;
 
-  @Input('blockchainLabel') set setBlockchainsLabel(blockchainLabel: string) {
-    this._blockchainLabel = BLOCKCHAIN_LABEL[blockchainLabel as keyof typeof BLOCKCHAIN_LABEL];
-  }
+  @Input() label: string;
 
   @Input('disabled') set setDisabled(disabled: boolean | '') {
     this._disabled = disabled === '' || disabled;

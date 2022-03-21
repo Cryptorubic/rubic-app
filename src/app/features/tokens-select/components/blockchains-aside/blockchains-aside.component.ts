@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
+import { BLOCKCHAIN_LABEL } from '@features/tokens-select/constants/blockchains-labels';
 
 @Component({
   selector: 'app-blockchains-aside',
@@ -18,14 +19,12 @@ export class BlockchainsAsideComponent {
   @Output() blockchainChange = new EventEmitter<BLOCKCHAIN_NAME>();
 
   private readonly allBlockchains: BLOCKCHAIN_NAME[] = [
-    // In viewport.
     BLOCKCHAIN_NAME.ETHEREUM,
     BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     BLOCKCHAIN_NAME.POLYGON,
     BLOCKCHAIN_NAME.NEAR,
     BLOCKCHAIN_NAME.AURORA,
     BLOCKCHAIN_NAME.AVALANCHE,
-    // Not in viewport.
     BLOCKCHAIN_NAME.FANTOM,
     BLOCKCHAIN_NAME.MOONRIVER,
     BLOCKCHAIN_NAME.HARMONY,
@@ -50,7 +49,11 @@ export class BlockchainsAsideComponent {
 
   constructor() {}
 
-  onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME): void {
+  public getBlockchainLabel(blockchainName: BLOCKCHAIN_NAME): string {
+    return BLOCKCHAIN_LABEL[blockchainName as keyof typeof BLOCKCHAIN_LABEL];
+  }
+
+  public onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME): void {
     this.blockchain = blockchainName;
     this.blockchainChange.emit(blockchainName);
   }
