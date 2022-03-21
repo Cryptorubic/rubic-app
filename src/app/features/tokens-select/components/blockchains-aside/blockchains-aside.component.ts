@@ -50,7 +50,7 @@ export class BlockchainsAsideComponent {
   constructor() {}
 
   public getBlockchainLabel(blockchainName: BLOCKCHAIN_NAME): string {
-    return BLOCKCHAIN_LABEL[blockchainName as keyof typeof BLOCKCHAIN_LABEL];
+    return BLOCKCHAIN_LABEL[blockchainName];
   }
 
   public onBlockchainSelect(blockchainName: BLOCKCHAIN_NAME): void {
