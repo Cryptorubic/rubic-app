@@ -1,0 +1,83 @@
+<tui-loader
+  [showLoader]="
+    deposit.tokenId &&
+    (collectingRewardsForToken === deposit.tokenId ||
+      requestingWithdrawForToken === deposit.tokenId)
+  "
+  [overlay]="true"
+>
+  <div class="deposit-card">
+    <div class="deposit-card__statuses">
+      <div class="status status_active" *ngIf="deposit.isWhitelisted">Whitelist</div>
+      <div
+        class="status"
+        [ngClass]="{ status_active: deposit.isStaked, status_processing: !deposit.isStaked }"
+      >
+        {{ deposit.isStaked ? 'Active' : 'Processing' }}
+      </div>
+    </div>
+    <div class="deposit-card__front">
+      <div class="deposit-card__title">
+        <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
+        <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
+        RBC / USDC
+        <div class="deposit-card__title-start">
+          {{ deposit.start | date: 'dd LLLL' }} at {{ deposit.start | date: 'shortTime' }}
+        </div>
+      </div>
+      <div class="deposit-card__stats">
+        <div class="stat">
+          <span class="stat__name">RBC: </span>
+          <span class="stat__data">{{ deposit.BRBCAmount | bigNumberFormat: 2:true }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat__name">USDC: </span>
+          <span class="stat__data">{{ deposit.USDCAmount | bigNumberFormat: 2:true }}</span>
+        </div>
+        <div class="stat">
+          <span class="stat__name">Term: </span>
+          <span class="stat__data">{{ deposit.period }} days</span>
+        </div>
+        <div class="stat">
+          <span class="stat__name">ID: </span>
+          <span class="stat__data">{{ deposit.tokenId }}</span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="deposit-card__back"
+      [ngClass]="{ 'deposit-card__back_active': true, 'deposit-card__back_closed': false }"
+    >
+      <div class="deposit-card__back-amounts">
+        <div class="deposit-card__amount">
+          <div class="deposit-card__amount-name">Collect now</div>
+          <div class="deposit-card__amount-value">
+            {{ deposit.rewardsToCollect | bigNumberFormat: 2:true }} USDC
+          </div>
+        </div>
+        <div class="deposit-card__amount">
+          <div class="deposit-card__amount-name">Total collected</div>
+          <div class="deposit-card__amount-value">
+            {{ deposit.collectedRewards | bigNumberFormat: 2:true }} USDC
+          </div>
+        </div>
+      </div>
+      <div class="deposit-card__back-actions">
+        <app-rubic-button
+          [disabled]="deposit.rewardsToCollect.isZero()"
+          (onClick)="onCollectRewards.emit()"
+          appearance="primary"
+        >
+          Collect rewards
+        </app-rubic-button>
+        <app-rubic-button
+          [disabled]="!deposit.isStaked"
+          (onClick)="onRemoveDeposit.emit()"
+          appearance="primary"
+        >
+          Remove deposit
+        </app-rubic-button>
+      </div>
+    </div>
+  </div>
+</tui-loader>

@@ -1,0 +1,1 @@
+export const WHITELIST_PERIOD = 86400;

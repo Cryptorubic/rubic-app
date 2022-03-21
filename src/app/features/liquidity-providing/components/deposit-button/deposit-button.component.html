@@ -1,0 +1,72 @@
+<app-rubic-button
+  appearance="secondary"
+  *ngIf="needLogin$ | async; else switchNetwork"
+  (onClick)="onLogin.emit()"
+>
+  Connect wallet
+</app-rubic-button>
+
+<ng-template #switchNetwork>
+  <app-rubic-button
+    appearance="secondary"
+    *ngIf="needSwitchNetwork$ | async | falsy; else approveAndStake"
+    (onClick)="onSwitchNetwork.emit()"
+  >
+    Switch to BSC network
+  </app-rubic-button>
+</ng-template>
+
+<ng-template #approveAndStake>
+  <ng-container
+    *ngLet="{
+      needBrbcApprove: needBrbcApprove$ | async,
+      needUsdcApprove: needUsdcApprove$ | async
+    } as approves"
+  >
+    <ng-container *ngIf="approves.needBrbcApprove || approves.needUsdcApprove; else stakeButton">
+      <div class="approves">
+        <app-rubic-button
+          appearance="secondary"
+          (click)="onApprove.emit(poolToken.USDC)"
+          [disabled]="!approves.needUsdcApprove"
+          [loading]="loading"
+        >
+          Approve USDC
+        </app-rubic-button>
+        <app-rubic-button
+          appearance="secondary"
+          (click)="onApprove.emit(poolToken.BRBC)"
+          [disabled]="!approves.needBrbcApprove"
+          [loading]="loading"
+        >
+          Approve BRBC
+        </app-rubic-button>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #stakeButton>
+    <app-rubic-button
+      *ngLet="error$ | async as error"
+      [disabled]="error !== null"
+      appearance="secondary"
+      (onClick)="onCreateDeposit.emit()"
+      [loading]="loading"
+    >
+      <ng-container [ngSwitch]="error">
+        <ng-container *ngSwitchCase="errors.INSUFFICIENT_BALANCE">
+          Insufficient balance
+        </ng-container>
+        <ng-container *ngSwitchCase="errors.INVALID_PERIOD">Invalid period</ng-container>
+        <ng-container *ngSwitchCase="errors.EMPTY_AMOUNT">Empty amount</ng-container>
+        <ng-container *ngSwitchCase="errors.LIMIT_GT_MAX">
+          Amount higher than limit {{ currentMaxLimit }}</ng-container
+        >
+        <ng-container *ngSwitchCase="errors.LIMIT_LT_MIN"
+          >Amount less than limit {{ minLimit }}</ng-container
+        >
+        <ng-container *ngSwitchCase="null"> Create deposit </ng-container>
+      </ng-container>
+    </app-rubic-button>
+  </ng-template>
+</ng-template>

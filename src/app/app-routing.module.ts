@@ -42,7 +42,9 @@ const routes: Routes = [
   {
     path: ROUTE_PATH.LIQUIDITY_PROVIDING,
     loadChildren: () =>
-      import('./features/lp-providing/lp-providing.module').then(m => m.LpProvidingModule)
+      import('./features/liquidity-providing/liquidity-providing.module').then(
+        m => m.LiquidityProvidingModule
+      )
   },
   {
     path: ROUTE_PATH.PROMOTION,

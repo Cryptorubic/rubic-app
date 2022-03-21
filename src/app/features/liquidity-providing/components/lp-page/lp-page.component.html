@@ -1,0 +1,12 @@
+<div class="progress-and-info">
+  <app-lp-progress class="progress-and-info__progress"></app-lp-progress>
+  <app-lp-info class="progress-and-info__info"></app-lp-info>
+</div>
+<ng-container *ngIf="showDeposits$ | async; else deposits">
+  <tui-loader [showLoader]="depositsLoading$ | async" [overlay]="true">
+    <app-lp-landing></app-lp-landing>
+  </tui-loader>
+</ng-container>
+<ng-template #deposits>
+  <app-deposits></app-deposits>
+</ng-template>

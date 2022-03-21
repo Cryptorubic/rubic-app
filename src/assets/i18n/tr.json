@@ -487,6 +487,9 @@
     "tradingNotAvailable": "Ticaret yapılamıyor",
     "rateIsUpdated": "Fiyat güncellendi, en son fiyatları almak için dokunun"
   },
+  "lpProviding": {
+    "liquidityTime": "Liquidity time"
+  },
   "staking": {
     "stake": {
       "stake": "Stake",
