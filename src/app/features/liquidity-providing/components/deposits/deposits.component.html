@@ -24,8 +24,7 @@
       <ng-container *ngFor="let deposit of deposits$ | async">
         <app-deposit-card
           [deposit]="deposit"
-          [collectingRewardsForToken]="collectingRewardsForToken$ | async"
-          [requestingWithdrawForToken]="requestingWithdrawForToken$ | async"
+          [loading]="(processingTokenId$ | async) === deposit.tokenId"
           (onCollectRewards)="collectReward(deposit.tokenId)"
           (onRemoveDeposit)="removeDeposit(deposit.tokenId)"
         ></app-deposit-card>

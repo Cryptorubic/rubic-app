@@ -111,6 +111,10 @@ export class LiquidityProvidingService {
 
   private readonly _deposits$ = new BehaviorSubject<TokenLpParsed[]>(undefined);
 
+  public get deposits(): TokenLpParsed[] {
+    return this._deposits$.getValue();
+  }
+
   public readonly deposits$ = this._deposits$.asObservable();
 
   private readonly _totalCollectedAmount$ = new BehaviorSubject<BigNumber>(undefined);
@@ -398,7 +402,7 @@ export class LiquidityProvidingService {
 
   public requestWithdraw(tokenId: string): Observable<unknown> {
     return from(
-      this.web3PrivateService[this.blockchain].executeContractMethod(
+      this.web3PrivateService[this.blockchain].executeContractMethodWithOnHashResolve(
         this.lpContractAddress,
         LP_PROVIDING_CONTRACT_ABI,
         'requestWithdraw',
@@ -410,8 +414,7 @@ export class LiquidityProvidingService {
         return EMPTY;
       }),
       tap(() => {
-        const deposits = this._deposits$.getValue();
-        const updatedDeposits = deposits.map(deposit => {
+        const updatedDeposits = this.deposits.map(deposit => {
           if (deposit.tokenId === tokenId) {
             return { ...deposit, isStaked: false };
           } else {

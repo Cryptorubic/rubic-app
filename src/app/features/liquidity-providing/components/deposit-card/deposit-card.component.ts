@@ -8,13 +8,11 @@ import { TokenLpParsed } from '../../models/token-lp.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepositCardComponent {
-  @Input() deposit: TokenLpParsed;
+  @Input()
+  deposit: TokenLpParsed;
 
   @Input()
-  collectingRewardsForToken: string;
-
-  @Input()
-  requestingWithdrawForToken: string;
+  loading: boolean;
 
   @Output()
   onCollectRewards = new EventEmitter<void>();

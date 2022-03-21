@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { DepositType } from '../../models/deposit-type.enum';
@@ -19,27 +18,22 @@ export class DepositsComponent {
 
   public readonly depositsLoading$ = this.service.depositsLoading$;
 
-  private readonly _collectingRewardsForToken$ = new BehaviorSubject<string>(undefined);
+  private readonly _processingTokenId$ = new BehaviorSubject<string>(undefined);
 
-  public readonly collectingRewardsForToken$ = this._collectingRewardsForToken$.asObservable();
-
-  private readonly _requestingWithdrawForToken$ = new BehaviorSubject<string>(undefined);
-
-  public readonly requestingWithdrawForToken$ = this._requestingWithdrawForToken$.asObservable();
+  public readonly processingTokenId$ = this._processingTokenId$.asObservable();
 
   constructor(
     private readonly service: LiquidityProvidingService,
-    private readonly router: Router,
     private readonly notificationsService: LiquidityProvidingNotificationsService
   ) {}
 
   public collectReward(tokenId: string): void {
-    this._collectingRewardsForToken$.next(tokenId);
+    this._processingTokenId$.next(tokenId);
     this.service
       .collectRewards(tokenId)
       .pipe(
         finalize(() => {
-          this._collectingRewardsForToken$.next(undefined);
+          this._processingTokenId$.next(undefined);
         })
       )
       .subscribe(() => {
@@ -49,12 +43,12 @@ export class DepositsComponent {
   }
 
   public removeDeposit(tokenId: string): void {
-    this._requestingWithdrawForToken$.next(tokenId);
+    this._processingTokenId$.next(tokenId);
     this.service
       .requestWithdraw(tokenId)
       .pipe(
         finalize(() => {
-          this._requestingWithdrawForToken$.next(undefined);
+          this._processingTokenId$.next(undefined);
         })
       )
       .subscribe(() => {

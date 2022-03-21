@@ -1,11 +1,4 @@
-<tui-loader
-  [showLoader]="
-    deposit.tokenId &&
-    (collectingRewardsForToken === deposit.tokenId ||
-      requestingWithdrawForToken === deposit.tokenId)
-  "
-  [overlay]="true"
->
+<tui-loader [showLoader]="loading" [overlay]="true">
   <div class="deposit-card">
     <div class="deposit-card__statuses">
       <div class="status status_active" *ngIf="deposit.isWhitelisted">Whitelist</div>
@@ -20,7 +13,7 @@
       <div class="deposit-card__title">
         <img src="assets/images/icons/lp-providing/rbc.svg" alt="RBC" />
         <img src="assets/images/icons/lp-providing/usdc.svg" alt="USDC" />
-        RBC / USDC
+        BRBC / USDC
         <div class="deposit-card__title-start">
           {{ deposit.start | date: 'dd LLLL' }} at {{ deposit.start | date: 'shortTime' }}
         </div>
@@ -75,7 +68,7 @@
           (onClick)="onRemoveDeposit.emit()"
           appearance="primary"
         >
-          Remove deposit
+          Request withdraw
         </app-rubic-button>
       </div>
     </div>
