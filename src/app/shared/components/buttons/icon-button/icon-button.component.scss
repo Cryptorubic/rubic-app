@@ -6,6 +6,7 @@
   --tui-disabled-opacity: 1;
 
   button {
+    width: 70px;
     overflow: hidden;
   }
 
@@ -19,12 +20,13 @@
     border-radius: 0;
 
     .content {
+      padding: 6px;
       flex-direction: column;
 
       .wrapper {
-        width: 52px;
-        margin-right: 10px;
-        padding-left: 10px;
+        //width: 52px;
+        //margin-right: 10px;
+        //padding-left: 10px;
         overflow: hidden;
       }
 

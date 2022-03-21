@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 .blockchain-aside {
-  width: 152px;
+  width: 180px;
   padding: 14px 10px;
 
   background: rgba(170, 170, 170, 0.13);
@@ -75,7 +75,6 @@
       align-items: center;
 
       li:not(:last-child) {
-        margin-bottom: 14px;
 
         @include iframe {
           margin-right: 15px;

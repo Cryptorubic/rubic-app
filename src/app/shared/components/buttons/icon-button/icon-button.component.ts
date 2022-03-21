@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { TuiSizeXXL, TuiSizeXS } from '@taiga-ui/core/types';
 import { BLOCKCHAIN_LABEL } from 'src/app/features/tokens-select/constants/blockchains-labels';
 
 @Component({
@@ -15,7 +15,7 @@ export class IconButtonComponent {
 
   public _blockchainLabel: string;
 
-  @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'l';
+  @Input() public buttonSize: TuiSizeXS | TuiSizeXXL = 'xxl';
 
   @Input() icon: string;
 
