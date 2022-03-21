@@ -1,7 +1,7 @@
 /* eslint-disable rxjs/finnish */
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Inject, Injectable, Injector } from '@angular/core';
-import { TuiDialogService, TuiDialogSize } from '@taiga-ui/core';
+import { TuiDialogService } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -38,7 +38,7 @@ export class TokensSelectService {
     allowedBlockchains: BLOCKCHAIN_NAME[] | undefined,
     idPrefix: string = ''
   ): Observable<TokenAmount> {
-    const size = (this.iframeService.isIframe ? 'fullscreen' : 'm') as TuiDialogSize;
+    const size = this.iframeService.isIframe ? 'fullscreen' : 'm';
     return this.dialogService.open(
       new PolymorpheusComponent(TokensSelectComponent, this.injector),
       {
