@@ -1,48 +1,32 @@
 @use 'src/scss/core' as *;
 
 .rubic-volume {
-  display: block;
-  padding: 29px 43px;
+  display: flex;
+  gap: 30px;
+  margin-bottom: 32px;
 
-  color: var(--rubic-base-17);
-  font-size: 22px;
   font-family: $sf-pro-font;
 
-  background-color: var(--main-form-background);
-  background-image: url('/assets/images/total-values/graphic.png');
-  background-repeat: no-repeat;
-  background-position: right 0;
-  background-size: contain;
-
-  border-radius: 19px;
-
-  backdrop-filter: blur(20px);
-
-  @include b($tablet) {
-    background-image: url('/assets/images/total-values/graphic-mobile.png');
+  &__icon {
+    margin-right: 10px;
   }
 
   &__title {
-    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
 
-    font-weight: 300;
-    font-size: $rubic-font-size-02;
+    color: #fff;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 120%;
   }
 
   &__value {
-    width: 55%;
-    min-height: 48px;
-    margin-bottom: 15px;
 
-    color: var(--rubic-base-02);
-    font-weight: 100;
-    font-size: 48px;
-    line-height: 48px;
-  }
-
-  &__time {
-    font-weight: 300;
-    font-size: 18px;
+    color: var(--main-green);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 120%;
   }
 }
 
