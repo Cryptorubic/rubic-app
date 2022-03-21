@@ -208,20 +208,14 @@ export class LiquidityProvidingService {
                 this.parseApr(aprInfo)
               ];
             }),
-            tap(([amountToCollect, amountCollectedTotal, apr]) => {
-              this._amountToCollect$.next(amountToCollect as BigNumber);
-              this._totalCollectedAmount$.next(amountCollectedTotal as BigNumber);
-              this._apr$.next(apr as number);
+            tap(([amountToCollect, amountCollectedTotal, apr]: [BigNumber, BigNumber, number]) => {
+              this._amountToCollect$.next(amountToCollect);
+              this._totalCollectedAmount$.next(amountCollectedTotal);
+              this._apr$.next(apr);
             })
           );
         } else {
-          return this.getApr().pipe(
-            tap(() => {
-              if (user?.address === null) {
-                this._balance$.next(0);
-              }
-            })
-          );
+          return this.getApr().pipe(tap(() => !user?.address && this._balance$.next(0)));
         }
       })
     );
