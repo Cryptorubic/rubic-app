@@ -240,7 +240,9 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     }
 
     const sendMethodName = 'signAndSendTransaction';
+    debugger;
     if (walletAdapter.wallet?.[sendMethodName]) {
+      debugger;
       const { signature } = await walletAdapter.wallet.request({
         method: sendMethodName,
         params: {
@@ -250,6 +252,7 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
 
       return signature;
     }
+    debugger;
     const rawTransaction = await walletAdapter.wallet.signTransaction(transaction);
     return this.connection?.sendRawTransaction(rawTransaction?.serialize());
   }

@@ -117,7 +117,8 @@ export class RaydiumSwapManager {
       owner,
       fromFinalAmount,
       transaction,
-      signers
+      signers,
+      true
     );
 
     const { from: middleAccount, to: toAccount } =

@@ -443,7 +443,8 @@ export class SolanaWeb3PrivateService {
     owner: PublicKey,
     amountIn: number,
     transaction: Transaction,
-    signers: Account[]
+    signers: Account[],
+    skipToAccount: boolean = false
   ): Promise<TokenAccounts> {
     const fromNative = fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
     const toNative = toCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
@@ -470,24 +471,26 @@ export class SolanaWeb3PrivateService {
       isWeth: fromNative
     };
 
-    const toAccount = {
-      key: toNative
-        ? await this.createTokenAccountIfNotExist(
-            null,
-            owner,
-            TOKENS.WSOL.mintAddress,
-            new BigNumber(1e7, 16),
-            transaction,
-            signers
-          )
-        : await this.createAssociatedTokenAccountIfNotExist(
-            toTokenAccount,
-            owner,
-            toCoinMint,
-            transaction
-          ),
-      isWeth: toNative
-    };
+    const toAccount = skipToAccount
+      ? null
+      : {
+          key: toNative
+            ? await this.createTokenAccountIfNotExist(
+                null,
+                owner,
+                TOKENS.WSOL.mintAddress,
+                new BigNumber(1e7, 16),
+                transaction,
+                signers
+              )
+            : await this.createAssociatedTokenAccountIfNotExist(
+                toTokenAccount,
+                owner,
+                toCoinMint,
+                transaction
+              ),
+          isWeth: toNative
+        };
 
     return { from: fromAccount, to: toAccount };
   }
