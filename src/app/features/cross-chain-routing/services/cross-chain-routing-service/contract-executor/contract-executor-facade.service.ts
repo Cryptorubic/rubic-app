@@ -14,7 +14,8 @@ import CustomError from '@core/errors/models/custom-error';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { SignatureResult } from '@solana/web3.js';
 import { NearContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
-import { RefFinanceService } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/ref-finance.service';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 
 @Injectable({
   providedIn: 'root'
@@ -56,11 +57,11 @@ export class ContractExecutorFacadeService {
     private readonly nearContractExecutor: NearContractExecutorService,
     // Other services.
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
+    private readonly walletConnectorService: WalletConnectorService,
     private readonly raydiumService: RaydiumService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly apiService: CrossChainRoutingApiService,
-    private readonly contractsDataService: ContractsDataService,
-    private readonly refFinanceService: RefFinanceService
+    private readonly contractsDataService: ContractsDataService
   ) {}
 
   public async executeTrade(
@@ -89,7 +90,11 @@ export class ContractExecutorFacadeService {
           this.targetAddress,
           isToNative
         );
-        const hash = await this.raydiumService.addMetaAndSend(transaction, signers);
+        const hash = await (blockchainAdapter as SolanaWeb3Public).signTransaction(
+          this.walletConnectorService.provider,
+          transaction,
+          signers
+        );
         await this.handleSolanaTransaction(hash, options?.onTransactionHash);
 
         return hash;

@@ -7,8 +7,7 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
-  TransactionInstruction,
-  TransactionSignature
+  TransactionInstruction
 } from '@solana/web3.js';
 import { Token } from '@solana/spl-token';
 import { initializeAccount } from '@project-serum/serum/lib/token-instructions';
@@ -26,9 +25,9 @@ import { TOKENS } from '@features/instant-trade/services/instant-trade-service/p
 import BigNumber from 'bignumber.js';
 import { Layout } from '@project-serum/borsh';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { Injectable } from '@angular/core';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/token-accounts';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +39,13 @@ export class SolanaWeb3PrivateService {
     if (!this._connection) {
       this._connection = connection;
     }
+  }
+
+  private static throwIfNull<T>(value: T | null, message = 'account not found'): T {
+    if (value === null) {
+      throw new Error(message);
+    }
+    return value;
   }
 
   constructor() {}
@@ -423,13 +429,11 @@ export class SolanaWeb3PrivateService {
     transaction: Transaction,
     signers: Array<Account> = []
   ): Promise<string> {
-    const txid: TransactionSignature = await wallet.sendTransaction(transaction, this._connection, {
+    return wallet.sendTransaction(transaction, this._connection, {
       signers,
       skipPreflight: true,
       preflightCommitment: 'confirmed'
     });
-
-    return txid;
   }
 
   public async getOrCreatesTokensAccounts(
@@ -516,15 +520,8 @@ export class SolanaWeb3PrivateService {
     return transaction;
   }
 
-  private throwIfNull<T>(value: T | null, message = 'account not found'): T {
-    if (value === null) {
-      throw new Error(message);
-    }
-    return value;
-  }
-
   public async getMintDecimals(mint: PublicKey): Promise<number> {
-    const { data } = this.throwIfNull(
+    const { data } = SolanaWeb3PrivateService.throwIfNull(
       await this._connection.getAccountInfo(mint),
       'mint not found'
     );

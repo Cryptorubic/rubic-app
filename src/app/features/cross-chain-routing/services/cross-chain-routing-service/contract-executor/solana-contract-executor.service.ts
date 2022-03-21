@@ -35,6 +35,7 @@ import { ContractExecutorFacadeService } from '@features/cross-chain-routing/ser
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { CROSS_CHAIN_METHODS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/cross-chain-methods';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -175,9 +176,8 @@ export class SolanaContractExecutorService {
     targetAddress: string,
     isToNative: boolean
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const owner = new PublicKey(address);
+    const { owner, signers, transaction } = SolanaWeb3Public.createBaseInformation(address);
+
     const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
 

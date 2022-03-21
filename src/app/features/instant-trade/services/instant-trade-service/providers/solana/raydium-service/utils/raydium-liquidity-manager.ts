@@ -16,7 +16,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { getBigNumber } from '@shared/utils/utils';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { OpenOrders } from '@project-serum/serum';
+import { MARKET_STATE_LAYOUT_V2, OpenOrders } from '@project-serum/serum';
 import {
   LP_TOKENS,
   NATIVE_SOL,
@@ -29,6 +29,8 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { ENDPOINTS, TokensBackendResponse } from '@core/services/backend/tokens-api/models/tokens';
+import { map } from 'rxjs/operators';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 
@@ -42,7 +44,7 @@ export class RaydiumLiquidityManager {
   private allPools: LiquidityPoolInfo[];
 
   constructor(
-    private readonly httpClient: HttpClient,
+    public readonly httpClient: HttpClient,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
     private readonly privateBlockchainAdapter: SolanaWeb3PrivateService
   ) {}
@@ -72,9 +74,11 @@ export class RaydiumLiquidityManager {
     solanaTokens: List<TokenAmount>,
     multihops: boolean
   ): Promise<LpInfo> {
-    const { ammAll, lpMintAddressList } = await this.fetchAmmAndMintAddresses();
-    const lpMintListDecimals = await this.getLpMintListDecimals(lpMintAddressList);
-    this.allPools = await this.getAllPools(ammAll, solanaTokens, lpMintListDecimals);
+    if (!this.allPools?.length) {
+      const { ammAll, lpMintAddressList, marketAll } = await this.fetchAmmAndMintAddresses();
+      const lpMintListDecimals = await this.getLpMintListDecimals(lpMintAddressList);
+      this.allPools = await this.getAllPools(ammAll, marketAll, solanaTokens, lpMintListDecimals);
+    }
 
     return await this.getSpecificPools(this.allPools, multihops, fromSymbol, toSymbol);
   }
@@ -109,6 +113,16 @@ export class RaydiumLiquidityManager {
 
   private async getAllPools(
     ammAll: PubKeyAccountInfo[],
+    marketAll: {
+      [key: string]: {
+        bids: object;
+        asks: object;
+        eventQueue: object;
+        baseVault: object;
+        quoteVault: object;
+        serumVaultSigner: object;
+      };
+    },
     solanaTokens: List<TokenAmount>,
     lpMintListDecimals: { [p: string]: number }
   ): Promise<LiquidityPoolInfo[]> {
@@ -122,79 +136,104 @@ export class RaydiumLiquidityManager {
     const { publicKey } = await this.privateBlockchainAdapter.createAmmAuthority(
       new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4)
     );
-    const test = ammAll.reduce(
-      (acc, curr, index) => {
-        const ammInfo = AMM_INFO_LAYOUT_V4.decode(Buffer.from(curr.accountInfo.data));
-        const fromCoin = ammInfo.coinMintAddress.toString();
-        const toCoin = ammInfo.pcMintAddress.toString();
+    const solanaBackendTokens = await this.fetchSolanaBackendTokens();
 
-        const coin =
-          tokens.find(item => item.mintAddress === fromCoin) ||
-          Object.values(TOKENS).find(item => item.mintAddress === fromCoin);
-        const pc =
-          tokens.find(item => item.mintAddress === toCoin) ||
-          Object.values(TOKENS).find(item => item.mintAddress === toCoin);
+    return ammAll.reduce(async (promiseAcc, curr, index) => {
+      const acc = await promiseAcc;
+      const ammInfo = AMM_INFO_LAYOUT_V4.decode(Buffer.from(curr.accountInfo.data));
+      const fromCoin = ammInfo.coinMintAddress.toString();
+      const toCoin = ammInfo.pcMintAddress.toString();
 
-        if (!coin || !pc) {
-          return acc;
-        }
+      let coin =
+        tokens.find(item => item.mintAddress === fromCoin) ||
+        Object.values(TOKENS).find(item => item.mintAddress === fromCoin) ||
+        solanaBackendTokens?.[fromCoin];
+      let pc =
+        tokens.find(item => item.mintAddress === toCoin) ||
+        Object.values(TOKENS).find(item => item.mintAddress === toCoin) ||
+        solanaBackendTokens?.[toCoin];
 
-        const lp = Object.values(LP_TOKENS).find(
-          item => item.mintAddress === ammInfo.lpMintAddress
-        ) || {
-          symbol: `${coin.symbol}-${pc.symbol}`,
-          name: `${coin.symbol}-${pc.symbol}`,
-          coin,
-          pc,
-          mintAddress: ammInfo.lpMintAddress.toString(),
-          decimals: lpMintListDecimals[ammInfo.lpMintAddress]
-        };
-        const itemLiquidity: LiquidityPoolInfo = {
-          name: `${coin.symbol}-${pc.symbol}`,
-          coin,
-          pc,
-          lp,
-          version: 4,
-          programId: LIQUIDITY_POOL_PROGRAM_ID_V4,
-          ammId: ammAll[index].publicKey.toString(),
-          ammAuthority: publicKey.toString(),
-          ammOpenOrders: ammInfo.ammOpenOrders.toString(),
-          ammTargetOrders: ammInfo.ammTargetOrders.toString(),
-          ammQuantities: NATIVE_SOL.mintAddress,
-          poolCoinTokenAccount: ammInfo.poolCoinTokenAccount.toString(),
-          poolPcTokenAccount: ammInfo.poolPcTokenAccount.toString(),
-          poolWithdrawQueue: ammInfo.poolWithdrawQueue.toString(),
-          poolTempLpTokenAccount: ammInfo.poolTempLpTokenAccount.toString(),
-          serumProgramId: SERUM_PROGRAM_ID_V3,
-          serumMarket: ammInfo.serumMarket.toString(),
-          serumBids: '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.bids.toString() */,
-          serumAsks: '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.asks.toString() */,
-          serumEventQueue:
-            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.eventQueue.toString() */,
-          serumCoinVaultAccount:
-            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.baseVault.toString() */,
-          serumPcVaultAccount:
-            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* market.quoteVault.toString() */,
-          serumVaultSigner:
-            '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD' /* serumVaultSigner.toString() */,
-          official: false
-        };
+      if (!coin || !pc) {
+        return acc;
+      }
 
-        if (!liquidityPools.find(item => item.ammId === itemLiquidity.ammId)) {
-          return [...acc, itemLiquidity];
-        }
-        return [
-          ...acc.map(
-            el =>
-              (el.ammId === itemLiquidity.ammId && el.name !== itemLiquidity.name && !el.official
-                ? itemLiquidity
-                : el) as LiquidityPoolInfo
-          )
-        ];
-      },
-      [...liquidityPools]
-    );
-    return test;
+      const lp = Object.values(LP_TOKENS).find(
+        item => item.mintAddress === ammInfo.lpMintAddress
+      ) || {
+        symbol: `${coin.symbol}-${pc.symbol}`,
+        name: `${coin.symbol}-${pc.symbol}`,
+        coin,
+        pc,
+        mintAddress: ammInfo.lpMintAddress.toString(),
+        decimals: lpMintListDecimals[ammInfo.lpMintAddress]
+      };
+      const market = marketAll[ammInfo.serumMarket];
+      const itemLiquidity: LiquidityPoolInfo = {
+        name: `${coin.symbol}-${pc.symbol}`,
+        coin,
+        pc,
+        lp,
+        version: 4,
+        programId: LIQUIDITY_POOL_PROGRAM_ID_V4,
+        ammId: ammAll[index].publicKey.toString(),
+        ammAuthority: publicKey.toString(),
+        ammOpenOrders: ammInfo.ammOpenOrders.toString(),
+        ammTargetOrders: ammInfo.ammTargetOrders.toString(),
+        ammQuantities: NATIVE_SOL.mintAddress,
+        poolCoinTokenAccount: ammInfo.poolCoinTokenAccount.toString(),
+        poolPcTokenAccount: ammInfo.poolPcTokenAccount.toString(),
+        poolWithdrawQueue: ammInfo.poolWithdrawQueue.toString(),
+        poolTempLpTokenAccount: ammInfo.poolTempLpTokenAccount.toString(),
+        serumProgramId: SERUM_PROGRAM_ID_V3,
+        serumMarket: ammInfo.serumMarket.toString(),
+        serumBids: market?.bids.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        serumAsks: market?.asks.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        serumEventQueue:
+          market?.eventQueue.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        serumCoinVaultAccount:
+          market?.baseVault.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        serumPcVaultAccount:
+          market?.quoteVault.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        serumVaultSigner:
+          market?.serumVaultSigner?.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        official: false
+      };
+
+      const hasPool = liquidityPools.some(item => item.ammId === itemLiquidity.ammId);
+
+      if (!hasPool) {
+        return [...acc, itemLiquidity];
+      }
+      return [
+        ...acc.map(
+          el =>
+            (el.ammId === itemLiquidity.ammId && el.name !== itemLiquidity.name && !el.official
+              ? itemLiquidity
+              : el) as LiquidityPoolInfo
+        )
+      ];
+    }, Promise.resolve([...liquidityPools]));
+  }
+
+  private fetchSolanaBackendTokens(): Promise<{ [key: string]: SolanaTokenInfo }> {
+    return this.httpClient
+      .get<TokensBackendResponse>(`api/${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
+      .pipe(
+        map(tokensResponse => {
+          return Object.fromEntries(
+            tokensResponse.results.map(el => [
+              el.address,
+              {
+                symbol: el.symbol,
+                name: el.name,
+                mintAddress: el.address,
+                decimals: el.decimals
+              }
+            ])
+          );
+        })
+      )
+      .toPromise();
   }
 
   private async getSpecificPools(
@@ -315,6 +354,16 @@ export class RaydiumLiquidityManager {
 
   private async fetchAmmAndMintAddresses(): Promise<{
     ammAll: PubKeyAccountInfo[];
+    marketAll: {
+      [name: string]: {
+        bids: object;
+        asks: object;
+        eventQueue: object;
+        baseVault: object;
+        quoteVault: object;
+        serumVaultSigner: object;
+      };
+    };
     lpMintAddressList: string[];
   }> {
     const ammAll = await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
@@ -323,16 +372,40 @@ export class RaydiumLiquidityManager {
       [{ dataSize: AMM_INFO_LAYOUT_V4.span }]
     );
 
+    const marketAccounts =
+      await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
+        'market',
+        new PublicKey(SERUM_PROGRAM_ID_V3),
+        [{ dataSize: MARKET_STATE_LAYOUT_V2.span }]
+      );
+
+    const marketAll: {
+      [name: string]: {
+        bids: object;
+        asks: object;
+        eventQueue: object;
+        baseVault: object;
+        quoteVault: object;
+        serumVaultSigner: object;
+      };
+    } = Object.fromEntries(
+      marketAccounts.map(item => [
+        item.publicKey.toString(),
+        MARKET_STATE_LAYOUT_V2.decode(item.accountInfo.data)
+      ])
+    );
+
     const lpMintAddressList = ammAll.reduce((acc, curr) => {
       const ammLayout = AMM_INFO_LAYOUT_V4.decode(Buffer.from(curr.accountInfo.data));
       if (
         ammLayout.pcMintAddress.toString() === ammLayout.serumMarket.toString() ||
-        ammLayout.lpMintAddress.toString() === '11111111111111111111111111111111'
+        ammLayout.lpMintAddress.toString() === '11111111111111111111111111111111' ||
+        !Object.keys(marketAll).includes(ammLayout.serumMarket.toString())
       ) {
         return acc;
       }
       return [...acc, ammLayout.lpMintAddress.toString()];
     }, []);
-    return { ammAll, lpMintAddressList };
+    return { ammAll, lpMintAddressList, marketAll };
   }
 }

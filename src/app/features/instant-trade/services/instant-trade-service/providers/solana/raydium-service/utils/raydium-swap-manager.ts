@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
-// eslint-disable-next-line
 // @ts-ignore
 import { nu64, struct, u8 } from 'buffer-layout';
 import {
@@ -13,39 +12,25 @@ import {
   Transaction,
   TransactionInstruction
 } from '@solana/web3.js';
-import { closeAccount, transfer } from '@project-serum/serum/lib/token-instructions';
+import { closeAccount } from '@project-serum/serum/lib/token-instructions';
 import { DATA_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   LIQUIDITY_POOL_PROGRAM_ID_V4,
-  MEMO_PROGRAM_ID,
   ROUTE_SWAP_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
-import { getBigNumber } from '@shared/utils/utils';
-import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
-import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
-import { CommonSolanaWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/solana/common/common-solana-wallet-adapter';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
-import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Token } from '@solana/spl-token';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-
-export type TokenAccounts = {
-  from: {
-    key: PublicKey;
-    isWeth: boolean;
-  };
-  to: {
-    key: PublicKey;
-    isWeth: boolean;
-  };
-};
+import { PreparedSwapParams } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/prepared-swap-params';
+import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/token-accounts';
+import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-router-info';
 
 export class RaydiumSwapManager {
   constructor(
@@ -54,7 +39,7 @@ export class RaydiumSwapManager {
     private readonly connection: Connection
   ) {}
 
-  public getInstantTradeInfo(
+  public static getInstantTradeInfo(
     fromToken: InstantTradeToken,
     toToken: InstantTradeToken,
     fromAmount: BigNumber,
@@ -114,14 +99,8 @@ export class RaydiumSwapManager {
     fromDec: number,
     toDec: number
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const owner = new PublicKey(address);
-    const mintAccountsAddresses = await this.privateBlockchainAdapter.getTokenAccounts(address);
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const fromDecimals = new BigNumber(10).exponentiatedBy(fromDec);
-    const amountIn = new BigNumber(aIn.toString()).multipliedBy(fromDecimals);
-    const toDecimals = new BigNumber(10).exponentiatedBy(toDec);
-    const amountOut = new BigNumber(aOut.toString()).multipliedBy(toDecimals);
+    const { amountIn, amountOut, mintAccountsAddresses, owner, transaction, signers } =
+      await this.prepareSwapParams(address, fromDec, toDec, aIn, aOut);
 
     const fromMint = fromToken.address;
     const toMint = toToken.address;
@@ -188,7 +167,8 @@ export class RaydiumSwapManager {
         newMiddleTokenAccount,
         publicKey,
         owner,
-        fromFinalAmount
+        fromFinalAmount,
+        toFinalAmount
       ),
       RaydiumSwapManager.createRouteSwapOutInstruction(
         new PublicKey(ROUTE_SWAP_PROGRAM_ID),
@@ -197,7 +177,6 @@ export class RaydiumSwapManager {
         new PublicKey(poolInfoB.ammId),
         new PublicKey(poolInfoB.ammAuthority),
         new PublicKey(poolInfoB.ammOpenOrders),
-        new PublicKey(poolInfoB.ammTargetOrders),
         new PublicKey(poolInfoB.poolCoinTokenAccount),
         new PublicKey(poolInfoB.poolPcTokenAccount),
         new PublicKey(poolInfoB.serumProgramId),
@@ -211,8 +190,7 @@ export class RaydiumSwapManager {
         newMiddleTokenAccount,
         newToTokenAccount,
         publicKey,
-        owner,
-        toFinalAmount
+        owner
       )
     );
     return { transaction, signers };
@@ -225,7 +203,6 @@ export class RaydiumSwapManager {
     toAmmId: PublicKey,
     ammAuthority: PublicKey,
     ammOpenOrders: PublicKey,
-    _ammTargetOrders: PublicKey,
     poolCoinTokenAccount: PublicKey,
     poolPcTokenAccount: PublicKey,
     // serum
@@ -241,8 +218,7 @@ export class RaydiumSwapManager {
     userMiddleTokenAccount: PublicKey,
     userDestTokenAccount: PublicKey,
     userPdaAccount: PublicKey,
-    userOwner: PublicKey,
-    amountOut: number
+    userOwner: PublicKey
   ): TransactionInstruction {
     const keys = [
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
@@ -272,15 +248,9 @@ export class RaydiumSwapManager {
       { pubkey: userOwner, isSigner: true, isWritable: false }
     ];
 
-    const dataLayout = struct([u8('instruction'), nu64('amountOut')]);
+    const dataLayout = struct([u8('instruction')]);
     const data = Buffer.alloc(dataLayout.span);
-    dataLayout.encode(
-      {
-        instruction: 1,
-        amountOut
-      },
-      data
-    );
+    dataLayout.encode({ instruction: 1 }, data);
 
     return new TransactionInstruction({
       keys,
@@ -315,20 +285,21 @@ export class RaydiumSwapManager {
     userMiddleTokenAccount: PublicKey,
     userPdaAccount: PublicKey,
     userOwner: PublicKey,
-    amountIn: number
+
+    // amounts
+    amountIn: number,
+    minimumAmountOut: number
   ): TransactionInstruction {
     const keys = [
       { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
       // spl token
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-
       // amm
       { pubkey: ammProgramId, isSigner: false, isWritable: false },
       { pubkey: fromAmmId, isSigner: false, isWritable: true },
       { pubkey: toAmmId, isSigner: false, isWritable: true },
       { pubkey: ammAuthority, isSigner: false, isWritable: false },
       { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
-      // { pubkey: ammTargetOrders, isSigner: false, isWritable: true },
       { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
       { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
       // serum
@@ -340,19 +311,20 @@ export class RaydiumSwapManager {
       { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
       { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
       { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
-
+      // user
       { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
       { pubkey: userMiddleTokenAccount, isSigner: false, isWritable: true },
       { pubkey: userPdaAccount, isSigner: false, isWritable: true },
       { pubkey: userOwner, isSigner: true, isWritable: false }
     ];
 
-    const dataLayout = struct([u8('instruction'), nu64('amountIn')]);
+    const dataLayout = struct([u8('instruction'), nu64('amountIn'), nu64('minimumAmountOut')]);
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode(
       {
         instruction: 0,
-        amountIn
+        amountIn,
+        minimumAmountOut
       },
       data
     );
@@ -375,15 +347,9 @@ export class RaydiumSwapManager {
     address: string,
     tokens: List<TokenAmount>
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const owner = new PublicKey(address);
-    const mintAccountsAddresses = await this.privateBlockchainAdapter.getTokenAccounts(address);
+    const { amountIn, amountOut, mintAccountsAddresses, owner, transaction, signers } =
+      await this.prepareSwapParams(address, fromDec, toDec, aIn, aOut);
 
-    const fromDecimals = new BigNumber(10).exponentiatedBy(fromDec);
-    const amountIn = new BigNumber(aIn.toString()).multipliedBy(fromDecimals);
-    const toDecimals = new BigNumber(10).exponentiatedBy(toDec);
-    const amountOut = new BigNumber(aOut.toString()).multipliedBy(toDecimals);
     const from = tokens.find(el => el.address === fromCoinMint);
     const to = tokens.find(el => el.address === toCoinMint);
 
@@ -547,81 +513,10 @@ export class RaydiumSwapManager {
     )?.blockhash;
   }
 
-  private async wrap(
-    trade: InstantTrade,
-    walletAdapter: CommonSolanaWalletAdapter<SolanaWallet>
-  ): Promise<string> {
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const owner = new PublicKey(walletAdapter.address);
-
-    const [fromTokenAccount, toTokenAccount] =
-      await this.privateBlockchainAdapter.getMultipleAccounts([
-        new PublicKey(trade.from.token.address),
-        new PublicKey(trade.to.token.address)
-      ]);
-
-    const newFromTokenAccount =
-      await this.privateBlockchainAdapter.createAssociatedTokenAccountIfNotExist(
-        fromTokenAccount.publicKey,
-        owner,
-        trade.from.token.address,
-        transaction
-      );
-    const newToTokenAccount =
-      await this.privateBlockchainAdapter.createAssociatedTokenAccountIfNotExist(
-        toTokenAccount.publicKey,
-        owner,
-        trade.to.token.address,
-        transaction
-      );
-
-    transaction.add(
-      transfer({
-        source: newFromTokenAccount,
-        destination: newToTokenAccount,
-        amount: getBigNumber(trade.to.amount),
-        owner
-      })
-    );
-
-    transaction.add(
-      new TransactionInstruction({
-        keys: [],
-        data: Buffer.from(newToTokenAccount.toString(), 'utf-8'),
-        programId: MEMO_PROGRAM_ID
-      })
-    );
-
-    await this.addTransactionMeta(transaction, walletAdapter.address);
-
-    if (signers?.length) {
-      transaction.partialSign(...signers);
-    }
-
-    const trx = await this.publicBlockchainAdapter.signTransaction(
-      walletAdapter,
-      transaction,
-      signers
-    );
-    const rawTransaction = trx?.serialize();
-    await this.connection?.sendRawTransaction(rawTransaction);
-
-    return await this.privateBlockchainAdapter.sendTransaction(
-      (walletAdapter as CommonWalletAdapter<SolanaWallet>).wallet,
-      transaction,
-      signers
-    );
-  }
-
   public async unwrapSol(
-    // trade: InstantTrade,
     address: string
-    // tokens: List<TokenAmount>
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const transaction = new Transaction();
-    // const signers: Account[] = [];
-    const owner = new PublicKey(address);
+    const { transaction, owner } = SolanaWeb3Public.createBaseInformation(address);
     const toPublicKey = new PublicKey(TOKENS.WSOL.mintAddress);
     const ata = await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -630,11 +525,6 @@ export class RaydiumSwapManager {
       owner,
       true
     );
-
-    // const fromDecimals = new BigNumber(10).exponentiatedBy(trade.from.token.decimals);
-    // const amountIn = new BigNumber(trade.from.amount.toString()).multipliedBy(fromDecimals);
-    // const from = tokens.find(el => el.address === trade.from.token.address);
-    // const to = tokens.find(el => el.address === trade.to.token.address);
 
     transaction.add(
       closeAccount({
@@ -652,9 +542,7 @@ export class RaydiumSwapManager {
     address: string,
     tokens: List<TokenAmount>
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const transaction = new Transaction();
-    const signers: Account[] = [];
-    const owner = new PublicKey(address);
+    const { transaction, signers, owner } = SolanaWeb3Public.createBaseInformation(address);
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.from.token.decimals);
     const amountIn = new BigNumber(trade.from.amount.toString()).multipliedBy(fromDecimals);
@@ -664,18 +552,6 @@ export class RaydiumSwapManager {
     if (!from || !to) {
       throw new Error('Miss token info');
     }
-    // const mintAccountsAddresses = await this.privateBlockchainAdapter.getTokenAccounts(address);
-
-    // const { from: fromAccount } = await this.privateBlockchainAdapter.getTokensAccounts(
-    //   mintAccountsAddresses,
-    //   NATIVE_SOL.mintAddress,
-    //   trade.to.token.address,
-    //   owner,
-    //   trade.from.amount,
-    //   trade.to.amount,
-    //   transaction,
-    //   signers
-    // );
 
     const fromFinalAmount = Math.floor(parseFloat(amountIn.toString()));
 
@@ -687,18 +563,24 @@ export class RaydiumSwapManager {
       fromFinalAmount
     );
 
-    // const toMint =
-    //   trade.to.token.address === NATIVE_SOL.mintAddress.toLowerCase()
-    //     ? trade.to.token.address
-    //     : TOKENS.WSOL.mintAddress;
-
-    // await this.privateBlockchainAdapter.createAssociatedTokenAccountIfNotExist(
-    //   toAccount.key.toBase58(),
-    //   owner,
-    //   toMint,
-    //   transaction
-    // );
-
     return { transaction, signers };
+  }
+
+  private async prepareSwapParams(
+    address: string,
+    fromDec: number,
+    toDec: number,
+    aIn: BigNumber,
+    aOut: BigNumber
+  ): Promise<PreparedSwapParams> {
+    const { owner, transaction, signers } = SolanaWeb3Public.createBaseInformation(address);
+
+    const mintAccountsAddresses = await this.privateBlockchainAdapter.getTokenAccounts(address);
+    const fromDecimals = new BigNumber(10).exponentiatedBy(fromDec);
+    const amountIn = new BigNumber(aIn.toString()).multipliedBy(fromDecimals);
+    const toDecimals = new BigNumber(10).exponentiatedBy(toDec);
+    const amountOut = new BigNumber(aOut.toString()).multipliedBy(toDecimals);
+
+    return { owner, transaction, signers, mintAccountsAddresses, amountIn, amountOut };
   }
 }

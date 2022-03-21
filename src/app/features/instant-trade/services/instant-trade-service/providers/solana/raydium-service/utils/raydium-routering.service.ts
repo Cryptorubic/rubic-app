@@ -6,32 +6,8 @@ import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-tra
 import { Injectable } from '@angular/core';
 import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-
-interface SwapOutAmount {
-  amountIn: BigNumber;
-  amountOut: BigNumber;
-  amountOutWithSlippage: BigNumber;
-  priceImpact: number;
-}
-
-export interface Route {
-  type: string;
-  id: string;
-  amountA: number;
-  amountB: number;
-  mintA: string;
-  mintB: string;
-}
-
-export interface RaydiumRouterInfo {
-  maxAmountOut: BigNumber;
-  middleCoin: {
-    address: string;
-    symbol: string;
-  };
-  priceImpact: number;
-  route: [Route, Route];
-}
+import { SwapOutAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/swap-out-amount';
+import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-router-info';
 
 @Injectable({
   providedIn: 'root'
@@ -161,27 +137,50 @@ export class RaydiumRoutingService {
     fromCoinMint: string,
     toCoinMint: string
   ): [LiquidityPoolInfo, LiquidityPoolInfo][] {
-    const routerCoinDefault = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI'];
-    const avaPools: LiquidityPoolInfo[] = Object.values(poolInfos).reduce((acc, curr) => {
-      if (!(curr.version === 4 && curr.status === 1)) {
-        return acc;
-      }
-      if (
-        ([fromCoinMint, toCoinMint].includes(curr.pc.mintAddress) &&
-          routerCoinDefault.includes(curr.coin.symbol)) ||
-        ([fromCoinMint, toCoinMint].includes(curr.coin.mintAddress) &&
-          routerCoinDefault.includes(curr.pc.symbol))
-      ) {
-        avaPools.push(curr);
-      }
-      return acc;
-    }, []);
+    const transitTokens = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI', 'USDT'];
+    const transitTokensPools = Object.values(
+      Object.fromEntries(
+        transitTokens
+          .map(coolToken => {
+            const pools = Object.values(poolInfos).filter(pool => {
+              const firstTokenAddress = pool.coin.mintAddress;
+              const secondTokenAddress = pool.pc.mintAddress;
+              return (
+                pool.name.includes(coolToken) &&
+                (firstTokenAddress === fromCoinMint ||
+                  pool.coin.mintAddress === toCoinMint ||
+                  secondTokenAddress === fromCoinMint ||
+                  pool.pc.mintAddress === toCoinMint)
+              );
+            });
+            return [coolToken, pools];
+          })
+          .filter(([_, pools]: [string, LiquidityPoolInfo[]]) => {
+            const hasPools = pools?.length;
+            const isTradeToken = pools.length > 30;
 
-    return avaPools.reduce((acc, curr) => {
+            if (!hasPools || isTradeToken) {
+              return false;
+            }
+
+            const hasFormToken = pools.find(pool => {
+              return [pool.pc.mintAddress, pool.coin.mintAddress].includes(fromCoinMint);
+            });
+
+            const hasToToken = pools.find(pool => {
+              return [pool.pc.mintAddress, pool.coin.mintAddress].includes(toCoinMint);
+            });
+
+            return hasFormToken && hasToToken;
+          })
+      )
+    ).flat() as LiquidityPoolInfo[];
+
+    return transitTokensPools.reduce((acc, curr) => {
       if (curr.coin.mintAddress === fromCoinMint) {
         return [
           ...acc,
-          ...avaPools
+          ...transitTokensPools
             .filter(
               p2 =>
                 curr.ammId !== p2.ammId &&
@@ -195,7 +194,7 @@ export class RaydiumRoutingService {
       if (curr.pc.mintAddress === fromCoinMint) {
         return [
           ...acc,
-          ...avaPools
+          ...transitTokensPools
             .filter(
               p2 =>
                 curr.ammId !== p2.ammId &&

@@ -18,6 +18,12 @@ import { base58 } from '@scure/base';
 import { from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 
+interface BaseInformation {
+  owner: PublicKey;
+  transaction: Transaction;
+  signers: Account[];
+}
+
 type ReturnValue = Promise<{
   result: RpcResponseAndContext<
     Array<{
@@ -38,6 +44,14 @@ type ReturnValue = Promise<{
 }>;
 
 export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
+  public static createBaseInformation(address: string): BaseInformation {
+    const owner = new PublicKey(address);
+    const transaction = new Transaction();
+    const signers: Account[] = [];
+
+    return { owner, transaction, signers };
+  }
+
   public static addressToBytes32(address: string): string {
     return (
       '0x' +
@@ -218,12 +232,25 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     walletAdapter: CommonWalletAdapter<SolanaWallet>,
     transaction: Transaction,
     signers: Array<Account> = []
-  ): Promise<Transaction> {
+  ): Promise<string> {
     transaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
     transaction.setSigners(new PublicKey(walletAdapter.address), ...signers.map(s => s.publicKey));
     if (signers.length > 0) {
       transaction.partialSign(...signers);
     }
-    return await walletAdapter.wallet.signTransaction(transaction);
+
+    const sendMethodName = 'signAndSendTransaction';
+    if (walletAdapter.wallet?.[sendMethodName]) {
+      const { signature } = await walletAdapter.wallet.request({
+        method: sendMethodName,
+        params: {
+          message: base58.encode(transaction.serializeMessage())
+        }
+      });
+
+      return signature;
+    }
+    const rawTransaction = await walletAdapter.wallet.signTransaction(transaction);
+    return this.connection?.sendRawTransaction(rawTransaction?.serialize());
   }
 }

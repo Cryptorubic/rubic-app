@@ -139,6 +139,18 @@ export class TokensApiService {
         coingecko_id: '0',
         usd_price: 1,
         used_in_iframe: false
+      },
+      {
+        address: '5EbpXhW7t8ypBF3Q1X7odFaHjuh7XJfCohXR3VYAW32i',
+        name: 'MALL',
+        symbol: 'MALL',
+        decimals: 3,
+        image: '',
+        rank: 1,
+        blockchain_network: 'solana',
+        coingecko_id: '0',
+        usd_price: 1,
+        used_in_iframe: false
       }
     ];
   }
