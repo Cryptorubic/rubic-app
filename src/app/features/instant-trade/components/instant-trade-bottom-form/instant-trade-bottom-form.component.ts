@@ -21,7 +21,6 @@ import { BehaviorSubject, forkJoin, from, of, Subject, Subscription } from 'rxjs
 import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { NotSupportedItNetwork } from 'src/app/core/errors/models/instant-trade/not-supported-it-network';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
@@ -42,7 +41,6 @@ import {
 } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { REFRESH_BUTTON_STATUS } from 'src/app/shared/components/rubic-refresh-button/rubic-refresh-button.component';
-import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
@@ -55,7 +53,6 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
-import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 
 export interface CalculationResult {
   status: 'fulfilled' | 'rejected';
@@ -186,14 +183,11 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly tokensService: TokensService,
     private readonly settingsService: SettingsService,
-    private readonly counterNotificationsService: CounterNotificationsService,
     private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly swapInfoService: SwapInfoService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly gtmService: GoogleTagManagerService
   ) {
     this.autoSelect = true;
@@ -769,8 +763,6 @@ export class InstantTradeBottomFormComponent implements OnInit, OnDestroy {
         }
         this.cdr.detectChanges();
       });
-
-      this.counterNotificationsService.updateUnread();
 
       await this.tokensService.calculateTokensBalances();
 
