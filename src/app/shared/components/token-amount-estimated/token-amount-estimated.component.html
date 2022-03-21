@@ -5,6 +5,7 @@
         *onlyFrame="'vertical'"
         [blockchain]="blockchain"
       ></app-iframe-blockchain-indicator>
+
       <div
         class="bottom-amount__tokens-container"
         [ngClass]="{
@@ -24,7 +25,11 @@
           </ng-container>
           <ng-template #tokenAmountTpl>
             {{
-              tokenAmount ? (tokenAmount | bigNumberFormat | withRound: 'toClosestValue') : '0.0'
+              tokenAmount
+                ? (tokenAmount
+                  | bigNumberFormat
+                  | withRound: 'toClosestValue':{ decimals: tokenDecimals })
+                : '0.0'
             }}
           </ng-template>
         </div>
