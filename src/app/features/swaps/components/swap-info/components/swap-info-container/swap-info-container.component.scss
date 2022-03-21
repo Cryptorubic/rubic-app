@@ -9,9 +9,9 @@
     width: 100%;
 
     color: $rubic-primary;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 24px;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
 
     border-bottom: 0;
     border-radius: $border-radius-2;
@@ -23,8 +23,8 @@
     }
 
     &-arrow {
-      width: 12px;
-      margin-left: 10px;
+      width: 16px;
+      margin-right: 12px;
 
       transition: 0.2s ease-in-out;
 
