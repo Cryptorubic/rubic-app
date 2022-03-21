@@ -26,6 +26,13 @@ export class SwapsHeaderComponent {
   @Input() public set swapType(type: SWAP_PROVIDER_TYPE) {
     if (type) {
       this.getIconUrl(type);
+
+      this.tradeType =
+        type === 'INSTANT_TRADE'
+          ? 'Instant Swap'
+          : type === 'CROSS_CHAIN_ROUTING'
+          ? 'Multi-Chain Swap'
+          : 'Bridge Swap';
     }
   }
 
@@ -34,6 +41,8 @@ export class SwapsHeaderComponent {
   public toBlockchainItem: BlockchainItem;
 
   public iconUrl: string;
+
+  public tradeType: string;
 
   constructor() {
     const ethBlockchain = BLOCKCHAINS_LIST.find(el => el.symbol === BLOCKCHAIN_NAME.ETHEREUM);
