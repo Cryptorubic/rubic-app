@@ -31,6 +31,7 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { ENDPOINTS, TokensBackendResponse } from '@core/services/backend/tokens-api/models/tokens';
 import { map } from 'rxjs/operators';
+import { RaydiumStableSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 
@@ -77,7 +78,11 @@ export class RaydiumLiquidityManager {
     if (!this.allPools?.length) {
       const { ammAll, lpMintAddressList, marketAll } = await this.fetchAmmAndMintAddresses();
       const lpMintListDecimals = await this.getLpMintListDecimals(lpMintAddressList);
-      this.allPools = await this.getAllPools(ammAll, marketAll, solanaTokens, lpMintListDecimals);
+      try {
+        this.allPools = await this.getAllPools(ammAll, marketAll, solanaTokens, lpMintListDecimals);
+      } catch (err) {
+        console.debug(err);
+      }
     }
 
     return await this.getSpecificPools(this.allPools, multihops, fromSymbol, toSymbol);
@@ -167,7 +172,11 @@ export class RaydiumLiquidityManager {
         mintAddress: ammInfo.lpMintAddress.toString(),
         decimals: lpMintListDecimals[ammInfo.lpMintAddress]
       };
-      const market = marketAll[ammInfo.serumMarket];
+      const market = marketAll?.[ammInfo.serumMarket];
+
+      if (!market?.bids || !market?.asks || !market?.serumVaultSigner) {
+        return acc;
+      }
       const itemLiquidity: LiquidityPoolInfo = {
         name: `${coin.symbol}-${pc.symbol}`,
         coin,
@@ -186,16 +195,12 @@ export class RaydiumLiquidityManager {
         poolTempLpTokenAccount: ammInfo.poolTempLpTokenAccount.toString(),
         serumProgramId: SERUM_PROGRAM_ID_V3,
         serumMarket: ammInfo.serumMarket.toString(),
-        serumBids: market?.bids.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
-        serumAsks: market?.asks.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
-        serumEventQueue:
-          market?.eventQueue.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
-        serumCoinVaultAccount:
-          market?.baseVault.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
-        serumPcVaultAccount:
-          market?.quoteVault.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
-        serumVaultSigner:
-          market?.serumVaultSigner?.toString() || '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD',
+        serumBids: market.bids.toString(),
+        serumAsks: market.asks.toString(),
+        serumEventQueue: market.eventQueue.toString(),
+        serumCoinVaultAccount: market.baseVault.toString(),
+        serumPcVaultAccount: market.quoteVault.toString(),
+        serumVaultSigner: market.serumVaultSigner.toString(),
         official: false
       };
 
@@ -272,6 +277,7 @@ export class RaydiumLiquidityManager {
     });
 
     const multipleInfo = await this.privateBlockchainAdapter.getMultipleAccounts(publicKeys);
+    const modelAccount: { [account: string]: string[] } = {};
 
     multipleInfo.forEach(info => {
       if (info) {
@@ -321,7 +327,13 @@ export class RaydiumLiquidityManager {
                 if (version === 5) {
                   parsed = AMM_INFO_LAYOUT_STABLE.decode(data);
                   poolInfo.currentK = getBigNumber(parsed.currentK);
-                } else parsed = AMM_INFO_LAYOUT_V4.decode(data);
+
+                  if (modelAccount[parsed.modelDataAccount.toString()] === undefined)
+                    modelAccount[parsed.modelDataAccount.toString()] = [];
+                  modelAccount[parsed.modelDataAccount.toString()].push(lpMintAddress);
+                } else {
+                  parsed = AMM_INFO_LAYOUT_V4.decode(data);
+                }
 
                 const { swapFeeNumerator, swapFeeDenominator } = parsed;
                 poolInfo.fees = {
@@ -349,6 +361,21 @@ export class RaydiumLiquidityManager {
         }
       }
     });
+
+    if (Object.keys(modelAccount).length > 0) {
+      const modelAccountData = await this.privateBlockchainAdapter.getMultipleAccounts(
+        Object.keys(modelAccount).map(item => new PublicKey(item))
+      );
+      for (const item of modelAccountData) {
+        if (item === null) continue;
+        const lpMintList = modelAccount[item.publicKey.toString()];
+        const data = RaydiumStableSwapManager.formatLayout(item.account.data);
+        for (const itemLp of lpMintList) {
+          liquidityPools[itemLp].modelData = data;
+        }
+      }
+    }
+
     return liquidityPools;
   }
 

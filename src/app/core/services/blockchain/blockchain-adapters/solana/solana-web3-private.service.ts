@@ -16,7 +16,7 @@ import {
   MINT_LAYOUT
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
+  AT_PROGRAM_ID,
   RENT_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
@@ -28,6 +28,7 @@ import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters
 import { Injectable } from '@angular/core';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokenAccounts } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/token-accounts';
+import { HttpService } from '@core/services/http/http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +49,7 @@ export class SolanaWeb3PrivateService {
     return value;
   }
 
-  constructor() {}
+  constructor(private readonly httpService: HttpService) {}
 
   public async findProgramAddress(
     seeds: Array<Buffer | Uint8Array>,
@@ -85,7 +86,7 @@ export class SolanaWeb3PrivateService {
   ): Promise<PublicKey> {
     const { publicKey } = await this.findProgramAddress(
       [walletAddress.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenMintAddress.toBuffer()],
-      ASSOCIATED_TOKEN_PROGRAM_ID
+      AT_PROGRAM_ID
     );
     return publicKey;
   }
@@ -137,7 +138,7 @@ export class SolanaWeb3PrivateService {
     const mint = new PublicKey(mintAddress);
 
     const ata = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+      AT_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       mint,
       owner,
@@ -148,7 +149,7 @@ export class SolanaWeb3PrivateService {
     if (!accountInfo) {
       transaction.add(
         Token.createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
+          AT_PROGRAM_ID,
           TOKEN_PROGRAM_ID,
           mint,
           ata,
@@ -176,7 +177,7 @@ export class SolanaWeb3PrivateService {
     const mint = new PublicKey(TOKENS.WSOL.mintAddress);
     // @ts-ignore without ts ignore, yarn build will failed
     const ata = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+      AT_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       mint,
       owner,
@@ -187,7 +188,7 @@ export class SolanaWeb3PrivateService {
       transaction.add(
         SystemProgram.transfer({ fromPubkey: owner, toPubkey: ata, lamports: amount + rent }),
         Token.createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
+          AT_PROGRAM_ID,
           TOKEN_PROGRAM_ID,
           mint,
           ata,
@@ -294,7 +295,7 @@ export class SolanaWeb3PrivateService {
     transaction.add(
       new TransactionInstruction({
         keys,
-        programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+        programId: AT_PROGRAM_ID,
         data: Buffer.from([])
       })
     );
@@ -339,12 +340,19 @@ export class SolanaWeb3PrivateService {
       if (!cacheName) {
         throw new Error('cacheName error');
       }
-
-      const resp = await (await fetch(`https://api.raydium.io/cache/rpc/${cacheName}`)).json();
-      if (resp.error) {
-        throw new Error(resp.error.message);
-      }
-      // @ts-ignore
+      const resp = await this.httpService
+        .get<{
+          result: {
+            pubkey: PublicKey;
+            account: {
+              data: string[];
+              executable: boolean;
+              owner: string;
+              lamports: number;
+            };
+          }[];
+        }>(`https://api.raydium.io/cache/rpc/${cacheName}`)
+        .toPromise();
       return resp.result.map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
         publicKey: new PublicKey(pubkey),
         accountInfo: {

@@ -8,12 +8,15 @@ import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-servi
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { SwapOutAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/swap-out-amount';
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-router-info';
+import { RaydiumStableSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RaydiumRoutingService {
   private _routerInfo: RaydiumRouterInfo;
+
+  private stableSwapManager: RaydiumStableSwapManager;
 
   public get routerInfo(): RaydiumRouterInfo {
     return this._routerInfo;
@@ -33,7 +36,9 @@ export class RaydiumRoutingService {
     this._currentPoolInfo = info;
   }
 
-  constructor() {}
+  constructor() {
+    this.stableSwapManager = new RaydiumStableSwapManager();
+  }
 
   public getSwapOutAmount(
     poolInfo: LiquidityPoolInfo,
@@ -225,21 +230,39 @@ export class RaydiumRoutingService {
           const middleCoin =
             route[0].coin.mintAddress === fromToken.address ? route[0].pc : route[0].coin;
 
-          const { amountOutWithSlippage: amountOutWithSlippageA } = this.getSwapOutAmount(
-            route[0],
-            fromToken.address,
-            middleCoin.mintAddress,
-            amount.toString(),
-            slippage
-          );
+          const { amountOutWithSlippage: amountOutWithSlippageA } =
+            route[0].version === 5
+              ? this.stableSwapManager.getSwapOutAmountStable(
+                  route[0],
+                  fromToken.address,
+                  middleCoin.mintAddress,
+                  amount.toString(),
+                  slippage
+                )
+              : this.getSwapOutAmount(
+                  route[0],
+                  fromToken.address,
+                  middleCoin.mintAddress,
+                  amount.toString(),
+                  slippage
+                );
 
-          const { amountOut, priceImpact } = this.getSwapOutAmount(
-            route[1],
-            middleCoin.mintAddress,
-            toToken.address,
-            amountOutWithSlippageA.toString(),
-            slippage
-          );
+          const { amountOut, priceImpact } =
+            route[1].version === 5
+              ? this.stableSwapManager.getSwapOutAmountStable(
+                  route[1],
+                  middleCoin.mintAddress,
+                  toToken.address,
+                  amountOutWithSlippageA.toString(),
+                  slippage
+                )
+              : this.getSwapOutAmount(
+                  route[1],
+                  middleCoin.mintAddress,
+                  toToken.address,
+                  amountOutWithSlippageA.toString(),
+                  slippage
+                );
 
           if (amountOut.gt(acc.maxAmountOut)) {
             return {

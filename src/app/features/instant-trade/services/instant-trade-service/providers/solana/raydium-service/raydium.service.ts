@@ -30,6 +30,7 @@ import InsufficientLiquidityError from '@core/errors/models/instant-trade/insuff
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { ROUTE_SWAP_PROGRAM_ID } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
+import { RaydiumStableSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,8 @@ export class RaydiumService implements ItProvider {
 
   private readonly swapManager: RaydiumSwapManager;
 
+  private readonly stableSwapManager: RaydiumStableSwapManager;
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly settingsService: SettingsService,
@@ -64,6 +67,7 @@ export class RaydiumService implements ItProvider {
     this.blockchainAdapter = this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA];
     this.connection = this.blockchainAdapter.connection;
     solanaPrivateAdapterService.connection = this.connection;
+    this.stableSwapManager = new RaydiumStableSwapManager();
     this.swapManager = new RaydiumSwapManager(
       this.solanaPrivateAdapterService,
       this.blockchainAdapter,
@@ -96,31 +100,34 @@ export class RaydiumService implements ItProvider {
     if (RaydiumService.isWrap(fromToken.address, toToken.address)) {
       return RaydiumSwapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, fromAmount);
     }
-
-    const directPoolInfos = await this.liquidityManager.requestInfos(
-      fromToken.symbol,
-      toToken.symbol,
-      this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
-      false
+    const directPoolInfos = Object.values(
+      await this.liquidityManager.requestInfos(
+        fromToken.symbol,
+        toToken.symbol,
+        this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
+        false
+      )
     );
 
-    // @TODO Solana. Remove filter by serum.
-    const amms = Object.values(directPoolInfos).filter(
-      pool =>
-        pool.version === 4 && pool.serumBids !== '461R7gK9GK1kLUXQbHgaW9L6PESQFSLGxKXahvcHEJwD'
-    );
-
-    if (amms?.length) {
-      const { amountOut, priceImpact, bestRoute } = amms.reduce(
+    if (directPoolInfos?.length) {
+      const { amountOut, priceImpact, bestRoute } = directPoolInfos.reduce(
         (acc, pool, index) => {
           const { amountOut: poolAmountOut, priceImpact: poolPriceImpact } =
-            this.raydiumRoutingService.getSwapOutAmount(
-              pool,
-              fromToken.address,
-              toToken.address,
-              fromAmount.toString(),
-              this.settings.slippageTolerance
-            );
+            pool.version === 5
+              ? this.stableSwapManager.getSwapOutAmountStable(
+                  pool,
+                  fromToken.address,
+                  toToken.address,
+                  fromAmount.toString(),
+                  this.settings.slippageTolerance
+                )
+              : this.raydiumRoutingService.getSwapOutAmount(
+                  pool,
+                  fromToken.address,
+                  toToken.address,
+                  fromAmount.toString(),
+                  this.settings.slippageTolerance
+                );
           if (poolAmountOut.gt(acc.amountOut)) {
             this.poolInfo = [pool];
             return { amountOut: poolAmountOut, priceImpact: poolPriceImpact, bestRoute: index };
@@ -134,7 +141,7 @@ export class RaydiumService implements ItProvider {
         }
       );
 
-      this.raydiumRoutingService.currentPoolInfo = amms[bestRoute];
+      this.raydiumRoutingService.currentPoolInfo = directPoolInfos[bestRoute];
       this.priceImpactService.setPriceImpact(priceImpact);
       return RaydiumSwapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
     } else {

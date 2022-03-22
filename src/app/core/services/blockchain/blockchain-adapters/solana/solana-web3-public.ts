@@ -9,7 +9,6 @@ import {
   Transaction,
   TransactionResponse
 } from '@solana/web3.js';
-import { compareAddresses } from '@shared/utils/utils';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
@@ -201,30 +200,27 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
       }
     )._rpcRequest('getTokenAccountsByOwner', [
       address,
-      {
-        programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-      },
-      {
-        encoding: 'jsonParsed'
-      }
+      { programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA' },
+      { encoding: 'jsonParsed' }
     ]);
+
+    const tokenInfo = new Map<string, number>(
+      resp.result.value.map(el => {
+        const { mint, tokenAmount } = el.account.data.parsed.info;
+        return [mint, tokenAmount.amount];
+      })
+    );
 
     const nativeSolBalance = await this.connection.getBalanceAndContext(
       new PublicKey(address),
       'confirmed'
     );
-
     return tokensAddresses.map(tokenAddress => {
       if (tokenAddress === NATIVE_SOLANA_MINT_ADDRESS) {
         return new BigNumber(nativeSolBalance.value.toString());
       }
-      const tokenWithBalance = resp.result.value.find(token => {
-        const { info } = token.account.data.parsed;
-        return compareAddresses(info.mint, tokenAddress);
-      });
-      return new BigNumber(
-        tokenWithBalance ? tokenWithBalance.account.data.parsed.info.tokenAmount.amount : NaN
-      );
+      const tokenWithBalance = tokenInfo.get(tokenAddress);
+      return new BigNumber(tokenWithBalance || NaN);
     });
   }
 
@@ -240,9 +236,7 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     }
 
     const sendMethodName = 'signAndSendTransaction';
-    debugger;
     if (walletAdapter.wallet?.[sendMethodName]) {
-      debugger;
       const { signature } = await walletAdapter.wallet.request({
         method: sendMethodName,
         params: {
@@ -252,7 +246,6 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
 
       return signature;
     }
-    debugger;
     const rawTransaction = await walletAdapter.wallet.signTransaction(transaction);
     return this.connection?.sendRawTransaction(rawTransaction?.serialize());
   }

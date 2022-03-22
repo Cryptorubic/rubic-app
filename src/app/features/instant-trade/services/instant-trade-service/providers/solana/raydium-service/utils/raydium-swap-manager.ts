@@ -15,8 +15,9 @@ import {
 import { closeAccount } from '@project-serum/serum/lib/token-instructions';
 import { DATA_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
+  AT_PROGRAM_ID,
   LIQUIDITY_POOL_PROGRAM_ID_V4,
+  LIQUIDITY_POOL_PROGRAM_ID_V5,
   ROUTE_SWAP_PROGRAM_ID,
   SYSTEM_PROGRAM_ID,
   TOKEN_PROGRAM_ID
@@ -145,55 +146,108 @@ export class RaydiumSwapManager {
       new PublicKey(ROUTE_SWAP_PROGRAM_ID)
     );
 
-    transaction.add(
-      RaydiumSwapManager.createRouteSwapInInstruction(
-        new PublicKey(ROUTE_SWAP_PROGRAM_ID),
-        new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
-        new PublicKey(poolInfoA.ammId),
-        new PublicKey(poolInfoB.ammId),
-        new PublicKey(poolInfoA.ammAuthority),
-        new PublicKey(poolInfoA.ammOpenOrders),
-        new PublicKey(poolInfoA.ammTargetOrders),
-        new PublicKey(poolInfoA.poolCoinTokenAccount),
-        new PublicKey(poolInfoA.poolPcTokenAccount),
-        new PublicKey(poolInfoA.serumProgramId),
-        new PublicKey(poolInfoA.serumMarket),
-        new PublicKey(poolInfoA.serumBids),
-        new PublicKey(poolInfoA.serumAsks),
-        new PublicKey(poolInfoA.serumEventQueue),
-        new PublicKey(poolInfoA.serumCoinVaultAccount),
-        new PublicKey(poolInfoA.serumPcVaultAccount),
-        new PublicKey(poolInfoA.serumVaultSigner),
-        newFromTokenAccount,
-        newMiddleTokenAccount,
-        publicKey,
-        owner,
-        fromFinalAmount,
-        toFinalAmount
-      ),
-      RaydiumSwapManager.createRouteSwapOutInstruction(
-        new PublicKey(ROUTE_SWAP_PROGRAM_ID),
-        new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
-        new PublicKey(poolInfoA.ammId),
-        new PublicKey(poolInfoB.ammId),
-        new PublicKey(poolInfoB.ammAuthority),
-        new PublicKey(poolInfoB.ammOpenOrders),
-        new PublicKey(poolInfoB.poolCoinTokenAccount),
-        new PublicKey(poolInfoB.poolPcTokenAccount),
-        new PublicKey(poolInfoB.serumProgramId),
-        new PublicKey(poolInfoB.serumMarket),
-        new PublicKey(poolInfoB.serumBids),
-        new PublicKey(poolInfoB.serumAsks),
-        new PublicKey(poolInfoB.serumEventQueue),
-        new PublicKey(poolInfoB.serumCoinVaultAccount),
-        new PublicKey(poolInfoB.serumPcVaultAccount),
-        new PublicKey(poolInfoB.serumVaultSigner),
-        newMiddleTokenAccount,
-        newToTokenAccount,
-        publicKey,
-        owner
-      )
-    );
+    const firstSwap =
+      poolInfoA.version === 5
+        ? RaydiumSwapManager.createRouteStableSwapInInstruction(
+            new PublicKey(ROUTE_SWAP_PROGRAM_ID),
+            new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V5),
+            new PublicKey(poolInfoA.ammId),
+            new PublicKey(poolInfoB.ammId),
+            new PublicKey(poolInfoA.ammAuthority),
+            new PublicKey(poolInfoA.ammOpenOrders),
+            new PublicKey(poolInfoA.poolCoinTokenAccount),
+            new PublicKey(poolInfoA.poolPcTokenAccount),
+            new PublicKey(poolInfoA.modelDataAccount),
+            new PublicKey(poolInfoA.serumProgramId),
+            new PublicKey(poolInfoA.serumMarket),
+            new PublicKey(poolInfoA.serumBids),
+            new PublicKey(poolInfoA.serumAsks),
+            new PublicKey(poolInfoA.serumEventQueue),
+            new PublicKey(poolInfoA.poolCoinTokenAccount),
+            new PublicKey(poolInfoA.poolPcTokenAccount),
+            PublicKey.default,
+            newFromTokenAccount,
+            newMiddleTokenAccount,
+            publicKey,
+            owner,
+            fromFinalAmount,
+            toFinalAmount
+          )
+        : RaydiumSwapManager.createRouteSwapInInstruction(
+            new PublicKey(ROUTE_SWAP_PROGRAM_ID),
+            new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
+            new PublicKey(poolInfoA.ammId),
+            new PublicKey(poolInfoB.ammId),
+            new PublicKey(poolInfoA.ammAuthority),
+            new PublicKey(poolInfoA.ammOpenOrders),
+            new PublicKey(poolInfoA.ammTargetOrders),
+            new PublicKey(poolInfoA.poolCoinTokenAccount),
+            new PublicKey(poolInfoA.poolPcTokenAccount),
+            new PublicKey(poolInfoA.serumProgramId),
+            new PublicKey(poolInfoA.serumMarket),
+            new PublicKey(poolInfoA.serumBids),
+            new PublicKey(poolInfoA.serumAsks),
+            new PublicKey(poolInfoA.serumEventQueue),
+            new PublicKey(poolInfoA.serumCoinVaultAccount),
+            new PublicKey(poolInfoA.serumPcVaultAccount),
+            new PublicKey(poolInfoA.serumVaultSigner),
+            newFromTokenAccount,
+            newMiddleTokenAccount,
+            publicKey,
+            owner,
+            fromFinalAmount,
+            toFinalAmount
+          );
+
+    const secondSwap =
+      poolInfoB.version === 5
+        ? RaydiumSwapManager.createRouteStableSwapOutInstruction(
+            new PublicKey(ROUTE_SWAP_PROGRAM_ID),
+            new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V5),
+            new PublicKey(poolInfoA.ammId),
+            new PublicKey(poolInfoB.ammId),
+            new PublicKey(poolInfoB.ammAuthority),
+            new PublicKey(poolInfoB.ammOpenOrders),
+            new PublicKey(poolInfoB.poolCoinTokenAccount),
+            new PublicKey(poolInfoB.poolPcTokenAccount),
+            new PublicKey(poolInfoB.modelDataAccount),
+            new PublicKey(poolInfoB.serumProgramId),
+            new PublicKey(poolInfoB.serumMarket),
+            new PublicKey(poolInfoB.serumBids),
+            new PublicKey(poolInfoB.serumAsks),
+            new PublicKey(poolInfoB.serumEventQueue),
+            new PublicKey(poolInfoB.poolCoinTokenAccount),
+            new PublicKey(poolInfoB.poolPcTokenAccount),
+            PublicKey.default,
+            newMiddleTokenAccount,
+            newToTokenAccount,
+            publicKey,
+            owner
+          )
+        : RaydiumSwapManager.createRouteSwapOutInstruction(
+            new PublicKey(ROUTE_SWAP_PROGRAM_ID),
+            new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
+            new PublicKey(poolInfoA.ammId),
+            new PublicKey(poolInfoB.ammId),
+            new PublicKey(poolInfoB.ammAuthority),
+            new PublicKey(poolInfoB.ammOpenOrders),
+            new PublicKey(poolInfoB.poolCoinTokenAccount),
+            new PublicKey(poolInfoB.poolPcTokenAccount),
+            new PublicKey(poolInfoB.serumProgramId),
+            new PublicKey(poolInfoB.serumMarket),
+            new PublicKey(poolInfoB.serumBids),
+            new PublicKey(poolInfoB.serumAsks),
+            new PublicKey(poolInfoB.serumEventQueue),
+            new PublicKey(poolInfoB.serumCoinVaultAccount),
+            new PublicKey(poolInfoB.serumPcVaultAccount),
+            new PublicKey(poolInfoB.serumVaultSigner),
+            newMiddleTokenAccount,
+            newToTokenAccount,
+            publicKey,
+            owner
+          );
+
+    transaction.add(firstSwap, secondSwap);
     return { transaction, signers };
   }
 
@@ -252,6 +306,222 @@ export class RaydiumSwapManager {
     const dataLayout = struct([u8('instruction')]);
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode({ instruction: 1 }, data);
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data
+    });
+  }
+
+  private static createRouteStableSwapOutInstruction(
+    programId: PublicKey,
+    ammProgramId: PublicKey,
+    fromAmmId: PublicKey,
+    toAmmId: PublicKey,
+    ammAuthority: PublicKey,
+    ammOpenOrders: PublicKey,
+    poolCoinTokenAccount: PublicKey,
+    poolPcTokenAccount: PublicKey,
+    modelDataAccount: PublicKey,
+    // serum
+    serumProgramId: PublicKey,
+    serumMarket: PublicKey,
+    serumBids: PublicKey,
+    serumAsks: PublicKey,
+    serumEventQueue: PublicKey,
+    serumCoinVaultAccount: PublicKey,
+    serumPcVaultAccount: PublicKey,
+    serumVaultSigner: PublicKey,
+    // user
+    userMiddleTokenAccount: PublicKey,
+    userDestTokenAccount: PublicKey,
+    userPdaAccount: PublicKey,
+    userOwner: PublicKey
+  ): TransactionInstruction {
+    const dataLayout = struct([u8('instruction')]);
+
+    const keys = [
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+
+      // amm
+      { pubkey: ammProgramId, isSigner: false, isWritable: false },
+      { pubkey: fromAmmId, isSigner: false, isWritable: true },
+      { pubkey: toAmmId, isSigner: false, isWritable: true },
+      { pubkey: ammAuthority, isSigner: false, isWritable: false },
+      { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
+      { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: modelDataAccount, isSigner: false, isWritable: true },
+      // serum
+      { pubkey: serumProgramId, isSigner: false, isWritable: false },
+      { pubkey: serumMarket, isSigner: false, isWritable: true },
+      { pubkey: serumBids, isSigner: false, isWritable: true },
+      { pubkey: serumAsks, isSigner: false, isWritable: true },
+      { pubkey: serumEventQueue, isSigner: false, isWritable: true },
+      { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
+
+      { pubkey: userMiddleTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userPdaAccount, isSigner: false, isWritable: true },
+      { pubkey: userOwner, isSigner: true, isWritable: false }
+    ];
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 3
+      },
+      data
+    );
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data
+    });
+  }
+
+  private static createSwapStableBaseInInstruction(
+    programId: PublicKey,
+    // tokenProgramId: PublicKey,
+    // amm
+    ammId: PublicKey,
+    ammAuthority: PublicKey,
+    ammOpenOrders: PublicKey,
+    poolCoinTokenAccount: PublicKey,
+    poolPcTokenAccount: PublicKey,
+    modelDataAccount: PublicKey,
+    // serum
+    serumProgramId: PublicKey,
+    serumMarket: PublicKey,
+    serumBids: PublicKey,
+    serumAsks: PublicKey,
+    serumEventQueue: PublicKey,
+    serumCoinVaultAccount: PublicKey,
+    serumPcVaultAccount: PublicKey,
+    serumVaultSigner: PublicKey,
+    // user
+    userSourceTokenAccount: PublicKey,
+    userDestTokenAccount: PublicKey,
+    userOwner: PublicKey,
+
+    amountIn: number,
+    minAmountOut: number
+  ): TransactionInstruction {
+    const dataLayout = struct([u8('instruction'), nu64('amountIn'), nu64('minAmountOut')]);
+
+    const keys = [
+      // spl token
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+      // amm
+      { pubkey: ammId, isSigner: false, isWritable: true },
+      { pubkey: ammAuthority, isSigner: false, isWritable: false },
+      { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
+      { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: modelDataAccount, isSigner: false, isWritable: false },
+      // serum
+      { pubkey: serumProgramId, isSigner: false, isWritable: false },
+      { pubkey: serumMarket, isSigner: false, isWritable: true },
+      { pubkey: serumBids, isSigner: false, isWritable: true },
+      { pubkey: serumAsks, isSigner: false, isWritable: true },
+      { pubkey: serumEventQueue, isSigner: false, isWritable: true },
+      { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
+      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userOwner, isSigner: true, isWritable: false }
+    ];
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 9,
+        amountIn,
+        minAmountOut
+      },
+      data
+    );
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data
+    });
+  }
+
+  private static createRouteStableSwapInInstruction(
+    programId: PublicKey,
+    ammProgramId: PublicKey,
+    fromAmmId: PublicKey,
+    toAmmId: PublicKey,
+    ammAuthority: PublicKey,
+    ammOpenOrders: PublicKey,
+    poolCoinTokenAccount: PublicKey,
+    poolPcTokenAccount: PublicKey,
+    modelDataAccount: PublicKey,
+    // serum
+    serumProgramId: PublicKey,
+    serumMarket: PublicKey,
+    serumBids: PublicKey,
+    serumAsks: PublicKey,
+    serumEventQueue: PublicKey,
+    serumCoinVaultAccount: PublicKey,
+    serumPcVaultAccount: PublicKey,
+    serumVaultSigner: PublicKey,
+    // user
+    userSourceTokenAccount: PublicKey,
+    userMiddleTokenAccount: PublicKey,
+    userPdaAccount: PublicKey,
+    userOwner: PublicKey,
+    amountIn: number,
+    minimunAmountOut: number
+  ): TransactionInstruction {
+    const dataLayout = struct([u8('instruction'), nu64('amountIn'), nu64('minimunAmountOut')]);
+
+    const keys = [
+      { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
+      // spl token
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+
+      // amm
+      { pubkey: ammProgramId, isSigner: false, isWritable: false },
+      { pubkey: fromAmmId, isSigner: false, isWritable: true },
+      { pubkey: toAmmId, isSigner: false, isWritable: true },
+      { pubkey: ammAuthority, isSigner: false, isWritable: false },
+      { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
+      { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: modelDataAccount, isSigner: false, isWritable: true },
+      // serum
+      { pubkey: serumProgramId, isSigner: false, isWritable: false },
+      { pubkey: serumMarket, isSigner: false, isWritable: true },
+      { pubkey: serumBids, isSigner: false, isWritable: true },
+      { pubkey: serumAsks, isSigner: false, isWritable: true },
+      { pubkey: serumEventQueue, isSigner: false, isWritable: true },
+      { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
+
+      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userMiddleTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userPdaAccount, isSigner: false, isWritable: true },
+      { pubkey: userOwner, isSigner: true, isWritable: false }
+    ];
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 2,
+        amountIn,
+        minimunAmountOut
+      },
+      data
+    );
 
     return new TransactionInstruction({
       keys,
@@ -384,28 +654,51 @@ export class RaydiumSwapManager {
       );
 
     transaction.add(
-      RaydiumSwapManager.createSwapInstruction(
-        new PublicKey(poolInfo.programId),
-        new PublicKey(poolInfo.ammId),
-        new PublicKey(poolInfo.ammAuthority),
-        new PublicKey(poolInfo.ammOpenOrders),
-        new PublicKey(poolInfo.ammTargetOrders),
-        new PublicKey(poolInfo.poolCoinTokenAccount),
-        new PublicKey(poolInfo.poolPcTokenAccount),
-        new PublicKey(poolInfo.serumProgramId),
-        new PublicKey(poolInfo.serumMarket),
-        new PublicKey(poolInfo.serumBids),
-        new PublicKey(poolInfo.serumAsks),
-        new PublicKey(poolInfo.serumEventQueue),
-        new PublicKey(poolInfo.serumCoinVaultAccount),
-        new PublicKey(poolInfo.serumPcVaultAccount),
-        new PublicKey(poolInfo.serumVaultSigner),
-        fromAccount.key,
-        toAccount.key,
-        owner,
-        fromFinalAmount,
-        toFinalAmount
-      )
+      poolInfo.version === 5
+        ? RaydiumSwapManager.createSwapStableBaseInInstruction(
+            new PublicKey(poolInfo.programId),
+            new PublicKey(poolInfo.ammId),
+            new PublicKey(poolInfo.ammAuthority),
+            new PublicKey(poolInfo.ammOpenOrders),
+            new PublicKey(poolInfo.poolCoinTokenAccount),
+            new PublicKey(poolInfo.poolPcTokenAccount),
+            new PublicKey(poolInfo.modelDataAccount),
+            new PublicKey(poolInfo.serumProgramId),
+            new PublicKey(poolInfo.serumMarket),
+            new PublicKey(poolInfo.serumBids),
+            new PublicKey(poolInfo.serumAsks),
+            new PublicKey(poolInfo.serumEventQueue),
+            new PublicKey(poolInfo.serumCoinVaultAccount),
+            new PublicKey(poolInfo.serumPcVaultAccount),
+            new PublicKey(poolInfo.serumVaultSigner),
+            fromAccount.key,
+            toAccount.key,
+            owner,
+            fromFinalAmount,
+            toFinalAmount
+          )
+        : RaydiumSwapManager.createSwapInstruction(
+            new PublicKey(poolInfo.programId),
+            new PublicKey(poolInfo.ammId),
+            new PublicKey(poolInfo.ammAuthority),
+            new PublicKey(poolInfo.ammOpenOrders),
+            new PublicKey(poolInfo.ammTargetOrders),
+            new PublicKey(poolInfo.poolCoinTokenAccount),
+            new PublicKey(poolInfo.poolPcTokenAccount),
+            new PublicKey(poolInfo.serumProgramId),
+            new PublicKey(poolInfo.serumMarket),
+            new PublicKey(poolInfo.serumBids),
+            new PublicKey(poolInfo.serumAsks),
+            new PublicKey(poolInfo.serumEventQueue),
+            new PublicKey(poolInfo.serumCoinVaultAccount),
+            new PublicKey(poolInfo.serumPcVaultAccount),
+            new PublicKey(poolInfo.serumVaultSigner),
+            fromAccount.key,
+            toAccount.key,
+            owner,
+            fromFinalAmount,
+            toFinalAmount
+          )
     );
     RaydiumSwapManager.closeWethAccounts({ from: fromAccount, to: toAccount }, transaction, owner);
 
@@ -520,7 +813,7 @@ export class RaydiumSwapManager {
     const { transaction, owner } = SolanaWeb3Public.createBaseInformation(address);
     const toPublicKey = new PublicKey(TOKENS.WSOL.mintAddress);
     const ata = await Token.getAssociatedTokenAddress(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+      AT_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       toPublicKey,
       owner,
