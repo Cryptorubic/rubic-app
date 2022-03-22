@@ -2,7 +2,7 @@
 
 :host {
   display: block;
-  max-width: 610px;
+  max-width: 540px;
   margin: 0 auto;
 
   @include iframe {
@@ -17,7 +17,7 @@
 .swaps-form {
   min-height: 200px;
   margin-bottom: 20px;
-  padding: 30px;
+  padding: 20px;
 
   background-color: var(--main-form-background);
   border-radius: 19px;
@@ -126,7 +126,7 @@
       top: 0;
 
       display: block;
-      width: calc(50% - 37px);
+      width: calc(50% - 17px);
       height: 1px;
 
       background-color: var(--rubic-secondary);
@@ -138,12 +138,8 @@
       }
     }
 
-    &::before {
-      left: 20px;
-    }
-
     &::after {
-      right: 20px;
+      right: 0;
     }
   }
 

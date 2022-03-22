@@ -9,9 +9,7 @@
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  padding: 40px 20px 21px;
-
-  border-radius: 0 0 14px 14px;
+  padding: 20px 0 21px;
 
   @include iframe-horizontal {
     position: relative;
@@ -58,9 +56,6 @@ $green: rgb(74, 169, 86);
     font-weight: 300;
     font-size: 14px;
     text-transform: capitalize;
-
-    background: var(--rubic-base-10);
-    border-radius: 3px;
   }
 
   &__providers {
@@ -147,8 +142,7 @@ $green: rgb(74, 169, 86);
 
   &__token-amount {
     max-width: 300px;
-    margin-bottom: 13px;
-    padding: 1px 2px;
+    margin-bottom: 5px;
 
     overflow: auto;
 
