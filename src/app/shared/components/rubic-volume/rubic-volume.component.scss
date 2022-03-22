@@ -3,6 +3,8 @@
 .rubic-volume {
   display: flex;
   gap: 30px;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 32px;
 
   font-family: $sf-pro-font;
@@ -36,14 +38,26 @@
   }
 }
 
+@include b($mobile-md-minus) {
+  .rubic-volume {
+    &__title {
+      font-size: $rubic-font-size-02;
+    }
+
+    &__value {
+      font-size: $rubic-font-size-02;
+    }
+  }
+}
+
 @include b($mobile-sm) {
   .rubic-volume {
-    background-position: right -15px bottom;
+    display: block;
 
     &__title {
       margin-bottom: 15px;
 
-      font-size: 16px;
+      font-size: $rubic-font-size-01;
     }
 
     &__value {

@@ -203,6 +203,7 @@
     &__blockchains {
       position: absolute;
       top: 20px;
+      z-index: 10;
     }
 
     &__title {
@@ -213,12 +214,14 @@
       position: absolute;
       top: 20px;
       right: 20px;
+      z-index: 10;
     }
 
     &__refresh {
       position: absolute;
       top: 20px;
       right: 50px;
+      z-index: 10;
     }
   }
 }
