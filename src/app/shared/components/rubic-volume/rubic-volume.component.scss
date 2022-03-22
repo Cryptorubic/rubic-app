@@ -10,6 +10,7 @@
   font-family: $sf-pro-font;
 
   &__icon {
+    width: 25px;
     margin-right: 10px;
   }
 
@@ -18,7 +19,7 @@
     align-items: center;
 
     color: #fff;
-    font-weight: 500;
+    font-weight: 200;
     font-size: 22px;
     line-height: 120%;
   }
@@ -26,7 +27,7 @@
   &__value {
 
     color: var(--main-green);
-    font-weight: 500;
+    font-weight: 300;
     font-size: 22px;
     line-height: 120%;
   }

@@ -4,7 +4,7 @@
 :host {
   padding: 26px;
 
-  background: var(--rubic-base-20);
+  background: var(--main-form-background);
   border-radius: 36px;
 
   @include mixins.b(vars.$tablet) {
