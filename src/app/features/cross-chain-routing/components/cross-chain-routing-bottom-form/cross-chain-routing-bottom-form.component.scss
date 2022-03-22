@@ -84,6 +84,7 @@
 
     @include b($mobile-md) {
       height: auto;
+      padding: 30px 20px;
     }
 
     @include b($mobile-sm) {

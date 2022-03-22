@@ -199,6 +199,7 @@
     &__blockchains {
       position: absolute;
       top: 20px;
+      left: 20px;
       z-index: 10;
     }
 
@@ -218,6 +219,21 @@
       top: 20px;
       right: 50px;
       z-index: 10;
+    }
+
+    &__delimiter {
+      &::before,
+      &::after {
+        width: calc(50% - 37px);
+      }
+
+      &::before {
+        left: 20px;
+      }
+
+      &::after {
+        right: 20px;
+      }
     }
   }
 }

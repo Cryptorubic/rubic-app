@@ -51,6 +51,7 @@
 
     @include b($mobile-md) {
       height: auto;
+      padding: 40px 20px;
     }
 
     @include b($mobile-sm) {
