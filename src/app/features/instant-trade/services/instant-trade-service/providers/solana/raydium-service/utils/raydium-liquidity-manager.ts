@@ -174,9 +174,6 @@ export class RaydiumLiquidityManager {
       };
       const market = marketAll?.[ammInfo.serumMarket];
 
-      if (!market?.bids || !market?.asks || !market?.serumVaultSigner) {
-        return acc;
-      }
       const itemLiquidity: LiquidityPoolInfo = {
         name: `${coin.symbol}-${pc.symbol}`,
         coin,
@@ -184,6 +181,7 @@ export class RaydiumLiquidityManager {
         lp,
         version: 4,
         programId: LIQUIDITY_POOL_PROGRAM_ID_V4,
+        // Amm.
         ammId: ammAll[index].publicKey.toString(),
         ammAuthority: publicKey.toString(),
         ammOpenOrders: ammInfo.ammOpenOrders.toString(),
@@ -193,14 +191,15 @@ export class RaydiumLiquidityManager {
         poolPcTokenAccount: ammInfo.poolPcTokenAccount.toString(),
         poolWithdrawQueue: ammInfo.poolWithdrawQueue.toString(),
         poolTempLpTokenAccount: ammInfo.poolTempLpTokenAccount.toString(),
+        // Orders.
         serumProgramId: SERUM_PROGRAM_ID_V3,
         serumMarket: ammInfo.serumMarket.toString(),
-        serumBids: market.bids.toString(),
-        serumAsks: market.asks.toString(),
-        serumEventQueue: market.eventQueue.toString(),
-        serumCoinVaultAccount: market.baseVault.toString(),
-        serumPcVaultAccount: market.quoteVault.toString(),
-        serumVaultSigner: market.serumVaultSigner.toString(),
+        serumBids: market?.bids?.toString(),
+        serumAsks: market?.asks?.toString(),
+        serumEventQueue: market?.eventQueue?.toString(),
+        serumCoinVaultAccount: market?.baseVault?.toString(),
+        serumPcVaultAccount: market?.quoteVault?.toString(),
+        serumVaultSigner: market?.serumVaultSigner?.toString(),
         official: false
       };
 
