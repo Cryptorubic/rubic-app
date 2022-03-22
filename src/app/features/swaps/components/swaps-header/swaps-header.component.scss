@@ -1,20 +1,11 @@
 @use 'src/scss/core' as *;
 
-:host {
-  display: block;
-  padding: 5px;
-
-  background-color: var(--main-background);
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-}
-
 .swaps-header {
   position: relative;
 
   display: flex;
   align-items: center;
-  margin: 20px 20px 0;
+  margin-left: 20px;
 
   &__icons {
     display: flex;

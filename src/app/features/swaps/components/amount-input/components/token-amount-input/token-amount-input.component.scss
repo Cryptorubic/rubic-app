@@ -11,6 +11,7 @@
   font-family: $sf-pro-font;
 
   background-color: var(--main-background);
+  border-radius: 14px 14px 0 0;
 
   @include iframe-horizontal {
     position: relative;
@@ -106,6 +107,7 @@
     position: relative;
 
     height: auto;
+    padding-top: 80px;
     padding-bottom: 20px;
   }
 }

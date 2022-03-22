@@ -51,9 +51,12 @@
   &__header {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     height: 30px;
-    margin-bottom: 20px;
+  }
+
+  &__settings-wrapper {
+    display: flex;
   }
 
   &__refresh {
@@ -145,6 +148,7 @@
   }
 
   &__content {
+    margin-top: 30px;
     @include iframe-horizontal {
       display: flex;
       justify-content: space-between;
@@ -184,9 +188,19 @@
 
     padding: 0 0 20px;
 
+    &__content {
+      margin-top: 0;
+    }
+
     &__header {
       height: 0;
       margin-bottom: 0;
+    }
+
+    &__blockchains {
+      position: absolute;
+      top: 20px;
+      z-index: 100;
     }
 
     &__title {
@@ -195,14 +209,14 @@
 
     &__settings {
       position: absolute;
-      top: 63px;
+      top: 20px;
       right: 20px;
       z-index: 100;
     }
 
     &__refresh {
       position: absolute;
-      top: 60px;
+      top: 20px;
       right: 50px;
       z-index: 10;
     }
@@ -216,14 +230,4 @@ app-analytics-link {
   margin-bottom: 20px !important;
 }
 
-@include b($mobile-sm) {
-  .swaps-form {
-    &__settings {
-      top: 80px;
-    }
 
-    &__refresh {
-      top: 78px;
-    }
-  }
-}

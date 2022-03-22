@@ -27,12 +27,7 @@ export class SwapsHeaderComponent {
     if (type) {
       this.getIconUrl(type);
 
-      this.tradeType =
-        type === 'INSTANT_TRADE'
-          ? 'Instant Swap'
-          : type === 'CROSS_CHAIN_ROUTING'
-          ? 'Multi-Chain Swap'
-          : 'Bridge Swap';
+      this.tradeType = type === 'INSTANT_TRADE' ? 'Instant Swap' : 'Multi-Chain';
     }
   }
 
