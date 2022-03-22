@@ -9,9 +9,8 @@
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
-  padding: 15px 20px 21px;
+  padding: 40px 20px 21px;
 
-  background-color: var(--main-background);
   border-radius: 0 0 14px 14px;
 
   @include iframe-horizontal {
@@ -66,7 +65,7 @@ $green: rgb(74, 169, 86);
 
   &__providers {
     display: block;
-    margin-top: 30px;
+    margin-top: 50px;
   }
 
   &__body {

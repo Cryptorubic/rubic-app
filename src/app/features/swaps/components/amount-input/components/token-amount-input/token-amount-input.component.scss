@@ -6,11 +6,11 @@
   justify-content: space-between;
 
   height: 110px;
-  padding: 23px 20px 20px;
+  margin-bottom: 20px;
+  padding: 20px;
 
   font-family: $sf-pro-font;
 
-  background-color: var(--main-background);
   border-radius: 14px 14px 0 0;
 
   @include iframe-horizontal {

@@ -1,7 +1,7 @@
 @use 'src/scss/vars' as *;
 
 html.dark {
-  --main-form-background: rgba(0, 0, 0, 0.6);
+  --main-form-background: #181a19;
   --main-background: rgba(50, 50, 50, 0.6);
   --secondary-background: rgba(50, 50, 50, 0.6);
 
@@ -33,7 +33,7 @@ html.dark {
   --plate-invert: rgb(41, 41, 41, 0.6);
   --bg-banner: rgba(51, 86, 51, 0.8);
 
-  --tui-base-01: rgba(0, 0, 0, 0.8);
+  --tui-base-01: #181a19;
   --tui-base-02: init;
   --tui-base-03: rgb(110, 110, 110);
   --tui-primary: rgba(0, 0, 0, 0.8);
@@ -64,7 +64,7 @@ html.dark {
   }
 
   body {
-    background: transparent;
+    background: #202622;
 
     &.default-iframe-background {
       background: linear-gradient(45deg, black, #4aa956) !important;
