@@ -55,14 +55,6 @@
     height: 30px;
   }
 
-  &__settings-wrapper {
-    display: flex;
-  }
-
-  &__refresh {
-    margin-right: 10px;
-  }
-
   &__title {
     margin: 0 10px 0 0;
 
@@ -70,6 +62,14 @@
     font-weight: 300;
     font-size: 24px;
     letter-spacing: 1.5px;
+  }
+
+  &__settings-wrapper {
+    display: flex;
+  }
+
+  &__refresh {
+    margin-right: 10px;
   }
 
   &__settings {
@@ -149,10 +149,12 @@
 
   &__content {
     margin-top: 30px;
+
     @include iframe-horizontal {
       display: flex;
       justify-content: space-between;
       width: 100%;
+      margin-top: 0;
     }
 
     @include iframe-vertical {
@@ -160,6 +162,7 @@
       flex-direction: column;
       justify-content: space-between;
       height: 100%;
+      margin-top: 0;
     }
   }
 
@@ -200,7 +203,6 @@
     &__blockchains {
       position: absolute;
       top: 20px;
-      z-index: 100;
     }
 
     &__title {
@@ -211,14 +213,12 @@
       position: absolute;
       top: 20px;
       right: 20px;
-      z-index: 100;
     }
 
     &__refresh {
       position: absolute;
       top: 20px;
       right: 50px;
-      z-index: 10;
     }
   }
 }
@@ -229,5 +229,3 @@ app-analytics-link {
 
   margin-bottom: 20px !important;
 }
-
-
