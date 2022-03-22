@@ -307,8 +307,28 @@ export class SolanaWeb3PrivateService {
     programId: PublicKey,
     filters: unknown
   ): Promise<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
-    // @ts-ignore
-    const resp = await this._connection._rpcRequest('getProgramAccounts', [
+    const connection = this._connection as Connection & {
+      _rpcRequest: (
+        method: string,
+        params: unknown[]
+      ) => Promise<
+        | {
+            error: Error;
+          }
+        | {
+            result: {
+              pubkey: PublicKey;
+              account: {
+                data: string[];
+                executable: boolean;
+                owner: string;
+                lamports: number;
+              };
+            }[];
+          }
+      >;
+    };
+    const resp = await connection._rpcRequest('getProgramAccounts', [
       programId.toBase58(),
       {
         commitment: this._connection.commitment,
@@ -316,10 +336,9 @@ export class SolanaWeb3PrivateService {
         encoding: 'base64'
       }
     ]);
-    if (resp.error) {
+    if ('error' in resp) {
       throw new Error(resp.error.message);
     }
-    // @ts-ignore
     return resp.result.map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
       publicKey: new PublicKey(pubkey),
       accountInfo: {
