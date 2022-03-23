@@ -370,7 +370,7 @@ export class SolanaWeb3PrivateService {
               lamports: number;
             };
           }[];
-        }>(`https://api.raydium.io/cache/rpc/${cacheName}`)
+        }>(null, null, `https://api.raydium.io/cache/rpc/${cacheName}`)
         .toPromise();
       return resp.result.map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
         publicKey: new PublicKey(pubkey),

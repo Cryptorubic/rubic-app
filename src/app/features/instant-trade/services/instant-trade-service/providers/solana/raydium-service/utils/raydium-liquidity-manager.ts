@@ -86,7 +86,7 @@ export class RaydiumLiquidityManager {
       }
     }
 
-    return await this.getSpecificPools(this.allPools, multihops, fromSymbol, toSymbol);
+    return await this.getSpecificPools([...this.allPools], multihops, fromSymbol, toSymbol);
   }
 
   public async getLpMintListDecimals(mintAddressInfos: string[]): Promise<LpDecimals> {
@@ -255,18 +255,20 @@ export class RaydiumLiquidityManager {
       const transitTokensWithoutFrom = transitTokens.filter(el => el !== fromSymbol);
       const transitTokensWithoutTo = transitTokens.filter(el => el !== toSymbol);
 
-      LP = [...allPools].filter(pool => {
+      LP = allPools.filter(pool => {
         const [fromPoolToken, toPoolToken] = pool.name.split('-').map(el => el);
 
         return (
-          (fromPoolToken === fromSymbol && transitTokensWithoutFrom.includes(toPoolToken)) ||
-          (toPoolToken === fromSymbol && transitTokensWithoutFrom.includes(fromPoolToken)) ||
-          (toPoolToken === toSymbol && transitTokensWithoutTo.includes(fromPoolToken)) ||
-          (fromPoolToken === toSymbol && transitTokensWithoutTo.includes(toPoolToken))
+          ((fromPoolToken === fromSymbol && transitTokensWithoutFrom.includes(toPoolToken)) ||
+            (toPoolToken === fromSymbol && transitTokensWithoutFrom.includes(fromPoolToken)) ||
+            (toPoolToken === toSymbol && transitTokensWithoutTo.includes(fromPoolToken)) ||
+            (fromPoolToken === toSymbol && transitTokensWithoutTo.includes(toPoolToken))) &&
+          (pool.version === 5 ||
+            (pool.version === 4 && !allPools.some(el => el.name === pool.name && el.version === 5)))
         );
       });
     } else {
-      LP = [...allPools].filter(
+      LP = allPools.filter(
         pool =>
           pool.name === `${fromSymbol}-${toSymbol}` || pool.name === `${toSymbol}-${fromSymbol}`
       );
