@@ -22,7 +22,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
+import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
 import { Buffer } from 'buffer';
 import { Injectable } from '@angular/core';
 import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
@@ -46,6 +46,13 @@ enum TransferDataType {
   providedIn: 'root'
 })
 export class SolanaContractExecutorService {
+  private readonly contracts = this.contractsDataService.contracts;
+
+  @tuiPure
+  private get contract(): SolanaContractData {
+    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaContractData;
+  }
+
   private static createSolanaInstruction(
     pdaConfig: PublicKey,
     pdaBlockchainConfig: PublicKey,
@@ -155,18 +162,11 @@ export class SolanaContractExecutorService {
     return averageTPS >= minimumTPSLimit;
   }
 
-  private readonly contracts = this.contractsDataService.contracts;
-
-  @tuiPure
-  private get contract(): SolanaContractData {
-    return this.contracts[BLOCKCHAIN_NAME.SOLANA] as SolanaContractData;
-  }
-
   constructor(
     private readonly contractsDataService: ContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly tokensService: TokensService,
-    private readonly raydiumRoutingService: RaydiumRoutingService
+    private readonly raydiumRoutingService: RaydiumRouterManager
   ) {}
 
   // eslint-disable-next-line complexity
@@ -176,7 +176,7 @@ export class SolanaContractExecutorService {
     targetAddress: string,
     isToNative: boolean
   ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const { owner, signers, transaction } = SolanaWeb3Public.createBaseInformation(address);
+    const { owner, signers, transaction } = SolanaWeb3Public.createBaseSwapInformation(address);
 
     const privateBlockchainAdapter = this.privateAdapter[BLOCKCHAIN_NAME.SOLANA];
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);

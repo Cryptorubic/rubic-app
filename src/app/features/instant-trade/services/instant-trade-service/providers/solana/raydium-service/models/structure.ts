@@ -1,5 +1,5 @@
 import { bool, publicKey, struct, u128, u32, u64, u8 } from '@project-serum/borsh';
-import { RaydiumStableSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
+import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 
 const bufferLayout = require('buffer-layout');
 
@@ -236,5 +236,5 @@ export const MODEL_DATA_INFO = struct([
   u64('status'),
   u64('multiplier'),
   u64('validDataCount'),
-  bufferLayout.seq(DATA_ELEMENT, RaydiumStableSwapManager.ELEMENT_SIZE, 'DataElement')
+  bufferLayout.seq(DATA_ELEMENT, RaydiumStableManager.ELEMENT_SIZE, 'DataElement')
 ]);

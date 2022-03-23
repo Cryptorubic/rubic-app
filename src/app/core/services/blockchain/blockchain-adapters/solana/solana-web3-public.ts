@@ -1,14 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import {
-  Account,
-  AccountInfo,
-  Connection,
-  PublicKey,
-  RpcResponseAndContext,
-  Transaction,
-  TransactionResponse
-} from '@solana/web3.js';
+import { Account, Connection, PublicKey, Transaction, TransactionResponse } from '@solana/web3.js';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
@@ -16,34 +8,17 @@ import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common
 import { base58 } from '@scure/base';
 import { from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
-
-interface BaseInformation {
-  owner: PublicKey;
-  transaction: Transaction;
-  signers: Account[];
-}
-
-type ReturnValue = Promise<{
-  result: RpcResponseAndContext<
-    Array<{
-      pubkey: PublicKey;
-      account: AccountInfo<{
-        parsed: {
-          info: {
-            tokenAmount: {
-              amount: number;
-              decimals: number;
-            };
-            mint: string;
-          };
-        };
-      }>;
-    }>
-  >;
-}>;
+import {
+  BaseInformation,
+  ReturnValue
+} from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
 
 export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
-  public static createBaseInformation(address: string): BaseInformation {
+  /**
+   * Create base swap information - owner, transaction and signers objects.
+   * @param address Wallet to perform swap.
+   */
+  public static createBaseSwapInformation(address: string): BaseInformation {
     const owner = new PublicKey(address);
     const transaction = new Transaction();
     const signers: Account[] = [];
@@ -51,6 +26,10 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     return { owner, transaction, signers };
   }
 
+  /**
+   * Converts address to bytes32 format.
+   * @param address Address to convert.
+   */
   public static addressToBytes32(address: string): string {
     return (
       '0x' +
@@ -60,6 +39,9 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     );
   }
 
+  /**
+   * RPC Solana connection.
+   */
   public readonly connection: Connection;
 
   constructor(connection: Connection) {
@@ -111,21 +93,24 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   }
 
   /**
-   * checks if address is Ether native address
-   * @param address address to check
+   * Checks if address is Solana native address.
+   * @param address Address to check.
    */
   public isNativeAddress = (address: string): boolean => {
     return address === NATIVE_SOLANA_MINT_ADDRESS;
   };
 
+  /**
+   * Gets information about token from blockchain.
+   */
   public async getTokenInfo(): Promise<BlockchainTokenExtended> {
     return null;
   }
 
   /**
-   *
-   * @param userAddress wallet address whose balance you want to find out
-   * @param tokenAddress address of the smart-contract corresponding to the token
+   * Gets token or native token balance.
+   * @param userAddress Wallet address whose balance you want to find out.
+   * @param tokenAddress Address of the smart-contract corresponding to the token.
    */
   public async getTokenOrNativeBalance(
     userAddress: string,
@@ -141,17 +126,17 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   }
 
   /**
-   * gets ERC-20 tokens balance as integer (multiplied to 10 ** decimals)
-   * @param tokenAddress address of the smart-contract corresponding to the token
-   * @param address wallet address whose balance you want to find out
-   * @return account tokens balance as integer (multiplied to 10 ** decimals)
+   * Gets solana tokens balance.
+   * @param tokenAddress Address of the contract corresponding to the token.
+   * @param address Wallet address whose balance you want to find out.
+   * @return Account tokens balance.
    */
   public async getTokenBalance(address: string, tokenAddress: string): Promise<BigNumber> {
     return (await this.getTokensBalances(address, [tokenAddress]))?.[0];
   }
 
   /**
-   * Predicts the volume of gas required to execute the contract method
+   * Predicts the volume of gas required to execute the contract method.
    */
   public async getEstimatedGas(): Promise<BigNumber> {
     const { feeCalculator } = await this.connection.getRecentBlockhash();
@@ -159,11 +144,11 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   }
 
   /**
-   * get a transaction by hash in several attempts
-   * @param hash hash of the target transaction
-   * @param attempt current attempt number
-   * @param attemptsLimit maximum allowed number of attempts
-   * @param delay ms delay before next attempt
+   * Get a transaction by hash in several attempts.
+   * @param hash Hash of the target transaction.
+   * @param attempt Current attempt number.
+   * @param attemptsLimit Maximum allowed number of attempts.
+   * @param delay Ms delay before next attempt.
    */
   public async getTransactionByHash(
     hash: string,
@@ -189,9 +174,9 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   }
 
   /**
-   * get balance of multiple tokens via multicall.
-   * @param address wallet address.
-   * @param tokensAddresses tokens addresses.
+   * Gets balance of multiple tokens.
+   * @param address Wallet address.
+   * @param tokensAddresses Tokens addresses.
    */
   public async getTokensBalances(address: string, tokensAddresses: string[]): Promise<BigNumber[]> {
     const resp = await (
@@ -224,6 +209,12 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     });
   }
 
+  /**
+   * Signs a Solana transaction.
+   * @param walletAdapter Wallet adapter object.
+   * @param transaction Transaction to sign.
+   * @param signers Array of accounts which can sign transaction.
+   */
   public async signTransaction(
     walletAdapter: CommonWalletAdapter<SolanaWallet>,
     transaction: Transaction,

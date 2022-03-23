@@ -31,8 +31,8 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { ENDPOINTS, TokensBackendResponse } from '@core/services/backend/tokens-api/models/tokens';
 import { map } from 'rxjs/operators';
-import { RaydiumStableSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
-import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
+import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
+import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 
@@ -251,7 +251,7 @@ export class RaydiumLiquidityManager {
     const liquidityPools: LpInfo = {};
     let LP: LiquidityPoolInfo[] = [];
     if (multihops) {
-      const transitTokens = RaydiumRoutingService.transitTokens;
+      const transitTokens = RaydiumRouterManager.transitTokens;
       const transitTokensWithoutFrom = transitTokens.filter(el => el !== fromSymbol);
       const transitTokensWithoutTo = transitTokens.filter(el => el !== toSymbol);
 
@@ -382,7 +382,7 @@ export class RaydiumLiquidityManager {
       for (const item of modelAccountData) {
         if (item === null) continue;
         const lpMintList = modelAccount[item.publicKey.toString()];
-        const data = RaydiumStableSwapManager.formatLayout(item.account.data);
+        const data = RaydiumStableManager.formatLayout(item.account.data);
         for (const itemLp of lpMintList) {
           liquidityPools[itemLp].modelData = data;
         }

@@ -9,7 +9,7 @@ import {
   SolanaTokenInfo,
   TOKENS
 } from 'src/app/features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { StableModelLayout } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
+import { StableModelLayout } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 
 export interface LiquidityPoolInfo {
   fees?: { swapFeeDenominator: number; swapFeeNumerator: number };

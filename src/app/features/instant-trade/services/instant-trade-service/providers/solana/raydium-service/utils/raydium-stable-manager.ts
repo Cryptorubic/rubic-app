@@ -4,6 +4,13 @@ import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-tra
 import { getBigNumber } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { MODEL_DATA_INFO } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
+import { PublicKey, TransactionInstruction } from '@solana/web3.js';
+// @ts-ignore
+import { nu64, struct, u8 } from 'buffer-layout';
+import {
+  SYSTEM_PROGRAM_ID,
+  TOKEN_PROGRAM_ID
+} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 
 export interface StableModelLayout {
   accountType: number;
@@ -13,8 +20,154 @@ export interface StableModelLayout {
   DataElement: { x: number; y: number; price: number }[];
 }
 
-export class RaydiumStableSwapManager {
+export class RaydiumStableManager {
   public static readonly ELEMENT_SIZE = 50000;
+
+  public static createRouteStableSwapOutInstruction(
+    programId: PublicKey,
+    ammProgramId: PublicKey,
+    fromAmmId: PublicKey,
+    toAmmId: PublicKey,
+    ammAuthority: PublicKey,
+    ammOpenOrders: PublicKey,
+    poolCoinTokenAccount: PublicKey,
+    poolPcTokenAccount: PublicKey,
+    modelDataAccount: PublicKey,
+    // serum
+    serumProgramId: PublicKey,
+    serumMarket: PublicKey,
+    serumBids: PublicKey,
+    serumAsks: PublicKey,
+    serumEventQueue: PublicKey,
+    serumCoinVaultAccount: PublicKey,
+    serumPcVaultAccount: PublicKey,
+    serumVaultSigner: PublicKey,
+    // user
+    userMiddleTokenAccount: PublicKey,
+    userDestTokenAccount: PublicKey,
+    userPdaAccount: PublicKey,
+    userOwner: PublicKey
+  ): TransactionInstruction {
+    const dataLayout = struct([u8('instruction')]);
+
+    const keys = [
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+
+      // amm
+      { pubkey: ammProgramId, isSigner: false, isWritable: false },
+      { pubkey: fromAmmId, isSigner: false, isWritable: true },
+      { pubkey: toAmmId, isSigner: false, isWritable: true },
+      { pubkey: ammAuthority, isSigner: false, isWritable: false },
+      { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
+      { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: modelDataAccount, isSigner: false, isWritable: true },
+      // serum
+      { pubkey: serumProgramId, isSigner: false, isWritable: false },
+      { pubkey: serumMarket, isSigner: false, isWritable: true },
+      { pubkey: serumBids, isSigner: false, isWritable: true },
+      { pubkey: serumAsks, isSigner: false, isWritable: true },
+      { pubkey: serumEventQueue, isSigner: false, isWritable: true },
+      { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
+
+      { pubkey: userMiddleTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userDestTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userPdaAccount, isSigner: false, isWritable: true },
+      { pubkey: userOwner, isSigner: true, isWritable: false }
+    ];
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 3
+      },
+      data
+    );
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data
+    });
+  }
+
+  public static createRouteStableSwapInInstruction(
+    programId: PublicKey,
+    ammProgramId: PublicKey,
+    fromAmmId: PublicKey,
+    toAmmId: PublicKey,
+    ammAuthority: PublicKey,
+    ammOpenOrders: PublicKey,
+    poolCoinTokenAccount: PublicKey,
+    poolPcTokenAccount: PublicKey,
+    modelDataAccount: PublicKey,
+    // serum
+    serumProgramId: PublicKey,
+    serumMarket: PublicKey,
+    serumBids: PublicKey,
+    serumAsks: PublicKey,
+    serumEventQueue: PublicKey,
+    serumCoinVaultAccount: PublicKey,
+    serumPcVaultAccount: PublicKey,
+    serumVaultSigner: PublicKey,
+    // user
+    userSourceTokenAccount: PublicKey,
+    userMiddleTokenAccount: PublicKey,
+    userPdaAccount: PublicKey,
+    userOwner: PublicKey,
+    amountIn: number,
+    minimunAmountOut: number
+  ): TransactionInstruction {
+    const dataLayout = struct([u8('instruction'), nu64('amountIn'), nu64('minimunAmountOut')]);
+
+    const keys = [
+      { pubkey: SYSTEM_PROGRAM_ID, isSigner: false, isWritable: false },
+      // spl token
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+
+      // amm
+      { pubkey: ammProgramId, isSigner: false, isWritable: false },
+      { pubkey: fromAmmId, isSigner: false, isWritable: true },
+      { pubkey: toAmmId, isSigner: false, isWritable: true },
+      { pubkey: ammAuthority, isSigner: false, isWritable: false },
+      { pubkey: ammOpenOrders, isSigner: false, isWritable: true },
+      { pubkey: poolCoinTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: poolPcTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: modelDataAccount, isSigner: false, isWritable: true },
+      // serum
+      { pubkey: serumProgramId, isSigner: false, isWritable: false },
+      { pubkey: serumMarket, isSigner: false, isWritable: true },
+      { pubkey: serumBids, isSigner: false, isWritable: true },
+      { pubkey: serumAsks, isSigner: false, isWritable: true },
+      { pubkey: serumEventQueue, isSigner: false, isWritable: true },
+      { pubkey: serumCoinVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumPcVaultAccount, isSigner: false, isWritable: true },
+      { pubkey: serumVaultSigner, isSigner: false, isWritable: false },
+
+      { pubkey: userSourceTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userMiddleTokenAccount, isSigner: false, isWritable: true },
+      { pubkey: userPdaAccount, isSigner: false, isWritable: true },
+      { pubkey: userOwner, isSigner: true, isWritable: false }
+    ];
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 2,
+        amountIn,
+        minimunAmountOut
+      },
+      data
+    );
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data
+    });
+  }
 
   public static formatLayout(buffer: Buffer): StableModelLayout {
     const layoutInfo = MODEL_DATA_INFO.decode(buffer);
@@ -35,7 +188,7 @@ export class RaydiumStableSwapManager {
 
   constructor() {}
 
-  public getSwapOutAmountStable(
+  public static getSwapOutAmountStable(
     poolInfo: LiquidityPoolInfo,
     fromCoinMint: string,
     toCoinMint: string,
@@ -62,7 +215,7 @@ export class RaydiumStableSwapManager {
       amountOut = amountIn.isNaN()
         ? 0
         : Math.abs(
-            RaydiumStableSwapManager.getDyByDxBaseIn(
+            RaydiumStableManager.getDyByDxBaseIn(
               poolInfo.modelData,
               coinBalance.toNumber(),
               pcBalance.toNumber(),
@@ -73,7 +226,7 @@ export class RaydiumStableSwapManager {
       inDecimals = coin.decimals;
       outDecimals = pc.decimals;
 
-      beforePrice = RaydiumStableSwapManager.getStablePrice(
+      beforePrice = RaydiumStableManager.getStablePrice(
         poolInfo.modelData,
         coinBalance.toNumber(),
         pcBalance.toNumber(),
@@ -81,7 +234,7 @@ export class RaydiumStableSwapManager {
       );
       const afterCoinBalance = coinBalance.plus(amountIn);
       const afterPcBalance = pcBalance.minus(amountOut);
-      afterPrice = RaydiumStableSwapManager.getStablePrice(
+      afterPrice = RaydiumStableManager.getStablePrice(
         poolInfo.modelData,
         afterCoinBalance.toNumber(),
         afterPcBalance.toNumber(),
@@ -91,7 +244,7 @@ export class RaydiumStableSwapManager {
       amountOut = amountIn.isNaN()
         ? 0
         : Math.abs(
-            RaydiumStableSwapManager.getDxByDyBaseIn(
+            RaydiumStableManager.getDxByDyBaseIn(
               poolInfo.modelData,
               coinBalance.toNumber(),
               pcBalance.toNumber(),
@@ -102,7 +255,7 @@ export class RaydiumStableSwapManager {
       inDecimals = pc.decimals;
       outDecimals = coin.decimals;
 
-      beforePrice = RaydiumStableSwapManager.getStablePrice(
+      beforePrice = RaydiumStableManager.getStablePrice(
         poolInfo.modelData,
         coinBalance.toNumber(),
         pcBalance.toNumber(),
@@ -110,7 +263,7 @@ export class RaydiumStableSwapManager {
       );
       const afterCoinBalance = coinBalance.minus(amountIn);
       const afterPcBalance = pcBalance.plus(amountOut);
-      afterPrice = RaydiumStableSwapManager.getStablePrice(
+      afterPrice = RaydiumStableManager.getStablePrice(
         poolInfo.modelData,
         afterCoinBalance.toNumber(),
         afterPcBalance.toNumber(),
@@ -145,23 +298,18 @@ export class RaydiumStableSwapManager {
     yReal: number,
     dyReal: number
   ): number {
-    const ratio = RaydiumStableSwapManager.getRatio(layoutData, xReal, yReal);
-    const x = RaydiumStableSwapManager.realToTable(layoutData, xReal, ratio);
-    const y = RaydiumStableSwapManager.realToTable(layoutData, yReal, ratio);
-    const dy = RaydiumStableSwapManager.realToTable(layoutData, dyReal, ratio);
+    const ratio = RaydiumStableManager.getRatio(layoutData, xReal, yReal);
+    const x = RaydiumStableManager.realToTable(layoutData, xReal, ratio);
+    const y = RaydiumStableManager.realToTable(layoutData, yReal, ratio);
+    const dy = RaydiumStableManager.realToTable(layoutData, dyReal, ratio);
     const priceUp = false;
-    const [p, x2, lessTrade, find] = RaydiumStableSwapManager.getDataByY(
-      layoutData,
-      y,
-      dy,
-      priceUp
-    );
+    const [p, x2, lessTrade, find] = RaydiumStableManager.getDataByY(layoutData, y, dy, priceUp);
     if (!find) return 0;
     if (lessTrade) {
       return (dyReal * p) / layoutData.multiplier;
     } else {
       const dx = x - x2;
-      return RaydiumStableSwapManager.tableToReal(layoutData, dx, ratio);
+      return RaydiumStableManager.tableToReal(layoutData, dx, ratio);
     }
   }
 
@@ -171,23 +319,18 @@ export class RaydiumStableSwapManager {
     yReal: number,
     dxReal: number
   ): number {
-    const ratio = RaydiumStableSwapManager.getRatio(layoutData, xReal, yReal);
-    const x = RaydiumStableSwapManager.realToTable(layoutData, xReal, ratio);
-    const y = RaydiumStableSwapManager.realToTable(layoutData, yReal, ratio);
-    const dx = RaydiumStableSwapManager.realToTable(layoutData, dxReal, ratio);
+    const ratio = RaydiumStableManager.getRatio(layoutData, xReal, yReal);
+    const x = RaydiumStableManager.realToTable(layoutData, xReal, ratio);
+    const y = RaydiumStableManager.realToTable(layoutData, yReal, ratio);
+    const dx = RaydiumStableManager.realToTable(layoutData, dxReal, ratio);
     const priceUp = true;
-    const [p, y2, lessTrade, find] = RaydiumStableSwapManager.getDataByX(
-      layoutData,
-      x,
-      dx,
-      priceUp
-    );
+    const [p, y2, lessTrade, find] = RaydiumStableManager.getDataByX(layoutData, x, dx, priceUp);
     if (!find) return 0;
     if (lessTrade) {
       return (dxReal * layoutData.multiplier) / p;
     } else {
       const dy = y - y2;
-      return RaydiumStableSwapManager.tableToReal(layoutData, dy, ratio);
+      return RaydiumStableManager.tableToReal(layoutData, dy, ratio);
     }
   }
 
@@ -198,19 +341,19 @@ export class RaydiumStableSwapManager {
     baseCoin: boolean
   ): number {
     const price =
-      RaydiumStableSwapManager.getMidPrice(
+      RaydiumStableManager.getMidPrice(
         layoutData,
-        RaydiumStableSwapManager.realToTable(
+        RaydiumStableManager.realToTable(
           layoutData,
           coinReal,
-          RaydiumStableSwapManager.getRatio(layoutData, coinReal, pcReal)
+          RaydiumStableManager.getRatio(layoutData, coinReal, pcReal)
         )
       ) / layoutData.multiplier;
     return baseCoin ? price : 1 / price;
   }
 
   private static getMidPrice(layoutData: StableModelLayout, x: number): number {
-    const ret = RaydiumStableSwapManager.getDataByX(layoutData, x, 0, false);
+    const ret = RaydiumStableManager.getDataByX(layoutData, x, 0, false);
     if (ret[3]) return ret[0];
     else return 0;
   }
@@ -222,7 +365,7 @@ export class RaydiumStableSwapManager {
     priceUp: boolean
   ): [number, number, boolean, boolean] {
     const yWithDy = priceUp ? y - dy : y + dy;
-    const [minIdx, maxIdx, find] = RaydiumStableSwapManager.getMinimumRangeByY(layoutData, yWithDy);
+    const [minIdx, maxIdx, find] = RaydiumStableManager.getMinimumRangeByY(layoutData, yWithDy);
     if (!find) return [0, 0, false, find];
     if (minIdx === maxIdx)
       return [layoutData.DataElement[maxIdx].price, layoutData.DataElement[maxIdx].x, false, find];
@@ -257,7 +400,7 @@ export class RaydiumStableSwapManager {
     priceUp: boolean
   ): [number, number, boolean, boolean] {
     const xWithDx = priceUp ? x + dx : x - dx;
-    const [minIdx, maxIdx, find] = RaydiumStableSwapManager.getMinimumRangeByX(layoutData, xWithDx);
+    const [minIdx, maxIdx, find] = RaydiumStableManager.getMinimumRangeByX(layoutData, xWithDx);
     if (!find) return [0, 0, false, find];
 
     if (minIdx === maxIdx)
@@ -291,14 +434,14 @@ export class RaydiumStableSwapManager {
     layoutData: StableModelLayout,
     y: number
   ): [number, number, boolean] {
-    const [min, max] = RaydiumStableSwapManager.estimateRangeByY(y);
+    const [min, max] = RaydiumStableManager.estimateRangeByY(y);
     let minRangeIdx = min;
     let maxRangeIdx = max;
     let mid = 0;
     const target = y;
     while (minRangeIdx <= maxRangeIdx) {
       mid = Math.floor((maxRangeIdx + minRangeIdx) / 2);
-      if (mid <= 0 || mid >= RaydiumStableSwapManager.ELEMENT_SIZE - 2) {
+      if (mid <= 0 || mid >= RaydiumStableManager.ELEMENT_SIZE - 2) {
         return [mid, mid, false];
       }
 
@@ -321,7 +464,7 @@ export class RaydiumStableSwapManager {
     layoutData: StableModelLayout,
     x: number
   ): [number, number, boolean] {
-    const [min, max] = RaydiumStableSwapManager.estimateRangeByX(x);
+    const [min, max] = RaydiumStableManager.estimateRangeByX(x);
     let minRangeIdx = min;
     let maxRangeIdx = max;
     let mid = 0;
@@ -329,7 +472,7 @@ export class RaydiumStableSwapManager {
     while (minRangeIdx < maxRangeIdx) {
       mid = Math.floor((maxRangeIdx + minRangeIdx) / 2);
 
-      if (mid <= 0 || mid > RaydiumStableSwapManager.ELEMENT_SIZE - 2) {
+      if (mid <= 0 || mid > RaydiumStableManager.ELEMENT_SIZE - 2) {
         return [mid, mid, false];
       }
       const cur = layoutData.DataElement[mid].x;
@@ -348,7 +491,7 @@ export class RaydiumStableSwapManager {
   }
 
   private static getRatio(layoutData: StableModelLayout, xReal: number, yReal: number): number {
-    const [minRangeIdx, maxRangeIdx, find] = RaydiumStableSwapManager.getMininumRangeByXyReal(
+    const [minRangeIdx, maxRangeIdx, find] = RaydiumStableManager.getMininumRangeByXyReal(
       layoutData,
       xReal,
       yReal
@@ -393,15 +536,15 @@ export class RaydiumStableSwapManager {
   }
 
   private static estimateRangeByXyReal(_xReal: number, _yReal: number): [number, number] {
-    return [0, RaydiumStableSwapManager.ELEMENT_SIZE - 2];
+    return [0, RaydiumStableManager.ELEMENT_SIZE - 2];
   }
 
   private static estimateRangeByX(_x: number): [number, number] {
-    return [0, RaydiumStableSwapManager.ELEMENT_SIZE - 2];
+    return [0, RaydiumStableManager.ELEMENT_SIZE - 2];
   }
 
   private static estimateRangeByY(_y: number): [number, number] {
-    return [0, RaydiumStableSwapManager.ELEMENT_SIZE - 2];
+    return [0, RaydiumStableManager.ELEMENT_SIZE - 2];
   }
 
   private static getMininumRangeByXyReal(
@@ -409,14 +552,14 @@ export class RaydiumStableSwapManager {
     xReal: number,
     yReal: number
   ): [number, number, boolean] {
-    const [min, max] = RaydiumStableSwapManager.estimateRangeByXyReal(xReal, yReal);
+    const [min, max] = RaydiumStableManager.estimateRangeByXyReal(xReal, yReal);
     let minRangeIdx = min;
     let maxRangeIdx = max;
     let mid = 0;
     const target = (xReal * layoutData.multiplier) / yReal;
     while (minRangeIdx <= maxRangeIdx) {
       mid = Math.floor((maxRangeIdx + minRangeIdx) / 2);
-      if (mid === 0 || mid >= RaydiumStableSwapManager.ELEMENT_SIZE - 2) {
+      if (mid === 0 || mid >= RaydiumStableManager.ELEMENT_SIZE - 2) {
         return [mid, mid, false];
       }
       const cur =
