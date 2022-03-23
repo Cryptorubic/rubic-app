@@ -741,9 +741,6 @@ export class CrossChainRoutingService {
   public createTrade(options: TransactionOptions = {}): Observable<void> {
     return from(
       (async () => {
-        if (this.currentCrossChainTrade.fromBlockchain === BLOCKCHAIN_NAME.NEAR) {
-          throw new CustomError('Swaps from Near are not available now. Try again later.');
-        }
         await this.checkTradeParameters();
         this.checkDeviceAndShowNotification();
 

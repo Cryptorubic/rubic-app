@@ -45,6 +45,11 @@ interface AllQueryParams {
   all_keys: string;
 }
 
+export interface QuerySlippage {
+  slippageIt: number | null;
+  slippageCcr: number | null;
+}
+
 export type QueryParams = {
   [P in AdditionalTokens]: string[];
 } & AllQueryParams;
