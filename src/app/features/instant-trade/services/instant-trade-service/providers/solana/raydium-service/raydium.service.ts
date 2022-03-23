@@ -10,7 +10,6 @@ import {
   ItSettingsForm,
   SettingsService
 } from '@features/swaps/services/settings-service/settings.service';
-import { HttpClient } from '@angular/common/http';
 import { startWith } from 'rxjs/operators';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
@@ -30,6 +29,7 @@ import { ROUTE_SWAP_PROGRAM_ID } from '@features/instant-trade/services/instant-
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { RaydiumWrapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-wrap-manager';
 import { RaydiumManagers } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-managers';
+import { HttpService } from '@core/services/http/http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -55,10 +55,10 @@ export class RaydiumService implements ItProvider {
 
   private readonly wrapManager: RaydiumWrapManager;
 
-  private readonly routerManager: RaydiumRouterManager;
+  public readonly routerManager: RaydiumRouterManager;
 
   constructor(
-    private readonly httpClient: HttpClient,
+    private readonly httpClient: HttpService,
     private readonly settingsService: SettingsService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -121,55 +121,58 @@ export class RaydiumService implements ItProvider {
     fromAmount: BigNumber,
     toToken: InstantTradeToken
   ): Promise<InstantTrade> {
-    if (RaydiumWrapManager.isWrap(fromToken.address, toToken.address)) {
-      return RaydiumSwapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, fromAmount);
-    }
-    const directPoolInfos = Object.values(
-      await this.liquidityManager.requestInfos(
-        fromToken.symbol,
-        toToken.symbol,
-        this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
-        false
-      )
-    );
-
-    if (directPoolInfos?.length) {
-      const { amountOut, priceImpact, poolInfo } = this.swapManager.calculateSwap(
-        directPoolInfos,
-        fromToken,
-        fromAmount,
-        toToken,
-        this.settings.slippageTolerance,
-        this.routerManager
+    try {
+      if (RaydiumWrapManager.isWrap(fromToken.address, toToken.address)) {
+        return RaydiumSwapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, fromAmount);
+      }
+      const directPoolInfos = Object.values(
+        await this.liquidityManager.requestInfos(
+          fromToken.symbol,
+          toToken.symbol,
+          this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA),
+          false
+        )
       );
 
-      this.poolInfo = poolInfo;
-      this.priceImpactService.setPriceImpact(priceImpact);
-      return RaydiumSwapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
-    } else {
-      const { maxAmountOut, middleCoin, priceImpact, poolInfo } =
-        await this.routerManager.calculateTrade(
-          this.liquidityManager,
+      if (directPoolInfos?.length) {
+        const { amountOut, priceImpact, poolInfo } = this.swapManager.calculateSwap(
+          directPoolInfos,
           fromToken,
           fromAmount,
           toToken,
           this.settings.slippageTolerance,
-          this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA)
+          this.routerManager
         );
 
-      this.poolInfo = poolInfo;
-      this.priceImpactService.setPriceImpact(priceImpact);
+        this.poolInfo = poolInfo;
+        this.priceImpactService.setPriceImpact(priceImpact);
+        return RaydiumSwapManager.getInstantTradeInfo(fromToken, toToken, fromAmount, amountOut);
+      } else {
+        const { maxAmountOut, middleCoin, priceImpact, poolInfo } =
+          await this.routerManager.calculateTrade(
+            this.liquidityManager,
+            fromToken,
+            fromAmount,
+            toToken,
+            this.settings.slippageTolerance,
+            this.tokensService.tokens.filter(el => el.blockchain === BLOCKCHAIN_NAME.SOLANA)
+          );
 
-      return RaydiumSwapManager.getInstantTradeInfo(
-        fromToken,
-        toToken,
-        fromAmount,
-        maxAmountOut,
-        middleCoin
-      );
+        this.poolInfo = poolInfo;
+        this.priceImpactService.setPriceImpact(priceImpact);
+
+        return RaydiumSwapManager.getInstantTradeInfo(
+          fromToken,
+          toToken,
+          fromAmount,
+          maxAmountOut,
+          middleCoin
+        );
+      }
+    } catch (err) {
+      console.debug(err);
+      throw new InsufficientLiquidityError('CrossChainRouting');
     }
-
-    throw new InsufficientLiquidityError('CrossChainRouting');
   }
 
   public async createTrade(

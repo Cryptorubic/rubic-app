@@ -1,5 +1,4 @@
 import { AccountInfo, PublicKey } from '@solana/web3.js';
-import { HttpClient } from '@angular/common/http';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import {
   LIQUIDITY_POOLS,
@@ -33,6 +32,7 @@ import { ENDPOINTS, TokensBackendResponse } from '@core/services/backend/tokens-
 import { map } from 'rxjs/operators';
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
+import { HttpService } from '@core/services/http/http.service';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 
@@ -46,7 +46,7 @@ export class RaydiumLiquidityManager {
   private allPools: LiquidityPoolInfo[];
 
   constructor(
-    public readonly httpClient: HttpClient,
+    public readonly httpClient: HttpService,
     private readonly publicBlockchainAdapter: SolanaWeb3Public,
     private readonly privateBlockchainAdapter: SolanaWeb3PrivateService
   ) {}
@@ -222,7 +222,7 @@ export class RaydiumLiquidityManager {
 
   private fetchSolanaBackendTokens(): Promise<{ [key: string]: SolanaTokenInfo }> {
     return this.httpClient
-      .get<TokensBackendResponse>(`api/${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
+      .get<TokensBackendResponse>(`${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
       .pipe(
         map(tokensResponse => {
           return Object.fromEntries(

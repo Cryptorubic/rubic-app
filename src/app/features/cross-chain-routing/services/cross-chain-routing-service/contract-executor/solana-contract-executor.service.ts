@@ -22,7 +22,6 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
 import { Buffer } from 'buffer';
 import { Injectable } from '@angular/core';
 import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
@@ -36,6 +35,7 @@ import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-a
 import { SOLANA_CCR_LAYOUT } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/raydium-ccr-sctuct';
 import { CROSS_CHAIN_METHODS } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/cross-chain-methods';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { RaydiumService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/raydium.service';
 
 enum TransferDataType {
   NON_TRANSFER_TOKEN = 0,
@@ -166,7 +166,7 @@ export class SolanaContractExecutorService {
     private readonly contractsDataService: ContractsDataService,
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly tokensService: TokensService,
-    private readonly raydiumRoutingService: RaydiumRouterManager
+    private readonly raydiumService: RaydiumService
   ) {}
 
   // eslint-disable-next-line complexity
@@ -209,7 +209,7 @@ export class SolanaContractExecutorService {
     const fromFinalAmount = parseInt(tokenInAmountAbsolute);
     const middleFinalAmount = parseInt(fromTransitTokenAmountMinAbsolute);
 
-    const poolInfo = this.raydiumRoutingService.currentPoolInfo;
+    const poolInfo = this.raydiumService.routerManager.currentPoolInfo;
 
     const isTransfer = trade.tokenIn.address === this.contract.transitToken.address;
     const fromNative = trade.tokenIn.address === NATIVE_SOLANA_MINT_ADDRESS;

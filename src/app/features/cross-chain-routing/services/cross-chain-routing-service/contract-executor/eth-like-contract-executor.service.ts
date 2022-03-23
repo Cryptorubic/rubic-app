@@ -4,7 +4,6 @@ import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-
 import { PrivateBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/private-blockchain-adapter.service';
 import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
 import { Injectable } from '@angular/core';
 import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
 import { ContractParams } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/contract-params';
@@ -29,7 +28,6 @@ export class EthLikeContractExecutorService {
     private readonly privateAdapter: PrivateBlockchainAdapterService,
     private readonly apiService: CrossChainRoutingApiService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly raydiumRoutingService: RaydiumRouterManager,
     private readonly refFinanceService: RefFinanceService
   ) {}
 
