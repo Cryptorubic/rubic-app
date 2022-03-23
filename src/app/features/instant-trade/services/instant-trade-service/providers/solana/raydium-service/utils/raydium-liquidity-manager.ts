@@ -32,6 +32,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { ENDPOINTS, TokensBackendResponse } from '@core/services/backend/tokens-api/models/tokens';
 import { map } from 'rxjs/operators';
 import { RaydiumStableSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-swap-manager';
+import { RaydiumRoutingService } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-routering.service';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 
@@ -248,13 +249,28 @@ export class RaydiumLiquidityManager {
   ): Promise<LpInfo> {
     const publicKeys: PublicKey[] = [];
     const liquidityPools: LpInfo = {};
+    let LP: LiquidityPoolInfo[] = [];
+    if (multihops) {
+      const transitTokens = RaydiumRoutingService.transitTokens;
+      const transitTokensWithoutFrom = transitTokens.filter(el => el !== fromSymbol);
+      const transitTokensWithoutTo = transitTokens.filter(el => el !== toSymbol);
 
-    const LP = multihops
-      ? allPools.filter(pool => pool.name.includes(fromSymbol) || pool.name.includes(toSymbol))
-      : allPools.filter(
-          pool =>
-            pool.name === `${fromSymbol}-${toSymbol}` || pool.name === `${toSymbol}-${fromSymbol}`
+      LP = [...allPools].filter(pool => {
+        const [fromPoolToken, toPoolToken] = pool.name.split('-').map(el => el);
+
+        return (
+          (fromPoolToken === fromSymbol && transitTokensWithoutFrom.includes(toPoolToken)) ||
+          (toPoolToken === fromSymbol && transitTokensWithoutFrom.includes(fromPoolToken)) ||
+          (toPoolToken === toSymbol && transitTokensWithoutTo.includes(fromPoolToken)) ||
+          (fromPoolToken === toSymbol && transitTokensWithoutTo.includes(toPoolToken))
         );
+      });
+    } else {
+      LP = [...allPools].filter(
+        pool =>
+          pool.name === `${fromSymbol}-${toSymbol}` || pool.name === `${toSymbol}-${fromSymbol}`
+      );
+    }
 
     LP.forEach(pool => {
       const { poolCoinTokenAccount, poolPcTokenAccount, ammOpenOrders, ammId, lp } = pool;
@@ -287,12 +303,9 @@ export class RaydiumLiquidityManager {
 
         if (key && lpMintAddress) {
           const poolInfo = liquidityPools[lpMintAddress];
-
-          // eslint-disable-next-line default-case
           switch (key) {
             case 'poolCoinTokenAccount': {
               const parsed = ACCOUNT_LAYOUT.decode(data);
-              // quick fix: Number can only safely store up to 53 bits
               poolInfo.coin.balance = poolInfo.coin.balance.plus(String(parsed.amount));
 
               break;
@@ -348,7 +361,6 @@ export class RaydiumLiquidityManager {
 
               break;
             }
-            // getLpSupply
             case 'lpMintAddress': {
               const parsed = MINT_LAYOUT.decode(data);
 

@@ -26,7 +26,10 @@ import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-a
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
-import { TOKENS } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import {
+  NATIVE_SOL,
+  TOKENS
+} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { Token } from '@solana/spl-token';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { PreparedSwapParams } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/prepared-swap-params';
@@ -190,7 +193,7 @@ export class RaydiumSwapManager {
             new PublicKey(poolInfoA.serumEventQueue),
             new PublicKey(poolInfoA.serumCoinVaultAccount),
             new PublicKey(poolInfoA.serumPcVaultAccount),
-            new PublicKey(poolInfoA.serumVaultSigner),
+            new PublicKey(poolInfoA?.serumVaultSigner || NATIVE_SOL.mintAddress),
             newFromTokenAccount,
             newMiddleTokenAccount,
             publicKey,
@@ -240,7 +243,7 @@ export class RaydiumSwapManager {
             new PublicKey(poolInfoB.serumEventQueue),
             new PublicKey(poolInfoB.serumCoinVaultAccount),
             new PublicKey(poolInfoB.serumPcVaultAccount),
-            new PublicKey(poolInfoB.serumVaultSigner),
+            new PublicKey(poolInfoB?.serumVaultSigner || NATIVE_SOL.mintAddress),
             newMiddleTokenAccount,
             newToTokenAccount,
             publicKey,

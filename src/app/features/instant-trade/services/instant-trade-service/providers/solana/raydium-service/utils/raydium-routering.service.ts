@@ -14,6 +14,8 @@ import { RaydiumStableSwapManager } from '@features/instant-trade/services/insta
   providedIn: 'root'
 })
 export class RaydiumRoutingService {
+  public static readonly transitTokens = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI', 'USDT'];
+
   private _routerInfo: RaydiumRouterInfo;
 
   private stableSwapManager: RaydiumStableSwapManager;
@@ -142,10 +144,9 @@ export class RaydiumRoutingService {
     fromCoinMint: string,
     toCoinMint: string
   ): [LiquidityPoolInfo, LiquidityPoolInfo][] {
-    const transitTokens = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI', 'USDT'];
     const transitTokensPools = Object.values(
       Object.fromEntries(
-        transitTokens
+        RaydiumRoutingService.transitTokens
           .map(coolToken => {
             const pools = Object.values(poolInfos).filter(pool => {
               const firstTokenAddress = pool.coin.mintAddress;
