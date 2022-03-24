@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { compareTokens } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { ThemeService } from '@core/services/theme/theme.service';
 
 export interface TokenInfo {
   blockchain: BLOCKCHAIN_NAME;
@@ -43,11 +44,20 @@ export class BuyTokenComponent {
 
   private readonly defaultTokens: TokenPair;
 
+  public theme: string;
+
+  public rubicIcon = {
+    light: 'assets/images/icons/header/rubic.svg',
+    dark: 'assets/images/icons/header/rubic-light.svg'
+  };
+
   constructor(
     private readonly router: Router,
     private readonly swapsService: SwapsService,
     private readonly swapFormService: SwapFormService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly themeService: ThemeService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.tokensType = 'default';
     this.customTokens = {
@@ -76,6 +86,10 @@ export class BuyTokenComponent {
         symbol: 'RBC'
       }
     };
+    this.themeService.theme$.subscribe(value => {
+      this.theme = value;
+      this.cdr.markForCheck();
+    });
   }
 
   /**

@@ -20,4 +20,13 @@
       }
     }
   }
+
+  &-icon {
+    display: flex;
+    margin-right: 10px;
+
+    img {
+      height: 24px;
+    }
+  }
 }
