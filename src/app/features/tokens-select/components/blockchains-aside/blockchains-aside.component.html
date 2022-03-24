@@ -6,7 +6,7 @@
           [icon]="blockchainImages[blockchainName]"
           [disabled]="blockchain === blockchainName"
           [border]="blockchain === blockchainName"
-          [label]="getBlockchainLabel(blockchainName)"
+          [label]="blockchainName | functionCall: getBlockchainLabel"
           (iconButtonClick)="onBlockchainSelect(blockchainName)"
         >
         </app-icon-button>
