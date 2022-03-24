@@ -1,9 +1,9 @@
 @use 'src/scss/core' as *;
 
 .blockchain-aside {
-  width: 85px;
+  width: 180px;
   height: 100%;
-  padding: 14px 0;
+  padding: 14px 10px;
 
   background: rgba(170, 170, 170, 0.13);
   border-radius: 0 10px 0 15px;
@@ -31,8 +31,8 @@
 
   &__blockchains-list {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    grid-row-gap: 14px;
 
     @include iframe {
       flex-direction: row;
@@ -52,12 +52,48 @@
       }
     }
 
-    li:not(:last-child) {
-      margin-bottom: 14px;
+    li {
+      margin: 0 5px 14px;
+      margin-bottom: 0;
 
       @include iframe {
         margin-right: 15px;
         margin-bottom: unset;
+      }
+    }
+  }
+
+  ::ng-deep app-icon-button {
+    button {
+      width: 70px !important;
+    }
+
+    .content {
+      padding-bottom: 3px;
+    }
+
+    .bordered .content {
+      padding-bottom: 1px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .blockchain-aside {
+    width: 85px;
+    padding: 14px 0;
+
+    &__blockchains-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      li:not(:last-child) {
+
+        @include iframe {
+          margin-right: 15px;
+          margin-bottom: unset;
+        }
       }
     }
   }
