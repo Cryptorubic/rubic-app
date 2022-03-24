@@ -20,9 +20,9 @@
   }
 
   &__chip {
-    padding: 6px 10px;
+    padding: 6px 20px;
 
-    color: #fff;
+    color: var(--rubic-base-02);
     font-size: 18px;
     line-height: 22px;
 
@@ -130,7 +130,7 @@
     }
 
     &__cap {
-      color: vars.$rubic-base-10;
+      color: var(--secondary-color);
       font-weight: 500;
       font-size: 16px;
       line-height: 19px;
