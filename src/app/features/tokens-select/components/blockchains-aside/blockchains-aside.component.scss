@@ -14,7 +14,7 @@
 
     width: 100%;
     height: unset;
-    padding-top: unset;
+    padding: 0 0 14px;
 
     background: unset;
     border-radius: unset;
@@ -39,13 +39,11 @@
     }
 
     @include iframe-vertical {
+      flex-wrap: nowrap;
+
       margin-bottom: 20px;
 
       ::ng-deep app-icon-button {
-        button {
-          height: 36px;
-        }
-
         img {
           max-height: 20px;
         }
@@ -57,8 +55,7 @@
       margin-bottom: 0;
 
       @include iframe {
-        margin-right: 15px;
-        margin-bottom: unset;
+        margin: 0 15px 0 0;
       }
     }
   }
