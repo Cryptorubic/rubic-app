@@ -1,10 +1,6 @@
 <div class="rubic-volume" *ngLet="volume$ | async as volume">
   <div class="rubic-volume__title">
-    <img
-      class="rubic-volume__icon"
-      src="assets/images/total-values/accumulated-icon.svg"
-      alt="Dollar"
-    />
+    <img class="rubic-volume__icon" [src]="icon[theme]" alt="Dollar" />
     {{ 'volume.title' | translate }}
   </div>
   <div class="rubic-volume__value" [class.tui-skeleton]="!volume">

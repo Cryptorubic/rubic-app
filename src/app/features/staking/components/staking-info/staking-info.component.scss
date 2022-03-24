@@ -20,7 +20,7 @@
   margin-bottom: 12px;
   padding: 36px;
 
-  background: var(--rubic-base-19);
+  background: var(--main-background);
   border-radius: 22px;
 
   @include mixins.b(vars.$tablet) {
@@ -97,7 +97,7 @@
 .features {
   padding: 25px 36px;
 
-  background: var(--rubic-base-19);
+  background: var(--main-background);
   border-radius: 22px;
 
   @include mixins.b(vars.$tablet) {

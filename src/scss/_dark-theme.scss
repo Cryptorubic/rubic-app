@@ -2,8 +2,7 @@
 
 html.dark {
   --main-form-background: #181a19;
-  --main-background: rgba(50, 50, 50, 0.6);
-  --background: #202622;
+  --main-background: #202622;
   --secondary-background: rgba(50, 50, 50, 0.6);
 
   --form-header-color-1: rgba(94, 94, 94, 0.7);
@@ -65,7 +64,7 @@ html.dark {
   }
 
   body {
-    background: var(--rubic-base-19);
+    background: var(--main-background);
 
     &.default-iframe-background {
       background: linear-gradient(45deg, black, #4aa956) !important;

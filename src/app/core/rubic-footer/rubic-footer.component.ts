@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
 import { FOOTER_LINKS } from '@core/rubic-footer/models/footer-links';
+import { ThemeService } from '@core/services/theme/theme.service';
 
 @Component({
   selector: 'app-rubic-footer',
@@ -14,6 +15,8 @@ export class RubicFooterComponent {
 
   public readonly year: number;
 
+  public theme: string;
+
   /**
    * Returns landing domain address.
    */
@@ -21,8 +24,15 @@ export class RubicFooterComponent {
     return EXTERNAL_LINKS.LANDING;
   }
 
-  constructor() {
+  constructor(
+    private readonly themeService: ThemeService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.year = new Date().getFullYear();
     this.footerLinks = FOOTER_LINKS;
+    this.themeService.theme$.subscribe(value => {
+      this.theme = value;
+      this.cdr.markForCheck();
+    });
   }
 }

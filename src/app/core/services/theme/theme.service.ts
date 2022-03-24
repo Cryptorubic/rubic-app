@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { DOCUMENT } from '@angular/common';
 
-type Theme = 'dark' | 'light';
+export type Theme = 'dark' | 'light';
 
 @Injectable({
   providedIn: 'root'

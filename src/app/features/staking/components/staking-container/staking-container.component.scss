@@ -18,7 +18,7 @@
   --background-color: var(--form-header-color-1);
   padding: 8px;
 
-  background: var(--rubic-base-19);
+  background: var(--main-background);
   border-radius: vars.$border-radius-2;
   box-shadow: 0 1px 14px rgba(15, 15, 15, 0.12), 0 5px 8px rgba(15, 15, 15, 0.14), 0 3px 5px rgba(15, 15, 15, 0.2);
 
@@ -39,13 +39,13 @@
     font-weight: 700;
     font-size: 20px;
 
-    background: linear-gradient(to bottom, #fff 50%, var(--form-header-color-1) 50%);
+    background: var(--main-background);
     box-shadow: none;
 
     @include mixins.dark {
       color: rgba(255, 255, 255, 0.6);
 
-      background: linear-gradient(to bottom, #202320 50%, var(--background-color) 50%);
+      background: var(--main-background);
     }
 
     ::ng-deep {
@@ -63,7 +63,7 @@
     font-weight: 800;
     text-align: center;
 
-    background-color: var(--rubic-base-19);
+    background-color: var(--main-background);
     border-radius: vars.$border-radius-2;
 
     transition: 0.1s color;
