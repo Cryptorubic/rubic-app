@@ -686,5 +686,8 @@
   "buyTokens": {
     "default": "RBC 구매",
     "custom": "FTM 구매"
+  },
+  "blockchainSwap": {
+    "to": "에"
   }
 }

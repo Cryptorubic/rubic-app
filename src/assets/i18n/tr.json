@@ -685,5 +685,8 @@
   "buyTokens": {
     "default": "RBC satın al",
     "custom": "FTM satın al"
+  },
+  "blockchainSwap": {
+    "to": "kime"
   }
 }

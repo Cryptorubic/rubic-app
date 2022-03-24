@@ -686,5 +686,8 @@
   "buyTokens": {
     "default": "Купить RBC",
     "custom": "Купить FTM"
+  },
+  "blockchainSwap": {
+    "to": "в"
   }
 }

@@ -686,5 +686,8 @@
   "buyTokens": {
     "default": "購買 RBC",
     "custom": "購買 FTM"
+  },
+  "blockchainSwap": {
+    "to": "至"
   }
 }
