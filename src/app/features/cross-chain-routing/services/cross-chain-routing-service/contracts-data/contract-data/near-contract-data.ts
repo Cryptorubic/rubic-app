@@ -28,6 +28,23 @@ export class NearContractData extends ContractData {
     return this._contract;
   }
 
+  /**
+   * Near tokens address can be too large for eth and solana ccr contract.
+   * Replaces large token address by two addresses with allowed length.
+   * @param addresses tokens addresses.
+   */
+  private static transformLargeAddresses(addresses: string[]): string[][] {
+    return addresses.map((tokenAddress, index) => {
+      if (tokenAddress.length > 40) {
+        return [
+          `${index + 1}!${tokenAddress.slice(0, 40)}`,
+          `${index + 1}!${tokenAddress.slice(41)}`
+        ];
+      }
+      return [`${index + 1}!${tokenAddress}`];
+    });
+  }
+
   constructor(
     public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
@@ -79,10 +96,13 @@ export class NearContractData extends ContractData {
   ): string[] {
     const emptyAddress = EMPTY_ADDRESS;
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      if (!instantTrade) {
-        return [emptyAddress];
-      }
-      return [emptyAddress, emptyAddress];
+      const path = !instantTrade
+        ? [this.transitToken.address]
+        : instantTrade?.path.map(el => el.address) || [
+            instantTrade.from.token.address,
+            instantTrade.to.token.address
+          ];
+      return NearContractData.transformLargeAddresses(path).flat();
     }
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(emptyAddress)];
