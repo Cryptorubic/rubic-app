@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { NATIVE_SOL } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
+import {
+  NATIVE_SOL,
+  WRAPPED_SOL
+} from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-router-info';
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { Account, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js';
@@ -21,6 +24,7 @@ import { RaydiumSwapManager } from '@features/instant-trade/services/instant-tra
 import { RaydiumLiquidityManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-liquidity-manager';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
+import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 export class RaydiumRouterManager {
   public static readonly transitTokens = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI', 'USDT'];
@@ -360,9 +364,17 @@ export class RaydiumRouterManager {
 
   private getSwapRouter(
     poolInfos: { [p: string]: LiquidityPoolInfo },
-    fromCoinMint: string,
-    toCoinMint: string
+    fromMint: string,
+    toMint: string
   ): [LiquidityPoolInfo, LiquidityPoolInfo][] {
+    const fromCoinMint =
+      fromMint === WRAPPED_SOL.mintAddress || fromMint === NATIVE_SOLANA_MINT_ADDRESS
+        ? NATIVE_SOL.mintAddress
+        : fromMint;
+    const toCoinMint =
+      toMint === WRAPPED_SOL.mintAddress || toMint === NATIVE_SOLANA_MINT_ADDRESS
+        ? NATIVE_SOL.mintAddress
+        : toMint;
     const transitTokensPools = Object.values(
       Object.fromEntries(
         RaydiumRouterManager.transitTokens
@@ -443,12 +455,18 @@ export class RaydiumRouterManager {
     slippage: number
   ): RaydiumRouterInfo | null {
     const routesInfo = this.getSwapRouter(poolInfos, fromToken.address, toToken.address);
+    const fromCoinMint =
+      fromToken.address === WRAPPED_SOL.mintAddress ||
+      fromToken.address === NATIVE_SOLANA_MINT_ADDRESS
+        ? NATIVE_SOL.mintAddress
+        : fromToken.address;
+
     if (routesInfo?.length) {
       this.routerInfo = routesInfo.reduce(
         (acc, route) => {
           // First token route
           const middleCoin =
-            route[0].coin.mintAddress === fromToken.address ? route[0].pc : route[0].coin;
+            route[0].coin.mintAddress === fromCoinMint ? route[0].pc : route[0].coin;
 
           const { amountOutWithSlippage: amountOutWithSlippageA } =
             route[0].version === 5
@@ -536,6 +554,16 @@ export class RaydiumRouterManager {
     priceImpact: number;
     poolInfo: LiquidityPoolInfo[];
   }> {
+    const fromCoinMint =
+      fromToken.address === WRAPPED_SOL.mintAddress ||
+      fromToken.address === NATIVE_SOLANA_MINT_ADDRESS
+        ? NATIVE_SOL.mintAddress
+        : fromToken.address;
+    const toCoinMint =
+      toToken.address === WRAPPED_SOL.mintAddress || toToken.address === NATIVE_SOLANA_MINT_ADDRESS
+        ? NATIVE_SOL.mintAddress
+        : toToken.address;
+
     const poolInfos = await liquidityManager.requestInfos(
       fromToken.symbol,
       toToken.symbol,
@@ -555,15 +583,15 @@ export class RaydiumRouterManager {
       poolInfo[0] = Object.values(poolInfos)
         .filter(
           p =>
-            (p.coin.mintAddress === fromToken.address && p.pc.mintAddress === middleCoin.address) ||
-            (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === fromToken.address)
+            (p.coin.mintAddress === fromCoinMint && p.pc.mintAddress === middleCoin.address) ||
+            (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === fromCoinMint)
         )
         .pop();
       poolInfo[1] = Object.values(poolInfos)
         .filter(
           p =>
-            (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === toToken.address) ||
-            (p.coin.mintAddress === toToken.address && p.pc.mintAddress === middleCoin.address)
+            (p.coin.mintAddress === middleCoin.address && p.pc.mintAddress === toCoinMint) ||
+            (p.coin.mintAddress === toCoinMint && p.pc.mintAddress === middleCoin.address)
         )
         .pop();
     }
