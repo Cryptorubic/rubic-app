@@ -66,6 +66,7 @@ import { NotificationBadgeComponent } from './components/notification-badge/noti
 import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
+import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { CopyContainerComponent } from './components/copy-container/copy-contain
     ThemedIconPipe,
     FalsyPipe,
     ThemedIconPipe,
+    FunctionCallPipe,
     // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
@@ -189,7 +191,8 @@ import { CopyContainerComponent } from './components/copy-container/copy-contain
     BuyTokenComponent,
     NotificationBadgeComponent,
     RubicContainerComponent,
-    CopyContainerComponent
+    CopyContainerComponent,
+    FunctionCallPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]
