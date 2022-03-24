@@ -40,25 +40,34 @@
 }
 
 .data-list {
+  min-width: 200px;
   padding: 0;
+
+  background: var(--menu-background);
 
   &__option {
     justify-content: flex-start;
     height: 45px;
     min-height: initial !important;
     margin: 0;
+    padding: 17px 0 17px 28px;
 
     color: var(--form-bright-text-color);
+    font-weight: 400;
+
+    font-size: 18px;
 
     border: none;
     border-radius: 156px;
 
-    transition: all 0.35s ease;
-
     &:hover {
       color: var(--main-green);
 
-      background-color: var(--selection-color);
+      ::ng-deep svg {
+        path[fill='black'] {
+          fill: var(--main-green);
+        }
+      }
     }
 
     &:active {
@@ -165,7 +174,6 @@
 
   tui-opt-group {
     margin: 0;
-    padding: 6px;
 
     &:last-child {
       padding-bottom: 0;
@@ -177,7 +185,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   &::after {
     top: 0;
 
-    background: rgba(225, 225, 225, 0.6);
+    background: #303030;
   }
 
   &::before {
