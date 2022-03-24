@@ -29,6 +29,9 @@ import {
   AccountsRpcRequest,
   ProgramAccounts
 } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
+import { Cacheable } from 'ts-cacheable';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -375,16 +378,17 @@ export class SolanaWeb3PrivateService {
    * @param programId Program Identifier.
    * @param filters Params to filter accounts.
    */
-  public async getFilteredProgramAccountsAmmOrMarketCache(
+  @Cacheable({ maxAge: 60_000 })
+  public getFilteredProgramAccountsAmmOrMarketCache(
     cacheName: String,
     programId: PublicKey,
     filters: unknown
-  ): Promise<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
+  ): Observable<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }[]> {
     try {
       if (!cacheName) {
         throw new Error('cacheName error');
       }
-      const resp = await this.httpService
+      return this.httpService
         .get<{
           result: {
             pubkey: PublicKey;
@@ -396,18 +400,23 @@ export class SolanaWeb3PrivateService {
             };
           }[];
         }>(null, null, `https://api.raydium.io/cache/rpc/${cacheName}`)
-        .toPromise();
-      return resp.result.map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
-        publicKey: new PublicKey(pubkey),
-        accountInfo: {
-          data: Buffer.from(data[0], 'base64'),
-          executable,
-          owner: new PublicKey(owner),
-          lamports
-        }
-      }));
+        .pipe(
+          map(cache => {
+            return cache.result.map(
+              ({ pubkey, account: { data, executable, owner, lamports } }) => ({
+                publicKey: new PublicKey(pubkey),
+                accountInfo: {
+                  data: Buffer.from(data[0], 'base64'),
+                  executable,
+                  owner: new PublicKey(owner),
+                  lamports
+                }
+              })
+            );
+          })
+        );
     } catch (e) {
-      return this.getFilteredProgramAccounts(programId, filters);
+      return from(this.getFilteredProgramAccounts(programId, filters));
     }
   }
 

@@ -33,6 +33,8 @@ import { map } from 'rxjs/operators';
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
 import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
 import { HttpService } from '@core/services/http/http.service';
+import { Cacheable } from 'ts-cacheable';
+import { Observable } from 'rxjs';
 
 type LpAddress = { key: string; lpMintAddress: string; version: number };
 
@@ -142,7 +144,7 @@ export class RaydiumLiquidityManager {
     const { publicKey } = await this.privateBlockchainAdapter.createAmmAuthority(
       new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4)
     );
-    const solanaBackendTokens = await this.fetchSolanaBackendTokens();
+    const solanaBackendTokens = await this.fetchSolanaBackendTokens().toPromise();
 
     return ammAll.reduce(async (promiseAcc, curr, index) => {
       const acc = await promiseAcc;
@@ -220,7 +222,8 @@ export class RaydiumLiquidityManager {
     }, Promise.resolve([...liquidityPools]));
   }
 
-  private fetchSolanaBackendTokens(): Promise<{ [key: string]: SolanaTokenInfo }> {
+  @Cacheable({ maxAge: 13_000 })
+  private fetchSolanaBackendTokens(): Observable<{ [key: string]: SolanaTokenInfo }> {
     return this.httpClient
       .get<TokensBackendResponse>(`${ENDPOINTS.TOKKENS}?page=1&page_size=9999&network=solana`)
       .pipe(
@@ -237,8 +240,7 @@ export class RaydiumLiquidityManager {
             ])
           );
         })
-      )
-      .toPromise();
+      );
   }
 
   private async getSpecificPools(
@@ -406,18 +408,19 @@ export class RaydiumLiquidityManager {
     };
     lpMintAddressList: string[];
   }> {
-    const ammAll = await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
-      'amm',
-      new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
-      [{ dataSize: AMM_INFO_LAYOUT_V4.span }]
-    );
+    const ammAll = await this.privateBlockchainAdapter
+      .getFilteredProgramAccountsAmmOrMarketCache(
+        'amm',
+        new PublicKey(LIQUIDITY_POOL_PROGRAM_ID_V4),
+        [{ dataSize: AMM_INFO_LAYOUT_V4.span }]
+      )
+      .toPromise();
 
-    const marketAccounts =
-      await this.privateBlockchainAdapter.getFilteredProgramAccountsAmmOrMarketCache(
-        'market',
-        new PublicKey(SERUM_PROGRAM_ID_V3),
-        [{ dataSize: MARKET_STATE_LAYOUT_V2.span }]
-      );
+    const marketAccounts = await this.privateBlockchainAdapter
+      .getFilteredProgramAccountsAmmOrMarketCache('market', new PublicKey(SERUM_PROGRAM_ID_V3), [
+        { dataSize: MARKET_STATE_LAYOUT_V2.span }
+      ])
+      .toPromise();
 
     const marketAll: {
       [name: string]: {
