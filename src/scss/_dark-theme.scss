@@ -46,7 +46,7 @@ html.dark {
   --selection-color: rgb(0, 0, 0, 0.5);
 
   --rubic-shadow-button-hover: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
-  --rubic-shadow-button-hover-dim: -5px -5px 15px rgb(0 0 0 / 10%), 5px 5px 15px #0f120f;
+  --rubic-shadow-button-hover-dim: none;
   --rubic-shadow-button-active: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
   --rubic-shadow-button-disabled: -5px -5px 30px rgb(0 0 0 / 50%), 5px 5px 30px rgb(38 53 40 / 50%);
 
@@ -105,7 +105,7 @@ html.dark {
     }
 
     .swaps-form__delimiter .switcher img {
-      filter: brightness(1.5);
+      filter: brightness(2.5);
     }
 
     .swaps-header .swaps-header__icon {

@@ -131,6 +131,8 @@
 
       background-color: var(--rubic-secondary);
 
+      opacity: 0.5;
+
       content: '';
 
       @include iframe-vertical {
