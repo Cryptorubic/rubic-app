@@ -172,8 +172,8 @@
     height: 20px;
     padding: 5px;
 
-    background-color: #{var(--rubic-base-14)};
-    border: 1px solid #{var(--rubic-base-14)};
+    background-color: #{var(--rubic-token-clear)};
+    border: 1px solid #{var(--rubic-token-clear)};
     border-radius: 50%;
 
     transition: 0.1s ease-in-out;
@@ -197,7 +197,7 @@
         width: 2px;
         height: 100%;
 
-        background-color: var(--rubic-base-15);
+        background-color: var(--rubic-token-clear-icon);
         border-radius: 10px;
 
         content: '';
