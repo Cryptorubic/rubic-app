@@ -8,11 +8,7 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types/size';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconButtonComponent {
-  public _disabled: boolean;
-
-  public _border: boolean;
-
-  @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'xl';
+  @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'l';
 
   @Input() icon: string;
 
@@ -28,12 +24,15 @@ export class IconButtonComponent {
     this._border = border === '' || border;
   }
 
-  @Output()
-  iconButtonClick = new EventEmitter<void>();
+  @Output() iconButtonClick = new EventEmitter<void>();
+
+  public _disabled = false;
+
+  public _border: boolean;
+
+  constructor() {}
 
   public onClick(): void {
     this.iconButtonClick.emit();
   }
-
-  constructor() {}
 }

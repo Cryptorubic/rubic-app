@@ -1,46 +1,59 @@
 export const CROSS_CHAIN_METHODS: { [P: string]: string } = {
-  swapTokensToOtherBlockchain: '0x09075d57',
-  swapCryptoToOtherBlockchain: '0xdf118e93',
-  swapTokensToUserWithFee: '0x2cb1229f',
-  swapCryptoToUserWithFee: '0xa73caff1',
+  swapTokensToOtherBlockchain: '0xcda60894',
+  swapCryptoToOtherBlockchain: '0xd5243178',
+  swapTokensToUserWithFee: '0xf620fe3e',
+  swapCryptoToUserWithFee: '0xd86ab4fa',
+
   refundTokensToUser: '0xa117e33a',
   refundCryptoToUser: '0x21e1249e',
-  swapTokensToOtherBlockchain1: '0xb87b5a8f',
-  swapCryptoToOtherBlockchain1: '0x9203aef7',
-  swapTokensToUserWithFee1: '0x8b3a0ea3',
-  swapCryptoToUserWithFee1: '0x16c9fecd',
+
+  swapTokensToOtherBlockchain1: '0x9cb3009a',
+  swapCryptoToOtherBlockchain1: '0xde88fcc4',
+  swapTokensToUserWithFee1: '0x494302d8',
+  swapCryptoToUserWithFee1: '0xbca8d0fe',
+
   refundTokensToUser1: '0x008d3d08',
   refundCryptoToUser1: '0x82730272',
-  swapTokensToOtherBlockchain2: '0xa49da0c6',
-  swapCryptoToOtherBlockchain2: '0x8f6006a3',
-  swapTokensToUserWithFee2: '0x9e61884d',
-  swapCryptoToUserWithFee2: '0x5e9f45fe',
+
+  swapTokensToOtherBlockchain2: '0xffa46847',
+  swapCryptoToOtherBlockchain2: '0x6b8b6917',
+  swapTokensToUserWithFee2: '0x24c8d6c3',
+  swapCryptoToUserWithFee2: '0xfb626136',
+
   refundTokensToUser2: '0xfe0c79bc',
   refundCryptoToUser2: '0x4656ad50',
-  swapTokensToOtherBlockchainV3: '0x926e59e9',
-  swapCryptoToOtherBlockchainV3: '0xf8f0b905',
-  swapTokensToUserWithFeeV3: '0x37fea770',
-  swapCryptoToUserWithFeeV3: '0xa7e13490',
+
+  swapTokensToOtherBlockchainV3: '0x9e19e855',
+  swapCryptoToOtherBlockchainV3: '0xf87a00d9',
+  swapTokensToUserWithFeeV3: '0x5f9e4663',
+  swapCryptoToUserWithFeeV3: '0x9ed75b31',
+
   refundTokensToUserV3: '0xa5f30a71',
   refundCryptoToUserV3: '0x5f097277',
-  swapTokensToOtherBlockchainAVAX: '0xb65699a8',
-  swapCryptoToOtherBlockchainAVAX: '0x32609142',
-  swapTokensToUserWithFeeAVAX: '0x4ee5289e',
-  swapCryptoToUserWithFeeAVAX: '0x648efb20',
+
+  swapTokensToOtherBlockchainAVAX: '0x0cf922e6',
+  swapCryptoToOtherBlockchainAVAX: '0xf2faa1d6',
+  swapTokensToUserWithFeeAVAX: '0xaba6b679',
+  swapCryptoToUserWithFeeAVAX: '0x874e5364',
+
   refundTokensToUserAVAX: '0xc88ce223',
   refundCryptoToUserAVAX: '0xe9e5f66e',
-  swapTokensToOtherBlockchainAVAX1: '0x283b115f',
-  swapCryptoToOtherBlockchainAVAX1: '0x7a69e99c',
-  swapTokensToUserWithFeeAVAX1: '0x7190bb40',
-  swapCryptoToUserWithFeeAVAX1: '0x2e4cac12',
+
+  swapTokensToOtherBlockchainAVAX1: '0x252e58cb',
+  swapCryptoToOtherBlockchainAVAX1: '0x71ae96aa',
+  swapTokensToUserWithFeeAVAX1: '0xdeffac35',
+  swapCryptoToUserWithFeeAVAX1: '0x6f2abd98',
+
   refundTokensToUserAVAX1: '0xbc4a5c0e',
   refundCryptoToUserAVAX1: '0x4b3c03ff',
-  swapTokensToOtherBlockchainALGB: '0xe2acb075',
-  swapCryptoToOtherBlockchainALGB: '0x8e07e165',
-  swapTokensToUserWithFeeALGB: '0x9b1e0672',
-  swapCryptoToUserWithFeeALGB: '0x50992db0',
-  swapTokensToOtherBlockchainInch: '0x99f5ede2',
-  swapCryptoToOtherBlockchainInch: '0xb7626bfd',
-  swapTokensToUserWithFeeInch: '0xe9fc4a5e',
-  swapCryptoToUserWithFeeInch: '0xda0253d5'
+
+  swapTokensToOtherBlockchainALGB: '0x890c20be',
+  swapCryptoToOtherBlockchainALGB: '0x5cf55f5a',
+  swapTokensToUserWithFeeALGB: '0x0e82ede7',
+  swapCryptoToUserWithFeeALGB: '0x398925ce',
+
+  swapTokensToOtherBlockchainInch: '0xa1189ff8',
+  swapCryptoToOtherBlockchainInch: '0x6567b5aa',
+  swapTokensToUserWithFeeInch: '0x83d7edac',
+  swapCryptoToUserWithFeeInch: '0x1955fbe5'
 };
