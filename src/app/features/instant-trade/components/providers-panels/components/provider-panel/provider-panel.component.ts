@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { INSTANT_TRADES_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
-import { ProviderControllerData } from '@features/instant-trade/models/providers-controller-data';
+import { INSTANT_TRADE_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
+import { InstantTradeProviderData } from '@features/instant-trade/models/providers-controller-data';
 import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
 import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -19,7 +19,7 @@ export class ProviderPanelComponent {
    * Setup provider data.
    * @param data provider controller data.
    */
-  @Input() public set providerControllerData(data: ProviderControllerData) {
+  @Input() public set providerControllerData(data: InstantTradeProviderData) {
     this.calculateProviderState(data);
   }
 
@@ -64,10 +64,10 @@ export class ProviderPanelComponent {
    * @desc Calculate provider state based on controller status.
    * @param data Provider controller data.
    */
-  private calculateProviderState(data: ProviderControllerData): void {
-    const hasError = data.tradeState === INSTANT_TRADES_STATUS.ERROR;
+  private calculateProviderState(data: InstantTradeProviderData): void {
+    const hasError = data.tradeState === INSTANT_TRADE_STATUS.ERROR;
     this.providerData = {
-      name: data.tradeProviderInfo.label,
+      name: data.providerInfo.label,
       isActive: data.isSelected,
       hasError,
       loading: this.calculateLoadingStatus(data.tradeState),
@@ -86,10 +86,10 @@ export class ProviderPanelComponent {
    * @param tradeState Instant trade status.
    * @return isLoading Is instant trade currently loading.
    */
-  private calculateLoadingStatus(tradeState: INSTANT_TRADES_STATUS): boolean {
+  private calculateLoadingStatus(tradeState: INSTANT_TRADE_STATUS): boolean {
     switch (tradeState) {
-      case INSTANT_TRADES_STATUS.CALCULATION:
-      case INSTANT_TRADES_STATUS.TX_IN_PROGRESS: {
+      case INSTANT_TRADE_STATUS.CALCULATION:
+      case INSTANT_TRADE_STATUS.TX_IN_PROGRESS: {
         return true;
       }
       default: {
@@ -102,7 +102,7 @@ export class ProviderPanelComponent {
    * Transform input controller data to comfortable.
    * @param data Provider controller data.
    */
-  private setupProviderData(data: ProviderControllerData): void {
+  private setupProviderData(data: InstantTradeProviderData): void {
     this.tradeData = {
       blockchain: data?.trade?.blockchain,
       amount: data?.trade?.to?.amount,

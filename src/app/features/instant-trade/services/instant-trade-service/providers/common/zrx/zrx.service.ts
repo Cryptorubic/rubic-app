@@ -35,7 +35,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 const AFFILIATE_ADDRESS = ENVIRONMENT.zrxAffiliateAddress;
 
@@ -51,7 +51,7 @@ export class ZrxService implements ItProvider {
     );
   }
 
-  public readonly providerType = INSTANT_TRADES_PROVIDERS.ZRX;
+  public readonly providerType = INSTANT_TRADE_PROVIDER.ZRX;
 
   public readonly contractAddress = '0xdef1c0ded9bec7f1a1670819833240f027b25eff';
 

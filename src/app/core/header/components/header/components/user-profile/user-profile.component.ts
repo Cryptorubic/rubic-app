@@ -8,7 +8,8 @@ import {
   QueryList,
   TemplateRef,
   Inject,
-  Injector
+  Injector,
+  Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -20,12 +21,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { HeaderStore } from '../../../../services/header.store';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class UserProfileComponent implements AfterViewInit, OnDestroy {
   constructor(
@@ -37,7 +40,8 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
     @Inject(Injector) private injector: Injector,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.isConfirmModalOpened$ = this.headerStore.getConfirmModalOpeningStatus();
@@ -68,17 +72,16 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   private _onAddressChanges$: Subscription;
 
-  public drowdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
+  public dropdownItems = [{ title: 'My trades' }, { title: 'Log out' }];
 
   ngAfterViewInit(): void {
-    this.cdr.detectChanges();
     this._onNetworkChanges$ = this.walletConnectorService.networkChange$.subscribe(network => {
       this.currentBlockchain = network;
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
     this._onAddressChanges$ = this.walletConnectorService.addressChange$.subscribe(address => {
       this.authService.setCurrentUser(address);
-      this.cdr.detectChanges();
+      this.cdr.markForCheck();
     });
   }
 

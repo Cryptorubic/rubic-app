@@ -10,11 +10,11 @@ import { TransactionReceipt } from 'web3-eth';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { CommonOneinchService } from 'src/app/features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/common-oneinch.service';
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 
 export abstract class OneinchProviderAbstract implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
   private readonly blockchain: BLOCKCHAIN_NAME;
 

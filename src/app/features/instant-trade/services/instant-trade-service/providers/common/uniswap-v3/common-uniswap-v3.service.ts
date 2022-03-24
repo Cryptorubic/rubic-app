@@ -28,13 +28,13 @@ import { MAX_TRANSIT_POOL } from '@features/instant-trade/services/instant-trade
 import { UniswapV3Constants } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/models/uniswap-v3-constants';
 import { UNISWAP_V3_SWAP_ROUTER_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/common/uniswap-v3/constants/swap-router-contract-data';
 import { UNISWAP_V3_QUOTER_CONTRACT } from './constants/quoter-contract-data';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 
 const RUBIC_OPTIMIZATION_DISABLED = true;
 
 @Injectable()
 export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraService {
-  public readonly providerType = INSTANT_TRADES_PROVIDERS.UNISWAP_V3;
+  public readonly providerType = INSTANT_TRADE_PROVIDER.UNISWAP_V3;
 
   protected readonly unwrapWethMethodName = 'unwrapWETH9';
 

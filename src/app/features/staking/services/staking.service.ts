@@ -383,7 +383,6 @@ export class StakingService {
     const amountInWei = Web3Pure.toWei(amount);
     const stakingContractAddress =
       this.stakingRound === 1 ? this.firstRoundContractForWithdraw : this.stakingContractAddress;
-    debugger;
     return from(
       this.web3PrivateService[BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN].tryExecuteContractMethod(
         stakingContractAddress,

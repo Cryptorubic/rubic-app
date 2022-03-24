@@ -35,12 +35,12 @@ import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { EthLikeWeb3Pure } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-pure/eth-like-web3-pure';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { RequiredField } from '@shared/models/utility-types/required-field';
 
 @Injectable()
 export abstract class CommonUniswapV3AlgebraService implements ItProvider {
-  public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
+  public abstract readonly providerType: INSTANT_TRADE_PROVIDER;
 
   protected abstract readonly unwrapWethMethodName: 'unwrapWETH9' | 'unwrapWNativeToken';
 

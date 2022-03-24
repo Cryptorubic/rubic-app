@@ -12,7 +12,7 @@
 
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
-            {{ 'common.tradeVia' | translate }} {{ selectedProvider.tradeProviderInfo.label }}
+            {{ 'common.tradeVia' | translate }} {{ selectedProvider.providerInfo.label }}
           </div>
         </ng-container>
       </div>
@@ -60,14 +60,18 @@
         <ng-container *ngIf="selectedProvider">
           <div class="instant-trade-bottom-form__usd-amount" *noFrame>
             <app-usd-price-container
-              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+              [usdPrice]="
+                wrapProvider ? getUsdPriceOfToAmount(fromAmount) : getUsdPriceOfToAmount()
+              "
               [loading]="tradeStatus === TRADE_STATUS.LOADING"
             ></app-usd-price-container>
           </div>
 
           <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
             <app-usd-price-container
-              [usdPrice]="wrapProvider ? getUsdPrice(fromAmount) : getUsdPrice()"
+              [usdPrice]="
+                wrapProvider ? getUsdPriceOfToAmount(fromAmount) : getUsdPriceOfToAmount()
+              "
             ></app-usd-price-container>
 
             <div *ngIf="!wrapProvider && selectedProvider?.trade.gasFeeInUsd?.gt(0)">
@@ -82,8 +86,8 @@
       <app-providers-panels-container
         *ngIf="allowTrade && !ethAndWethTrade"
         class="instant-trade-bottom-form__providers"
-        [providers]="providerControllers"
-        (onSelectProvider)="selectProvider($event)"
+        [providers]="providersData"
+        (onSelectProvider)="onSelectProvider($event)"
       >
       </app-providers-panels-container>
     </ng-container>
@@ -99,6 +103,6 @@
     [buttonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
-    (updateRatesClick)="onCalculateTrade$.next('normal')"
+    (updateRatesClick)="conditionalCalculate('normal')"
   ></app-swap-button-container>
 </div>

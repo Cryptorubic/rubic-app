@@ -30,14 +30,14 @@ import { subtractPercent } from '@shared/utils/utils';
 import CustomError from '@core/errors/models/custom-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
-import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
+import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { ROUTE_SWAP_PROGRAM_ID } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RaydiumService implements ItProvider {
-  public readonly providerType = INSTANT_TRADES_PROVIDERS.RAYDIUM;
+  public readonly providerType = INSTANT_TRADE_PROVIDER.RAYDIUM;
 
   public readonly contractAddress = ROUTE_SWAP_PROGRAM_ID;
 
