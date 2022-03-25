@@ -24,7 +24,7 @@ export const BLOCKCHAINS_LIST: BlockchainItem[] = [
   },
   {
     symbol: BLOCKCHAIN_NAME.XDAI,
-    visibleName: 'XDai',
+    visibleName: 'Gnosis',
     image: `${imageBaseSrc}xdai.svg`,
     id: 100
   },
