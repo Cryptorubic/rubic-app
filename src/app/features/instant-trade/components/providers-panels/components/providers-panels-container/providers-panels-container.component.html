@@ -1,32 +1,34 @@
 <div class="providers">
-  <div class="providers__item" *ngFor="let provider of providers.slice(0, 3); let i = index">
+  <div
+    class="providers__item"
+    *ngFor="let providerData of providersData.slice(0, 3); let i = index"
+  >
     <app-provider-panel
-      [providerIndex]="i"
-      [providerControllerData]="provider"
-      (selectProvider)="onSelectProvider.emit(provider)"
+      [providerData]="providerData"
+      [isBestProvider]="i === 0"
+      (onSelectProvider)="onSelectProvider.emit(providerData)"
     ></app-provider-panel>
   </div>
 
-  <ng-container *ngIf="allProvidersShown">
-    <div class="providers__item" *ngFor="let provider of providers.slice(3); let i = index">
+  <ng-container *ngIf="showAllProviders">
+    <div class="providers__item" *ngFor="let providerData of providersData.slice(3); let i = index">
       <app-provider-panel
-        [providerIndex]="i + 3"
-        [providerControllerData]="provider"
-        (selectProvider)="onSelectProvider.emit(provider)"
+        [providerData]="providerData"
+        (onSelectProvider)="onSelectProvider.emit(providerData)"
       ></app-provider-panel>
     </div>
   </ng-container>
 
   <button
-    *ngIf="providers.length > 3"
+    *ngIf="providersData.length > 3"
     class="providers__toggler"
-    (click)="allProvidersShown = !allProvidersShown"
+    (click)="showAllProviders = !showAllProviders"
   >
     <img
-      [class.reverted]="allProvidersShown"
+      [class.reverted]="showAllProviders"
       src="assets/images/swaps/icons/show-more-arrow.svg"
       alt="arrow"
     />
-    {{ !allProvidersShown ? 'Show more providers' : 'Hide providers' }}
+    {{ !showAllProviders ? 'Show more providers' : 'Hide providers' }}
   </button>
 </div>

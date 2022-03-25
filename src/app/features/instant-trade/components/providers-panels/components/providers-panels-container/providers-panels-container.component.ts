@@ -8,13 +8,9 @@ import { InstantTradeProviderData } from '@features/instant-trade/models/provide
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProvidersPanelsContainerComponent {
-  @Input() public providers: InstantTradeProviderData[];
+  @Input() public providersData: InstantTradeProviderData[];
 
   @Output() public onSelectProvider = new EventEmitter<InstantTradeProviderData>();
 
-  public allProvidersShown: boolean;
-
-  constructor() {
-    this.allProvidersShown = false;
-  }
+  public showAllProviders = false;
 }

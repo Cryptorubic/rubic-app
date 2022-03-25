@@ -6,16 +6,15 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { TradeData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-data';
-import { ProviderData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-data';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { SHOULD_DISPLAY_GAS } from '@features/instant-trade/constants/should-display-gas';
+import { TradePanelData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/trade-panel-data';
+import { ProviderPanelData } from '@features/instant-trade/components/providers-panels/components/provider-panel/models/provider-panel-data';
 import BigNumber from 'bignumber.js';
 import { PERMITTED_PRICE_DIFFERENCE } from '@shared/constants/common/permited-price-difference';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { SwapFormService } from '@features/swaps/services/swaps-form-service/swap-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith, takeUntil } from 'rxjs/operators';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 @Component({
   selector: 'app-panel-content',
@@ -25,26 +24,24 @@ import { startWith, takeUntil } from 'rxjs/operators';
   providers: [TuiDestroyService]
 })
 export class PanelContentComponent implements OnInit {
-  @Input() public tradeData: TradeData;
+  @Input() public tradePanelData: TradePanelData;
 
-  @Input() public providerData: ProviderData;
+  @Input() public providerPanelData: ProviderPanelData;
 
-  @Input() public isBestRate: boolean;
-
-  public blockchains = BLOCKCHAIN_NAME;
+  @Input() public isBestProvider: boolean;
 
   public displayGas: boolean;
 
   private toToken: TokenAmount;
 
   public get usdPrice(): BigNumber {
-    if (!this.toToken?.price || !this.tradeData.amount) {
+    if (!this.toToken?.price || !this.tradePanelData?.amount) {
       return null;
     }
 
     const { fromToken, fromAmount } = this.swapFormService.inputValue;
     const fromTokenCost = fromAmount.multipliedBy(fromToken.price);
-    const toTokenCost = this.tradeData.amount.multipliedBy(this.toToken.price);
+    const toTokenCost = this.tradePanelData.amount.multipliedBy(this.toToken.price);
     if (toTokenCost.minus(fromTokenCost).dividedBy(fromTokenCost).gt(PERMITTED_PRICE_DIFFERENCE)) {
       return null;
     }
@@ -58,8 +55,7 @@ export class PanelContentComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.displayGas =
-      SHOULD_DISPLAY_GAS[this.tradeData?.blockchain as keyof typeof SHOULD_DISPLAY_GAS];
+    this.displayGas = this.tradePanelData?.blockchain === BLOCKCHAIN_NAME.ETHEREUM;
 
     this.swapFormService.inputValueChanges
       .pipe(startWith(this.swapFormService.inputValue), takeUntil(this.destroy$))
