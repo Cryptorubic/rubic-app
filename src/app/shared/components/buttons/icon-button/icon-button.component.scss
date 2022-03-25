@@ -6,16 +6,33 @@
   --tui-disabled-opacity: 1;
 
   button {
+    width: 70px;
     overflow: hidden;
   }
 
   &:hover {
     img {
-      transform: scale(1.2);
+      transform: scale(1.1);
     }
   }
 
   ::ng-deep tui-wrapper {
+    .content {
+      flex-direction: column;
+
+      padding: 6px;
+
+      .label-container {
+        overflow: hidden;
+
+        .label {
+          color: var(--rubic-base-02);
+          font-weight: normal;
+          font-size: $rubic-font-size-main;
+        }
+      }
+    }
+
     &[data-state='hovered'] {
       background-color: var(--rubic-secondary);
     }
@@ -50,4 +67,10 @@
 
 .bordered {
   border: 2px solid var(--main-green);
+
+  ::ng-deep tui-wrapper {
+    .content {
+      padding: 4px 6px;
+    }
+  }
 }

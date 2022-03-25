@@ -18,17 +18,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { compareAddresses, switchIif } from 'src/app/shared/utils/utils';
 import { PAGINATED_BLOCKCHAIN_NAME } from '@shared/models/tokens/paginated-tokens';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { AdditionalTokens, QueryParams } from './models/query-params';
+import { AdditionalTokens, QueryParams, QuerySlippage } from './models/query-params';
 import { GoogleTagManagerService } from 'src/app/core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WALLET_NAME } from '@core/wallets/components/wallets-modal/models/wallet-name';
 import { NearTransactionType } from '@core/services/blockchain/blockchain-adapters/near/models/near-transaction-type';
-
-interface QuerySlippage {
-  slippageIt: number | null;
-  slippageCcr: number | null;
-}
+import { SettingsService } from '@features/swaps/services/settings-service/settings.service';
 
 type NearQueryParams =
   | {
@@ -91,9 +87,7 @@ export class QueryParamsService {
 
   public readonly nearQueryParams = this._nearQueryParams$.value;
 
-  private readonly _slippage$ = new BehaviorSubject<QuerySlippage>(null);
-
-  public slippage = this._slippage$.getValue();
+  public slippage: QuerySlippage;
 
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
@@ -113,7 +107,8 @@ export class QueryParamsService {
     private readonly translateService: TranslateService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly settingsService: SettingsService
   ) {
     this.swapFormService.inputValueChanges.subscribe(value => {
       this.setQueryParams({
@@ -416,10 +411,12 @@ export class QueryParamsService {
       return;
     }
 
-    this._slippage$.next({
+    this.slippage = {
       slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
       slippageCcr: queryParams.slippageCcr ? parseFloat(queryParams.slippageCcr) : null
-    });
+    };
+
+    this.settingsService.changeDefaultSlippage(this.slippage);
   }
 
   private setAdditionalIframeTokens(queryParams: QueryParams): void {

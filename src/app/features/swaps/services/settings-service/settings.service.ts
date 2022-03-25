@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { PromoCode } from '@features/swaps/models/promo-code';
 import { copyObject } from 'src/app/shared/utils/utils';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { QuerySlippage } from '@core/services/query-params/models/query-params';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { filter, startWith, switchMap, tap } from 'rxjs/operators';
 
@@ -50,9 +50,9 @@ export class SettingsService {
     crossChain: 4
   };
 
-  public readonly defaultItSettings: ItSettingsForm;
+  public defaultItSettings: ItSettingsForm;
 
-  public readonly defaultCcrSettings: ItSettingsForm;
+  public defaultCcrSettings: ItSettingsForm;
 
   public settingsForm: FormGroup<SettingsForm>;
 
@@ -95,15 +95,23 @@ export class SettingsService {
   constructor(
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly queryParamsService: QueryParamsService,
     private readonly authService: AuthService
   ) {
-    const { slippageIt, slippageCcr } = this.queryParamsService.slippage ?? {};
-    this.defaultItSettings = this.getDefaultITSettings(slippageIt);
-    this.defaultCcrSettings = this.getDefaultCCRSettings(slippageCcr);
+    this.defaultItSettings = this.getDefaultITSettings();
+    this.defaultCcrSettings = this.getDefaultCCRSettings();
 
     this.createForm();
     this.setupData();
+  }
+
+  public changeDefaultSlippage(slippage: QuerySlippage): void {
+    this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
+    this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
+
+    this.instantTrade.patchValue({ slippageTolerance: this.defaultItSettings.slippageTolerance });
+    this.crossChainRouting.patchValue({
+      slippageTolerance: this.defaultCcrSettings.slippageTolerance
+    });
   }
 
   private getDefaultITSettings(slippageIt?: number): ItSettingsForm {

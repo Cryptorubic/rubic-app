@@ -6,6 +6,12 @@ $token-card-height: 55px;
   width: 100%;
 }
 
+.tokens-container {
+  @include iframe-horizontal {
+    height: $token-card-height + 20px;
+  }
+}
+
 .tokens-list {
   padding-right: 15px;
 
@@ -160,10 +166,6 @@ $token-card-height: 55px;
     .cdk-virtual-scroll-content-wrapper {
       padding-left: 24px;
     }
-  }
-
-  @include iframe-horizontal {
-    height: $token-card-height + 20px;
   }
 }
 
