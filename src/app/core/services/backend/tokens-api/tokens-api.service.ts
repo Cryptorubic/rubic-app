@@ -129,8 +129,8 @@ export class TokensApiService {
     return [
       {
         address: NATIVE_TOKEN_ADDRESS,
-        name: 'Dai Stablecoin',
-        symbol: 'xDAI',
+        name: 'Gnosis Coin',
+        symbol: 'GNO',
         decimals: 18,
         image:
           'https://api.rubic.exchange/assets/xdai/0x0000000000000000000000000000000000000000/logo.png',

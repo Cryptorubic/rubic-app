@@ -28,7 +28,7 @@ const BRIDGE_PROVIDERS: Record<BRIDGE_PROVIDER, Provider> = {
 const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADES_PROVIDERS, Provider> = {
   [INSTANT_TRADES_PROVIDERS.UNISWAP_V3]: {
     name: 'Uniswap V3',
-    image: `${imageBasePath}uniswap-3.png`,
+    image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
   [INSTANT_TRADES_PROVIDERS.UNISWAP_V2]: {
@@ -117,7 +117,7 @@ const INSTANT_TRADES_PROVIDER: Record<INSTANT_TRADES_PROVIDERS, Provider> = {
   },
   [INSTANT_TRADES_PROVIDERS.WANNASWAP]: {
     name: 'Wannaswap',
-    image: `${imageBasePath}wannaswap.png`,
+    image: `${imageBasePath}wannaswap.svg`,
     color: '#FACB5B'
   }
 };

@@ -4,7 +4,7 @@ export const BLOCKCHAIN_LABEL: Partial<Record<BLOCKCHAIN_NAME, string>> = {
   ETH: 'Ethereum',
   BSC: 'Binance',
   POLYGON: 'Polygon',
-  XDAI: 'XDai',
+  GNOSIS: 'Gnosis',
   HARMONY: 'Harmony',
   AVALANCHE: 'Avalanche',
   MOONRIVER: 'Moonriver',

@@ -40,8 +40,8 @@
 }
 
 .data-list {
-  min-width: 200px;
-  padding: 0;
+  min-width: 230px;
+  padding: 16px 0;
 
   background: var(--menu-background);
 
@@ -67,11 +67,17 @@
         path[fill='black'] {
           fill: var(--main-green);
         }
+
+        rect[fill='black'] {
+          fill: var(--main-green);
+        }
       }
     }
 
     &:active {
-      color: white;
+      a {
+        color: white;
+      }
 
       background-color: $rubic-primary;
 
@@ -128,8 +134,12 @@
         fill: var(--rubic-base-02);
       }
 
+      rect[fill='black'] {
+        fill: var(--rubic-base-02);
+      }
+
       path[fill='white'] {
-        fill: var(--rubic-base-11);
+        fill: var(--rubic-base-02);
       }
     }
   }
