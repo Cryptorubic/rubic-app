@@ -5,13 +5,13 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 
 export interface InstantTradeProviderData {
-  trade: InstantTrade;
+  readonly name: INSTANT_TRADE_PROVIDER;
+  trade: InstantTrade | null;
   tradeState: INSTANT_TRADE_STATUS;
-  providerInfo: {
-    label: string;
-    name: INSTANT_TRADE_PROVIDER;
-  };
-  isSelected: boolean;
   needApprove: boolean;
   error?: RubicError<ERROR_TYPE>;
+
+  // UI data
+  readonly label: string;
+  isSelected: boolean;
 }

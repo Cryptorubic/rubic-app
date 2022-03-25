@@ -12,7 +12,7 @@
 
         <ng-container *noFrame>
           <div *ngIf="selectedProvider" class="instant-trade-bottom-form__provider-badge">
-            {{ 'common.tradeVia' | translate }} {{ selectedProvider.providerInfo.label }}
+            {{ 'common.tradeVia' | translate }} {{ selectedProvider.label }}
           </div>
         </ng-container>
       </div>
@@ -100,9 +100,9 @@
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
-    [buttonText]="!ethAndWethTrade ? 'Swap' : isEth.from ? 'Wrap' : 'Unwrap'"
+    [buttonText]="!ethAndWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
-    (updateRatesClick)="conditionalCalculate('normal')"
+    (updateRatesClick)="onSelectHiddenData()"
   ></app-swap-button-container>
 </div>

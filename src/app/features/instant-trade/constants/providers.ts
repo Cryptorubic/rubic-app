@@ -4,23 +4,20 @@ import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-tra
 import { InstantTradeProviderData } from '@features/instant-trade/models/providers-controller-data';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 
-const defaultState: InstantTradeProviderData = {
+const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   trade: null,
   tradeState: INSTANT_TRADE_STATUS.CALCULATION,
-  providerInfo: null,
   isSelected: false,
-  needApprove: null
+  needApprove: false
 };
 
 function getDefaultStateByProviders(
   providers: INSTANT_TRADE_PROVIDER[]
 ): InstantTradeProviderData[] {
   return providers.map(provider => ({
+    name: provider,
     ...defaultState,
-    providerInfo: {
-      label: instantTradesLabels[provider],
-      name: provider
-    }
+    label: instantTradesLabels[provider]
   }));
 }
 
