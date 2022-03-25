@@ -6,7 +6,7 @@ import { instantTradesLabels } from '@shared/constants/instant-trade/instant-tra
 
 const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
   trade: null,
-  tradeState: INSTANT_TRADE_STATUS.CALCULATION,
+  tradeStatus: INSTANT_TRADE_STATUS.CALCULATION,
   isSelected: false,
   needApprove: false
 };

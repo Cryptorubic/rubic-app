@@ -65,12 +65,12 @@ export class ProviderPanelComponent {
    * @param data Provider controller data.
    */
   private calculateProviderState(data: InstantTradeProviderData): void {
-    const hasError = data.tradeState === INSTANT_TRADE_STATUS.ERROR;
+    const hasError = data.tradeStatus === INSTANT_TRADE_STATUS.ERROR;
     this.providerData = {
       name: data.label,
       isActive: data.isSelected,
       hasError,
-      loading: this.calculateLoadingStatus(data.tradeState),
+      loading: this.calculateLoadingStatus(data.tradeStatus),
       appearance: this.providerIndex === 0 ? 'normal' : 'small'
     };
 

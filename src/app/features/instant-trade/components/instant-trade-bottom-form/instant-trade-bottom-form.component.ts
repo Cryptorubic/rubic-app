@@ -377,7 +377,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.tradeStatus = TRADE_STATUS.LOADING;
     this.providersData = this.providersData.map(controller => ({
       ...controller,
-      tradeState: INSTANT_TRADE_STATUS.CALCULATION
+      tradeStatus: INSTANT_TRADE_STATUS.CALCULATION
     }));
     this.cdr.detectChanges();
   }
@@ -400,7 +400,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
         isSelected: false,
         trade: providerTrade,
         needApprove: settledProviderTrade.needApprove ?? provider.needApprove,
-        tradeState:
+        tradeStatus:
           settledProviderTrade?.status === 'fulfilled'
             ? INSTANT_TRADE_STATUS.APPROVAL
             : INSTANT_TRADE_STATUS.ERROR,
@@ -598,101 +598,83 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   /**
-   * Sets trade and provider's state during approve or swap.
+   * Sets trade and provider's statuses during approve or swap.
    */
   private setProviderState(
     tradeStatus: TRADE_STATUS,
-    providerIndex: number,
     providerState?: INSTANT_TRADE_STATUS,
     needApprove?: boolean
   ): void {
-    needApprove ??= this.providersData[providerIndex].needApprove;
-
     this.tradeStatus = tradeStatus;
-    this.providersData[providerIndex] = {
-      ...this.providersData[providerIndex],
-      ...(providerState && { tradeState: providerState }),
-      needApprove
-    };
+
+    if (this.selectedProvider) {
+      this.providersData = this.providersData.map(providerData => {
+        if (!providerData.isSelected) {
+          return providerData;
+        }
+        return {
+          ...providerData,
+          ...(providerState && { tradeStatus: providerState }),
+          ...(needApprove && { needApprove: needApprove })
+        };
+      });
+    }
+
+    if (needApprove !== undefined) {
+      this.needApprove = needApprove;
+    }
   }
 
   public async approveTrade(): Promise<void> {
-    const providerIndex = this.providersData.findIndex(el => el.isSelected);
-    if (providerIndex === -1) {
+    if (!this.selectedProvider) {
       this.errorService.catch(new NoSelectedProviderError());
     }
 
-    const provider = this.providersData[providerIndex];
-    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS, providerIndex);
+    this.setProviderState(TRADE_STATUS.APPROVE_IN_PROGRESS);
 
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
-      await this.instantTradeService.approve(provider.name, provider.trade);
-
-      this.setProviderState(
-        TRADE_STATUS.READY_TO_SWAP,
-        providerIndex,
-        INSTANT_TRADE_STATUS.COMPLETED,
-        false
+      await this.instantTradeService.approve(
+        this.selectedProvider.name,
+        this.selectedProvider.trade
       );
-      this.needApprove = false;
-      this.cdr.detectChanges();
+
+      this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED, false);
 
       this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
     } catch (err) {
       this.errorService.catch(err);
 
-      this.setProviderState(
-        TRADE_STATUS.READY_TO_APPROVE,
-        providerIndex,
-        INSTANT_TRADE_STATUS.APPROVAL,
-        true
-      );
-      this.cdr.detectChanges();
+      this.setProviderState(TRADE_STATUS.READY_TO_APPROVE, INSTANT_TRADE_STATUS.APPROVAL, true);
     }
+    this.cdr.detectChanges();
 
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);
   }
 
   public async createTrade(): Promise<void> {
-    let providerIndex = -1;
     let providerName: INSTANT_TRADE_PROVIDER;
     let providerTrade: InstantTrade;
     if (!this.ethAndWethTrade) {
-      providerIndex = this.providersData.findIndex(provider => provider.isSelected);
-      if (providerIndex === -1) {
+      if (!this.selectedProvider) {
         this.errorService.catch(new NoSelectedProviderError());
       }
 
-      const provider = this.providersData[providerIndex];
-      this.setProviderState(
-        TRADE_STATUS.SWAP_IN_PROGRESS,
-        providerIndex,
-        INSTANT_TRADE_STATUS.TX_IN_PROGRESS
-      );
-
-      providerName = provider.name;
-      providerTrade = provider.trade;
+      providerName = this.selectedProvider.name;
+      providerTrade = this.selectedProvider.trade;
     } else {
-      this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
       providerName = INSTANT_TRADE_PROVIDER.WRAPPED;
       providerTrade = this.ethAndWethTrade;
     }
+
+    this.setProviderState(TRADE_STATUS.SWAP_IN_PROGRESS, INSTANT_TRADE_STATUS.TX_IN_PROGRESS);
 
     this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.IN_PROGRESS);
 
     try {
       await this.instantTradeService.createTrade(providerName, providerTrade, () => {
-        if (providerIndex !== -1) {
-          this.setProviderState(
-            TRADE_STATUS.READY_TO_SWAP,
-            providerIndex,
-            INSTANT_TRADE_STATUS.COMPLETED
-          );
-        } else {
-          this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-        }
+        this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED);
         this.cdr.detectChanges();
 
         this.conditionalCalculate('hidden');
@@ -700,15 +682,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     } catch (err) {
       this.errorService.catch(err);
 
-      if (providerIndex !== -1) {
-        this.setProviderState(
-          TRADE_STATUS.READY_TO_SWAP,
-          providerIndex,
-          INSTANT_TRADE_STATUS.COMPLETED
-        );
-      } else {
-        this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
-      }
+      this.setProviderState(TRADE_STATUS.READY_TO_SWAP, INSTANT_TRADE_STATUS.COMPLETED);
       this.cdr.detectChanges();
 
       this.onRefreshStatusChange.emit(REFRESH_BUTTON_STATUS.STOPPED);

@@ -7,7 +7,7 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 export interface InstantTradeProviderData {
   readonly name: INSTANT_TRADE_PROVIDER;
   trade: InstantTrade | null;
-  tradeState: INSTANT_TRADE_STATUS;
+  tradeStatus: INSTANT_TRADE_STATUS;
   needApprove: boolean;
   error?: RubicError<ERROR_TYPE>;
 
