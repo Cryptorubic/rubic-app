@@ -39,7 +39,7 @@ export class NearContractData extends ContractData {
     return addresses.map((tokenAddress, index) => {
       const address = tokenAddress === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : tokenAddress;
       if (address.length > 40) {
-        return [`${index + 1}!${address.slice(0, 40)}`, `${index + 1}!${address.slice(41)}`];
+        return [`${index + 1}!${address.slice(0, 40)}`, `${index + 1}!${address.slice(40)}`];
       }
       return [`${index + 1}!${address}`];
     });
