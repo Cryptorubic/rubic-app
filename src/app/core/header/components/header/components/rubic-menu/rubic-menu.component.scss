@@ -75,11 +75,13 @@
     }
 
     &:active {
+      color: white;
+
+      background-color: $rubic-primary;
+
       a {
         color: white;
       }
-
-      background-color: $rubic-primary;
 
       ::ng-deep {
         a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
