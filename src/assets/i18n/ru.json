@@ -101,179 +101,6 @@
     "staking": "Staking",
     "promotion": "Промо кампания"
   },
-  "aboutPage": {
-    "description": "Rubic-это мультичейн экосистема DeFi, которая включает в себя кросс-чейн, P2P, мгновенные обмены и лимит ордера с возможностью использовать разные блокчейны, стремясь обеспечить общую для всех универсальную децентрализованную платформу.",
-    "benefits": {
-      "0": {
-        "title": "Custom routing",
-        "description": "Rubic created a routing solution that will allow users to trade any token. The main advantage is the ability to calculate gas prices and show users the best-optimized solution with paying the least amount of gas."
-      },
-      "1": {
-        "title": "Мгновенная сделка",
-        "description": "Совершайте мгновенные сделки, используя наши внешние DEXы, по лучшему курсу."
-      },
-      "2": {
-        "title": "Поддержка разных блокчейнов!",
-        "description": "Уже работают: Ethereum, Binance Smart Chain, Polygon & TRON)."
-      },
-      "3": {
-        "title": "Cross-chain swaps",
-        "description": "Complete swaps between these networks: BSC <-> Ethereum, Polygon <-> Ethereum, Ethereum -> TRON and BSC -> TRON."
-      },
-      "4": {
-        "title": "Faucet",
-        "description": "Our Faucet feature will allow users to buy tokens using RBC or ETH without KYC. Currently, users are able to buy BNB, but more to come!"
-      },
-      "5": {
-        "title": "P2P сделки",
-        "description": "Создайте свою сделку, выберите свои собственные условия, сделайте ее публичной или частной и все это децентрализованно."
-      },
-      "6": {
-        "title": "Лимит Ордеры",
-        "description": "Установите желаемый курс, и сделка будет заключена, когда один из DEXs удовлетворит вашим требованиям."
-      }
-    },
-    "features": {
-      "title": "Особенности Rubic DEX",
-      "data": {
-        "0": "iFrame Виджет",
-        "1": "Custom routing",
-        "2": "Кросс-чейн обмены",
-        "3": "Мультичейн: Ethereum, Binance Smart Chain, Polygon & TRON networks",
-        "4": "Возможность проводить краудсейлы",
-        "5": "Процент дохода платформы можно регулировать",
-        "6": "Мгновенные сделки",
-        "7": "Публичные/Приватные сделки",
-        "8": "Поддержка брокеров",
-        "9": "Нет ограничений по объему",
-        "10": "Custom tokens",
-        "11": "Stops scams and \"rugpulls\" from happening",
-        "12": "Limit Orders для Ethereum",
-        "13": "Creation of Custom Bridges",
-        "14": "BNB faucet"
-      }
-    },
-    "contract": {
-      "title": "Rubic контракт"
-    },
-    "roadmap": {
-      "title": "Roadmap",
-      "data": {
-        "0": {
-          "quarter": "Q1. 2021",
-          "month": "",
-          "done": true,
-          "data": [
-            "New Blockchain & DEX Integrations",
-            "Binance Smart Chain Instant Trades",
-            "Cross-chain Solutions For ETH And BSC",
-            "Mobile Support",
-            "Limit Orders For ETH",
-            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
-            "Custom Token Support",
-            "Custom Bridges Feature",
-            "Custom Routing System"
-          ]
-        },
-        "1": {
-          "quarter": "Q2. 2021",
-          "month": "April",
-          "done": true,
-          "data": [
-            "Custom Token Support",
-            "Custom Bridges Feature",
-            "Custom Routing System"
-          ]
-        },
-        "2": {
-          "quarter": "Q2. 2021",
-          "month": "May",
-          "done": true,
-          "data": [
-            "CoinGecko And Coin Market Cap API For ETH<>RBC",
-            "BNB Faucet",
-            "Instant Trades Table",
-            "UI Simple Update",
-            "BSC Limit Orders"
-          ]
-        },
-        "3": {
-          "quarter": "Q2. 2021",
-          "month": "June",
-          "done": true,
-          "data": [
-            "UI Update stage 2",
-            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
-            "Merch Shop",
-            "CoinGecko & CMC All Pairs Reporting",
-            "FIAT Integration",
-            "Uniswap V3",
-            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
-            "MATIC Faucet",
-            "Usecase Updates"
-          ]
-        },
-        "4": {
-          "quarter": "Q3. 2021",
-          "month": "July",
-          "done": true,
-          "data": [
-            "Cross-Chain Routing",
-            "New Blockchain/Bridge Integrations",
-            "UI Update Stage 3",
-            "Commission In RBC - Stage 1"
-          ]
-        },
-        "5": {
-          "quarter": "Q3. 2021",
-          "month": "August",
-          "done": true,
-          "data": [
-            "Commission In RBC - stage 2",
-            "Anonymizer V1 - Polygon"
-          ]
-        },
-        "6": {
-          "quarter": "Q3. 2021",
-          "month": "September",
-          "done": true,
-          "data": [
-            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
-            "AutoRefund system release",
-            "Creating a 24/7 technical support team for our community",
-            "Beginning of a new blockchain integration",
-            "Rubic Relay Widget partners and integrations",
-            "Beginning of Widget development: SDK/API",
-            "Cross-chain fixes and improvements"
-          ]
-        },
-        "7": {
-          "quarter": "Q4. 2021",
-          "month": "",
-          "done": true,
-          "data": [
-            "0x integration and gas fee reductions",
-            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
-            "RBC Staking",
-            "Widget: SDK/API release"
-          ]
-        },
-        "8": {
-          "quarter": "Q1-Q2. 2022",
-          "month": "",
-          "done": true,
-          "data": [
-            "Yield Farming and/or Lending Product integrations",
-            "Governance",
-            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
-            "RBC Staking 2.0",
-            "Mobile version (iOS, Android)",
-            "BTC bridge integration"
-          ]
-        }
-      }
-    }
-  },
   "faqPage": {
     "title": "FAQ",
     "questions": [
@@ -376,13 +203,10 @@
     }
   },
   "bridgePage": {
-    "title": "Bridge assets with low gas fees",
     "progressMessage": "Вы подтвердили транзакцию, и обмен начался. Пожалуйста, подождите пока сделка не будет завершена.",
     "successMessage": "Начался процесс cross-chain обмена. Пожалуйста, подождите, пока сделка не будет завершена обеими блокчейнами.",
     "approveProgressMessage": "Вы приняли одобренную транзакцию, и обмен начался. Подождите, пока сделка не будет завершена.",
-    "approveSuccessMessage": "Вы одобрили токены. Нажмите кнопку свопа, чтобы продолжить торговлю.",
-    "whatIs": "Что такое ",
-    "getTokens": "Вы получите {{ toBlockchainName }} токены на выбранный адрес"
+    "approveSuccessMessage": "Вы одобрили токены. Нажмите кнопку свопа, чтобы продолжить торговлю."
   },
   "crossChainPage": {
     "targetAddress": {
@@ -649,8 +473,7 @@
       "link": "Попробуйте уже сейчас!"
     },
     "external": {
-      "text": "Обменивайте любой токен с комиссией платформы - 0%. Торгуйте сейчас!",
-      "link": ""
+      "text": "Обменивайте любой токен с комиссией платформы - 0%. Торгуйте сейчас!"
     }
   },
   "referralBanner": {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
+import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types/size';
 
 @Component({
   selector: 'app-icon-button',
@@ -8,15 +8,13 @@ import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconButtonComponent {
-  public _disabled: boolean;
-
-  public _border: boolean;
-
   @Input() public buttonSize: TuiSizeXS | TuiSizeXL = 'l';
 
   @Input() icon: string;
 
   @Input() scale: number = 1;
+
+  @Input() label: string;
 
   @Input('disabled') set setDisabled(disabled: boolean | '') {
     this._disabled = disabled === '' || disabled;
@@ -26,12 +24,15 @@ export class IconButtonComponent {
     this._border = border === '' || border;
   }
 
-  @Output()
-  iconButtonClick = new EventEmitter<void>();
+  @Output() iconButtonClick = new EventEmitter<void>();
+
+  public _disabled = false;
+
+  public _border: boolean;
+
+  constructor() {}
 
   public onClick(): void {
     this.iconButtonClick.emit();
   }
-
-  constructor() {}
 }
