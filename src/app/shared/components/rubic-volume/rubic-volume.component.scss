@@ -53,7 +53,8 @@
 
 @include b($mobile-sm) {
   .rubic-volume {
-    display: block;
+    flex-direction: column;
+    gap: 0;
 
     &__title {
       margin-bottom: 15px;

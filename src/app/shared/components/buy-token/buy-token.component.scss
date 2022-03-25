@@ -21,6 +21,10 @@
     }
   }
 
+  ::ng-deep tui-wrapper {
+    padding: 0 20px !important;
+  }
+
   &-icon {
     display: flex;
     margin-right: 10px;
