@@ -53,41 +53,18 @@ export class WalletsModalComponent implements OnInit {
     return new AsyncPipe(this.cdr).transform(this.mobileDisplayStatus$);
   }
 
-  private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
-    switch (provider) {
-      case WALLET_NAME.METAMASK:
-        this.redirectToMetamaskBrowser();
-        return true;
-      case WALLET_NAME.WALLET_LINK:
-        this.redirectToCoinbaseBrowser();
-        return true;
-      default:
-        return false;
-    }
-  }
+  // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
+  public readonly coinbaseDeeplink = 'https://go.cb-w.com/cDgO1V5aDlb';
 
-  private redirectToMetamaskBrowser(): void {
-    const metamaskAppLink = 'https://metamask.app.link/dapp/';
-    this.window.location.assign(`${metamaskAppLink}${this.window.location.hostname}`);
-  }
+  private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
-  private redirectToCoinbaseBrowser(): void {
-    // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
-    const walletLinkAppLink = 'https://go.cb-w.com/cDgO1V5aDlb';
-    this.window.location.assign(walletLinkAppLink);
-  }
-
-  public shouldRenderAsLink(provider: WALLET_NAME): string | null {
-    if (
+  public shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
+    return (
       this.iframeService.isIframe &&
       this.iframeService.device === 'mobile' &&
       provider === WALLET_NAME.WALLET_LINK
-    ) {
-      return 'https://go.cb-w.com/cDgO1V5aDlb';
-    }
-
-    return null;
-  }
+    );
+  };
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
@@ -116,6 +93,27 @@ export class WalletsModalComponent implements OnInit {
     if (this.browserService.currentBrowser === BROWSER.COINBASE) {
       this.connectProvider(WALLET_NAME.WALLET_LINK);
     }
+  }
+
+  private deepLinkRedirectIfSupported(provider: WALLET_NAME): boolean {
+    switch (provider) {
+      case WALLET_NAME.METAMASK:
+        this.redirectToMetamaskBrowser();
+        return true;
+      case WALLET_NAME.WALLET_LINK:
+        this.redirectToCoinbaseBrowser();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  private redirectToMetamaskBrowser(): void {
+    this.window.location.assign(`${this.metamaskAppLink}${this.window.location.hostname}`);
+  }
+
+  private redirectToCoinbaseBrowser(): void {
+    this.window.location.assign(this.coinbaseDeeplink);
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {

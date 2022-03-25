@@ -9,14 +9,11 @@ import {
 import { BehaviorSubject, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { MyTradesService } from 'src/app/features/my-trades/services/my-trades.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
 import BigNumber from 'bignumber.js';
 import { TableRow } from 'src/app/features/my-trades/components/my-trades/models/TableRow';
-import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { defaultSort } from '@taiga-ui/addon-table';
-import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
 import { catchError, first, mergeMap, takeUntil } from 'rxjs/operators';
@@ -48,11 +45,8 @@ export class MyTradesComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly myTradesService: MyTradesService,
     private readonly authService: AuthService,
-    private readonly translate: TranslateService,
     private readonly errorsService: ErrorsService,
     private readonly walletsModalService: WalletsModalService,
-    private readonly tokensService: TokensService,
-    private readonly notificationsService: NotificationsService,
     private readonly counterNotificationsService: CounterNotificationsService,
     private readonly destroy$: TuiDestroyService,
     @Inject(WINDOW) private readonly window: Window
@@ -115,7 +109,6 @@ export class MyTradesComponent implements OnInit {
             Sent: new BigNumber(trade.fromToken?.amount),
             Expected: new BigNumber(trade.toToken.amount),
             Date: trade.date,
-
             inProgress: false
           } as TableRow)
       )
