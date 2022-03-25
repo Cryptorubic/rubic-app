@@ -228,6 +228,14 @@ export class RaydiumService implements ItProvider {
       transaction = wrapResult.transaction;
       signers = wrapResult.signers;
     } else if (trade.path.length > 2) {
+      // @TODO Solana. Fix SOL in routing.
+      if (
+        trade.path.some(
+          el => el.symbol.toLowerCase() === 'wsol' || el.symbol.toLowerCase() === 'sol'
+        )
+      ) {
+        throw new CustomError('Transactions with SOL are not supported in routing yet.');
+      }
       const routeSwapResult = await this.routerManager.createRouteSwap(this.poolInfo, trade);
       transaction = routeSwapResult.transaction;
       signers = routeSwapResult.signers;
