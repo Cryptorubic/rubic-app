@@ -8,7 +8,7 @@
         <ng-container *ngFor="let provider of providers">
           <ng-container *ngIf="provider.display">
             <button
-              *ngIf="!shouldRenderAsLink(provider.value); else deepLink"
+              *ngIf="!(provider.value | functionCall: shouldRenderAsLink); else deepLink"
               [disabled]="(walletsLoading$ | async) ? 'disabled' : false"
               class="modal__provider-button"
               (click)="connectProvider(provider.value)"
@@ -19,7 +19,7 @@
               /></span>
             </button>
             <ng-template #deepLink>
-              <a class="modal__provider-button" [href]="shouldRenderAsLink(provider.value)"
+              <a class="modal__provider-button" [href]="coinbaseDeeplink"
                 >{{ provider.name }}
                 <span class="modal__provider-icon"
                   ><img src="{{ provider.img }}" alt="{{ provider.name }} provider"
