@@ -58,7 +58,7 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
-  public shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
+  public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
     return (
       this.iframeService.isIframe &&
       this.iframeService.device === 'mobile' &&
