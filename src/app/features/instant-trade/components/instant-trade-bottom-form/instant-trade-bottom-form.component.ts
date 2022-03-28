@@ -48,6 +48,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/models/swap-provider-type';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
+import { IT_PROXY_FEE } from '@features/instant-trade/services/instant-trade-service/constants/iframe-fee-contract/instant-trades-proxy-fee-contract';
 
 interface SettledProviderTrade {
   providerName: INSTANT_TRADE_PROVIDER;
@@ -89,11 +90,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
-  /**
-   * Amount of fee for iframe referral program.
-   */
-  private readonly IT_PROXY_FEE = 0.003;
-
   private currentBlockchain: BLOCKCHAIN_NAME;
 
   private fromToken: TokenAmount;
@@ -108,7 +104,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   private _selectedProvider: InstantTradeProviderData;
 
-  public ethAndWethTrade: InstantTrade | null;
+  public ethWethTrade: InstantTrade | null;
 
   public needApprove: boolean;
 
@@ -132,7 +128,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this._selectedProvider = selectedProvider;
     this.instantTradeInfoChange.emit({
       trade: selectedProvider?.trade,
-      isWrappedType: !!this.ethAndWethTrade
+      isWrappedType: !!this.ethWethTrade
     });
   }
 
@@ -165,7 +161,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return this.selectedProvider.trade.to.amount;
     }
 
-    return this.selectedProvider.trade.to.amount.multipliedBy(1 - this.IT_PROXY_FEE);
+    return this.selectedProvider.trade.to.amount.multipliedBy(1 - IT_PROXY_FEE);
   }
 
   public get isFromNative(): boolean {
@@ -263,8 +259,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this.fromToken = form.fromToken;
     this.toToken = form.toToken;
 
-    this.ethAndWethTrade = this.instantTradeService.getEthAndWethTrade();
-    this.allowRefreshChange.emit(!this.ethAndWethTrade);
+    this.ethWethTrade = this.instantTradeService.getEthWethTrade();
+    this.allowRefreshChange.emit(!this.ethWethTrade);
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&
@@ -315,7 +311,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
             return of(null);
           }
 
-          if (this.ethAndWethTrade) {
+          if (this.ethWethTrade) {
             this.setTradeStateIsEthWethSwap();
             return of(null);
           }
@@ -656,7 +652,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   public async createTrade(): Promise<void> {
     let providerName: INSTANT_TRADE_PROVIDER;
     let providerTrade: InstantTrade;
-    if (!this.ethAndWethTrade) {
+    if (!this.ethWethTrade) {
       if (!this.selectedProvider) {
         this.errorService.catch(new NoSelectedProviderError());
       }
@@ -665,7 +661,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       providerTrade = this.selectedProvider.trade;
     } else {
       providerName = INSTANT_TRADE_PROVIDER.WRAPPED;
-      providerTrade = this.ethAndWethTrade;
+      providerTrade = this.ethWethTrade;
     }
 
     this.setProviderState(TRADE_STATUS.SWAP_IN_PROGRESS, INSTANT_TRADE_STATUS.TX_IN_PROGRESS);

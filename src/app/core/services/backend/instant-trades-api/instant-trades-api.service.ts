@@ -78,13 +78,12 @@ export class InstantTradesApiService {
     hash: string,
     provider: INSTANT_TRADE_PROVIDER,
     trade: InstantTrade,
-    blockchain: BLOCKCHAIN_NAME,
     fee?: number,
     promoCode?: string
   ): Observable<InstantTradesResponseApi> {
-    const hashObject = InstantTradesApiService.getHashObject(blockchain, hash);
+    const hashObject = InstantTradesApiService.getHashObject(trade.blockchain, hash);
     const tradeInfo: InstantTradesPostApi = {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain as ToBackendBlockchain],
+      network: TO_BACKEND_BLOCKCHAINS[trade.blockchain as ToBackendBlockchain],
       provider,
       from_token: trade.from.token.address,
       to_token: trade.to.token.address,

@@ -338,7 +338,7 @@ export class RefFinanceService implements ItProvider {
           );
 
           await this.instantTradesApiService
-            .createTrade(txHash, INSTANT_TRADE_PROVIDER.REF, trade, BLOCKCHAIN_NAME.NEAR)
+            .createTrade(txHash, INSTANT_TRADE_PROVIDER.REF, trade)
             .toPromise();
 
           try {

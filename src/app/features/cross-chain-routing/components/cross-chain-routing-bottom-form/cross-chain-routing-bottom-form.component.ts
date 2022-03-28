@@ -480,9 +480,9 @@ export class CrossChainRoutingBottomFormComponent implements OnInit {
 
     if (this.window.location.pathname === '/') {
       this.successTxModalService.open(
-        'cross-chain-routing',
         txHash,
         fromBlockchain,
+        'cross-chain-routing',
         this.showSuccessTrxNotification
       );
     }

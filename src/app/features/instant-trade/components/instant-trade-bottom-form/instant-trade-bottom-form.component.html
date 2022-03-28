@@ -19,7 +19,7 @@
 
       <div
         class="instant-trade-bottom-form__amount"
-        *ngLet="allowTrade && ethAndWethTrade as wrapProvider"
+        *ngLet="allowTrade && ethWethTrade as wrapProvider"
       >
         <ng-container *onlyFrame="'vertical'">
           <app-iframe-blockchain-indicator
@@ -84,7 +84,7 @@
 
     <ng-container *noFrame>
       <app-providers-panels-container
-        *ngIf="allowTrade && !ethAndWethTrade"
+        *ngIf="allowTrade && !ethWethTrade"
         class="instant-trade-bottom-form__providers"
         [providersData]="providersData"
         (onSelectProvider)="onSelectProvider($event)"
@@ -100,7 +100,7 @@
     [status]="tradeStatus"
     [formService]="swapFormService"
     [fromAmount]="fromAmount"
-    [buttonText]="!ethAndWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
+    [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     (swapClick)="createTrade()"
     (approveClick)="approveTrade()"
     (updateRatesClick)="onSelectHiddenData()"
