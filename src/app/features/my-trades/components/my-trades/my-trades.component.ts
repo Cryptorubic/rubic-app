@@ -16,7 +16,7 @@ import { TableRow } from 'src/app/features/my-trades/components/my-trades/models
 import { defaultSort } from '@taiga-ui/addon-table';
 import { CounterNotificationsService } from 'src/app/core/services/counter-notifications/counter-notifications.service';
 import { TuiDestroyService, watch } from '@taiga-ui/cdk';
-import { catchError, first, mergeMap, takeUntil } from 'rxjs/operators';
+import { catchError, filter, first, mergeMap, takeUntil } from 'rxjs/operators';
 import { WalletsModalService } from 'src/app/core/wallets/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { NoDataMyTradesError } from '@core/errors/models/my-trades/no-data-my-trades-error';
@@ -65,6 +65,7 @@ export class MyTradesComponent implements OnInit {
 
     this.myTradesService.tableTrades$
       .pipe(
+        filter(trades => !!trades),
         catchError(() => {
           this.errorsService.catch(new NoDataMyTradesError());
           return of([]);
