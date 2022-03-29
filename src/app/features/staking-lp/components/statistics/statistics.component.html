@@ -1,1 +1,38 @@
-1
+<div class="statistics">
+  <div class="statistics__row">
+    <div class="statistics__param">
+      <div class="statistics__param-label">TVL</div>
+      <div class="statistics__param-value">$2,076,953</div>
+    </div>
+    <div class="statistics__param">
+      <div class="statistics__param-label">TVL Staking</div>
+      <div class="statistics__param-value">$1,039,805</div>
+    </div>
+    <div class="statistics__param">
+      <div class="statistics__param-label">TVL Multi-Chain</div>
+      <div class="statistics__param-value">$1,037,148</div>
+    </div>
+  </div>
+  <div class="statistics__row">
+    <div class="statistics__param">
+      <div class="statistics__param-label">Current Value Fee</div>
+      <div class="statistics__param-value">$19.023</div>
+    </div>
+    <div class="statistics__param">
+      <div class="statistics__param-label">Accumulated Transaction Volume</div>
+      <div class="statistics__param-value">
+        $37,183,302
+        <app-chips
+          class="statistics__param-chips"
+          [chips]="chips"
+          [value]="chips[0]"
+          (onSelect)="s($event)"
+        ></app-chips>
+      </div>
+    </div>
+  </div>
+  <app-rotating-icon
+    class="statistics__refresh"
+    (iconClick)="refreshStatistics()"
+  ></app-rotating-icon>
+</div>

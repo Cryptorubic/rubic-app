@@ -176,3 +176,10 @@
     @content;
   }
 }
+
+@mixin font($fontSize, $lineHeight, $fontWeight, $color) {
+  color: $color;
+  font-weight: $fontWeight;
+  font-size: $fontSize;
+  line-height: $lineHeight;
+}

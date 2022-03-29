@@ -11,7 +11,8 @@ import {
   TuiTabsModule,
   TuiInputCountModule,
   TuiDataListWrapperModule,
-  TuiBadgeModule
+  TuiBadgeModule,
+  TuiTagModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
@@ -67,6 +68,8 @@ import { FalsyPipe } from './pipes/falsy.pipe';
 import { RubicContainerComponent } from './components/rubic-container/rubic-container.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
+import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
+import { ChipsComponent } from './components/chips/chips.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +109,8 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     NotificationBadgeComponent,
     CopyContainerComponent,
     IframeBlockchainIndicatorComponent,
+    StatusBadgeComponent,
+    ChipsComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -149,7 +154,8 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     TuiDataListWrapperModule,
     TuiLoaderModule,
     TuiBadgeModule,
-    TuiManualHintModule
+    TuiManualHintModule,
+    TuiTagModule
   ],
   exports: [
     SpinnerComponent,
@@ -192,7 +198,9 @@ import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
     NotificationBadgeComponent,
     RubicContainerComponent,
     CopyContainerComponent,
-    FunctionCallPipe
+    FunctionCallPipe,
+    StatusBadgeComponent,
+    ChipsComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe],
   entryComponents: [SuccessTrxNotificationComponent]

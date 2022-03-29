@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  width: fit-content;
+}
+
+.status-badge {
+  padding: 4px 8px;
+
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 20px;
+  text-align: center;
+
+  border-radius: 6px;
+}
+
+.warning {
+  color: #dab530;
+
+  background: rgba(218, 181, 48, 0.25);
+}
+
+.error {
+  color: #f35e42;
+
+  background: rgba(243, 94, 66, 0.25);
+}
+
+.active {   
+  color: #30da60;
+
+  background: rgba(48, 218, 96, 0.25);
+}
+
+.info {
+  color: #627eea;
+
+  background: rgba(98, 126, 234, 0.15);   
+}

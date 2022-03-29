@@ -5,7 +5,6 @@ import { StakingLpService } from './services/staking-lp.service';
 import { StakingLpApiService } from './services/staking-lp-api.service';
 import { StakingLpRoutingModule } from './staking-lp-routing.module';
 import { SharedModule } from '@app/shared/shared.module';
-import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { StakingCardComponent } from './components/staking-card/staking-card.component';
 import { LpCardComponent } from './components/lp-card/lp-card.component';
@@ -15,8 +14,7 @@ import { LpCardComponent } from './components/lp-card/lp-card.component';
     StakingLpPageComponent,
     StatisticsComponent,
     StakingCardComponent,
-    LpCardComponent,
-    StatusBadgeComponent
+    LpCardComponent
   ],
   imports: [CommonModule, StakingLpRoutingModule, SharedModule],
   exports: [],

@@ -1,0 +1,57 @@
+@use 'src/scss/core' as *;
+
+.statistics {
+  position: relative;
+
+  padding: 48px 60px;
+
+  background: #181a19;
+  border-radius: 30px;
+
+  &__refresh {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+  }
+
+  &__row {
+    display: flex;
+
+    &:first-child {
+      margin-bottom: 60px;
+
+      .statistics__param {
+        width: 33.33%;
+      }
+    }
+
+    &:nth-child(2) {
+      .statistics__param {
+        &:first-child {
+          width: 33.33%;
+        }
+
+        &:last-child {
+          width: 66.66%;
+        }
+      }
+    }
+  }
+
+  &__param {
+    &-label {
+      @include font(20px, 24px, 700, $rubic-primary);
+      margin-bottom: 14px;
+    }
+
+    &-value {
+      @include font(28px, 34px, 600, var(--rubic-base-02));
+      display: flex;
+      align-items: center;
+    }
+
+    &-chips {
+      margin-left: 60px;
+    }
+  }
+}
