@@ -101,179 +101,6 @@
     "staking": "Staking",
     "promotion": "Promotion"
   },
-  "aboutPage": {
-    "description": "Rubic, birden fazla blok zincirinde çapraz zincir, P2P, anında takas ve limit emirleri içeren ve eksiksiz bir  merkezi olmayan bir platform sunmayı amaçlayan çok zincirli bir DeFi ekosistemidir.",
-    "benefits": {
-      "0": {
-        "title": "Özel yönlendirme",
-        "description": "Rubic, kullanıcıların herhangi bir belirteçle ticaret yapmasına izin verecek bir yönlendirme çözümü yarattı. Ana avantajı, gaz fiyatlarını hesaplama ve kullanıcılara en az miktarda gaz ödeyerek en iyi optimize edilmiş çözümü gösterme yeteneğidir."
-      },
-      "1": {
-        "title": "Anında Ticaret",
-        "description": "Harici DEX'leri kullanarak anında ticaret yapın (en iyi oranlarla alın)  "
-      },
-      "2": {
-        "title": "Çoklu zincir desteği",
-        "description": "Şu anda desteklenen blok zincirler: Ethereum, Binance Akıllı Zincir ve Çokgen) "
-      },
-      "3": {
-        "title": "Zincirler arası takaslar",
-        "description": "Bu ağlar arasında tam takaslar: BSC <-> Ethereum & Polygon <-> Ethereum"
-      },
-      "4": {
-        "title": "Musluk",
-        "description": "Musluk özelliğimiz, kullanıcıların KYC olmadan RBC veya ETH kullanarak jeton satın almalarına olanak tanır. Şu anda kullanıcılar BNB satın alabiliyor, ancak daha fazlası gelecek!"
-      },
-      "5": {
-        "title": "P2P Ticareti",
-        "description": "Ticaretinizi oluşturun ve kendi şartlarınızı seçin"
-      },
-      "6": {
-        "title": "Limit Emri",
-        "description": "İstediğiniz oranı ayarlayın ve DEX'lerden biri anlaşmanızın parametrelerini karşıladığında anlaşmanız otomatik olarak yürütülecektir."
-      }
-    },
-    "features": {
-      "title": "Rubic'in DEX Özellikleri",
-      "data": {
-        "0": "iFrame Widget'ı",
-        "1": "Özel yönlendirme",
-        "2": "Zincirler arası takaslar",
-        "3": "Çoklu Zincir Desteği: Ethereum, Binance Akıllı Zincir ve Çokgen ağları",
-        "4": "Kitlesel satış yapabilme",
-        "5": "Platform gelirinin yüzdesi düzenlenebilir",
-        "6": "Instant Trades",
-        "7": "Genel/Özel fırsatlar",
-        "8": "Brokers support",
-        "9": "Broker desteği",
-        "10": "Özel jetonlar",
-        "11": "Dolandırıcılıkların ve \"rugpulls\" olmasını engeller",
-        "12": "Ethereum için Limit Emirleri",
-        "13": "Özel Köprülerin Oluşturulması",
-        "14": "BNB faucet"
-      }
-    },
-    "contract": {
-      "title": "Rubik sözleşmesi"
-    },
-    "roadmap": {
-      "title": "Yol Haritası",
-      "data": {
-        "0": {
-          "quarter": "Q1. 2021",
-          "month": "",
-          "done": true,
-          "data": [
-            "Yeni Blockchain ve DEX Entegrasyonları",
-            "Binance Smart Chain Instant Trades",
-            "Cross-chain Solutions For ETH And BSC",
-            "Mobile Support",
-            "Limit Orders For ETH",
-            "Creating BRBC And Building Rubic Bridge For RBC-BRBC",
-            "Custom Token Support",
-            "Custom Bridges Feature",
-            "Custom Routing System"
-          ]
-        },
-        "1": {
-          "quarter": "Q2. 2021",
-          "month": "April",
-          "done": true,
-          "data": [
-            "Custom Token Support",
-            "Custom Bridges Feature",
-            "Custom Routing System"
-          ]
-        },
-        "2": {
-          "quarter": "Q2. 2021",
-          "month": "May",
-          "done": true,
-          "data": [
-            "CoinGecko And Coin Market Cap API For ETH<>RBC",
-            "BNB Faucet",
-            "Instant Trades Table",
-            "UI Simple Update",
-            "BSC Limit Orders"
-          ]
-        },
-        "3": {
-          "quarter": "Q2. 2021",
-          "month": "June",
-          "done": true,
-          "data": [
-            "UI Update stage 2",
-            "New Wallets support - Wallet Connect + WalletLink (Coinbase)",
-            "Merch Shop",
-            "CoinGecko & CMC All Pairs Reporting",
-            "FIAT Integration",
-            "Uniswap V3",
-            "New Blockchain/Bridge Integrations (Candidates: Anyswap/XDai, HECO, Moonbeam, Fantom, Avalanche, RenBTC)",
-            "MATIC Faucet",
-            "Usecase Updates"
-          ]
-        },
-        "4": {
-          "quarter": "Q3. 2021",
-          "month": "July",
-          "done": true,
-          "data": [
-            "Cross-Chain Routing",
-            "New Blockchain/Bridge Integrations",
-            "UI Update Stage 3",
-            "Commission In RBC - Stage 1"
-          ]
-        },
-        "5": {
-          "quarter": "Q3. 2021",
-          "month": "August",
-          "done": true,
-          "data": [
-            "Commission In RBC - stage 2",
-            "Anonymizer V1 - Polygon"
-          ]
-        },
-        "6": {
-          "quarter": "Q3. 2021",
-          "month": "September",
-          "done": true,
-          "data": [
-            "Rubic Cross-Chain 2.0 development begins, improving stability and decentralization",
-            "AutoRefund system release",
-            "Creating a 24/7 technical support team for our community",
-            "Beginning of a new blockchain integration",
-            "Rubic Relay Widget partners and integrations",
-            "Beginning of Widget development: SDK/API",
-            "Cross-chain fixes and improvements"
-          ]
-        },
-        "7": {
-          "quarter": "Q4. 2021",
-          "month": "",
-          "done": true,
-          "data": [
-            "0x integration and gas fee reductions",
-            "Three new blockchains integrated (Compatible with Rubic Cross-Chain) Candidates: Avalanche (AVAX), Cardano (ADA), Cosmos (ATOM), Polkadot (DOT), Kusama (KSM), Fantom (FTM), Elrond (EGLD), Enjin (ENJ), Pulse chain (ticker PLS), Optimism, Arbitrum",
-            "RBC Staking",
-            "Widget: SDK/API release"
-          ]
-        },
-        "8": {
-          "quarter": "Q1-Q2. 2022",
-          "month": "",
-          "done": true,
-          "data": [
-            "Yield Farming and/or Lending Product integrations",
-            "Governance",
-            "3-6 new blockchain integrations (Compatible with Rubic Cross-Chain)",
-            "RBC Staking 2.0",
-            "Mobile version (iOS, Android)",
-            "BTC bridge integration"
-          ]
-        }
-      }
-    }
-  },
   "faqPage": {
     "title": "FAQ",
     "questions": [
@@ -376,13 +203,10 @@
     }
   },
   "bridgePage": {
-    "title": "Düşük gaz ücretleri ile köprü varlıkları",
     "progressMessage": "İşlemi kabul ettiniz ve değişim başladı. Lütfen işlem tamamlanana kadar bekleyin",
     "successMessage": "Zincirler arası takas süreci başladı. Lütfen ticaret her iki blok zinciri tarafından tamamlanana kadar bekleyin. ",
     "approveProgressMessage": "Onay işlemini kabul ettiniz ve değişim başladı. Lütfen işlem tamamlanana kadar bekleyin.",
-    "approveSuccessMessage": "Onaylanmış jetonlarınız var. Ticarete devam etmek için takas düğmesine basın.",
-    "whatIs": "Nedir",
-    "getTokens": "Bu adrese {{ toBlockchainName }} jeton alacaksınız"
+    "approveSuccessMessage": "Onaylanmış jetonlarınız var. Ticarete devam etmek için takas düğmesine basın."
   },
   "crossChainPage": {
     "targetAddress": {
@@ -652,8 +476,7 @@
       "link": "bugün dene!"
     },
     "external": {
-      "text": "Herhangi bir jetonu %0 protokol ücretiyle değiştirin. Şimdi ticaret yapın!",
-      "link": ""
+      "text": "Herhangi bir jetonu %0 protokol ücretiyle değiştirin. Şimdi ticaret yapın!"
     }
   },
   "referralBanner": {

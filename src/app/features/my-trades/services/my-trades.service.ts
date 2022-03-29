@@ -104,8 +104,18 @@ export class MyTradesService {
           this.getGasRefundTrades()
         ]).pipe(
           map(data => {
-            this._tableTrades$.next(data.flat());
-            return data.flat();
+            const adjustedData = data.flat().map(trade => ({
+              ...trade,
+              transactionHashScanUrl: this.scannerLinkPipe.transform(
+                trade.fromTransactionHash || trade.toTransactionHash,
+                trade.fromTransactionHash
+                  ? trade?.fromToken?.blockchain
+                  : trade?.toToken?.blockchain,
+                ADDRESS_TYPE.TRANSACTION
+              )
+            }));
+            this._tableTrades$.next(adjustedData);
+            return adjustedData;
           })
         );
       }),

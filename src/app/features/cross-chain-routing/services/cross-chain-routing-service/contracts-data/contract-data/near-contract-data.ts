@@ -16,6 +16,8 @@ import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters
 import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 import BigNumber from 'bignumber.js';
 import { BlockchainNumber } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/blockchain-number';
+import { NATIVE_NEAR_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { WRAP_NEAR_CONTRACT } from '@features/instant-trade/services/instant-trade-service/providers/near/ref-finance-service/constants/ref-fi-constants';
 
 type NearCrossChainContract = Contract & NearCcrViewMethods;
 
@@ -26,6 +28,21 @@ export class NearContractData extends ContractData {
 
   public get contract(): NearCrossChainContract {
     return this._contract;
+  }
+
+  /**
+   * Near tokens address can be too large for eth and solana ccr contract.
+   * Replaces large token address by two addresses with allowed length.
+   * @param addresses tokens addresses.
+   */
+  private static transformLargeAddresses(addresses: string[]): string[][] {
+    return addresses.map((tokenAddress, index) => {
+      const address = tokenAddress === NATIVE_NEAR_ADDRESS ? WRAP_NEAR_CONTRACT : tokenAddress;
+      if (address.length > 40) {
+        return [`${index + 1}!${address.slice(0, 40)}`, `${index + 1}!${address.slice(40)}`];
+      }
+      return [`${index + 1}!${address}`];
+    });
   }
 
   constructor(
@@ -79,10 +96,13 @@ export class NearContractData extends ContractData {
   ): string[] {
     const emptyAddress = EMPTY_ADDRESS;
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      if (!instantTrade) {
-        return [emptyAddress];
-      }
-      return [emptyAddress, emptyAddress];
+      const path = !instantTrade
+        ? [this.transitToken.address]
+        : instantTrade?.path.map(el => el.address) || [
+            instantTrade.from.token.address,
+            instantTrade.to.token.address
+          ];
+      return NearContractData.transformLargeAddresses(path).flat();
     }
     if (!instantTrade) {
       return [EthLikeWeb3Public.addressToBytes32(emptyAddress)];
