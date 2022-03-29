@@ -1,7 +1,7 @@
 import {
-  TableRow,
+  TableRowTrade,
   TableRowKey
-} from 'src/app/features/my-trades/components/my-trades/models/TableRow';
+} from '@features/my-trades/components/my-trades/models/table-row-trade';
 import { defaultSort, TuiComparator } from '@taiga-ui/addon-table';
 import BigNumber from 'bignumber.js';
 import { TableTrade } from '@shared/models/my-trades/table-trade';
@@ -28,7 +28,7 @@ export abstract class AbstractTableDataComponent {
     this.tokensService = injector.get(TokensService);
   }
 
-  protected sortBy(key: TableRowKey, direction: -1 | 1): TuiComparator<TableRow> {
+  protected sortBy(key: TableRowKey, direction: -1 | 1): TuiComparator<TableRowTrade> {
     return (a, b) => {
       let sort;
       if (key === 'Sent' || key === 'Expected') {
@@ -44,7 +44,7 @@ export abstract class AbstractTableDataComponent {
     };
   }
 
-  public getTableTrade(tableRow: TableRow): TableTrade {
+  public getTableTrade(tableRow: TableRowTrade): TableTrade {
     return this.myTradesService.getTableTradeByDate(tableRow.Date);
   }
 

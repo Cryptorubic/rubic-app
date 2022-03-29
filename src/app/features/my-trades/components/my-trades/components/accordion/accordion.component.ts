@@ -2,16 +2,18 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Injector,
   Input,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { BLOCKCHAINS } from '@features/my-trades/constants/blockchains';
 import { Observable } from 'rxjs';
 import {
-  TableRow,
-  TableRowKeyValue
-} from 'src/app/features/my-trades/components/my-trades/models/TableRow';
+  TableRowTrade,
+  TableRowsData
+} from '@features/my-trades/components/my-trades/models/table-row-trade';
 import { AbstractTableDataComponent } from 'src/app/features/my-trades/components/my-trades/components/abstract-table-data-component';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -31,35 +33,36 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
   /**
    * [REQUIRED] Table data to display.
    */
-  @Input() tableData$: Observable<TableRow[]>;
+  @Input() tableData$: Observable<TableRowsData>;
+
+  @Output() onPageChange = new EventEmitter<number>();
 
   public TRANSACTION_STATUS = TRANSACTION_STATUS;
 
   public BLOCKCHAINS = BLOCKCHAINS;
 
-  public readonly tradesProviders = TRADES_PROVIDERS;
+  public readonly TRADES_PROVIDERS = TRADES_PROVIDERS;
 
-  private PAGE_SIZE = 5;
+  public readonly COLUMNS = COLUMNS;
 
-  public page: number;
+  public readonly TRANSLATION_STATUS_KEY = TRANSLATION_STATUS_KEY;
+
+  private readonly PAGE_SIZE = 10;
+
+  private _page = 0;
 
   public pagesLength: number;
 
-  private tableData: TableRow[];
+  public rowTrades: TableRowTrade[];
 
-  private sortedTableData: TableRow[];
+  public get index(): number {
+    return this._page;
+  }
 
-  public visibleData: TableRow[];
-
-  public isDropdownOpened = false;
-
-  public readonly columns = COLUMNS;
-
-  public readonly translationStatusKeys = TRANSLATION_STATUS_KEY;
-
-  public selectedColumn: TableRowKeyValue;
-
-  public sortDirection: -1 | 1 = -1;
+  public set index(page: number) {
+    this._page = page;
+    this.onPageChange.emit(page);
+  }
 
   constructor(
     injector: Injector,
@@ -77,57 +80,16 @@ export class AccordionComponent extends AbstractTableDataComponent implements On
    * Inits component data and subscriptions
    */
   private initData(): void {
-    this.selectedColumn = this.columns.find(column => column.value === 'Date');
-    this.page = 0;
-
     this.tableData$
       .pipe(
         filter(tableData => !!tableData),
         takeUntil(this.destroy$)
       )
       .subscribe(tableData => {
-        this.tableData = tableData;
-        this.pagesLength = Math.ceil(this.tableData.length / this.PAGE_SIZE);
-        if (this.pagesLength <= this.page) {
-          this.page = 0;
-        }
+        this.rowTrades = tableData.rowTrades;
+        this.pagesLength = Math.ceil(tableData.totalCount / this.PAGE_SIZE);
 
-        const waitingForReceivingTrades = this.tableData.filter(
-          el => el.Status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING
-        );
-        const otherTrades = this.tableData
-          .filter(el => el.Status !== TRANSACTION_STATUS.WAITING_FOR_RECEIVING)
-          .sort(this.sortBy('Date', -1));
-
-        this.tableData = [...waitingForReceivingTrades, ...otherTrades];
-        this.sortedTableData = this.tableData;
-        this.goToPage(this.page);
+        this.cdr.markForCheck();
       });
-  }
-
-  public onColumnChange(column: TableRowKeyValue): void {
-    this.isDropdownOpened = false;
-    this.selectedColumn = column;
-    this.sortTableData();
-  }
-
-  public onSortDirectionChange(): void {
-    this.sortDirection *= -1;
-    this.sortTableData();
-  }
-
-  private sortTableData(): void {
-    this.sortedTableData = this.tableData?.sort(
-      this.sortBy(this.selectedColumn.value, this.sortDirection)
-    );
-    this.goToPage(this.page);
-  }
-
-  public goToPage(page: number): void {
-    this.page = page;
-    const start = this.page * this.PAGE_SIZE;
-    this.visibleData = this.sortedTableData.slice(start, start + this.PAGE_SIZE);
-
-    this.cdr.detectChanges();
   }
 }
