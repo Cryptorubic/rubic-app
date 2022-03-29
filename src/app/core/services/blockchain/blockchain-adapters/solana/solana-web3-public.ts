@@ -1,6 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
-import { Account, Connection, PublicKey, Transaction, TransactionResponse } from '@solana/web3.js';
+import {
+  Connection,
+  PublicKey,
+  Signer,
+  Transaction,
+  TransactionInstruction,
+  TransactionResponse
+} from '@solana/web3.js';
 import { SolanaWallet } from '@core/services/blockchain/wallets/wallets-adapters/solana/models/types';
 import { BlockchainTokenExtended } from '@shared/models/tokens/blockchain-token-extended';
 import { CommonWalletAdapter } from '@core/services/blockchain/wallets/wallets-adapters/common-wallet-adapter';
@@ -10,20 +17,58 @@ import { from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import {
   BaseInformation,
+  BaseTransaction,
   ReturnValue
 } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
+import { asyncMap, shakeUndefiledItem } from '@shared/utils/utils';
+import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { UnsignedTransactionAndSigners } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
+  /**
+   * Creates setup and swap transactions.
+   * @param setupInstructions Instruction to perform pre-swap (Register tokens and wrapp)
+   * @param tradeInstructions Instructions to perform swap.
+   * @param signers Setup transaction signers.
+   */
+  public static createTransactions(
+    setupInstructions: TransactionInstruction[],
+    tradeInstructions: TransactionInstruction[],
+    signers: Signer[]
+  ): BaseTransaction {
+    const setupTransaction =
+      setupInstructions.length > 0
+        ? {
+            transaction: new Transaction().add(...setupInstructions),
+            signers: signers
+          }
+        : null;
+
+    const tradeTransaction =
+      tradeInstructions.length > 0
+        ? {
+            transaction: new Transaction().add(...tradeInstructions),
+            signers: [] as Signer[]
+          }
+        : null;
+
+    return { setupTransaction, tradeTransaction };
+  }
+
   /**
    * Create base swap information - owner, transaction and signers objects.
    * @param address Wallet to perform swap.
    */
   public static createBaseSwapInformation(address: string): BaseInformation {
     const owner = new PublicKey(address);
-    const transaction = new Transaction();
-    const signers: Account[] = [];
+    // const transaction = new Transaction();
+    const signers: Signer[] = [];
+    const setupInstructions: TransactionInstruction[] = [];
+    const tradeInstructions: TransactionInstruction[] = [];
 
-    return { owner, transaction, signers };
+    return { owner, signers, setupInstructions, tradeInstructions };
   }
 
   /**
@@ -210,6 +255,46 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   }
 
   /**
+   * Attaches recent blockhash and payer public key to transaction.
+   * @param transaction Transaction to attach blockhash and payer.
+   * @param owner Payer public key.
+   */
+  private async attachRecentBlockhashAndPayer(
+    transaction: Transaction,
+    owner: PublicKey
+  ): Promise<void> {
+    if (!transaction.recentBlockhash) {
+      // RecentBlockhash may already be attached by raydium SDK
+      try {
+        transaction.recentBlockhash =
+          (await this.connection.getLatestBlockhash?.())?.blockhash ||
+          (await this.connection.getRecentBlockhash()).blockhash;
+      } catch {
+        transaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
+      }
+    }
+    transaction.feePayer = owner;
+  }
+
+  /**
+   * Signs list of transactions.
+   * @param transactions Transactions array.
+   * @param walletAdapter Wallet adapter.
+   * @param owner Owner public key.
+   */
+  public async signAllTransactions(
+    transactions: Transaction[],
+    walletAdapter: CommonWalletAdapter<SolanaWallet>,
+    owner: PublicKey
+  ): Promise<Transaction[]> {
+    for await (const transaction of transactions) {
+      await this.attachRecentBlockhashAndPayer(transaction, owner);
+    }
+
+    return walletAdapter.wallet.signAllTransactions(transactions);
+  }
+
+  /**
    * Signs a Solana transaction.
    * @param walletAdapter Wallet adapter object.
    * @param transaction Transaction to sign.
@@ -218,7 +303,7 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
   public async signTransaction(
     walletAdapter: CommonWalletAdapter<SolanaWallet>,
     transaction: Transaction,
-    signers: Array<Account> = []
+    signers: Signer[] = []
   ): Promise<string> {
     transaction.recentBlockhash = (await this.connection.getRecentBlockhash()).blockhash;
     transaction.setSigners(new PublicKey(walletAdapter.address), ...signers.map(s => s.publicKey));
@@ -239,5 +324,71 @@ export class SolanaWeb3Public extends Web3Public<null, TransactionResponse> {
     }
     const rawTransaction = await walletAdapter.wallet.signTransaction(transaction);
     return this.connection?.sendRawTransaction(rawTransaction?.serialize());
+  }
+
+  /**
+   * Attaches transaction blockhash and payer and partial signs transaction.
+   * @param transaction Transaction to perform actions.
+   * @param signers Array of signers.
+   * @param owner Owner public key.
+   */
+  public async partialSignTransaction(
+    transaction: Transaction,
+    signers?: Signer[],
+    owner?: PublicKey
+  ): Promise<Transaction> {
+    if (signers?.length) {
+      await this.attachRecentBlockhashAndPayer(transaction, owner);
+
+      transaction.partialSign(...signers);
+      return transaction;
+    }
+    return transaction;
+  }
+
+  /**
+   * Sends raw transaction to blockchain skipping preflight.
+   * @param transaction Transaction to send.
+   */
+  public async sendOneTransaction(transaction: Transaction): Promise<string> {
+    const serializedTransaction = transaction.serialize();
+    return this.connection.sendRawTransaction(serializedTransaction, {
+      skipPreflight: true
+    });
+  }
+
+  public async signAndSendRaydiumTransaction(
+    transactionInformation: BaseTransaction,
+    connector: WalletConnectorService
+  ): Promise<string> {
+    let signedTransactions: Transaction[];
+
+    try {
+      // @Todo replace Rubic Any by awaited.
+      const transactions = await asyncMap<UnsignedTransactionAndSigners, RubicAny>(
+        [transactionInformation.setupTransaction, transactionInformation.tradeTransaction],
+        merged => {
+          if (!merged) return;
+          const { transaction, signers } = merged;
+          return this.partialSignTransaction(
+            transaction,
+            signers,
+            new PublicKey(connector.address)
+          );
+        }
+      );
+      signedTransactions = shakeUndefiledItem<Transaction>(transactions);
+    } catch {
+      throw new SignRejectError();
+    }
+    const allSignedTransactions = await this.signAllTransactions(
+      signedTransactions,
+      connector.provider,
+      new PublicKey(connector.address)
+    );
+    const transactionRequests = allSignedTransactions.map(el => this.sendOneTransaction(el));
+    const transactionsHashes = await Promise.all(transactionRequests);
+
+    return transactionsHashes.pop();
   }
 }

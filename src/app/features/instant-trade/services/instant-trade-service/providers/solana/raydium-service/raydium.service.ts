@@ -5,7 +5,7 @@ import InstantTradeToken from '@features/instant-trade/models/instant-trade-toke
 import BigNumber from 'bignumber.js';
 import { Observable, of } from 'rxjs';
 import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { Account, Connection, SignatureResult, Transaction } from '@solana/web3.js';
+import { Connection, SignatureResult, TransactionError } from '@solana/web3.js';
 import {
   ItSettingsForm,
   SettingsService
@@ -21,7 +21,6 @@ import { RaydiumRouterManager } from '@features/instant-trade/services/instant-t
 import { RaydiumSwapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-swap-manager';
 import { PriceImpactService } from '@core/services/price-impact/price-impact.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import CustomError from '@core/errors/models/custom-error';
 import InsufficientLiquidityError from '@core/errors/models/instant-trade/insufficient-liquidity-error';
 import { ItProvider } from '@features/instant-trade/services/instant-trade-service/models/it-provider';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
@@ -30,6 +29,8 @@ import { RaydiumStableManager } from '@features/instant-trade/services/instant-t
 import { RaydiumWrapManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-wrap-manager';
 import { RaydiumManagers } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-managers';
 import { HttpService } from '@core/services/http/http.service';
+import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
+import CustomError from '@core/errors/models/custom-error';
 
 @Injectable({
   providedIn: 'root'
@@ -179,76 +180,67 @@ export class RaydiumService implements ItProvider {
     trade: InstantTrade,
     options: { onConfirm?: (hash: string) => Promise<void> }
   ): Promise<Partial<TransactionReceipt>> {
-    try {
-      const { transaction, signers } = await this.getTrade(trade);
-      const hash = await this.blockchainAdapter.signTransaction(
-        this.walletConnectorService.provider,
-        transaction,
-        signers
-      );
+    const tradeData = await this.getTrade(trade);
+    const hash = await this.blockchainAdapter.signAndSendRaydiumTransaction(
+      tradeData,
+      this.walletConnectorService
+    );
+    await options.onConfirm(hash);
 
-      await options.onConfirm(hash);
-      await new Promise((resolve, reject) => {
-        this.connection.onSignature(hash, (signatureResult: SignatureResult) => {
-          if (!signatureResult.err) {
-            resolve(hash);
-          } else {
-            reject(signatureResult.err);
-          }
-        });
+    await new Promise((resolve, reject) => {
+      this.connection.onSignature(hash, (signatureResult: SignatureResult) => {
+        if (!signatureResult.err) {
+          resolve(hash);
+        } else {
+          reject(this.handleRaydiumError(signatureResult.err));
+        }
       });
-      return {
-        from: this.walletConnectorService.address,
-        transactionHash: hash
-      };
-    } catch (err) {
-      if ('message' in err) {
-        throw new CustomError(err.message);
-      }
+    });
+
+    return {
+      from: this.walletConnectorService.address,
+      transactionHash: hash
+    };
+  }
+
+  private handleRaydiumError(err: TransactionError | null): CustomError {
+    if (typeof err === 'string') {
+      return new CustomError(err);
+    } else if ('InstructionError' in err) {
+      const error = err as { InstructionError: ({ [key: string]: number } | 0)[] };
+      const instructionError = error.InstructionError.find(el => el !== 0);
+      const [message, code] = Object.entries(instructionError)[0];
+      const resultError = new CustomError(`Error: ${message}`);
+      resultError.code = code || 0;
+      return resultError;
     }
+    return new CustomError('Unknown Error');
   }
 
   public getAllowance(_tokenAddress: string): Observable<BigNumber> {
     return of(new BigNumber(NaN));
   }
 
-  private async getTrade(
-    trade: InstantTrade
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+  private async getTrade(trade: InstantTrade): Promise<BaseTransaction> {
     const solanaTokens = this.tokensService.tokens.filter(
       el => el.blockchain === BLOCKCHAIN_NAME.SOLANA
     );
     const isWrap = RaydiumWrapManager.isWrap(trade.from.token.address, trade.to.token.address);
 
-    let transaction: Transaction;
-    let signers: Account[];
-
     if (isWrap) {
-      const wrapResult = await this.wrapManager.createWrapTrade(trade, solanaTokens);
-      transaction = wrapResult.transaction;
-      signers = wrapResult.signers;
+      return this.wrapManager.createWrapTrade(trade, solanaTokens);
     } else if (trade.path.length > 2) {
-      // @TODO Solana. Fix SOL in routing.
-      if (
-        trade.path.some(
-          el => el.symbol.toLowerCase() === 'wsol' || el.symbol.toLowerCase() === 'sol'
-        )
-      ) {
-        throw new CustomError('Transactions with SOL are not supported in routing yet.');
-      }
-      const routeSwapResult = await this.routerManager.createRouteSwap(this.poolInfo, trade);
-      transaction = routeSwapResult.transaction;
-      signers = routeSwapResult.signers;
-    } else {
-      const swapResult = await this.swapManager.createSwapTrade(
+      return this.routerManager.createRouteSwap(
         this.poolInfo,
         trade,
-        solanaTokens,
         this.settings.slippageTolerance
       );
-      transaction = swapResult.transaction;
-      signers = swapResult.signers;
     }
-    return { transaction, signers };
+    return this.swapManager.createSwapTrade(
+      this.poolInfo,
+      trade,
+      solanaTokens,
+      this.settings.slippageTolerance
+    );
   }
 }

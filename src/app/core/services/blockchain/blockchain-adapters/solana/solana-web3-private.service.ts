@@ -5,6 +5,7 @@ import {
   Connection,
   PerfSample,
   PublicKey,
+  Signer,
   SystemProgram,
   Transaction,
   TransactionInstruction
@@ -95,7 +96,7 @@ export class SolanaWeb3PrivateService {
    * @param owner Owner account.
    * @param mintAddress Token mint address.
    * @param lamports Amount of lamports to pay network fee.
-   * @param transaction Transaction which stores the token creation instruction.
+   * @param instructions Transaction which stores the token creation instruction.
    * @param signers Array of accounts which can sign transaction.
    */
   public async createTokenAccountIfNotExist(
@@ -103,8 +104,8 @@ export class SolanaWeb3PrivateService {
     owner: PublicKey,
     mintAddress: string,
     lamports: BigNumber,
-    transaction: Transaction,
-    signers: Array<Account>
+    instructions: TransactionInstruction[],
+    signers: Signer[]
   ): Promise<PublicKey> {
     let publicKey;
 
@@ -117,11 +118,11 @@ export class SolanaWeb3PrivateService {
         TOKEN_PROGRAM_ID,
         lamports.toNumber(),
         ACCOUNT_LAYOUT,
-        transaction,
+        instructions,
         signers
       );
 
-      transaction.add(
+      instructions.push(
         initializeAccount({
           account: publicKey,
           mint: new PublicKey(mintAddress),
@@ -138,17 +139,15 @@ export class SolanaWeb3PrivateService {
    * @param account Accounts to check existence.
    * @param owner Owner account.
    * @param mintAddress Token mint address.
-   * @param transaction Transaction which stores the token creation instruction.
+   * @param instructions The token creation instructions.
    * @param atas Associated token accounts.
    */
   public async createAssociatedTokenAccountIfNotExist(
-    account: string | undefined | null | PublicKey,
     owner: PublicKey,
     mintAddress: string,
-    transaction: Transaction,
+    instructions: TransactionInstruction[],
     atas: string[] = []
   ): Promise<PublicKey> {
-    console.debug(account);
     const mint = new PublicKey(mintAddress);
 
     const ata = await Token.getAssociatedTokenAddress(
@@ -161,7 +160,7 @@ export class SolanaWeb3PrivateService {
     const accountInfo = await this._connection.getAccountInfo(ata);
 
     if (!accountInfo) {
-      transaction.add(
+      instructions.push(
         Token.createAssociatedTokenAccountInstruction(
           AT_PROGRAM_ID,
           TOKEN_PROGRAM_ID,
@@ -181,15 +180,15 @@ export class SolanaWeb3PrivateService {
    * Creates associated SOL account and wrap tokens to wrapped version.
    * @param account Token account.
    * @param owner Owner account.
-   * @param transaction Transaction which stores the token creation and wrap instructions.
+   * @param instructions Token creation and wrap instructions.
    * @param signers Array of accounts which can sign transaction.
    * @param amount Amount of tokens to wrap.
    */
   public async createAtaSolIfNotExistAndWrap(
     account: string | undefined | null,
     owner: PublicKey,
-    transaction: Transaction,
-    signers: Array<Account>,
+    instructions: TransactionInstruction[],
+    signers: Signer[],
     amount: number
   ): Promise<void> {
     let publicKey;
@@ -206,7 +205,7 @@ export class SolanaWeb3PrivateService {
     );
     if (!publicKey) {
       const rent = await Token.getMinBalanceRentForExemptAccount(this._connection);
-      transaction.add(
+      instructions.push(
         SystemProgram.transfer({ fromPubkey: owner, toPubkey: ata, lamports: amount + rent }),
         Token.createAssociatedTokenAccountInstruction(
           AT_PROGRAM_ID,
@@ -224,10 +223,10 @@ export class SolanaWeb3PrivateService {
         owner,
         TOKENS.WSOL.mintAddress,
         new BigNumber(amount + rent),
-        transaction,
+        instructions,
         signers
       );
-      transaction.add(
+      instructions.push(
         Token.createTransferInstruction(TOKEN_PROGRAM_ID, wsol, ata, owner, [], amount),
         Token.createCloseAccountInstruction(TOKEN_PROGRAM_ID, wsol, owner, owner, [])
       );
@@ -241,7 +240,7 @@ export class SolanaWeb3PrivateService {
    * @param programId Program Identifier account.
    * @param lamports Amount of lamports to pay network fee.
    * @param layout Creation layout to decode and encode operation from blockchain.
-   * @param transaction Transaction which stores the token creation instruction.
+   * @param instructions Token creation instructions.
    * @param signers Array of accounts which can sign transaction.
    */
   public async createProgramAccountIfNotExist(
@@ -250,8 +249,8 @@ export class SolanaWeb3PrivateService {
     programId: PublicKey,
     lamports: number | null,
     layout: Layout<unknown>,
-    transaction: Transaction,
-    signers: Array<Account>
+    instructions: TransactionInstruction[],
+    signers: Signer[]
   ): Promise<PublicKey> {
     let publicKey;
 
@@ -261,7 +260,7 @@ export class SolanaWeb3PrivateService {
       const newAccount = new Account();
       publicKey = newAccount.publicKey;
 
-      transaction.add(
+      instructions.push(
         SystemProgram.createAccount({
           fromPubkey: owner,
           newAccountPubkey: publicKey,
@@ -481,25 +480,21 @@ export class SolanaWeb3PrivateService {
    * @param toCoinMint To token mint address.
    * @param owner Owner account.
    * @param amountIn Amount in.
-   * @param transaction Transaction.
+   * @param instructions Instructions.
    * @param signers Array of signers.
    * @param skipToAccount Get and create account for pair the of tokens or just for from token.
    */
   public async getOrCreatesTokensAccounts(
-    mintAccountsAddresses: { [P: string]: string },
     fromCoinMint: string,
     toCoinMint: string,
     owner: PublicKey,
     amountIn: number,
-    transaction: Transaction,
-    signers: Account[],
+    instructions: TransactionInstruction[],
+    signers: Signer[],
     skipToAccount: boolean = false
   ): Promise<TokenAccounts> {
     const fromNative = fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
     const toNative = toCoinMint === NATIVE_SOLANA_MINT_ADDRESS;
-
-    const fromTokenAccount = mintAccountsAddresses[fromCoinMint];
-    const toTokenAccount = mintAccountsAddresses[toCoinMint];
 
     const fromAccount = {
       key: fromNative
@@ -508,15 +503,10 @@ export class SolanaWeb3PrivateService {
             owner,
             TOKENS.WSOL.mintAddress,
             new BigNumber(amountIn).plus(1e7, 16),
-            transaction,
+            instructions,
             signers
           )
-        : await this.createAssociatedTokenAccountIfNotExist(
-            fromTokenAccount,
-            owner,
-            fromCoinMint,
-            transaction
-          ),
+        : await this.createAssociatedTokenAccountIfNotExist(owner, fromCoinMint, instructions),
       isWeth: fromNative
     };
 
@@ -529,15 +519,10 @@ export class SolanaWeb3PrivateService {
                 owner,
                 TOKENS.WSOL.mintAddress,
                 new BigNumber(1e7, 16),
-                transaction,
+                instructions,
                 signers
               )
-            : await this.createAssociatedTokenAccountIfNotExist(
-                toTokenAccount,
-                owner,
-                toCoinMint,
-                transaction
-              ),
+            : await this.createAssociatedTokenAccountIfNotExist(owner, toCoinMint, instructions),
           isWeth: toNative
         };
 

@@ -3,7 +3,7 @@ import {
   TOKENS,
   WRAPPED_SOL
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
-import { Account, PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { Token } from '@solana/spl-token';
 import {
@@ -17,6 +17,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SolanaWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-private.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
+import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
 
 export class RaydiumWrapManager {
   public static isWrap(fromAddress: string, toAddress: string): boolean {
@@ -26,10 +27,9 @@ export class RaydiumWrapManager {
     );
   }
 
-  private static async unwrapSol(
-    address: string
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const { transaction, owner } = SolanaWeb3Public.createBaseSwapInformation(address);
+  private static async unwrapSol(address: string): Promise<BaseTransaction> {
+    const { setupInstructions, owner, signers } =
+      SolanaWeb3Public.createBaseSwapInformation(address);
     const toPublicKey = new PublicKey(TOKENS.WSOL.mintAddress);
     const ata = await Token.getAssociatedTokenAddress(
       AT_PROGRAM_ID,
@@ -39,7 +39,7 @@ export class RaydiumWrapManager {
       true
     );
 
-    transaction.add(
+    setupInstructions.push(
       closeAccount({
         source: new PublicKey(ata),
         destination: owner,
@@ -47,7 +47,7 @@ export class RaydiumWrapManager {
       })
     );
 
-    return { transaction, signers: [] };
+    return SolanaWeb3Public.createTransactions(setupInstructions, null, signers);
   }
 
   constructor(
@@ -58,7 +58,7 @@ export class RaydiumWrapManager {
   public async createWrapTrade(
     trade: InstantTrade,
     solanaTokens: List<TokenAmount>
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+  ): Promise<BaseTransaction> {
     const fromNativeSol = trade.from.token.address === NATIVE_SOLANA_MINT_ADDRESS;
     return fromNativeSol
       ? await this.wrapSol(trade, this.walletConnectorService.address, solanaTokens)
@@ -69,8 +69,9 @@ export class RaydiumWrapManager {
     trade: InstantTrade,
     address: string,
     tokens: List<TokenAmount>
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
-    const { transaction, signers, owner } = SolanaWeb3Public.createBaseSwapInformation(address);
+  ): Promise<BaseTransaction> {
+    const { signers, owner, setupInstructions } =
+      SolanaWeb3Public.createBaseSwapInformation(address);
 
     const fromDecimals = new BigNumber(10).exponentiatedBy(trade.from.token.decimals);
     const amountIn = new BigNumber(trade.from.amount.toString()).multipliedBy(fromDecimals);
@@ -86,11 +87,11 @@ export class RaydiumWrapManager {
     await this.privateBlockchainAdapter.createAtaSolIfNotExistAndWrap(
       undefined,
       owner,
-      transaction,
+      setupInstructions,
       signers,
       fromFinalAmount
     );
 
-    return { transaction, signers };
+    return SolanaWeb3Public.createTransactions(setupInstructions, null, signers);
   }
 }

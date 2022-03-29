@@ -7,7 +7,7 @@ import {
 } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/tokens';
 import { RaydiumRouterInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-router-info';
 import { RaydiumStableManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-stable-manager';
-import { Account, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js';
+import { PublicKey, Signer, TransactionInstruction } from '@solana/web3.js';
 import {
   LIQUIDITY_POOL_PROGRAM_ID_V4,
   LIQUIDITY_POOL_PROGRAM_ID_V5,
@@ -25,9 +25,12 @@ import { RaydiumLiquidityManager } from '@features/instant-trade/services/instan
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { List } from 'immutable';
 import { NATIVE_SOLANA_MINT_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { subtractPercent } from '@shared/utils/utils';
+import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
+import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
 
 export class RaydiumRouterManager {
-  public static readonly transitTokens = ['USDC', 'RAY', 'SOL', 'WSOL', 'mSOL', 'PAI', 'USDT'];
+  public static readonly transitTokens = ['USDC', 'wSOL', 'SOL', 'mSOL', 'RAY', 'PAI', 'USDT'];
 
   private _routerInfo: RaydiumRouterInfo;
 
@@ -200,19 +203,23 @@ export class RaydiumRouterManager {
 
   public async createRouteSwap(
     poolsInfo: LiquidityPoolInfo[],
-    trade: InstantTrade
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+    trade: InstantTrade,
+    slippage: number
+  ): Promise<BaseTransaction> {
     const [poolInfoA, poolInfoB] = poolsInfo;
 
-    const { amountIn, amountOut, mintAccountsAddresses, owner, transaction, signers } =
-      await RaydiumSwapManager.prepareSwapParams(
-        this.walletConnectorService.address,
-        trade.from.token.decimals,
-        trade.to.token.decimals,
-        trade.from.amount,
-        trade.to.amount,
-        this.privateBlockchainAdapter
-      );
+    const setupInstructions: TransactionInstruction[] = [];
+    const signers: Signer[] = [];
+    const tradeInstructions: TransactionInstruction[] = [];
+
+    const { amountIn, amountOut, owner } = await RaydiumSwapManager.prepareSwapParams(
+      this.walletConnectorService.address,
+      trade.from.token.decimals,
+      trade.to.token.decimals,
+      trade.from.amount,
+      subtractPercent(trade.to.amount, slippage),
+      this.privateBlockchainAdapter
+    );
 
     const fromMint = trade.from.token.address;
     const toMint = trade.to.token.address;
@@ -223,24 +230,22 @@ export class RaydiumRouterManager {
     const toFinalAmount = Math.floor(parseFloat(amountOut.toString()));
 
     const { from: fromAccount } = await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
-      mintAccountsAddresses,
       fromMint,
       middleMint,
       owner,
       fromFinalAmount,
-      transaction,
+      setupInstructions,
       signers,
       true
     );
 
     const { from: middleAccount, to: toAccount } =
       await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
-        mintAccountsAddresses,
         middleMint,
         toMint,
         owner,
         middleFinalAmount,
-        transaction,
+        setupInstructions,
         signers
       );
 
@@ -358,8 +363,10 @@ export class RaydiumRouterManager {
             owner
           );
 
-    transaction.add(firstSwap, secondSwap);
-    return { transaction, signers };
+    tradeInstructions.push(firstSwap);
+    tradeInstructions.push(secondSwap);
+
+    return SolanaWeb3Public.createTransactions(setupInstructions, tradeInstructions, signers);
   }
 
   private getSwapRouter(

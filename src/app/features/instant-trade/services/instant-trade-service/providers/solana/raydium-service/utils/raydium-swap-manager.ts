@@ -5,13 +5,7 @@ import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { LiquidityPoolInfo } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/pools';
 // @ts-ignore
 import { nu64, struct, u8 } from 'buffer-layout';
-import {
-  Account,
-  Connection,
-  PublicKey,
-  Transaction,
-  TransactionInstruction
-} from '@solana/web3.js';
+import { Connection, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js';
 import { closeAccount } from '@project-serum/serum/lib/token-instructions';
 import { DATA_LAYOUT } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/structure';
 import { TOKEN_PROGRAM_ID } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/accounts';
@@ -32,6 +26,7 @@ import { RaydiumStableManager } from '@features/instant-trade/services/instant-t
 import { SwapOutAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/swap-out-amount';
 import { RaydiumTokenAmount } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/raydium-token-amount';
 import { RaydiumRouterManager } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/utils/raydium-router-manager';
+import { BaseTransaction } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-types';
 
 export class RaydiumSwapManager {
   public static getSwapOutAmount(
@@ -133,11 +128,11 @@ export class RaydiumSwapManager {
 
   private static closeWethAccounts(
     accounts: TokenAccounts,
-    transaction: Transaction,
+    instructions: TransactionInstruction[],
     owner: PublicKey
   ): void {
     if (accounts.from.isWeth) {
-      transaction.add(
+      instructions.push(
         closeAccount({
           source: accounts.from.key,
           destination: owner,
@@ -146,7 +141,7 @@ export class RaydiumSwapManager {
       );
     }
     if (accounts.to.isWeth) {
-      transaction.add(
+      instructions.push(
         closeAccount({
           source: accounts.to.key,
           destination: owner,
@@ -234,7 +229,8 @@ export class RaydiumSwapManager {
     aOut: BigNumber,
     privateBlockchainAdapter: SolanaWeb3PrivateService
   ): Promise<PreparedSwapParams> {
-    const { owner, transaction, signers } = SolanaWeb3Public.createBaseSwapInformation(address);
+    const { owner, setupInstructions, tradeInstructions, signers } =
+      SolanaWeb3Public.createBaseSwapInformation(address);
 
     const mintAccountsAddresses = await privateBlockchainAdapter.getTokenAccounts(address);
     const fromDecimals = new BigNumber(10).exponentiatedBy(fromDec);
@@ -242,7 +238,15 @@ export class RaydiumSwapManager {
     const toDecimals = new BigNumber(10).exponentiatedBy(toDec);
     const amountOut = new BigNumber(aOut.toString()).multipliedBy(toDecimals);
 
-    return { owner, transaction, signers, mintAccountsAddresses, amountIn, amountOut };
+    return {
+      owner,
+      setupInstructions,
+      tradeInstructions,
+      signers,
+      mintAccountsAddresses,
+      amountIn,
+      amountOut
+    };
   }
 
   public static getInstantTradeInfo(
@@ -374,20 +378,27 @@ export class RaydiumSwapManager {
     trade: InstantTrade,
     tokens: List<TokenAmount>,
     slippageTolerance: number
-  ): Promise<{ transaction: Transaction; signers: Account[] }> {
+  ): Promise<BaseTransaction> {
     const [poolInfo] = poolInfos;
     const fromCoinMint = trade.from.token.address;
     const toCoinMint = trade.to.token.address;
 
-    const { amountIn, amountOut, mintAccountsAddresses, owner, transaction, signers } =
-      await RaydiumSwapManager.prepareSwapParams(
-        this.walletConnectorService.address,
-        trade.from.token.decimals,
-        trade.to.token.decimals,
-        trade.from.amount,
-        subtractPercent(trade.to.amount, slippageTolerance),
-        this.privateBlockchainAdapter
-      );
+    const {
+      amountIn,
+      amountOut,
+      mintAccountsAddresses,
+      owner,
+      signers,
+      setupInstructions,
+      tradeInstructions
+    } = await RaydiumSwapManager.prepareSwapParams(
+      this.walletConnectorService.address,
+      trade.from.token.decimals,
+      trade.to.token.decimals,
+      trade.from.amount,
+      subtractPercent(trade.to.amount, slippageTolerance),
+      this.privateBlockchainAdapter
+    );
 
     const from = tokens.find(el => el.address === fromCoinMint);
     const to = tokens.find(el => el.address === toCoinMint);
@@ -398,7 +409,7 @@ export class RaydiumSwapManager {
 
     const wsolAddress = mintAccountsAddresses[TOKENS.WSOL.mintAddress];
     if (fromCoinMint === NATIVE_SOLANA_MINT_ADDRESS && wsolAddress) {
-      transaction.add(
+      setupInstructions.push(
         closeAccount({
           source: new PublicKey(wsolAddress),
           destination: owner,
@@ -412,16 +423,15 @@ export class RaydiumSwapManager {
 
     const { from: fromAccount, to: toAccount } =
       await this.privateBlockchainAdapter.getOrCreatesTokensAccounts(
-        mintAccountsAddresses,
         fromCoinMint,
         toCoinMint,
         owner,
         fromFinalAmount,
-        transaction,
+        setupInstructions,
         signers
       );
 
-    transaction.add(
+    tradeInstructions.push(
       poolInfo.version === 5
         ? RaydiumSwapManager.createSwapStableBaseInInstruction(
             new PublicKey(poolInfo.programId),
@@ -468,9 +478,13 @@ export class RaydiumSwapManager {
             toFinalAmount
           )
     );
-    RaydiumSwapManager.closeWethAccounts({ from: fromAccount, to: toAccount }, transaction, owner);
+    RaydiumSwapManager.closeWethAccounts(
+      { from: fromAccount, to: toAccount },
+      tradeInstructions,
+      owner
+    );
 
-    return { transaction, signers };
+    return SolanaWeb3Public.createTransactions(setupInstructions, tradeInstructions, signers);
   }
 
   public async addTransactionMeta(transaction: Transaction, address: string): Promise<void> {

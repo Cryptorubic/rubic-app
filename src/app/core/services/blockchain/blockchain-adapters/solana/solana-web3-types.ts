@@ -1,10 +1,11 @@
 import {
-  Account,
   AccountInfo,
   PublicKey,
   RpcResponseAndContext,
-  Transaction
+  Signer,
+  TransactionInstruction
 } from '@solana/web3.js';
+import { UnsignedTransactionAndSigners } from '@features/instant-trade/services/instant-trade-service/providers/solana/raydium-service/models/unsigned-transaction-and-signers';
 
 /**
  * Direct request to Solana RPC.
@@ -31,8 +32,14 @@ export interface ProgramAccounts {
  */
 export interface BaseInformation {
   owner: PublicKey;
-  transaction: Transaction;
-  signers: Account[];
+  signers: Signer[];
+  setupInstructions: TransactionInstruction[];
+  tradeInstructions: TransactionInstruction[];
+}
+
+export interface BaseTransaction {
+  setupTransaction: UnsignedTransactionAndSigners;
+  tradeTransaction: UnsignedTransactionAndSigners;
 }
 
 /**

@@ -7,15 +7,10 @@ import { RaydiumService } from '@features/instant-trade/services/instant-trade-s
 import { EthLikeContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/eth-like-contract-executor.service';
 import BigNumber from 'bignumber.js';
 import { TargetNetworkAddressService } from '@features/cross-chain-routing/components/target-network-address/services/target-network-address.service';
-import { CrossChainRoutingApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-routing-api.service';
-import { ContractsDataService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contracts-data.service';
 import { SolanaContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/solana-contract-executor.service';
 import CustomError from '@core/errors/models/custom-error';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { SignatureResult } from '@solana/web3.js';
 import { NearContractExecutorService } from '@features/cross-chain-routing/services/cross-chain-routing-service/contract-executor/near-contract-executor.service';
 import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
-import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 
 @Injectable({
   providedIn: 'root'
@@ -41,8 +36,6 @@ export class ContractExecutorFacadeService {
     return trade.tokenOutAmount.multipliedBy(trade.toSlippage);
   }
 
-  private readonly contracts = this.contractsDataService.contracts;
-
   /**
    * Gets address in target network.
    */
@@ -59,9 +52,7 @@ export class ContractExecutorFacadeService {
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly raydiumService: RaydiumService,
-    private readonly targetAddressService: TargetNetworkAddressService,
-    private readonly apiService: CrossChainRoutingApiService,
-    private readonly contractsDataService: ContractsDataService
+    private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
   public async executeTrade(
@@ -84,20 +75,12 @@ export class ContractExecutorFacadeService {
 
       if (blockchainType === 'solana') {
         const isToNative = blockchainAdapter.isNativeAddress(trade.tokenOut.address);
-        const { transaction, signers } = await this.solanaContractExecutor.executeTrade(
+        return this.solanaContractExecutor.executeTrade(
           trade,
           userAddress,
           this.targetAddress,
           isToNative
         );
-        const hash = await (blockchainAdapter as SolanaWeb3Public).signTransaction(
-          this.walletConnectorService.provider,
-          transaction,
-          signers
-        );
-        await this.handleSolanaTransaction(hash, options?.onTransactionHash);
-
-        return hash;
       }
 
       if (blockchainType === 'near') {
@@ -109,26 +92,5 @@ export class ContractExecutorFacadeService {
         throw new CustomError(err.message);
       }
     }
-  }
-
-  private async handleSolanaTransaction(
-    hash: string,
-    onTransactionHash: ((hash: string) => void) | undefined
-  ): Promise<void> {
-    if (onTransactionHash) {
-      onTransactionHash(hash);
-    }
-    await new Promise((resolve, reject) => {
-      this.publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA].connection.onSignature(
-        hash,
-        (signatureResult: SignatureResult) => {
-          if (!signatureResult.err) {
-            resolve(hash);
-          } else {
-            reject(signatureResult.err);
-          }
-        }
-      );
-    });
   }
 }
