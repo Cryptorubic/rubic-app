@@ -379,6 +379,7 @@ export class TokensSelectComponent implements OnInit, OnDestroy {
       )
       .subscribe(({ backendTokens, customToken }) => {
         if (backendTokens) {
+          console.log(backendTokens);
           this._tokensToShow$.next(backendTokens);
         } else if (customToken) {
           this.customToken = customToken;
