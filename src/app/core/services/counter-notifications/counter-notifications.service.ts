@@ -26,18 +26,6 @@ export class CounterNotificationsService {
     private readonly myTradesService: MyTradesService,
     private readonly storeService: StoreService
   ) {
-    // this.myTradesService.tableTrades$
-    //   .pipe(
-    //     filter(trades => !!trades),
-    //     map(
-    //       trades =>
-    //         trades.filter(trade => trade.status === TRANSACTION_STATUS.WAITING_FOR_RECEIVING).length
-    //     )
-    //   )
-    //   .subscribe(v => {
-    //     this._unreadReceived$.next(v);
-    //   });
-
     this.authService
       .getCurrentUser()
       .pipe(
