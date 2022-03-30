@@ -1,12 +1,35 @@
 <app-statistics class="statistics"></app-statistics>
 
-<div class="staking">
-  2
-
-  <app-staking-card></app-staking-card>
+<div class="staking" *ngLet="stakingBalanceByRound$ | async as balances">
+  <div class="staking__title">Rubic Staking</div>
+  <app-staking-card
+    class="staking__card"
+    [round]="2"
+    [apr]="30"
+    [poolLimit]="7000000"
+    [balance]="balances.roundTwo"
+    [statuses]="[roundStatus.FULL, roundStatus.ACTIVE]"
+    (onNavigate)="navigateToStaking($event)"
+  ></app-staking-card>
+  <app-staking-card
+    class="staking__card"
+    [round]="1"
+    [apr]="82"
+    [poolLimit]="7000000"
+    [balance]="balances.roundOne"
+    [statuses]="[roundStatus.CLOSED]"
+    (onNavigate)="navigateToStaking($event)"
+  ></app-staking-card>
 </div>
 
 <div class="lp">
-  3
-  <app-lp-card></app-lp-card>
+  <div class="lp__title">Rubic Liquidity Providing</div>
+  <app-lp-card
+    class="lp__card"
+    [round]="1"
+    [apr]="undefined"
+    [poolLimit]="undefined"
+    [balance]="undefined"
+    [startTime]="'04.01.2022'"
+  ></app-lp-card>
 </div>

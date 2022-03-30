@@ -1,0 +1,83 @@
+@use 'src/scss/core' as *;
+
+.staking-card {
+  position: relative;
+
+  padding: 32px;
+
+  background: #202622;
+  border-radius: 20px;
+}
+
+.statuses {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  display: flex;
+    
+  app-status-badge:not(:last-child) {
+    display: block;
+    margin-right: 8px;
+  }
+}
+
+.title {
+  @include font(22px, 26px, 600, white);
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+
+  img {
+    width: 34px;
+    height: 34px;
+  }
+
+  img:first-child {
+    margin-right: 32px;
+
+    border: 3px solid transparent;
+  }
+
+  img:nth-child(2) {
+    position: absolute;
+    left: 20px;
+
+    border: 3px solid #202622;
+    border-radius: 100px;
+  }
+}
+
+.params {
+  display: flex;
+
+  &__param {
+    @include font(18px, 22px, 500, white, 0.03em);
+
+    &-label {
+      color: grey;
+    }
+
+    &:not(:last-child) {
+      margin-right: 38px;
+    }
+  }
+}
+
+.join {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+
+  ::ng-deep {
+    button {
+      height: 32px;
+    }
+
+    .wrapper {
+      padding: 8px 18px;
+    }
+  }
+}

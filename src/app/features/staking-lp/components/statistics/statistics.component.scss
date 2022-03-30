@@ -3,10 +3,19 @@
 .statistics {
   position: relative;
 
-  padding: 48px 60px;
+  display: flex;
+  justify-content: space-between;
+
+  padding: 22px;
 
   background: #181a19;
   border-radius: 30px;
+
+  &_loading {
+    .statistics__param-value {
+      opacity: 0.4;
+    }
+  }
 
   &__refresh {
     position: absolute;
@@ -14,44 +23,73 @@
     right: 22px;
   }
 
-  &__row {
+  &__col {
     display: flex;
+    flex-direction: column;
+    padding: 35px 60px;
 
     &:first-child {
-      margin-bottom: 60px;
+      align-items: center;
+      justify-content: center;
 
-      .statistics__param {
-        width: 33.33%;
-      }
+      border: 2px solid #4aa956;
+      border-radius: 18px;
     }
 
-    &:nth-child(2) {
-      .statistics__param {
-        &:first-child {
-          width: 33.33%;
-        }
-
-        &:last-child {
-          width: 66.66%;
-        }
-      }
+    .statistics__param:first-child {
+      margin-bottom: 50px;
     }
   }
 
   &__param {
     &-label {
-      @include font(20px, 24px, 700, $rubic-primary);
-      margin-bottom: 14px;
+      @include font(18px, 22px, 500, rgba(255, 255, 255, 0.6));
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+
+      &_btn {
+
+        cursor: pointer;
+
+        img {
+          width: 15px;
+          height: 9px;
+          margin-left: 10px;
+        }
+      }
     }
 
     &-value {
-      @include font(28px, 34px, 600, var(--rubic-base-02));
-      display: flex;
-      align-items: center;
+      @include font(26px, 31px, 600, var(--rubic-base-02));
+      transition: 0.4s opacity ease-in-out;
     }
 
-    &-chips {
-      margin-left: 60px;
+    &-hint {
+      margin-left: 8px;
+
+      cursor: pointer;
+    }
+  }
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: fit-content;
+  padding: 16px;
+
+  &__filter {
+    @include font(18px, 21px, 500, white);
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-bottom: 18px;
+    }
+
+    &_active {
+      color: $rubic-primary;
     }
   }
 }

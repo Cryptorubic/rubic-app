@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatusBadgeComponent {
-  @Input() type: 'warning' | 'error' | 'active' | 'info';
+  @Input() type: 'warning' | 'error' | 'active' | 'info' | 'inactive';
 
-  @Input() translationKey: string;
+  @Input() text: string;
 }

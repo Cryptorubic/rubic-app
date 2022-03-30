@@ -8,6 +8,13 @@ import { SharedModule } from '@app/shared/shared.module';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { StakingCardComponent } from './components/staking-card/staking-card.component';
 import { LpCardComponent } from './components/lp-card/lp-card.component';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import {
+  TuiDropdownControllerModule,
+  TuiDropdownModule,
+  TuiHostedDropdownModule,
+  TuiManualHintModule
+} from '@taiga-ui/core';
 
 @NgModule({
   declarations: [
@@ -16,7 +23,16 @@ import { LpCardComponent } from './components/lp-card/lp-card.component';
     StakingCardComponent,
     LpCardComponent
   ],
-  imports: [CommonModule, StakingLpRoutingModule, SharedModule],
+  imports: [
+    CommonModule,
+    StakingLpRoutingModule,
+    SharedModule,
+    InlineSVGModule,
+    TuiManualHintModule,
+    TuiHostedDropdownModule,
+    TuiDropdownControllerModule,
+    TuiDropdownModule
+  ],
   exports: [],
   providers: [StakingLpService, StakingLpApiService]
 })

@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 :host {
   display: block;
   max-width: 1003px;
@@ -12,4 +14,37 @@
 
 .staking {
   margin-bottom: 22px;
+  padding: 32px;
+
+  background: #181a19;
+  border-radius: 30px;
+
+
+  &__title {
+    @include font(24px, 29px, 600, white);
+    margin-bottom: 31px;  
+  }
+
+  &__card:not(:last-child) {
+    display: block;
+    margin-bottom: 12px;
+  }
+}
+
+.lp {
+  margin-bottom: 22px;
+  padding: 32px;
+
+  background: #181a19;
+  border-radius: 30px;
+  
+  &__title {
+    @include font(24px, 29px, 600, white);
+    margin-bottom: 31px;  
+  }
+
+  &__card:not(:last-child) {
+    display: block;
+    margin-bottom: 12px;
+  }
 }

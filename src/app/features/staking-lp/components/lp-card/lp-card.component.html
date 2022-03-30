@@ -1,0 +1,39 @@
+<div class="lp-card">
+  <div class="title">
+    <img src="assets/images/usdc-util-icon.png" alt="USDC" />
+    <img src="assets/images/rbc-util-icon.png" alt="BRBC" />
+    Round {{ round }}
+  </div>
+  <div class="params">
+    <div class="params__param">
+      <span class="params__param-label">APR:</span> {{ apr || '--.--' + '%' }}
+    </div>
+    <div class="params__param">
+      <span class="params__param-label">Pool Limit:</span>
+      {{ poolLimit ? (poolLimit | bigNumberFormat) : '--.--' }} USDC
+    </div>
+    <div class="params__param">
+      <span class="params__param-label">Your Balance:</span>
+      {{ balance ? (balance | bigNumberFormat: 3:true) : '--.--' }} USDC
+    </div>
+  </div>
+  <div class="statuses">
+    <app-status-badge
+      *ngIf="startTime"
+      type="inactive"
+      [text]="'Start: ' + (startTime | date: 'long')"
+    ></app-status-badge>
+    <app-status-badge
+      *ngFor="let status of statuses"
+      [text]="statusBadgeText[status]"
+      [type]="statusBadgeType[status]"
+    ></app-status-badge>
+  </div>
+  <app-rubic-button
+    appearance="secondary"
+    class="join"
+    *ngIf="!(startTime | functionCall: isInPast:this)"
+    (onClick)="onNavigate.emit(round)"
+    >Join Round</app-rubic-button
+  >
+</div>
