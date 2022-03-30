@@ -17,8 +17,6 @@ import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
-import { BRIDGE_TEST_TOKENS } from 'src/test/tokens/bridge-tokens';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { compareAddresses } from '@shared/utils/utils';
 import { SwapFormService } from '../../../swaps/services/swaps-form-service/swap-form.service';
@@ -44,8 +42,6 @@ export class BridgeService {
 
   private bridgeProvider: BlockchainsBridgeProvider;
 
-  private isTestingMode = false;
-
   constructor(
     // bridge providers start
     private readonly ethereumBinanceBridgeProviderService: EthereumBinanceBridgeProviderService,
@@ -54,7 +50,6 @@ export class BridgeService {
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly swapFormService: SwapFormService,
     private readonly iframeService: IframeService,
     private readonly translateService: TranslateService,
@@ -64,13 +59,6 @@ export class BridgeService {
     this.subscribeToFormChanges();
 
     this.setTokens();
-
-    useTestingModeService.isTestingMode.subscribe(isTestingMode => {
-      if (isTestingMode) {
-        this.isTestingMode = true;
-        this._tokens$.next(BRIDGE_TEST_TOKENS);
-      }
-    });
   }
 
   private setupBlockchainsProviders(): void {
@@ -116,9 +104,7 @@ export class BridgeService {
     zip(...tokensObservables)
       .pipe(first())
       .subscribe(tokens => {
-        if (!this.isTestingMode) {
-          this._tokens$.next(tokens);
-        }
+        this._tokens$.next(tokens);
       });
   }
 

@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { COINGECKO_TEST_TOKENS } from 'src/test/tokens/test-tokens';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { UseTestingModeService } from 'src/app/core/services/use-testing-mode/use-testing-mode.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Token } from '@shared/models/tokens/token';
@@ -70,16 +68,6 @@ export class TokensService {
   private userAddress: string;
 
   /**
-   * Is testing mode currently activated.
-   */
-  private isTestingMode = false;
-
-  /**
-   * Amount of test tokens.
-   */
-  private readonly testTokensNumber: number;
-
-  /**
    * Current tokens list.
    */
   get tokens(): List<TokenAmount> {
@@ -117,13 +105,10 @@ export class TokensService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly publicBlockchainAdapterService: PublicBlockchainAdapterService,
-    private readonly useTestingMode: UseTestingModeService,
     private readonly coingeckoApiService: CoingeckoApiService,
     private readonly errorsService: ErrorsService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
-    this.testTokensNumber = COINGECKO_TEST_TOKENS.length;
-
     this.setupSubscriptions();
   }
 
@@ -135,11 +120,8 @@ export class TokensService {
       .pipe(
         switchMap(params => this.tokensApiService.getTokensList(params)),
         switchMap(tokens => {
-          if (!this.isTestingMode) {
-            const newTokens = this.setDefaultTokensParams(tokens, false);
-            return this.calculateTokensBalancesByType('default', newTokens);
-          }
-          return of();
+          const newTokens = this.setDefaultTokensParams(tokens, false);
+          return this.calculateTokensBalancesByType('default', newTokens);
         }),
         catchError((err: unknown) => {
           console.error('Error retrieving tokens', err);
@@ -155,14 +137,6 @@ export class TokensService {
         this.fetchFavoriteTokens();
       } else {
         this._favoriteTokens$.next(List([]));
-      }
-    });
-
-    this.useTestingMode.isTestingMode.subscribe(async isTestingMode => {
-      if (isTestingMode) {
-        this.isTestingMode = true;
-        this._tokens$.next(List(COINGECKO_TEST_TOKENS));
-        await this.calculateTokensBalancesByType('default');
       }
     });
 
@@ -224,20 +198,18 @@ export class TokensService {
     const newTokens = this.setDefaultTokensParams(tokens, type === 'favorite');
     const tokensWithBalance = await this.getTokensWithBalance(newTokens as List<TokenAmount>);
 
-    if (!this.isTestingMode || (this.isTestingMode && tokens.size <= this.testTokensNumber)) {
-      const updatedTokens = tokens.map(token => {
-        const currentToken = this.tokens?.find(t => TokensService.areTokensEqual(token, t));
-        const balance = tokensWithBalance.find(tWithBalance =>
-          TokensService.areTokensEqual(token, tWithBalance)
-        )?.amount;
-        return {
-          ...token,
-          ...currentToken,
-          amount: balance || new BigNumber(NaN)
-        };
-      });
-      subject$.next(List(updatedTokens));
-    }
+    const updatedTokens = tokens.map(token => {
+      const currentToken = this.tokens?.find(t => TokensService.areTokensEqual(token, t));
+      const balance = tokensWithBalance.find(tWithBalance =>
+        TokensService.areTokensEqual(token, tWithBalance)
+      )?.amount;
+      return {
+        ...token,
+        ...currentToken,
+        amount: balance || new BigNumber(NaN)
+      };
+    });
+    subject$.next(List(updatedTokens));
   }
 
   /**
