@@ -3,7 +3,7 @@ import { BlockchainsBridgeProvider } from 'src/app/features/bridge/services/brid
 import { first } from 'rxjs/operators';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { Observable } from 'rxjs';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { TransactionReceipt } from 'web3-eth';
@@ -26,7 +26,7 @@ export class BinancePolygonBridgeProviderService extends BlockchainsBridgeProvid
     throw new UnknownError();
   }
 
-  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BLOCKCHAIN_NAME): Observable<number> {
+  public getFee(tokenPair: BridgeTokenPair, toBlockchain: BlockchainName): Observable<number> {
     if (this.isRBCToken(tokenPair.symbol)) {
       return this.rubicBridgeProvider.getFee(tokenPair, toBlockchain);
     }

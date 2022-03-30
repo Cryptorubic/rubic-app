@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SwapFormService } from 'src/app/features/swaps/services/swaps-form-service/swap-form.service';
 import BigNumber from 'bignumber.js';
 import { forkJoin, Observable, of, Subscription } from 'rxjs';
@@ -33,9 +33,9 @@ import { EthWethSwapProviderService } from '@features/instant-trade/services/ins
   providedIn: 'root'
 })
 export class InstantTradeService {
-  private static readonly unsupportedItNetworks = [BLOCKCHAIN_NAME.XDAI];
+  private static readonly unsupportedItNetworks: BlockchainName[] = [];
 
-  public static isSupportedBlockchain(blockchain: BLOCKCHAIN_NAME): boolean {
+  public static isSupportedBlockchain(blockchain: BlockchainName): boolean {
     return !InstantTradeService.unsupportedItNetworks.includes(blockchain);
   }
 

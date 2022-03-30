@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 
 export interface TradePanelData {
-  blockchain: BLOCKCHAIN_NAME;
+  blockchain: BlockchainName;
   amount: BigNumber;
   gasLimit: string;
   gasFeeInUsd: BigNumber;

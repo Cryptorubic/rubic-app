@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 
 export interface BridgeToken extends BlockchainToken {
@@ -7,7 +7,7 @@ export interface BridgeToken extends BlockchainToken {
 }
 
 export type BridgeTokensByBlockchain = {
-  [blockchain in BLOCKCHAIN_NAME]?: BridgeToken;
+  [blockchain in BlockchainName]?: BridgeToken;
 };
 
 export interface BridgeTokenPair {

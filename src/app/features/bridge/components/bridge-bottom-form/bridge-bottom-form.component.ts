@@ -29,7 +29,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { UndefinedError } from 'src/app/core/errors/models/undefined.error';
 import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -78,9 +78,9 @@ export class BridgeBottomFormComponent implements OnInit, OnDestroy {
 
   private bridgeTokenPairsByBlockchainsArray: BridgeTokenPairsByBlockchains[];
 
-  private fromBlockchain: BLOCKCHAIN_NAME;
+  private fromBlockchain: BlockchainName;
 
-  public toBlockchain: BLOCKCHAIN_NAME;
+  public toBlockchain: BlockchainName;
 
   public isBridgeSupported: boolean;
 

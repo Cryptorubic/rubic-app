@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { BlockchainData } from '@shared/models/blockchain/blockchain-data';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -22,7 +22,7 @@ export class CoinbaseConfirmModalComponent {
 
   public selectedBlockchain = this.availableBlockchains[0];
 
-  constructor(@Inject(POLYMORPHEUS_CONTEXT) private context: TuiDialogContext<BLOCKCHAIN_NAME>) {}
+  constructor(@Inject(POLYMORPHEUS_CONTEXT) private context: TuiDialogContext<BlockchainName>) {}
 
   onConfirm(): void {
     this.context.completeWith(this.selectedBlockchain.name);

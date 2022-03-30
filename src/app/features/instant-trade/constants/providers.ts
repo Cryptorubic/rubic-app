@@ -1,7 +1,7 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { INSTANT_TRADE_STATUS } from '@features/instant-trade/models/instant-trades-trade-status';
 import { INSTANT_TRADE_PROVIDER } from '@shared/models/instant-trade/instant-trade-provider';
 import { InstantTradeProviderData } from '@features/instant-trade/models/providers-controller-data';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
 
 const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
@@ -21,7 +21,7 @@ function getDefaultStateByProviders(
   }));
 }
 
-export const INSTANT_TRADE_PROVIDERS: Partial<Record<BLOCKCHAIN_NAME, InstantTradeProviderData[]>> =
+export const INSTANT_TRADE_PROVIDERS: Partial<Record<BlockchainName, InstantTradeProviderData[]>> =
   {
     [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
       INSTANT_TRADE_PROVIDER.UNISWAP_V3,

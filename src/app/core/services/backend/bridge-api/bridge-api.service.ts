@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
-import {
-  BLOCKCHAIN_NAME,
-  DEPRECATED_BLOCKCHAIN_NAME
-} from '@shared/models/blockchain/blockchain-name';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { BridgeTokenPair } from '@features/bridge/models/bridge-token-pair';
 import { EMPTY, Observable } from 'rxjs';
@@ -18,20 +14,20 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { BridgeBotRequest } from '@core/services/backend/bridge-api/models/bridge-bot-request';
+import {
+  BLOCKCHAIN_NAME,
+  BLOCKCHAIN_NAMES,
+  BlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BridgeApiService {
-  private readonly tradeBlockchain: Record<
-    BridgeBlockchainApi,
-    BLOCKCHAIN_NAME | DEPRECATED_BLOCKCHAIN_NAME
-  > = {
+  private readonly tradeBlockchain: Record<BridgeBlockchainApi, BlockchainName> = {
     ETH: BLOCKCHAIN_NAME.ETHEREUM,
     BSC: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    POL: BLOCKCHAIN_NAME.POLYGON,
-    XDAI: BLOCKCHAIN_NAME.XDAI,
-    TRX: DEPRECATED_BLOCKCHAIN_NAME.TRON
+    POL: BLOCKCHAIN_NAME.POLYGON
   };
 
   constructor(private httpService: HttpService, private tokensService: TokensService) {}
@@ -98,7 +94,7 @@ export class BridgeApiService {
    * @param walletFromAddress User's wallet address.
    */
   public postRubicTransaction(
-    fromBlockchain: BLOCKCHAIN_NAME,
+    fromBlockchain: BlockchainName,
     transactionHash: string,
     actualFromAmount: string,
     walletFromAddress: string
@@ -224,15 +220,14 @@ export class BridgeApiService {
     return this.tokensService.tokens$.pipe(
       first(),
       map(backendTokens => {
-        const prices = Object.values(BLOCKCHAIN_NAME)
-          .map(
-            blockchain =>
-              backendTokens.find(
-                token =>
-                  bridgeTokenPair.tokenByBlockchain[blockchain]?.address.toLowerCase() ===
-                  token.address.toLowerCase()
-              )?.price
-          )
+        const prices = BLOCKCHAIN_NAMES.map(
+          blockchain =>
+            backendTokens.find(
+              token =>
+                bridgeTokenPair.tokenByBlockchain[blockchain]?.address.toLowerCase() ===
+                token.address.toLowerCase()
+            )?.price
+        )
           .filter(it => it)
           .sort((a, b) => b - a);
         return prices[0] || 0;

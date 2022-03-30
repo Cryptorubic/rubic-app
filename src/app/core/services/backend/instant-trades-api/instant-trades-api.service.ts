@@ -6,7 +6,7 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   ToBackendBlockchain
 } from '@shared/constants/blockchain/backend-blockchains';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { TableToken, TableTrade } from '@shared/models/my-trades/table-trade';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
@@ -17,7 +17,6 @@ import { WalletConnectorService } from '@core/services/blockchain/wallets/wallet
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
-import { UseTestingModeService } from '../../use-testing-mode/use-testing-mode.service';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
 import { AuthService } from '../../auth/auth.service';
@@ -34,25 +33,20 @@ const instantTradesApiRoutes = {
   providedIn: 'root'
 })
 export class InstantTradesApiService {
-  private isTestingMode: boolean;
-
-  private static getHashObject(blockchain: BLOCKCHAIN_NAME, hash: string): HashObject {
+  private static getHashObject(blockchain: BlockchainName, hash: string): HashObject {
     const blockchainType = BlockchainsInfo.getBlockchainType(blockchain);
     return blockchainType === 'solana' ? { signature: hash } : { hash };
   }
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly useTestingModeService: UseTestingModeService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService
-  ) {
-    this.useTestingModeService.isTestingMode.subscribe(res => (this.isTestingMode = res));
-  }
+  ) {}
 
   public notifyInstantTradesBot(body: {
     provider: INSTANT_TRADE_PROVIDER;
-    blockchain: BLOCKCHAIN_NAME;
+    blockchain: BlockchainName;
     walletAddress: string;
     trade: InstantTrade;
     txHash: string;
@@ -94,10 +88,6 @@ export class InstantTradesApiService {
       promocode: promoCode,
       ...hashObject
     };
-
-    if (this.isTestingMode) {
-      tradeInfo.network = 'ethereum-test';
-    }
 
     const url = instantTradesApiRoutes.createData(this.walletConnectorService.provider.walletType);
     return this.httpService.post<InstantTradesResponseApi>(url, tradeInfo).pipe(delay(1000));
@@ -166,9 +156,6 @@ export class InstantTradesApiService {
     }
     if ('program' in tradeApi) {
       provider = tradeApi.program.name;
-    }
-    if (provider === 'pancakeswap_old') {
-      provider = INSTANT_TRADE_PROVIDER.PANCAKESWAP;
     }
 
     let fromTransactionHash;

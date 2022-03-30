@@ -1,8 +1,6 @@
 import { ContractData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/contract-data';
-import { SupportedCrossChainBlockchain } from '@features/cross-chain-routing/services/cross-chain-routing-service/models/supported-cross-chain-blockchain';
 import { ProviderData } from '@features/cross-chain-routing/services/cross-chain-routing-service/contracts-data/contract-data/models/provider-data';
 import { PublicBlockchainAdapterService } from '@core/services/blockchain/blockchain-adapters/public-blockchain-adapter.service';
-import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { SolanaWeb3Public } from '@core/services/blockchain/blockchain-adapters/solana/solana-web3-public';
 import { PublicKey } from '@solana/web3.js';
 import { PDA_CONFIG } from '@features/cross-chain-routing/services/cross-chain-routing-service/constants/solana/solana-constants';
@@ -24,14 +22,12 @@ export class SolanaContractData extends ContractData {
   private readonly blockchainAdapter: SolanaWeb3Public;
 
   constructor(
-    public readonly blockchain: SupportedCrossChainBlockchain,
     public readonly providersData: ProviderData[],
     public readonly numOfBlockchain: BlockchainNumber,
     publicBlockchainAdapterService: PublicBlockchainAdapterService
   ) {
-    super(blockchain, providersData, numOfBlockchain);
+    super(BLOCKCHAIN_NAME.SOLANA, providersData, numOfBlockchain);
 
-    BlockchainsInfo.checkIsSolana(blockchain);
     this.blockchainAdapter = publicBlockchainAdapterService[BLOCKCHAIN_NAME.SOLANA];
   }
 

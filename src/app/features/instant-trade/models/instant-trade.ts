@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { SymbolToken } from '@shared/models/tokens/symbol-token';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 
 interface InstantTrade {
-  blockchain: BLOCKCHAIN_NAME;
+  blockchain: BlockchainName;
 
   from: {
     token: InstantTradeToken;

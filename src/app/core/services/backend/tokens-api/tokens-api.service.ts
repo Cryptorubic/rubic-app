@@ -19,12 +19,10 @@ import {
   TokensRequestNetworkOptions,
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
-import { PAGINATED_BLOCKCHAIN_NAME } from 'src/app/shared/models/tokens/paginated-tokens';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
+import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -122,28 +120,6 @@ export class TokensApiService {
   }
 
   /**
-   * Fetches static tokens for bridges.
-   * @return BackendToken[] Static tokens for bridge.
-   */
-  private static fetchStaticTokens(): BackendToken[] {
-    return [
-      {
-        address: NATIVE_TOKEN_ADDRESS,
-        name: 'Dai Stablecoin',
-        symbol: 'xDAI',
-        decimals: 18,
-        image:
-          'https://api.rubic.exchange/assets/xdai/0x0000000000000000000000000000000000000000/logo.png',
-        rank: 1,
-        blockchain_network: 'xdai',
-        coingecko_id: '0',
-        usd_price: 1,
-        used_in_iframe: false
-      }
-    ];
-  }
-
-  /**
    * Fetches basic tokens from backend.
    */
   private fetchBasicTokens(): Observable<List<Token>> {
@@ -160,16 +136,15 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.AURORA,
       BLOCKCHAIN_NAME.SOLANA,
       BLOCKCHAIN_NAME.NEAR
-    ].map(el => TO_BACKEND_BLOCKCHAINS[el as PAGINATED_BLOCKCHAIN_NAME]);
+    ].map(blockchain => TO_BACKEND_BLOCKCHAINS[blockchain]);
 
     const requests$ = blockchainsToFetch.map(network =>
-      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, { ...options, network })
+      this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network })
     );
     return forkJoin(requests$).pipe(
       map(results => {
         const backendTokens = results.flatMap(el => el.results || []);
-        const staticTokens = TokensApiService.fetchStaticTokens();
-        return TokensApiService.prepareTokens([...backendTokens, ...staticTokens]);
+        return TokensApiService.prepareTokens(backendTokens);
       })
     );
   }
@@ -186,7 +161,7 @@ export class TokensApiService {
       ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
     };
     return this.httpService
-      .get(ENDPOINTS.TOKKENS, options)
+      .get(ENDPOINTS.TOKENS, options)
       .pipe(
         map((tokensResponse: BackendToken[]) =>
           tokensResponse.length ? TokensApiService.prepareTokens(tokensResponse) : List()
@@ -207,7 +182,7 @@ export class TokensApiService {
       page: requestOptions.page,
       page_size: DEFAULT_PAGE_SIZE
     };
-    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKKENS, options).pipe(
+    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(
       map(tokensResponse => {
         return {
           total: tokensResponse.count,

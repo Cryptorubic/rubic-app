@@ -56,8 +56,6 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
 
   @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
 
-  private clicks = 0;
-
   public readonly isConfirmModalOpened$: Observable<boolean>;
 
   public readonly isMobile$: Observable<boolean>;
@@ -88,15 +86,6 @@ export class UserProfileComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this._onNetworkChanges$.unsubscribe();
     this._onAddressChanges$.unsubscribe();
-  }
-
-  public useTestingMode(): void {
-    this.clicks++;
-    const neededClicksAmount = 5;
-    if (this.clicks >= neededClicksAmount) {
-      this.clicks = 0;
-      this.window.testingMode.use();
-    }
   }
 
   public logout(): void {

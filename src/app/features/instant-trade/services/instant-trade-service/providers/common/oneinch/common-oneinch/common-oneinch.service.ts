@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
-import { EthLikeWeb3Public } from 'src/app/core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  EthLikeBlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith } from 'rxjs/operators';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { from, Observable, of } from 'rxjs';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -104,7 +106,7 @@ export class CommonOneinchService {
     return { fromTokenAddress, toTokenAddress };
   }
 
-  private async getSupportedTokensByBlockchain(blockchain: BLOCKCHAIN_NAME): Promise<string[]> {
+  private async getSupportedTokensByBlockchain(blockchain: BlockchainName): Promise<string[]> {
     blockchain = blockchain as keyof SupportedTokens;
     if (this.supportedTokens[blockchain].length) {
       return this.supportedTokens[blockchain];
@@ -125,14 +127,14 @@ export class CommonOneinchService {
   }
 
   public getAllowance(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: EthLikeBlockchainName,
     tokenAddress: string,
     targetContractAddress = this.contractAddress
   ): Observable<BigNumber> {
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
     if (blockchainAdapter.isNativeAddress(tokenAddress)) {
       return of(new BigNumber(Infinity));
     }
@@ -147,7 +149,7 @@ export class CommonOneinchService {
   }
 
   public async approve(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: EthLikeBlockchainName,
     tokenAddress: string,
     options: TransactionOptions,
     targetContractAddress = this.contractAddress
@@ -158,13 +160,13 @@ export class CommonOneinchService {
   }
 
   public async calculateTrade(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: EthLikeBlockchainName,
     fromToken: InstantTradeToken,
     fromAmount: BigNumber,
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string
-  ): Promise<InstantTrade> {
+  ): Promise<OneinchInstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       fromToken.address,
       toToken.address
@@ -208,7 +210,7 @@ export class CommonOneinchService {
     if (BlockchainsInfo.getBlockchainType(blockchain) !== 'ethLike') {
       throw new CustomError('Wrong blockchain error');
     }
-    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain] as EthLikeWeb3Public;
+    const blockchainAdapter = this.publicBlockchainAdapterService[blockchain];
     const gasPrice = await blockchainAdapter.getGasPrice();
     const gasPriceInEth = Web3Pure.fromWei(gasPrice);
     const gasFeeInEth = gasPriceInEth.multipliedBy(estimatedGas);
@@ -225,7 +227,7 @@ export class CommonOneinchService {
   }
 
   private async getTradeInfo(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: EthLikeBlockchainName,
     fromTokenAddress: string,
     toTokenAddress: string,
     amountAbsolute: string,
@@ -304,7 +306,7 @@ export class CommonOneinchService {
    * @return Promise<SymbolToken[]> Tokens array, used in the route.
    */
   private async extractPath(
-    blockchain: BLOCKCHAIN_NAME,
+    blockchain: EthLikeBlockchainName,
     fromTokenAddress: string,
     toTokenAddress: string,
     oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse
@@ -341,7 +343,10 @@ export class CommonOneinchService {
     }
   }
 
-  public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
+  public async createTrade(
+    trade: OneinchInstantTrade,
+    options: ItOptions
+  ): Promise<TransactionReceipt> {
     const transactionOptions = await this.checkAndGetTradeData(trade, options);
 
     return this.web3Private.trySendTransaction(
@@ -352,7 +357,7 @@ export class CommonOneinchService {
   }
 
   public checkAndEncodeTrade(
-    trade: InstantTrade,
+    trade: OneinchInstantTrade,
     options: ItOptions,
     receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
@@ -360,7 +365,7 @@ export class CommonOneinchService {
   }
 
   private async checkAndGetTradeData(
-    trade: InstantTrade,
+    trade: OneinchInstantTrade,
     options: ItOptions,
     receiverAddress = this.walletAddress
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
@@ -409,7 +414,7 @@ export class CommonOneinchService {
     };
   }
 
-  private specifyError(err: unknown, blockchain: BLOCKCHAIN_NAME): never {
+  private specifyError(err: unknown, blockchain: EthLikeBlockchainName): never {
     if (err instanceof HttpErrorResponse) {
       if (err.error.message?.includes('cannot estimate')) {
         const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;

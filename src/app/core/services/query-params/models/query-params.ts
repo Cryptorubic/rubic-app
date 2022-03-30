@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@shared/models/blockchain/blockchain-name';
+import { BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 
 export type AdditionalTokens =
@@ -13,8 +13,8 @@ export type AdditionalTokens =
 interface AllQueryParams {
   from: string;
   to: string;
-  fromChain: BLOCKCHAIN_NAME;
-  toChain: BLOCKCHAIN_NAME;
+  fromChain: BlockchainName;
+  toChain: BlockchainName;
   amount: string;
 
   // iframe
