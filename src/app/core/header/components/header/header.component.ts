@@ -180,7 +180,7 @@ export class HeaderComponent implements AfterViewInit {
     });
   }
 
-  public async navigateToBridgeOrCrossChain(type: 'bridge' | 'cross-chain'): Promise<void> {
+  public async navigateToCrossChain(): Promise<void> {
     const params = {
       fromBlockchain: BLOCKCHAIN_NAME.ETHEREUM,
       toBlockchain: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -190,11 +190,7 @@ export class HeaderComponent implements AfterViewInit {
     } as SwapFormInput;
     this.swapFormService.input.patchValue(params);
 
-    if (type === 'bridge') {
-      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.BRIDGE;
-    } else {
-      this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
-    }
+    this.swapsService.swapMode = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
     this.gtmService.reloadGtmSession();
 
