@@ -8,7 +8,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { WalletConnectorService } from 'src/app/core/services/blockchain/wallets/wallet-connector-service/wallet-connector.service';
 import { catchError, map, startWith } from 'rxjs/operators';
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
-import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { from, Observable, of } from 'rxjs';
 import { EthLikeWeb3PrivateService } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-private/eth-like-web3-private.service';
 import { BlockchainsInfo } from 'src/app/core/services/blockchain/blockchain-info';
@@ -150,7 +149,7 @@ export class CommonOneinchService {
   }
 
   public async approve(
-    blockchain: BlockchainName,
+    blockchain: EthLikeBlockchainName,
     tokenAddress: string,
     options: TransactionOptions,
     targetContractAddress = this.contractAddress
@@ -167,7 +166,7 @@ export class CommonOneinchService {
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string
-  ): Promise<InstantTrade> {
+  ): Promise<OneinchInstantTrade> {
     const { fromTokenAddress, toTokenAddress } = this.getOneInchTokenSpecificAddresses(
       fromToken.address,
       toToken.address
@@ -307,7 +306,7 @@ export class CommonOneinchService {
    * @return Promise<SymbolToken[]> Tokens array, used in the route.
    */
   private async extractPath(
-    blockchain: BlockchainName,
+    blockchain: EthLikeBlockchainName,
     fromTokenAddress: string,
     toTokenAddress: string,
     oneInchTrade: OneinchSwapResponse | OneinchQuoteResponse
@@ -344,7 +343,10 @@ export class CommonOneinchService {
     }
   }
 
-  public async createTrade(trade: InstantTrade, options: ItOptions): Promise<TransactionReceipt> {
+  public async createTrade(
+    trade: OneinchInstantTrade,
+    options: ItOptions
+  ): Promise<TransactionReceipt> {
     const transactionOptions = await this.checkAndGetTradeData(trade, options);
 
     return this.web3Private.trySendTransaction(
@@ -355,7 +357,7 @@ export class CommonOneinchService {
   }
 
   public checkAndEncodeTrade(
-    trade: InstantTrade,
+    trade: OneinchInstantTrade,
     options: ItOptions,
     receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
@@ -363,7 +365,7 @@ export class CommonOneinchService {
   }
 
   private async checkAndGetTradeData(
-    trade: InstantTrade,
+    trade: OneinchInstantTrade,
     options: ItOptions,
     receiverAddress = this.walletAddress
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
@@ -412,7 +414,7 @@ export class CommonOneinchService {
     };
   }
 
-  private specifyError(err: unknown, blockchain: BlockchainName): never {
+  private specifyError(err: unknown, blockchain: EthLikeBlockchainName): never {
     if (err instanceof HttpErrorResponse) {
       if (err.error.message?.includes('cannot estimate')) {
         const nativeToken = networks.find(el => el.name === blockchain).nativeCoin.symbol;

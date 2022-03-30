@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { BlockchainType } from '@shared/models/blockchain/blockchain-type';
-import { isBlockchainName } from '@shared/utils/blockchain/is-blockchain-name';
+import { isBlockchainName } from '@shared/utils/blockchain/check-blockchain-name';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   protected selectedAddress: string;

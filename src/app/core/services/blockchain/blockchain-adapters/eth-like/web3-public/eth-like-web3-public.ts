@@ -19,7 +19,7 @@ import { MethodData } from '@shared/models/blockchain/method-data';
 import ERC20_TOKEN_ABI from '@core/services/blockchain/constants/erc-20-abi';
 import MULTICALL_ABI from '@core/services/blockchain/constants/multicall-abi';
 import { Call } from '@core/services/blockchain/models/call';
-import { MULTICALL_ADDRESSES } from '@core/services/blockchain/constants/multicall-addresses';
+import { MULTICALL_ADDRESS } from '@core/services/blockchain/constants/multicall-addresses';
 import { TransactionOptions } from '@shared/models/blockchain/transaction-options';
 import { Web3Public } from '@core/services/blockchain/blockchain-adapters/common/web3-public';
 import { Web3Pure } from '@core/services/blockchain/blockchain-adapters/common/web3-pure';
@@ -54,7 +54,7 @@ type TokenField = typeof supportedTokenFields[number];
 type TokenFields = Partial<Record<TokenField, string>>;
 
 export class EthLikeWeb3Public extends Web3Public<AllowanceParams, Transaction> {
-  private readonly multicallAddress = MULTICALL_ADDRESSES[this.blockchain.name];
+  private readonly multicallAddress = MULTICALL_ADDRESS[this.blockchain.name];
 
   constructor(
     private readonly web3: Web3,

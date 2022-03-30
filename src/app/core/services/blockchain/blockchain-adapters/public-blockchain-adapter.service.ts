@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  ETH_LIKE_BLOCKCHAIN_NAME,
+  ETH_LIKE_BLOCKCHAIN_NAMES,
   EthLikeBlockchainName
 } from '@shared/models/blockchain/blockchain-name';
 import { first, switchMap, tap } from 'rxjs/operators';
@@ -151,14 +151,14 @@ export class PublicBlockchainAdapterService {
       );
 
     forkJoin([
-      ...Object.values(ETH_LIKE_BLOCKCHAIN_NAME).map(ethLikeBlockchainName =>
+      ETH_LIKE_BLOCKCHAIN_NAMES.map(ethLikeBlockchainName =>
         checkNode$(this[ethLikeBlockchainName])
       ),
       checkNode$(this[BLOCKCHAIN_NAME.SOLANA])
     ]).subscribe(() => this._nodesChecked$.next(true));
   }
 
-  public getEthLikeAdapter(blockchain: BlockchainName): EthLikeWeb3Public {
+  public getEthLikeWeb3Public(blockchain: BlockchainName): EthLikeWeb3Public {
     if (!isEthLikeBlockchainName(blockchain)) {
       throw new IsNotEthLikeError(blockchain);
     }

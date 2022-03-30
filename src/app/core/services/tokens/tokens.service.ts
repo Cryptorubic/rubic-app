@@ -567,7 +567,7 @@ export class TokensService {
       return foundToken?.symbol;
     }
 
-    const blockchainAdapter = this.publicBlockchainAdapterService.getEthLikeAdapter(blockchain);
+    const blockchainAdapter = this.publicBlockchainAdapterService.getEthLikeWeb3Public(blockchain);
     return blockchainAdapter.getTokenSymbol(tokenAddress);
   }
 }

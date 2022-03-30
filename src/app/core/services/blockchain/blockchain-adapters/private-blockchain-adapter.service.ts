@@ -34,13 +34,13 @@ export class PrivateBlockchainAdapterService {
   public readonly [BLOCKCHAIN_NAME.NEAR]: NearWeb3PrivateService;
 
   constructor(
-    private readonly web3PrivateService: EthLikeWeb3PrivateService,
+    private readonly ethLikeWeb3PrivateService: EthLikeWeb3PrivateService,
     private readonly solanaWeb3PrivateService: SolanaWeb3PrivateService,
     private readonly nearWeb3privateService: NearWeb3PrivateService
   ) {
     ETH_LIKE_BLOCKCHAIN_NAMES.forEach(blockchain => {
       // @ts-ignore. Cannot assign to readonly property in cycle.
-      this[blockchain] = web3PrivateService;
+      this[blockchain] = ethLikeWeb3PrivateService;
     });
     this[BLOCKCHAIN_NAME.SOLANA] = solanaWeb3PrivateService;
     this[BLOCKCHAIN_NAME.NEAR] = nearWeb3privateService;

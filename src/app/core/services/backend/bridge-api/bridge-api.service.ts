@@ -14,7 +14,11 @@ import { TokensService } from 'src/app/core/services/tokens/tokens.service';
 import { HttpService } from '../../http/http.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { BridgeBotRequest } from '@core/services/backend/bridge-api/models/bridge-bot-request';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
+import {
+  BLOCKCHAIN_NAME,
+  BLOCKCHAIN_NAMES,
+  BlockchainName
+} from '@shared/models/blockchain/blockchain-name';
 
 @Injectable({
   providedIn: 'root'
@@ -216,15 +220,14 @@ export class BridgeApiService {
     return this.tokensService.tokens$.pipe(
       first(),
       map(backendTokens => {
-        const prices = Object.values(BLOCKCHAIN_NAME)
-          .map(
-            blockchain =>
-              backendTokens.find(
-                token =>
-                  bridgeTokenPair.tokenByBlockchain[blockchain]?.address.toLowerCase() ===
-                  token.address.toLowerCase()
-              )?.price
-          )
+        const prices = BLOCKCHAIN_NAMES.map(
+          blockchain =>
+            backendTokens.find(
+              token =>
+                bridgeTokenPair.tokenByBlockchain[blockchain]?.address.toLowerCase() ===
+                token.address.toLowerCase()
+            )?.price
+        )
           .filter(it => it)
           .sort((a, b) => b - a);
         return prices[0] || 0;

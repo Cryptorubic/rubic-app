@@ -30,7 +30,7 @@ import {
 import {
   RUBIC_BRIDGE_CONTRACT_ADDRESS,
   RUBIC_TOKEN_ADDRESS
-} from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses-net-mode';
+} from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses';
 
 interface RubicConfig {
   maxAmount: number;

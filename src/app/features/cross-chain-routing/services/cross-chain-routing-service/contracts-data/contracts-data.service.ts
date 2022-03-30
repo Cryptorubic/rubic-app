@@ -44,7 +44,10 @@ import { RefFinanceService } from '@features/instant-trade/services/instant-trad
   providedIn: 'root'
 })
 export class ContractsDataService {
-  public readonly contracts: Record<EthLikeBlockchainName, EthLikeContractData> &
+  public readonly contracts: Record<
+    SupportedCrossChainBlockchain & EthLikeBlockchainName,
+    EthLikeContractData
+  > &
     Record<SupportedCrossChainBlockchain & SolanaBlockchainName, SolanaContractData> &
     Record<SupportedCrossChainBlockchain & NearBlockchainName, NearContractData>;
 

@@ -1,6 +1,5 @@
 import InstantTradeToken from '@features/instant-trade/models/instant-trade-token';
 import BigNumber from 'bignumber.js';
-import InstantTrade from '@features/instant-trade/models/instant-trade';
 import { Observable } from 'rxjs';
 import {
   ItOptions,
@@ -12,6 +11,7 @@ import { CommonOneinchService } from 'src/app/features/instant-trade/services/in
 import { TransactionOptions } from 'src/app/shared/models/blockchain/transaction-options';
 import { INSTANT_TRADES_PROVIDERS } from '@shared/models/instant-trade/instant-trade-providers';
 import { RequiredField } from '@shared/models/utility-types/required-field';
+import { OneinchInstantTrade } from '@features/instant-trade/services/instant-trade-service/providers/common/oneinch/common-oneinch/models/oneinch-instant-trade';
 
 export abstract class OneinchProviderAbstract implements ItProvider {
   public abstract readonly providerType: INSTANT_TRADES_PROVIDERS;
@@ -54,7 +54,7 @@ export abstract class OneinchProviderAbstract implements ItProvider {
     toToken: InstantTradeToken,
     shouldCalculateGas: boolean,
     fromAddress?: string
-  ): Promise<InstantTrade> {
+  ): Promise<OneinchInstantTrade> {
     return this.commonOneinchService.calculateTrade(
       this.blockchain,
       fromToken,
@@ -65,12 +65,15 @@ export abstract class OneinchProviderAbstract implements ItProvider {
     );
   }
 
-  public createTrade(trade: InstantTrade, options: ItOptions = {}): Promise<TransactionReceipt> {
+  public createTrade(
+    trade: OneinchInstantTrade,
+    options: ItOptions = {}
+  ): Promise<TransactionReceipt> {
     return this.commonOneinchService.createTrade(trade, options);
   }
 
   public checkAndEncodeTrade(
-    trade: InstantTrade,
+    trade: OneinchInstantTrade,
     options: ItOptions,
     receiverAddress: string
   ): Promise<RequiredField<TransactionOptions, 'data'>> {
