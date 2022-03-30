@@ -148,9 +148,9 @@ export abstract class CommonUniswapV2Service implements ItProvider {
     this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
 
     this.maxTransitTokens = uniswapConstants.maxTransitTokens;
-    this._contractAddress = uniswapConstants.contractAddressNetMode.mainnet;
-    this.wethAddress = uniswapConstants.wethAddressNetMode.mainnet;
-    this.routingProviders = uniswapConstants.routingProvidersNetMode.mainnet;
+    this._contractAddress = uniswapConstants.contractAddress;
+    this.wethAddress = uniswapConstants.wethAddress;
+    this.routingProviders = uniswapConstants.routingProviders;
   }
 
   /**

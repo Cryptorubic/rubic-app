@@ -55,8 +55,8 @@ export abstract class CommonUniswapV3Service extends CommonUniswapV3AlgebraServi
     this.quoterController = new UniSwapV3QuoterController(
       this.blockchainAdapter,
       UNISWAP_V3_QUOTER_CONTRACT,
-      uniswapV3Constants.routerTokensNetMode,
-      uniswapV3Constants.routerLiquidityPoolsNetMode
+      uniswapV3Constants.routerTokens,
+      uniswapV3Constants.routerLiquidityPools
     );
   }
 

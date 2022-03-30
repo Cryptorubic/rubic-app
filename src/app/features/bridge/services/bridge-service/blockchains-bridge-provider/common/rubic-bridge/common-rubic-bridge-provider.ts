@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@shared/models/blockchain/blockchain-name';
 import { EMPTY, from, Observable, of, throwError } from 'rxjs';
 import { EthLikeWeb3Public } from '@core/services/blockchain/blockchain-adapters/eth-like/web3-public/eth-like-web3-public';
-
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { BlockchainsInfo } from '@core/services/blockchain/blockchain-info';
 import { UndefinedError } from '@core/errors/models/undefined.error';
@@ -19,10 +18,6 @@ import { BRIDGE_PROVIDER } from '@shared/models/bridge/bridge-provider';
 import { BridgeTrade } from '@features/bridge/models/bridge-trade';
 import { BlockchainsBridgeProvider } from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/blockchains-bridge-provider';
 import { inject } from '@angular/core';
-import {
-  RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE,
-  RUBIC_TOKEN_ADDRESSES_NET_MODE
-} from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses-net-mode';
 import rubicBridgeContractAbi from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/rubic-bridge-contract-abi';
 import {
   RubicBridgeConfig,
@@ -32,6 +27,10 @@ import {
   FromBackendBlockchain,
   TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
+import {
+  RUBIC_BRIDGE_CONTRACT_ADDRESS,
+  RUBIC_TOKEN_ADDRESS
+} from '@features/bridge/services/bridge-service/blockchains-bridge-provider/common/rubic-bridge/constants/addresses-net-mode';
 
 interface RubicConfig {
   maxAmount: number;
@@ -86,7 +85,7 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
 
   protected constructor(private readonly defaultConfig: RubicBridgeConfig) {
     super();
-    this.setRubicConfig(defaultConfig, 'mainnet');
+    this.setRubicConfig(defaultConfig);
     this.loadRubicTokenInfo();
   }
 
@@ -307,20 +306,18 @@ export abstract class CommonRubicBridgeProvider extends BlockchainsBridgeProvide
     }
   }
 
-  private setRubicConfig(config: RubicBridgeConfig, type: 'testnet' | 'mainnet'): void {
+  private setRubicConfig(config: RubicBridgeConfig): void {
     this.rubicConfig = {
       [config.from.blockchainName]: {
         maxAmount: config.from.maxAmount,
-        swapContractAddress:
-          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.from.blockchainName],
-        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.from.blockchainName],
+        swapContractAddress: RUBIC_BRIDGE_CONTRACT_ADDRESS[config.from.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESS[config.from.blockchainName],
         ...config.from.token
       },
       [config.to.blockchainName]: {
         maxAmount: config.to.maxAmount,
-        swapContractAddress:
-          RUBIC_BRIDGE_CONTRACT_ADDRESSES_NET_MODE[type][config.to.blockchainName],
-        rubicTokenAddress: RUBIC_TOKEN_ADDRESSES_NET_MODE[type][config.to.blockchainName],
+        swapContractAddress: RUBIC_BRIDGE_CONTRACT_ADDRESS[config.to.blockchainName],
+        rubicTokenAddress: RUBIC_TOKEN_ADDRESS[config.to.blockchainName],
         ...config.to.token
       }
     };

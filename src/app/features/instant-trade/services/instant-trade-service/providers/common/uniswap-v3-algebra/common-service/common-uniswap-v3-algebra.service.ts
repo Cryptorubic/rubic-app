@@ -46,7 +46,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
   protected blockchainAdapter: EthLikeWeb3Public;
 
-  private wethAddress: string;
+  private readonly wethAddress: string;
 
   protected readonly swapRouterContract: ContractData;
 
@@ -74,7 +74,7 @@ export abstract class CommonUniswapV3AlgebraService implements ItProvider {
 
     this.blockchainAdapter = this.publicBlockchainAdapterService[this.blockchain];
 
-    this.wethAddress = uniswapV3Constants.wethAddressNetMode.mainnet;
+    this.wethAddress = uniswapV3Constants.wethAddress;
     this.swapRouterContract = uniswapV3Constants.swapRouterContract;
 
     this.settingsService.instantTradeValueChanges
